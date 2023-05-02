@@ -1,0 +1,89 @@
+<ng-container *ngIf="!ventanaConfirmacion">
+  <form [formGroup]="modificarBeneficiarioForm">
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span></label>
+        <input id="velatorio" class="form-control" formControlName="velatorio" placeholder="Ingresa el modelo">
+        <span class="campo-obligatorio"
+              *ngIf="fmb.velatorio?.errors?.required && (fmb.velatorio?.dirty || fmb.velatorio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="fecha">Fecha<span class="req">*</span></label>
+        <input id="fecha" class="form-control" formControlName="fecha" placeholder="Ingresa el modelo">
+        <span class="campo-obligatorio"
+              *ngIf="fmb.fecha?.errors?.required && (fmb.fecha?.dirty || fmb.fecha?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="modeloDeArticulo">Nombre completo<span class="req">*:</span>:</label>
+        <input id="modeloDeArticulo" class="form-control" formControlName="modeloDeArticulo" placeholder="Ingresa el modelo">
+        <span class="campo-obligatorio"
+              *ngIf="fmb.modeloDeArticulo?.errors?.required && (fmb.modeloDeArticulo?.dirty || fmb.modeloDeArticulo?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="edad">Edad<span class="req">*:</span></label>
+        <p-dropdown appendTo="body" id="edad" class="form-control" formControlName="edad"
+                    [options]="tipoServicio"
+                    placeholder="Selecciona el tipo de servicio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fmb.edad?.errors?.required && (fmb.edad?.dirty || fmb.edad?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="parentesco">Parentesco<span class="req">*:</span></label>
+        <input id="parentesco" class="form-control" formControlName="parentesco" placeholder="Ingresa el parentesco">
+        <span class="campo-obligatorio"
+              *ngIf="fmb.parentesco?.errors?.required && (fmb.parentesco?.dirty || fmb.parentesco?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="curp">CURP<span class="req">*:</span></label>
+        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el modelo">
+        <span class="campo-obligatorio"
+              *ngIf="fmb.curp?.errors?.required && (fmb.curp?.dirty || fmb.curp?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="rfc">RFC<span class="req">*:</span></label>
+        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el rfc">
+        <span class="campo-obligatorio"
+              *ngIf="fmb.rfc?.errors?.required && (fmb.rfc?.dirty || fmb.rfc?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*:</span></label>
+        <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa el modelo">
+        <span class="campo-obligatorio"
+              *ngIf="fmb.correoElectronico?.errors?.required && (fmb.correoElectronico?.dirty || fmb.correoElectronico?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="clasificacionDeProducto">teléfono<span class="req">*:</span></label>
+        <input id="modeloDeArticulo" class="form-control" formControlName="modeloDeArticulo" placeholder="Ingresa el modelo">
+        <span class="campo-obligatorio"
+              *ngIf="fmb.clasificacionDeProducto?.errors?.required && (fmb.clasificacionDeProducto?.dirty || fmb.clasificacionDeProducto?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+  </form>
+
+
+  <div class="flex justify-content-end">
+    <button class="btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" [disabled]="modificarBeneficiarioForm.invalid" (click)="confirmarModificarBeneficiario()">
+      Agregar
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="ventanaConfirmacion">
+  <app-detalle-beneficiario [beneficiarioSeleccionado]="this.beneficiarios" [origen]="'agregar'"
+                        (confirmacionAceptar)="cerrar()"  ></app-detalle-beneficiario>
+</ng-container>
+
+

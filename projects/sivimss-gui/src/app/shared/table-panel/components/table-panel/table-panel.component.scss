@@ -1,0 +1,27 @@
+.table-panel {
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid #DEE2E6;
+
+  .table-panel-header {
+    background: #F3F3F3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .table-panel-header-content {
+      display: flex;
+      align-items: center;
+    }
+
+    .table-panel-header-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .table-panel-header-right {
+      display: flex;
+      align-items: center;
+    }
+  }
+}

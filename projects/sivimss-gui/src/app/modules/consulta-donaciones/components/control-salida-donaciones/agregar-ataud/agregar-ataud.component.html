@@ -1,0 +1,27 @@
+<form [formGroup]="formAtaud">
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label class="control-label" for="ataud">Ataúd <span class="req">*</span></label>
+      <p-dropdown appendTo="body" id="ataud" class="form-control" formControlName="ataud"
+                  [options]="ataud"
+                  placeholder="Selecciona el ataúd">
+      </p-dropdown>
+      <span class="campo-obligatorio"
+            *ngIf="f.ataud?.errors?.required && (f.ataud?.dirty || f.ataud?.touched)">Campo obligatorio</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+          <span class="mensaje-inferior-campo-obligatorio">
+            *Campos obligatorios
+          </span>
+    </div>
+  </div>
+</form>
+<div class="flex justify-content-end mt-6 my-3">
+  <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
+  <button type="button" class="ml-4 btn btn-primary btn-md" (click)="agregar()">
+    Agregar
+  </button>
+
+</div>

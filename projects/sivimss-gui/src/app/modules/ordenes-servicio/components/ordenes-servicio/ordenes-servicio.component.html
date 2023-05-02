@@ -1,0 +1,135 @@
+<app-titulo-principal titulo="Órdenes de servicio"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="opciones"
+                    placeholder="Selecciona el velatorio">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="numeroFolio">No. de folio:</label>
+        <p-dropdown id="numeroFolio" class="form-control" formControlName="numeroFolio" [options]="opciones"
+                    placeholder="">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nombreContratante">Nombre del contratante:</label>
+        <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
+               placeholder="Ingresa nombre del contratante">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="nombreFinado">Nombre del finado:</label>
+        <input id="nombreFinado" class="form-control" formControlName="nombreFinado"
+               placeholder="Ingresa nombre del finado">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="tipoOrden">Tipo de orden:</label>
+        <p-dropdown id="tipoOrden" class="form-control" formControlName="tipoOrden" [options]="opciones"
+                    placeholder="Selecciona tipo de orden">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="unidadProcedencia">Unidad de procedencia:</label>
+        <p-dropdown id="unidadProcedencia" class="form-control" formControlName="unidadProcedencia" [options]="opciones"
+                    placeholder="Selecciona unidad de procedencia">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="numeroContrato">No. de contrato:</label>
+        <input id="numeroContrato" class="form-control" formControlName="numeroContrato"
+               placeholder="Ingresa no. de contrato">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="estatus">Estatus:</label>
+        <p-dropdown id="estatus" class="form-control" formControlName="estatus" [options]="opciones"
+                    placeholder="Selecciona estatus">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Órdenes de servicio</h2>
+    <button type="button" class="btn btn-primary btn-lg" routerLink="generar-orden-de-servicio">Generar orden de
+      servicio
+    </button>
+  </div>
+  <p-table styleClass="mt-5 mb-8" [value]="ordenesServicio" [paginator]="ordenesServicio.length > 0"
+           [rows]="cantElementosPorPagina"
+           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="paginar($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>No. de Folio</th>
+        <th>Velatorio</th>
+        <th>Nombre del contratante</th>
+        <th>Nombre del finado</th>
+        <th>Estatus</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-ordenServicio>
+      <tr>
+        <td>{{ordenServicio.numeroFolio}}</td>
+        <td>{{ordenServicio.velatorio}}</td>
+        <td>{{ordenServicio.nombreContratante}}</td>
+        <td>{{ordenServicio.nombreFinado}}</td>
+        <td><b>{{ordenServicio.estatus}}</b></td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a routerLink="ver-orden-de-servicio">
+              <i class="fs fs-ver"></i>
+            </a>
+            <a (click)="abrirPanel($event,ordenServicio)">
+              <i class="fs fs-barras-horizontales"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{ordenesServicio.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg"
+                 alt="exportar excel">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Generar tarjeta identificación" (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver tarjeta de identificación" (click)="abrirModalVerTarjetaIdent()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Cancelar orden"
+                                routerLink="cancelar-orden-de-servicio"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

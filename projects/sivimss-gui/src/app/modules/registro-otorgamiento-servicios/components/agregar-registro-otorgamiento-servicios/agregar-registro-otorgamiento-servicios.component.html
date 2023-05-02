@@ -1,0 +1,59 @@
+<ng-container *ngIf="!confirmacionAgregar">
+  <form [formGroup]="form">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="tipoServicio">Tipo de servicio <span class="req">*:</span></label>
+        <p-dropdown appendTo="body" id="tipoServicio" class="form-control" formControlName="tipoServicio"
+                    [options]="tipoServicio"
+                    placeholder="Selecciona el tipo de servicio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="f.tipoServicio?.errors?.required && (f.tipoServicio?.dirty || f.tipoServicio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6 pt-6">
+
+          <p-checkbox inputId="alta" formControlName="certificadoCremacion" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <label [for]="'certificadoCremacion'" class="control-label mb-0">Certificado de cremación</label>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <label class="control-label" for="tipoServicio">Fecha y hora <span class="req">*:</span></label><br>
+        <div class="row mb-2 mt-2">
+            <div class="col-md-3">
+              <label>{{fechaActual}} - {{registro | date:'shortTime'}}</label>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <label class="control-label" for="notasServicio">Notas del servicio:</label>
+        <input id="notasServicio" class="form-control" formControlName="notasServicio"
+               placeholder="Ingresa las notas del servicio" maxlength="100" >
+      </div>
+    </div>
+    <div class="row  mt-2 mb-4">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+
+    <div class="flex justify-content-end">
+      <button class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" [disabled]="form.invalid" (click)="confirmarAgregarOrderServicio()">
+        Registrar
+      </button>
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="confirmacionAgregar">
+  <app-detalle-registro-otorgamiento-servicios (regresarPantalla)="regresarPantalla($event)" [origen]="'situar'" [registroOtorgamientoSeleccionado]="registroOtorgamiento">
+
+  </app-detalle-registro-otorgamiento-servicios>
+</ng-container>
+

@@ -1,0 +1,62 @@
+<ng-container *ngIf="indice === 0">
+    <form [formGroup]="modificarRolPermisoForm" (submit)="modificarRolPermisos()">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="control-label" for="idMod">Rol<span class="req">*</span>:</label>
+                <p-dropdown id="idRol" class="form-control" formControlName="idRol" [options]="catRol" placeholder="Seleccionar rol">
+                </p-dropdown>
+                <span class="campo-obligatorio" *ngIf="fmu.idRol?.errors?.required && (fmu.idRol?.dirty || fmu.idRol?.touched)">Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <input id="idFuncionalidad" type="hidden" class="form-control" formControlName="idFuncionalidad">
+                <label class="control-label" for="nombreFun">Nombre de la funcionalidad<span class="req">*</span></label>
+                <input id="nombreFun" class="form-control" formControlName="nombreFun">
+                <span class="campo-obligatorio" *ngIf="fmu?.nombreFun?.errors?.required && (fmu?.nombreFun?.dirty || fmu?.nombreFun?.touched)">Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="control-label">Permisos:</label>
+                <div class="flex">
+                    <div class="flex align-items-center">
+                        <p-checkbox inputId="alta" formControlName="alta" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'alta'" class="control-label mb-0">Alta</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="baja" formControlName="baja" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'baja'" class="control-label mb-0">Baja</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="aprobacion" formControlName="aprobacion" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'aprobacion'" class="control-label mb-0">Aprobacion</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="consulta" formControlName="consulta" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'consulta'" class="control-label mb-0">Consulta</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="modificar" formControlName="modificar" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'modificar'" class="control-label mb-0">Modificar</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="imprimir" formControlName="imprimir" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'imprimir'" class="control-label mb-0">Imprimir</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <span>*Campos obligatorios</span>
+            </div>
+        </div>
+        <div class="flex justify-content-end row">
+            <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+            <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="modificarRolPermisoForm.invalid" (click)="confirmarModificacion();">
+        Modificar
+      </button>
+        </div>
+    </form>
+</ng-container>

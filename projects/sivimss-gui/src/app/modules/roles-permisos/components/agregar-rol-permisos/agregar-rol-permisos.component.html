@@ -1,0 +1,202 @@
+<app-titulo-principal titulo="Agregar permisos rol"></app-titulo-principal>
+<form [formGroup]="agregarRolForm">
+    <section>
+        <h2 class="subtitulo">Datos generales</h2>
+        <div class="px-4 mt-3">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="control-label" for="rol">Rol<span class="req">*</span>:</label>
+                    <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" (ngModelChange)="catalogoFuncionalidad($event)" placeholder="Seleccionar el rol">
+                    </p-dropdown>
+                    <span class="campo-obligatorio" *ngIf="f.rol?.errors?.required && (f.rol?.dirty || f.rol?.touched)">Campo obligatorio</span>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <span class="campos-obligatorios-texto">*Campos obligatorios</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="mt-6">
+        <div class="flex justify-content-between align-items-center">
+            <h2 class="subtitulo">Funcionalidades y permisos</h2>
+            <button class="ml-4 btn btn-primary btn-lg" [disabled]="agregarRolForm.invalid" (click)="abrirModalAgregarFuncionalidad()">
+        Agregar funcionalidad
+      </button>
+        </div>
+
+        <div class="px-4" *ngIf="formArrayFuncionalidades.value.length == 0">
+            <div class="px-4 py-6 mt-5 border-panel flex justify-content-center">
+                <span class="mensaje-agregar-funcionalidad">No has agregado funcionalidades a este rol</span>
+            </div>
+        </div>
+        <p-table *ngIf="funcionalidades.length > 0" styleClass="mt-5 mb-4" [value]="funcionalidades">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>ID funcionalidad</th>
+                    <th>Nombre</th>
+                    <th>Permisos</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-funcionalidad>
+                <tr>
+                    <td>{{funcionalidad.id}}</td>
+                    <td>{{funcionalidad.nombre}}</td>
+                    <td>
+                        {{funcionalidad | cadenaPermisos}}
+                    </td>
+                    <td>
+                        <div class="contenedor-celda-iconos">
+                            <a (click)="abrirPanel($event,funcionalidad)">
+                                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </section>
+
+    <div class="flex justify-content-end mb-6">
+        <button class="btn btn-default btn-md" routerLink="../">Regresar</button>
+        <button class="ml-4 btn btn-gold btn-md" routerLink="../">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarRolForm.invalid" (click)="agregarRolPermisos()">
+      Aceptar
+    </button>
+    </div>
+</form>
+
+<!-- AGREGAR FUNCIONALIDAD -->
+<p-dialog [style]="{maxWidth:'876px',width: '100%'}" header="Agregar funcionalidad" [(visible)]="mostrarModalAgregarFunc" [modal]="true" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="content">
+        <form [formGroup]="formFuncionalidad">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="control-label" for="id">Funcionalidad<span class="req">*</span>:</label>
+                    <p-dropdown id="id" class="form-control" formControlName="id" [options]="catFuncionalidad" placeholder="Seleccionar funcionalidad" optionLabel="label">
+                    </p-dropdown>
+                    <span class="campo-obligatorio" *ngIf="funcionalidad.id?.errors?.required && (funcionalidad.id?.dirty || funcionalidad.id?.touched)">Campo obligatorio</span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="control-label">Permisos:</label>
+                    <div class="flex">
+                        <div class="flex align-items-center">
+                            <p-checkbox inputId="alta" formControlName="alta" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'alta'" class="control-label mb-0">Alta</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="baja" formControlName="baja" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'baja'" class="control-label mb-0">Baja</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="aprobacion" formControlName="aprobacion" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'aprobacion'" class="control-label mb-0">Aprobacion</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="consulta" formControlName="consulta" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'consulta'" class="control-label mb-0">Consulta</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="modificar" formControlName="modificar" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'modificar'" class="control-label mb-0">Modificar</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="imprimir" formControlName="imprimir" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'imprimir'" class="control-label mb-0">Imprimir</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <span>*Campos obligatorios</span>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end">
+            <button class="ml-4 btn btn-gold btn-md" (click)="mostrarModalAgregarFunc = false">
+        Cancelar
+      </button>
+            <button class="ml-4 btn btn-primary btn-md" [disabled]="formFuncionalidad.invalid" (click)="agregarFuncionalidad(funcionalidad.id.value)">
+        Aceptar
+      </button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- MODIFICAR FUNCIONALIDAD -->
+<p-dialog [style]="{maxWidth:'876px',width: '100%'}" header="Modificar funcionalidad" [(visible)]="mostrarModalModificarFunc" [modal]="true" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="content">
+        <form [formGroup]="formFuncionalidad">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="control-label" for="id">Funcionalidad<span class="req">*</span>:</label>
+                    <p-dropdown id="id" class="form-control" formControlName="id" [options]="catFuncionalidad" placeholder="Seleccionar funcionalidad">
+                    </p-dropdown>
+                    <span class="campo-obligatorio" *ngIf="funcionalidad.id?.errors?.required && (funcionalidad.id?.dirty || funcionalidad.id?.touched)">Campo obligatorio</span>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="control-label">Permisos:</label>
+                    <div class="flex">
+                        <div class="flex align-items-center">
+                            <p-checkbox inputId="alta" formControlName="alta" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'alta'" class="control-label mb-0">Alta</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="baja" formControlName="baja" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'baja'" class="control-label mb-0">Baja</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="aprobacion" formControlName="aprobacion" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'aprobacion'" class="control-label mb-0">Aprobacion</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="consulta" formControlName="consulta" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'consulta'" class="control-label mb-0">Consulta</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="modificar" formControlName="modificar" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'modificar'" class="control-label mb-0">Modificar</label>
+                        </div>
+                        <div class="flex align-items-center ml-5">
+                            <p-checkbox inputId="imprimir" formControlName="imprimir" styleClass="mr-3" [binary]="true"></p-checkbox>
+                            <label [for]="'imprimir'" class="control-label mb-0">Imprimir</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <span>*Campos obligatorios</span>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end">
+            <button class="ml-4 btn btn-gold btn-md" (click)="mostrarModalModificarFunc = false">
+        Cancelar
+      </button>
+            <button class="ml-4 btn btn-primary btn-md" [disabled]="formFuncionalidad.invalid" (click)="modificarFuncionalidad()">
+        Aceptar
+      </button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarFuncionalidad()"></app-overlay-panel-opcion>
+            <app-overlay-panel-opcion titulo="Eliminar" (click)="eliminarFuncionalidad()"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>

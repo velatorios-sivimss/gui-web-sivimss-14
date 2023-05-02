@@ -1,0 +1,121 @@
+<app-titulo-principal styleClass="mt-4" titulo="ADMINISTRAR PROVEEDORES"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="niveles"
+          placeholder="Seleccionar el nivel">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
+          placeholder="Seleccionar el velatorio">
+        </p-dropdown>
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="proveedores">Proveedores:</label>
+        <p-dropdown id="proveedores" class="form-control" formControlName="proveedores" [options]="proveedoresOpciones"
+          placeholder="Seleccionar la delegación">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+    <div class="col-md-12">
+        <label class="control-label" for="proveedor">Proveedor<span class="req">*</span></label>
+        <input id="proveedor" class="form-control" formControlName="proveedor" placeholder="Inserta el proveedor">
+    </div>
+    </div>
+
+
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md" (click)="limpiarFiltros()">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<section class="mt-5">
+    <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">proveedores</h2>
+        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCreacionProveedor()">
+            Agregar proveedor</button>
+    </div>
+    <p-table styleClass="mt-5 mb-8" [value]="proveedores" [paginator]="proveedores.length > 0"
+      [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+      [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Tipo de proveedor</th>
+          <th>Responsable sanitario</th>
+          <th>Estatus</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-proveedor>
+        <tr>
+          <td>{{proveedor.id}}</td>
+          <td>{{proveedor.nombre}}</td>
+          <td>{{proveedor.tipoProveedor}}</td>
+          <td>{{proveedor.responsableSanitario}}</td>
+          <td>
+            <div class="contenedor-inputswitch">
+              <p-inputSwitch [(ngModel)]="proveedor.estatus" (onChange)="abrirModalCambioEstatus(proveedor)"></p-inputSwitch>
+              <span class="activo" *ngIf="proveedor.estatus">Activo</span>
+              <span class="inactivo" *ngIf="!proveedor.estatus">Inactivo</span>
+            </div>
+          <td>
+            <div class="contenedor-celda-iconos">
+              <a (click)="abrirModalDetalleProveedor(proveedor)">
+                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+              </a>
+              <a (click)="abrirPanel($event,proveedor)">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft">
+        <div class="paginator-template">
+          <span class="total-elements">{{proveedores.length}} de {{totalElementos}}</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="paginatorright">
+        <div class="paginator-template">
+          <div class="export-table">
+            <span class="export-table-text">Exportar tabla</span>
+            <div class="export-table-icons">
+              <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+              <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-table>
+</section>
+
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificacionProveedor()" ></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>
+
+<!-- <app-stepper [items]="items" [checked]="true" [index]="1"></app-stepper> -->
+<!-- <p-steps [model]="items" [ngClass]="{'mostrar-check': propiedad }" [activeIndex]="1"></p-steps> -->
+<!-- <button class="ml-4 btn btn-primary btn-md" (click)="propiedad = !propiedad">
+    Aceptar
+</button> -->

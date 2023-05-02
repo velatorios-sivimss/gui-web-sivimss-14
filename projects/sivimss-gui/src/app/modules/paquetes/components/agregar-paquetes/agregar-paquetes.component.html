@@ -1,0 +1,359 @@
+<app-titulo-principal [titulo]="'REGISTRAR PAQUETES'"></app-titulo-principal>
+
+<form [formGroup]="agregarPaqueteForm">
+
+  <div class="row mb-3 p-4">
+    <section>
+      <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">Datos del paquete</h2>
+      </div>
+    </section>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="control-label" for="id">ID *:</label>
+      <input id="id" class="form-control" formControlName="id" placeholder="">
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="nombrePaquete">Paquete *:</label>
+      <input id="nombrePaquete" class="form-control" formControlName="nombrePaquete" maxlength="70"
+             placeholder="Ingresa el nombre del paquete" alphanumericOnly trimmer>
+      <span class="campo-obligatorio"
+            *ngIf="f.nombrePaquete?.errors?.required && (f.nombrePaquete?.dirty || f.nombrePaquete?.touched)">Campo
+        obligatorio</span>
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="descripcion">Descripción *:</label>
+      <input id="descripcion" class="form-control" formControlName="descripcion" maxlength="70"
+             placeholder="Ingresa la descripción del paquete" alphanumericOnly trimmer>
+      <span class="campo-obligatorio"
+            *ngIf="f.descripcion?.errors?.required && (f.descripcion?.dirty || f.descripcion?.touched)">Campo
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3 p-4">
+    <section class="mt-5">
+      <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">Servicios del paquete *:</h2>
+        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAgregarServicio()">Agregar servicio
+        </button>
+      </div>
+    </section>
+
+    <div class="col-md-12 mt-5 empty-table-label" *ngIf="servicios.length === 0"
+         [ngClass]="{'empty-table-label-obligatorio': servicios.length === 0 && intentoPorGuardar}">
+      <div class="vertical-center">
+        <p class="text-center"
+           [ngClass]="{'listado-obligatorio-recuadro': servicios.length === 0 && intentoPorGuardar}">
+          Agrega servicios a este paquete
+        </p>
+      </div>
+    </div>
+    <span class="campo-obligatorio" *ngIf="servicios.length === 0 && intentoPorGuardar">Campo
+      obligatorio</span>
+  </div>
+
+  <section class="mt-5" *ngIf="servicios.length > 0">
+    <p-table styleClass="mt-5 mb-8" [value]="servicios" [paginator]="servicios.length > 0"
+             [rows]="cantElementosPorPagina"
+             [lazy]="true" [totalRecords]="totalElementosServicios" [pageLinks]="3" [(first)]="numPaginaActual"
+             (onLazyLoad)="paginar($event)">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Servicio</th>
+          <th>Costo</th>
+          <th>Precio</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-servicio>
+        <tr>
+          <td>{{servicio.servicio}}</td>
+          <td>{{servicio.costo}}</td>
+          <td>{{servicio.precio}}</td>
+          <td>
+            <div class="contenedor-celda-iconos">
+              <a (click)="abrirModalEliminarServicio(servicio)">
+                <img src="assets/images/imagen-icono-eliminar.svg" alt="icono ver">
+              </a>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft">
+        <div class="paginator-template">
+          <span class="total-elements">{{servicios.length}} de {{totalElementosServicios}}</span>
+        </div>
+      </ng-template>
+    </p-table>
+  </section>
+
+  <div class="row mb-3 p-4">
+    <section class="mt-5">
+      <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">Artículos del paquete *:</h2>
+        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAgregarArticulo()">Agregar artículo
+        </button>
+      </div>
+    </section>
+
+    <div class="col-md-12 mt-5 empty-table-label" *ngIf="articulos.length === 0"
+         [ngClass]="{'empty-table-label-obligatorio': articulos.length === 0 && intentoPorGuardar}">
+      <div class="vertical-center">
+        <p class="text-center"
+           [ngClass]="{'listado-obligatorio-recuadro': articulos.length === 0 && intentoPorGuardar}">
+          Agrega artículos a este paquete
+        </p>
+      </div>
+    </div>
+    <span class="campo-obligatorio" *ngIf="articulos.length === 0 && intentoPorGuardar">Campo
+      obligatorio</span>
+  </div>
+
+  <section class="mt-5" *ngIf="articulos.length > 0">
+    <p-table styleClass="mt-5 mb-8" [value]="articulos" [paginator]="articulos.length > 0"
+             [rows]="cantElementosPorPagina"
+             [lazy]="true" [totalRecords]="totalElementosArticulos" [pageLinks]="3" [(first)]="numPaginaActual"
+             (onLazyLoad)="paginar($event)">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Artículo</th>
+          <th>Tipo artículo</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-articulo>
+        <tr>
+          <td>{{articulo.articulo}}</td>
+          <td>{{articulo.tipoArticulo}}</td>
+          <td>
+            <div class="contenedor-celda-iconos">
+              <a (click)="abrirModalEliminarArticulo(articulo)">
+                <img src="assets/images/imagen-icono-eliminar.svg" alt="icono ver">
+              </a>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft">
+        <div class="paginator-template">
+          <span class="total-elements">{{articulos.length}} de {{totalElementosArticulos}}</span>
+        </div>
+      </ng-template>
+    </p-table>
+  </section>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="region">Región *:</label>
+      <p-dropdown id="region" class="form-control" formControlName="region" [options]="regiones"
+                  placeholder="Selecciona la región" (onChange)="handleChangeRegion();">
+      </p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.region?.errors?.required && (f.region?.dirty || f.region?.touched)">Campo
+        obligatorio</span>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="clave">Clave SAT *:</label>
+      <p-dropdown id="clave" class="form-control" formControlName="clave" [options]="clavesSat"
+                  placeholder="Selecciona la clave de articulo SAT">
+      </p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.clave?.errors?.required && (f.clave?.dirty || f.clave?.touched)">Campo
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="control-label" for="costoInicial">Costo inicial *:</label>
+      <input id="costoInicial" class="form-control" formControlName="costoInicial"
+             placeholder="Ingresa el costo inicial">
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="costoReferencia">Costo referencia *:</label>
+      <input id="costoReferencia" class="form-control" formControlName="costoReferencia" numbersOnly
+             placeholder="Ingresa el costo" maxlength="10">
+      <span class="campo-obligatorio"
+            *ngIf="f.costoReferencia?.errors?.required && (f.costoReferencia?.dirty || f.costoReferencia?.touched)">Campo
+        obligatorio</span>
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="precio">Precio *:</label>
+      <input id="precio" class="form-control" formControlName="precio" numbersOnly maxlength="10"
+             placeholder="Ingresa el precio">
+    </div>
+  </div>
+
+  <div class="row mb-3 p-4" *ngIf="mostrarVelatorios">
+    <section>
+      <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo leyenda-seccion">Selecciona los velatorios en los que se mostrará el paquete</h2>
+      </div>
+      <div class="flex align-items-center mt-4" *ngFor="let velatorio of velatorios; let i = index">
+        <p-checkbox [inputId]="velatorio.descripcion" styleClass="mr-3" [binary]="true"></p-checkbox>
+        <label [for]="velatorio.descripcion" class="control-label mb-0">{{velatorio.descripcion}}</label>
+      </div>
+    </section>
+  </div>
+
+  <div>
+    <label class="control-label">Estatus<span class="req"> *:</span></label>
+    <div class="contenedor-inputswitch">
+      <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+      <span class="activo" *ngIf="f.estatus?.value">Activo</span>
+      <span class="inactivo" *ngIf="!f.estatus?.value">Inactivo</span>
+    </div>
+  </div>
+
+  <div class="row mb-2">
+    <div class="col-md-12">
+      <span>*Campos obligatorios</span>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end mb-6">
+    <button class="ml-4 btn btn-gold btn-md" routerLink="../">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarPaqueteForm.invalid"
+            (click)="verDetalleGuardarPaquete()">
+      Aceptar
+    </button>
+  </div>
+</form>
+
+<!-- MODAL AGREGAR SERVICIO -->
+<p-dialog [style]="{maxWidth:'876px',width: '100%'}" header="Agregar servicio al paquete"
+          [(visible)]="mostrarModalAgregarServicio"
+          [modal]="true"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <form [formGroup]="agregarServicioForm">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="tipoServicio">Tipo de servicio<span class="req">*</span>:</label>
+          <p-dropdown appendTo="body" id="tipoServicio" class="form-control" formControlName="tipoServicio"
+                      [options]="tipoServicios" placeholder="Selecciona el tipo de servicio" optionValue="label">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fas.tipoServicio?.errors?.required && (fas.tipoServicio?.dirty || fas.tipoServicio?.touched)">Campo obligatorio
+          </span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="servicio">Servicio<span class="req">*</span></label>
+          <p-dropdown appendTo="body" id="servicio" class="form-control" formControlName="servicio"
+                      [options]="opciones" placeholder="Seleccione el servicio" optionValue="label">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fas.servicio?.errors?.required && (fas.servicio?.dirty || fas.servicio?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-12">
+          <span>*Campos obligatorios</span>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-default btn-md" (click)="mostrarModalAgregarServicio = false">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarServicioForm.invalid" (click)="agregarServicio()">
+        Aceptar
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<!-- MODAL AGREGAR ARTICULO -->
+<p-dialog [style]="{maxWidth:'876px',width: '100%'}" header="Agregar artículo al paquete"
+          [(visible)]="mostrarModalAgregarArticulo" [modal]="true"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <form [formGroup]="agregarArticuloForm">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="articulo">Artículo<span class="req">*</span></label>
+          <p-dropdown appendTo="body" id="articulo" class="form-control" formControlName="articulo"
+                      [options]="catalogoArticulos" placeholder="Seleccione el artículo" optionValue="label"
+                      (onChange)="handleChangeCatArticulo();">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="faa.articulo?.errors?.required && (faa.articulo?.dirty || faa.articulo?.touched)">Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="tipoArticulo">Tipo de artículo<span class="req">*</span>:</label>
+          <p-dropdown appendTo="body" id="tipoArticulo" class="form-control" formControlName="tipoArticulo"
+                      [options]="tipoArticulos" placeholder="Selecciona el tipo de artículo" optionValue="label">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="faa.tipoArticulo?.errors?.required && (faa.tipoArticulo?.dirty || faa.tipoArticulo?.touched)">Campo obligatorio
+          </span>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-md-12">
+          <span>*Campos obligatorios</span>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-default btn-md" (click)="mostrarModalAgregarArticulo = false">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarArticuloForm.invalid" (click)="agregarArticulo()">
+        Aceptar
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- MODAL ELIMINAR SERVICIO -->
+<p-dialog [style]="{maxWidth:'876px',width: '100%'}" [header]="tituloEliminar"
+          [(visible)]="mostrarModalEliminarServicio"
+          [modal]="true"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="row rectangle-row m-2">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Servicio</label>
+          <span>{{servicioSeleccionado.servicio}}</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-default btn-md" (click)="mostrarModalEliminarServicio = false">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" (click)="eliminarServicio()">
+        Aceptar
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- MODAL ELIMINAR ARTICULO -->
+<p-dialog [style]="{maxWidth:'876px',width: '100%'}" [header]="tituloEliminar"
+          [(visible)]="mostrarModalEliminarArticulo"
+          [modal]="true"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="row rectangle-row m-2">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Artículo</label>
+          <span>{{articuloSeleccionado.articulo}}</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-default btn-md" (click)="mostrarModalEliminarArticulo = false">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" (click)="eliminarArticulo()">
+        Aceptar
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

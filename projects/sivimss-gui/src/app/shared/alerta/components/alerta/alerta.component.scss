@@ -1,0 +1,45 @@
+:host{
+  width: 790px;
+  @media screen and (max-width: 810px){
+    width: 80vw;
+  }
+}
+.alerta-flotante {
+  padding: 16px 45px;
+  text-align: center;
+  &-mensaje {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 0;
+    transform:translateX(30px);
+  }
+}
+
+:host-context(.p-toast-message-success) {
+  .alerta-flotante-mensaje {
+    color: #397E3E;
+  }
+}
+
+:host-context(.p-toast-message-info) {
+  .alerta-flotante-mensaje {
+    color: #31708F;
+  }
+}
+
+:host-context(.p-toast-message-warn) {
+  .alerta-flotante-mensaje {
+    color: #8B6C42;
+  }
+}
+
+:host-context(.p-toast-message-error) {
+  .alerta-flotante-mensaje {
+    color: #e10000;
+  }
+}
+
+
+

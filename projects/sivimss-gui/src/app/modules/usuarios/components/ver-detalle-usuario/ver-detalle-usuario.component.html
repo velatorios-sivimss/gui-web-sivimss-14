@@ -1,0 +1,112 @@
+<app-table-panel *ngIf="usuarioSeleccionado">
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">ID {{usuarioSeleccionado.id}}</span>
+    </div>
+  </ng-template>
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span>Estatus</span>
+        <div class="contenedor-inputswitch">
+          <p-inputSwitch [(ngModel)]="usuarioSeleccionado.estatus" [disabled]="true"></p-inputSwitch>
+          <span class="activo" *ngIf="usuarioSeleccionado.estatus">Activo</span>
+          <span class="inactivo" *ngIf="!usuarioSeleccionado.estatus">Inactivo</span>
+        </div>
+      </div>
+      <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)" *appValidaRol="['USUARIOS','MODIFICAR']">
+        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+      </a>
+    </div>
+  </ng-template>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>CURP</label>
+        <span>{{usuarioSeleccionado.curp}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Matrícula</label>
+        <span>{{usuarioSeleccionado.matricula}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Nombre</label>
+        <span>{{usuarioSeleccionado.nombre}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Usuario</label>
+        <span>{{usuarioSeleccionado.claveMatricula}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Primer apellido</label>
+        <span>{{usuarioSeleccionado.paterno}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Segundo apellido</label>
+        <span>{{usuarioSeleccionado.materno}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Correo electrónico</label>
+        <span>{{usuarioSeleccionado.correo}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Nivel</label>
+        <span>{{usuarioSeleccionado.oficina}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Delegación</label>
+        <span>{{usuarioSeleccionado.delegacion}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Velatorio</label>
+        <span>{{usuarioSeleccionado.velatorio}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-12">
+      <div class="table-panel-column">
+        <label>Rol</label>
+        <span>{{usuarioSeleccionado.rol}}</span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+<div class="flex justify-content-end mt-4 mb-3">
+  <button class="ml-4 btn btn-primary btn-md" (click)="cambiarEstatus()">
+    Aceptar
+  </button>
+</div>
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarUsuario()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

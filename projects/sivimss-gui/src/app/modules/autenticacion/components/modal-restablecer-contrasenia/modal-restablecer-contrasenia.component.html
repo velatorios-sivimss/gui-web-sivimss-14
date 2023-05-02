@@ -1,0 +1,57 @@
+<ng-container [ngSwitch]="pasoRestablecerContrasena">
+  <ng-container *ngSwitchCase="CONFIRMACION_RESTABLECER_CONTRASENIA">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">¿Deseas restablecer tu contraseña?</span>
+    </div>
+    <div class="flex justify-content-end mt-4">
+      <button class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary btn-md ml-5" (click)="pasoRestablecerContrasena = CAPTURA_DE_USUARIO">Aceptar</button>
+    </div>
+  </ng-container>
+  <ng-container *ngSwitchCase="CAPTURA_DE_USUARIO">
+    <form [formGroup]="formRestContraUsuario" class="form-restablecer-contrasena">
+      <span class="block text-center">Ingresa tu usuario</span>
+      <span class="block text-center mb-4">Recibirás un correo para restablecer tu contraseña</span>
+      <div>
+        <label class="control-label" for="usuarioRestCont">Usuario<span
+          class="req">*</span>:</label>
+        <input id="usuarioRestCont" class="form-control" formControlName="usuario"
+               placeholder="Ingresar usuario">
+        <span class="campo-obligatorio"
+              *ngIf="frcu?.usuario?.errors?.required && (frcu?.usuario?.dirty || frcu?.usuario?.touched)">Campo obligatorio</span>
+        <div class="mt-3">
+          <span>*Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="flex justify-content-end">
+        <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="formRestContraUsuario.invalid"
+                (click)="generarCodigo()">
+          Aceptar
+        </button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="CAPTURA_DE_CODIGO">
+    <form [formGroup]="formRestContraCodigo" class="form-restablecer-contrasena">
+      <span class="block text-center mb-4">Te hemos enviado un código a "usuario" para establecer tu contraseña</span>
+      <div>
+        <label class="control-label" for="codigoRestCont">Código<span
+          class="req">*</span>:</label>
+        <input id="codigoRestCont" class="form-control" formControlName="codigo"
+               placeholder="Ingresar código">
+        <span class="campo-obligatorio"
+              *ngIf="frcc?.codigo?.errors?.required && (frcc?.codigo?.dirty || frcc?.codigo?.touched)">Campo obligatorio</span>
+        <div class="mt-3">
+          <span>*Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="flex justify-content-end mt-4">
+        <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="formRestContraCodigo.invalid"
+                (click)="validarCodigo()">Aceptar
+        </button>
+      </div>
+    </form>
+  </ng-container>
+</ng-container>

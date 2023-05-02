@@ -1,0 +1,94 @@
+<app-titulo-principal titulo="Administrar roles"></app-titulo-principal>
+<div class="border-panel">
+    <form [formGroup]="filtroForm">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="rol">Rol:</label>
+                <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" placeholder="Seleccionar el rol">
+                </p-dropdown>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="nivel">Nivel:</label>
+                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="opciones" placeholder="Seleccionar el nivel">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="row mt-6">
+            <div class="col-md-12 flex justify-content-end">
+                <button type="submit" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
+                <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+<section class="mt-5">
+    <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">Roles</h2>
+        <button type="button" class="btn btn-primary btn-lg" routerLink="agregar-rol">Agregar rol</button>
+    </div>
+   </section>
+   <section>
+    <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="roles"
+    [paginator]="roles.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
+    [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+    (onLazyLoad)="seleccionarPaginacion($event)">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Nivel</th>
+                <th>Fecha de creación</th>
+                <th>Estatus</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-roles>
+            <tr>
+                <td>{{roles.idRol}}</td>
+                <td>{{roles.desRol}}</td>
+                <td>{{roles.desNivelOficina}}</td>
+                <td>{{roles.fCreacion}}</td>
+                <td>
+                    <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
+                        <div class="contenedor-inputswitch">
+                            <p-inputSwitch [(ngModel)]="roles.estatusRol" (ngModelChange)="cambiarEstatus(roles);"></p-inputSwitch>
+                            <span class="activo" *ngIf="roles.estatusRol">Activo</span>
+                            <span class="inactivo" *ngIf="!roles.estatusRol">Inactivo</span>
+                        </div>
+                        <div class="contenedor-celda-iconos">
+                            <a (click)="abrirModalDetalleRol(roles)">
+                                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+                            </a>
+                            <a (click)="abrirPanel($event,roles)">
+                                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+                <span class="total-elements">{{roles.length}} de {{totalElementos}}</span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <div class="paginator-template">
+                <div class="export-table">
+                    <span class="export-table-text">Exportar tabla</span>
+                    <div class="export-table-icons">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" (click)="descargarArchivo('pdf')" alt="exportar pdf">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" (click)="descargarArchivo('xls')"  alt="exportar excel">
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarRol()"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>

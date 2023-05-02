@@ -1,0 +1,181 @@
+<app-titulo-principal titulo="Ver detalle"></app-titulo-principal>
+<p-accordion styleClass="sivimss-accordion">
+  <p-accordionTab>
+    <ng-template pTemplate="header">
+      <span>Folio de la ODS </span> <b>DOC-00001</b>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <app-table-panel>
+        <ng-template appCustomTemplate="header">
+          <div class="row table-panel-row">
+            <div class="col-md-4">
+              <div class="table-panel-column" >
+                <label>Velatorio</label>
+                <span>No. 18 Tequesquináhuac</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="table-panel-column" >
+                <label>Nombre del contratante</label>
+                <span>Joel Gonzalo Marea Jojutla</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="table-panel-column" >
+                <label>Nombre del finado</label>
+                <span>Eugenia Marea Lascano</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <div class="row table-panel-row">
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Responsable de la entrega</label>
+              <span>Pablo Lpopez Poblano</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Días de novenario</label>
+              <span>8</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Fecha de salida</label>
+              <span>18/01/2021</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Responsable de la instalación</label>
+              <span>Macario Viveros Risa</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Matrícula del responsable</label>
+              <span>1029384</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Responsable de los equipos de velación</label>
+              <span>Macario Viveros Risa</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Matrícula del responsable</label>
+              <span>1029384</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Fecha de entrada</label>
+              <span>21/01/2021</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <h2 class=" ml-6 mt-3 subtitulo">Domicilio donde se realiza la velación / novenario</h2>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>CP</label>
+              <span>00666</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Calle</label>
+              <span>Lázaro Cárdenas</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>No. exterior</label>
+              <span>113</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>No. interior</label>
+              <span>113</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Colonia</label>
+              <span>Villa Flores</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Municipio</label>
+              <span>Santiago de Querétaro</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column" >
+              <label>Estado</label>
+              <span>Querétaro</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row table-panel-row">
+          <div class="flex justify-content-between mb-3">
+            <div class="col-md-3">
+              <div class="table-panel-column" >
+                <h2 class="subtitulo">Equipo de velación</h2>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="table-panel-column" >
+                <h2 class="subtitulo">Total de artículos / bienes inmuebles {{equipo.length}} </h2>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-6 mb-3">
+            <p-table styleClass="mb-8" [value]="equipo"
+               [rows]="cantElementosPorPagina"
+               [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th scope="col">Nombre de bienes inmuebles / artículos</th>
+                    <th scope="col">Cantidad / piezas</th>
+                    <th scope="col">Observaciones</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-equipo>
+                  <tr>
+                    <td> {{equipo.nombreBienesArticulos}} </td>
+                    <td> {{equipo.cantidad}} </td>
+                    <td> {{equipo.observaciones}} </td>
+                  </tr>
+                </ng-template>
+             </p-table>
+          </div>
+        </div>
+      </app-table-panel>
+    </ng-template>
+  </p-accordionTab>
+</p-accordion>
+<div class="flex justify-content-end mb-3">
+  <button class="ml-4 mt-3 btn btn btn-danger btn-md" routerLink="../../">Cancelar</button>
+  <button class="ml-4 mt-3 btn btn btn-default btn-md" (click)="registrarEquipoEntrada()">
+    Registrar entrada de equipo</button>
+  <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+    Aceptar
+  </button>
+</div>

@@ -1,0 +1,182 @@
+<app-titulo-principal titulo="Vale de salida de equipo de velación"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="generarValeSalidaForm" >
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label class="control-label" for="folioODS">Folio de la ODS<span class="req">*</span>:</label>
+        <input id="folioODS" type="text" class="form-control" formControlName="folioODS" placeholder="Ingresa folio de la ODS">
+        <span class="campo-obligatorio" *ngIf="f.folioODS?.errors?.required && (f.folioODS?.dirty || f.folioODS?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="velatorio">Nivel<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
+                    [options]="velatorio"
+                    placeholder="Selecciona el velatorio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="nombreContratante">Nombre del contratante<span class="req">*</span>:</label>
+        <input id="nombreContratante" type="text" class="form-control" formControlName="nombreContratante" placeholder="Ingresa el nombre del contratante">
+        <span class="campo-obligatorio" *ngIf="f.nombreContratante?.errors?.required && (f.nombreContratante?.dirty || f.nombreContratante?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="nombreFinado">Nombre del finado<span class="req">*</span>:</label>
+        <input id="nombreFinado" type="text" class="form-control" formControlName="nombreFinado" placeholder="Ingresa el nombre del finado">
+        <span class="campo-obligatorio" *ngIf="f.nombreFinado?.errors?.required && (f.nombreFinado?.dirty || f.nombreFinado?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="responsableEntrega">Responsable de la entrega<span class="req">*</span>:</label>
+        <input id="responsableEntrega" type="text" class="form-control" formControlName="responsableEntrega" placeholder="Ingresa el responsable de la entrega">
+        <span class="campo-obligatorio" *ngIf="f.responsableEntrega?.errors?.required && (f.responsableEntrega?.dirty || f.responsableEntrega?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="diasNovenario">Días de novenario<span class="req">*</span>:</label>
+        <input id="diasNovenario" type="text" class="form-control" formControlName="diasNovenario" placeholder="Ingresa los días de novenario">
+        <span class="campo-obligatorio" *ngIf="f.diasNovenario?.errors?.required && (f.diasNovenario?.dirty || f.diasNovenario?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="fechaSalida">Fecha de salida<span class="req">*</span>:</label>
+        <p-calendar id="fechaSalida" formControlName="fechaSalida" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona la fecha de salida" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio" *ngIf="f.fechaSalida?.errors?.required && (f.fechaSalida?.dirty || f.fechaSalida?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="responsableInstalacion">Responsable de la instalación<span class="req">*</span>:</label>
+        <input id="responsableInstalacion" type="text" class="form-control" formControlName="responsableInstalacion" placeholder="Ingresa el responsable de la instalación">
+        <span class="campo-obligatorio" *ngIf="f.responsableInstalacion?.errors?.required && (f.responsableInstalacion?.dirty || f.responsableInstalacion?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="matriculaResponsableInstalacion">Matrícula del resposnable<span class="req">*</span>:</label>
+        <input id="matriculaResponsableInstalacion" type="text" class="form-control" formControlName="matriculaResponsableInstalacion" placeholder="Ingresa la matrícula del responsable de la instalación">
+        <span class="campo-obligatorio" *ngIf="f.matriculaResponsableInstalacion?.errors?.required && (f.matriculaResponsableInstalacion?.dirty || f.matriculaResponsableInstalacion?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="responsableEquipoVelacion">Responsable de los equipos de velación<span class="req">*</span>:</label>
+        <input id="responsableEquipoVelacion" type="text" class="form-control" formControlName="responsableEquipoVelacion" placeholder="Ingresa el responsable de los equipos de velación">
+        <span class="campo-obligatorio" *ngIf="f.responsableEquipoVelacion?.errors?.required && (f.responsableEquipoVelacion?.dirty || f.responsableEquipoVelacion?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="matriculaResponsableVelacion">Matrícula del responsable<span class="req">*</span>:</label>
+        <input id="matriculaResponsableVelacion" type="text" class="form-control" formControlName="matriculaResponsableVelacion" placeholder="Ingresa la matrícula del responsable de la instalación">
+        <span class="campo-obligatorio" *ngIf="f.matriculaResponsableVelacion?.errors?.required && (f.matriculaResponsableVelacion?.dirty || f.matriculaResponsableVelacion?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="fechaEntrada">Fecha de entrada<span class="req">*</span>:</label>
+        <p-calendar id="fechaEntrada" formControlName="fechaEntrada" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona la fecha de entrada" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio" *ngIf="f.fechaEntrada?.errors?.required && (f.fechaEntrada?.dirty || f.fechaEntrada?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <h2 class="subtitulo">Domicilio donde se realiza la velación / novenario</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <label class="control-label" for="cp">CP<span class="req">*</span>:</label>
+        <input id="cp" type="text" class="form-control" formControlName="cp" placeholder="Ingresa el CP">
+        <span class="campo-obligatorio" *ngIf="f.cp?.errors?.required && (f.cp?.dirty || f.cp?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
+        <input id="calle" type="text" class="form-control" formControlName="calle" placeholder="Ingresa la calle">
+        <span class="campo-obligatorio" *ngIf="f.calle?.errors?.required && (f.calle?.dirty || f.calle?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="numeroExterior">No. exterior<span class="req">*</span>:</label>
+        <input id="numeroExterior" type="text" class="form-control" formControlName="numeroExterior" placeholder="Ingresa el no. exterior">
+        <span class="campo-obligatorio" *ngIf="f.numeroExterior?.errors?.required && (f.numeroExterior?.dirty || f.numeroExterior?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="numeroInterior">No. interior<span class="req">*</span>:</label>
+        <input id="numeroInterior" type="text" class="form-control" formControlName="numeroInterior" placeholder="Ingresa el no. interior">
+        <span class="campo-obligatorio" *ngIf="f.numeroInterior?.errors?.required && (f.numeroInterior?.dirty || f.numeroInterior?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
+        <input id="colonia" type="text" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia">
+        <span class="campo-obligatorio" *ngIf="f.colonia?.errors?.required && (f.colonia?.dirty || f.colonia?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
+        <input id="municipio" type="text" class="form-control" formControlName="municipio" placeholder="Ingresa el municipio">
+        <span class="campo-obligatorio" *ngIf="f.municipio?.errors?.required && (f.municipio?.dirty || f.municipio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="estado">Estado<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="estado" class="form-control" formControlName="estado"
+                    [options]="estado"
+                    placeholder="Selecciona el estado">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="f.estado?.errors?.required && (f.estado?.dirty || f.estado?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+  </form>
+    <div class=" mt-6 mb-3 flex justify-content-between">
+      <div class="col-md-3">
+        <h2 class="subtitulo">Equipo de velación</h2>
+      </div>
+      <div class="col-md-4">
+        <h2 class="subtitulo">Total de artículos / bienes inmuebles {{equipo.length}} </h2>
+      </div>
+    </div>
+    <p-table styleClass="mb-6" [value]="equipo"
+             [rows]="cantElementosPorPagina"
+             [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col">Nombre de bienes inmuebles / artículos</th>
+          <th scope="col">Cantidad / piezas</th>
+          <th scope="col">Observaciones</th>
+          <th scope="col"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-equipo>
+        <tr>
+          <td> {{equipo.nombreBienesArticulos}} </td>
+          <td> {{equipo.cantidad}} </td>
+          <td> {{equipo.observaciones}} </td>
+          <td>
+            <div class="contenedor-celda-iconos">
+              <a class="ml-5 cursor-pointer" (click)="abrirPanel($event,equipo)">
+                <img
+                  src="assets/images/imagen-icono-barras-horizontales.svg"
+                  alt="icono barras horizontales">
+              </a>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+</div>
+<div class="flex justify-content-end mb-3">
+  <button class="ml-4 mt-3 btn btn btn-danger btn-md" routerLink="../">Cancelar</button>
+  <button class="ml-4 mt-3 btn btn btn-default btn-md" (click)="registrarSalida()">
+    Registrar salida</button>
+  <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+    Aceptar
+  </button>
+</div>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion (click)="eliminarEquipoVelacion()" titulo="Eliminar"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

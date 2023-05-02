@@ -1,0 +1,11 @@
+.btn-extra-grande {
+  display:inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 70px;
+}
+
+.btn-extra-grande + .btn-extra-grande {
+  margin-left: 2.5rem;
+}

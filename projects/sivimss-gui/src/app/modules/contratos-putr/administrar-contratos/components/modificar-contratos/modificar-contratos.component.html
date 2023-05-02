@@ -1,0 +1,75 @@
+
+<form [formGroup]="modificarContratoForm">
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <label class="control-label" for="id">ID<span class="req">*</span>:</label>
+      <input id="id" class="form-control" formControlName="id" placeholder="">
+    </div>
+    <div class="col-md-9">
+      <label class="control-label" for="nombreContrato">Nombre de contrato<span class="req">*</span>:</label>
+      <input id="nombreContrato" class="form-control" formControlName="nombreContrato" maxlength="50"
+             placeholder="Ingresa nombre de contrato" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.nombreContrato?.errors?.required && (f.nombreContrato?.dirty || f.nombreContrato?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="tipoContrato">Tipo de contrato<span class="req">*</span>:</label>
+      <p-dropdown id="clave" class="form-control" formControlName="tipoContrato" [options]="opciones"
+                placeholder="Selecciona tipo de contrato">
+      </p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.tipoContrato?.errors?.required && (f.tipoContrato?.dirty || f.tipoContrato?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+      <p-dropdown id="clave" class="form-control" formControlName="velatorio" [options]="opciones"
+                placeholder="Selecciona el velatorio">
+      </p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="capacidad">Capacidad<span class="req">*</span>:</label>
+      <input id="capacidad" class="form-control" formControlName="capacidad" maxlength="1"
+             placeholder="Ingresa el capacidad" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.capacidad?.errors?.required && (f.capacidad?.dirty || f.capacidad?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="disponibilidad">Disponibilidad:</label>
+      <p-dropdown id="clave" class="form-control" formControlName="disponibilidad" [options]="disponibilidad"
+                placeholder="Selecciona disponibilidad">
+      </p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.disponibilidad?.errors?.required && (f.disponibilidad?.dirty || f.disponibilidad?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div>
+    <label class="control-label">Estatus<span class="req"><span class="req">*</span>:</span></label>
+    <div class="contenedor-inputswitch">
+      <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+      <span class="activo" *ngIf="f.estatus?.value">Activo</span>
+      <span class="inactivo" *ngIf="!f.estatus?.value">Inactivo</span>
+    </div>
+  </div>
+
+  <div class="row mb-2">
+    <div class="col-md-12">
+      <span>*Campos obligatorios</span>
+    </div>
+  </div>
+  
+  <div class="flex justify-content-end mb-6">
+    <button class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="verDetalleGuardarContrato()">
+      Aceptar
+    </button>
+  </div>
+</form>

@@ -1,0 +1,119 @@
+<div class="inicio-sesion">
+  <form [formGroup]="form" (ngSubmit)="acceder()">
+    <h1>Inicio de sesión</h1>
+    <h2>Captura tu usuario y contraseña para ingresar</h2>
+    <div class="form-group">
+      <label class="control-label" for="usuario">Usuario<span class="req">*</span>:</label>
+      <input class="form-control" id="usuario" formControlName="usuario"
+             placeholder="Ingresar usuario" type="text" [maxlength]="16">
+      <span class="campo-obligatorio"
+            *ngIf="f.usuario?.errors?.required && (f.usuario?.dirty || f.usuario?.touched)">Campo obligatorio</span>
+    </div>
+    <div class="form-group mb-0">
+      <div class="flex justify-content-between align-items-center">
+        <label class="control-label" for="contrasenia">Contraseña<span class="req">*</span>:</label>
+        <span class="olvidaste-contrasena" (click)="abrirModalRestablecerContrasenia()">¿Olvidaste tu contraseña?</span>
+      </div>
+      <div class="form-icon">
+        <input #input class="form-control" id="contrasenia" formControlName="contrasenia"
+               placeholder="Ingresar contraseña" type="password" [maxlength]="16">
+        <i class="cursor-pointer icon pi pi-eye"
+           (click)="input.type = input.type==='password'?'text':'password'"></i>
+      </div>
+      <span class="campo-obligatorio"
+            *ngIf="f.contrasenia?.errors?.required && (f.contrasenia?.dirty || f.contrasenia?.touched)">Campo obligatorio</span>
+    </div>
+    <div class="mt-3">
+      <span class="req">*Campos obligatorios</span>
+    </div>
+    <div class="flex justify-content-end align-items-center mt-3 mb-4 flex-wrap">
+      <button class="btn btn-primary btn-lg ml-5" [disabled]="form.invalid">Acceder</button>
+    </div>
+  </form>
+</div>
+
+<p-dialog [(visible)]="mostrarModalContraseniaProxVencer" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}" [closable]="false"
+          [draggable]="false" [resizable]="false" header="Cambiar contraseña">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center">
+      <span>¡Tu contraseña está próxima a vencer!</span>
+      <span>Tienes 15 dias para cambiarla</span>
+      <span class="mt-10">¿Deseas cambiar tu contraseña?</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-gold btn-md" (click)="acceder(NO_MOSTRAR_MSJ_CONTRASENIA_PROX_VENCER)">Cancelar</button>
+      <button class="btn btn-primary btn-md ml-5" (click)="actualizarContrasenia()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarModalPreActivo" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}" [closable]="false"
+          [draggable]="false" [resizable]="false" header="Cambiar contraseña">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center">
+      <span>Se requiere el cambio de tu contraseña.</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-primary btn-md" (click)="actualizarContrasenia()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarModalFechaContraseniaVencida" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}" [closable]="false"
+          [draggable]="false" [resizable]="false" header="Fecha contraseña vencida">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center">
+      <span>Se requiere el cambio de tu contraseña.</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-primary btn-md" (click)="actualizarContrasenia()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarModalCuentaBloqueada" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="Cuenta desactivada">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">La cuenta con la que deseas ingresar está desactivada, favor de contactar a tu administrador</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalCuentaBloqueada = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarModalIntentosFallidos" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%', minHeight:'275px'}" [closable]="true"
+          [draggable]="false" [resizable]="false" header="Intentos agotados">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="block text-center">Excediste el número de intentos para ingresar al sistema</span>
+      <span class="block text-center mt-3">Tu cuenta quiedará inactiva por 5 minutos</span>
+    </div>
+    <div class="mt-8 contenedor-intentos flex justify-content-center align-items-center"
+         *ngIf="minutosTemporizadorIntentos && segundosTemporizadorIntentos">
+      <div class="flex flex-column align-items-center justify-content-center">
+        <span class="numero">{{minutosTemporizadorIntentos}}</span>
+        <span>minutos</span>
+      </div>
+      <span>:</span>
+      <div class="flex flex-column align-items-center justify-content-center">
+        <span class="numero">{{segundosTemporizadorIntentos}}</span>
+        <span>segundos</span>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,129 @@
+<form [formGroup]="agregarPanteonForm">
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <label class="control-label" for="id">ID<span class="req">*</span>:</label>
+      <input id="id" class="form-control" formControlName="id" placeholder="">
+    </div>
+    <div class="col-md-9">
+      <label class="control-label" for="nombrePanteon">Nombre del panteón<span class="req">*</span>:</label>
+      <input id="nombrePanteon" class="form-control" formControlName="nombrePanteon" maxlength="50"
+             placeholder="Ingresa el nombre del panteón" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.nombrePanteon?.errors?.required && (f.nombrePanteon?.dirty || f.nombrePanteon?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3 p-4">
+    <section>
+      <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">Dirección</h2>
+      </div>
+    </section>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
+      <input id="calle" class="form-control" formControlName="calle" maxlength="30"
+             placeholder="Ingresa la calle" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.calle?.errors?.required && (f.calle?.dirty || f.calle?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="numExterior">No. exterior<span class="req">*</span>:</label>
+      <input id="numExterior" class="form-control" formControlName="numExterior" maxlength="10"
+             placeholder="No. exterior" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.numExterior?.errors?.required && (f.numExterior?.dirty || f.numExterior?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="numInterior">No. interior:</label>
+      <input id="numInterior" class="form-control" formControlName="numInterior" maxlength="10"
+             placeholder="No. interior" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.numInterior?.errors?.required && (f.numInterior?.dirty || f.numInterior?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
+      <input id="colonia" class="form-control" formControlName="colonia" maxlength="20"
+             placeholder="Ingresa la colonia" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.colonia?.errors?.required && (f.colonia?.dirty || f.colonia?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
+      <input id="municipio" class="form-control" formControlName="municipio" maxlength="20"
+             placeholder="Ingresa el municipio" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.municipio?.errors?.required && (f.municipio?.dirty || f.municipio?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="control-label" for="cp">CP<span class="req">*</span>:</label>
+      <input id="cp" class="form-control" formControlName="cp" maxlength="5" (blur)='handleChangeCodigoPostal();'
+             placeholder="Ingresa el código postal" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.cp?.errors?.required && (f.cp?.dirty || f.cp?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-8">
+      <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
+      <p-dropdown id="clave" class="form-control" formControlName="estado" [options]="opciones"
+                placeholder="Selecciona el estado">
+      </p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.estado?.errors?.required && (f.estado?.dirty || f.estado?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3 p-4">
+    <section>
+      <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">Contacto</h2>
+      </div>
+    </section>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="contacto">Contacto<span class="req">*</span>:</label>
+      <input id="contacto" class="form-control" formControlName="contacto" maxlength="30"
+             placeholder="Ingresa el contacto" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.contacto?.errors?.required && (f.contacto?.dirty || f.contacto?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="numTelefono">Teléfono<span class="req">*</span>:</label>
+      <input id="numTelefono" class="form-control" formControlName="numTelefono" maxlength="10"
+             placeholder="Ingresa el teléfono" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.numTelefono?.errors?.required && (f.numTelefono?.dirty || f.numTelefono?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div>
+    <label class="control-label">Estatus<span class="req"><span class="req">*</span>:</span></label>
+    <div class="contenedor-inputswitch">
+      <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+      <span class="activo" *ngIf="f.estatus?.value">Activo</span>
+      <span class="inactivo" *ngIf="!f.estatus?.value">Inactivo</span>
+    </div>
+  </div>
+
+  <div class="row mb-2">
+    <div class="col-md-12">
+      <span>*Campos obligatorios</span>
+    </div>
+  </div>
+  
+  <div class="flex justify-content-end mb-6">
+    <button class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="verDetalleGuardarPanteon()">
+      Aceptar
+    </button>
+  </div>
+</form>

@@ -1,0 +1,119 @@
+<ng-container *ngIf="!abrirModificar">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span class="font-bold">Folio convenio {{convenioSeleccionado.folioConvenio}}</span>
+      </div>
+    </ng-template>
+    <ng-template *ngIf="(origen == 'detalle')" appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+        </div>
+        <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
+          <img src="../../../../../assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+        </a>
+      </div>
+    </ng-template>
+    <ng-template *ngIf="(origen == 'agregar' || origen == 'modificar' || origen == 'estatus')"
+      appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <span>Estatus</span>
+          <div class="contenedor-inputswitch">
+            <span class="activo" *ngIf="convenioSeleccionado.estatus">Activo</span>
+            <span class="inactivo" *ngIf="!convenioSeleccionado.estatus">Inactivo</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Velatorio origen</label>
+          <span> {{convenioSeleccionado.velatorioOrigen}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>RFC</label>
+          <span> {{convenioSeleccionado.rfc}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nombre</label>
+          <span> {{convenioSeleccionado.nombre}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Clasificación del producto</label>
+          <span> {{convenioSeleccionado.primerApellido}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Clasificación del producto</label>
+          <span> {{convenioSeleccionado.segundoApellido}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Tipo de prevención funeraria</label>
+          <span> {{convenioSeleccionado.tipoPrevencionFuneraria}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Tipo de paquete </label>
+          <span> {{convenioSeleccionado.tipoPaquete}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha inicio de vigencia</label>
+          <span> {{convenioSeleccionado.fechaInicioVigencia}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha fin de vigencia</label>
+          <span> {{convenioSeleccionado.fechaFinVigencia}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Cuota de recuperación</label>
+          <span> {{convenioSeleccionado.cuotaRecuperacion}} </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <ng-container *ngIf="origen == 'agregar'">
+    <div class="flex justify-content-center">
+      <div class="mt-4 col-md-7">
+        ¿Estás seguro que deseas agregar este nuevo artículo?
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="origen == 'detalle'">
+    <div class="flex justify-content-end">
+      <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="aceptar()">
+        Aceptar
+      </button>
+    </div>
+  </ng-container>
+  <p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+      <app-overlay-panel-opciones>
+        <app-overlay-panel-opcion></app-overlay-panel-opcion>
+      </app-overlay-panel-opciones>
+    </ng-template>
+  </p-overlayPanel>
+</ng-container>

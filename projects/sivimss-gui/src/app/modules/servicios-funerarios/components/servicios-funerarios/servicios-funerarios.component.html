@@ -1,0 +1,148 @@
+<app-titulo-principal titulo="Servicios funerarios pago anticipado sfpa"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="estatus">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel"
+                    placeholder="Selecciona el nivel" [options]="nivel"></p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio"
+                    placeholder="Selecciona velatorio" [options]="velatorio"></p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label class="control-label" for="folioPlanSFPA">Folio Plan SFPA:</label>
+        <input id="folioPlanSFPA"  class="form-control" formControlName="folioPlanSFPA" placeholder="Ingresa folio plan SFPA">
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="rfc">RFC:</label>
+        <input id="rfc"  class="form-control" formControlName="rfc" placeholder="Ingresa el RFC">
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="curp">CURP:</label>
+        <input id="curp"  class="form-control" formControlName="curp" placeholder="Ingresa el CURP">
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="estatus">Estatus:</label>
+        <p-dropdown id="estatus" class="form-control" formControlName="estatus"
+                    placeholder="Selecciona el estatus" [options]="estatus"></p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="afiliado">Afiliado:</label>
+        <input id="afiliado"  class="form-control" formControlName="afiliado" placeholder="Ingresa el afiliado">
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="rangoInicio">Rango de fechas:</label>
+        <p-calendar id="rangoInicio" styleClass="form-control" formControlName="rangoInicio" [showIcon]="true"
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha inicio"></p-calendar>
+      </div>
+      <div class="col-md-3 mt-4">
+        <p-calendar id="rangoFin" styleClass="form-control mt-3" formControlName="rangoFin" [showIcon]="true"
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha fin"></p-calendar>
+      </div>
+    </div>
+  </form>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="submit" class="btn btn-default btn-md">Limpiar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+    </div>
+  </div>
+</div>
+
+<section class="my-6">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Planes SFPA</h2>
+    <button type="button" class="btn btn-primary btn-lg" routerLink="registrar-nuevo-plan-sfpa" >Registrar nuevo plan SFPA</button>
+  </div>
+
+  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="servicioFunerario"
+           [paginator]="servicioFunerario.length > 0"
+           [rows]="cantElementosPorPagina"
+           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="paginar($event)">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Folio Plan SFPA</th>
+        <th scope="col">Afiliado</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Correo electrónico</th>
+        <th scope="col">Paquete</th>
+        <th scope="col">Número de pagos</th>
+        <th scope="col">Estatus de Plan SFPA PA</th>
+        <th scope="col">Estatus pago</th>
+        <th scope="col">Estatus</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-servicioFunerario>
+      <tr>
+        <td> {{servicioFunerario.folioPlanSFPA}} </td>
+        <td> {{servicioFunerario.nombre}} {{servicioFunerario.primerApellido}} {{servicioFunerario.segundoApellido}} </td>
+        <td> {{servicioFunerario.estado}} </td>
+        <td> {{servicioFunerario.correoElectronico}} </td>
+        <td> {{servicioFunerario.paquete}} </td>
+        <td> {{servicioFunerario.numeroPago}} </td>
+        <td> {{servicioFunerario.estatusPlan}} </td>
+        <td> {{servicioFunerario.estatusPago}} </td>
+        <td>
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
+            <div class="contenedor-inputswitch">
+              <span class="activo" *ngIf="servicioFunerario.estatus">Activo</span>
+              <span class="inactivo" *ngIf="!servicioFunerario.estatus">Inactivo</span>
+            </div>
+            <div class="contenedor-celda-iconos">
+              <a >
+                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+              </a>
+              <a (click)="abrirPanel($event,servicioFunerario)">
+                <img
+                  src="assets/images/imagen-icono-barras-horizontales.svg"
+                  alt="icono barras horizontales">
+              </a>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{servicioFunerario.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg"
+                 alt="exportar excel">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+
+  <p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+      <app-overlay-panel-opciones>
+        <app-overlay-panel-opcion (click)="detallePago()" titulo="Detalle pago"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion (click)="modificarPago()" titulo="Modificar"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion (click)="cancelarPago()"  titulo="Cancelar"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion titulo="Ver contrato"></app-overlay-panel-opcion>
+      </app-overlay-panel-opciones>
+    </ng-template>
+  </p-overlayPanel>
+
+
+
+
+
+</section>

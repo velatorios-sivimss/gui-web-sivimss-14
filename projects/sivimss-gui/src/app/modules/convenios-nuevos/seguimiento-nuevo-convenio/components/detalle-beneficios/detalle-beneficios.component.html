@@ -1,0 +1,155 @@
+<app-titulo-principal titulo="Detalle y beneficios"></app-titulo-principal>
+<div class="border-panel mb-3">
+  <div class="section">
+    <div class="mb-8">
+      <p-accordion styleClass="sivimss-accordion">
+        <p-accordionTab>
+          <ng-template pTemplate="header">Datos del contratante</ng-template>
+          <ng-template pTemplate="content">
+            <div class="row">
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">RFC*:</span>
+                <span class="texto-base">LAHJ07087067L</span>
+              </div>
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">CURP*:</span>
+                <span class="texto-base">LAHJ07087067LCDNNHDF</span>
+              </div>
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">NSS*:</span>
+                <span class="texto-base">1029384756</span>
+              </div>
+            </div>
+            <hr class="hr-accordion-content">
+            <div class="row">
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">Nombre (s)*:</span>
+                <span class="texto-base">José</span>
+              </div>
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">Sexo*:</span>
+                <span class="texto-base">Otro</span>
+              </div>
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">Fecha de nacimiento*:</span>
+                <span class="texto-base">07/08/1970</span>
+              </div>
+            </div>
+            <hr class="hr-accordion-content">
+            <div class="row">
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">Nacionalidad*:</span>
+                <span class="texto-base">Mexicana</span>
+              </div>
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">Correo electrónico*:</span>
+                <span class="texto-base">larajohe3452@gmail.com</span>
+              </div>
+              <div class="col-md-4 flex flex-column">
+                <span class="etiqueta-base">Teléfono*:</span>
+                <span class="texto-base">55 8796 5667</span>
+              </div>
+            </div>
+            <hr class="hr-accordion-content">
+            <div class="row">
+              <div class="col-md-12 flex flex-column">
+                <span class="etiqueta-base">Dirección*:</span>
+                <span class="texto-base">Ninños Héroes 65, Col. Flores Magón, Santiago de Querétaro, Querétaro, CP
+                  00666.</span>
+              </div>
+            </div>
+          </ng-template>
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+    <div class="section">
+      <h2 class="subtitulo-base">Personas y beneficiarios</h2>
+    </div>
+    <div class="section">
+      <app-table-panel *ngFor="let beneficiario of beneficiarios">
+        <ng-template appCustomTemplate="left-header">
+          <div class="table-panel-header-column">
+            <span class="font-bold">
+              {{beneficiario.nombre +" "+ beneficiario.apellidoMaterno +" "+ beneficiario.apellidoPaterno}}
+            </span>
+          </div>
+        </ng-template>
+        <ng-template appCustomTemplate="right-header">
+          <div class="table-panel-header-column">
+            <div class="flex flex-column">
+              <div>
+              </div>
+            </div>
+            <div class="flex flex-column ml-5">
+              <div class="contenedor-celda-iconos">
+                <a (click)="abrirModalDetalleRol(beneficiario)">
+                  <i class="fs fs-ver"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </app-table-panel>
+    </div>
+
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md" routerLink="../">Regresar</button>
+      </div>
+    </div>
+  </div>
+  <p-dialog [style]="{maxWidth:'876px',width: '100%'}" header="Detalle beneficiario"
+    [(visible)]="mostrarDetalleBeneficiario" [modal]="true" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="content">
+      <app-table-panel>
+        <ng-template appCustomTemplate="left-header">
+          <div class="table-panel-header-column">
+            <span class="font-bold">{{beneficiarioSeleccionado.nombre +" "+ beneficiarioSeleccionado.apellidoMaterno +"
+              "+ beneficiarioSeleccionado.apellidoPaterno}}</span>
+          </div>
+        </ng-template>
+        <div class="row table-panel-row">
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Edad</label>
+              <span>{{beneficiarioSeleccionado.edad}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Parentesco</label>
+              <span>{{beneficiarioSeleccionado.parentesco}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>CURP</label>
+              <span>{{beneficiarioSeleccionado.curp}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>RFC</label>
+              <span>{{beneficiarioSeleccionado.rfc}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>Correo electrónico</label>
+              <span>{{beneficiarioSeleccionado.correoElectronico}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="table-panel-column">
+              <label>telefono</label>
+              <span>{{beneficiarioSeleccionado.telefono}}</span>
+            </div>
+          </div>
+        </div>
+      </app-table-panel>
+    </ng-template>
+  </p-dialog>

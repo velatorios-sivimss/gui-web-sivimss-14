@@ -1,0 +1,78 @@
+<ng-container *ngIf="!confirmacion">
+  <form [formGroup]="registrarEntradaForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="fechaEntrada">Fecha de entrada<span class="req">*</span>:</label>
+        <p-calendar id="fechaEntrada" formControlName="fechaEntrada" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona la fecha de entrada" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio" *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Campo
+            obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="responsableEquiposVelacion">Responsable de los equipos de velación<span class="req">*</span>:</label>
+        <input id="responsableEquiposVelacion" type="text" class="form-control" formControlName="responsableEquiposVelacion"
+               placeholder="Ingresa nombre">
+        <span class="campo-obligatorio"
+              *ngIf="ref.responsableEquiposVelacion?.errors?.required && (ref.responsableEquiposVelacion?.dirty || ref.responsableEquiposVelacion?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="matriculaResponsable">Matrícula del responsable<span class="req">*</span>:</label>
+        <input id="matriculaResponsable" type="text" class="form-control" formControlName="matriculaResponsable"
+               placeholder="Ingresa nombre del panteón">
+        <span class="campo-obligatorio"
+              *ngIf="ref.matriculaResponsable?.errors?.required && (ref.matriculaResponsable?.dirty || ref.matriculaResponsable?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+      <span class="mensaje-inferior-campo-obligatorio">
+              *Campos obligatorios
+      </span>
+      </div>
+    </div>
+  </form>
+</ng-container>
+<ng-container *ngIf="confirmacion">
+  <app-table-panel class="mb-3">
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha de entrada</label>
+          <span> {{ref.fechaEntrada.value}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Responsable de los equipos de velación</label>
+          <span> {{ref.responsableEquiposVelacion.value}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Matrícula del responsable</label>
+          <span> {{ref.matriculaResponsable.value}}</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <div class="flex justify-content-center my-5">
+    <div class="col-md-8">
+      ¿Estás seguro de registrar la entrada del equipo de velación?</div>
+  </div>
+</ng-container>
+<section>
+  <div class="row mb-3">
+    <div class="col-md-12 flex justify-content-end align-items-center">
+      <button class="btn btn-md btn-default" *ngIf="confirmacion" (click)="confirmacion = false" >Regresar</button>
+      <button class="ml-6 btn btn-md btn-gold" (click)="cancelar()">Cancelar</button>
+      <button class="ml-6 btn btn-md btn-primary" *ngIf="confirmacion" [disabled]="registrarEntradaForm.invalid"  (click)="aceptar()">Aceptar</button>
+      <button class="ml-6 btn btn-md btn-primary" *ngIf="!confirmacion" [disabled]="registrarEntradaForm.invalid"  (click)="confirmacion = true">Registrar entrada</button>
+    </div>
+  </div>
+</section>
+

@@ -1,0 +1,115 @@
+<ng-container *ngIf="!ventanaConfirmacion">
+      <app-table-panel class="row mb-5">
+      <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+          <span class="font-bold">ID </span>
+        </div>
+      </ng-template>
+      <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column">
+          <div class="flex flex-column">
+            <span>Estatus</span>
+            <div class="contenedor-inputswitch">
+              <span class="activo">Activo</span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </app-table-panel>
+  <form [formGroup]="modificarServicioForm">
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="servicioModificar">Servicio<span class="req">*</span>:</label>
+        <input id="servicioModificar" class="form-control" formControlName="servicio" placeholder="Ingresar el servicio">
+        <span class="campo-obligatorio"
+              *ngIf="fms.servicio?.errors?.required && (fms.servicio?.dirty || fms.servicio?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="descripcionModificar">Descripción del servicio<span class="req">*</span>:</label>
+        <input id="descripcionModificar" class="form-control" formControlName="descripcion" placeholder="Inserta la descripción">
+        <span class="campo-obligatorio"
+              *ngIf="fms.descripcion?.errors?.required && (fms.descripcion?.dirty || fms.descripcion?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="tipoServicioModificar">Tipo de servicio<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="tipoServicioModificar" class="form-control" formControlName="tipoServicio"
+                    [options]="tipoServicio"
+                    placeholder="Selecciona el tipo de servicio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fms.tipoServicio?.errors?.required && (fms.tipoServicio?.dirty || fms.tipoServicio?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+
+      <div class="col-md-6">
+        <label class="control-label" for="partidaPresupuestalModificar">Partida presupuestal<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="partidaPresupuestalModificar" class="form-control" formControlName="partidaPresupuestal"
+                    [options]="partidaPresupuestal"
+                    placeholder="Selecciona la partida presupuestal">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fms.partidaPresupuestal?.errors?.required && (fms.partidaPresupuestal?.dirty || fms.partidaPresupuestal?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="cuentaContableModicicar">Cuenta contable<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="cuentaContableModicicar" class="form-control" formControlName="cuentaContable"
+                    [options]="cuentaContable"
+                    placeholder="Selecciona la cuenta contable">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fms.cuentaContable?.errors?.required && (fms.cuentaContable?.dirty || fms.cuentaContable?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="observacionesModificar">Observaciones<span class="req">*</span></label>
+        <input id="observacionesModificar" class="form-control" formControlName="observaciones" placeholder="Ingresa las observaciones">
+        <span class="campo-obligatorio"
+              *ngIf="fms.observaciones?.errors?.required && (fms.observaciones?.dirty || fms.observaciones?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="claveSATModificar">Clave de artículo SAT<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="claveSATModificar" class="form-control" formControlName="claveSAT"
+                    [options]="claveSAT"
+                    placeholder="Selecciona la clave de artículo SAT">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fms.claveSAT?.errors?.required && (fms.claveSAT?.dirty || fms.claveSAT?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <label class="control-label">Estatus<span class="req">*</span></label>
+        <div class="contenedor-inputswitch">
+          <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+          <span class="activo" *ngIf="fms.estatus?.value">Activo</span>
+          <span class="inactivo" *ngIf="!fms.estatus?.value">Inactivo</span>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-end">
+    <button class="btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" [disabled]="modificarServicioForm.invalid"
+            (click)="confirmarModificarServicio()">
+      Aceptar
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="ventanaConfirmacion">
+  <app-detalle-servicio [servicioSeleccionado]="this.servicio" [origen]="'modificar'" (confirmacionAceptar)="cerrar($event)"  ></app-detalle-servicio>
+</ng-container>
+

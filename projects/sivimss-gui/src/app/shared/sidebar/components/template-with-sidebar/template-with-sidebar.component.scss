@@ -1,0 +1,17 @@
+.content {
+  position: relative;
+
+  main {
+    padding: 0 2.5rem;
+    min-height: 600px;
+  }
+
+  &.sidebar-activo {
+
+    main {
+     // margin-left: 320px;
+    }
+
+  }
+
+}

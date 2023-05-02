@@ -1,0 +1,124 @@
+<app-titulo-principal titulo="Administrar roles permisos"></app-titulo-principal>
+<div class="border-panel">
+    <form [formGroup]="filtroForm">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="rol">Rol:</label>
+                <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" placeholder="Seleccionar el rol">
+                </p-dropdown>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="nivel">Nivel:</label>
+                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="opciones" placeholder="Seleccionar el nivel">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <label class="control-label">Permisos:</label>
+                <div class="flex">
+                    <div class="flex align-items-center">
+                        <p-checkbox inputId="alta" formControlName="alta" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'alta'" class="control-label mb-0">Alta</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="baja" formControlName="baja" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'baja'" class="control-label mb-0">baja</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="consulta" formControlName="consulta" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'consulta'" class="control-label mb-0">Consulta</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="modificar" formControlName="modificar" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'modificar'" class="control-label mb-0">Modificar</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="aprobacion" formControlName="aprobacion" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'aprobacion'" class="control-label mb-0">Aprobacion</label>
+                    </div>
+                    <div class="flex align-items-center ml-5">
+                        <p-checkbox inputId="imprimir" formControlName="imprimir" styleClass="mr-3" [binary]="true"></p-checkbox>
+                        <label [for]="'imprimir'" class="control-label mb-0">Imprimir</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-6">
+            <div class="col-md-12 flex justify-content-end">
+                <button type="submit" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
+                <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+<section class="mt-5">
+    <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">Roles</h2>
+        <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['ROLES_PERMISOS','ALTA']" routerLink="agregar-rol-permisos">Agregar rol</button>
+    </div>
+    <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="roles" [paginator]="roles.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion()">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Funcionabilidad</th>
+                <th>Permisos</th>
+                <th>Nivel</th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rol>
+            <tr>
+                <td>{{rol.idRol}}</td>
+                <td>{{rol.nombre}}</td>
+                <td>{{rol.funcionalidad}}</td>
+                <td>{{rol.permisos}}</td>
+                <td>{{rol.nivel}}</td>
+                <td>
+                    <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
+                       <div class="contenedor-celda-iconos">
+                            <a (click)="abrirModalDetalleRol(rol)">
+                                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+                            </a>
+                            <a (click)="abrirPanel($event,rol)">
+                                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <th colspan="9" class="p-2 text-center font-bold text-xl">
+                    No se encontro información relacionada a tu búsqueda
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+                <span class="total-elements">{{roles.length}} de {{totalElementos}}</span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <div class="paginator-template">
+                <div class="export-table">
+                    <span class="export-table-text">Exportar tabla</span>
+                    <div class="export-table-icons">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarRolPermisos()"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>

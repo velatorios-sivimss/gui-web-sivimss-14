@@ -1,0 +1,152 @@
+<ng-container *ngIf="!abrirHabilitar">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span class="font-bold">Folio convenio {{convenioSeleccionado.folioConvenio}}</span>
+      </div>
+    </ng-template>
+    <ng-template *ngIf="(origen == 'agregar' || origen == 'modificar' || origen == 'estatus')" appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <div>Estatus del convenio</div>
+          <div class="contenedor-inputswitch">
+            <span class="activo" style="margin-left: -8px;" *ngIf="convenioSeleccionado.estatus">Activo</span>
+            <span class="inactivo" style="margin-left: -8px;" *ngIf="!convenioSeleccionado.estatus">Inactivo</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>RFC</label>
+          <span> {{convenioSeleccionado.rfc}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Numero INE</label>
+          <span> {{convenioSeleccionado.velatorioOrigen}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Matrícula IMSS</label>
+          <span> {{convenioSeleccionado.velatorioOrigen}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nombre</label>
+          <span> {{convenioSeleccionado.nombre}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Primer apellido</label>
+          <span> {{convenioSeleccionado.primerApellido}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Segundo apellido</label>
+          <span> {{convenioSeleccionado.segundoApellido}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Tipo de prevención funeraria</label>
+          <span> {{convenioSeleccionado.tipoPrevencionFuneraria}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Tipo de paquete </label>
+          <span> {{convenioSeleccionado.tipoPaquete}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Beneficiarios</label>
+          <span> {{convenioSeleccionado.beneficiarios}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Teléfono de contacto</label>
+          <span> {{convenioSeleccionado.telefonoContacto}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Correo electrónico</label>
+          <span> {{convenioSeleccionado.correoElectronico}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha inicio de vigencia</label>
+          <span> {{convenioSeleccionado.fechaInicioVigencia}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha fin de vigencia</label>
+          <span> {{convenioSeleccionado.fechaFinVigencia}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Cuota de recuperación</label>
+          <span> {{convenioSeleccionado.cuotaRecuperacion}} </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <ng-container *ngIf="origen == 'agregar'">
+    <div class="flex justify-content-end">
+      <button class="ml-4 mt-3 btn btn-default btn-md"  (click)="aceptar()">
+        Cancelar
+      </button>
+      <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="continuarHabilitacion()">
+        Aceptar
+      </button>
+    </div>
+  </ng-container>
+  <p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+      <app-overlay-panel-opciones>
+      </app-overlay-panel-opciones>
+    </ng-template>
+  </p-overlayPanel>
+</ng-container>
+  <ng-container *ngIf="abrirHabilitar">
+    <form [formGroup]="habilitarRenobacionForm">
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label class="control-label" for="justificacion">Justificación<span class="req">*</span>:</label>
+          <input id="justificacion" class="form-control" formControlName="justificacion" placeholder="Ingresa la justificación" required="true">
+          <span class="campo-obligatorio"
+                *ngIf="hrf.justificacion?.errors?.required && (hrf.justificacion?.dirty || hrf.justificacion?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <span>*Campos obligatorios</span>
+        </div>
+      </div>
+    </form>
+    <div class="flex justify-content-end">
+      <button class="btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" [disabled]="habilitarRenobacionForm.invalid"  (click)="realizarCombenio()">Aceptar</button>
+    </div>
+  </ng-container>
+

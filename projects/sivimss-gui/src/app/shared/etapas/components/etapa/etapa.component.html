@@ -1,0 +1,15 @@
+<div (click)="seleccionarEtapa()" [style.max-width.px]="maxWidth" class="etapa" [ngClass]="{
+'activo':estado === EtapaEstado.Activo,
+'inactivo':estado === EtapaEstado.Inactivo,
+'completado':estado === EtapaEstado.Completado,
+'mostrar-linea-izquierda':lineaIzquierda.mostrar,
+'mostrar-linea-derecha':lineaDerecha.mostrar,
+'border-dashed-linea-izquierda':lineaIzquierda.estilo === 'dashed',
+'border-dashed-linea-derecha':lineaDerecha.estilo === 'dashed'
+}">
+  <div class="etapa-circulo">
+    <span *ngIf="estado != EtapaEstado.Completado" class="etapa-texto-interior">{{textoInterior}}</span>
+    <span class="etapa-icono-completado" *ngIf="estado === EtapaEstado.Completado"><i class="fs fs-check"></i></span>
+  </div>
+  <span class="etapa-texto-exterior">{{textoExterior}}</span>
+</div>

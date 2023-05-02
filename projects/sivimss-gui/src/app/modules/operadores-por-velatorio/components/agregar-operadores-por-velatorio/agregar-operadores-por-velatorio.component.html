@@ -1,0 +1,196 @@
+<ng-container *ngIf="!ventanaConfirmacion">
+  <form [formGroup]="agregarOperadorForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="id">ID <span class="req">*</span>:</label>
+        <input id="id" class="form-control" formControlName="id" placeholder="Ingresa ID">
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP">
+        <span class="campo-obligatorio"
+              *ngIf="fao.curp?.errors?.required && (fao.curp?.dirty || fao.curp?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="numeroEmpleado">No. de empleado<span class="req">*</span>:</label>
+        <input id="numeroEmpleado" class="form-control" formControlName="numeroEmpleado" placeholder="Ingresa no. de empleado">
+        <span class="campo-obligatorio"
+              *ngIf="fao.numeroEmpleado?.errors?.required && (fao.numeroEmpleado?.dirty || fao.numeroEmpleado?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="Matrícula">Matrícula<span class="req">*</span>:</label>
+        <input id="Matrícula" class="form-control" formControlName="matricula" placeholder="Ingresa matrícula">
+        <span class="campo-obligatorio"
+              *ngIf="fao.matricula?.errors?.required && (fao.matricula?.dirty || fao.matricula?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-8">
+        <label class="control-label" for="nombre">Nombres<span class="req">*</span>:</label>
+        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombres">
+        <span class="campo-obligatorio"
+              *ngIf="fao.nombre?.errors?.required && (fao.nombre?.dirty || fao.nombre?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
+        <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa primer apellido">
+        <span class="campo-obligatorio"
+              *ngIf="fao.primerApellido?.errors?.primerApellido && (fao.primerApellido?.dirty || fao.primerApellido?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
+        <input id="segundoApellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa segundo apellido">
+        <span class="campo-obligatorio"
+              *ngIf="fao.segundoApellido?.errors?.required && (fao.segundoApellido?.dirty || fao.segundoApellido?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="fechaNaciemiento">
+          Fecha de nacimiento
+          <span class="req">*</span>:</label>
+        <p-calendar id="fechaNaciemiento" formControlName="fechaNaciemiento" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona fecha" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="fao.fechaNaciemiento?.errors?.required && (fao.fechaNaciemiento?.dirty || fao.fechaNaciemiento?.touched)">
+                    Campo obligatorio</span>
+      </div>
+
+      <div class="col-md-4">
+        <label class="control-label" for="fechaIngreso">
+          Fecha de ingreso
+          <span class="req">*</span>:</label>
+        <p-calendar id="fechaIngreso" formControlName="fechaIngreso" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona fecha" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="fao.fechaIngreso?.errors?.required && (fao.fechaIngreso?.dirty || fao.fechaIngreso?.touched)">
+                    Campo obligatorio</span>
+      </div>
+
+      <div class="col-md-4">
+        <label class="control-label" for="fechaBaja">
+          Fecha baja
+          <span class="req">*</span>:</label>
+        <p-calendar id="fechaBaja" formControlName="fechaBaja" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona fecha" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="fao.fechaBaja?.errors?.required && (fao.fechaBaja?.dirty || fao.fechaBaja?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <label class="control-label" for="entidadFederativa">Entidad federativa de nacimiento<span class="req">*</span>:</label>
+        <p-dropdown id="entidadFederativa" class="form-control" formControlName="entidadFederativa" [options]="entidadFederativa"
+                    placeholder="Selecciona la Entidad Federativa de nacimiento">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fao.entidadFederativa?.errors?.required && (fao.entidadFederativa?.dirty || fao.entidadFederativa?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="entidadFederativa">Velatorio<span class="req">*</span>:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorio"
+                    placeholder="Selecciona velatorio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fao.velatorio?.errors?.required && (fao.velatorio?.dirty || fao.velatorio?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="sueldoBase">Sueldo base<span class="req">*</span>:</label>
+        <input id="sueldoBase" class="form-control" formControlName="sueldoBase" placeholder="Ingresa sueldo base">
+        <span class="campo-obligatorio"
+              *ngIf="fao.sueldoBase?.errors?.required && (fao.sueldoBase?.dirty || fao.sueldoBase?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="diasDescanso">Días de descanso<span class="req">*</span>:</label>
+        <p-multiSelect [showHeader]="false" id="diasDescanso" class="form-control" formControlName="diasDescanso" [options]="velatorio"
+                       placeholder="Selecciona días de descanso">
+        </p-multiSelect>
+        <span class="campo-obligatorio"
+              *ngIf="fao.diasDescanso?.errors?.required && (fao.diasDescanso?.dirty || fao.diasDescanso?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="antiguedad">Antigüedad<span class="req">*</span>:</label>
+        <input id="antiguedad" class="form-control" formControlName="antiguedad" placeholder="Ingresa antigüedad">
+        <span class="campo-obligatorio"
+              *ngIf="fao.antiguedad?.errors?.required && (fao.antiguedad?.dirty || fao.antiguedad?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="puesto">Puesto<span class="req">*</span>:</label>
+        <input id="puesto" class="form-control" formControlName="puesto" placeholder="Ingresa puesto">
+        <span class="campo-obligatorio"
+              *ngIf="fao.puesto?.errors?.required && (fao.puesto?.dirty || fao.puesto?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
+        <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
+        <span class="campo-obligatorio"
+              *ngIf="fao.correoElectronico?.errors?.required && (fao.correoElectronico?.dirty || fao.correoElectronico?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <label class="control-label">Estatus<span class="req">*</span></label>
+        <div class="contenedor-inputswitch">
+          <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+          <span class="activo" *ngIf="fao.estatus?.value">Activo</span>
+          <span class="inactivo" *ngIf="!fao.estatus?.value">Inactivo</span>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-end">
+    <button class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarOperadorForm.invalid" (click)="confirmarAgregarOperador()">
+      Aceptar
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="ventanaConfirmacion">
+  <app-detalle-operadores-por-velatorio (confirmacionAceptar)="aceptaConfirmacion($event)"
+                                        [operadorSeleccionado]="nuevoOperador" [origen]="'agregar'" >
+
+  </app-detalle-operadores-por-velatorio>
+</ng-container>
+
+

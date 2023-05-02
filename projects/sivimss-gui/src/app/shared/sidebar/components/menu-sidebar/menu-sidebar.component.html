@@ -1,0 +1,6 @@
+<div [class.abierto]="abierto$ | async" class="menu-sidebar" appTiempoTransicion appWidthMenuSidebar>
+  <div class="modulos">
+    <app-modulo [esModuloRaiz]="true" [modulo]="modulo"
+                *ngFor="let modulo of (modulos$ | async)"></app-modulo>
+  </div>
+</div>

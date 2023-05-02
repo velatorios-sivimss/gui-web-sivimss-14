@@ -1,0 +1,139 @@
+<app-titulo-principal titulo="Renovación extemporánea de un convenio de Previsión Funeraria"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="niveles"
+          placeholder="Selecciona el velatorio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="numeroConvenio">Número de convenio:</label>
+        <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio"
+          placeholder="Ingresa el número de convenio" (keyup)="consultaServicioEspecifico()">
+        <span class="campo-obligatorio"
+          *ngIf="f.numeroConvenio?.errors?.required && (f.numeroConvenio?.dirty || f.numeroConvenio?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="folioConvenio">Folio de convenio:</label>
+        <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
+          placeholder="Ingresa el folio del convenio" (keyup)="consultaServicioEspecifico()">
+        <span class="campo-obligatorio"
+          *ngIf="f.folioConvenio?.errors?.required && (f.folioConvenio?.dirty || f.folioConvenio?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="rfcAfiliado">RFC afiliado:</label>
+        <input id="rfcAfiliado" class="form-control" formControlName="rfcAfiliado" placeholder="Ingresa el articulo"
+          (keyup)="consultaServicioEspecifico()">
+        <span class="campo-obligatorio"
+          *ngIf="f.rfcAfiliado?.errors?.required && (f.rfcAfiliado?.dirty || f.rfcAfiliado?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
+          (click)="mostrarModalTitularFallecido()">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Convenios de previsión funeraria</h2>
+  </div>
+  <p-table styleClass="mt-5 mb-8" [value]="conveniosPrevicion"
+    [paginator]="conveniosPrevicion.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
+    [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Velatorio origen</th>
+        <th scope="col">Número/Folio de convenio</th>
+        <th scope="col">RFC</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Primer apellido</th>
+        <th scope="col">Segundo apellido</th>
+        <th scope="col">Estatus</th>
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-convenioPrevision>
+      <tr>
+        <td> {{convenioPrevision.velatorioOrigen}} </td>
+        <td> {{convenioPrevision.folioConvenio}} </td>
+        <td> {{convenioPrevision.rfc}} </td>
+        <td> {{convenioPrevision.nombre}} </td>
+        <td> {{convenioPrevision.primerApellido}} </td>
+        <td> {{convenioPrevision.segundoApellido}} </td>
+        <td>
+          <span class="activo" *ngIf="convenioPrevision.estatus">Abierto</span>
+          <span class="inactivo" *ngIf="!convenioPrevision.estatus">Cerrado</span>
+        </td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirModalDetalleRenovacion(convenioPrevision)">
+              <img src="../../../../../assets/images/imagen-icono-ver.svg" alt="icono ver">
+            </a>
+            <a (click)="abrirPanel($event,convenioPrevision)">
+              <img src="../../../../../assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements"> {{conveniosPrevicion.length}} de {{totalElementos}} </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-excel.svg" alt="exportar excel">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Habilitar renovación"
+        (click)="abrirModalHabilitarRenovacion()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
+<p-dialog [style]="{maxWidth:'776px',width: '100%'}" header="Titular del convenio fallecido"
+  [(visible)]="mostrarModaltitularFallecido" [modal]="true" [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="row" style="text-align: center;">
+      <div class="col-md-2">
+      </div>
+      <div class="col-md-8">
+        <span>Titular del convenio fallecido</span>
+        <p>
+          <span>El beneficiario NO PUEDE RENOVAR el convenio</span>
+        </p>
+      </div>
+      <div class="col-md-2">
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-default btn-md" (click)="mostrarModaltitularFallecido = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

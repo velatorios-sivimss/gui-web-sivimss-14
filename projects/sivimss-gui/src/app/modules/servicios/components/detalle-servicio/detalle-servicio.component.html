@@ -1,0 +1,153 @@
+<ng-container *ngIf="!abrirModificar">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span class="font-bold">ID {{servicioSeleccionado.id}}</span>
+      </div>
+    </ng-template>
+    <ng-template *ngIf="(origen == 'detalle')" appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <span>Estatus</span>
+          <div class="contenedor-inputswitch">
+            <p-inputSwitch [(ngModel)]="servicioSeleccionado.estatus"></p-inputSwitch>
+            <span class="activo" *ngIf="servicioSeleccionado.estatus">Activo</span>
+            <span class="inactivo" *ngIf="!servicioSeleccionado.estatus">Inactivo</span>
+          </div>
+        </div>
+        <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
+          <img
+            src="assets/images/imagen-icono-barras-horizontales.svg"
+            alt="icono barras horizontales">
+        </a>
+      </div>
+    </ng-template>
+    <ng-template *ngIf="(origen == 'agregar' || origen == 'modificar' || origen == 'estatus')" appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <span>Estatus</span>
+          <div class="contenedor-inputswitch">
+            <span class="activo" *ngIf="servicioSeleccionado.estatus">Activo</span>
+            <span class="inactivo" *ngIf="!servicioSeleccionado.estatus">Inactivo</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Servicio</label>
+          <span> {{servicioSeleccionado.servicio}} </span>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="table-panel-column">
+          <label>Descripci&oacute;n del servicio</label>
+          <span> {{servicioSeleccionado.descripcionServicio}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Tipo de servicio</label>
+          <span> {{servicioSeleccionado.descTipoServicio}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Partida presupuestal</label>
+          <span> {{servicioSeleccionado.descPartidaPresupuestal}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Cuenta contable</label>
+          <span> {{servicioSeleccionado.descCuentaContable}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Observaciones</label>
+          <span> {{servicioSeleccionado.observaciones}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Clave de artículo SAT</label>
+          <span> {{servicioSeleccionado.claveSAT}} </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <ng-container *ngIf="origen == 'agregar'">
+    <div class="flex justify-content-center">
+      <div class="mt-4 col-md-7" >
+        ¿Estás seguro que deseas agregar este nuevo servicio?
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="origen == 'modificar'">
+    <div class="flex justify-content-center">
+      <div class="mt-4 col-md-7" >
+        ¿Estás seguro que deseas modificar este nuevo servicio?
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="origen == 'detalle'">
+    <div class="flex justify-content-end">
+      <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+        Aceptar
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="(origen == 'agregar' || origen == 'modificar')">
+    <div class="flex mt-4 justify-content-end">
+      <button class="ml-6 mt-3 btn btn-default btn-md"  (click)="regresar()">Regresar</button>
+      <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cerrar()">Cancelar</button>
+      <button class="ml-6 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+        Aceptar
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="(origen == 'estatus')">
+      <ng-container *ngIf="servicioSeleccionado.estatus">
+        <div class="flex mt-4 justify-content-center">
+          <div class="col-md-7">
+            ¿Estás seguro que deseas activar este servicio?
+          </div>
+        </div>
+      </ng-container>
+    <ng-container *ngIf="!servicioSeleccionado.estatus">
+      <div class="flex mt-4 justify-content-center">
+        <div class="col-md-7" >
+          ¿Estás seguro que deseas desactivar este servicio?
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="flex mt-5 justify-content-end">
+      <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cerrar()">Cancelar</button>
+      <button class="ml-6 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+      Aceptar
+    </button>
+    </div>
+  </ng-container>
+  <p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+      <app-overlay-panel-opciones>
+        <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarServicio()"></app-overlay-panel-opcion>
+      </app-overlay-panel-opciones>
+    </ng-template>
+  </p-overlayPanel>
+</ng-container>
+<ng-container *ngIf="abrirModificar">
+  <app-modificar-servicio></app-modificar-servicio>
+</ng-container>

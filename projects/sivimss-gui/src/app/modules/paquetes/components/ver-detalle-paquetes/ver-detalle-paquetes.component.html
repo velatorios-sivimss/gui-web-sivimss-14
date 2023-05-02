@@ -1,0 +1,152 @@
+<app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+            <span class="font-bold">
+                ID <span [ngClass]="paqueteSeleccionado.estatus ? 'activo' : 'inactivo'">{{paqueteSeleccionado.id}}</span>
+            </span>
+        </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column">
+            <div class="flex flex-column">
+                <span>Estatus</span>
+                <div>
+                    <span class="activo" *ngIf="paqueteSeleccionado.estatus">Activo</span>
+                    <span class="inactivo" *ngIf="!paqueteSeleccionado.estatus">Inactivo</span>
+                </div>
+            </div>
+            <div class="flex flex-column ml-5">
+                <a>
+                    <img
+                      src="assets/images/imagen-icono-barras-horizontales.svg"
+                      alt="icono barras horizontales">
+                  </a>
+            </div>
+        </div>
+    </ng-template>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column">
+                <label>Paquete</label>
+                <span>{{paqueteSeleccionado.nombrePaquete}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column">
+                <label>Descripción</label>
+                <span>{{paqueteSeleccionado.descripcion}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column">
+                <span>Servicios del paquete</span>
+                <p-table styleClass="mt-5 mb-8 custom-table" [value]="servicios" [paginator]="servicios.length > 0"
+                        [rows]="cantElementosPorPagina"
+                        [lazy]="true" [totalRecords]="totalElementosServicios" [pageLinks]="3" [(first)]="numPaginaActual"
+                        (onLazyLoad)="paginar($event)">
+                    <ng-template pTemplate="header">
+                        <tr class="custom-header">
+                            <th>Servicio</th>
+                            <th>Precio</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-servicio>
+                        <tr>
+                            <td>{{servicio.servicio}}</td>
+                            <td>{{servicio.precio}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorleft"></ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column">
+                <span>Artículos del paquete</span>
+                <p-table styleClass="mt-5 mb-8 custom-table" [value]="articulos" [paginator]="articulos.length > 0"
+                    [rows]="cantElementosPorPagina"
+                    [lazy]="true" [totalRecords]="totalElementosArticulos" [pageLinks]="3" [(first)]="numPaginaActual"
+                    (onLazyLoad)="paginar($event)">
+                    <ng-template pTemplate="header">
+                        <tr class="custom-header">
+                            <th>Artículo</th>
+                            <th>Tipo artículo</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-articulo>
+                        <tr>
+                            <td>{{articulo.articulo}}</td>
+                            <td>{{articulo.tipoArticulo}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="paginatorleft"></ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Costo inicial</label>
+                <span>{{paqueteSeleccionado.costoInicial}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Costo</label>
+                <span>{{paqueteSeleccionado.costoReferencia}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Precio</label>
+                <span>{{paqueteSeleccionado.precio}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Región</label>
+                <span>{{paqueteSeleccionado.region}}</span>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="table-panel-column">
+                <label>Clave SAT</label>
+                <span>{{paqueteSeleccionado.clave}}</span>
+            </div>
+        </div>
+    </div>
+</app-table-panel>
+
+
+<div class="flex justify-content-end mt-5" *ngIf="accionEntrada === Accion.Detalle">
+    <button class="ml-4 btn btn-primary btn-md" (click)="cerrarDialogo();">Aceptar</button>
+</div>
+
+<div *ngIf="accionEntrada === Accion.Agregar">
+    <div class="m-4 flex flex-column align-items-center justify-content-center">
+        <span>{{preguntaConfirmacion}}</span>
+    </div>
+    <div class="flex justify-content-end mt-5">
+        <button class="btn btn-default btn-md" (click)="cerrarDialogo();">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="agregarPaquete();">Aceptar</button>
+    </div>
+</div>
+
+<div *ngIf="accionEntrada === Accion.Activar || accionEntrada === Accion.Desactivar">
+    <div class="m-4 flex flex-column align-items-center justify-content-center">
+        <span>{{preguntaConfirmacion}}</span>
+    </div>
+    <div class="flex justify-content-end mt-5">
+        <button class="btn btn-default btn-md" (click)="cerrarDialogo();">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="cambiarEstatusPaquete();">Aceptar</button>
+    </div>
+</div>

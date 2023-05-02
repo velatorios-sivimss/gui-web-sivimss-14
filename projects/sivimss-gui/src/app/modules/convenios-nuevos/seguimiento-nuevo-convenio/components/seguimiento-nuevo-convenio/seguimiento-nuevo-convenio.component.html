@@ -1,0 +1,126 @@
+<app-titulo-principal titulo="Seguimiento de nuevo convenio"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <input id="nivel" class="form-control" formControlName="nivel"
+        placeholder="Ingresa el nivel" (keyup)="consultaServicioEspecifico()">
+      <span class="campo-obligatorio"
+        *ngIf="nuf.nivel?.errors?.required && (nuf.nivel?.dirty || nuf.nivel?.touched)">Campo
+        obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+          <input id="velatorio" class="form-control" formControlName="velatorio"
+          placeholder="Ingresa el velatorio" (keyup)="consultaServicioEspecifico()">
+        <span class="campo-obligatorio"
+          *ngIf="nuf.velatorio?.errors?.required && (nuf.velatorio?.dirty || nuf.velatorio?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Folio de Convenio PF *:</label>
+        <input id="folioConvenioPf" class="form-control" formControlName="folioConvenioPf"
+        placeholder="Ingresa el folio de convenio PF" (keyup)="consultaServicioEspecifico()">
+      <span class="campo-obligatorio"
+        *ngIf="nuf.folioConvenioPf?.errors?.required && (nuf.folioConvenioPf?.dirty || nuf.folioConvenioPf?.touched)">Campo
+        obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="nivel">Folio de Convenio PSFPA *:</label>
+         <input id="folioConvenioPsfpa" class="form-control" formControlName="folioConvenioPsfpa"
+          placeholder="Ingresa el folio de convenio PSFPA" (keyup)="consultaServicioEspecifico()">
+        <span class="campo-obligatorio"
+          *ngIf="nuf.folioConvenioPsfpa?.errors?.required && (nuf.folioConvenioPsfpa?.dirty || nuf.folioConvenioPsfpa?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="nivel">RFC del afiliado *:</label>
+         <input id="rfcAfiliado" class="form-control" formControlName="rfcAfiliado"
+          placeholder="Ingresa el RFC de afiliado" (keyup)="consultaServicioEspecifico()">
+        <span class="campo-obligatorio"
+          *ngIf="nuf.rfcAfiliado?.errors?.required && (nuf.rfcAfiliado?.dirty || nuf.rfcAfiliado?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md" (click)="limpiar()" >Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Registros</h2>
+  </div>
+  <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="convenios" [paginator]="convenios.length > 0"
+           [rows]="cantElementosPorPagina"
+           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="paginar($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Folio convenio</th>
+        <th scope="col">Tipo de contratación</th>
+        <th scope="col">RFC</th>
+        <th scope="col">Nombre afiliado</th>
+        <th scope="col">Tipo paquete</th>
+        <th scope="col">Estatus</th>
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-convenio>
+      <tr>
+        <td> {{convenio.folioConvenioPf}} </td>
+        <td> {{convenio.tipoContratacion}} </td>
+        <td> {{convenio.rfc}} </td>
+        <td> {{convenio.nombreAfiliado}} </td>
+        <td> {{convenio.tipoPaquete}} </td>
+        <td>
+          <div class="contenedor-inputswitch">
+            <p-inputSwitch [(ngModel)]="convenio.estatus" (onChange)="abrirCambioEstatus(convenio)"></p-inputSwitch>
+            <span class="activo" *ngIf="convenio.estatus">Activo</span>
+            <span class="inactivo" *ngIf="!convenio.estatus">Inactivo</span>
+          </div>
+        </td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirPanel($event,convenio)">
+              <img
+                src="assets/images/imagen-icono-barras-horizontales.svg"
+                alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements"> {{convenios.length}} de {{totalElementos}} </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Concluir formato" (click)="abrirPreRegistroNuevoConvenio()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

@@ -1,0 +1,77 @@
+<div class="row mb-3">
+  <div class="col-md-6">
+    <label class="control-label" for="velatorio">Delegación:</label>
+    <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación">
+    </p-dropdown>
+  </div>
+  <div class="col-md-6">
+    <label class="control-label" for="velatorio">Velatorios:</label>
+    <p-dropdown id="velatorio" [(ngModel)]="velatorio" class="form-control" [options]="velatorios" placeholder="Selecciona velatorio"
+    (onChange)="cambiarMes()">
+    </p-dropdown>
+  </div>
+</div>
+<div class="row mb-3">
+
+  <div class="col-md-12">
+    <p-tabView (onChange)="cambiarPestania($event)">
+      <p-tabPanel [header]="menu[0]">
+          <div class="flex justify-content-end">
+            <ng-container *ngIf="tituloSalas">
+              <div class="flex col-md-6 justify-content-around col-absolute" >
+                <ng-container  *ngFor="let titulo of tituloSalas">
+                  <div>
+                    <span class="circle" [style.background-color]="titulo.borderColor"></span>
+                    <b class="texto-base" [style.color]="titulo.textColor"> {{titulo.title}}</b>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+          <full-calendar #calendarioCremacion [options]="calendarOptions"></full-calendar>
+          <ng-template pTemplate="paginatorright">
+            <div class="flex justify-content-end paginator-template">
+<!--              <div class="export-table" *appValidaRol="['SALAS_RESERVACION','IMPRIMIR']">-->
+              <div class="export-table">
+                <span class="export-table-text">Exportar tabla</span>
+                <div class="export-table-icons">
+                  <img class="icon-export-table" (click)="generarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+                  <img class="icon-export-table" (click)="generarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
+                       alt="exportar excel">
+                </div>
+              </div>
+            </div>
+          </ng-template>
+      </p-tabPanel>
+      <p-tabPanel [header]="menu[1]">
+
+          <div class="flex justify-content-end">
+            <div class="flex col-md-6 justify-content-around col-absolute" *ngIf="tituloSalas != null">
+              <ng-container *ngFor="let titulo of tituloSalas">
+                <div>
+                  <span class="circle" [style.background-color]="titulo?.borderColor"></span>
+                  <b class="texto-base" [style.color]="titulo?.textColor"> {{titulo?.title}}</b>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <ng-container *ngIf="posicionPestania">
+            <full-calendar #calendarioEmbalsamamiento [options]="calendarEmbalsamamientoOptions"></full-calendar>
+          </ng-container>
+          <ng-template pTemplate="paginatorright">
+            <div class="flex justify-content-end paginator-template">
+<!--              <div class="export-table" *appValidaRol="['SALAS_RESERVACION','IMPRIMIR']">-->
+                <div class="export-table">
+                <span class="export-table-text">Exportar tabla</span>
+                <div class="export-table-icons">
+                  <img class="icon-export-table" (click)="generarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+                  <img class="icon-export-table" (click)="generarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
+                       alt="exportar excel">
+                </div>
+              </div>
+            </div>
+          </ng-template>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>

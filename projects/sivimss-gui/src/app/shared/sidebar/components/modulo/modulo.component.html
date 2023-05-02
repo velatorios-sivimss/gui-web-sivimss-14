@@ -1,0 +1,9 @@
+<div class="modulo" [ngClass]="clasesModulo" [class.seleccionado]="modulo.activo">
+  <div class="modulo-contenido" (click)="abrirCerrarModulo()">
+    <img class="modulo-icono" src="assets/images/menu/{{modulo.icono}}" alt=""><span
+      class="modulo-titulo">{{modulo.titulo}}</span>
+  </div>
+  <div class="modulos" *ngIf="modulo.modulos && modulo.modulos.length > 0 && abierto">
+    <app-modulo [modulo]="moduloHijo" *ngFor="let moduloHijo of modulo.modulos"></app-modulo>
+  </div>
+</div>

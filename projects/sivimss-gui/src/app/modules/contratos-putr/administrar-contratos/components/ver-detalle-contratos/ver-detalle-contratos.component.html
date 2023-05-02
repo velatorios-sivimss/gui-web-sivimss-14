@@ -1,0 +1,279 @@
+<app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+            <span class="font-bold">
+                ID <span [ngClass]="contratoSeleccionado.estatus ? 'activo' : 'inactivo'">{{contratoSeleccionado.id}}</span>
+            </span>
+        </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column">
+            <div class="flex flex-column">
+                <span>Estatus</span>
+                <div>
+                    <span class="activo" *ngIf="contratoSeleccionado.estatus">Activo</span>
+                    <span class="inactivo" *ngIf="!contratoSeleccionado.estatus">Inactivo</span>
+                </div>
+            </div>
+            <div class="flex flex-column ml-5">
+                <a (click)="abrirPanel($event)">
+                    <img
+                      src="assets/images/imagen-icono-barras-horizontales.svg"
+                      alt="icono barras horizontales">
+                  </a>
+            </div>
+        </div>
+    </ng-template>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column-title">
+                <span>Datos generales del permisionario</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>No. de permiso</label>
+                <span>{{contratoSeleccionado.numeroPermiso}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>RFC</label>
+                <span>{{contratoSeleccionado.rfc}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>CURP</label>
+                <span>{{contratoSeleccionado.curp}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Nombre(s) del permisionario</label>
+                <span>{{contratoSeleccionado.nombrePermisionario}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Primer apellido</label>
+                <span>{{contratoSeleccionado.primerApellido}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Segundo apellido</label>
+                <span>{{contratoSeleccionado.segundoApellido}}</span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Sexo</label>
+                <span>{{contratoSeleccionado.sexo}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Nacionalidad</label>
+                <span>{{contratoSeleccionado.nacionalidad}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Lugar de nacimiento</label>
+                <span>{{contratoSeleccionado.lugarNacimiento}}</span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Teléfono</label>
+                <span>{{contratoSeleccionado.telefono}}</span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Correo </label>
+                <span>{{contratoSeleccionado.correo}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Fecha de nacimiento</label>
+                <span>{{contratoSeleccionado.fechaNacimiento}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column-title">
+                <span>Domicilio del permisionario</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Código postal</label>
+                <span>{{contratoSeleccionado.codigoPostal}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Calle</label>
+                <span>{{contratoSeleccionado.calle}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Núm. exterior</label>
+                <span>{{contratoSeleccionado.numeroExterior}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Núm. interior</label>
+                <span>{{contratoSeleccionado.numeroInterior}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Colonia</label>
+                <span>{{contratoSeleccionado.colonia}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Municipio</label>
+                <span>{{contratoSeleccionado.municipio}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Estado</label>
+                <span>{{contratoSeleccionado.estado}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column-title">
+                <span>Datos del permiso</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Uso de la superficie (m²)</label>
+                <span>{{contratoSeleccionado.usoSuperficie}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Giro</label>
+                <span>{{contratoSeleccionado.giro}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Forma de pago</label>
+                <span>{{contratoSeleccionado.formaPago}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Cuota de recuperación ($)</label>
+                <span>{{contratoSeleccionado.cuotaRecuperacion}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Número de cuotas de recuperación</label>
+                <span>{{contratoSeleccionado.numeroCuotasRecuperacion}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Banco</label>
+                <span>{{contratoSeleccionado.banco}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>No. de cuenta</label>
+                <span>{{contratoSeleccionado.numeroCuenta}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Vigencia del permiso</label>
+                <span>{{contratoSeleccionado.vigenciaPermiso}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Nombre del administrador del contrato</label>
+                <span>{{contratoSeleccionado.nombreAdministrador}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Observaciones</label>
+                <span>{{contratoSeleccionado.observaciones}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Clave de articulo SAT</label>
+                <span>{{contratoSeleccionado.claveArticulo}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Fecha de contrato </label>
+                <span>{{contratoSeleccionado.fechaContrato}}</span>
+            </div>
+        </div>
+    </div>
+</app-table-panel>
+
+
+<div class="flex justify-content-end mt-5" *ngIf="accionEntrada === Accion.Detalle">
+    <button class="ml-4 btn btn-primary btn-md" (click)="cerrarDialogo();">Aceptar</button>
+</div>
+
+<div *ngIf="accionEntrada === Accion.Agregar || accionEntrada === Accion.Modificar">
+    <div class="m-4 flex flex-column align-items-center justify-content-center">
+        <span>{{preguntaConfirmacion}}</span>
+    </div>
+    <div class="flex justify-content-end mt-5">
+        <button class="btn btn-default btn-md" (click)="cerrarDialogo();">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="agregarContrato();">Aceptar</button>
+    </div>
+</div>
+
+<div *ngIf="accionEntrada === Accion.Activar || accionEntrada === Accion.Desactivar">
+    <div class="m-4 flex flex-column align-items-center justify-content-center">
+        <span>{{preguntaConfirmacion}}</span>
+    </div>
+    <div class="flex justify-content-end mt-5">
+        <button class="btn btn-default btn-md" (click)="cerrarDialogo();">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="cambiarEstatusContrato();">Aceptar</button>
+    </div>
+</div>
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+      <app-overlay-panel-opciones>
+        <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarContrato()"></app-overlay-panel-opcion>
+      </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>

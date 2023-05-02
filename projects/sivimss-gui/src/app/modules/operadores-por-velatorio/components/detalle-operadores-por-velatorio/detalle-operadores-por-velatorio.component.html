@@ -1,0 +1,206 @@
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">ID {{operadorSeleccionado.id}} </span>
+    </div>
+  </ng-template>
+
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span>Estatus</span>
+        <div class="contenedor-inputswitch" *ngIf="origen == 'detalle'">
+          <p-inputSwitch [(ngModel)]="operadorSeleccionado.estatus"></p-inputSwitch>
+          <span class="activo" *ngIf="operadorSeleccionado.estatus">Activo</span>
+          <span class="inactivo" *ngIf="!operadorSeleccionado.estatus">Inactivo</span>
+
+          <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
+            <img
+              src="assets/images/imagen-icono-barras-horizontales.svg"
+              alt="icono barras horizontales">
+          </a>
+        </div>
+        <div class="contenedor-inputswitch" *ngIf="origen != 'detalle'">
+          <span class="activo" *ngIf="operadorSeleccionado.estatus">Activo</span>
+          <span class="inactivo" *ngIf="!operadorSeleccionado.estatus">Inactivo</span>
+        </div>
+      </div>
+
+    </div>
+  </ng-template>
+  <div class="row table-panel-row">
+    <div class="col-md-4">
+      <div class="table-panel-column">
+        <label>CURP:</label>
+        <span> {{operadorSeleccionado.curp}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>No. de empleado:</label>
+        <span> {{operadorSeleccionado.numeroEmpleado}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Matrícula:</label>
+        <span> {{operadorSeleccionado.matricula}} </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nombre:</label>
+        <span> {{operadorSeleccionado.nombre}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Primer apellido:</label>
+        <span> {{operadorSeleccionado.primerApellido}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Segundo apellido:</label>
+        <span> {{operadorSeleccionado.segundoApellido}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Velatorio:</label>
+        <span> {{operadorSeleccionado.velatorio || operadorSeleccionado.descVelatorio}} </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Velatorio:</label>
+        <span> {{operadorSeleccionado.velatorio || operadorSeleccionado.descVelatorio}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Sueldo base:</label>
+        <span> {{operadorSeleccionado.sueldoBase}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Fecha de nacimiento*:</label>
+        <span> {{operadorSeleccionado.fechaNaciemiento}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Fecha de ingreso*:</label>
+        <span> {{operadorSeleccionado.fechaIngreso}} </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row table-panel-row">
+    <div class="col-md-4">
+      <div class="table-panel-column">
+        <label>Entidad Federativa de nacimiento:</label>
+        <span> {{operadorSeleccionado.entidadFederativa}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Días de descanso:</label>
+        <span> {{operadorSeleccionado.descDiasDescanso}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Antigüedad:</label>
+        <span> {{operadorSeleccionado.antiguedad}} </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Puesto:</label>
+        <span> {{operadorSeleccionado.puesto}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Correo electrónico:</label>
+        <span> {{operadorSeleccionado.correoElectronico}} </span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+
+<ng-container *ngIf="origen == 'agregar'">
+  <div class="flex mt-4 justify-content-center">
+    <div class="col-md-7" >
+      ¿Estás seguro que deseas agregar este operador?
+    </div>
+  </div>
+
+  <div class="flex mt-5 justify-content-end">
+    <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
+    <button class="ml-6 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+      Aceptar
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="origen == 'modificar'">
+  <div class="flex mt-4 justify-content-center">
+    <div class="col-md-7" >
+      ¿Estás seguro que deseas modificar este operador?
+    </div>
+  </div>
+  <div class="flex mt-5 justify-content-end">
+    <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
+    <button class="ml-6 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+      Aceptar
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="origen == 'detalle'">
+  <div class="flex mt-5 justify-content-end">
+    <button class="ml-6 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+      Aceptar
+    </button>
+  </div>
+</ng-container>
+
+
+<ng-container *ngIf="origen == 'activar' || origen == 'desactivar'">
+  <div class="flex mt-4 justify-content-center">
+    <div class="col-md-7" >
+      ¿Estás seguro que deseas {{origen}} este operador?
+    </div>
+  </div>
+  <div class="flex mt-5 justify-content-end">
+    <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
+    <button *ngIf="origen == 'activar'" class="ml-6 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+      Activar
+    </button>
+
+    <button *ngIf="origen == 'desactivar'" class="ml-6 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+      Desactivar
+    </button>
+  </div>
+</ng-container>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Modificar"
+                                (click)="abrirModalModificarOperador()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

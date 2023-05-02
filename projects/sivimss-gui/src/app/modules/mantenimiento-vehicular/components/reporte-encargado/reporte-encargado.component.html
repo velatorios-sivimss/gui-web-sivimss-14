@@ -1,0 +1,333 @@
+<app-titulo-principal titulo="REPORTE DEL ENCARGADO"></app-titulo-principal>
+<ng-container *ngIf="!mostrarDetalle">
+  <div class="border-panel">
+    <form [formGroup]="filtroForm">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="tipoReporte">Tipo de reporte*:</label>
+          <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
+                      placeholder="Selecciona el tipo">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fmp.tipoReporte?.errors?.required && (fmp.tipoReporte?.dirty || fmp.tipoReporte?.touched)">
+            Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="placa">Placa*:</label>
+          <input id="placa" class="form-control" formControlName="placa" placeholder="Ingresa placa"
+                 (keyup)="consultaServicioEspecifico()">
+          <span class="campo-obligatorio"
+                *ngIf="fmp.placa?.errors?.required && (fmp.placa?.dirty || fmp.placa?.touched)">
+            Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-12">
+              <label class="control-label">
+                Fecha vigencia:
+                <span class="req">*</span>:</label>
+            </div>
+            <div class="col-md-6">
+              <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
+                          [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy">
+              </p-calendar>
+              <span class="campo-obligatorio"
+                    *ngIf="fmp.fechaVigenciaDesde?.errors?.required && (fmp.fechaVigenciaDesde?.dirty || fmp.fechaVigenciaDesde?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-6">
+              <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
+                          [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body">
+              </p-calendar>
+              <span class="campo-obligatorio"
+                    *ngIf="fmp.fecahVigenciaHasta?.errors?.required && (fmp.fecahVigenciaHasta?.dirty || fmp.fecahVigenciaHasta?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <span>*Campos obligatorios</span>
+        </div>
+      </div>
+      <div class="row mt-6">
+        <div class="col-md-12 flex justify-content-end">
+          <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+          <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()"
+                  [disabled]="filtroForm.invalid">Buscar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <ng-container>
+    <div class="separador">
+      <h1></h1>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="mostrarTabla">
+    <p-accordion styleClass="sivimss-accordion">
+      <app-table-panel>
+        <ng-template appCustomTemplate="header">
+          <div class="table-panel-header-column">
+            <div class="col-md-6 colum-tam">
+              <div class="table-panel-column">
+                <label>Velatorio</label>
+                <span>No. 18 Tequesquináhuac</span>
+              </div>
+            </div>
+            <div class="col-md-6 colum-tam">
+              <div class="table-panel-column">
+                <label>total de vehiculos</label>
+                <span> 1</span>
+              </div>
+            </div>
+            <div class="col-md-6 colum-tam">
+              <div class="table-panel-column">
+                <label>Rango de fechas</label>
+                <span> 01/01/2021 a 01/01/2022</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <div class="row table-panel-row">
+          <div class="col-md-4">
+            <div class="table-panel-column">
+              <label>Velatorio</label>
+              <span>No. 18 Tequesquináhuac </span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column">
+              <label>total de vehiculos</label>
+              <span> 1</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column">
+              <label>Periodo</label>
+              <span> 01/01/2021 a 01/01/2022</span>
+            </div>
+          </div>
+        </div>
+        <div class="row table-panel-row">
+          <div class="col-md-12">
+            <div class="table-panel-column">
+              <p-table [value]="data">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Placa</th>
+                    <th>Aceite</th>
+                    <th>Agua</th>
+                    <th>Calibración neumáticos</th>
+                    <th>Combustible</th>
+                    <th>Código falla</th>
+                    <th>Beteria</th>
+                    <th></th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                  <tr>
+                    <td>{{ item.dia }}</td>
+                    <td>{{ item.valor }}</td>
+                    <td>{{ item.valor }}</td>
+                    <td>{{ item.valor }}</td>
+                    <td>{{ item.valor }}</td>
+                    <td>{{ item.valor }}</td>
+                    <td>{{ item.valor }}</td>
+                    <td>{{ item.valor }}</td>
+                    <td>
+                      <div class="contenedor-celda-iconos">
+                        <a (click)="abrirDetallereporteEncargado(item)">
+                          <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+                        </a>
+
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </app-table-panel>
+    </p-accordion>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="mostrarDetalle">
+  <app-table-panel>
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <h6>Reporte del encargado</h6>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+
+        <div class="table-panel-column">
+          <label>Velatorio</label>
+          <span> categoria 1 33</span>
+        </div>
+
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Total de vehiculos</label>
+          <span> 22</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Rango de fecha</label>
+          <span> 01/21/2022 a 01/21/2022</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <h6>Verificación diaria</h6>
+
+          <div class="table-panel-column">
+
+
+            <div class="row table-panel-row borderSolidTable">
+              <div class="col-md-4">
+
+                <div class="table-panel-column">
+                  <label>Placa</label>
+                  <span> categoria 1 33</span>
+                </div>
+
+              </div>
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Fecha</label>
+                  <span> 01/21/2022</span>
+                </div>
+
+              </div>
+            </div>
+            <div class="row table-panel-row borderSolidTableSub">
+              <div class="col-md-12">
+                <div class="col-md-4">
+                  <div class="table-panel-column col-md-6">
+                    <label>Nivel de aceite</label>
+                    <span> Medio</span>
+                  </div>
+                  <div class="table-panel-column col-md-6">
+                    <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="table-panel-column col-md-6">
+                    <label>Nivel de agua</label>
+                    <span> Correcto </span>
+                  </div>
+                  <div class="table-panel-column col-md-6">
+                    <img class="icono" src="../../../../../../assets/images/nivelAgua.svg">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row table-panel-row borderSolidTableSub">
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <div class="table-panel-column col-md-6">
+                    <label>Calibrtación de neumáticos traseros</label>
+                    <span> Bajo </span>
+                  </div>
+                  <div class="table-panel-column col-md-6">
+                    <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg">
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="table-panel-column col-md-6">
+                    <label>Calibración de numáticos delanteros</label>
+                    <span> Correcto</span>
+                  </div>
+                  <div class="table-panel-column col-md-6">
+                    <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="bordes">
+                  <div class="col-md-8 margen-tabla">
+                    <label>Presion recomendada</label>
+                    <p-table [value]="dataDetalle">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th>Rin</th>
+                          <th>Precisión</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-item>
+                        <tr>
+                          <td>{{ item.rin }}</td>
+                          <td>{{ item.presicion }}</td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                  <div class="col-md-4">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row table-panel-row borderSolidTableSub">
+              <div class="col-md-12">
+                <div class="col-md-4">
+                  <div class="table-panel-column col-md-6">
+                    <label>Nivel de Combustible</label>
+                    <span> Medio </span>
+                  </div>
+                  <div class="table-panel-column col-md-6">
+                    <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="table-panel-column col-md-6">
+                    <label>Nivel de Bateria </label>
+                    <span> Medio </span>
+                  </div>
+                  <div class="table-panel-column col-md-6">
+                    <img class="icono-bateria" src="../../../../../../assets/images/loading.svg">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="table-panel-column col-md-6">
+                    <label>Código de falla</label>
+                    <span> Correcto </span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+</ng-container>
+
+
+<ng-container>
+  <div class="col-mb-12 row flex justify-content-end"
+       style="margin-top: 30px; margin-bottom: 30px;  padding-right: 14px;">
+    <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../">Cerrar</button>
+  </div>
+</ng-container>

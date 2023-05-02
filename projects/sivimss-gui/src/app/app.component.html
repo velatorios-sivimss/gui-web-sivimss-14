@@ -1,0 +1,26 @@
+<ng-container *ngIf="paginaCargada"
+              [ngTemplateOutlet]="(existeUnaSesion$ | async) ? paginaPrivada:paginaPublica"></ng-container>
+
+<ng-template #paginaPublica>
+  <app-header-imss-publico></app-header-imss-publico>
+  <router-outlet></router-outlet>
+</ng-template>
+
+<ng-template #paginaPrivada>
+  <ng-container>
+    <app-header-imss-publico></app-header-imss-publico>
+    <app-sub-header-privado></app-sub-header-privado>
+    <app-template-with-sidebar>
+      <app-breadcrumb></app-breadcrumb>
+      <router-outlet></router-outlet>
+    </app-template-with-sidebar>
+  </ng-container>
+</ng-template>
+
+<app-loader [activarLoaderNavegacionRutas]="true"></app-loader>
+
+<p-toast position="top-center">
+  <ng-template let-message pTemplate="message">
+    <app-alerta [mensaje]="message.detail"></app-alerta>
+  </ng-template>
+</p-toast>

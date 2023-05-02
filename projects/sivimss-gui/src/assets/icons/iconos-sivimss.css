@@ -1,0 +1,57 @@
+@font-face {
+  font-family: 'font-sivimss';
+  src:  url('fonts/font-sivimss.eot?ce7tsq');
+  src:  url('fonts/font-sivimss.eot?ce7tsq#iefix') format('embedded-opentype'),
+    url('fonts/font-sivimss.ttf?ce7tsq') format('truetype'),
+    url('fonts/font-sivimss.woff?ce7tsq') format('woff'),
+    url('fonts/font-sivimss.svg?ce7tsq#font-sivimss') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.fs {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'font-sivimss' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fs-ordenes-de-subrogacion:before {
+  content: "\e905";
+}
+.fs-ordenes-de-servicio:before {
+  content: "\e906";
+}
+.fs-operacion-sivimss:before {
+  content: "\e907";
+}
+.fs-barras-horizontales:before {
+  content: "\e904";
+}
+.fs-flecha-abajo:before {
+  content: "\e903";
+}
+.fs-calendario:before {
+  content: "\e902";
+}
+.fs-ver-apagado:before {
+  content: "\e901";
+}
+.fs-ver:before {
+  content: "\e900";
+}
+.fs-check:before {
+  content: "\f00c";
+}
+.fs-pagos:before {
+  content: "\e908";
+}

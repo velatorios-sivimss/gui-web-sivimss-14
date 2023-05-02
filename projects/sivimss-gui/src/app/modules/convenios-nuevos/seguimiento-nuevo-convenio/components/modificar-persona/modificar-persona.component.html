@@ -1,0 +1,173 @@
+
+<app-titulo-principal titulo="Modificar persona"></app-titulo-principal>
+
+<ng-container *ngIf="indice < menuStep.length">
+  <div class="row mb-3">
+      <div class="col-md-2"></div>
+      <div class="col-md-8">
+        <img class="datoPersona" src="../../../../../assets/images/beneficiarios.PNG">
+          <!-- <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps> -->
+          <!-- <img src="../../../../../assets/images/proveedor.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 0">
+          <img src="../../../../../assets/images/direccion.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 1"> -->
+      </div>
+      <div class="col-md-2"></div>
+  </div>
+</ng-container>
+
+<div class="border-panel">
+  <div class="row mb-3">
+<ng-container *ngIf="indice === 0">
+  <form [formGroup]="modificarPersonaForm" (submit)="adelantarPagina()">
+    <h2 class="subtitulo-base">Datos del afiliado</h2>
+
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label class="control-label" for="matricula">Matrícula<span class="req">*</span>:</label>
+        <input id="matricula" type="text" class="form-control" formControlName="matricula"
+               placeholder="Ingresa matrícula">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.matricula?.errors?.required && (mpf.matricula?.dirty || mpf.matricula?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="rfc">RFC<span class="req">*</span>:</label>
+        <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.rfc?.errors?.required && (mpf.rfc?.dirty || mpf.rfc?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+        <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.curp?.errors?.required && (mpf.curp?.dirty || mpf.curp?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="nss">NSS<span class="req">*</span>:</label>
+        <input id="nss" type="text" class="form-control" formControlName="nss" placeholder="Ingresa NSS">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.nss?.errors?.required && (mpf.nss?.dirty || mpf.nss?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-2">
+      <div class="col-md-3">
+        <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span class="req">*</span>:</label>
+        <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha de nacimiento"></p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="mpf.fechaNacimiento?.errors?.required && (mpf.fechaNacimiento?.dirty || mpf.fechaNacimiento?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
+        <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Ingresa sexo"
+                    [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="mpf.sexo?.errors?.required && (mpf.sexo?.dirty || mpf.sexo?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
+        <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
+                    placeholder="Ingresa nacionalidad"
+                    [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="mpf.nacionalidad?.errors?.required && (mpf.nacionalidad?.dirty || mpf.nacionalidad?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
+        <input id="lugarNacimiento" type="text" class="form-control" formControlName="lugarNacimiento"
+               placeholder="Ingresa lugar de nacimiento">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.lugarNacimiento?.errors?.required && (mpf.lugarNacimiento?.dirty || mpf.lugarNacimiento?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+
+
+    <div class="row mb-5">
+      <div class="col-md-6">
+        <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
+        <input id="calle" type="text" class="form-control" formControlName="calle"
+               placeholder="Ingresa correo electrónico">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.calle?.errors?.required && (mpf.calle?.dirty || mpf.calle?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="noExterior">No exterior<span class="req">*</span>:</label>
+        <input id="noExterior" type="text" class="form-control" formControlName="noExterior"
+               placeholder="Ingresa no. Exterior">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.noExterior?.errors?.required && (mpf.noExterior?.dirty || mpf.noExterior?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="noInterior">No interior<span class="req">*</span>:</label>
+        <input id="noInterior" type="text" class="form-control" formControlName="noInterior"
+               placeholder="Ingresa no. Interior">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.noInterior?.errors?.required && (mpf.noInterior?.dirty || mpf.noInterior?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label class="control-label" for="cp">CP<span class="req">*</span>:</label>
+        <input id="cp" type="text" class="form-control" formControlName="cp"
+               placeholder="Ingresa CP">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.cp?.errors?.required && (mpf.cp?.dirty || mpf.cp?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
+        <input id="colonia" type="text" class="form-control" formControlName="colonia" placeholder="Ingresa colonia">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.colonia?.errors?.required && (mpf.colonia?.dirty || mpf.colonia?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
+        <input id="municipio" type="text" class="form-control" formControlName="municipio" placeholder="Ingresa municipio">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.municipio?.errors?.required && (mpf.municipio?.dirty || mpf.municipio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
+        <input id="estado" type="text" class="form-control" formControlName="estado" placeholder="Ingresa NSS">
+        <span class="campo-obligatorio"
+              *ngIf="mpf.estado?.errors?.required && (mpf.estado?.dirty || mpf.estado?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+
+
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
+        <p-dropdown id="tipoPaquete" class="form-control" formControlName="tipoPaquete" placeholder="Económico"
+                    [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="mpf.tipoPaquete?.errors?.required && (mpf.tipoPaquete?.dirty || mpf.tipoPaquete?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="enfermedadPrexistente">enfermedad prexistente<span class="req">*</span>:</label>
+        <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente" placeholder="No"
+                    [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="mpf.enfermedadPrexistente?.errors?.required && (mpf.enfermedadPrexistente?.dirty || mpf.enfermedadPrexistente?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+  <div class="flex justify-content-end">
+    <button class="btn btn-md btn-gold" routerLink="../">Cancelar</button>
+    <button class="btn btn-md btn-primary ml-5">Aceptar</button>
+  </div>
+  </form>
+</ng-container>
+
+
+
+<ng-container >
+
+</ng-container>
+
+</div>
+</div>

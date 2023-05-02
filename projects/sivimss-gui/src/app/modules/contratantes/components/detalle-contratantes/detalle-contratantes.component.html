@@ -1,0 +1,173 @@
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">ID {{contratante.id}}</span>
+    </div>
+  </ng-template>
+  <ng-template *ngIf="(origen == 'detalle')" appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span>Estatus</span>
+        <div class="contenedor-inputswitch">
+          <p-inputSwitch (onChange)="cambiarEstatus(contratante)" [(ngModel)]="contratante.estatus"></p-inputSwitch>
+          <span class="activo" *ngIf="contratante.estatus">Activo</span>
+          <span class="inactivo" *ngIf="!contratante.estatus">Inactivo</span>
+        </div>
+      </div>
+      <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
+        <img
+          src="assets/images/imagen-icono-barras-horizontales.svg"
+          alt="icono barras horizontales">
+      </a>
+    </div>
+  </ng-template>
+  <div class="row table-panel-row">
+    <div class="row ml-6"><h2 class="subtitulo">Datos generales</h2></div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>RFC</label>
+        <span> {{contratante.rfc}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>CURP</label>
+        <span> {{contratante.curp}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>NSS</label>
+        <span> {{contratante.nss}} </span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nombre(s)</label>
+        <span> {{contratante.nombre}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Primer apellido</label>
+        <span> {{contratante.primerApellido}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Segundo apellido</label>
+        <span> {{contratante.segundoApellido}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Fecha de nacimiento</label>
+        <span> {{contratante.fechaNacimiento}} </span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nacionalidad</label>
+        <span> {{contratante.nacionalidad}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Lugar de nacimiento</label>
+        <span> {{contratante.lugarNacimiento}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Teléfono</label>
+        <span> {{contratante.telefono}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Sexo</label>
+        <span> {{contratante.sexo}} </span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="row ml-6"><h2 class="subtitulo">Domicilio</h2></div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Código postal</label>
+        <span> {{contratante.cp}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Calle</label>
+        <span> {{contratante.calle}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Núm. exterior</label>
+        <span> {{contratante.numeroExterior}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Núm. interior</label>
+        <span> {{contratante.numeroInterior}} </span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>País</label>
+        <span> {{contratante.pais}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Estado</label>
+        <span> {{contratante.estado}} </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Municipio</label>
+        <span> {{contratante.municipio}} </span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+<section>
+  <ng-container *ngIf="origen == 'detalle'">
+    <div class="flex justify-content-end">
+      <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+        Aceptar
+      </button>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="origen != 'detalle'">
+    <div class="row my-6">
+      <div class="col-md-12">
+        <p class="etiqueta-base text-center">{{mensaje}}</p>
+      </div>
+    </div>
+    <div class="flex justify-content-end">
+      <button class="ml-4 mt-3 btn btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
+      <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+        Aceptar
+      </button>
+    </div>
+  </ng-container>
+</section>
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarContratante()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

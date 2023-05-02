@@ -1,0 +1,213 @@
+<script src="../agregar-vehiculo/agregar-vehiculo.component.ts"></script>
+<app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+            <span class="font-bold mr-2">ID</span>
+            <span class="activo">{{vehiculoSeleccionado.id}}</span>
+        </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column" *ngIf="estatus">
+            <div class="flex flex-column">
+                <span>Estatus</span>
+                <div class="contenedor-inputswitch" *ngIf="tipoEstatus === 'texto'">
+                    <span class="activo" *ngIf="vehiculoSeleccionado.estatus">Activo</span>
+                    <span class="inactivo" *ngIf="!vehiculoSeleccionado.estatus">Inactivo</span>
+                </div>
+                <div class="contenedor-inputswitch" *ngIf="tipoEstatus === 'switch'">
+                    <p-inputSwitch [(ngModel)]="vehiculoSeleccionado.estatus"></p-inputSwitch>
+                    <span class="activo" *ngIf="vehiculoSeleccionado.estatus">Activo</span>
+                    <span class="inactivo" *ngIf="!vehiculoSeleccionado.estatus">Inactivo</span>
+                </div>
+            </div>
+            <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+        </div>
+    </ng-template>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Velatorio</label>
+                <span>{{vehiculoSeleccionado.velatorio}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Uso</label>
+                <span>{{vehiculoSeleccionado.uso}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Usuario</label>
+                <span>{{vehiculoSeleccionado.usuario}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Tipo Vehiculo</label>
+                <span>{{vehiculoSeleccionado.tipoVehiculo}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Tipo Contrato</label>
+                <span>{{vehiculoSeleccionado.tipoContrato}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Vigencia</label>
+                <span>{{vehiculoSeleccionado.fechaVigenciaInicio | date }} a
+                    {{vehiculoSeleccionado.fechaVigenciaFin | date }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Marca</label>
+                <span>{{vehiculoSeleccionado.marca}}</span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Modelo</label>
+                <span>{{vehiculoSeleccionado.modelo}}</span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Placas</label>
+                <span>{{vehiculoSeleccionado.placas}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>No. de motor</label>
+                <span>{{vehiculoSeleccionado.noMotor}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>No. de cilindros</label>
+                <span>{{vehiculoSeleccionado.noCilindros}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Transmisión</label>
+                <span>{{vehiculoSeleccionado.transmision}}</span>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="table-panel-column">
+                <label>Descripción</label>
+                <span>{{vehiculoSeleccionado.desTransmision}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Combustible</label>
+                <span>{{vehiculoSeleccionado.combustible}}</span>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="table-panel-column">
+                <label>Descripción</label>
+                <span>{{vehiculoSeleccionado.desCombustible}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-5">
+            <div class="table-panel-column">
+                <label>No. tarjeta de circulación</label>
+                <span>{{vehiculoSeleccionado.tarjetaCirculacion}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Vigencia tarjeta de circulación</label>
+                <span>{{vehiculoSeleccionado.vigenciaTarjetaFin | date}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-5">
+            <div class="table-panel-column">
+                <label>No. serie</label>
+                <span>{{vehiculoSeleccionado.noSerie}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Fecha de adquisición</label>
+                <span>{{vehiculoSeleccionado.fechaAdquisicion | date }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-5">
+            <div class="table-panel-column">
+                <label>Vigencia</label>
+                <span>{{vehiculoSeleccionado.vigenciaDocumentacion}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Costo total (IVA incluido)</label>
+                <span>{{vehiculoSeleccionado.costoTotal}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Aseguradora</label>
+                <span>{{vehiculoSeleccionado.aseguradora}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Riesgos (Poliza)</label>
+                <span>{{vehiculoSeleccionado.poliza}}</span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="table-panel-column">
+                <label>Vigencia</label>
+                <span>{{vehiculoSeleccionado.vigenciaSeguro}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Importe prima</label>
+                <span>{{vehiculoSeleccionado.importePrima}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column">
+                <label>Riesgos</label>
+                <span>{{vehiculoSeleccionado.riesgos}}</span>
+            </div>
+        </div>
+    </div>
+</app-table-panel>
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Modificar"
+                (click)="abrirModalModificacionVehiculo()"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>

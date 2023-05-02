@@ -1,0 +1,129 @@
+<app-titulo-principal titulo="Administración de Contratos PUTR"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <input id="nivel" class="form-control" formControlName="nivel" placeholder="Ingresa nivel" trimmer>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="opciones"
+          placeholder="Selecciona delegación">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="opciones"
+          placeholder="Selecciona velatorio">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="numeroPermiso">Número de permiso:</label>
+        <input id="numeroPermiso" class="form-control" formControlName="numeroPermiso" placeholder="Ingresa número de permiso" trimmer>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nombrePermisionario">Nombre del permisionario:</label>
+        <p-autoComplete id="nombrePermisionario" class="form-control" formControlName="nombrePermisionario"
+          [showEmptyMessage]="true" [suggestions]="contratosServicioFiltrados" (completeMethod)="filtrarContratos($event)"
+          [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa nombre del permisionario" field="label"
+          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"
+          >
+        </p-autoComplete>
+      </div>
+    </div>
+    <br />
+    <div class="row mb-2" *ngIf="filtroForm.invalid">
+      <div class="col-md-12">
+        <span class="listado-obligatorio-recuadro font-normal">Ingresa al menos 1 campo</span>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md" (click)="limpiarFormBusqueda();">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscarContrato();">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Contratos de PUTR</h2>
+    <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAgregarContrato()">Agregar contrato PUTR</button>
+  </div>
+  <p-table styleClass="mt-5 mb-8" [value]="contratos" [paginator]="contratos.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>No. de permiso</th>
+        <th>Giro</th>
+        <th>Nombre del permisionario</th>
+        <th>Vigencia del permiso</th>
+        <th>Cuota de recuperación</th>
+        <th>Estatus</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-contrato>
+      <tr>
+        <td>{{contrato.id}}</td>
+        <td>{{contrato.numeroPermiso}}</td>
+        <td>{{contrato.giro}}</td>
+        <td>{{contrato.nombrePermisionario}}</td>
+        <td>{{contrato.vigenciaPermiso}}</td>
+        <td>{{contrato.cuotaRecuperacion}}</td>
+        <td>
+          <div class="contenedor-inputswitch">
+            <p-inputSwitch
+              [(ngModel)]="contrato.estatus"
+              (click)="contrato.estatus = !contrato.estatus; cambiarEstatus(contrato);">
+            </p-inputSwitch>
+            <span class="activo" *ngIf="contrato.estatus">Activo</span>
+            <span class="inactivo" *ngIf="!contrato.estatus">Inactivo</span>
+          </div>
+        </td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirModalDetalleContrato(contrato)">
+              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+            </a>
+            <a (click)="abrirPanel($event,contrato)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{contratos.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Renovar contrato" (click)="abrirModalModificarContrato()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarContrato()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

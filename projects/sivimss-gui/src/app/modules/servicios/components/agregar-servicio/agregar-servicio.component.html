@@ -1,0 +1,103 @@
+<ng-container *ngIf="!ventanaConfirmacion">
+  <form [formGroup]="agregarServicioForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="idAgregar">ID<span class="req">*</span>:</label>
+        <input id="idAgregar" class="form-control" formControlName="id" placeholder="ID">
+        <span class="campo-obligatorio"
+              *ngIf="fas.id?.errors?.required && (fas.id?.dirty || fas.id?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="servicioAgregar">Servicio<span class="req">*</span>:</label>
+        <input id="servicioAgregar" class="form-control" formControlName="servicio" placeholder="Ingresa el servicio">
+        <span class="campo-obligatorio"
+              *ngIf="fas.servicio?.errors?.required && (fas.servicio?.dirty || fas.servicio?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="descripcionAgregar">Descripción del servicio<span class="req">*</span>:</label>
+        <input id="descripcionAgregar" class="form-control" formControlName="descripcion" placeholder="Inserta la descripción">
+        <span class="campo-obligatorio"
+              *ngIf="fas.descripcion?.errors?.required && (fas.descripcion?.dirty || fas.descripcion?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="tipoServicioAgregar">Tipo de servicio<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="tipoServicioAgregar" class="form-control" formControlName="tipoServicio"
+                    [options]="tipoServicio"
+                    placeholder="Selecciona el tipo de servicio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fas.tipoServicio?.errors?.required && (fas.tipoServicio?.dirty || fas.tipoServicio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="cuentaContableAgregar">Cuenta contable<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="cuentaContableAgregar" class="form-control" formControlName="cuentaContable"
+                    [options]="cuentaContable"
+                    placeholder="Selecciona la cuenta contable">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fas.cuentaContable?.errors?.required && (fas.cuentaContable?.dirty || fas.cuentaContable?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="partidaPresupuestalAgregar">Partida presupuestal<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="partidaPresupuestalAgregar" class="form-control" formControlName="partidaPresupuestal"
+                    [options]="partidaPresupuestal"
+                    placeholder="Selecciona la partida presupuestal">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fas.partidaPresupuestal?.errors?.required && (fas.partidaPresupuestal?.dirty || fas.partidaPresupuestal?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="observacionesAgregar">Observaciones<span class="req">*</span></label>
+        <input id="observacionesAgregar" class="form-control" formControlName="observaciones" placeholder="Ingresa las observaciones">
+        <span class="campo-obligatorio"
+              *ngIf="fas.observaciones?.errors?.required && (fas.observaciones?.dirty || fas.observaciones?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="claveSATAgregar">Clave de artículo SAT<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="claveSATAgregar" class="form-control" formControlName="claveSAT"
+                    [options]="claveSAT"
+                    placeholder="Selecciona la clave de artículo SAT">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fas.claveSAT?.errors?.required && (fas.claveSAT?.dirty || fas.claveSAT?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <label class="control-label">Estatus<span class="req">*</span></label>
+        <div class="contenedor-inputswitch">
+          <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+          <span class="activo" *ngIf="fas.estatus?.value">Activo</span>
+          <span class="inactivo" *ngIf="!fas.estatus?.value">Inactivo</span>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-end">
+    <button class="btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarServicioForm.invalid" (click)="confirmarAgregarServicio()">
+      Aceptar
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="ventanaConfirmacion">
+  <app-detalle-servicio [servicioSeleccionado]="this.servicio" [origen]="'agregar'"
+                        (confirmacionAceptar)="cerrar($event)"  ></app-detalle-servicio>
+</ng-container>

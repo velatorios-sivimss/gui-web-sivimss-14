@@ -1,0 +1,97 @@
+<div class="row mb-3">
+  <div class="col-md-6">
+    <label class="control-label" for="velatorio">Delegación:</label>
+    <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación">
+    </p-dropdown>
+  </div>
+  <div class="col-md-6">
+    <label class="control-label" for="velatorio">Velatorios:</label>
+    <p-dropdown id="velatorio" [(ngModel)]="velatorio" class="form-control" [options]="velatorios" placeholder="Selecciona velatorio"
+    (onChange)="consultaSalasCremacion()">
+    </p-dropdown>
+  </div>
+</div>
+<div class="row mb-3">
+  <div class="col-md-12">
+    <p-tabView (onChange)="cambiarPestania($event)">
+      <p-tabPanel [header]="menu[0]">
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="salasCremacion"
+                     [rows]="cantElementosPorPagina" [lazy]="true"
+                     [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col"></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-salasCremacion>
+                <tr>
+                  <td>{{salasCremacion.idSala}}</td>
+                  <td>{{salasCremacion.nombreSala}}</td>
+                  <td>
+                    <span class="circle" [ngStyle]="{'background-color': retornarColor(salasCremacion.estadoSala)}" ></span>
+                    {{salasCremacion.estadoSala}}
+                  </td>
+                  <td>
+<!--                    <button type="button" *appValidaRol="['SALAS_RESERVACION','ALTA']" class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)">-->
+                    <button type="button"  class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)">
+                      Registrar {{ salasCremacion.estadoSala != 'DISPONIBLE' ? 'salida' : 'entrada'}}
+                    </button>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <th colspan="5" class="p-2 text-center font-bold text-xl">
+                    No hay elementos que coincidan con los parámetros seleccionados
+                  </th>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel [header]="menu[1]">
+        <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="salasEmbalsamamiento"
+                  [rows]="cantElementosPorPagina" [lazy]="true"
+                 [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Estado</th>
+              <th scope="col"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-sala>
+            <tr>
+              <td>{{sala.idSala}}</td>
+              <td>{{sala.nombreSala}}</td>
+              <td>
+                <span class="circle" [ngStyle]="{'background-color': retornarColor(sala.estadoSala)}" ></span>
+                {{sala.estadoSala}}
+              </td>
+              <td>
+<!--                <button type="button" *appValidaRol="['SALAS_RESERVACION','MODIFICAR']" class="btn btn-primary btn-md" (click)="registrarActividad(sala)">-->
+                <button type="button" class="btn btn-primary btn-md" (click)="registrarActividad(sala)">
+                  Registrar {{ sala.estadoSala != 'DISPONIBLE' ? 'salida' : 'entrada'}}
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <th colspan="5" class="p-2 text-center font-bold text-xl">
+                No hay elementos que coincidan con los parámetros seleccionados
+              </th>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>

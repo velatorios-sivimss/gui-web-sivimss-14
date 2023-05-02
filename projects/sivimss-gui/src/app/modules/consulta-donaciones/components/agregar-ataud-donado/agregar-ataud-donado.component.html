@@ -1,0 +1,26 @@
+<form [formGroup]="agregarAtaudForm">
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label class="control-label" for="ataudDonado">Tipo de contratación <span class="req">*</span></label>
+      <p-dropdown id="ataudDonado" class="form-control" formControlName="ataudDonado" [options]="ataudDonado"
+                   placeholder="Selecciona el ataúd">
+      </p-dropdown>
+      <span class="campo-obligatoriso"
+            *ngIf="f.ataudDonado?.errors?.required && (f.ataudDonado?.dirty || f.ataudDonado?.touched)">
+                      Campo obligatorio</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <span class="etiqueta-base">
+        *Campos obligatorios
+      </span>
+    </div>
+  </div>
+  <div class="row my-3">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="agregar()">Agregar</button>
+    </div>
+  </div>
+</form>

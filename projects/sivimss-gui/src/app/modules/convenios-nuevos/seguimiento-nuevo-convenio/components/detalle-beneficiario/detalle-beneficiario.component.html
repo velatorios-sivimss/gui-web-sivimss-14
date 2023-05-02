@@ -1,0 +1,116 @@
+<ng-container *ngIf="!abrirModificar">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span class="font-bold">ID {{beneficiarioSeleccionado.id}}</span>
+      </div>
+    </ng-template>
+
+    <ng-template *ngIf="(origen == 'agregar' || origen == 'modificar' || origen == 'estatus')" appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <!-- <div class="flex flex-column">
+          <span>Estatus</span>
+          <div class="contenedor-inputswitch">
+            <span class="activo" *ngIf="beneficiarioSeleccionado.estatus">Activo</span>
+            <span class="inactivo" *ngIf="!beneficiarioSeleccionado.estatus">Inactivo</span>
+          </div>
+        </div> -->
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Edad</label>
+          <span> {{beneficiarioSeleccionado.edad}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Parente</label>
+          <span> {{beneficiarioSeleccionado.parentesco}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Velatorio</label>
+          <span> {{beneficiarioSeleccionado.edad}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Fecha</label>
+          <span> {{beneficiarioSeleccionado.parentesco}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>CURP</label>
+          <span> {{beneficiarioSeleccionado.edad}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>RFC</label>
+          <span> {{beneficiarioSeleccionado.parentesco}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Correo electrónico</label>
+          <span> {{beneficiarioSeleccionado.edad}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Teléfono</label>
+          <span> {{beneficiarioSeleccionado.parentesco}} </span>
+        </div>
+      </div>
+    </div>
+
+
+
+  </app-table-panel>
+
+
+
+  <ng-container *ngIf="origen == 'detalle'">
+    <div class="flex justify-content-end">
+      <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+        Aceptar
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="(origen == 'agregar' || origen == 'modificar')">
+    <div class="flex mt-4 justify-content-end">
+      <button class="ml-6 mt-3 btn btn-primary btn-md"  (click)="regresar()">Regresar</button>
+      <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cerrar()">Cancelar</button>
+      <button class="ml-6 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+        Aceptar
+      </button>
+    </div>
+  </ng-container>
+
+
+
+
+
+  <p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+      <app-overlay-panel-opciones>
+        <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarBeneficiario()"></app-overlay-panel-opcion>
+      </app-overlay-panel-opciones>
+    </ng-template>
+  </p-overlayPanel>
+</ng-container>
+
+<ng-container *ngIf="abrirModificar">
+  <app-modificar-beneficiario></app-modificar-beneficiario>
+</ng-container>

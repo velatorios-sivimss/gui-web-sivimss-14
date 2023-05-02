@@ -1,0 +1,15 @@
+.pagina{
+
+    &-logo{
+        color: gray;
+        font-size: 64px;
+    }
+
+    &-titulo{
+        font-size: 32px;
+    }
+
+    &-inicio{
+        cursor: pointer;
+    }
+}

@@ -1,0 +1,13 @@
+<div class="breadcrumb-sivimss">
+  <ul>
+    <li *ngFor="let elementoBreadcrumb of elementosBreadcrumb$ | async; first as esPrimerElemento;">
+      <span *ngIf="!esPrimerElemento">/</span>
+      <a>
+        <img *ngIf="elementoBreadcrumb.icono"
+             src="assets/images/{{elementoBreadcrumb.icono}}"
+             alt="icono">
+        <span [ngClass]="{'es-primer-elemento':esPrimerElemento}">{{elementoBreadcrumb.titulo}}</span>
+      </a>
+    </li>
+  </ul>
+</div>

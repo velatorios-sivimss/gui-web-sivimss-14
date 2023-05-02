@@ -1,0 +1,5 @@
+.element {
+    &:hover > .dropdown-menu {
+        display: block;
+    }
+}

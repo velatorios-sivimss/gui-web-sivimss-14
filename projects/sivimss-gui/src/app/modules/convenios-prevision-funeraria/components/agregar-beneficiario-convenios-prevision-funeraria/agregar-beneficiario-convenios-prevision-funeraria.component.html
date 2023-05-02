@@ -1,0 +1,94 @@
+<div class="border-panel">
+
+  <form [formGroup]="beneficiarioForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio"
+                    placeholder="Selecciona velatorio" [options]="velatorio"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="abf.velatorio?.errors?.required && (abf.velatorio?.dirty || abf.velatorio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
+        <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha"></p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="abf.fecha?.errors?.required && (abf.fecha?.dirty || abf.fecha?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="edad">Edad<span class="req">*</span>:</label>
+        <input id="edad" class="form-control" formControlName="edad" placeholder="Ingresa edad">
+        <span class="campo-obligatorio"
+              *ngIf="abf.edad?.errors?.required && (abf.edad?.dirty || abf.edad?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="nombre">Nombre (s)<span class="req">*</span>:</label>
+        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
+        <span class="campo-obligatorio"
+              *ngIf="abf.nombre?.errors?.required && (abf.nombre?.dirty || abf.nombre?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="edad">Primer apellido<span class="req">*</span>:</label>
+        <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa primer apellido">
+        <span class="campo-obligatorio"
+              *ngIf="abf.primerApellido?.errors?.required && (abf.primerApellido?.dirty || abf.primerApellido?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
+        <input id="segundoApellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa segundo apellido">
+        <span class="campo-obligatorio"
+              *ngIf="abf.segundoApellido?.errors?.required && (abf.segundoApellido?.dirty || abf.segundoApellido?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="parentesco">Parentesco<span class="req">*</span>:</label>
+        <p-dropdown id="parentesco" class="form-control" formControlName="parentesco"
+                    placeholder="Selecciona parentesco" [options]="parentesco"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="abf.parentesco?.errors?.required && (abf.parentesco?.dirty || abf.parentesco?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP">
+        <span class="campo-obligatorio"
+              *ngIf="abf.curp?.errors?.required && (abf.curp?.dirty || abf.curp?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="rfc">RFC<span class="req">*</span>:</label>
+        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa RFC">
+        <span class="campo-obligatorio"
+              *ngIf="abf.rfc?.errors?.required && (abf.rfc?.dirty || abf.rfc?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="actaNacimiento">Acta de nacimiento<span class="req">*</span>:</label>
+        <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento" placeholder="Ingresa no. de acta">
+        <span class="campo-obligatorio"
+              *ngIf="abf.actaNacimiento?.errors?.required && (abf.actaNacimiento?.dirty || abf.actaNacimiento?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
+        <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
+        <span class="campo-obligatorio"
+              *ngIf="abf.correoElectronico?.errors?.required && (abf.correoElectronico?.dirty || abf.correoElectronico?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
+        <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono">
+        <span class="campo-obligatorio"
+              *ngIf="abf.telefono?.errors?.required && (abf.telefono?.dirty || abf.telefono?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="row my-3">
+  <div class="col-md-12 flex justify-content-end">
+    <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
+    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+  </div>
+</div>

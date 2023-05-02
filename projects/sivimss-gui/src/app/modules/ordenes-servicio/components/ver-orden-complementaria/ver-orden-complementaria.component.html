@@ -1,0 +1,165 @@
+<div class="border-panel mb-8">
+  <h1>VER ORDEN COMPLEMENTARIA</h1>
+  <div class="sivimss-acoordion-header">
+    <div class="accordion-header-left">
+      <span>Folio </span>
+      <b>DOC-000001</b>
+    </div>
+    <div class="accordion-header-right">
+      <div class="estatus">
+        <span>Estatus</span>
+        <b>En trámite</b>
+      </div>
+      <a (click)="overlayPanel.toggle($event)">
+        <i class="fs fs-barras-horizontales"></i>
+      </a>
+    </div>
+  </div>
+  <p-accordion styleClass="sivimss-accordion">
+    <p-accordionTab>
+      <ng-template pTemplate="header">Datos del contratante</ng-template>
+      <ng-template pTemplate="content">
+        <div class="row">
+          <div class="col-md-4 flex flex-column">
+            <span class="etiqueta-base">Matrícula*:</span>
+            <span class="texto-base">1029384756</span>
+          </div>
+          <div class="col-md-4 flex flex-column">
+            <span class="label-base">RFC*:</span>
+            <span class="texto-base">LAHJ07087067L</span>
+          </div>
+          <div class="col-md-4 flex flex-column">
+            <span class="label-base">CURP*:</span>
+            <span class="texto-base">LAHJ07087067LCDNNHDF</span>
+          </div>
+        </div>
+        <hr class="hr-accordion-content">
+        <div class="row">
+          <div class="col-md-4 flex flex-column">
+            <span class="etiqueta-base">Nombre (s)*:</span>
+            <span class="texto-base">José</span>
+          </div>
+          <div class="col-md-4 flex flex-column">
+            <span class="label-base">Primer apellido*:</span>
+            <span class="texto-base">Lara</span>
+          </div>
+          <div class="col-md-4 flex flex-column">
+            <span class="label-base">Segundo apellido*:</span>
+            <span class="texto-base">Hernández</span>
+          </div>
+        </div>
+        <hr class="hr-accordion-content">
+        <div class="flex justify-content-between">
+          <div class="flex flex-column">
+            <span class="etiqueta-base">Fecha de nacimiento*:</span>
+            <span class="texto-base">07/08/1970</span>
+          </div>
+          <div class="flex flex-column">
+            <span class="label-base">Sexo*:</span>
+            <span class="texto-base">Otro</span>
+          </div>
+          <div class="flex flex-column">
+            <span class="label-base">Cual es el sexo*:</span>
+            <span class="texto-base">LGBTT</span>
+          </div>
+          <div class="flex flex-column">
+            <span class="label-base">Nacionalidad*:</span>
+            <span class="texto-base">Mexicana</span>
+          </div>
+          <div class="flex flex-column">
+            <span class="label-base">Lugar de nacimiento*:</span>
+            <span class="texto-base">CDMX</span>
+          </div>
+        </div>
+        <hr class="hr-accordion-content">
+        <div class="row">
+          <div class="col-md-3 flex flex-column">
+            <span class="etiqueta-base">Teléfono*:</span>
+            <span class="texto-base">55 8796 5667</span>
+          </div>
+          <div class="col-md-6 flex flex-column">
+            <span class="label-base">Correo electrónico*:</span>
+            <span class="texto-base">larajohe3452@gmail.com</span>
+          </div>
+          <div class="col-md-3 flex flex-column">
+            <span class="label-base">Parentesco*:</span>
+            <span class="texto-base">Abuelo paterno</span>
+          </div>
+        </div>
+        <hr class="hr-accordion-content">
+        <h2 class="subtitulo-base">Dirección</h2>
+        <div class="row">
+          <div class="col-md-6 flex flex-column">
+            <span class="etiqueta-base">Calle*:</span>
+            <span class="texto-base">Niños Héroes</span>
+          </div>
+          <div class="col-md-3 flex flex-column">
+            <span class="label-base">No. exterior*:</span>
+            <span class="texto-base">65</span>
+          </div>
+          <div class="col-md-3 flex flex-column">
+            <span class="label-base">No. interior*:</span>
+            <span class="texto-base"></span>
+          </div>
+        </div>
+        <hr class="hr-accordion-content">
+        <div class="row">
+          <div class="col-md-3 flex flex-column">
+            <span class="etiqueta-base">CP*:</span>
+            <span class="texto-base">00666</span>
+          </div>
+          <div class="col-md-3 flex flex-column">
+            <span class="label-base">Colonia*:</span>
+            <span class="texto-base">Flores Magón</span>
+          </div>
+          <div class="col-md-3 flex flex-column">
+            <span class="label-base">Municipio*:</span>
+            <span class="texto-base">Santiago de Querétaro</span>
+          </div>
+          <div class="col-md-3 flex flex-column">
+            <span class="label-base">Estado*:</span>
+            <span class="texto-base">Querétaro</span>
+          </div>
+        </div>
+
+      </ng-template>
+    </p-accordionTab>
+    <p-accordionTab>
+      <ng-template pTemplate="header">Datos del finado</ng-template>
+      <ng-template pTemplate="content">Body Content</ng-template>
+    </p-accordionTab>
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <div class="flex justify-content-between align-items-center flex-1">
+          <span>Presupuesto</span>
+          <div>
+            <span class="texto-base">Total orden de servicio:</span>
+            <b class="cantidad-base">$50,000.00</b>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">Body Content</ng-template>
+    </p-accordionTab>
+    <p-accordionTab>
+      <ng-template pTemplate="header">Información de los servicios</ng-template>
+      <ng-template pTemplate="content">Body Content</ng-template>
+    </p-accordionTab>
+  </p-accordion>
+  <div class="row">
+    <div class="col-md-12 flex justify-content-end align-items-center">
+      <button class="btn btn-md btn-default" routerLink="../">Regresar</button>
+      <button class="ml-6 btn btn-md btn-primary">Aceptar</button>
+    </div>
+  </div>
+
+</div>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Opcion 1"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Opcion 2"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
+

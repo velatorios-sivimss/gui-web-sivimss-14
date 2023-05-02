@@ -1,0 +1,49 @@
+:host {
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  .hamburguesa {
+    position: relative;
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+
+    .hamburguesa-linea {
+      position: absolute;
+      background-color: white;
+      content: "";
+      width: 28px;
+      height: 7px;
+      top: 50%;
+      left: 50%;
+      transition: .25s ease-in-out;
+    }
+
+    .hamburguesa-linea:nth-child(1) {
+      transform: translate(-50%, -300%);
+    }
+
+    .hamburguesa-linea:nth-child(2) {
+      transform: translate(-50%, -50%);
+    }
+
+    .hamburguesa-linea:nth-child(3) {
+      transform: translate(-50%, 200%);
+    }
+
+    &.activo{
+      .hamburguesa-linea:nth-child(1) {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+      .hamburguesa-linea:nth-child(2) {
+        opacity: 0;
+        transform: translate(-50%, -50%);
+      }
+      .hamburguesa-linea:nth-child(3) {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+    }
+  }
+}

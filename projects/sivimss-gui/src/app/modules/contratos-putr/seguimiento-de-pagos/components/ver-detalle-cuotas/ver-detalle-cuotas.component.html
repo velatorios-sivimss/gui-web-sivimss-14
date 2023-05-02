@@ -1,0 +1,83 @@
+<app-table-panel>
+    <div class="row table-panel-row">
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>No. de permiso</label>
+                <span>{{cuotaSeleccionada.numeroPermiso}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Nombre del permisionario</label>
+                <span>{{cuotaSeleccionada.nombrePermisionario}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>No. de cuenta</label>
+                <span>{{cuotaSeleccionada.numeroCuenta}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Banco</label>
+                <span>{{cuotaSeleccionada.banco}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Pago de garantía</label>
+                <span>{{cuotaSeleccionada.pagoGarantia}}</span>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="table-panel-column">
+                <label>No. de cuota de recuperación</label>
+                <span>{{cuotaSeleccionada.cuotaRecuperacion}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Folio de autorización</label>
+                <span>{{cuotaSeleccionada.folioAutorizacion}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Fecha</label>
+                <span>{{cuotaSeleccionada.fecha}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Importe</label>
+                <span>{{cuotaSeleccionada.importe}}</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="table-panel-column">
+                <label>Total a pagar</label>
+                <span>{{cuotaSeleccionada.totalPagar}}</span>
+            </div>
+        </div>
+    </div>
+</app-table-panel>
+
+
+<div class="flex justify-content-end mt-5" *ngIf="accionEntrada === Accion.Detalle">
+    <button class="ml-4 btn btn-primary btn-md" (click)="cerrarDialogo();">Aceptar</button>
+</div>
+
+<div *ngIf="accionEntrada === Accion.Agregar">
+    <div class="m-4 flex flex-column align-items-center justify-content-center">
+        <span>{{preguntaConfirmacion}}</span>
+    </div>
+    <div class="flex justify-content-end mt-5">
+        <button class="btn btn-default btn-md" (click)="cerrarDialogo();">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="agregarCuota();">Aceptar</button>
+    </div>
+</div>

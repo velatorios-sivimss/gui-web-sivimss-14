@@ -1,0 +1,135 @@
+<app-titulo-principal titulo="Servicios / Generar nota de remisión"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm" (ngSubmit)="buscarFoliosNotaRemision()">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+          placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+          placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)='obtenerVelatorios();'>
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="folio">Folio de la ODS<span class="req"
+            *ngIf="hayCamposObligatorios">*</span>:</label>
+        <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="foliosGenerados"
+          optionLabel="label" placeholder="Selecciona el folio" (onChange)="fechasOpcionales()" [filter]="true"
+          filterBy="label">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="fechaInicial">Rango de fechas<span class="req"
+            *ngIf="hayCamposObligatorios">*</span>:</label>
+        <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true"
+          placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="f!.fechaFinal!.value"
+          (onSelect)="folioOpcional();">
+        </p-calendar>
+      </div>
+      <div class="col-md-4 pt-5">
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
+              dateFormat="dd/mm/yy" placeholder="Fecha final" [minDate]="f!.fechaInicial!.value"
+              (onSelect)="folioOpcional();">
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Órdenes de servicio</h2>
+  </div>
+
+  <p-table styleClass="mt-5 mb-8" [value]="notasRemision" [paginator]="notasRemision.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Fecha</th>
+        <th scope="col">Folio ODS</th>
+        <th scope="col">Folio convenio</th>
+        <th scope="col">Contratante</th>
+        <th scope="col">Nombre de finado</th>
+        <th scope="col">Estatus</th>
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-notaRemision>
+      <tr>
+        <td> {{notaRemision.fechaODS}} </td>
+        <td> {{notaRemision.folioODS}} </td>
+        <td> {{notaRemision.folioConvenio}} </td>
+        <td> {{notaRemision.nomContratante}} </td>
+        <td> {{notaRemision.nomFinado}} </td>
+        <td> {{clavesEstatus[notaRemision.estatus]}} </td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirPanel($event,notaRemision)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements"> {{notasRemision.length}} de {{totalElementos}} </span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="descargarDocumento('pdf')">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="descargarDocumento('excel')">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Generar nota de remisión" *ngIf="notaRemisionSeleccionada?.estatus === 1"
+        (click)="generarNotaRemision()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver" *ngIf="notaRemisionSeleccionada?.estatus !== 1"
+        (click)="verDetalleNotaRemision()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Descargar PDF" (click)="descargarDocumento('pdf')"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Descargar Excel"
+        (click)="descargarDocumento('excel')"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Cancelar" *ngIf="notaRemisionSeleccionada?.estatus === 2"
+        (click)="cancelarNotaRemision()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

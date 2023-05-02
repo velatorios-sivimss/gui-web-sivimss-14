@@ -1,0 +1,193 @@
+<ng-container *ngIf="!ventanaConfirmacion">
+  <form [formGroup]="modificarOperadorForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="id">ID <span class="req">*</span>:</label>
+        <input id="id" class="form-control" formControlName="id" placeholder="Ingresa ID">
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.curp?.errors?.required && (fmo.curp?.dirty || fmo.curp?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="numeroEmpleado">No. de empleado<span class="req">*</span>:</label>
+        <input id="numeroEmpleado" class="form-control" formControlName="numeroEmpleado" placeholder="Ingresa no. de empleado">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.numeroEmpleado?.errors?.required && (fmo.numeroEmpleado?.dirty || fmo.numeroEmpleado?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="Matrícula">Matrícula<span class="req">*</span>:</label>
+        <input id="Matrícula" class="form-control" formControlName="matricula" placeholder="Ingresa matrícula">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.matricula?.errors?.required && (fmo.matricula?.dirty || fmo.matricula?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-8">
+        <label class="control-label" for="nombre">Nombres<span class="req">*</span>:</label>
+        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombres">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.nombre?.errors?.required && (fmo.nombre?.dirty || fmo.nombre?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
+        <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa primer apellido">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.primerApellido?.errors?.primerApellido && (fmo.primerApellido?.dirty || fmo.primerApellido?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
+        <input id="segundoApellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa segundo apellido">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.segundoApellido?.errors?.required && (fmo.segundoApellido?.dirty || fmo.segundoApellido?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="fechaNaciemiento">
+          Fecha de nacimiento
+          <span class="req">*</span>:</label>
+        <p-calendar id="fechaNaciemiento" formControlName="fechaNaciemiento" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona fecha" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="fmo.fechaNaciemiento?.errors?.required && (fmo.fechaNaciemiento?.dirty || fmo.fechaNaciemiento?.touched)">
+                    Campo obligatorio</span>
+      </div>
+
+      <div class="col-md-4">
+        <label class="control-label" for="fechaIngreso">
+          Fecha de ingreso
+          <span class="req">*</span>:</label>
+        <p-calendar id="fechaIngreso" formControlName="fechaIngreso" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona fecha" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="fmo.fechaIngreso?.errors?.required && (fmo.fechaIngreso?.dirty || fmo.fechaIngreso?.touched)">
+                    Campo obligatorio</span>
+      </div>
+
+      <div class="col-md-4">
+        <label class="control-label" for="fechaBaja">
+          Fecha baja
+          <span class="req">*</span>:</label>
+        <p-calendar id="fechaBaja" formControlName="fechaBaja" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona fecha" dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="fmo.fechaBaja?.errors?.required && (fmo.fechaBaja?.dirty || fmo.fechaBaja?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-8">
+        <label class="control-label" for="entidadFederativa">Entidad federativa de nacimiento<span class="req">*</span>:</label>
+        <p-dropdown id="entidadFederativa" class="form-control" formControlName="entidadFederativa" [options]="entidadFederativa"
+                    placeholder="Selecciona la Entidad Federativa de nacimiento">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fmo.entidadFederativa?.errors?.required && (fmo.entidadFederativa?.dirty || fmo.entidadFederativa?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="entidadFederativa">Velatorio<span class="req">*</span>:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorio"
+                    placeholder="Selecciona velatorio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="fmo.velatorio?.errors?.required && (fmo.velatorio?.dirty || fmo.velatorio?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="sueldoBase">Sueldo base<span class="req">*</span>:</label>
+        <input id="sueldoBase" class="form-control" formControlName="sueldoBase" placeholder="Ingresa sueldo base">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.sueldoBase?.errors?.required && (fmo.sueldoBase?.dirty || fmo.sueldoBase?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="diasDescanso">Días de descanso<span class="req">*</span>:</label>
+        <p-multiSelect [showHeader]="false" id="diasDescanso" class="form-control" formControlName="diasDescanso" [options]="velatorio"
+                       placeholder="Selecciona días de descanso">
+        </p-multiSelect>
+        <span class="campo-obligatorio"
+              *ngIf="fmo.diasDescanso?.errors?.required && (fmo.diasDescanso?.dirty || fmo.diasDescanso?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="antiguedad">Antigüedad<span class="req">*</span>:</label>
+        <input id="antiguedad" class="form-control" formControlName="antiguedad" placeholder="Ingresa antigüedad">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.antiguedad?.errors?.required && (fmo.antiguedad?.dirty || fmo.antiguedad?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="puesto">Puesto<span class="req">*</span>:</label>
+        <input id="puesto" class="form-control" formControlName="puesto" placeholder="Ingresa puesto">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.puesto?.errors?.required && (fmo.puesto?.dirty || fmo.puesto?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
+        <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
+        <span class="campo-obligatorio"
+              *ngIf="fmo.correoElectronico?.errors?.required && (fmo.correoElectronico?.dirty || fmo.correoElectronico?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <label class="control-label">Estatus<span class="req">*</span></label>
+        <div class="contenedor-inputswitch">
+          <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+          <span class="activo" *ngIf="fmo.estatus?.value">Activo</span>
+          <span class="inactivo" *ngIf="!fmo.estatus?.value">Inactivo</span>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-end">
+    <button class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" [disabled]="modificarOperadorForm.invalid" (click)="confirmarModificarOperador()">
+      Aceptar
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="ventanaConfirmacion">
+  <app-detalle-operadores-por-velatorio (confirmacionAceptar)="aceptaConfirmacion($event)" [operadorSeleccionado]="operadorModificado" [origen]="'modificar'" ></app-detalle-operadores-por-velatorio>
+</ng-container>
+
+

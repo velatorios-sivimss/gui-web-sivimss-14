@@ -1,0 +1,136 @@
+.colum-tam{
+  width: 300px;
+}
+
+
+.separador{
+  height: 30px;
+  }
+
+
+  .margin{
+    margin-bottom: 30px;
+  }
+
+  .icono-bateria{
+    margin-top: 9px;
+    width: 80px;
+  }
+
+
+  .sivimss-acoordion-header-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    margin-bottom: 0px;
+    padding: 0.75rem;
+    height: 100%;
+    width: 100%;
+    border: 1px solid #DDDDDD;
+
+    .accordion-header-left {
+      margin-top: 11px;
+      span {
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 22px;
+        color: #393C3E;
+      }
+
+      b {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: #9D2449;
+      }
+      .subtitulos {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 20px;
+        color: #484848
+      }
+    }
+
+    .accordion-header-right {
+      display: flex;
+      align-items: center;
+      margin-top: 11px;
+
+      span{
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 17px;
+        color: #272829;
+      }
+
+      b{
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 17px;
+        color: #484848;
+      }
+
+      .estatus {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-right:3rem;
+      }
+      a{
+        cursor:pointer;
+        text-decoration: none;
+        .fs-barras-horizontales {
+          color: #9D2449;
+        }
+      }
+
+    }
+  }
+
+
+  .vertical-line {
+    border-left: 1px solid #DDDDDD;
+    height: 33px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+  }
+
+
+  .contenedor-subtitulo{
+    background: Black!important;
+  }
+
+  .margen-tabla{
+    margin-bottom: 20px;
+  }
+
+  .icono{
+    width: 47px;
+    margin-bottom: -8px;
+    margin-left: 31px;
+  }
+  .icono-velocimetro{
+    width: 47px;
+    margin-bottom: -8px;
+    margin-left: 40px;
+  }
+
+  .bordes{
+    padding: 1rem;
+
+    height: 230px;
+
+      width: 100%;
+      border: 1px solid #DDDDDD;
+  }
+
+
+  .borderSolidTable{
+    background-color: #DEE2E6;
+    border: solid #DDDDDD
+  }
+  .borderSolidTableSub{
+    border-right: 1px solid #DDDDDD;
+    border-left: 1px solid #DDDDDD;
+  }

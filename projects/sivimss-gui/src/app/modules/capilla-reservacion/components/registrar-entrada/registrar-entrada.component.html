@@ -1,0 +1,130 @@
+<ng-container *ngIf="!confirmacion">
+  <section class="mb-3">
+    <app-table-panel>
+      <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+          <span>ID<span class="font-bold"> 1</span></span>
+        </div>
+      </ng-template>
+    </app-table-panel>
+  </section>
+  <section>
+    <form [formGroup]="registrarEntradaForm">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="capilla">Nombre de la capilla <span class="req">*</span></label>
+          <p-dropdown appendTo="body" id="capilla" class="form-control" formControlName="capilla"
+                      [options]="capilla"
+                      placeholder="Selecciona la capilla">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="ref.capilla?.errors?.required && (ref.capilla?.dirty || ref.capilla?.touched)">Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="folioODS">Folio de la ODS <span class="req">*</span>:</label>
+          <input id="folioODS" type="text" class="form-control" formControlName="folioODS"
+                 placeholder="Ingresa el folio de la ODS">
+          <span class="campo-obligatorio"
+                *ngIf="ref.folioODS?.errors?.required && (ref.folioODS?.dirty || ref.folioODS?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="nombreContratante">Nombre del contratante <span class="req">*</span>:</label>
+          <input id="nombreContratante" type="text" class="form-control" formControlName="nombreContratante"
+                 placeholder="Ingresa el nombre del contratante">
+          <span class="campo-obligatorio"
+                *ngIf="ref.nombreContratante?.errors?.required && (ref.nombreContratante?.dirty || ref.nombreContratante?.touched)">Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="nombreFinado">Nombre del finado <span class="req">*</span>:</label>
+          <input id="nombreFinado" type="text" class="form-control" formControlName="nombreFinado"
+                 placeholder="Ingresa el nombre del finado">
+          <span class="campo-obligatorio"
+                *ngIf="ref.nombreFinado?.errors?.required && (ref.nombreFinado?.dirty || ref.nombreFinado?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="registroEntradaEntrada">Registro de entrada <span class="req">*</span>:</label>
+          <p-calendar id="registroEntradaEntrada" styleClass="form-control" formControlName="registroEntrada" placeholder="00:00"
+                      [timeOnly]="true"></p-calendar>
+          <span class="campo-obligatorio"
+                *ngIf="ref.registroEntrada?.errors?.required && (ref.registroEntrada?.dirty || ref.registroEntrada?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12">
+              <span class="mensaje-inferior-campo-obligatorio">
+                *Campos obligatorios
+              </span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-12 flex justify-content-end">
+          <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
+          <button type="submit" class="btn btn-primary btn-md ml-5" (click)="confirmarEntrada()">Registrar entrada</button>
+        </div>
+      </div>
+    </form>
+  </section>
+</ng-container>
+
+<ng-container *ngIf="confirmacion">
+  <app-table-panel >
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span>ID<span class="font-bold"> 1</span></span>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>{{ref.capilla.value}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Folio de la ODS</label>
+          <span>{{ref.folioODS.value}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nombre del contratante</label>
+          <span>{{ref.nombreContratante.value}}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nombre del finado</label>
+          <span>{{ref.nombreFinado.value}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Registro de entrada</label>
+          <span>{{ref.registroEntrada.value}}</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+
+  <div class="flex mt-3 justify-content-center">
+    <div class="col-md-6">
+      <p class="text-center">¿Estás seguro de registrar esta entrada?</p>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="confirmarEntrada(true)">Registrar</button>
+    </div>
+  </div>
+
+
+</ng-container>

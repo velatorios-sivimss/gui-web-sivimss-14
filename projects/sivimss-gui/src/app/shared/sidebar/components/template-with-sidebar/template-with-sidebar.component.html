@@ -1,0 +1,6 @@
+<div class="content" [class.sidebar-activo]="sidebarActivo$ | async">
+  <app-menu-sidebar></app-menu-sidebar>
+  <main class="container-sivimss" appTiempoTransicion [style.marginLeft]="(sidebarActivo$ | async) ? marginLeft+'px' : 0" >
+    <ng-content></ng-content>
+  </main>
+</div>

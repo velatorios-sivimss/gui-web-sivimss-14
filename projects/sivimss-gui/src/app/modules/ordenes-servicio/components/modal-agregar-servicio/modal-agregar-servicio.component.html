@@ -1,0 +1,91 @@
+<ng-container *ngIf="mostrarSeccionCreacion; then templateCreacion else templateConfirmacion"></ng-container>
+
+<ng-template #templateCreacion>
+  <form [formGroup]="form">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="servicio">Servicio<span class="req">*</span>:</label>
+        <p-dropdown id="servicio" class="form-control" formControlName="servicio" placeholder="Selecciona servicio"
+                    appendTo="body"
+                    [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="f.servicio?.errors?.required && (f.servicio?.dirty || f.servicio?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
+        <p-dropdown id="proveedor" class="form-control" formControlName="proveedor" appendTo="body"
+                    placeholder="Selecciona proveedor"
+                    [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label class="control-label" for="destino">Destino<span class="req">*</span>:</label>
+        <input id="destino" type="text" class="form-control" formControlName="destino"
+               placeholder="Ingresa dirección de destino">
+        <span class="campo-obligatorio"
+              *ngIf="f.destino?.errors?.required && (f.destino?.dirty || f.destino?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
+        <input id="kilometraje" type="text" class="form-control" formControlName="kilometraje"
+               placeholder="Ingresa kilometraje">
+        <span class="campo-obligatorio"
+              *ngIf="f.kilometraje?.errors?.required && (f.kilometraje?.dirty || f.kilometraje?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="flex justify-content-end">
+      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="mostrarSeccionCreacion = false;">Aceptar
+      </button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #templateConfirmacion>
+  <div class="row">
+    <div class="col-md-6 flex flex-column">
+      <span class="etiqueta-base">Servicio*:</span>
+      <span class="texto-base">Traslado a nivel nacional</span>
+    </div>
+    <div class="col-md-6 flex flex-column">
+      <span class="etiqueta-base">Proveedor*:</span>
+      <span class="texto-base">Transportes resistentes del Noreste S.A. de C.V.</span>
+    </div>
+  </div>
+  <hr class="separador">
+  <div class="row">
+    <div class="col-md-12 flex flex-column">
+      <span class="etiqueta-base">Origen*:</span>
+      <span class="texto-base">Calle Rafael Lucio 237, Doctores Cuauhtémoc, 06720 Ciudad de México, CDMX</span>
+    </div>
+  </div>
+  <hr class="separador">
+  <div class="row">
+    <div class="col-md-12 flex flex-column">
+      <span class="etiqueta-base">Destino*:</span>
+      <span class="texto-base">Norte, Prol. Tecnológico 700, Los Girasoles, 76159, Santiago de Querétaro, Qro.</span>
+    </div>
+  </div>
+  <hr class="separador">
+  <div class="row">
+    <div class="col-md-12 flex flex-column">
+      <span class="etiqueta-base">Kilometraje*:</span>
+      <span class="texto-base">219 km</span>
+    </div>
+  </div>
+  <hr class="separador">
+  <div class="row mb-4">
+    <div class="col-md-12 text-center">
+      <span class="etiqueta-base">¿Estás seguro que deseas agregar este servicio?</span>
+    </div>
+  </div>
+  <div class="flex justify-content-end">
+    <button type="button" class="btn btn-gold btn-md" (click)="mostrarSeccionCreacion = true">Cancelar</button>
+    <button type="button" class="ml-5 btn btn-primary btn-md" (click)="cerrarModal()">Aceptar</button>
+  </div>
+</ng-template>

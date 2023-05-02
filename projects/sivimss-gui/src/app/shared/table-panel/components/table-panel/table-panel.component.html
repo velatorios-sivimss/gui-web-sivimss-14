@@ -1,0 +1,24 @@
+<div class="table-panel">
+  <div class="table-panel-header">
+    <ng-container *ngIf="leftTemplate">
+      <div class="table-panel-header-left">
+        <ng-container *ngTemplateOutlet="leftTemplate"></ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="rightTemplate">
+      <div class="table-panel-header-right">
+        <ng-container *ngTemplateOutlet="rightTemplate"></ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="contentTemplate">
+      <div class="table-panel-header-content">
+        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+      </div>
+    </ng-container>
+  </div>
+  <div class="table-panel-body">
+    <ng-content></ng-content>
+  </div>
+
+</div>
+

@@ -1,0 +1,161 @@
+::placeholder {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #999999;
+}
+
+input.ng-invalid:not(.ng-untouched), textarea.ng-invalid:not(.ng-untouched) {
+  border: 1px solid #e10000;
+}
+
+.form-control {
+  height: 40px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  padding: .5rem 1rem;
+  color: #484848;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  box-shadow: none;
+  transition: none;
+}
+
+
+button[disabled].btn {
+  cursor: pointer;
+}
+
+.control-label ~ .campo-obligatorio {
+  margin-top: 5px;
+  display: inline-block;
+}
+
+textarea.form-control {
+  resize: none;
+}
+
+.control-label {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #272829;
+}
+
+.form-radio {
+  height: 39px;
+  display: flex;
+  align-items: center;
+
+  label {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    font-family: "Montserrat", Arial, Helvetica, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #323433;
+
+    input {
+      margin: 0;
+      margin-right: 5px;
+    }
+
+    & + label {
+      margin-left: 20px;
+    }
+  }
+}
+
+.form-icon {
+  position: relative;
+
+  .form-control {
+    padding-right: 30px;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(-25%, -50%);
+    font-size: 26px;
+  }
+}
+
+.btn {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+
+.btn-gold {
+  border: 2px solid #b38e5d;
+  box-shadow: 0 0 0 0 #b38e5d;
+  background-color: transparent;
+  color: #b38e5d;
+
+  &:hover {
+    color: #fff;
+    background-color: #b38e5d;
+    border-color: #b38e5d;
+  }
+}
+
+.btn-gold[disabled] {
+  color: #fff;
+  background-color: #b38e5d;
+  border-color: #b38e5d;
+}
+
+.btn-small {
+  padding: 9px 8px;
+  width: 70px;
+}
+
+.btn-md {
+  min-width: 130px;
+  padding: 9px 25px;
+}
+
+.btn-lg {
+  min-width: 170px;
+  padding: 9px 25px;
+}
+
+
+.btn-primary {
+  border: 1px solid #9f2241;
+}
+
+.btn-default {
+  border: 1px solid #6f7271;
+}
+
+.btn-gold {
+  border: 1px solid #b38e5d;
+}
+
+p-calendar.ng-invalid:not(.ng-untouched) .p-inputtext {
+  border: 1px solid #E10000;
+}
+
+p-dropdown.form-control.ng-invalid:not(.ng-untouched) {
+  border: 1px solid #E10000;
+}
+
+p-inputnumber.form-control.ng-invalid:not(.ng-untouched) {
+  border: 1px solid #E10000;
+}

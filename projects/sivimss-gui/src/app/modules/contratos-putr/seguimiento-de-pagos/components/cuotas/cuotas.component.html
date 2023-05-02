@@ -1,0 +1,114 @@
+<app-titulo-principal titulo="Seguimiento de pagos PUTR"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <input id="nivel" class="form-control" formControlName="nivel" placeholder="Ingresa nivel" trimmer>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="opciones"
+          placeholder="Selecciona delegación">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="opciones"
+          placeholder="Selecciona velatorio">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="numeroPermiso">Número de permiso:</label>
+        <input id="numeroPermiso" class="form-control" formControlName="numeroPermiso" placeholder="Ingresa número de permiso" trimmer>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nombrePermisionario">Nombre del permisionario:</label>
+        <p-autoComplete id="nombrePermisionario" class="form-control" formControlName="nombrePermisionario"
+          [showEmptyMessage]="true" [suggestions]="cuotasServicioFiltrados" (completeMethod)="filtrarCuotas($event)"
+          [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa nombre de la cuota" field="label"
+          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"
+          >
+        </p-autoComplete>
+      </div>
+    </div>
+    <br />
+    <div class="row mb-2" *ngIf="filtroForm.invalid">
+      <div class="col-md-12">
+        <span class="listado-obligatorio-recuadro font-normal">Ingresa al menos 1 campo</span>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md" (click)="limpiarFormBusqueda();">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscarCuota();">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Contratos PUTR</h2>
+    <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAgregarCuota()">Registrar cuota</button>
+  </div>
+  <p-table styleClass="mt-5 mb-8" [value]="cuotas" [paginator]="cuotas.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>No. de permiso</th>
+        <th>Giro</th>
+        <th>Nombre del permisionario</th>
+        <th>Vigencia del permiso</th>
+        <th>Cuota de recuperación</th>
+        <th>Cumplimiento de cuotas</th>
+        <th>Pena convencional</th>
+        <th><b>Historial de cuotas</b></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-cuota>
+      <tr>
+        <td>{{cuota.numeroPermiso}}</td>
+        <td>{{cuota.giro}}</td>
+        <td>{{cuota.nombrePermisionario}}</td>
+        <td>{{cuota.vigenciaPermiso}}</td>
+        <td>{{cuota.cuotaRecuperacion}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a>
+              <img src="assets/images/imagen-icono-bullet-{{cuota.cumplimientoCuotas}}.svg" alt="icono bullet">
+            </a>
+          </div>
+        </td>
+        <td>{{cuota.penaConvencional}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirModalDetalleCuota(cuota)">
+              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{cuotas.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>

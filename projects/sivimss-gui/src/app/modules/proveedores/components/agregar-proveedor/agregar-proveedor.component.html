@@ -1,0 +1,383 @@
+<ng-container *ngIf="indice < menuStep.length">
+  <div class="row mb-3">
+      <div class="col-md-2"></div>
+      <div class="col-md-8">
+          <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps>
+          <!-- <img src="../../../../../assets/images/proveedor.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 0">
+          <img src="../../../../../assets/images/direccion.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 1"> -->
+      </div>
+      <div class="col-md-2"></div>
+  </div>
+</ng-container>
+
+
+<ng-container *ngIf="indice === 0">
+  <form [formGroup]="agregarProveedorForm" (submit)="adelantarPagina()">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="id">ID*</label>
+        <input id="id" class="form-control" formControlName="id" placeholder="ID">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="nombre">Nombre<span class="req">*:</span></label>
+        <input id="nombre" class="form-control" formControlName="nombre"
+          placeholder="Ingresa el nombre del proveedor">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.nombre?.errors?.required && (apf?.nombre?.dirty || apf?.nombre?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="banco">Banco<span class="req">*:</span></label>
+        <input id="banco" class="form-control" formControlName="banco" placeholder="Ingresa el banco">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.banco?.errors?.required && (apf?.banco?.dirty || apf?.banco?.touched)">Campo
+          obligatorio</span>
+      </div>
+
+      <div class="col-md-6">
+        <label class="control-label" for="cuenta">Cuenta<span class="req">*:</span></label>
+        <input id="cuenta" class="form-control" formControlName="cuenta" placeholder="Ingresa el no. de cuenta">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.cuenta?.errors?.required && (apf?.cuenta?.dirty || apf?.cuenta?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="claveBancaria">Clave bancaria<span class="req">*:</span></label>
+        <input id="claveBancaria" class="form-control" formControlName="claveBancaria"
+          placeholder="Ingresa la clabe bancarias">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.claveBancaria?.errors?.required && (apf?.claveBancaria?.dirty || apf?.claveBancaria?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="tipoProveedor">Tipo de proveedor<span class="req">*:</span></label>
+        <p-dropdown appendTo="body" id="tipoProveedor" class="form-control" formControlName="tipoProveedor"
+          [options]="tiposProveedor" placeholder="Selecciona el tipo de proveedor">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="apf?.tipoProveedor?.errors?.required && (apf?.tipoProveedor?.dirty || apf?.tipoProveedor?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="rfc">RFC<span class="req">*:</span></label>
+        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.rfc?.errors?.required && (apf?.rfc?.dirty || apf?.rfc?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="curp">CURP<span class="req">*:</span></label>
+        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.curp?.errors?.required && (apf?.curp?.dirty || apf?.curp?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="tipoContrato">Tipo de contrato<span class="req">*:</span></label>
+        <input id="tipoContrato" class="form-control" formControlName="tipoContrato"
+          placeholder="Ingresa el tipo de contrato">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.tipoContrato?.errors?.required && (apf?.tipoContrato?.dirty || apf?.tipoContrato?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-12">
+              <label class="control-label" for="vigencia">Vigencia<span class="req">*</span>:</label>
+            </div>
+            <div class="col-md-6">
+              <p-calendar id="vigenciaDesde" formControlName="vigenciaDesde" styleClass="form-control"
+              [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+            </p-calendar>
+            <span class="campo-obligatorio"
+              *ngIf="apf?.vigenciaDesde?.errors?.required && (apf?.vigenciaDesde?.dirty || apf?.vigenciaDesde?.touched)">Campo
+              obligatorio</span>
+            </div>
+            <div class="col-md-6">
+              <!-- <label class="control-label" for="vigencia"><span class="req"></span></label> -->
+              <p-calendar id="vigenciaHasta" formControlName="vigenciaHasta" styleClass="form-control"
+                [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+              </p-calendar>
+              <span class="campo-obligatorio"
+                *ngIf="apf?.vigenciaHasta?.errors?.required && (apf?.vigenciaHasta?.dirty || apf?.vigenciaHasta?.touched)">Campo
+                obligatorio</span>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="telefono">Teléfono<span class="req">*:</span></label>
+        <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.telefono?.errors?.required && (apf?.telefono?.dirty || apf?.telefono?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*:</span></label>
+        <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
+          placeholder="Ingresa el correo electrónico">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.correoElectronico?.errors?.required && (apf?.correoElectronico?.dirty || apf?.correoElectronico?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="regimen">Régimen<span class="req">*:</span></label>
+        <input id="regimen" class="form-control" formControlName="regimen" placeholder="Ingresa el régimen">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.regimen?.errors?.required && (apf?.regimen?.dirty || apf?.regimen?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="representanteLegal">Representante legal<span class="req">*:</span></label>
+        <input id="representanteLegal" class="form-control" formControlName="representanteLegal"
+          placeholder="Ingresa el representante legal">
+        <span class="campo-obligatorio"
+          *ngIf="apf?.representanteLegal?.errors?.required && (apf?.representanteLegal?.dirty || apf?.representanteLegal?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <label class="control-label">Estatus<span class="req">*</span></label>
+
+
+        <div class="contenedor-inputswitch">
+          <p-inputSwitch></p-inputSwitch>
+          <span class="activo" *ngIf="apf.estatus?.value">Activo</span>
+          <span >Inactivo</span>
+        </div>
+
+
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+      <div class="row mb-3">
+          <div class="col-md-12 flex justify-content-end">
+              <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+              <button type="submit" class="btn btn-primary btn-md ml-5"
+                  [disabled]="agregarProveedorForm.invalid">Siguiente</button>
+          </div>
+      </div>
+  </form>
+</ng-container>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ng-container *ngIf="indice === 1">
+  <form [formGroup]="agregarDireccionFiscalForm">
+    <div class="row mb-3">
+      <div class="row mb-4">
+        <h2 class="subtituloModal">Dirección fiscal</h2>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="codigoPostal">Código postal<span class="req">*:</span></label>
+        <input id="codigoPostal" class="form-control" formControlName="codigoPostal"
+          placeholder="Ingresa el código postal">
+        <span class="campo-obligatorio"
+          *ngIf="adf?.codigoPostal?.errors?.required && (adf?.codigoPostal?.dirty || adf?.codigoPostal?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="calle">Calle<span class="req">*:</span></label>
+        <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle del proveedor">
+        <span class="campo-obligatorio"
+          *ngIf="adf?.calle?.errors?.required && (adf?.calle?.dirty || adf?.calle?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="numExterior">No. Exterior<span class="req">*:</span></label>
+        <input id="numExterior" class="form-control" formControlName="numExterior"
+          placeholder="No. Exterior">
+        <span class="campo-obligatorio"
+          *ngIf="adf?.numExterior?.errors?.required && (adf?.numExterior?.dirty || adf?.numExterior?.touched)">Campo
+          obligatorio</span>
+      </div>
+
+      <div class="col-md-6">
+        <label class="control-label" for="numInterior">No. Interior<span class="req">*:</span></label>
+        <input id="numInterior" class="form-control" formControlName="numInterior"
+          placeholder="No. Interior">
+        <span class="campo-obligatorio"
+          *ngIf="adf?.numInterior?.errors?.required && (adf?.numInterior?.dirty || adf?.numInterior?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="pais">País<span class="req">*:</span></label>
+        <input id="pais" class="form-control" formControlName="pais" placeholder="Ingresa el país">
+        <span class="campo-obligatorio"
+          *ngIf="adf?.pais?.errors?.required && (adf?.pais?.dirty || adf?.pais?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="estado">Estado<span class="req">*:</span></label>
+        <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
+        <span class="campo-obligatorio"
+          *ngIf="adf?.estado?.errors?.required && (adf?.estado?.dirty || adf?.estado?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="municipio">Municipio<span class="req">*:</span></label>
+        <input id="municipio" class="form-control" formControlName="municipio" placeholder="Ingresa el municipio">
+        <span class="campo-obligatorio"
+          *ngIf="adf?.municipio?.errors?.required && (adf?.municipio?.dirty || adf?.municipio?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row col-md-12">
+      <input type="checkbox" name="check" id="check" value="1" (change)='abrirAgregarDireccionReferencia()'/> Mi dirección referencia es diferente a mi dirección
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <span></span>
+      </div>
+  </div>
+</form>
+
+
+<ng-container *ngIf="direccionReferencia == true">
+<div class="row mb-4">
+  <h2 class="subtituloSubModal">Dirección de referencia</h2>
+  </div>
+  <form [formGroup]="formDireccionReferencia">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="codigoPostalReferencia">Código postal<span class="req">*:</span></label>
+        <input id="codigoPostalReferencia" class="form-control" formControlName="codigoPostalReferencia" placeholder="Ingresa el código postal">
+        <span class="campo-obligatorio"
+          *ngIf="adrf?.codigoPostalReferencia?.errors?.required && (adrf?.codigoPostalReferencia?.dirty || adrf?.codigoPostalReferencia?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="calleReferencia">calle<span class="req">*:</span></label>
+        <input id="calleReferencia" class="form-control" formControlName="calleReferencia"
+        placeholder="Ingresa la calle">
+        <span class="campo-obligatorio"
+          *ngIf="adrf?.calleReferencia?.errors?.required && (adrf?.calleReferencia?.dirty || adrf?.calleReferencia?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="numExteriorReferencia">No. Exterior<span class="req">*:</span></label>
+        <input id="numExteriorReferencia" class="form-control" formControlName="numExteriorReferencia"
+          placeholder="No. Exterior">
+        <span class="campo-obligatorio"
+          *ngIf="adrf?.numExteriorReferencia?.errors?.required && (adrf?.numExteriorReferencia?.dirty || adrf?.numExteriorReferencia?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="numInteriorReferencia">No. Interior<span class="req">*:</span></label>
+        <input id="numInteriorReferencia" class="form-control" formControlName="numInteriorReferencia"
+          placeholder="No. Interior">
+        <span class="campo-obligatorio"
+          *ngIf="adrf?.numInteriorReferencia?.errors?.required && (adrf?.numInteriorReferencia?.dirty || adrf?.numInteriorReferencia?.touched)">Campo
+          obligatorio</span>
+      </div>
+
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="paisReferencia">País<span class="req">*</span>:</label>
+        <input id="paisReferencia" class="form-control" formControlName="paisReferencia"
+        placeholder="Ingresa el país">
+        <span class="campo-obligatorio"
+          *ngIf="adrf.paisReferencia?.errors?.required && (adrf.paisReferencia?.dirty || adrf.paisReferencia?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="estadoReferencia">Estado<span class="req">*</span>:</label>
+        <input id="estadoReferencia" class="form-control" formControlName="estadoReferencia"
+          placeholder="Ingresa el estado">
+        <span class="campo-obligatorio"
+          *ngIf="adrf.estadoReferencia?.errors?.required && (adrf.estadoReferencia?.dirty || adrf.estadoReferencia?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="municipioReferencia">Municipio<span class="req">*</span>:</label>
+        <input id="municipioReferencia" class="form-control" formControlName="municipioReferencia"
+          placeholder="Ingresa el municipio">
+        <span class="campo-obligatorio"
+          *ngIf="adrf.municipioReferencia?.errors?.required && (adrf.municipioReferencia?.dirty || adrf.municipioReferencia?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+      <div class="row mb-3">
+          <div class="col-md-12">
+              <span>*Campos obligatorios</span>
+          </div>
+      </div>
+      <div class="row mb-3">
+          <div class="col-md-12 flex justify-content-end">
+              <button type="button" class="btn btn-default btn-md" (click)="regresarPagina()">Regresar</button>
+              <button type="button" class="btn btn-default btn-md ml-5" (click)="cancelar()">Cancelar</button>
+              <button type="submit" class="btn btn-primary btn-md ml-5" (click)="adelantarPagina()" [disabled]="agregarDireccionFiscalForm.invalid">Siguiente</button>
+          </div>
+      </div>
+</ng-container>
+<ng-container *ngIf="indice === menuStep.length">
+  <div class="row mb-3">
+      <div class="col-md-12">
+          <!-- <app-detalle-proveedor [proveedorSeleccionado]="this.proveedor[origen]="'agregar'" (confirmacionAceptar)="cerrar($event)"
+          </app-detalle-proveedor> -->
+          <app-detalle-proveedor [proveedorSeleccionado]="this.proveedor" [origen]="'agregar'" (confirmacionAceptar)="cerrar($event)"  ></app-detalle-proveedor>
+
+      </div>
+  </div>
+  <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-end">
+          <button type="button" class="btn btn-default btn-md" (click)="regresarPagina()">Regresar</button>
+          <button type="button" class="btn btn-default btn-md ml-5" (click)="cancelar()">Cancelar</button>
+          <button type="submit" class="btn btn-primary btn-md ml-5" (click)="cancelar()">Aceptar</button>
+      </div>
+  </div>
+</ng-container>

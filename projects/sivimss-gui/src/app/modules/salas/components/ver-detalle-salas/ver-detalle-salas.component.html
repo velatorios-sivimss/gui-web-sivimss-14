@@ -1,0 +1,94 @@
+<app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+            <span class="font-bold">
+                ID <span [ngClass]="salaSeleccionada.estatus ? 'activo' : 'inactivo'">{{salaSeleccionada.id}}</span>
+            </span>
+        </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column">
+            <div class="flex flex-column">
+                <span>Estatus</span>
+                <div>
+                    <span class="activo" *ngIf="salaSeleccionada.estatus">Activo</span>
+                    <span class="inactivo" *ngIf="!salaSeleccionada.estatus">Inactivo</span>
+                </div>
+            </div>
+            <div class="flex flex-column ml-5">
+                <a (click)="abrirPanel($event)">
+                    <img
+                      src="assets/images/imagen-icono-barras-horizontales.svg"
+                      alt="icono barras horizontales">
+                  </a>
+            </div>
+        </div>
+    </ng-template>
+    <div class="row table-panel-row">
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Nombre:</label>
+                <span>{{salaSeleccionada.nombreSala}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Disponibilidad:</label>
+                <span>{{salaSeleccionada.disponibilidad}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Tipo de sala:</label>
+                <span>{{salaSeleccionada.tipoSala}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Velatorio:</label>
+                <span>{{salaSeleccionada.velatorio}}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="table-panel-column">
+                <label>Capacidad:</label>
+                <span>{{salaSeleccionada.capacidad}}</span>
+            </div>
+        </div>
+    </div>
+</app-table-panel>
+
+
+<div class="flex justify-content-end mt-5" *ngIf="accionEntrada === Accion.Detalle">
+    <button class="ml-4 btn btn-primary btn-md" (click)="cerrarDialogo();">Aceptar</button>
+</div>
+
+<div *ngIf="accionEntrada === Accion.Agregar || accionEntrada === Accion.Modificar">
+    <div class="m-4 flex flex-column align-items-center justify-content-center">
+        <span>{{preguntaConfirmacion}}</span>
+    </div>
+    <div class="flex justify-content-end mt-5">
+        <button class="btn btn-default btn-md" (click)="cerrarDialogo();">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="agregarSala();">Aceptar</button>
+    </div>
+</div>
+
+<div *ngIf="accionEntrada === Accion.Activar || accionEntrada === Accion.Desactivar">
+    <div class="m-4 flex flex-column align-items-center justify-content-center">
+        <span>{{preguntaConfirmacion}}</span>
+    </div>
+    <div class="flex justify-content-end mt-5">
+        <button class="btn btn-default btn-md" (click)="cerrarDialogo();">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="cambiarEstatusSala();">Aceptar</button>
+    </div>
+</div>
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+      <app-overlay-panel-opciones>
+        <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarSala()"></app-overlay-panel-opcion>
+      </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>

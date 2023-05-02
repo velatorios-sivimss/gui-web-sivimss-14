@@ -1,0 +1,372 @@
+<app-table-panel *ngIf="indice < menuStep.length">
+    <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+            <span class="font-bold mr-2">ID</span>
+            <span class="activo">{{ id }}</span>
+        </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column">
+            <div class="flex flex-column">
+                <span>Estatus</span>
+                <div class="contenedor-inputswitch">
+                    <span class="activo" *ngIf="fdd.estatus?.value">Activo</span>
+                    <span class="inactivo" *ngIf="!fdd.estatus?.value">Inactivo</span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</app-table-panel>
+<ng-container *ngIf="indice < menuStep.length">
+    <div class="row mb-3">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <p-steps [model]="menuStep" [activeIndex]="indice" [styleClass]="'mt-5'" class="mostrar-check"></p-steps>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</ng-container>
+<ng-container *ngIf="indice === 0">
+    <form [formGroup]="datosGeneralesForm" (submit)="adelantarPagina()">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="id">ID <span class="req">*</span>:</label>
+                <input id="id" class="form-control" formControlName="id">
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
+                    placeholder="Selecciona velatorio">
+                </p-dropdown>
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.velatorio?.errors?.required && (fdg.velatorio?.dirty || fdg.velatorio?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="uso">Uso<span class="req">*</span>:</label>
+                <p-dropdown id="uso" class="form-control" formControlName="uso" [options]="usos"
+                    placeholder="Selecciona uso">
+                </p-dropdown>
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.uso?.errors?.required && (fdg.uso?.dirty || fdg.uso?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="responsable">Responsable<span class="req">*</span>:</label>
+                <p-dropdown id="responsable" class="form-control" formControlName="responsable" [options]="responsables"
+                    placeholder="Selecciona responsable">
+                </p-dropdown>
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.responsable?.errors?.required && (fdg.responsable?.dirty || fdg.responsable?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="tipoVehiculo">Tipo Vehiculo<span class="req">*</span>:</label>
+                <p-dropdown id="tipoVehiculo" class="form-control" formControlName="tipoVehiculo"
+                    [options]="tiposVehiculo" placeholder="Selecciona tipo de vehiculo">
+                </p-dropdown>
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.tipoVehiculo?.errors?.required && (fdg.tipoVehiculo?.dirty || fdg.tipoVehiculo?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-6">
+            </div>
+        </div>
+        <div class="row subtitulo mb-3">
+            Especificaciones
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="control-label" for="marca">Marca<span class="req">*</span>:</label>
+                <input id="marca" class="form-control" formControlName="marca" placeholder="Ingresa la marca">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.marca?.errors?.required && (fdg.marca?.dirty || fdg.marca?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="submarca">Submarca<span class="req">*</span>:</label>
+                <input id="submarca" class="form-control" formControlName="submarca" placeholder="Ingresar submarca">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.submarca?.errors?.required && (fdg.submarca?.dirty || fdg.submarca?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="modelo">Modelo<span class="req">*</span>:</label>
+                <input id="modelo" class="form-control" formControlName="modelo" placeholder="Ingresar modelo">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.modelo?.errors?.required && (fdg.modelo?.dirty || fdg.modelo?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="control-label" for="placas">Placas<span class="req">*</span>:</label>
+                <input id="placas" class="form-control" formControlName="placas" placeholder="Ingresa placas">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.placas?.errors?.required && (fdg.placas?.dirty || fdg.placas?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="noMotor">No. de motor<span class="req">*</span>:</label>
+                <input id="noMotor" class="form-control" formControlName="noMotor" placeholder="Ingresa No. de motor">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.noMotor?.errors?.required && (fdg.noMotor?.dirty || fdg.noMotor?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="noCilindros">No. de cilindros<span class="req">*</span>:</label>
+                <input id="noCilindros" class="form-control" formControlName="noCilindros"
+                    placeholder="Ingresa No. de cilindros">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.noCilindros?.errors?.required && (fdg.noCilindros?.dirty || fdg.noCilindros?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="transmision">Transmisión<span class="req">*</span>:</label>
+                <input id="transmision" class="form-control" formControlName="transmision"
+                    placeholder="Ingresa la transmisión">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.transmision?.errors?.required && (fdg.transmision?.dirty || fdg.transmision?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="combustible">Combustible<span class="req">*</span>:</label>
+                <input id="combustible" class="form-control" formControlName="combustible"
+                    placeholder="Ingresa combustible">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.combustible?.errors?.required && (fdg.combustible?.dirty || fdg.combustible?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="control-label" for="desCombustible">Descripción<span class="req">*</span>:</label>
+                <input id="desCombustible" class="form-control" formControlName="desCombustible"
+                    placeholder="Ingresa descripción">
+                <span class="campo-obligatorio"
+                    *ngIf="fdg.desCombustible?.errors?.required && (fdg.desCombustible?.dirty || fdg.desCombustible?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <span>*Campos obligatorios</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12 flex justify-content-end">
+                <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+                <button type="submit" class="btn btn-primary btn-md ml-5"
+                [disabled]="datosGeneralesForm.invalid">Siguiente</button>
+            </div>
+        </div>
+    </form>
+</ng-container>
+<ng-container *ngIf="indice === 1">
+    <form [formGroup]="datosDocumentacionForm">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="tarjetaCirculacion">No. tarjeta de Circulación<span
+                        class="req">*</span>:</label>
+                <input id="tarjetaCirculacion" class="form-control" formControlName="tarjetaCirculacion"
+                    placeholder="Ingresa la tarjeta de circulación">
+                <span class="campo-obligatorio"
+                    *ngIf="fdd.tarjetaCirculacion?.errors?.required && (fdd.tarjetaCirculacion?.dirty || fdd.tarjetaCirculacion?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="control-label" for="vigenciaTarjetaInicio">
+                            Vigencia tarjeta circulación
+                            <span class="req">*</span>:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p-calendar id="vigenciaTarjetaInicio" formControlName="vigenciaTarjetaInicio"
+                            styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
+                            [maxDate]="fdd!.vigenciaTarjetaFin!.value">
+                        </p-calendar>
+                        <span class="campo-obligatorio"
+                            *ngIf="fdd.vigenciaTarjetaInicio?.errors?.required && (fdd.vigenciaTarjetaInicio?.dirty || fdd.vigenciaTarjetaInicio?.touched)">
+                            Campo obligatorio</span>
+                    </div>
+                    <div class="col-md-6">
+                        <p-calendar id="vigenciaTarjetaFin" formControlName="vigenciaTarjetaFin"
+                            styleClass="form-control" [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy"
+                            [minDate]="fdd!.vigenciaTarjetaInicio!.value" appendTo="body">
+                        </p-calendar>
+                        <span class="campo-obligatorio"
+                            *ngIf="fdd.vigenciaTarjetaFin?.errors?.required && (fdd.vigenciaTarjetaFin?.dirty || fdd.vigenciaTarjetaFin?.touched)">
+                            Campo obligatorio</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="noSerie">No. de serie<span class="req">*</span>:</label>
+                <p-dropdown id="noSerie" class="form-control" formControlName="noSerie" [options]="numerosSerie"
+                    placeholder="Selecciona No. de serie">
+                </p-dropdown>
+                <span class="campo-obligatorio"
+                    *ngIf="fdd.noSerie?.errors?.required && (fdd.noSerie?.dirty || fdd.noSerie?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="fechaAdquisicion">
+                    Fecha de adquisición
+                    <span class="req">*</span>:</label>
+                <p-calendar id="fechaAdquisicion" formControlName="fechaAdquisicion" styleClass="form-control"
+                    [showIcon]="true" placeholder="Selecciona fecha" dateFormat="dd/mm/yy">
+                </p-calendar>
+                <span class="campo-obligatorio"
+                    *ngIf="fdd.fechaAdquisicion?.errors?.required && (fdd.fechaAdquisicion?.dirty || fdd.fechaAdquisicion?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="control-label" for="vigenciaAdquisicionInicio">
+                            Vigencia
+                            <span class="req">*</span>:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p-calendar id="vigenciaAdquisicionInicio" formControlName="vigenciaAdquisicionInicio"
+                            styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
+                            [maxDate]="fdd!.vigenciaAdquisicionFin!.value">
+                        </p-calendar>
+                        <span class="campo-obligatorio"
+                            *ngIf="fdd.vigenciaAdquisicionInicio?.errors?.required && (fdd.vigenciaAdquisicionInicio?.dirty || fdd.vigenciaAdquisicionInicio?.touched)">
+                            Campo obligatorio</span>
+                    </div>
+                    <div class="col-md-6">
+                        <p-calendar id="vigenciaAdquisicionFin" formControlName="vigenciaAdquisicionFin"
+                            styleClass="form-control" [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy"
+                            [minDate]="fdd!.vigenciaAdquisicionInicio!.value">
+                        </p-calendar>
+                        <span class="campo-obligatorio"
+                            *ngIf="fdd.vigenciaAdquisicionFin?.errors?.required && (fdd.vigenciaAdquisicionFin?.dirty || fdd.vigenciaAdquisicionFin?.touched)">
+                            Campo obligatorio</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="costoTotal">Costo total (IVA incluido)<span
+                        class="req">*</span>:</label>
+                <input id="costoTotal" class="form-control" formControlName="costoTotal"
+                    placeholder="Ingresa el costo total">
+                <span class="campo-obligatorio"
+                    *ngIf="fdd.costoTotal?.errors?.required && (fdd.costoTotal?.dirty || fdd.costoTotal?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row subtitulo mb-3">
+            Datos del Seguro
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="aseguradora">Aseguradora<span class="req">*</span>:</label>
+                <input id="aseguradora" class="form-control" formControlName="aseguradora"
+                    placeholder="Ingresa la aseguradora">
+                <span class="campo-obligatorio"
+                    *ngIf="fdd.aseguradora?.errors?.required && (fdd.aseguradora?.dirty || fdd.aseguradora?.touched)">
+                    Campo obligatorio</span>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="poliza">Poliza<span class="req">*</span>:</label>
+                <input id="poliza" class="form-control" formControlName="poliza" placeholder="Ingresa la poliza">
+                <span class="campo-obligatorio"
+                    *ngIf="fdd.poliza?.errors?.required && (fdd.poliza?.dirty || fdd.poliza?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="control-label" for="vigenciapolizaInicio">
+                            Vigencia
+                            <span class="req">*</span>:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p-calendar id="vigenciapolizaInicio" formControlName="vigenciapolizaInicio"
+                            styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
+                            [maxDate]="fdd!.vigenciapolizaFin!.value">
+                        </p-calendar>
+                        <span class="campo-obligatorio"
+                            *ngIf="fdd.vigenciapolizaInicio?.errors?.required && (fdd.vigenciapolizaInicio?.dirty || fdd.vigenciapolizaInicio?.touched)">
+                            Campo obligatorio</span>
+                    </div>
+                    <div class="col-md-6">
+                        <p-calendar id="vigenciapolizaFin" formControlName="vigenciapolizaFin" styleClass="form-control"
+                            [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy"
+                            [minDate]="fdd!.vigenciapolizaInicio!.value">
+                        </p-calendar>
+                        <span class="campo-obligatorio"
+                            *ngIf="fdd.vigenciapolizaFin?.errors?.required && (fdd.vigenciapolizaFin?.dirty || fdd.vigenciapolizaFin?.touched)">
+                            Campo obligatorio</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="riesgos">Riesgos (Poliza)<span class="req">*</span>:</label>
+                <input id="riesgos" class="form-control" formControlName="riesgos" placeholder="Ingresa los riesgos">
+                <span class="campo-obligatorio"
+                    *ngIf="fdd.riesgos?.errors?.required && (fdd.riesgos?.dirty || fdd.riesgos?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="importePrima">Importe Prima<span class="req">*</span>:</label>
+                <input id="importePrima" class="form-control" formControlName="importePrima"
+                    placeholder="Ingresa el importe prima">
+                <span class="campo-obligatorio"
+                    *ngIf="fdd.importePrima?.errors?.required && (fdd.importePrima?.dirty || fdd.importePrima?.touched)">
+                    Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="control-label" for="estatus">Estatus<span class="req">*</span>:</label>
+                <p-inputSwitch id="estatus" formControlName="estatus" class="ml-2"></p-inputSwitch>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <span>*Campos obligatorios</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12 flex justify-content-end">
+                <button type="button" class="btn btn-default btn-md" (click)="regresarPagina()">Regresar</button>
+                <button type="button" class="btn btn-default btn-md ml-5" (click)="cancelar()">Cancelar</button>
+                <button type="submit" class="btn btn-primary btn-md ml-5" (click)="adelantarPagina()"
+                [disabled]="datosDocumentacionForm.invalid">Siguiente</button>
+            </div>
+        </div>
+    </form>
+</ng-container>
+<ng-container *ngIf="indice === menuStep.length">
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <app-detalle-vehiculo [vehiculoSeleccionado]="vehiculoModificado">
+            </app-detalle-vehiculo>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-12 flex justify-content-end">
+            <button type="button" class="btn btn-default btn-md" (click)="regresarPagina()">Regresar</button>
+            <button type="button" class="btn btn-default btn-md ml-5" (click)="cancelar()">Cancelar</button>
+            <button type="submit" class="btn btn-primary btn-md ml-5">Aceptar</button>
+        </div>
+    </div>
+</ng-container>

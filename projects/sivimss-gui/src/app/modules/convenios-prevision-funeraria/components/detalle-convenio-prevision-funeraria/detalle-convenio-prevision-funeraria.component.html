@@ -1,0 +1,83 @@
+<app-table-panel class="mb-6">
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">Folio convenio {{convenio.folioConvenio}}</span>
+    </div>
+  </ng-template>
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span>Estatus</span>
+        <div class="contenedor-inputswitch">
+          <span class="activo" *ngIf="convenio.estatus == 0">Activa</span>
+          <span class="activo" *ngIf="convenio.estatus == 1">Cerrada</span>
+          <span class="activo" *ngIf="convenio.estatus == 2">Cancelada</span>
+        </div>
+      </div>
+      <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
+        <img
+          src="assets/images/imagen-icono-barras-horizontales.svg"
+          alt="icono barras horizontales">
+      </a>
+    </div>
+  </ng-template>
+</app-table-panel>
+<section class="pl-7 mt-7">
+  <div class="row">
+    <h6>Datos del convenio</h6>
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <span>Fecha de contratación</span>
+        <br/>
+        <label>{{convenio.fechaContratacion}}</label>
+      </div>
+      <div class="col-md-4">
+        <span>Fecha vigencia inicio</span>
+        <br/>
+        <label>{{convenio.fechaVigenciaInicio}}</label>
+      </div>
+      <div class="col-md-4">
+        <span>Fecha vigencia fin</span>
+        <br/>
+        <label>{{convenio.fechaVigenciaFin}}</label>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <span>Situación</span>
+        <br/>
+        <label>{{convenio.situacion}}</label>
+      </div>
+      <div class="col-md-4">
+        <span>Factura</span>
+        <br/>
+        <label>{{convenio.factura}}</label>
+      </div>
+      <div class="col-md-4">
+        <span>Importe convenio</span>
+        <br/>
+        <label>{{convenio.importeConvenio}}</label>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-7">
+  <h6>Beneficiarios</h6>
+    <p-accordion styleClass="sivimss-accordion">
+      <p-accordionTab>
+        <ng-template pTemplate="header">Beneficiario</ng-template>
+      </p-accordionTab>
+      <ng-template pTemplate="content">
+
+      </ng-template>
+    </p-accordion>
+  </div>
+</section>
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Renovar" (click)="abrirRenovar()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificar()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Activar" (click)="abrirActivar()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

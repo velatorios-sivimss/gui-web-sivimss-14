@@ -1,0 +1,123 @@
+<ng-container *ngIf="indice === 0">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column contenedor-inputswitch">
+        <span class="activo font-bold mr-2">ID</span>
+        <span>{{salaSeleccionada.idSala}}</span>
+      </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+        <span>
+        {{salaSeleccionada.nombreSala}}
+        </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <form [formGroup]="registroSalidaForm" (submit)="guardar()">
+    <div class="row mb-3 mt-3">
+      <div class="col-md-12">
+        Registro de salida
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="fecha">Fecha <span class="req">*</span>:</label>
+        <p-calendar appendTo="body" id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"></p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="salidaF.fecha?.errors?.required && (salidaF.fecha?.dirty || salidaF.fecha?.touched)">
+                    Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="hora">Hora <span class="req">*</span>:</label>
+        <div class="row">
+          <div class="col-md-6">
+            <p-calendar appendTo="body" id="hora" styleClass="form-control" formControlName="hora" [timeOnly]="true"
+            ></p-calendar>
+            <span class="campo-obligatorio"
+                  *ngIf="salidaF.hora?.errors?.required && (salidaF.hora?.dirty || salidaF.hora?.touched)">
+                    Campo obligatorio</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6 mb-3" *ngIf="!tipoSala && estadoSala != 'MANTENIMIENTO'">
+
+        <label class="control-label" for="nivelGas">Nivel de gas <span class="req">*</span>:</label>
+        <p-inputNumber [useGrouping]="false" mode="decimal" currency="USD" locale="en-US" [minFractionDigits]="2" [maxFractionDigits]="2" suffix="L"
+                       id="nivelGas" class="form-control" formControlName="nivelGas" [maxlength]="11"></p-inputNumber>
+        <span class="campo-obligatorio"
+              *ngIf="salidaF.nivelGas?.errors?.required && (salidaF.nivelGas?.dirty || salidaF.nivelGas?.touched)">
+                    Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5"
+                [disabled]="registroSalidaForm.invalid">Aceptar
+        </button>
+      </div>
+    </div>
+
+  </form>
+</ng-container>
+<ng-container *ngIf="indice === 1">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column contenedor-inputswitch">
+        <span class="activo font-bold mr-2">ID</span>
+        <span>{{salaSeleccionada.idSala}}</span>
+      </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+        <span>
+          <h2 class="subtitulo">
+            {{salaSeleccionada.nombreSala}}
+          </h2>
+        </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-3" *ngIf="!tipoSala && estadoSala != 'MANTENIMIENTO'">
+        <div class="table-panel-column">
+          <label>Nivel del gas</label>
+          <span> {{salidaF.nivelGas.value}} L</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Registro de salida</label>
+          <span> {{salidaF.fecha.value | date: 'dd/MM/yyyy'}} - {{salidaF.hora.value | date: 'shortTime'}}</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <div class="row mb-5 mt-5">
+    <div class="col-md-12 text-center">
+      ¿Estas seguro de registrar la salida de esta sala?
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar
+      </button>
+    </div>
+  </div>
+</ng-container>

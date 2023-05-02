@@ -1,0 +1,105 @@
+<form [formGroup]="agregarCuotaForm">
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label class="control-label" for="numeroPermiso">No. de permiso<span class="req">*</span>:</label>
+      <input id="numeroPermiso" class="form-control" formControlName="numeroPermiso" maxlength="50"
+             placeholder="Ingresa el no. de permiso" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.numeroPermiso?.errors?.required && (f.numeroPermiso?.dirty || f.numeroPermiso?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <p-checkbox inputId="pagoGarantia" formControlName="pagoGarantia" styleClass="mr-3"
+        [binary]="true" (change)='handlePagoGarantia()'></p-checkbox>
+      <label for="pagoGarantia" class="control-label mb-0">Pago de garantía</label>
+    </div>
+  </div>
+
+  <div class="row mb-3" *ngIf="f.pagoGarantia.value">
+    <div class="col-md-6">
+      <label class="control-label" for="nombrePermisionario">Nombre del permisionario</label>
+      <input id="nombrePermisionario" class="form-control" formControlName="nombrePermisionario" maxlength="10"
+             placeholder="Ingresa el nombre del permisionario" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.nombrePermisionario?.errors?.required && (f.nombrePermisionario?.dirty || f.nombrePermisionario?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="numeroCuenta">No. de cuenta</label>
+      <input id="numeroCuenta" class="form-control" formControlName="numeroCuenta" maxlength="10"
+             placeholder="Ingresa el número de cuenta" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.numeroCuenta?.errors?.required && (f.numeroCuenta?.dirty || f.numeroCuenta?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3" *ngIf="f.pagoGarantia.value">
+    <div class="col-md-6">
+      <label class="control-label" for="banco">Banco<span class="req">*</span>:</label>
+      <input id="banco" class="form-control" formControlName="banco" maxlength="10"
+             placeholder="Ingresa el número de cuenta" alphanumericOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.banco?.errors?.required && (f.banco?.dirty || f.banco?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="cuotaRecuperacion">No. de cuota de recuperación<span class="req">*</span>:</label>
+      <p-dropdown id="clave" class="form-control" formControlName="cuotaRecuperacion" [options]="opciones"
+                placeholder="Selecciona la no. de cuota de recuperación">
+      </p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.cuotaRecuperacion?.errors?.required && (f.cuotaRecuperacion?.dirty || f.cuotaRecuperacion?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="folioAutorizacion">Folio de autorización<span class="req">*</span>:</label>
+      <input id="folioAutorizacion" class="form-control" formControlName="folioAutorizacion" maxlength="10"
+             placeholder="Ingresa el folio de autorización" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.folioAutorizacion?.errors?.required && (f.folioAutorizacion?.dirty || f.folioAutorizacion?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="fecha">Fecha</label>
+      <p-calendar id="fecha" formControlName="fecha" styleClass="form-control"
+          [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
+      </p-calendar>
+      <span class="campo-obligatorio" *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">Campo 
+        obligatorio</span>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
+      <input id="importe" class="form-control" formControlName="importe" maxlength="10"
+             placeholder="Ingresa el importe" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.importe?.errors?.required && (f.importe?.dirty || f.importe?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="totalPagar">Total a pagar<span class="req">*</span>:</label>
+      <input id="totalPagar" class="form-control" formControlName="totalPagar" maxlength="10"
+             placeholder="Ingresa la descripción" numbersOnly trimmer>
+      <span class="campo-obligatorio" *ngIf="f.totalPagar?.errors?.required && (f.totalPagar?.dirty || f.totalPagar?.touched)">Campo 
+        obligatorio</span>
+    </div>
+  </div>
+
+  <div class="row mb-2">
+    <div class="col-md-12">
+      <span>*Campos obligatorios</span>
+    </div>
+  </div>
+  
+  <div class="flex justify-content-end mb-6">
+    <button class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="verDetalleGuardarCuota()">
+      Aceptar
+    </button>
+  </div>
+</form>

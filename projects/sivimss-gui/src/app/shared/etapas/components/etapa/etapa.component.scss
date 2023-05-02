@@ -1,0 +1,140 @@
+
+.etapa {
+  position: relative;
+  padding: 0 4rem;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+
+  .etapa-circulo {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+
+    &::before {
+      content: "";
+      display: none;
+      position: absolute;
+      top: 50%;
+      right: 100%;
+      z-index: 0;
+      width: 1000px;
+      border-top: 2px solid #999999;
+    }
+
+    &::after {
+      content: "";
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      z-index: 0;
+      width: 1000px;
+      border-top: 2px solid #999999;
+    }
+
+    .etapa-texto-interior {
+      text-align: center;
+      display: inline-block;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+    }
+  }
+
+  .etapa-texto-exterior {
+    margin-top: .75rem;
+    display: inline-block;
+    text-align: center;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+
+  &.activo {
+    .etapa-circulo {
+      border: 1px solid #9D2449;
+      background: #FFFFFF;
+
+      .etapa-texto-interior {
+        font-weight: 600;
+        color: #9D2449;
+      }
+    }
+
+    .etapa-texto-exterior {
+      color: #9D2449;
+      font-weight: 600;
+    }
+  }
+
+
+  &.inactivo {
+    .etapa-circulo {
+      background: #FFFFFF;
+      border: 1px solid #DDDDDD;
+
+      .etapa-texto-interior {
+        font-weight: 400;
+        color: #484848;
+      }
+    }
+
+    .etapa-texto-exterior {
+      font-weight: 400;
+      color: #272829;
+    }
+  }
+
+  &.completado {
+    transform: translateY(0.75px);
+    .etapa-circulo {
+      background: #9D2449;
+      border: 2px solid #9D2449;
+
+      .etapa-icono-completado {
+        font-weight: normal;
+
+        .fs {
+          display: inline-block;
+          transform: translateY(1px);
+          color: white;
+        }
+      }
+    }
+
+    .etapa-texto-exterior {
+      font-weight: normal;
+      color: #9D2449;
+    }
+  }
+
+  &.mostrar-linea-izquierda .etapa-circulo::before {
+    display: inline-block;
+  }
+
+  &.mostrar-linea-derecha .etapa-circulo::after {
+    display: inline-block;
+  }
+
+  &.border-dashed-linea-izquierda .etapa-circulo::before {
+    border-top: 2px dashed #999999;
+  }
+
+  &.border-dashed-linea-derecha .etapa-circulo::after {
+    border-top: 2px dashed #999999;
+  }
+
+}
+
+

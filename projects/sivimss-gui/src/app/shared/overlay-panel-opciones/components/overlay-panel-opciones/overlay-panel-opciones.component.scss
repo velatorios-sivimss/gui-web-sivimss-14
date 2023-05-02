@@ -1,0 +1,13 @@
+.overlay-panel-opciones {
+  min-width: 274px;
+  margin: 0;
+  padding: 0;
+}
+
+app-overlay-panel-opciones app-overlay-panel-opcion {
+  display: block;
+
+  &:hover {
+    background-color: #ededed;
+  }
+}
