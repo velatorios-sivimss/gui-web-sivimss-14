@@ -16,7 +16,7 @@ export class PopoverDirective {
   ) {
   }
 
-  @HostListener('click') onClick() {
+  @HostListener('click') onClick(): void {
     if (!this.popoverRef) {
       this.popoverRef = this.viewContainerRef.createComponent(PopoverComponent);
       this.popoverRef.instance.title = this.popoverTitle;
@@ -33,9 +33,9 @@ export class PopoverDirective {
       const buttonTop = buttonRect.bottom + window.scrollY;
       const popoverWidth = this.popoverRef.location.nativeElement.offsetWidth;
       const popoverHeight = this.popoverRef.location.nativeElement.offsetHeight;
-      const popoverLeft = buttonLeft + (buttonRect.width / 2) - (popoverWidth / 2);
+      const popoverLeft: number = buttonLeft + (buttonRect.width / 2) - (popoverWidth / 2);
       console.log(buttonLeft, (buttonRect.width / 2), (popoverWidth / 2))
-      const popoverTop = buttonTop - popoverHeight - 10; // Adjust for padding
+      const popoverTop: number = buttonTop - popoverHeight - 10; // Adjust for padding
 
       // Set the position of the popover element
       this.popoverRef.location.nativeElement.style.position = 'absolute';
@@ -49,8 +49,8 @@ export class PopoverDirective {
         const buttonTop = buttonRect.bottom + window.scrollY;
         const popoverWidth = this.popoverRef.location.nativeElement.offsetWidth;
         const popoverHeight = this.popoverRef.location.nativeElement.offsetHeight;
-        const popoverLeft = buttonLeft + (buttonRect.width / 2) - (popoverWidth / 2);
-        const popoverTop = buttonTop - popoverHeight - 10; // Adjust for padding
+        const popoverLeft: number = buttonLeft + (buttonRect.width / 2) - (popoverWidth / 2);
+        const popoverTop: number = buttonTop - popoverHeight - 10; // Adjust for padding
 
         // Set the position of the popover element
         this.popoverRef.location.nativeElement.style.top = `${popoverTop}px`;
