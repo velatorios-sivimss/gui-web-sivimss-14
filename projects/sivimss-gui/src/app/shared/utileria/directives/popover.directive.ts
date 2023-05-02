@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, Directive, ElementRef, HostListener, Input, ViewContainerRef } from '@angular/core';
+import {Directive, ElementRef, HostListener, Input, ViewContainerRef} from '@angular/core';
 import {PopoverComponent} from "../../popover/popover.component";
 
 @Directive({
@@ -13,13 +13,12 @@ export class PopoverDirective {
   constructor(
     private elementRef: ElementRef,
     private viewContainerRef: ViewContainerRef,
-    private componentFactoryResolver: ComponentFactoryResolver
-  ) {}
+  ) {
+  }
 
   @HostListener('click') onClick() {
     if (!this.popoverRef) {
-      const popoverFactory = this.componentFactoryResolver.resolveComponentFactory(PopoverComponent);
-      this.popoverRef = this.viewContainerRef.createComponent(popoverFactory);
+      this.popoverRef = this.viewContainerRef.createComponent(PopoverComponent);
       this.popoverRef.instance.title = this.popoverTitle;
       this.popoverRef.instance.zIndex = this.popoverZIndex;
       this.popoverRef.instance.closed.subscribe(() => {
