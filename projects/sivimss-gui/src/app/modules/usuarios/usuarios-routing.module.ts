@@ -9,7 +9,7 @@ const routes: Routes = [{
   resolve: {respuesta: UsuarioResolver},
   data: {
     validaRol: {
-      funcionalidadRol: 'USUARIOS',
+      funcionalidad: 'USUARIOS',
       permiso: 'CONSULTA'
     }
   },
