@@ -41,7 +41,7 @@
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Lista de usuarios</h2>
     <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['USUARIOS','ALTA']"
-            (click)="abrirModalAgregarUsuario()">Agregar
+            (click)="abrirModalAgregarUsuario()" onCloseOnNavigation>Agregar
     </button>
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="usuarios" [paginator]="usuarios.length > 0" [rows]="cantElementosPorPagina"

@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import { CeldaStickyModule } from "projects/sivimss-gui/src/app/shared/celda-sticky/celda-sticky.module";
-import { ValidaRolModule } from "projects/sivimss-gui/src/app/shared/valida-rol/valida-rol.module";
+import {CeldaStickyModule} from "projects/sivimss-gui/src/app/shared/celda-sticky/celda-sticky.module";
+import {ValidaRolModule} from "projects/sivimss-gui/src/app/shared/valida-rol/valida-rol.module";
 
 import {UsuariosRoutingModule} from './usuarios-routing.module';
 import {UsuariosComponent} from './components/usuarios/usuarios.component';
@@ -16,10 +16,11 @@ import {CalendarModule} from "primeng/calendar";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {OverlayPanelOpcionesModule} from "../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
 import {TablePanelModule} from "../../shared/table-panel/table-panel.module";
-import { AgregarUsuarioComponent } from './components/agregar-usuario/agregar-usuario.component';
-import { ModificarUsuarioComponent } from './components/modificar-usuario/modificar-usuario.component';
-import { VerDetalleUsuarioComponent } from './components/ver-detalle-usuario/ver-detalle-usuario.component';
-import { CambioEstatusUsuarioComponent } from './components/cambio-estatus-usuario/cambio-estatus-usuario.component';
+import {AgregarUsuarioComponent} from './components/agregar-usuario/agregar-usuario.component';
+import {ModificarUsuarioComponent} from './components/modificar-usuario/modificar-usuario.component';
+import {VerDetalleUsuarioComponent} from './components/ver-detalle-usuario/ver-detalle-usuario.component';
+import {CambioEstatusUsuarioComponent} from './components/cambio-estatus-usuario/cambio-estatus-usuario.component';
+import {UtileriaModule} from "../../shared/utileria/utileria.module";
 
 
 @NgModule({
@@ -45,11 +46,10 @@ import { CambioEstatusUsuarioComponent } from './components/cambio-estatus-usuar
     OverlayPanelOpcionesModule,
     TablePanelModule,
     CeldaStickyModule,
-    ValidaRolModule
+    ValidaRolModule,
+    UtileriaModule
   ],
-  providers: [
-    UsuarioService
-  ]
+  providers: [UsuarioService]
 })
 export class UsuariosModule {
 }
