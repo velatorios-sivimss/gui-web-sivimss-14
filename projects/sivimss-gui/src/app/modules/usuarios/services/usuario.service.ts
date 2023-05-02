@@ -29,7 +29,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarCurpRenapo(curp: string): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`http://localhost:8083/mssivimss-servicios-externos/v1/catalogos/externos/consultar/curp/${curp}`);
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/curp/${curp}`);
   }
 
   validarMatricula(matricula: any): Observable<HttpRespuesta<any>> {
@@ -37,7 +37,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`http://localhost:8083/mssivimss-servicios-externos/v1/catalogos/externos/consultar/siap/${matricula}`);
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}/consultar/siap/${matricula}`);
   }
 
   obtenerCatalogoRoles(): Observable<HttpRespuesta<any>> {
