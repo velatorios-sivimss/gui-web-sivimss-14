@@ -8,7 +8,7 @@ import {NotificacionesService} from "../../services/notificaciones.service";
   selector: 'app-sub-header-privado',
   templateUrl: './sub-header-privado.component.html',
   styleUrls: ['./sub-header-privado.component.scss'],
-  providers: [NotificacionesService,]
+  providers: [NotificacionesService]
 })
 export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
