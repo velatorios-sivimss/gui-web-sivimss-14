@@ -7,6 +7,7 @@ import {AlphanumericDirective} from './directives/only-alphanumeric.directive';
 import {TrimmerDirective} from './directives/trimmer.directive';
 import {TextDirective} from './directives/only-text.directive';
 import {OnCloseOnNavigationDirective} from "./directives/close-on-navigation.directive";
+import {PopoverDirective} from "./directives/popover.directive";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import {OnCloseOnNavigationDirective} from "./directives/close-on-navigation.dir
     AlphanumericDirective,
     TrimmerDirective,
     TextDirective,
-    OnCloseOnNavigationDirective
+    OnCloseOnNavigationDirective,
+    PopoverDirective
   ],
   imports: [
     CommonModule
@@ -28,7 +30,8 @@ import {OnCloseOnNavigationDirective} from "./directives/close-on-navigation.dir
     AlphanumericDirective,
     TrimmerDirective,
     TextDirective,
-    OnCloseOnNavigationDirective
+    OnCloseOnNavigationDirective,
+    PopoverDirective
   ]
 })
 export class UtileriaModule {
