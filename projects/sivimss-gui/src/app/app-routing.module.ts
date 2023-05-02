@@ -180,6 +180,11 @@ const routes: Routes = [
   loadChildren: () => import('./modules/mantenimiento-vehicular/mantenimiento-vehicular.module').then(m => m.MantenimientoVehicularModule),
   },
   {
+    path: 'control-de-vehiculos',
+    loadChildren: () => import('./modules/control-vehiculos/control-vehiculos.module').then(m => m.ControlVehiculosModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: '**',
     component: PaginaNoEncontradaComponent,
   },
