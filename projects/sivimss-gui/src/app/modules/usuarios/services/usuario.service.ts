@@ -17,7 +17,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-usuarios`, filtros,
@@ -29,7 +29,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarCurpRenapo(curp: string): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/curp/${curp}`);
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.externos}consultar/curp/${curp}`);
   }
 
   validarMatricula(matricula: any): Observable<HttpRespuesta<any>> {
@@ -37,11 +37,11 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}/consultar/siap/${matricula}`);
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.externos}/consultar/siap/${matricula}`);
   }
 
   obtenerCatalogoRoles(): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("servicio", "catalogo-roles")
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo`, {params});
   }
@@ -63,7 +63,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   descargarListado(): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
@@ -73,7 +73,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   descargarListadoExcel(): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });

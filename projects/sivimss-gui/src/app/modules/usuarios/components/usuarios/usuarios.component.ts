@@ -25,6 +25,7 @@ import {finalize} from "rxjs/operators";
 import {CambioEstatusUsuarioComponent} from "../cambio-estatus-usuario/cambio-estatus-usuario.component";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 type SolicitudEstatus = Pick<Usuario, "id">;
 const MAX_WIDTH: string = "920px";
@@ -60,10 +61,10 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   modificacionRef!: DynamicDialogRef;
   cambioEstatusRef!: DynamicDialogRef;
 
-  readonly POSICION_ROLES: number = 0;
-  readonly POSICION_NIVELES: number = 1;
-  readonly POSICION_DELEGACIONES: number = 2;
-  readonly POSICION_VELATORIOS: number = 3;
+  readonly POSICION_CATALOGO_ROLES: number = 0;
+  readonly POSICION_CATALOGO_NIVELES: number = 1;
+  readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
+  readonly POSICION_CATALOGO_VELATORIOS: number = 3;
 
   constructor(
     private route: ActivatedRoute,
@@ -85,11 +86,11 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const roles = respuesta[this.POSICION_ROLES].datos;
-    const velatorios = respuesta[this.POSICION_VELATORIOS].datos;
+    const roles = respuesta[this.POSICION_CATALOGO_ROLES].datos;
+    const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
     this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
-    this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
-    this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
   }
 
@@ -164,11 +165,11 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.usuarioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta) => {
+        next: (respuesta: HttpRespuesta<any>): void => {
           this.usuarios = respuesta!.datos.content;
           this.totalElementos = respuesta!.datos.totalElements;
         },
-        error: (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
@@ -180,16 +181,16 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.cargadorService.activar();
     this.usuarioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
           this.usuarios = respuesta!.datos.content;
           this.totalElementos = respuesta!.datos.totalElements;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
   }
 
   buscar(): void {
@@ -200,10 +201,10 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   crearSolicitudFiltros(): FiltrosUsuario {
     return {
+      idDelegacion: this.filtroForm.get("delegacion")?.value,
       idOficina: this.filtroForm.get("nivel")?.value,
-      idVelatorio: this.filtroForm.get("velatorio")?.value,
       idRol: this.filtroForm.get("rol")?.value,
-      idDelegacion: this.filtroForm.get("delegacion")?.value
+      idVelatorio: this.filtroForm.get("velatorio")?.value
     };
   }
 
@@ -221,15 +222,15 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.cargadorService.activar();
     this.usuarioService.cambiarEstatus(idUsuario)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        () => {
+      .subscribe({
+        next: (): void => {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus realizado');
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
   }
 
   procesarRespuestaModal(respuesta: RespuestaModalUsuario = {}): void {
@@ -264,14 +265,14 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.descargaArchivosService.descargarArchivo(this.usuarioService.descargarListadoExcel(),
       configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta): void => {
         console.log(respuesta)
       },
-      (error) => {
+      error: (error): void => {
         console.log(error)
       },
-    )
+    })
   }
 
   get f() {

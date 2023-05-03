@@ -13,6 +13,7 @@ import {diferenciaUTC, mapearArregloTipoDropdown} from "../../../../utils/funcio
 import {ActivatedRoute} from '@angular/router';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 type UsuarioModificado = Omit<Usuario, "password">
 
@@ -38,9 +39,9 @@ export class ModificarUsuarioComponent implements OnInit {
   delegacionResumen: string = "";
   velatorioResumen: string = "";
 
-  readonly POSICION_ROLES: number = 0;
-  readonly POSICION_NIVELES: number = 1;
-  readonly POSICION_DELEGACIONES: number = 2;
+  readonly POSICION_CATALOGO_ROLES: number = 0;
+  readonly POSICION_CATALOGO_NIVELES: number = 1;
+  readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
 
   constructor(
     private route: ActivatedRoute,
@@ -61,10 +62,10 @@ export class ModificarUsuarioComponent implements OnInit {
 
   cargarCatalogos(delegacion: string): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const roles = respuesta[this.POSICION_ROLES].datos
+    const roles = respuesta[this.POSICION_CATALOGO_ROLES].datos
     this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
-    this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
-    this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     this.buscarVelatorios(delegacion);
   }
 
@@ -73,9 +74,9 @@ export class ModificarUsuarioComponent implements OnInit {
       id: [{value: usuario.id, disabled: true}, [Validators.required]],
       curp: [{value: usuario.curp, disabled: true}, [Validators.required, Validators.maxLength(18)]],
       matricula: [{value: usuario.matricula, disabled: true}, [Validators.required, Validators.maxLength(10)]],
-      nombre: [{value: usuario.nombre, disabled: true}, [Validators.required, Validators.maxLength(50)]],
-      primerApellido: [{value: usuario.paterno, disabled: true}, [Validators.required, Validators.maxLength(50)]],
-      segundoApellido: [{value: usuario.materno, disabled: true}, [Validators.required, Validators.maxLength(50)]],
+      nombre: [{value: usuario.nombre, disabled: true}, [Validators.required, Validators.maxLength(20)]],
+      primerApellido: [{value: usuario.paterno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
+      segundoApellido: [{value: usuario.materno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
       correoElectronico: [{value: usuario.correo, disabled: false},
         [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       fechaNacimiento: [{value: new Date(diferenciaUTC(usuario.fecNacimiento)), disabled: false},
@@ -93,47 +94,46 @@ export class ModificarUsuarioComponent implements OnInit {
       delegacion = this.modificarUsuarioForm.get('delegacion')?.value;
       this.modificarUsuarioForm.get('velatorio')?.patchValue("");
     }
-    this.usuarioService.obtenerVelatorios(delegacion)
-      .subscribe(
-        (respuesta) => {
-          const velatorios = respuesta.datos || [];
-          this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error)
-        }
-      );
+    this.usuarioService.obtenerVelatorios(delegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const velatorios = respuesta.datos || [];
+        this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error)
+      }
+    });
   }
 
   crearUsuarioModificado(): UsuarioModificado {
     return {
-      id: this.modificarUsuarioForm.get("id")?.value,
-      materno: this.modificarUsuarioForm.get("segundoApellido")?.value,
-      nombre: this.modificarUsuarioForm.get("nombre")?.value,
+      claveMatricula: this.modificarUsuarioForm.get("matricula")?.value,
       correo: this.modificarUsuarioForm.get("correoElectronico")?.value,
       curp: this.modificarUsuarioForm.get("curp")?.value,
-      claveMatricula: this.modificarUsuarioForm.get("matricula")?.value,
+      estatus: this.modificarUsuarioForm.get("estatus")?.value ? 1 : 0,
       fecNacimiento: this.modificarUsuarioForm.get('fechaNacimiento')?.value &&
         moment(this.modificarUsuarioForm.get('fechaNacimiento')?.value).format('YYYY-MM-DD'),
-      paterno: this.modificarUsuarioForm.get("primerApellido")?.value,
-      estatus: this.modificarUsuarioForm.get("estatus")?.value ? 1 : 0,
-      idOficina: this.modificarUsuarioForm.get("nivel")?.value,
-      idVelatorio: this.modificarUsuarioForm.get("velatorio")?.value,
-      idRol: this.modificarUsuarioForm.get("rol")?.value,
+      id: this.modificarUsuarioForm.get("id")?.value,
       idDelegacion: this.modificarUsuarioForm.get("delegacion")?.value,
-      matricula: this.modificarUsuarioForm.get("matricula")?.value
+      idOficina: this.modificarUsuarioForm.get("nivel")?.value,
+      idRol: this.modificarUsuarioForm.get("rol")?.value,
+      idVelatorio: this.modificarUsuarioForm.get("velatorio")?.value,
+      materno: this.modificarUsuarioForm.get("segundoApellido")?.value,
+      matricula: this.modificarUsuarioForm.get("matricula")?.value,
+      nombre: this.modificarUsuarioForm.get("nombre")?.value,
+      paterno: this.modificarUsuarioForm.get("primerApellido")?.value
     };
   }
 
   creacionVariablesResumen(): void {
-    const rol = this.modificarUsuarioForm.get("rol")?.value;
-    const nivel = this.modificarUsuarioForm.get("nivel")?.value;
-    const delegacion = this.modificarUsuarioForm.get("delegacion")?.value;
-    const velatorio = this.modificarUsuarioForm.get("velatorio")?.value;
-    this.rolResumen = this.catalogoRoles.find(r => r.value === rol)?.label || "";
-    this.nivelResumen = this.catalogoNiveles.find(n => n.value === nivel)?.label || "";
-    this.delegacionResumen = this.catalogoDelegaciones.find(d => d.value === delegacion)?.label || "";
-    this.velatorioResumen = this.catalogoVelatorios.find(v => v.value === velatorio)?.label || "";
+    const idRolMod = this.modificarUsuarioForm.get("rol")?.value;
+    const idNivelMod = this.modificarUsuarioForm.get("nivel")?.value;
+    const idDelegacionMod = this.modificarUsuarioForm.get("delegacion")?.value;
+    const idVelatorioMod = this.modificarUsuarioForm.get("velatorio")?.value;
+    this.rolResumen = this.catalogoRoles.find(rol => rol.value === idRolMod)?.label || "";
+    this.nivelResumen = this.catalogoNiveles.find(nivel => nivel.value === idNivelMod)?.label || "";
+    this.delegacionResumen = this.catalogoDelegaciones.find(delegacion => delegacion.value === idDelegacionMod)?.label || "";
+    this.velatorioResumen = this.catalogoVelatorios.find(velatorio => velatorio.value === idVelatorioMod)?.label || "";
   }
 
   modificarUsuario(): void {
@@ -141,15 +141,15 @@ export class ModificarUsuarioComponent implements OnInit {
     this.cargadorService.activar();
     this.usuarioService.actualizar(this.usuarioModificado)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        () => {
+      .subscribe({
+        next: (): void => {
           this.ref.close(respuesta)
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
           console.error("ERROR: ", error)
         }
-      );
+      });
   }
 
   cancelar(): void {

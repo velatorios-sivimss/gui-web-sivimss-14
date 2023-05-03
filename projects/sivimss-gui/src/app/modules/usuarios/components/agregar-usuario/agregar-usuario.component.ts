@@ -150,8 +150,9 @@ export class AgregarUsuarioComponent implements OnInit {
         if (!MENSAJES_CURP.has(valor)) return;
         const {mensaje, tipo, valido} = MENSAJES_CURP.get(valor);
         this.curpValida = valido;
-        console.log(this.curpValida)
-        this.alertaService.mostrar(tipo, mensaje);
+        if (!valido) {
+          this.alertaService.mostrar(tipo, mensaje);
+        }
       },
       error: (error: HttpErrorResponse): void => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
@@ -181,39 +182,42 @@ export class AgregarUsuarioComponent implements OnInit {
   }
 
   validarMatricula(): void {
-    const matricula: SolicitudMatricula = {claveMatricula: this.agregarUsuarioForm.get("matricula")?.value};
-    if (!matricula.claveMatricula) return;
-    this.usuarioService.validarMatricula(matricula).pipe(
-      finalize(() => this.validarCurpMatricula(matricula.claveMatricula))
-    ).subscribe(
-      (respuesta) => {
+    const consulta: SolicitudMatricula = {claveMatricula: this.agregarUsuarioForm.get("matricula")?.value};
+    if (!consulta.claveMatricula) return;
+    this.usuarioService.validarMatricula(consulta).pipe(
+      finalize(() => this.validarMatriculaSiap(consulta.claveMatricula))
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_MATRICULA.has(valor)) return;
         const {mensaje, tipo, valido} = MENSAJES_MATRICULA.get(valor);
         this.matriculaValida = valido;
-        this.alertaService.mostrar(tipo, mensaje);
+        if (!valido) {
+          this.alertaService.mostrar(tipo, mensaje);
+        }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Matricula no valida');
         console.error("ERROR: ", error.message)
       }
-    );
+    });
   }
 
-  validarCurpMatricula(matricula: string): void {
-    if (!this.matriculaValida) return
+  validarMatriculaSiap(matricula: string): void {
+    if (!this.matriculaValida) return;
     this.cargadorService.activar();
     this.usuarioService.consultarMatriculaSiap(matricula).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         console.log(respuesta)
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
         console.error("ERROR: ", error.message)
-      });
+      }
+    });
   }
 
   agregarUsuario(): void {
@@ -221,15 +225,15 @@ export class AgregarUsuarioComponent implements OnInit {
     this.cargadorService.activar();
     this.usuarioService.guardar(this.nuevoUsuario)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        () => {
+      .subscribe({
+        next: (): void => {
           this.ref.close(respuesta)
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
           console.error("ERROR: ", error.message)
         }
-      );
+      });
   }
 
   cancelar(): void {
