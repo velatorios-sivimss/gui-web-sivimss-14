@@ -11,6 +11,10 @@ import {AutenticacionService} from "../../../services/autenticacion.service";
 @Injectable()
 export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
 
+  readonly _roles: string = 'catalogo-roles';
+  readonly _nivel: string = 'catalogo_nivelOficina';
+  readonly _delegacion: string = 'catalogo_delegaciones';
+
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "agregar-usuario", "actualizar-usuario",
       2, "consultar-usuarios", "detalle-usuario", "cambiar-estatus-usr");
@@ -41,25 +45,22 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerCatalogoRoles(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", "catalogo-roles")
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo`, {params});
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/${this._roles}`,);
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    const niveles = this.authService.obtenerCatalogoDeLocalStorage((this._nivel));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage((this._delegacion));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
   obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body = {idDelegacion: delegacion}
-    return of({error: false, codigo: 2, mensaje: "", datos: []})
-    // return this._http.post<HttpRespuesta<any>>(`http://localhost:8079/mssivimss-oauth/velatorio/consulta`, body);
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
   descargarListado(): Observable<Blob> {

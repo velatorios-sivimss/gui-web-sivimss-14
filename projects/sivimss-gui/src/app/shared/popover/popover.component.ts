@@ -53,7 +53,7 @@ export class PopoverComponent {
   constructor(private elementRef: ElementRef) {
   }
 
-  toggle(event: MouseEvent) {
+  toggle(event: MouseEvent): void {
     event?.stopPropagation(); // Stop event propagation
     this.visible = !this.visible;
   }
