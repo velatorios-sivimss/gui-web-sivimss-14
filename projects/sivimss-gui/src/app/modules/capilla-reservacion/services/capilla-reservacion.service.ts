@@ -52,8 +52,7 @@ export class CapillaReservacionService extends BaseService<HttpRespuesta<any>, a
 
   obtenerCatalogoVelatorios(): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_tokenCap}`, 'Content-Type': 'application/json' });
-    const params = new HttpParams().append("servicio", "catalogo")
-    debugger;
+    const params = new HttpParams().append("servicio", "catalogo");
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar`, { params });
   }
 

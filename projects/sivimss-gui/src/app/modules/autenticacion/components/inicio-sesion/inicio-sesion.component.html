@@ -117,3 +117,48 @@
     </div>
   </ng-template>
 </p-dialog>
+
+<p-dialog [(visible)]="mostrarModalUsuarioNoExiste" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="Usuario no existe">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">La cuenta con la que deseas ingresar no existe, favor de contactar a tu administrador</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalUsuarioNoExiste = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarModalSIAPSinConexion" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="SIAP sin conexión">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">No se pudo tener comunicación con el SIAP, favor de contactar a tu administrador</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalSIAPSinConexion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarModalSIAPDesactivado" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="SIAP desactivado">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">El SIAP está desactivado, favor de contactar a tu administrador</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalSIAPDesactivado = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

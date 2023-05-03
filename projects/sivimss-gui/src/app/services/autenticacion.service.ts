@@ -455,11 +455,13 @@ export class AutenticacionService {
       try {
         const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(token);
         this.usuarioEnSesionSubject.next(usuario);
-        this.obtenerPermisos(usuario.idRol).subscribe((respuesta: HttpRespuesta<any>) => {
-          this.permisosUsuarioSubject.next(respuesta.datos.permisosUsuario);
-          this.iniciarTemporizadorSesion();
-          this.paginaCargadaSubject.next(true);
-        });
+        setTimeout(() => {
+          this.obtenerPermisos(usuario.idRol).subscribe((respuesta: HttpRespuesta<any>) => {
+            this.permisosUsuarioSubject.next(respuesta.datos.permisosUsuario);
+            this.iniciarTemporizadorSesion();
+            this.paginaCargadaSubject.next(true);
+          });
+        }, 1000);
       } catch (ex) {
         this.cerrarSesion();
         this.paginaCargadaSubject.next(true);
@@ -470,16 +472,13 @@ export class AutenticacionService {
   }
 
   iniciarSesion(usuario: string, contrasenia: string, mostrarMsjContraseniaProxVencer: boolean = true): Observable<string> {
-    //this.http.post<any>(`http://localhost:8080/mssivimss-oauth/acceder`, {usuario, contrasena})
-    debugger;
-    this.paginaCargadaSubject.next(false);
+    // this.paginaCargadaSubject.next(false);
     return this.httpClient.post<any>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/login`, {usuario, contrasenia}).pipe(
-      delay(1000),
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (this.esInicioSesionCorrecto(respuesta.mensaje) || (respuesta.mensaje === MensajesRespuestaAutenticacion.ContraseniaProximaVencer && !mostrarMsjContraseniaProxVencer)) {
-          const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos.token);
+          const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos);
           return this.obtenerPermisos(usuario.idRol).pipe(map((respuestaPermisos: HttpRespuesta<any>) => {
-            this.crearSesion(respuesta.datos.token, usuario, respuestaPermisos.datos.permisosUsuario);
+            this.crearSesion(respuesta.datos, usuario, respuestaPermisos.datos.permisosUsuario);
             this.paginaCargadaSubject.next(true);
             return MensajesRespuestaAutenticacion.InicioSesionCorrecto;
           }));
@@ -531,7 +530,7 @@ export class AutenticacionService {
 
   obtenerModulosPorIdRol(idRol: string): Observable<HttpRespuesta<Modulo[]>> {
     //this.httpClient.get<RespuestaHttp<Modulo>>('');
-    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/menu`, {idRol});
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/menu`, {idRol});
     // return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
   }
 
@@ -598,7 +597,6 @@ export class AutenticacionService {
 
   obtenerCatalogos(): void {
     this.httpClient.post<HttpRespuesta<any>>('https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/catalogos/consulta', {})
-    // of<HttpRespuesta<any>>(respuestaCatalogos)
       .subscribe({
         next: (respuesta) => {
           const {datos} = respuesta;
