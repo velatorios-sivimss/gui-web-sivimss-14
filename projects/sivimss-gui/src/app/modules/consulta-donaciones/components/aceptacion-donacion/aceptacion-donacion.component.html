@@ -5,7 +5,7 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="folio">Folio ODS<span class="req">*</span></label>
-          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS">
+          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS" (blur)="consultaContratantePorFolioODS()">
           <span class="campo-obligatorio"
                 *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Campo obligatorio</span>
         </div>
@@ -22,7 +22,8 @@
         </div>
         <div class="col-md-6">
           <label class="control-label" for="responsableAlmacen">Responsable de almacén<span class="req">*</span></label>
-          <input id="responsableAlmacen" class="form-control" formControlName="responsableAlmacen" placeholder="Ingresa el responsable de almacén">
+          <input id="responsableAlmacen" class="form-control" formControlName="responsableAlmacen" placeholder="Ingresa el responsable de almacén"
+                 (keyup.space)="noEspaciosAlPrincipio()" lettersOnly maxlength="70">
           <span class="campo-obligatorio"
                 *ngIf="f.responsableAlmacen?.errors?.required && (f.responsableAlmacen?.dirty || f.responsableAlmacen?.touched)">
             Campo obligatorio
@@ -66,9 +67,9 @@
           </ng-template>
           <ng-template pTemplate="body" let-ataudDonado>
             <tr>
-              <td> {{ataudDonado.material}} </td>
-              <td> {{ataudDonado.modelo}} </td>
-              <td> {{ataudDonado.noInventario}} </td>
+              <td> {{ataudDonado.desTipoMaterial}} </td>
+              <td> {{ataudDonado.desModeloArticulo}} </td>
+              <td> {{ataudDonado.idArticulo}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -128,15 +129,15 @@
             </ng-template>
             <ng-template pTemplate="body" let-ataudDonado>
               <tr>
-                <td> {{ataudDonado.material}} </td>
-                <td> {{ataudDonado.modelo}} </td>
-                <td> {{ataudDonado.noInventario}} </td>
+                <td> {{ataudDonado.desTipoMaterial}} </td>
+                <td> {{ataudDonado.desModeloArticulo}} </td>
+                <td> {{ataudDonado.idArticulo}} </td>
               </tr>
             </ng-template>
           </p-table>
           <div class="flex justify-content-end my-2">
             <div class="col-md-6">
-              <p class="text-right bold"> Total de ataúdes a donar {{ataudDonado.length}}</p>
+              <p class="text-right bold" style="font-size: 18px"> Total de ataúdes a donar {{ataudDonado.length}}</p>
             </div>
           </div>
         </section>
@@ -153,7 +154,7 @@
 </ng-container>
 <div class="flex justify-content-end mb-4">
   <button class="ml-4 btn btn-gold btn-md" routerLink="../">Cancelar</button>
-  <button class="ml-4 btn btn-primary btn-md" *ngIf="!confirmacion" (click)="abrirConfirmacion()">
+  <button class="ml-4 btn btn-primary btn-md" [disabled]="donacionForm.invalid" *ngIf="!confirmacion" (click)="abrirConfirmacion()">
     Guardar
   </button>
   <button class="ml-4 btn btn-primary btn-md" *ngIf="confirmacion" (click)="guardar()">
