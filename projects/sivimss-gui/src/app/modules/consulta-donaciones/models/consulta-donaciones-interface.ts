@@ -10,18 +10,23 @@ export interface ConsultaDonacionesInterface {
 
 export interface AtaudDonado {
   idAtaud?: number;
-  descAtaud?: string;
-  modelo?: string;
-  material?: string;
+  idArticulo?: number;
   noInventario?: string;
+  folioArticulo?: string;
+  material?: string;
+  desTipoMaterial?: string;
+  modelo?: string;
+  desModeloArticulo?: string
+  descAtaud?: string;
 }
 
-// export interface RespuestaAtaud {
-//   ataud?: AtaudDonado,
-//   estatus?: boolean
-// }
+export interface ConsultaAtaudesDonados {
+  folio: string;
+  ataudes?: AtaudDonado[]
+}
 
 export interface FinadoInterface {
+  nomFinado?: string;
   nombre?: string;
   primerApellido?: string;
   segundoApellido?: string;
@@ -40,5 +45,18 @@ export interface FiltroDonacionesInterface {
   fechaFin?: string;
   donadoPor?: string;
   tipoReporte?: string
+}
+
+export interface GuardarAgregarDonacion {
+  idOrdenServicio?: number;
+  responsableAlmacen?: string;
+  matricularesponsable?: string;
+  numTotalAtaudes?: number;
+  ataudesDonados?: [
+    {
+      idArticulo?: number,
+      folioArticulo?: string
+    }
+  ];
 }
 

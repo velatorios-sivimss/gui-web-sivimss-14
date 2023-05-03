@@ -19,6 +19,8 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     this.subs = this.autenticacionService.usuarioEnSesion$.subscribe(
       (usuarioEnSesion: UsuarioEnSesion | null) => {
         this.usuarioEnSesion = usuarioEnSesion;
+        localStorage.setItem('usuario', JSON.stringify(
+          {'idDelegacion':this.usuarioEnSesion?.idDelegacion,'idVelatorio': this.usuarioEnSesion?.idVelatorio}));
       }
     );
   }
