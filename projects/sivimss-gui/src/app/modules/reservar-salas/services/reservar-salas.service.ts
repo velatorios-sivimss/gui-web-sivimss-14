@@ -15,12 +15,14 @@ export class ReservarSalasService extends  BaseService<HttpRespuesta<any>, any> 
 
   constructor( _http: HttpClient,private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`,"veri-registrar","veri-salida",
-      1,"","veri-consulta-dia","");
+      9,"","veri-consulta-dia","");
   }
 
   obtenerCatalogoVelatorio(): Observable<HttpRespuesta<any>>{
+
+    // TODO Agregar validación delegación
     const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
-    return this._http.get<HttpRespuesta<any>>(this._base + `consultaVelatorio/1`, { headers});
+    return this._http.get<HttpRespuesta<any>>(this._base + `consultaVelatorio/1`);
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
@@ -35,23 +37,23 @@ export class ReservarSalasService extends  BaseService<HttpRespuesta<any>, any> 
 
   consultarSalas(idVelatorio?: number,tipoSala?: number): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-buscar`,{idVelatorio:idVelatorio, tipoSala:tipoSala}, { headers});
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-buscar`,{idVelatorio:idVelatorio, tipoSala:tipoSala});
   }
 
   consultarODS(folioODS: number): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-datos`,{folioODS:folioODS}, { headers});
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-datos`,{folioODS:folioODS});
   }
 
   consultarDetalleDia(fechaConsulta:string, idSala:number): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-dia`,{fechaConsulta:fechaConsulta,idSala:idSala}, { headers});
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-dia`,{fechaConsulta:fechaConsulta,idSala:idSala});
   }
 
   consultaMes(mes: number,anio: number, tipoSala: number, idVelatorio: number): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-mes`,
-      {"mes":mes,"anio":anio,"tipoSala":tipoSala,"idVelatorio":idVelatorio}, { headers});
+      {"mes":mes,"anio":anio,"tipoSala":tipoSala,"idVelatorio":idVelatorio});
   }
 
   generarReporte(filtroArchivo:any): Observable<Blob> {

@@ -20,7 +20,7 @@
 </form>
 <div class="flex justify-content-end mt-6 my-3">
   <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
-  <button type="button" class="ml-4 btn btn-primary btn-md" (click)="agregar()">
+  <button type="button" class="ml-4 btn btn-primary btn-md" [disabled]="this.formAtaud.invalid" (click)="agregar()">
     Agregar
   </button>
 

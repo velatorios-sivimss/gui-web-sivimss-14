@@ -11,7 +11,7 @@ import {AutenticacionService} from "../../../services/autenticacion.service";
 @Injectable()
 export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
 
-  constructor( _http: HttpClient, private authService: AutenticacionService) {
+  constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "agregar-usuario", "actualizar-usuario",
       2, "consultar-usuarios", "detalle-usuario", "cambiar-estatus-usr");
   }
@@ -28,8 +28,16 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/valida-curp`, curp);
   }
 
+  consultarCurpRenapo(curp: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/curp/${curp}`);
+  }
+
   validarMatricula(matricula: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/valida-matricula`, matricula);
+  }
+
+  consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}/consultar/siap/${matricula}`);
   }
 
   obtenerCatalogoRoles(): Observable<HttpRespuesta<any>> {
@@ -49,8 +57,9 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body = { idDelegacion: delegacion }
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8079/mssivimss-oauth/velatorio/consulta`, body);
+    const body = {idDelegacion: delegacion}
+    return of({error: false, codigo: 2, mensaje: "", datos: []})
+    // return this._http.post<HttpRespuesta<any>>(`http://localhost:8079/mssivimss-oauth/velatorio/consulta`, body);
   }
 
   descargarListado(): Observable<Blob> {

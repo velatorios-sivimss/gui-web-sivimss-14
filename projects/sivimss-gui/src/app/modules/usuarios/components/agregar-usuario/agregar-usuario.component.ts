@@ -6,7 +6,6 @@ import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {UsuarioService} from "../../services/usuario.service";
-import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {RespuestaModalUsuario} from "../../models/respuestaModal.interface";
 import {MENSAJES_CURP} from "../../constants/validacionCURP";
@@ -15,6 +14,7 @@ import {ActivatedRoute} from '@angular/router';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {DynamicDialogRef} from "primeng/dynamicdialog";
 
 type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula">;
 type SolicitudCurp = Pick<Usuario, "curp">;
@@ -77,9 +77,9 @@ export class AgregarUsuarioComponent implements OnInit {
       curp: [{value: null, disabled: false},
         [Validators.required, Validators.maxLength(18), Validators.pattern(PATRON_CURP)]],
       matricula: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(10)]],
-      nombre: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(50)]],
-      primerApellido: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(50)]],
-      segundoApellido: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(50)]],
+      nombre: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(50)]],
+      primerApellido: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(50)]],
+      segundoApellido: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(50)]],
       correoElectronico: [{value: null, disabled: false},
         [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
@@ -138,13 +138,16 @@ export class AgregarUsuarioComponent implements OnInit {
     const curp: SolicitudCurp = {curp: this.agregarUsuarioForm.get("curp")?.value};
     if (!curp.curp) return;
     if (!PATRON_CURP.test(curp.curp)) return;
-    this.usuarioService.validarCurp(curp).subscribe(
+    this.usuarioService.validarCurp(curp).pipe(
+      finalize(() => this.validarCurpRenapo(curp.curp))
+    ).subscribe(
       (respuesta) => {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_CURP.has(valor)) return;
         const {mensaje, tipo, valido} = MENSAJES_CURP.get(valor);
         this.curpValida = valido;
+        console.log(this.curpValida)
         this.alertaService.mostrar(tipo, mensaje);
       },
       (error: HttpErrorResponse) => {
@@ -154,10 +157,31 @@ export class AgregarUsuarioComponent implements OnInit {
     );
   }
 
+  validarCurpRenapo(curp: string): void {
+    if (!this.curpValida) return
+    this.cargadorService.activar();
+    this.usuarioService.consultarCurpRenapo(curp).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        if (!respuesta.datos) return;
+        const {apellido1, apellido2, nombre} = respuesta.datos;
+        this.agregarUsuarioForm.get("nombre")?.patchValue(nombre);
+        this.agregarUsuarioForm.get("primerApellido")?.patchValue(apellido1);
+        this.agregarUsuarioForm.get("segundoApellido")?.patchValue(apellido2);
+      },
+      (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
+        console.error("ERROR: ", error.message)
+      });
+  }
+
   validarMatricula(): void {
     const matricula: SolicitudMatricula = {claveMatricula: this.agregarUsuarioForm.get("matricula")?.value};
     if (!matricula.claveMatricula) return;
-    this.usuarioService.validarMatricula(matricula).subscribe(
+    this.usuarioService.validarMatricula(matricula).pipe(
+      finalize(() => this.validarCurpMatricula(matricula.claveMatricula))
+    ).subscribe(
       (respuesta) => {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
@@ -171,6 +195,21 @@ export class AgregarUsuarioComponent implements OnInit {
         console.error("ERROR: ", error.message)
       }
     );
+  }
+
+  validarCurpMatricula(matricula: string): void {
+    if (!this.matriculaValida) return
+    this.cargadorService.activar();
+    this.usuarioService.consultarMatriculaSiap(matricula).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta)
+      },
+      (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
+        console.error("ERROR: ", error.message)
+      });
   }
 
   agregarUsuario(): void {
