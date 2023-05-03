@@ -111,7 +111,7 @@ export class ConsultaDonacionesService extends BaseService<HttpRespuesta<any>, a
 
   consutaCP(cp:String): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.externos}consultar/codigo-postal/`+ cp )
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/codigo-postal/`+ cp )
   }
 
   guardarAgregarDonacion(donacion: GuardarAgregarDonacion): Observable<HttpRespuesta<any>> {
