@@ -471,8 +471,9 @@ export class AutenticacionService {
 
   iniciarSesion(usuario: string, contrasenia: string, mostrarMsjContraseniaProxVencer: boolean = true): Observable<string> {
     //this.http.post<any>(`http://localhost:8080/mssivimss-oauth/acceder`, {usuario, contrasena})
+    debugger;
     this.paginaCargadaSubject.next(false);
-    return of<HttpRespuesta<any>>(respuestaInicioSesionCorrecto).pipe(
+    return this.httpClient.post<any>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/login`, {usuario, contrasenia}).pipe(
       delay(1000),
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (this.esInicioSesionCorrecto(respuesta.mensaje) || (respuesta.mensaje === MensajesRespuestaAutenticacion.ContraseniaProximaVencer && !mostrarMsjContraseniaProxVencer)) {
@@ -530,16 +531,18 @@ export class AutenticacionService {
 
   obtenerModulosPorIdRol(idRol: string): Observable<HttpRespuesta<Modulo[]>> {
     //this.httpClient.get<RespuestaHttp<Modulo>>('');
-    return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/menu`, {idRol});
+    // return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
   }
 
   actualizarContrasenia(usuario: string, contraseniaAnterior: string, contraseniaNueva: string): Observable<HttpRespuesta<any>> {
-    //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/acceder`, {usuario, contraseniaAnterior, contraseniaNueva})
-    return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/contrasenia/cambiar`, {usuario, contraseniaAnterior, contraseniaNueva});
+    //return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
   }
 
   obtenerPermisos(idRol: string) {
-    return of<HttpRespuesta<any>>(respuestaPermisosUsuario);
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/permisos`, {idRol});
+    // return of<HttpRespuesta<any>>(respuestaPermisosUsuario);
   }
 
   existeFuncionalidadConPermiso(idFuncionalidad: string, idPermiso: string): boolean {
@@ -577,7 +580,7 @@ export class AutenticacionService {
 
   validarCodigoRestablecerContrasenia(usuario: string, codigo: string): Observable<string> {
     //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/valida-codigo`, {usuario,codigo})
-    return of<HttpRespuesta<any>>(respCodigoCorrecto).pipe(
+    return this.httpClient.post<HttpRespuesta<any>>(`/mssivimss-oauth/v1/contrasenia/valida-codigo`, {usuario,codigo}).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (existeMensajeEnEnum(MensajesRespuestaCodigo, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
@@ -589,13 +592,13 @@ export class AutenticacionService {
   }
 
   generarCodigoRestablecerContrasenia(usuario: string): Observable<HttpRespuesta<any>> {
-    //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/genera-codigo`, {usuario})
-    return of<HttpRespuesta<any>>(respCodigoRestablecerContrasenia);
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/contrasenia/genera-codigo`, {usuario});
+    // return of<HttpRespuesta<any>>(respCodigoRestablecerContrasenia);
   }
 
   obtenerCatalogos(): void {
-    // this.httpClient.post<HttpRespuesta<any>>('http://localhost:8079/mssivimss-oauth/catalogos/consulta', {})
-    of<HttpRespuesta<any>>(respuestaCatalogos)
+    this.httpClient.post<HttpRespuesta<any>>('https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/catalogos/consulta', {})
+    // of<HttpRespuesta<any>>(respuestaCatalogos)
       .subscribe({
         next: (respuesta) => {
           const {datos} = respuesta;
