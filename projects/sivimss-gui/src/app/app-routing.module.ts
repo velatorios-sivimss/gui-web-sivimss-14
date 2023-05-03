@@ -167,6 +167,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'pagos/generar-formato-pagare',
+    loadChildren: () => import('./modules/pagos/generar-formato-pagare/generar-formato-pagare.module').then(m => m.GenerarFormatoPagareModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: 'reservar-salas',
     loadChildren: () => import('./modules/reservar-salas/reservar-salas.module').then(m => m.ReservarSalasModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
