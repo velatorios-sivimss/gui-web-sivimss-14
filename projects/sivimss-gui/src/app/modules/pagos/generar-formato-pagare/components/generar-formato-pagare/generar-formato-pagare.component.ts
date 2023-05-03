@@ -1,14 +1,14 @@
 import {FormatoPagare} from '../../models/formato-pagare.interface';
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {DialogService, DynamicDialogRef} from 'primeng-lts/dynamicdialog';
-import {OverlayPanel} from 'primeng-lts/overlaypanel';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {CATALOGOS_DUMMIES} from '../../constants/dummies';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {LazyLoadEvent} from 'primeng-lts/api';
+import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {GenerarFormatoPagareService} from '../../services/generar-formato-pagare.service';
 import {ActivatedRoute, Router} from '@angular/router';
