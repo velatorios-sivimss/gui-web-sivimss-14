@@ -72,7 +72,7 @@ export class AgregarRolComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-        console.error("ERROR: ", error.message)
+        console.error("ERROR: ", error)
       }
     );
   }

@@ -277,7 +277,6 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        debugger
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == respuesta.mensaje;
         });
@@ -347,7 +346,6 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   generarDatosPlantilla(): PlantillaControlSalida {
-    debugger;
     let usuario = JSON.parse(localStorage.getItem('usuario') as string)
 
 

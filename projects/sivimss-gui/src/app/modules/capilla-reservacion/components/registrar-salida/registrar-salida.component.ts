@@ -119,7 +119,7 @@ export class RegistrarSalidaComponent implements OnInit {
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta')
         this.ref.close(false)
-        console.error('ERROR: ', error.message)
+        console.error('ERROR: ', error)
       },
     )
   }

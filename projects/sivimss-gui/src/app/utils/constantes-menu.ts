@@ -17,7 +17,7 @@ export const idsModulos: DatoModulo = {
   },
   '2': {
     ruta: '/usuarios',
-    icono: 'administracion-usuarios.svg'
+    icono: ''
   },
   '3': {
     ruta: '/roles-permisos',
@@ -53,6 +53,18 @@ export const idsModulos: DatoModulo = {
   },
   '11': {
     ruta: '/contratantes',
+    icono: ''
+  },
+  '14': {
+    ruta: '/inventario-interno',
+    icono: ''
+  },
+  '19': {
+    ruta: '/salas',
+    icono: ''
+  },
+  '70': {
+    ruta: '/gestionar-tramites',
     icono: ''
   }
 };
