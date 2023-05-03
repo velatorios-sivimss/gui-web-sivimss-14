@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   api: {
-    mssivimss: 'http://localhost:8082/mssivimss-ctrol-permisos/v1/sivimss/service/',
-    login: 'http://localhost:8080/mssivimss-oauth/acceder',
-    externos: 'http://localhost:8081/mssivimss-servicios-externos/v1/catalogos/externos/'
+    mssivimss: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ctrol-permisos/v1/sivimss/service/',
+    login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/acceder',
+    servicios_externos: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-servicios-externos/v1/catalogos/externos/'
   }
 };
 
