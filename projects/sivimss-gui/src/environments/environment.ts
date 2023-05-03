@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   api: {
     mssivimss: 'http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/',
-    login: 'http://localhost:8080/mssivimss-oauth/acceder'
+    login: 'http://localhost:8080/mssivimss-oauth/acceder',
+    servicios_externos: 'http://localhost:8083/mssivimss-servicios-externos/v1/catalogos/externos/'
   }
 };
 

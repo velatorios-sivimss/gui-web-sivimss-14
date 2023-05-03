@@ -1,14 +1,19 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ValidaRolGuard } from "projects/sivimss-gui/src/app/guards/valida-rol.guard";
-import { UsuariosComponent } from './components/usuarios/usuarios.component';
-import { UsuarioResolver } from './services/usuario.resolver';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {ValidaRolGuard} from "projects/sivimss-gui/src/app/guards/valida-rol.guard";
+import {UsuariosComponent} from './components/usuarios/usuarios.component';
+import {UsuarioResolver} from './services/usuario.resolver';
 
 const routes: Routes = [{
   path: '', component: UsuariosComponent,
-  resolve: {
-    respuesta: UsuarioResolver,
+  resolve: {respuesta: UsuarioResolver},
+  data: {
+    validaRol: {
+      funcionalidad: 'USUARIOS',
+      permiso: 'CONSULTA'
+    }
   },
+  canActivate: [ValidaRolGuard]
 }
 ];
 
