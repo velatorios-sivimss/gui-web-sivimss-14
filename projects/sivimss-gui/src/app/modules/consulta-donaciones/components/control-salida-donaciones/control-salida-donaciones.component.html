@@ -18,18 +18,20 @@
           </div>
           <div class="col-md-6">
             <label class="control-label" for="curp">CURP <span class="req">*</span></label>
-            <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP">
+            <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP" maxlength="18"
+                   (blur)="consultaCURP()">
             <span class="campo-obligatorio"
                   *ngIf="fds.curp?.errors?.required && (fds.curp?.dirty || fds.curp?.touched)">Campo obligatorio</span>
+            <span class="campo-obligatorio"
+                  *ngIf="fds.curp?.errors?.pattern && (fds.curp?.dirty || fds.curp?.touched)">Campo obligatorio</span>
           </div>
         </div>
 
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="rfc">RFC </label>
-            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC">
-            <span class="campo-obligatorio"
-                  *ngIf="fds.rfc?.errors?.required && (fds.rfc?.dirty || fds.rfc?.touched)">Campo obligatorio</span>
+            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC"
+                   (blur)="consultaRFC()" maxlength="13" >
           </div>
         </div>
 
@@ -59,27 +61,60 @@
           <div class="col-md-6">
             <label class="control-label" for="sexo">Sexo <span class="req">*</span></label>
             <p-dropdown appendTo="body" id="sexo" class="form-control" formControlName="sexo"
-                        [options]="sexo"
+                        [options]="sexo" (onChange)="cambiarSexo()"
                         placeholder="Selecciona el sexo">
             </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fds.sexo?.errors?.required && (fds.sexo?.dirty || fds.sexo?.touched)">Campo obligatorio</span>
           </div>
+          <ng-container *ngIf="otroTipoSexo">
+            <div class="col-md-6">
+              <label class="control-label" for="otro">Otro <span class="req">*</span></label>
+              <input id="otro" class="form-control" formControlName="otro" placeholder="Ingresa sexo">
+              <span class="campo-obligatorio"
+                    *ngIf="fds.otro?.errors?.required && (fds.otro?.dirty || fds.otro?.touched)">Campo obligatorio</span>
+            </div>
+          </ng-container>
         </div>
 
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="nacionalidad">Nacionalidad <span class="req">*</span></label>
             <p-dropdown appendTo="body" id="nacionalidad" class="form-control" formControlName="nacionalidad"
-                        [options]="nacionalidad"
+                        [options]="nacionalidad" (onChange)="cambiarNacionalidad()"
                         placeholder="Selecciona la nacionalidad">
             </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fds.nacionalidad?.errors?.required && (fds.nacionalidad?.dirty || fds.nacionalidad?.touched)">Campo obligatorio</span>
           </div>
+
+          <ng-container *ngIf="fds.nacionalidad.value == 1">
+            <div class="col-md-6">
+              <label class="control-label" for="lugarNacimiento">Lugar de nacimiento <span class="req">*</span></label>
+              <p-dropdown appendTo="body" id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
+                          [options]="lugarNacimiento"
+                          placeholder="Selecciona el lugar de nacimiento">
+              </p-dropdown>
+              <span class="campo-obligatorio"
+                    *ngIf="fds.lugarNacimiento?.errors?.required && (fds.lugarNacimiento?.dirty || fds.lugarNacimiento?.touched)">Campo obligatorio</span>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="fds.nacionalidad.value == 2">
+            <div class="col-md-6">
+              <label class="control-label" for="paisNacimiento">País de nacimiento <span class="req">*</span></label>
+              <p-dropdown appendTo="body" id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
+                          [options]="paisNacimiento"
+                          placeholder="Selecciona el lugar de nacimiento">
+              </p-dropdown>
+              <span class="campo-obligatorio"
+                    *ngIf="fds.paisNacimiento?.errors?.required && (fds.paisNacimiento?.dirty || fds.paisNacimiento?.touched)">Campo obligatorio</span>
+            </div>
+          </ng-container>
           <div class="col-md-6">
             <label class="control-label" for="telefono">Tel&eacute;fono <span class="req">*</span></label>
-            <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono">
+            <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono"
+                   maxlength="10" numbersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fds.telefono?.errors?.required && (fds.telefono?.dirty || fds.telefono?.touched)">Campo obligatorio</span>
           </div>
@@ -91,6 +126,8 @@
             <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa el correo electrónico">
             <span class="campo-obligatorio"
                   *ngIf="fds.correoElectronico?.errors?.required && (fds.correoElectronico?.dirty || fds.correoElectronico?.touched)">Campo obligatorio</span>
+            <span class="campo-obligatorio"
+                  *ngIf="fds.correoElectronico?.errors?.pattern && (fds.correoElectronico?.dirty || fds.correoElectronico?.touched)">Campo obligatorio</span>
           </div>
         </div>
 
@@ -98,13 +135,14 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="calle">Calle <span class="req">*</span></label>
-            <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle">
+            <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle" maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fds.calle?.errors?.required && (fds.calle?.dirty || fds.calle?.touched)">Campo obligatorio</span>
           </div>
           <div class="col-md-6">
             <label class="control-label" for="cp">CP <span class="req">*</span></label>
-            <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa el código postal">
+            <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa el código postal" maxlength="5"
+                   (blur)="consultaCP()">
             <span class="campo-obligatorio"
                   *ngIf="fds.cp?.errors?.required && (fds.cp?.dirty || fds.cp?.touched)">Campo obligatorio</span>
           </div>
@@ -112,13 +150,13 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="numeroExterior">No. exterior <span class="req">*</span></label>
-            <input id="numeroExterior" class="form-control" formControlName="numeroExterior" placeholder="Ingresa el no. exterior">
+            <input id="numeroExterior" class="form-control" formControlName="numeroExterior" maxlength="10" placeholder="Ingresa el no. exterior">
             <span class="campo-obligatorio"
                   *ngIf="fds.numeroExterior?.errors?.required && (fds.numeroExterior?.dirty || fds.numeroExterior?.touched)">Campo obligatorio</span>
           </div>
           <div class="col-md-6">
             <label class="control-label" for="numeroInterior">No. interior</label>
-            <input id="numeroInterior" class="form-control" formControlName="numeroInterior" placeholder="Ingresa el número interior">
+            <input id="numeroInterior" class="form-control" formControlName="numeroInterior" maxlength="10" placeholder="Ingresa el número interior">
           </div>
         </div>
         <div class="row mb-3">
@@ -147,9 +185,8 @@
           </div>
           <div class="col-md-6">
             <label class="control-label" for="nombreInstitucion">Nombre de la institución </label>
-            <input id="nombreInstitucion" class="form-control" formControlName="nombreInstitucion" placeholder="Ingresa el nombre de la institución">
-            <span class="campo-obligatorio"
-                  *ngIf="fds.nombreInstitucion?.errors?.required && (fds.nombreInstitucion?.dirty || fds.nombreInstitucion?.touched)">Campo obligatorio</span>
+            <input id="nombreInstitucion" class="form-control" formControlName="nombreInstitucion" placeholder="Ingresa el nombre de la institución"
+                   maxlength="50">
           </div>
         </div>
 
@@ -234,9 +271,9 @@
           </ng-template>
           <ng-template pTemplate="body" let-ataudes>
             <tr>
-              <td> {{ataudes.material}} </td>
-              <td> {{ataudes.modelo}} </td>
-              <td> {{ataudes.noInventario}} </td>
+              <td> {{ataudes.desTipoMaterial}} </td>
+              <td> {{ataudes.desModeloArticulo}} </td>
+              <td> {{ataudes.idArticulo}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -252,12 +289,12 @@
             <label class="control-label">Para el otorgamiento de esta donación fue presentado un:</label>
             <div class="flex">
               <div class="flex align-items-center">
-                <p-checkbox inputId="otorgamiento" formControlName="otorgamiento" styleClass="mr-3" [binary]="true"></p-checkbox>
-                <label [for]="'otorgamiento'" class="control-label mb-0">Estudio socioeconómico</label>
+                <p-checkbox inputId="otorgamiento" formControlName="estudioSocioeconomico" styleClass="mr-3" (click)="otorgamiento(0)"  [binary]="true"></p-checkbox>
+                <label [for]="'estudioSocioeconomico'" class="control-label mb-0">Estudio socioeconómico</label>
               </div>
               <div class="flex align-items-center ml-5">
-                <p-checkbox inputId="escrito" formControlName="otorgamiento" styleClass="mr-3" [binary]="true"></p-checkbox>
-                <label [for]="'escrito'" class="control-label mb-0">Escrito libre</label>
+                <p-checkbox inputId="escrito" formControlName="estudioLibre" styleClass="mr-3" (click)="otorgamiento(1)" [binary]="true"></p-checkbox>
+                <label [for]="'estudioLibre'" class="control-label mb-0">Escrito libre</label>
               </div>
             </div>
           </div>
@@ -272,9 +309,10 @@
         <div class="row">
           <div class="col-md-6">
             <label class="control-label" for="responsableAlmacenAtaud">Responsable de almacén <span class="req">*</span></label>
-            <input id="responsableAlmacenAtaud" class="form-control" formControlName="responsableAlmacen" placeholder="Ingresa el responsable de almacén">
+            <input id="responsableAlmacenAtaud" class="form-control" formControlName="responsableAlmacenAtaud" placeholder="Ingresa el responsable de almacén"
+                   maxlength="70" lettersOnly (keyup.space)="noEspaciosAlPrincipio()">
             <span class="campo-obligatorio"
-                  *ngIf="fa.responsableAlmacen?.errors?.required && (fa.responsableAlmacen?.dirty || fa.responsableAlmacen?.touched)">Campo obligatorio</span>
+                  *ngIf="fa.responsableAlmacenAtaud?.errors?.required && (fa.responsableAlmacenAtaud?.dirty || fa.responsableAlmacenAtaud?.touched)">Campo obligatorio</span>
           </div>
           <div class="col-md-6">
             <label class="control-label" for="matriculaResponsableAtaud">Matrícula del responsable <span class="req">*</span></label>
@@ -304,13 +342,13 @@
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>CURP</label>
-                  <span>{{fds.curp.value}}</span>
+                  <span>{{fds.curp?.value}}</span>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-3" *ngIf="fds.rfc.value">
                 <div class="table-panel-column">
-                  <label>NSS</label>
-                  <span>{{fds.nss.value}}</span>
+                  <label>RFC</label>
+                  <span>{{fds.rfc?.value}}</span>
                 </div>
               </div>
             </div>
@@ -318,45 +356,48 @@
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Nombre(s)</label>
-                  <span>{{fds.nombre.value}}</span>
+                  <span>{{fds.nombre?.value}}</span>
                 </div>
               </div>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Primer apellido</label>
-                  <span>{{fds.primerApellido.value}}</span>
+                  <span>{{fds.primerApellido?.value}}</span>
                 </div>
               </div>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Segundo apellido</label>
-                  <span>{{fds.segundoApellido.value}}</span>
+                  <span>{{fds.segundoApellido?.value}}</span>
                 </div>
               </div>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Fecha de nacimiento</label>
-                  <span>{{fds.fechaNacimiento.value}}</span>
+                  <span>{{fds.fechaNacimiento?.value | date : 'dd/MM/yyyy'}}</span>
                 </div>
               </div>
             </div>
             <div class="row table-panel-row">
-              <div class="col-md-3">
-                <div class="table-panel-column">
-                  <label>Edad</label>
-                  <span>{{fds.edad.value}}</span>
-                </div>
-              </div>
+
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Sexo</label>
-                  <span>{{fds.sexo.value}}</span>
+                  <span>{{tomarTipoSexo() }}</span>
                 </div>
               </div>
+              <ng-container *ngIf="fds.sexo?.value == 3">
+                <div class="col-md-3">
+                  <div class="table-panel-column">
+                    <label>Otro</label>
+                    <span>{{fds.otro?.value}}</span>
+                  </div>
+                </div>
+              </ng-container>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Nacionalidad</label>
-                  <span>{{fds.nacionalidad.value}}</span>
+                  <span>{{fds.nacionalidad?.value == 1 ? "Mexicana": "Extranjera"}}</span>
                 </div>
               </div>
             </div>
@@ -389,7 +430,7 @@
           </p-table>
           <div class="flex justify-content-end my-2">
             <div class="col-md-6">
-              <p class="text-right bold"> Total de finados {{finados.length}}</p>
+              <p class="text-right bold" style="font-size: 18px"> Total de finados {{finados.length}}</p>
             </div>
           </div>
         </ng-template>
@@ -413,15 +454,15 @@
             </ng-template>
             <ng-template pTemplate="body" let-ataudes>
               <tr>
-                <td> {{ataudes.material}} </td>
-                <td> {{ataudes.modelo}} </td>
-                <td> {{ataudes.noInventario}} </td>
+                <td> {{ataudes.desTipoMaterial}} </td>
+                <td> {{ataudes.desModeloArticulo}} </td>
+                <td> {{ataudes.idArticulo}} </td>
               </tr>
             </ng-template>
           </p-table>
           <div class="flex justify-content-end my-2">
             <div class="col-md-6">
-              <p class="text-right bold"> Total de ataudes a donar {{ataudes.length}}</p>
+              <p class="text-right bold" style="font-size: 18px"> Total de ataudes a donar {{ataudes.length}}</p>
             </div>
           </div>
 
@@ -430,13 +471,15 @@
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Para el otorgamiento de esta donación fue presentado un:</label>
-                  <span>{{fa.otorgamiento.value}}</span>
+                  <span>{{fa.estudioSocioeconomico?.value == true ? "Estudio socioeconómico": ''}}</span>
+                  <span>{{fa.estudioLibre?.value == true ? "Escrito libre": ''}}</span>
+
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Fecha de solicitud</label>
-                  <span>{{fa.fechaSolicitud.value}}</span>
+                  <span>{{fa.fechaSolicitud?.value | date: 'dd/MM/YYYY'}}</span>
                 </div>
               </div>
             </div>
@@ -444,13 +487,13 @@
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Responsable de almacén</label>
-                  <span>{{fa.responsableAlmacen.value}}</span>
+                  <span>{{fa.responsableAlmacenAtaud?.value}}</span>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Matrícula del responsable</label>
-                  <span>{{fa.matriculaResponsable.value}}</span>
+                  <span>{{fa.matriculaResponsable?.value}}</span>
                 </div>
               </div>
             </div>

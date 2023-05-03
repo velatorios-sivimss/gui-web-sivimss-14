@@ -15,7 +15,7 @@ const routes: Routes = [
     component: ConsultaDonacionesComponent,
     resolve: {
       respuesta: DonacionesResolver,
-  }
+    }
   },
   {
     path:'aceptacion-donacion',
@@ -23,7 +23,7 @@ const routes: Routes = [
   },
   {
     path:'control-salida-donaciones',
-    component: ControlSalidaDonacionesComponent
+    component: ControlSalidaDonacionesComponent,
   },
 
 ];

@@ -69,6 +69,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
+    debugger;
     const respuesta = this.route.snapshot.data['respuesta'];
     this.velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS]!.datos.map((velatorio: VelatorioInterface) => (
       {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];

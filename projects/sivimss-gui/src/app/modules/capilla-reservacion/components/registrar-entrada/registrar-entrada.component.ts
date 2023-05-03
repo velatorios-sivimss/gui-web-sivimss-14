@@ -1,66 +1,234 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../../servicios-funerarios/constants/dummies";
-import {DynamicDialogRef} from "primeng/dynamicdialog";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-
+import {
+  Component,
+  EventEmitter,
+  Input, OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { TipoDropdown } from '../../../../models/tipo-dropdown'
+import { CATALOGOS_DUMMIES } from '../../../servicios-funerarios/constants/dummies'
+import {DynamicDialogConfig,DynamicDialogRef,} from "primeng/dynamicdialog";
+import {
+  AlertaService,
+  TipoAlerta,
+} from '../../../../shared/alerta/services/alerta.service'
+import { RespuestaModalUsuario } from '../../../usuarios/models/respuestaModal.interface'
+import { registrarEntrada } from '../../models/capilla-reservacion.interface'
+import {OverlayPanel} from "primeng/overlaypanel";
+import { CapillaReservacionService } from '../../services/capilla-reservacion.service'
+import { HttpErrorResponse } from '@angular/common/http'
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones'
+import { ActivatedRoute } from '@angular/router'
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import * as moment from 'moment'
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+type NuevaEntrada = Omit<registrarEntrada, 'idRol'>
 
 @Component({
   selector: 'app-registrar-entrada',
   templateUrl: './registrar-entrada.component.html',
-  styleUrls: ['./registrar-entrada.component.scss']
+  styleUrls: ['./registrar-entrada.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class RegistrarEntradaComponent implements OnInit {
+  @Input() entradaRegistrada!: registrarEntrada
+  @Input() origen!: string
+  @Output() confirmacionAceptar = new EventEmitter<registrarEntrada>()
 
-  registrarEntradaForm!: FormGroup;
 
-  confirmacion: boolean = false;
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  acordionAbierto: boolean = false
 
-  capilla:TipoDropdown[] = CATALOGOS_DUMMIES;
+  @ViewChild(OverlayPanel)
+  overlayPanel: OverlayPanel | undefined
+  horaEntrada: any
+
+  identificadorCapilla!: any;
+  idOds!:number;
+  folioOdsEstatus: boolean = false;
+
+  registrarEntradaForm!: FormGroup
+
+  confirmacion: boolean = false
+
+  registros: any[] = [
+    { value: 1, label: 'Registro 1' },
+    { value: 2, label: 'Registro 2' },
+    { value: 3, label: 'Registro 3' },
+    { value: 4, label: 'Registro 4' },
+    { value: 5, label: 'Registro 5' },
+  ];
+
+  registros2: any[] = [];
+
+  velatorios: TipoDropdown[] = []
+  capilla: TipoDropdown[] = []
+  fechaDetalle!: string;
+  nombreCapilla!: any;
 
   constructor(
-    // private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     private readonly refModal: DynamicDialogRef,
-  ) { }
+    public config: DynamicDialogConfig,
+    public capillaReservacionService: CapillaReservacionService,
+    private route: ActivatedRoute,
+    private readonly loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService
+  ) {
+    this.entradaRegistrada = this.config.data
+    this.inicializarRegistrarEntradaForm(this.entradaRegistrada)
+  }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
-    this.inicializarRegistrarEntradaForm();
+    this.inicializarRegistrarEntradaForm(this.entradaRegistrada);
+    this.obtenerCapillaPorIdVelatorio();
   }
 
-  actualizarBreadcrumb(): void{
-    // this.breadcrumbService.actualizar([]);
-
-    //Has registrado la entrada/inicio del servicio correctamente.
-  }
-
-  inicializarRegistrarEntradaForm(): void {
+  actualizarBreadcrumb(): void { }
+  inicializarRegistrarEntradaForm(datosEntrada: registrarEntrada): void {
+    this.fechaDetalle = moment(datosEntrada.fechaEntrada).format('DD/MM/yyyy');
     this.registrarEntradaForm = this.formBuilder.group({
-      capilla: [{value: null,disabled: false}, [Validators.required]],
-      folioODS: [{value: null,disabled: false}, [Validators.required]],
-      nombreContratante: [{value: null,disabled: false}, [Validators.required]],
-      nombreFinado: [{value: null,disabled: false}, [Validators.required]],
-      registroEntrada: [{value: null,disabled: false}, [Validators.required]]
-    });
+      capilla: [{ value: null, disabled: false }, [Validators.required]],
+      folioODS: [{ value: null, disabled: false }, [Validators.required]],
+      nombreContratante: [{ value: null, disabled: true }],
+      nombreFinado: [{ value: null, disabled: true }],
+      fechaEntrada: [{ value: datosEntrada.fechaEntrada, disabled: false }, [Validators.required]],
+      horaEntrada: [{ value: datosEntrada.horaEntrada, disabled: false }, [Validators.required]],
+    })
   }
 
-  confirmarEntrada(valor?:boolean): void {
-    this.confirmacion = true;
-    if(valor){
-      this.alertaService.mostrar(TipoAlerta.Exito, 'Has registrado la entrada/inicio del servicio correctamente.');
-      this.refModal.close();
+  obtenerCapillaPorIdVelatorio() {
+    this.capillaReservacionService.buscarPorIdVelatorio(+this.entradaRegistrada.idVelatorio!).subscribe(
+      (respuesta) => {
+        if (respuesta.datos) {
+          this.registros2 = respuesta!.datos.map((capilla: any) => {
+            return { label: capilla.nomCapilla, value: capilla.idCapilla };
+          });
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    );
+  }
+
+  crearEntradaModificado(): registrarEntrada {
+    return {
+      idCapilla: this.registrarEntradaForm.get('capilla')?.value,
+      fechaEntrada: moment(this.registrarEntradaForm.get('fechaEntrada')?.value).format('DD-MM-yyyy'),
+      horaEntrada: moment(this.registrarEntradaForm.get('horaEntrada')?.value).format('HH:mm'),
+      idOrdenServicio: this.idOds,
     }
   }
 
+  confirmarEntrada(valor?: boolean): void {
+    this.confirmacion = true
+  }
+
+  guardar(): void {
+    const registrarEntradaBo: NuevaEntrada = this.crearEntradaModificado()
+    const solicitudEntrada: string = JSON.stringify(registrarEntradaBo)
+    this.capillaReservacionService.guardar(solicitudEntrada).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        const mensaje = this.alertas.filter((msj: any) => {
+          return msj.idMensaje == respuesta.mensaje;
+        })
+        this.generarPlantillaEntregaCapilla();
+        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+        this.refModal.close(true)
+      },
+      (error: HttpErrorResponse) => {
+        const mensaje = this.alertas.filter((msj: any) => {
+          return msj.idMensaje == error.error.mensaje;
+        })
+        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+        console.error('ERROR: ', error.message)
+        this.refModal.close(false)
+      },
+    )
+  }
+
+  consultaODS(): void {
+    this.loaderService.activar();
+    const folioODS = +this.ref.folioODS.value;
+    if(!folioODS){
+      this.loaderService.desactivar();
+      return;
+    }
+    this.capillaReservacionService.consultarODS(folioODS).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        this.ref.nombreContratante.patchValue(null);
+        this.ref.nombreFinado.patchValue(null);
+        if (respuesta.datos.length > 0){
+          this.folioOdsEstatus = false;
+          this.idOds = respuesta.datos[0]?.idOds;
+          this.ref.nombreContratante.setValue(respuesta.datos[0]?.nombreContratante);
+          this.ref.nombreFinado.setValue(respuesta.datos[0]?.finado);
+          if((respuesta.datos[0].nombreContratante &&
+            respuesta.datos[0]?.finado)
+          ){
+            this.folioOdsEstatus = true;
+          }
+        }else{
+          this.alertaService.mostrar(TipoAlerta.Precaucion, "El número de folio no existe.\n" +
+            "Verifica tu información.\n")
+        }
+      },
+      (error:HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    );
+  }
+
+  generarPlantillaEntregaCapilla(): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    this.loaderService.activar();
+    const busqueda = this.filtrosArchivos();
+    this.descargaArchivosService.descargarArchivo(this.capillaReservacionService.generarFormatEntregaCapilla(busqueda), configuracionArchivo).pipe(
+      finalize( () => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta)
+      },
+      (error) => {
+        console.log(error)
+      },
+    )
+  }
+
+  filtrosArchivos() {
+    return {
+      idCapilla: this.ref.capilla.value,
+      folioOds: this.ref.folioODS.value,
+      rutaNombreReporte: "reportes/plantilla/EntregaCapilla2.jrxml",
+      tipoReporte: "pdf"
+    }
+  }
+
+  tomarNombreCapilla(): void {
+    this.nombreCapilla = this.registros2.filter((valor:any) => {
+      return valor.value == this.registrarEntradaForm.get('capilla')?.value;
+    })
+
+    this.nombreCapilla = this.nombreCapilla[0].label
+  }
+
   cancelar(): void {
-    this.refModal.close();
+    this.refModal.close(false)
   }
 
   get ref() {
-    return this.registrarEntradaForm.controls;
+    return this.registrarEntradaForm.controls
   }
-
 }

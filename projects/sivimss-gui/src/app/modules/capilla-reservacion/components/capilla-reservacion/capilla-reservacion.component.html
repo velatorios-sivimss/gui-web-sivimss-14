@@ -1,26 +1,32 @@
 <app-titulo-principal titulo="Reservar capilla"></app-titulo-principal>
-  <div class="row mx-4 mb-4">
-    <div class="col-md-3">
-      <p-selectButton [options]="opciones" [(ngModel)]="value" optionLabel="icon" optionValue="value">
-        <ng-template let-item>
-          <i [class]="item.icon"></i>
-        </ng-template>
-      </p-selectButton>
-    </div>
+<div class="row mx-4 mb-4">
+  <div class="col-md-3">
+    <p-selectButton [options]="opciones" [(ngModel)]="value" optionLabel="icon" optionValue="value">
+      <ng-template let-item>
+        <i [class]="item.icon"></i>
+      </ng-template>
+    </p-selectButton>
   </div>
+</div>
 <ng-container *ngIf="value == 0">
   <div class="border-panel mb-5">
-    <form [formGroup]="registrarEntradaForm">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="velatorio">Velatorio</label>
-          <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
-                      [options]="velatorio"
-                      placeholder="Selecciona el velatorio">
-          </p-dropdown>
-        </div>
+    <div class="row mb-3">
+
+      <div class="col-md-6">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación">
+        </p-dropdown>
       </div>
-      <h2 class="subtitulo mb-3">Registrar entrada a capilla</h2>
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio</label>
+        <p-dropdown appendTo="body" id="velatorio" class="form-control" [(ngModel)]="velatorioListado"
+                    [options]="velatorios" (onChange)="obtenerCapillaPorIdVelatorio()"
+                    placeholder="Selecciona el velatorio">
+        </p-dropdown>
+      </div>
+    </div>
+    <h2 class="subtitulo mb-3">Registrar entrada a capilla</h2>
+    <form [formGroup]="registrarEntradaForm">
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="fechaEntrada">Fecha<span class="req">*</span>:</label>
@@ -47,7 +53,7 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="button" class="btn btn-primary btn-md ml-5" (click)="abrirModalAgregarEntrada()">Buscar</button>
+          <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarEntradaForm.invalid" (click)="abrirModalAgregarEntrada()">Buscar</button>
         </div>
       </div>
 
@@ -91,7 +97,7 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="button" class="btn btn-primary btn-md ml-5" (click)="abrirModalAgregarSalida()" >Registrar salida</button>
+          <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarSalidaForm.invalid"  (click)="abrirModalAgregarSalida()" >Registrar salida</button>
         </div>
       </div>
     </form>
@@ -99,7 +105,7 @@
 </ng-container>
 <ng-container *ngIf="value == 1">
   <section class="my-4">
-    <form [formGroup]="calendarioForm">
+    <!-- <form [formGroup]="calendarioForm">
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="velatorioCalendario">Velatorio</label>
@@ -109,7 +115,7 @@
           </p-dropdown>
         </div>
       </div>
-    </form>
+    </form> -->
     <app-calendario></app-calendario>
   </section>
 </ng-container>
