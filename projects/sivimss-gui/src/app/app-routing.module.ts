@@ -167,6 +167,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'pagos/generar-formato-pagare',
+    loadChildren: () => import('./modules/pagos/generar-formato-pagare/generar-formato-pagare.module').then(m => m.GenerarFormatoPagareModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: 'reservar-salas',
     loadChildren: () => import('./modules/reservar-salas/reservar-salas.module').then(m => m.ReservarSalasModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
@@ -178,6 +183,11 @@ const routes: Routes = [
   {
   path: 'programar-mantenimiento-vehicular',
   loadChildren: () => import('./modules/mantenimiento-vehicular/mantenimiento-vehicular.module').then(m => m.MantenimientoVehicularModule),
+  },
+  {
+    path: 'control-de-vehiculos',
+    loadChildren: () => import('./modules/control-vehiculos/control-vehiculos.module').then(m => m.ControlVehiculosModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: '**',

@@ -80,7 +80,7 @@
           class="req">*</span></label>
         <p-dropdown appendTo="body" id="delegacionAgregarUsuarioModificar" class="form-control"
                     formControlName="delegacion" [options]="catalogoDelegaciones" placeholder="Seleccione el nivel"
-                    (onChange)="buscarVelatorios()" >
+                    (onChange)="buscarVelatorios()">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="fmu?.delegacion?.errors?.required && (fmu?.delegacion?.dirty || fmu?.delegacion?.touched)">Campo obligatorio</span>

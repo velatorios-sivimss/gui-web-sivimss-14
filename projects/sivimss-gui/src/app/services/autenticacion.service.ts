@@ -482,7 +482,7 @@ export class AutenticacionService {
             this.paginaCargadaSubject.next(true);
             return MensajesRespuestaAutenticacion.InicioSesionCorrecto;
           }));
-        } else if (this.esMensajeRespuestaValido(MensajesRespuestaAutenticacion,respuesta.mensaje)) {
+        } else if (this.esMensajeRespuestaValido(MensajesRespuestaAutenticacion, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
         } else {
           return throwError('Ocurrió un error al intentar iniciar sesión');
@@ -491,11 +491,11 @@ export class AutenticacionService {
     );
   }
 
-  esMensajeRespuestaValido(enumObj: { [s: string]: string }, mensaje: string):boolean {
+  esMensajeRespuestaValido(enumObj: { [s: string]: string }, mensaje: string): boolean {
     return existeMensajeEnEnum(MensajesRespuestaAutenticacion, mensaje);
   }
 
-  esInicioSesionCorrecto(mensaje:string):boolean{
+  esInicioSesionCorrecto(mensaje: string): boolean {
     return mensaje === MensajesRespuestaAutenticacion.InicioSesionCorrecto;
   }
 

@@ -41,7 +41,7 @@
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Lista de usuarios</h2>
     <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['USUARIOS','ALTA']"
-            (click)="abrirModalAgregarUsuario()">Agregar
+            (click)="abrirModalAgregarUsuario()" onCloseOnNavigation>Agregar
     </button>
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="usuarios" [paginator]="usuarios.length > 0" [rows]="cantElementosPorPagina"
@@ -78,10 +78,10 @@
           </div>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetalleUsuario(usuario)" *appValidaRol="['USUARIOS','CONSULTA']">
-              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+            <a (click)="abrirModalDetalleUsuario(usuario)" *appValidaRol="['USUARIOS','CONSULTA']" onCloseOnNavigation>
+              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver" >
             </a>
-            <a (click)="abrirPanel($event,usuario)" *appValidaRol="['USUARIOS','MODIFICAR']">
+            <a (click)="abrirPanel($event,usuario)" *appValidaRol="['USUARIOS','MODIFICAR']" onCloseOnNavigation>
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>

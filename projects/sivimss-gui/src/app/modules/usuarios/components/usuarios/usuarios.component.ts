@@ -163,16 +163,16 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.cargadorService.activar();
     this.usuarioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
+      .subscribe({
+        next: (respuesta) => {
           this.usuarios = respuesta!.datos.content;
           this.totalElementos = respuesta!.datos.totalElements;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
   }
 
   paginarConFiltros(): void {
