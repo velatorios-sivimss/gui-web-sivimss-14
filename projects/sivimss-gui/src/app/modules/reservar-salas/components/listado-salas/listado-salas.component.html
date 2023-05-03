@@ -37,8 +37,8 @@
                     {{salasCremacion.estadoSala}}
                   </td>
                   <td>
-<!--                    <button type="button" *appValidaRol="['SALAS_RESERVACION','ALTA']" class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)">-->
-                    <button type="button"  class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)">
+                    <button type="button" *appValidaRol="['SALAS_RESERVACION','ALTA']" class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)"
+                            onCloseOnNavigation>
                       Registrar {{ salasCremacion.estadoSala != 'DISPONIBLE' ? 'salida' : 'entrada'}}
                     </button>
                   </td>
@@ -46,7 +46,7 @@
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <th colspan="5" class="p-2 text-center font-bold text-xl">
+                  <th scope="col" colspan="5" class="p-2 text-center font-bold text-xl">
                     No hay elementos que coincidan con los parámetros seleccionados
                   </th>
                 </tr>
@@ -76,8 +76,8 @@
                 {{sala.estadoSala}}
               </td>
               <td>
-<!--                <button type="button" *appValidaRol="['SALAS_RESERVACION','MODIFICAR']" class="btn btn-primary btn-md" (click)="registrarActividad(sala)">-->
-                <button type="button" class="btn btn-primary btn-md" (click)="registrarActividad(sala)">
+                <button type="button" *appValidaRol="['SALAS_RESERVACION','MODIFICAR']" class="btn btn-primary btn-md" (click)="registrarActividad(sala)"
+                        onCloseOnNavigation>
                   Registrar {{ sala.estadoSala != 'DISPONIBLE' ? 'salida' : 'entrada'}}
                 </button>
               </td>
@@ -85,7 +85,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <th colspan="5" class="p-2 text-center font-bold text-xl">
+              <th scope="col" colspan="5" class="p-2 text-center font-bold text-xl">
                 No hay elementos que coincidan con los parámetros seleccionados
               </th>
             </tr>

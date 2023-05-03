@@ -205,7 +205,7 @@
     <div class="border-panel mb-3">
       <h2 class="subtitulo">Datos del (los) finado (s)</h2>
       <div class="flex justify-content-end">
-        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalFinado()">
+        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalFinado()" onCloseOnNavigation>
           Agregar finado
         </button>
       </div>
@@ -247,7 +247,7 @@
     <div class="border-panel">
       <h2 class="subtitulo">Selección de ataudes</h2>
       <div class="flex justify-content-end">
-        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAtaud()">
+        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAtaud()" onCloseOnNavigation>
           Agregar ataúd
         </button>
       </div>

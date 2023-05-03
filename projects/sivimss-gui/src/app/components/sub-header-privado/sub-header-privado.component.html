@@ -24,6 +24,8 @@
 
 <ng-template #notificacionesTemplate>
   <ul>
-    <li *ngFor="let notificacion of notificaciones">{{ notificacion }}</li>
+    <li (click)="seleccionarNotificacion($event)" *ngFor="let notificacion of notificaciones">{{ notificacion }}</li>
   </ul>
+
+
 </ng-template>

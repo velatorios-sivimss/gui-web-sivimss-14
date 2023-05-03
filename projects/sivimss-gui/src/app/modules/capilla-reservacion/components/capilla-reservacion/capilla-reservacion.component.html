@@ -53,7 +53,10 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarEntradaForm.invalid" (click)="abrirModalAgregarEntrada()">Buscar</button>
+            <button *appValidaRol="['CAPILLA_RESERVACION','ALTA']" type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarEntradaForm.invalid"
+                    onCloseOnNavigation  (click)="abrirModalAgregarEntrada()">
+              Buscar
+            </button>
         </div>
       </div>
 
@@ -97,7 +100,8 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarSalidaForm.invalid"  (click)="abrirModalAgregarSalida()" >Registrar salida</button>
+          <button *appValidaRol="['CAPILLA_RESERVACION','MODIFICAR']" onCloseOnNavigation type="button" class="btn btn-primary btn-md ml-5"
+                  [disabled]="registrarSalidaForm.invalid"  (click)="abrirModalAgregarSalida()" >Registrar salida</button>
         </div>
       </div>
     </form>
