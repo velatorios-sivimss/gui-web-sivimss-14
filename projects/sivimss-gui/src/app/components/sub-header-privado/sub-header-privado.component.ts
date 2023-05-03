@@ -43,4 +43,11 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     }
   }
 
+  seleccionarNotificacion(event:any): void {
+  }
+
+  aceptar(): void {
+
+  }
+
 }
