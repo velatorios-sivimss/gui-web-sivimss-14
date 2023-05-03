@@ -36,7 +36,7 @@ export class VerDetalleUsuarioComponent implements OnInit {
     this.obtenerUsuario(this.id);
   }
 
-  cambiarEstatus(): void {
+  aceptar(): void {
     const respuesta: RespuestaModalUsuario = {actualizar: false};
     this.ref.close(respuesta);
   }
