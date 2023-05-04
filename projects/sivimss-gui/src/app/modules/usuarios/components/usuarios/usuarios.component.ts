@@ -26,6 +26,7 @@ import {CambioEstatusUsuarioComponent} from "../cambio-estatus-usuario/cambio-es
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type SolicitudEstatus = Pick<Usuario, "id">;
 const MAX_WIDTH: string = "920px";
@@ -74,7 +75,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
     private cargadorService: LoaderService,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -218,16 +220,15 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     const idUsuario: SolicitudEstatus = {id}
     this.cargadorService.activar();
     this.usuarioService.cambiarEstatus(idUsuario)
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe({
-        next: (): void => {
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus realizado');
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
-        }
-      });
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe(
+      (): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus realizado');
+      },
+      (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mostrarMensajeError("", error.message)
+      }
+    );
   }
 
   procesarRespuestaModal(respuesta: RespuestaModalUsuario = {}): void {
@@ -252,6 +253,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       },
       (error) => {
         console.log(error)
+        this.mostrarMensajeError("", error.message)
       },
     )
   }
@@ -261,15 +263,28 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
     this.descargaArchivosService.descargarArchivo(this.usuarioService.descargarListadoExcel(),
       configuracionArchivo).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta): void => {
+      finalize(() => this.cargadorService.desactivar())).subscribe(
+      (respuesta): void => {
         console.log(respuesta)
       },
-      error: (error): void => {
+      (error): void => {
+        this.mostrarMensajeError("", error.message)
         console.log(error)
       },
-    })
+    )
+  }
+
+  mostrarMensajeError(defaultError: string = '', codigoError: string): void {
+    // const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(codigoError));
+    // if (errorMsg !== '') {
+    //  this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
+    //  return;
+    // }
+    if (defaultError !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, defaultError);
+      return;
+    }
+    this.alertaService.mostrar(TipoAlerta.Error, "Error Desconocido");
   }
 
   get f() {

@@ -41,11 +41,10 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}/consultar/siap/${matricula}`);
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/siap/${matricula}`);
   }
 
   obtenerCatalogoRoles(): Observable<HttpRespuesta<any>> {
-    // return of({ codigo: 200, datos: [], mensaje: "", error: false});
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/${this._roles}`,);
   }
 
