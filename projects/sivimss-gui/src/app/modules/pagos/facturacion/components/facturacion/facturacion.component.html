@@ -1,1 +1,146 @@
-<p>facturacion works!</p>
+<app-titulo-principal titulo="Facturación"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Velatorios:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
+                    placeholder="Seleccionar el velatorio">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="ods">Folio de ODS:</label>
+        <input id="ods" class="form-control" formControlName="ods"
+               placeholder="Ingresa el folio ODS">
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="folioConvenio">Folio de convenio:</label>
+        <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
+               placeholder="Ingresa el folio del convenio">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="numeroPermiso">Numero de permiso:</label>
+        <input id="numeroPermiso" class="form-control" formControlName="numeroPermiso"
+               placeholder="Ingresa el número de permiso">
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="folioFactura">Folio de factura (SIVIMSS):</label>
+        <input id="folioFactura" class="form-control" formControlName="folioFactura"
+               placeholder="Ingresa el folio de la factura">
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="folioFiscal">Folio fiscal (SAT):</label>
+        <input id="folioFiscal" class="form-control" formControlName="folioFiscal"
+               placeholder="Ingresa el folio fiscal">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="rfc">RFC:</label>
+        <input id="rfc" class="form-control" formControlName="rfc"
+               placeholder="Ingresa el RFC">
+      </div>
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="control-label">
+              Periodo:
+              <span class="req">*</span>:</label>
+          </div>
+          <div class="col-md-6">
+            <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+            </p-calendar>
+          </div>
+          <div class="col-md-6">
+            <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md" (click)="limpiarFiltros()">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Registros</h2>
+    <button type="button" class="btn btn-primary btn-lg">Solicitar factura
+    </button>
+  </div>
+  <p-table styleClass="mt-5 mb-8" [value]="registros" [paginator]="registros.length > 0" [rows]="cantElementosPorPagina"
+           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="seleccionarPaginacion($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Velatorio</th>
+        <th>Folio</th>
+        <th>Folio de factura</th>
+        <th>Fecha de factura</th>
+        <th>Folio fiscal</th>
+        <th>Estatus</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-registro>
+      <tr>
+        <td>{{registro.velatorio}}</td>
+        <td>{{registro.folio}}</td>
+        <td>{{registro.folioFactura}}</td>
+        <td>{{registro.fechaFactura}}</td>
+        <td>{{registro.folioFiscal}}</td>
+        <td>{{registro.estatus}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a>
+              <img ngSrc="assets/images/imagen-icono-ver.svg" alt="icono ver" height="19" width="24">
+            </a>
+            <a>
+              <img ngSrc="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales"
+                   height="19" width="22">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="7" class="p-2 text-center font-bold text-xl">
+          No se encontro información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{registros.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" ngSrc="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                 (click)="guardarPDF()" height="41" width="40">
+            <img class="icon-export-table" ngSrc="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                 (click)="guardarExcel()" height="41" width="39">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
