@@ -92,13 +92,13 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}],
-      delegacion: [{value: null, disabled: false}],
-      velatorio: [{value: null, disabled: false}],
-      folio: [{value: null, disabled: false}],
+      idNivel: [{value: null, disabled: false}],
+      idDelegacion: [{value: null, disabled: false}],
+      idVelatorio: [{value: null, disabled: false}],
+      folioODS: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
-      fechaInicial: [{value: null, disabled: false}],
-      fechaFinal: [{value: null, disabled: false}],
+      fecIniODS: [{value: null, disabled: false}],
+      fecFinODS: [{value: null, disabled: false}],
     });
   }
 
@@ -154,8 +154,15 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   crearSolicitudFiltros(): FiltrosFormatoPagare {
     return {
-      claveFolio: this.filtroForm.get("folio")?.value,
-      nomContratante: this.filtroForm.get("nombreContratante")?.value
+      idOficina: this.filtroForm.get("idOficina")?.value,
+      idNivel: this.filtroForm.get("idNivel")?.value,
+      idDelegacion: this.filtroForm.get("idDelegacion")?.value,
+      idVelatorio: this.filtroForm.get("idVelatorio")?.value,
+      folioODS: this.filtroForm.get("folioODS")?.value,
+      nomContratante: this.filtroForm.get("nomContratante")?.value,
+      fecIniODS: this.filtroForm.get("fecIniODS")?.value,
+      fecFinODS: this.filtroForm.get("fecFinODS")?.value,
+      tipoReporte: this.filtroForm.get("tipoReporte")?.value,
     }
   }
 
