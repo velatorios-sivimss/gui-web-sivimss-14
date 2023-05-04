@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { OverlayPanel } from 'primeng/overlaypanel';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { Vehiculos } from '../../models/vehiculos.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { CATALOGOS_DUMMIES } from '../../../inventario-vehicular/constants/dummies';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { AlertaService } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {OverlayPanel} from "primeng/overlaypanel";
 
 @Component({
   selector: 'app-reporte-encargado',

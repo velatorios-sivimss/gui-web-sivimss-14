@@ -1,38 +1,36 @@
 export interface Vehiculos {
-  id?: number;
-  velatorio?: string;
-  fecha?: string;
-  tamanio?: string;
-  hora?: string;
-  vehiculo?: string;
-  placas?: string;
-  nivelAceiteBajo?: boolean;
-  nivelAgua?: boolean;
-  calibracionNeumaticosTraseros?: number;
+  anio?: string;
   calibracionNeumaticosDelanteros?: number;
-  nivelCombustible?: number;
-  nivelBateria?: number;
-  limpiezaExterior?: number;
-  limpiezaInterior?: number;
+  calibracionNeumaticosTraseros?: number;
   codigoFalla?: number;
-  estatusText?: string;
   estatus?: boolean;
   estatusNumber?: number;
-  kilometraje?: string;
-  tipoMantenimiento?: string;
-  modalidad?: string;
+  estatusText?: string;
+  fecha?: string;
   fechaMantenimiento?: string;
-  nivelAceite?: number;
-  marca?: string;
-  anio?: string;
-  modalidadNumber?: number;
   fechaRegistro?: string;
+  hora?: string;
+  id?: number;
+  kilometraje?: string;
+  limpiezaExterior?: number;
+  limpiezaInterior?: number;
+  marca?: string;
+  modalidad?: string;
+  modalidadNumber?: number;
+  nivelAceite?: number;
+  nivelAceiteBajo?: boolean;
+  nivelAgua?: boolean;
+  nivelBateria?: number;
+  nivelCombustible?: number;
+  placas?: string;
+  tamanio?: string;
+  tipoMantenimiento?: string;
   tipoMantenimientoNumber?: number;
+  vehiculo?: string;
+  velatorio?: string;
+}
 
-
-  }
-
-  export interface ConfirmacionServicio {
-    estatus?: boolean;
-    origen?: string;
-  }
+export interface ConfirmacionServicio {
+  estatus?: boolean;
+  origen?: string;
+}

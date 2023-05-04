@@ -6,14 +6,14 @@
       <div class="sivimss-acoordion-header">
         <div class="accordion-header-left">
           <span>ID </span>
-          <b>DOC-000001</b>
+          <b>{{vehiculoSeleccionado.ID_VEHICULO}}</b>
         </div>
         <div class="accordion-header-right">
           <div class="estatus">
             <span>Estado de mantenimiento</span>
-            <b>Cercano</b>
+            <b [appTextColor]="vehiculoSeleccionado.DES_MTTOESTADO">{{vehiculoSeleccionado.DES_MTTOESTADO}}</b>
           </div>
-          <a (click)="overlayPanel.toggle($event)">
+          <a>
             <i class="fs fs-barras-horizontales"></i>
           </a>
         </div>
@@ -27,27 +27,40 @@
         </div>
         <div class="col col2">
           <span class="flex flex-column etiqueta-base">Velatorio</span>
-          <span class="texto-base">LAHJ0708</span>
+          <span class="texto-base">{{vehiculoSeleccionado.NOM_VELATORIO}}</span>
         </div>
         <div class="col col3">
           <span class="flex flex-column etiqueta-base">Fecha</span>
-          <span class="texto-base">LAHJ0708</span>
+          <span class="texto-base">{{fecha}}</span>
         </div>
         <div class="col col4">
           <span class="flex flex-column etiqueta-base">Vehiculo</span>
-          <span class="texto-base">LAHJ0708</span>
+          <span
+            class="texto-base">{{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}} {{vehiculoSeleccionado.DES_MODELO}}</span>
         </div>
         <div class="col col5">
           <span class="flex flex-column etiqueta-base">Placas</span>
-          <span class="texto-base">LAHJ0708</span>
+          <span class="texto-base">{{vehiculoSeleccionado.DES_PLACAS}}</span>
         </div>
         <div class="col col6">
           <span class="flex flex-column etiqueta-base">Kilometraje</span>
-          <span class="texto-base">LAHJ0708</span>
+          <span class="texto-base">{{asignacion.kilometraje}}</span>
         </div>
         <div class="col col7">
           <span class="flex flex-column etiqueta-base">Fecha Mantenimiento</span>
           <span class="texto-base">LAHJ0708</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col col1"></div>
+        <div class="col col2"></div>
+        <div class="col col3"></div>
+        <div class="col col4"></div>
+        <div class="col col5"></div>
+        <div class="col col6"></div>
+        <div class="col col7">
+          <span class="flex flex-column etiqueta-base">Costo de mantenimiento</span>
+          <span class="texto-base">$50000</span>
         </div>
       </div>
       <hr class="hr-accordion-content">
@@ -60,7 +73,7 @@
           <div class="vertical-line"></div>
 
           <div class="accordion-header-left col-md-4">
-            <b >Solicitud de mantenimiento</b>
+            <b>Solicitud de mantenimiento</b>
           </div>
           <div class="vertical-line"></div>
           <div class="accordion-header-left col-md-4">
@@ -80,60 +93,46 @@
                 <div class="col-md-2">
                   <div class="table-panel-column col-md-6">
                     <label>Placas</label>
-                    <span> Medio</span>
+                    <span>{{vehiculoSeleccionado.DES_PLACAS}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-
                   </div>
                 </div>
-
                 <div class="col-md-2">
                   <div class="table-panel-column col-md-6">
                     <label>Marca</label>
-                    <span> Medio</span>
+                    <span>{{vehiculoSeleccionado.DES_MARCA}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-
                   </div>
                 </div>
-
                 <div class="col-md-2">
                   <div class="table-panel-column col-md-6">
                     <label>Año</label>
-                    <span> Medio</span>
+                    <span>{{vehiculoSeleccionado.DES_MODELO}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-
                   </div>
                 </div>
-
                 <div class="col-md-2">
                   <div class="table-panel-column col-md-6">
                     <label>Kilometraje</label>
-                    <span> Medio</span>
+                    <span>{{asignacion.kilometraje}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-
                   </div>
                 </div>
-
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
-                    <label>Fecha de registro</label>
-                    <span>  Correcto </span>
+                    <label>Fecha registro</label>
+                    <span>{{asignacion.fechaRegistro | date:'dd/MM/YYYY'}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-
                   </div>
-
-
                 </div>
               </div>
-
               <div class="col-md-6">
-
               </div>
-
             </div>
 
 
@@ -142,7 +141,7 @@
                 <div class="col-md-3">
                   <div class="table-panel-column ">
                     <label>Tipo de mantenimiento</label>
-                    <span>  Medio </span>
+                    <span>{{asignacion.tipoMantenimiento}}</span>
                   </div>
                   <div class="table-panel-column ">
 
@@ -151,21 +150,15 @@
                 <div class="col-md-3">
                   <div class="table-panel-column ">
                     <label>Modalidad </label>
-                    <span>  Medio </span>
+                    <span>{{asignacion.modalidad}}</span>
                   </div>
                   <div class="table-panel-column ">
-
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="table-panel-column ">
                     <label>Mantenimiento preventivo</label>
-                    <span>  Revisión de bateria </span>
-                    <span>  Revisión de banda </span>
-                    <span>  Revisión de focos y lámparas </span>
-                    <span>  Revisión de claxon </span>
-                    <span>  Revisión de limpiadores </span>
-                    <span>  Otro </span>
+                    <span>{{asignacion.mantenimientoPreventivo}}</span>
                   </div>
 
                 </div>
@@ -173,7 +166,7 @@
                 <div class="col-md-3">
                   <div class="table-panel-column ">
                     <label>Notas</label>
-                    <span>  Correcto </span>
+                    <span>{{asignacion.notas}}</span>
                   </div>
 
                 </div>
@@ -189,8 +182,6 @@
       </ng-container>
 
 
-
-
     </ng-template>
   </p-accordionTab>
 </p-accordion>
@@ -200,21 +191,3 @@
     <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../">Aceptar</button>
   </div>
 </ng-container>
-
-
-
-
-
-
-
-
-<p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar tarjeta identificación"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar orden"></app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel>
-
