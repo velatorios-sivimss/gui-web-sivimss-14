@@ -164,16 +164,15 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.cargadorService.activar();
     this.usuarioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
+      .subscribe((respuesta: HttpRespuesta<any>): void => {
           this.usuarios = respuesta!.datos.content;
           this.totalElementos = respuesta!.datos.totalElements;
         },
-        error: (error: HttpErrorResponse): void => {
+        (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      });
+      );
   }
 
   paginarConFiltros(): void {
@@ -181,16 +180,14 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.cargadorService.activar();
     this.usuarioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
+      .subscribe((respuesta: HttpRespuesta<any>): void => {
           this.usuarios = respuesta!.datos.content;
           this.totalElementos = respuesta!.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
+        }, (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      });
+      );
   }
 
   buscar(): void {

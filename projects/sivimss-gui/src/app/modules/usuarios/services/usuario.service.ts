@@ -45,6 +45,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerCatalogoRoles(): Observable<HttpRespuesta<any>> {
+    // return of({ codigo: 200, datos: [], mensaje: "", error: false});
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/${this._roles}`,);
   }
 

@@ -16,6 +16,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula">;
 type SolicitudCurp = Pick<Usuario, "curp">;
@@ -56,7 +57,8 @@ export class AgregarUsuarioComponent implements OnInit {
     private formBuilder: FormBuilder,
     public ref: DynamicDialogRef,
     private usuarioService: UsuarioService,
-    private cargadorService: LoaderService
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -104,7 +106,8 @@ export class AgregarUsuarioComponent implements OnInit {
           this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
         },
         error: (error: HttpErrorResponse): void => {
-          console.log(error)
+          this.mostrarMensajeError("", error.message);
+          console.log(error);
         }
       });
   }
@@ -155,8 +158,8 @@ export class AgregarUsuarioComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse): void => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
+        this.mostrarMensajeError("Ocurrio un error", error.message);
+        console.error("ERROR: ", error)
       }
     });
   }
@@ -175,8 +178,8 @@ export class AgregarUsuarioComponent implements OnInit {
         this.agregarUsuarioForm.get("segundoApellido")?.patchValue(apellido2);
       },
       error: (error: HttpErrorResponse): void => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
+        this.mostrarMensajeError("Ocurrio un error", error.message);
+        console.error("ERROR: ", error)
       }
     });
   }
@@ -198,8 +201,8 @@ export class AgregarUsuarioComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse): void => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Matricula no valida');
-        console.error("ERROR: ", error.message)
+        this.mostrarMensajeError("Matricula no valida", error.message);
+        console.error("ERROR: ", error)
       }
     });
   }
@@ -214,8 +217,8 @@ export class AgregarUsuarioComponent implements OnInit {
         console.log(respuesta)
       },
       error: (error: HttpErrorResponse): void => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
+        this.mostrarMensajeError("Ocurrio un error", error.message);
+        console.error("ERROR: ", error)
       }
     });
   }
@@ -230,8 +233,8 @@ export class AgregarUsuarioComponent implements OnInit {
           this.ref.close(respuesta)
         },
         error: (error: HttpErrorResponse): void => {
-          this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-          console.error("ERROR: ", error.message)
+          this.mostrarMensajeError("Alta incorrecta", error.message);
+          console.error("ERROR: ", error)
         }
       });
   }
@@ -253,6 +256,19 @@ export class AgregarUsuarioComponent implements OnInit {
 
   get fau() {
     return this.agregarUsuarioForm?.controls;
+  }
+
+  mostrarMensajeError(defaultError: string = '', codigoError: string): void {
+    const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(codigoError));
+    if (errorMsg !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
+      return;
+    }
+    if (defaultError !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, defaultError);
+      return;
+    }
+    this.alertaService.mostrar(TipoAlerta.Error, "Error Desconocido");
   }
 
 }
