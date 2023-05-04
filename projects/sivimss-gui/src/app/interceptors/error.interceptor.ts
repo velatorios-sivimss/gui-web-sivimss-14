@@ -18,12 +18,12 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((err) => {
         if (err.error instanceof ErrorEvent) {
-          this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error inesperado');
+          // this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error inesperado');
           console.error('Ha ocurrido un error inesperado: ', err);
         } else if (err instanceof HttpErrorResponse) {
           this.mostrarErrorDeServidor(err);
         } else {
-          this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error inesperado');
+          // this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error inesperado');
           console.error('Ha ocurrido un error inesperado: ', err);
         }
         return throwError(err);
@@ -34,29 +34,29 @@ export class ErrorInterceptor implements HttpInterceptor {
   private mostrarErrorDeServidor(error: HttpErrorResponse): void {
     switch (error.status) {
       case 401:
-        this.alertaService.mostrar(TipoAlerta.Error, 'Acceso no autorizado');
+        // this.alertaService.mostrar(TipoAlerta.Error, 'Acceso no autorizado');
         console.error(`Acceso no autorizado: `, error);
         this.cerrarSesionConRedireccion();
         break;
 
       case 403:
-        this.alertaService.mostrar(TipoAlerta.Error, 'Acceso no autorizado');
+        // this.alertaService.mostrar(TipoAlerta.Error, 'Acceso no autorizado');
         console.error(`Acceso no autorizado: `, error);
         this.cerrarSesionConRedireccion();
         break;
 
       case 404:
-        this.alertaService.mostrar(TipoAlerta.Error, 'Recurso no encontrado');
+        // this.alertaService.mostrar(TipoAlerta.Error, 'Recurso no encontrado');
         console.error(`Recurso no encontrado: `, error);
         break;
 
       case 500:
-        this.alertaService.mostrar(TipoAlerta.Error, 'Error interno del servidor');
+        // this.alertaService.mostrar(TipoAlerta.Error, 'Error interno del servidor');
         console.error(`Error interno del servidor: `, error);
         break;
 
       default:
-        this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error inesperado');
+        // this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error inesperado');
         console.error(`Error desconocido: `, error);
         break;
     }

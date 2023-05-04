@@ -152,7 +152,7 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
+        console.error("ERROR: ", error)
       }
     );
   }
@@ -172,7 +172,7 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
+        console.error("ERROR: ", error)
       });
   }
 
@@ -192,7 +192,7 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Matricula no valida');
-        console.error("ERROR: ", error.message)
+        console.error("ERROR: ", error)
       }
     );
   }
@@ -208,7 +208,7 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
+        console.error("ERROR: ", error)
       });
   }
 
@@ -223,7 +223,7 @@ export class AgregarUsuarioComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-          console.error("ERROR: ", error.message)
+          console.error("ERROR: ", error)
         }
       );
   }

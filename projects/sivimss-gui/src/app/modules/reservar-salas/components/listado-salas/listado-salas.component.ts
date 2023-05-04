@@ -105,6 +105,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
 
   consultaSalasCremacion(): void {
+    if(this.velatorio == 0){return}
     this.loaderService.activar();
     this.reservarSalasService.consultarSalas(this.velatorio,this.posicionPestania).pipe(
       finalize(() => this.loaderService.desactivar())

@@ -24,6 +24,8 @@ import {AccordionModule} from "primeng/accordion";
 import { TabViewModule } from 'primeng/tabview';
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {TableModule} from "primeng/table";
+import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
+import {UtileriaModule} from "../../shared/utileria/utileria.module";
 
 @NgModule({
   declarations:[CapillaReservacionComponent, RegistrarEntradaComponent, RegistrarSalidaComponent, CalendarioComponent, DetalleActividadDiaComponent],
@@ -46,6 +48,8 @@ import {TableModule} from "primeng/table";
     TabViewModule,
     AutoCompleteModule,
     TableModule,
+    ValidaRolModule,
+    UtileriaModule
   ],
   providers:[
     CapillaReservacionService
