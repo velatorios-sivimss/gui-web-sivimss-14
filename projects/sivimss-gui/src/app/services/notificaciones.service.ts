@@ -1,12 +1,25 @@
 import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {AutenticacionService} from "./autenticacion.service";
+import {Observable} from "rxjs";
+import {HttpRespuesta} from "../models/http-respuesta.interface";
 
 @Injectable()
 export class NotificacionesService {
 
-  readonly notificaciones = ["Notificion1", "Notificion2", "Notifiacion3", "Notificacion4"];
+  readonly notificaciones = ["Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente",
+    "Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente",
+    "Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente"];
+  private _http: any;
 
-  constructor() {
+  constructor(_http: HttpClient,private authService: AutenticacionService) {
   }
+
+  // consultaAlertas(): Observable<HttpRespuesta<any>> {
+    // body = {};
+    // return this._http.post<HttpRespuesta<any>>("localhost:8082/mssivimss-ctrol-permisos/v1/sivimss/service/9/buscar-filtros/veri-alertas",body);
+  // }
+
 
   existenNotificaciones(): boolean {
     return this.obtenerNotificaciones().length !== 0
