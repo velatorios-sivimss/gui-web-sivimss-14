@@ -275,11 +275,11 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   mostrarMensajeError(defaultError: string = '', codigoError: string): void {
-    // const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(codigoError));
-    // if (errorMsg !== '') {
-    //  this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
-    //  return;
-    // }
+    const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(codigoError));
+    if (errorMsg !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
+      return;
+    }
     if (defaultError !== '') {
       this.alertaService.mostrar(TipoAlerta.Error, defaultError);
       return;

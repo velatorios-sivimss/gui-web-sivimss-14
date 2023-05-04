@@ -28,7 +28,11 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
       (usuarioEnSesion: UsuarioEnSesion | null) => {
         this.usuarioEnSesion = usuarioEnSesion;
         localStorage.setItem('usuario', JSON.stringify(
-          {'idDelegacion':this.usuarioEnSesion?.idDelegacion,'idVelatorio': this.usuarioEnSesion?.idVelatorio}));
+          {
+            'idDelegacion': this.usuarioEnSesion?.idDelegacion,
+            'idVelatorio': this.usuarioEnSesion?.idVelatorio,
+            'idOficina': this.usuarioEnSesion?.idOficina
+          }));
       }
     );
   }
@@ -43,7 +47,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     }
   }
 
-  seleccionarNotificacion(event:any): void {
+  seleccionarNotificacion(event: any): void {
   }
 
   aceptar(): void {

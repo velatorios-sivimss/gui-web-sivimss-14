@@ -8,12 +8,23 @@ import {mapearArregloTipoDropdown} from "../../../utils/funciones";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {AutenticacionService} from "../../../services/autenticacion.service";
 
+interface ConsultaVelatorio {
+  idDelegacion: string | null
+}
+
+interface PeticionDescarga {
+  idNota: number,
+  idOrden: number,
+  tipoReporte: "pdf" | "xls"
+}
+
 @Injectable()
 export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
 
   readonly _roles: string = 'catalogo-roles';
   readonly _nivel: string = 'catalogo_nivelOficina';
   readonly _delegacion: string = 'catalogo_delegaciones';
+  readonly _filtros: string = 'buscar-usuarios';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "agregar-usuario", "actualizar-usuario",
@@ -24,8 +35,8 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-usuarios`, filtros,
-      {params});
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._filtros}`,
+      filtros, {params});
   }
 
   validarCurp(curp: any): Observable<HttpRespuesta<any>> {
@@ -59,7 +70,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body = {idDelegacion: delegacion}
+    const body: ConsultaVelatorio = {idDelegacion: delegacion}
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
@@ -68,7 +79,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body = {idNota: 1, idOrden: 1, tipoReporte: "pdf"}
+    const body: PeticionDescarga = {idNota: 1, idOrden: 1, tipoReporte: "pdf"}
     return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-usuarios/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
@@ -78,7 +89,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body = {idNota: 1, idOrden: 1, tipoReporte: "xls"}
+    const body: PeticionDescarga = {idNota: 1, idOrden: 1, tipoReporte: "xls"}
     return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-usuarios/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }

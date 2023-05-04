@@ -214,7 +214,9 @@ export class AgregarUsuarioComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        console.log(respuesta)
+        if (respuesta.error) {
+          this.mostrarMensajeError("Ocurrio un error", respuesta.mensaje);
+        }
       },
       error: (error: HttpErrorResponse): void => {
         this.mostrarMensajeError("Ocurrio un error", error.message);
