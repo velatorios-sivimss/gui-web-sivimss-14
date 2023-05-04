@@ -13,6 +13,8 @@ export interface NotificacionInterface {
   idRegistro?: number;
   indTipoSala?: boolean;
   usoSala?: string;
+  idSala?: number;
+  nombreSala?: string;
 }
 
 @Component({
@@ -71,8 +73,12 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   }
 
   registrarSalida(notificacion:NotificacionInterface):void {
-    let datos = {estadoSala:notificacion.usoSala,tipoSala:notificacion.indTipoSala,idRegistro:notificacion.idRegistro}
-    localStorage.setItem('reserva-sala', JSON.stringify({idRegistro:notificacion.idRegistro,tipoSala:notificacion.indTipoSala}));
+    let datos = {estadoSala:notificacion.usoSala,
+      tipoSala:notificacion.indTipoSala,
+      idRegistro:notificacion.idRegistro,
+      idSala:notificacion.idSala,
+    nombreSala: notificacion.nombreSala}
+    localStorage.setItem('reserva-sala', JSON.stringify(datos));
     this.router.navigate([notificacion.path?.toLowerCase()])
   }
 
