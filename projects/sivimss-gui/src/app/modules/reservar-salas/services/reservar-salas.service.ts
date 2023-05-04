@@ -18,22 +18,32 @@ export class ReservarSalasService extends  BaseService<HttpRespuesta<any>, any> 
       9,"","veri-consulta-dia","");
   }
 
-  obtenerCatalogoVelatorio(): Observable<HttpRespuesta<any>>{
+  // obtenerCatalogoVelatorio(): Observable<HttpRespuesta<any>>{
+  //   const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
+  //   return this._http.get<HttpRespuesta<any>>(this._base + `consultaVelatorio/1`);
+  // }
 
-    // TODO Agregar validación delegación
-    const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
-    return this._http.get<HttpRespuesta<any>>(this._base + `consultaVelatorio/1`);
+
+  obtenerCatalogoVelatoriosPorDelegacion(delegacion:number): Observable<HttpRespuesta<any>>{
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/velatorios/${delegacion}`);
   }
+
+
+
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
     const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
+
+
   obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body = { idDelegacion: delegacion }
     return this._http.post<HttpRespuesta<any>>(`http://localhost:8079/mssivimss-oauth/velatorio/consulta`, body);
   }
+
+
 
   consultarSalas(idVelatorio?: number,tipoSala?: number): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});

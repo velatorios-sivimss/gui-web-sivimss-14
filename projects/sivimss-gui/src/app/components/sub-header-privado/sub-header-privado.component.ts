@@ -3,6 +3,15 @@ import {UsuarioEnSesion} from "projects/sivimss-gui/src/app/models/usuario-en-se
 import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
 import {Subscription} from "rxjs";
 import {NotificacionesService} from "../../services/notificaciones.service";
+import {HttpRespuesta} from "../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Router} from "@angular/router";
+
+export interface NotificacionInterface {
+  PATH?: string;
+  mensaje?: string;
+  idRegistro?: number;
+}
 
 @Component({
   selector: 'app-sub-header-privado',
@@ -10,17 +19,27 @@ import {NotificacionesService} from "../../services/notificaciones.service";
   styleUrls: ['./sub-header-privado.component.scss'],
   providers: [NotificacionesService]
 })
-export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
-  usuarioEnSesion!: UsuarioEnSesion | null;
+export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
+   usuarioEnSesion!: UsuarioEnSesion | null;
   subs!: Subscription;
   existeNotificacion: boolean;
-  notificaciones: string[] = [];
+  notificaciones: NotificacionInterface[] = [];
 
   constructor(private readonly autenticacionService: AutenticacionService,
-              private readonly notificacionService: NotificacionesService) {
-    this.existeNotificacion = notificacionService.existenNotificaciones();
-    this.notificaciones = notificacionService.consultarNotificaciones();
+              private readonly notificacionService: NotificacionesService,
+              private router: Router,) {
+    this.existeNotificacion = false;
+    this.notificacionService.consultaNotificacion().subscribe(
+      (respuesta:HttpRespuesta<any>) => {
+        if (respuesta.datos.length < 1){return}
+        this.existeNotificacion = true;
+        this.notificaciones = respuesta.datos;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
   }
 
   ngOnInit(): void {
@@ -43,11 +62,42 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     }
   }
 
-  seleccionarNotificacion(event:any): void {
+  seleccionarNotificacion(notificacion:NotificacionInterface): void {
+
+  }
+
+  registrarSalida(notificacion:NotificacionInterface):void {
+    this.router.navigate([notificacion.PATH?.toLowerCase()],
+      {queryParams:{idRegistro:notificacion.idRegistro}})
+  }
+
+  registrarMasTarde(notificacion:NotificacionInterface): void {
+    const idRegistro = notificacion.idRegistro;
+    this.notificacionService.renovarNotificacion(idRegistro).subscribe(
+      (respuesta:HttpRespuesta<any>) => {
+        this.renovarNotificaciones();
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
+  }
+
+  renovarNotificaciones(): void {
+    this.existeNotificacion = false;
+    this.notificacionService.consultaNotificacion().subscribe(
+      (respuesta:HttpRespuesta<any>) => {
+        if (respuesta.datos.length < 1){return}
+        this.existeNotificacion = true;
+        this.notificaciones = respuesta.datos;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
   }
 
   aceptar(): void {
 
   }
-
 }

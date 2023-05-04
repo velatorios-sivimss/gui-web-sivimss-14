@@ -1,25 +1,37 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AutenticacionService} from "./autenticacion.service";
 import {Observable} from "rxjs";
 import {HttpRespuesta} from "../models/http-respuesta.interface";
+import {environment} from "../../environments/environment";
 
 @Injectable()
 export class NotificacionesService {
 
+  private auth_tokenCap: string = "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjk5MDk2MzYzXCIsXCJjdmVNYXRyaWN1bGFcIjpcIjk5MDk2MzYzXCIsXCJub21icmVcIjpcInVzdWFyaW8gdXN1YXJpbyB1c3VhcmlvXCIsXCJjdXJwXCI6XCJ1c3VhcmlvXCJ9IiwiaWF0IjoxNjgzMTU1NTc2LCJleHAiOjE2ODM3NjAzNzZ9.YMuti8IzemnO4Xm9A1AlZs1C7QLEymDMZ3-fgQRDrKY";
+
+
   readonly notificaciones = ["Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente",
     "Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente",
     "Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente"];
-  private _http: any;
 
-  constructor(_http: HttpClient,private authService: AutenticacionService) {
+  constructor(private _http: HttpClient,private authService: AutenticacionService) {
   }
 
-  // consultaAlertas(): Observable<HttpRespuesta<any>> {
-    // body = {};
-    // return this._http.post<HttpRespuesta<any>>("localhost:8082/mssivimss-ctrol-permisos/v1/sivimss/service/9/buscar-filtros/veri-alertas",body);
+  consultaNotificacion(): Observable<HttpRespuesta<any>> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_tokenCap}`, 'Content-Type': 'application/json' });
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.mssivimss}9/buscar-filtros/veri-alertas`, {},{headers});
+  }
+
+  // renovarNotificacion: Observable<HttpRespuesta<any>> {
+  // const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_tokenCap}`, 'Content-Type': 'application/json' });
+  // return this._http.post<HttpRespuesta<any>>(`${environment.api.mssivimss}9/buscar-filtros/veri-alertas`, {},{headers});
   // }
 
+  renovarNotificacion(idRegistro:any): Observable<HttpRespuesta<any>> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_tokenCap}`, 'Content-Type': 'application/json' });
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.mssivimss}9/veri-renovar-hora`,{idRegistro:idRegistro})
+  }
 
   existenNotificaciones(): boolean {
     return this.obtenerNotificaciones().length !== 0
