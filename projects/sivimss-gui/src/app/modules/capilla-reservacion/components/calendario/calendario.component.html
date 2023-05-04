@@ -4,7 +4,8 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
-        <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación">
+        <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación"
+                    (onChange)="cambiarDelegacion()">
         </p-dropdown>
       </div>
       <div class="col-md-6">

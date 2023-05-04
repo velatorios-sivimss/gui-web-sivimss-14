@@ -3,6 +3,17 @@ import {UsuarioEnSesion} from "projects/sivimss-gui/src/app/models/usuario-en-se
 import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
 import {Subscription} from "rxjs";
 import {NotificacionesService} from "../../services/notificaciones.service";
+import {HttpRespuesta} from "../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Router} from "@angular/router";
+
+export interface NotificacionInterface {
+  path?: string;
+  mensaje?: string;
+  idRegistro?: number;
+  indTipoSala?: boolean;
+  usoSala?: string;
+}
 
 @Component({
   selector: 'app-sub-header-privado',
@@ -10,17 +21,29 @@ import {NotificacionesService} from "../../services/notificaciones.service";
   styleUrls: ['./sub-header-privado.component.scss'],
   providers: [NotificacionesService]
 })
-export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
-  usuarioEnSesion!: UsuarioEnSesion | null;
+export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
+   usuarioEnSesion!: UsuarioEnSesion | null;
   subs!: Subscription;
   existeNotificacion: boolean;
-  notificaciones: string[] = [];
+  notificaciones: NotificacionInterface[] = [];
 
   constructor(private readonly autenticacionService: AutenticacionService,
-              private readonly notificacionService: NotificacionesService) {
-    this.existeNotificacion = notificacionService.existenNotificaciones();
-    this.notificaciones = notificacionService.consultarNotificaciones();
+              private readonly notificacionService: NotificacionesService,
+              private router: Router,) {
+    this.existeNotificacion = false;
+    this.notificacionService.consultaNotificacion().subscribe(
+      (respuesta:HttpRespuesta<any>) => {
+        if (respuesta.datos.length < 1){return}
+        this.notificaciones = respuesta.datos.filter((sala:any) => {
+          return sala.mensaje.trim() != ""
+        });
+        if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
   }
 
   ngOnInit(): void {
@@ -43,11 +66,45 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     }
   }
 
-  seleccionarNotificacion(event:any): void {
+  seleccionarNotificacion(notificacion:NotificacionInterface): void {
+
+  }
+
+  registrarSalida(notificacion:NotificacionInterface):void {
+    let datos = {estadoSala:notificacion.usoSala,tipoSala:notificacion.indTipoSala,idRegistro:notificacion.idRegistro}
+    localStorage.setItem('reserva-sala', JSON.stringify({idRegistro:notificacion.idRegistro,tipoSala:notificacion.indTipoSala}));
+    this.router.navigate([notificacion.path?.toLowerCase()])
+  }
+
+  registrarMasTarde(notificacion:NotificacionInterface): void {
+    const idRegistro = notificacion.idRegistro;
+    this.notificacionService.renovarNotificacion(idRegistro).subscribe(
+      (respuesta:HttpRespuesta<any>) => {
+        this.renovarNotificaciones();
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
+  }
+
+  renovarNotificaciones(): void {
+    this.existeNotificacion = false;
+    this.notificacionService.consultaNotificacion().subscribe(
+      (respuesta:HttpRespuesta<any>) => {
+        if (respuesta.datos.length < 1){return}
+        this.notificaciones = respuesta.datos.filter((sala:any) => {
+          return sala.mensaje.trim() != ""
+        });
+        if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
   }
 
   aceptar(): void {
 
   }
-
 }

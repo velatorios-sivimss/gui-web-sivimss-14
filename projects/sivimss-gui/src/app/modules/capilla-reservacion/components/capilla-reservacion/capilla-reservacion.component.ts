@@ -13,9 +13,12 @@ import { ActivatedRoute } from '@angular/router';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { CapillaReservacionService } from '../../services/capilla-reservacion.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {finalize} from "rxjs/operators";
 import * as moment from 'moment'
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import { HttpErrorResponse } from '@angular/common/http';
 import {mensajes} from "../../../reservar-salas/constants/mensajes";
+import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
 
 @Component({
   selector: 'app-capilla-reservacion',
@@ -79,11 +82,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
     this.inicializarRegistroSalidaForm();
     this.inicializarCalendarioForm();
     this.respuesta = this.route.snapshot.data['respuesta']
-    this.velatorios = mapearArregloTipoDropdown(
-      this.respuesta[0]?.datos,
-      'velatorio',
-      'id',
-    )
+
 
     this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
@@ -150,7 +149,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
       if(respuesta){
         this.velatorioListado = 0;
         this.delegacion = 0
-        this.velatorios = mapearArregloTipoDropdown(this.respuesta[0]?.datos,'velatorio','id');
+        this.velatorios = [];
         this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
           {label: delegacion.label, value: delegacion.value} )) || [];
         this.registrarEntradaForm.reset();
@@ -195,6 +194,22 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     );
+  }
+
+
+   cambiarDelegacion(): void {
+    this.loaderService.activar();
+    this.capillaReservacionService.obtenerCatalogoVelatoriosPorDelegacion(this.delegacion).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>)=> {
+        this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
   }
 
 
