@@ -8,9 +8,11 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {Router} from "@angular/router";
 
 export interface NotificacionInterface {
-  PATH?: string;
+  path?: string;
   mensaje?: string;
   idRegistro?: number;
+  indTipoSala?: boolean;
+  usoSala?: string;
 }
 
 @Component({
@@ -33,8 +35,10 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     this.notificacionService.consultaNotificacion().subscribe(
       (respuesta:HttpRespuesta<any>) => {
         if (respuesta.datos.length < 1){return}
-        this.existeNotificacion = true;
-        this.notificaciones = respuesta.datos;
+        this.notificaciones = respuesta.datos.filter((sala:any) => {
+          return sala.mensaje.trim() != ""
+        });
+        if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
       },
       (error: HttpErrorResponse) => {
         console.log(error)
@@ -67,8 +71,9 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   }
 
   registrarSalida(notificacion:NotificacionInterface):void {
-    this.router.navigate([notificacion.PATH?.toLowerCase()],
-      {queryParams:{idRegistro:notificacion.idRegistro}})
+    let datos = {estadoSala:notificacion.usoSala,tipoSala:notificacion.indTipoSala,idRegistro:notificacion.idRegistro}
+    localStorage.setItem('reserva-sala', JSON.stringify({idRegistro:notificacion.idRegistro,tipoSala:notificacion.indTipoSala}));
+    this.router.navigate([notificacion.path?.toLowerCase()])
   }
 
   registrarMasTarde(notificacion:NotificacionInterface): void {
@@ -88,8 +93,10 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     this.notificacionService.consultaNotificacion().subscribe(
       (respuesta:HttpRespuesta<any>) => {
         if (respuesta.datos.length < 1){return}
-        this.existeNotificacion = true;
-        this.notificaciones = respuesta.datos;
+        this.notificaciones = respuesta.datos.filter((sala:any) => {
+          return sala.mensaje.trim() != ""
+        });
+        if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
       },
       (error: HttpErrorResponse) => {
         console.log(error)

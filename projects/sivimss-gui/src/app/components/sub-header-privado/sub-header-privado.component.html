@@ -26,7 +26,7 @@
   <ul>
     <li *ngFor="let notificacion of notificaciones">
       {{ notificacion.mensaje}}
-      <div class="flex justify-content-end" *ngIf="notificacion.PATH=='RESERVAR-SALAS'">
+      <div class="flex justify-content-end" *ngIf="notificacion.path=='RESERVAR-SALAS'">
         <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">
           Registrar salida
         </button>

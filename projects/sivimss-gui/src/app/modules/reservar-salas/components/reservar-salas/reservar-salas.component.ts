@@ -18,22 +18,15 @@ export class ReservarSalasComponent implements OnInit {
 
   OpcionesReservarSalas = OpcionesReservarSalas;
   opcionSala: any = OpcionesReservarSalas[0];
-  idBitacora!:number;
 
   constructor(private breadcrumbService: BreadcrumbService,
     private router: Router) {
-    this.idBitacora=this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idRegistro;
   }
 
   ngOnInit(): void {
     localStorage.setItem("mensajes", JSON.stringify(mensajes));
     const alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-    if(!this.idBitacora){
-      this.router.navigate(["/reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]);
-    }else{
-      this.router.navigate(["/reservar-salas", {queryParams:{idRegistro:this.idBitacora}, outlets: { salas: [this.opcionSala.route] } }]);
-      // this.router.navigate(["/reservar-salas/(salas:salas)"], {queryParams:{idRegistro:this.idBitacora}});
-    }
+    this.router.navigate(["/reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]);
     this.actualizarBreadcrumb();
   }
 

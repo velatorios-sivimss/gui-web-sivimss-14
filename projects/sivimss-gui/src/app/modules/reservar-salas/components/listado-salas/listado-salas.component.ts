@@ -61,7 +61,13 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
     this.delegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
+
+    let tipoSala = JSON.parse(localStorage.getItem('reserva-sala') as string);
+    localStorage.removeItem('reserva-sala');
+    if(tipoSala){
+      this.registrarSalida(tipoSala);
     }
+  }
 
   registrarActividad(sala: SalaVelatorio): void {
     if (sala.estadoSala != "DISPONIBLE") {

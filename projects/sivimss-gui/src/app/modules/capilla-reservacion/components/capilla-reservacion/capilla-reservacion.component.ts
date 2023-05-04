@@ -82,11 +82,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
     this.inicializarRegistroSalidaForm();
     this.inicializarCalendarioForm();
     this.respuesta = this.route.snapshot.data['respuesta']
-    this.velatorios = mapearArregloTipoDropdown(
-      this.respuesta[0]?.datos,
-      'velatorio',
-      'id',
-    )
+
 
     this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
@@ -153,7 +149,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
       if(respuesta){
         this.velatorioListado = 0;
         this.delegacion = 0
-        this.velatorios = mapearArregloTipoDropdown(this.respuesta[0]?.datos,'velatorio','id');
+        this.velatorios = [];
         this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
           {label: delegacion.label, value: delegacion.value} )) || [];
         this.registrarEntradaForm.reset();
@@ -207,15 +203,13 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>)=> {
-
-        this.velatorioListado = respuesta.datos.map((velatorio: VelatorioInterface) => (
+        this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
           {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
       },
       (error: HttpErrorResponse) => {
         console.log(error);
       }
     )
-
   }
 
 
