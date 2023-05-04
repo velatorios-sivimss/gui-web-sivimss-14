@@ -28,7 +28,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   usuarioEnSesion!: UsuarioEnSesion | null;
   subs!: Subscription;
   existeNotificacion: boolean;
-  notificaciones: string[] = [];
+  notificaciones: NotificacionInterface[] = [];
 
   constructor(private readonly autenticacionService: AutenticacionService,
               private readonly notificacionService: NotificacionesService,
