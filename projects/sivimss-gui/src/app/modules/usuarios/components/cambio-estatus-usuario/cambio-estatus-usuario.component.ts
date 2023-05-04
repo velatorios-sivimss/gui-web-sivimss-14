@@ -7,6 +7,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RespuestaModalUsuario} from "../../models/respuestaModal.interface";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 type SolicitudEstatus = Pick<Usuario, "id">
 type DetalleUsuario = Required<Usuario> & { oficina: string, rol: string, delegacion: string, velatorio: string };
@@ -41,17 +42,17 @@ export class CambioEstatusUsuarioComponent implements OnInit {
     this.cargadorService.activar();
     this.usuarioService.buscarPorId(id)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
           this.usuarioSeleccionado = respuesta.datos[0];
           this.estatus = !!this.usuarioSeleccionado.estatus;
           this.title = this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
   }
 
   cancelar(): void {
@@ -66,16 +67,16 @@ export class CambioEstatusUsuarioComponent implements OnInit {
     this.cargadorService.activar();
     this.usuarioService.cambiarEstatus(idUsuario)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        () => {
+      .subscribe({
+        next: (): void => {
           respuesta.actualizar = true;
           respuesta.mensaje = mensaje;
           this.ref.close(respuesta);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
   }
 }

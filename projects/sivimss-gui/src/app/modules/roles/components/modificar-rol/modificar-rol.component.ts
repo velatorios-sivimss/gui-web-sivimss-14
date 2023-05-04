@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CATALOGOS} from "../../../usuarios/constants/catalogos_dummies";
+import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -20,7 +20,7 @@ export class ModificarRolComponent implements OnInit {
 
   modificarRolForm!: FormGroup;
   rolModificado!: RolModificado;
-  opciones: TipoDropdown[] = CATALOGOS;
+  opciones: TipoDropdown[] = CATALOGO_NIVEL;
   indice: number = 0;
 
   constructor(

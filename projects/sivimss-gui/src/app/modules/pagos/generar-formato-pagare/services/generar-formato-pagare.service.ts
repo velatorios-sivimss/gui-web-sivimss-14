@@ -11,7 +11,7 @@ import {AutenticacionService} from "../../../../services/autenticacion.service";
 @Injectable()
 export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "", "", 23, "consultar-rec-pagos", "", "");
+    super(_http, `${environment.api.mssivimss}`, "", "", 23, "consultar-pagares", "", "");
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
@@ -28,7 +28,7 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
     const params = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/rec-pagos-filtros`, filtros,
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-pagares`, filtros,
       {params});
   }
 

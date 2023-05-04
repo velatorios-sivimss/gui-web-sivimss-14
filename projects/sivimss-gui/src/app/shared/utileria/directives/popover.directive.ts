@@ -34,7 +34,6 @@ export class PopoverDirective {
       const popoverWidth = this.popoverRef.location.nativeElement.offsetWidth;
       const popoverHeight = this.popoverRef.location.nativeElement.offsetHeight;
       const popoverLeft: number = buttonLeft + (buttonRect.width / 2) - (popoverWidth / 2);
-      console.log(buttonLeft, (buttonRect.width / 2), (popoverWidth / 2))
       const popoverTop: number = buttonTop - popoverHeight - 10; // Adjust for padding
 
       // Set the position of the popover element
