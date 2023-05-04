@@ -4,9 +4,9 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {OverlayPanel} from "primeng/overlaypanel";
-import {Usuario} from "../../../../usuarios/models/usuario.interface";
 import {LazyLoadEvent} from "primeng/api";
 import {FACTURACION_BREADCRUMB} from "../../constants/breadcrumb";
+import {Usuario} from "../../../../usuarios/models/usuario.interface";
 
 @Component({
   selector: 'app-facturacion',
@@ -24,7 +24,16 @@ export class FacturacionComponent implements OnInit {
 
   velatorios: TipoDropdown[] = [];
   filtroForm!: FormGroup;
-  registros: Usuario[] = [];
+  registros: any[] = [
+    {
+      velatorio: 'No. 14 San Luis Potosí y CD Valles',
+      folio: 'DOC-000001',
+      folioFactura: 'DOC-000002',
+      fechaFactura: '01/01/2022',
+      folioFiscal: 'DOC-000002',
+      estatus: 'Facturada'
+    }
+  ];
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -59,6 +68,10 @@ export class FacturacionComponent implements OnInit {
 
   limpiarFiltros(): void {
 
+  }
+
+  abrirPanel(event: MouseEvent, registro: any): void {
+    this.overlayPanel.toggle(event);
   }
 
   protected readonly DIEZ_ELEMENTOS_POR_PAGINA = DIEZ_ELEMENTOS_POR_PAGINA;

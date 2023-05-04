@@ -103,7 +103,7 @@
             <a>
               <img ngSrc="assets/images/imagen-icono-ver.svg" alt="icono ver" height="19" width="24">
             </a>
-            <a>
+            <a (click)="abrirPanel($event,registro)">
               <img ngSrc="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales"
                    height="19" width="22">
             </a>
@@ -141,6 +141,9 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Ver factura" class="text-center"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
