@@ -14,12 +14,16 @@ import {OverlayPanelModule} from "primeng/overlaypanel";
 import {OverlayPanelOpcionesModule} from "../../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
 import {TableModule} from "primeng/table";
 import {InputSwitchModule} from "primeng/inputswitch";
+import { CancelarFacturaComponent } from './components/cancelar-factura/cancelar-factura.component';
+import { EnviarFacturaComponent } from './components/enviar-factura/enviar-factura.component';
 
 
 @NgModule({
   declarations: [
     FacturacionComponent,
-    SolicitarFacturaComponent
+    SolicitarFacturaComponent,
+    CancelarFacturaComponent,
+    EnviarFacturaComponent
   ],
   imports: [
     CommonModule,
