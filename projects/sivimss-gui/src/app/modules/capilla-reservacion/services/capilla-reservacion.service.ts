@@ -83,6 +83,10 @@ export class CapillaReservacionService extends BaseService<HttpRespuesta<any>, a
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, { params});
   }
 
+  obtenerCatalogoVelatoriosPorDelegacion(delegacion:number): Observable<HttpRespuesta<any>>{
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/velatorios/${delegacion}`);
+  }
+
   capillaOcupadaPorIdVelatorio(id: number): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_tokenCap}`, 'Content-Type': 'application/json'});
     const params = new HttpParams().append("servicio", "capillas-ocupadas").append("palabra", id);
