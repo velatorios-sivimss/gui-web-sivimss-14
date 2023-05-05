@@ -24,7 +24,10 @@ const routes: Routes = [
   },
   {
     path: 'ver-detalle/:id',
-    component: DetalleVelacionDomicilioComponent
+    component: DetalleVelacionDomicilioComponent,
+    resolve: {
+      respuesta: VelacionDomicilioResolver
+    }
   }
 ]
 

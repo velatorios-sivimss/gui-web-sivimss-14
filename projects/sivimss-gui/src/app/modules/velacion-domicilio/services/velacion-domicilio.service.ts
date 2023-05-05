@@ -31,7 +31,7 @@ export class VelacionDomicilioService extends BaseService<HttpRespuesta<any>, an
 
 
   buscarTodasOdsGeneradas(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo?servicio=consultar-vs-folios-osd`);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/consultar-vs-folios-osd`);
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
