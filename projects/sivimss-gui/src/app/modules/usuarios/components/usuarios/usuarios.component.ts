@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../utils/constantes";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
@@ -29,7 +29,6 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type SolicitudEstatus = Pick<Usuario, "id">;
-const MAX_WIDTH: string = "920px";
 
 @Component({
   selector: 'app-usuarios',
@@ -66,6 +65,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGO_NIVELES: number = 1;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
   readonly POSICION_CATALOGO_VELATORIOS: number = 3;
+  readonly MSG_CAMBIO_ESTATUS: string = "Cambio de estatus realizado";
+  readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
   constructor(
     private route: ActivatedRoute,
@@ -142,7 +143,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.creacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
   }
 
-  inicializarFiltroForm() {
+  inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: null, disabled: false}],
       velatorio: [{value: null, disabled: false}],
@@ -163,33 +164,35 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   paginar(): void {
+    if (!localStorage.getItem('token')) return;
     this.cargadorService.activar();
     this.usuarioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe((respuesta: HttpRespuesta<any>): void => {
-          this.usuarios = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
-        },
-        (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
-        }
-      );
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.usuarios = respuesta!.datos.content;
+        this.totalElementos = respuesta!.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      },
+    });
   }
 
   paginarConFiltros(): void {
     const filtros: FiltrosUsuario = this.crearSolicitudFiltros();
     this.cargadorService.activar();
     this.usuarioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe((respuesta: HttpRespuesta<any>): void => {
-          this.usuarios = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
-        }, (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
-        }
-      );
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.usuarios = respuesta!.datos.content;
+        this.totalElementos = respuesta!.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
   buscar(): void {
@@ -220,15 +223,15 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     const idUsuario: SolicitudEstatus = {id}
     this.cargadorService.activar();
     this.usuarioService.cambiarEstatus(idUsuario)
-      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe(
-      (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus realizado');
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, this.MSG_CAMBIO_ESTATUS);
       },
-      (error: HttpErrorResponse): void => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mostrarMensajeError("", error.message)
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    );
+    });
   }
 
   procesarRespuestaModal(respuesta: RespuestaModalUsuario = {}): void {
@@ -246,16 +249,15 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   guardarPDF(): void {
     this.cargadorService.activar();
     this.descargaArchivosService.descargarArchivo(this.usuarioService.descargarListado()).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta) => {
         console.log(respuesta)
       },
-      (error) => {
+      error: (error) => {
+        this.mensajesSistemaService.mostrarMensajeError(error.message, "Error al guardar el archivo");
         console.log(error)
-        this.mostrarMensajeError("", error.message)
       },
-    )
+    })
   }
 
   guardarExcel(): void {
@@ -263,29 +265,17 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
     this.descargaArchivosService.descargarArchivo(this.usuarioService.descargarListadoExcel(),
       configuracionArchivo).pipe(
-      finalize(() => this.cargadorService.desactivar())).subscribe(
-      (respuesta): void => {
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta): void => {
         console.log(respuesta)
       },
-      (error): void => {
-        this.mostrarMensajeError("", error.message)
+      error: (error): void => {
+        this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
         console.log(error)
       },
-    )
+    })
   }
 
-  mostrarMensajeError(defaultError: string = '', codigoError: string): void {
-    const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(codigoError));
-    if (errorMsg !== '') {
-      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
-      return;
-    }
-    if (defaultError !== '') {
-      this.alertaService.mostrar(TipoAlerta.Error, defaultError);
-      return;
-    }
-    this.alertaService.mostrar(TipoAlerta.Error, "Error Desconocido");
-  }
 
   get f() {
     return this.filtroForm.controls;

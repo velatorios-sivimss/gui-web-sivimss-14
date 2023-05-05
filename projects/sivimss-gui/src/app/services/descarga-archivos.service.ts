@@ -38,8 +38,7 @@ export class DescargaArchivosService {
         });
       }),
       catchError((error) => {
-        console.error('Error al guardar el archivo:', error);
-        return of(false);
+        throw 'Error al guardar el archivo:';
       })
     );
   }

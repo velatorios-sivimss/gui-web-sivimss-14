@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Usuario} from "../../models/usuario.interface";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {UsuarioService} from "../../services/usuario.service";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -8,6 +8,7 @@ import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RespuestaModalUsuario} from "../../models/respuestaModal.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type SolicitudEstatus = Pick<Usuario, "id">
 type DetalleUsuario = Required<Usuario> & { oficina: string, rol: string, delegacion: string, velatorio: string };
@@ -29,7 +30,8 @@ export class CambioEstatusUsuarioComponent implements OnInit {
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private usuarioService: UsuarioService,
-    private cargadorService: LoaderService
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -50,7 +52,7 @@ export class CambioEstatusUsuarioComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error.message);
         }
       });
   }
@@ -75,7 +77,7 @@ export class CambioEstatusUsuarioComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error.message);
         }
       });
   }
