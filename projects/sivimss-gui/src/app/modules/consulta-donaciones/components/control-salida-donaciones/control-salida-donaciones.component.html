@@ -205,7 +205,7 @@
     <div class="border-panel mb-3">
       <h2 class="subtitulo">Datos del (los) finado (s)</h2>
       <div class="flex justify-content-end">
-        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalFinado()">
+        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalFinado()" onCloseOnNavigation>
           Agregar finado
         </button>
       </div>
@@ -247,7 +247,7 @@
     <div class="border-panel">
       <h2 class="subtitulo">Selección de ataudes</h2>
       <div class="flex justify-content-end">
-        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAtaud()">
+        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAtaud()" onCloseOnNavigation>
           Agregar ataúd
         </button>
       </div>
@@ -342,13 +342,13 @@
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>CURP</label>
-                  <span>{{fds.curp?.value}}</span>
+                  <span>{{fds.curp.value}}</span>
                 </div>
               </div>
               <div class="col-md-3" *ngIf="fds.rfc.value">
                 <div class="table-panel-column">
                   <label>RFC</label>
-                  <span>{{fds.rfc?.value}}</span>
+                  <span>{{fds.rfc.value}}</span>
                 </div>
               </div>
             </div>
@@ -356,25 +356,25 @@
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Nombre(s)</label>
-                  <span>{{fds.nombre?.value}}</span>
+                  <span>{{fds.nombre.value}}</span>
                 </div>
               </div>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Primer apellido</label>
-                  <span>{{fds.primerApellido?.value}}</span>
+                  <span>{{fds.primerApellido.value}}</span>
                 </div>
               </div>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Segundo apellido</label>
-                  <span>{{fds.segundoApellido?.value}}</span>
+                  <span>{{fds.segundoApellido.value}}</span>
                 </div>
               </div>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Fecha de nacimiento</label>
-                  <span>{{fds.fechaNacimiento?.value | date : 'dd/MM/yyyy'}}</span>
+                  <span>{{fds.fechaNacimiento.value | date : 'dd/MM/yyyy'}}</span>
                 </div>
               </div>
             </div>
@@ -386,18 +386,18 @@
                   <span>{{tomarTipoSexo() }}</span>
                 </div>
               </div>
-              <ng-container *ngIf="fds.sexo?.value == 3">
+              <ng-container *ngIf="fds.sexo.value == 3">
                 <div class="col-md-3">
                   <div class="table-panel-column">
                     <label>Otro</label>
-                    <span>{{fds.otro?.value}}</span>
+                    <span>{{fds.otro.value}}</span>
                   </div>
                 </div>
               </ng-container>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Nacionalidad</label>
-                  <span>{{fds.nacionalidad?.value == 1 ? "Mexicana": "Extranjera"}}</span>
+                  <span>{{fds.nacionalidad.value == 1 ? "Mexicana": "Extranjera"}}</span>
                 </div>
               </div>
             </div>
@@ -405,7 +405,6 @@
         </ng-template>
       </p-accordionTab>
     </p-accordion>
-
     <p-accordion styleClass="sivimss-accordion">
       <p-accordionTab>
         <ng-template pTemplate="header">Datos del (los) finado(s)</ng-template>
@@ -422,9 +421,9 @@
             </ng-template>
             <ng-template pTemplate="body" let-finados>
               <tr>
-                <td> {{finados.nombre}} </td>
-                <td> {{finados.primerApellido}} </td>
-                <td> {{finados.segundoApellido}} </td>
+                <td> {{finados.nombre}}</td>
+                <td> {{finados.primerApellido}}</td>
+                <td> {{finados.segundoApellido}}</td>
               </tr>
             </ng-template>
           </p-table>
@@ -471,15 +470,15 @@
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Para el otorgamiento de esta donación fue presentado un:</label>
-                  <span>{{fa.estudioSocioeconomico?.value == true ? "Estudio socioeconómico": ''}}</span>
-                  <span>{{fa.estudioLibre?.value == true ? "Escrito libre": ''}}</span>
+                  <span>{{fa.estudioSocioeconomico.value == true ? "Estudio socioeconómico": ''}}</span>
+                  <span>{{fa.estudioLibre.value == true ? "Escrito libre": ''}}</span>
 
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Fecha de solicitud</label>
-                  <span>{{fa.fechaSolicitud?.value | date: 'dd/MM/YYYY'}}</span>
+                  <span>{{fa.fechaSolicitud.value | date: 'dd/MM/YYYY'}}</span>
                 </div>
               </div>
             </div>
@@ -487,13 +486,13 @@
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Responsable de almacén</label>
-                  <span>{{fa.responsableAlmacenAtaud?.value}}</span>
+                  <span>{{fa.responsableAlmacenAtaud.value}}</span>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Matrícula del responsable</label>
-                  <span>{{fa.matriculaResponsable?.value}}</span>
+                  <span>{{fa.matriculaResponsable.value}}</span>
                 </div>
               </div>
             </div>
@@ -518,7 +517,10 @@
       Regresar
     </button>
     <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
-    <button type="submit" *ngIf="indice < menuStep.length" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
+    <button type="submit" *ngIf="indice == 0" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
+            [disabled]="formDatosSolicitante.invalid">Siguiente</button>
+    <button type="submit" *ngIf="indice == 1" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
+            [disabled]=" formAtaudes.invalid ">Siguiente</button>
     <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
   </div>
 </div>

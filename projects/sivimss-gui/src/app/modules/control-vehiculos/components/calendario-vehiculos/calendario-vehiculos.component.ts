@@ -148,7 +148,6 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
   }
 
   mostrarEvento(clickInfo: EventClickArg): void {
-    debugger;
     let obj = {
       ...clickInfo,
       dateStr: '',

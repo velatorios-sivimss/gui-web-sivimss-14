@@ -23,6 +23,8 @@ import { AlertaModule } from './shared/alerta/alerta.module';
 import { SubHeaderPrivadoComponent } from './components/sub-header-privado/sub-header-privado.component';
 import { BreadcrumbModule } from "./shared/breadcrumb/breadcrumb.module";
 import {PopoverModule} from "./shared/popover/popover.module";
+import {UtileriaModule} from "./shared/utileria/utileria.module";
+import {NgOptimizedImage} from "@angular/common";
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json')
 }
@@ -56,6 +58,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     LoaderModule,
     AlertaModule,
     PopoverModule,
+    UtileriaModule,
+    NgOptimizedImage,
   ],
   providers: [
     AutenticacionService,

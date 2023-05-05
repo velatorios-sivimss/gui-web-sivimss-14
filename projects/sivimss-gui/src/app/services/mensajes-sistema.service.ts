@@ -42,7 +42,7 @@ export class MensajesSistemaService {
         }]
     }
     //return this.httpClient.get<HttpRespuesta<any>>('http://localhost:8079/mssivimss-oauth/mensajes');
-    return of(respMensajes).pipe(
+    return this.httpClient.post<HttpRespuesta<any>>('https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/mensajes',{}).pipe(
       map((respuesta: HttpRespuesta<any>) => {
         return respuesta.datos as MensajeSistema[];
       })

@@ -15,6 +15,8 @@ import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {DynamicDialogRef} from "primeng/dynamicdialog";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula">;
 type SolicitudCurp = Pick<Usuario, "curp">;
@@ -45,9 +47,9 @@ export class AgregarUsuarioComponent implements OnInit {
   delegacionResumen: string = "";
   velatorioResumen: string = "";
 
-  readonly POSICION_ROLES: number = 0;
-  readonly POSICION_NIVELES: number = 1;
-  readonly POSICION_DELEGACIONES: number = 2;
+  readonly POSICION_CATALOGO_ROLES: number = 0;
+  readonly POSICION_CATALOGO_NIVELES: number = 1;
+  readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
 
   constructor(
     private route: ActivatedRoute,
@@ -55,7 +57,8 @@ export class AgregarUsuarioComponent implements OnInit {
     private formBuilder: FormBuilder,
     public ref: DynamicDialogRef,
     private usuarioService: UsuarioService,
-    private cargadorService: LoaderService
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -66,10 +69,10 @@ export class AgregarUsuarioComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const roles = respuesta[this.POSICION_ROLES].datos
+    const roles = respuesta[this.POSICION_CATALOGO_ROLES].datos
     this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
-    this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
-    this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
   }
 
   inicializarAgregarUsuarioForm(): void {
@@ -77,9 +80,9 @@ export class AgregarUsuarioComponent implements OnInit {
       curp: [{value: null, disabled: false},
         [Validators.required, Validators.maxLength(18), Validators.pattern(PATRON_CURP)]],
       matricula: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(10)]],
-      nombre: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(50)]],
-      primerApellido: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(50)]],
-      segundoApellido: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(50)]],
+      nombre: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(20)]],
+      primerApellido: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(30)]],
+      segundoApellido: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(30)]],
       correoElectronico: [{value: null, disabled: false},
         [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
@@ -87,129 +90,137 @@ export class AgregarUsuarioComponent implements OnInit {
       delegacion: [{value: null, disabled: false}, [Validators.required]],
       velatorio: [{value: null, disabled: false}, [Validators.required]],
       rol: [{value: null, disabled: false}, [Validators.required]],
-      estatus: [{value: true, disabled: false}]
+      estatus: [{value: true, disabled: false}, [Validators.required]]
     });
   }
 
   buscarVelatorios(): void {
     const delegacion = this.agregarUsuarioForm.get('delegacion')?.value;
     this.agregarUsuarioForm.get('velatorio')?.patchValue("");
+    this.cargadorService.activar();
     this.usuarioService.obtenerVelatorios(delegacion)
-      .subscribe(
-        (respuesta) => {
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
           const velatorios = respuesta.datos || [];
           this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
         },
-        (error: HttpErrorResponse) => {
-          console.log(error)
+        error: (error: HttpErrorResponse): void => {
+          this.mostrarMensajeError("", error.message);
+          console.log(error);
         }
-      );
+      });
   }
 
   crearUsuario(): NuevoUsuario {
     return {
-      materno: this.agregarUsuarioForm.get("segundoApellido")?.value,
-      nombre: this.agregarUsuarioForm.get("nombre")?.value,
+      claveMatricula: this.agregarUsuarioForm.get("matricula")?.value,
       correo: this.agregarUsuarioForm.get("correoElectronico")?.value,
       curp: this.agregarUsuarioForm.get("curp")?.value,
-      claveMatricula: this.agregarUsuarioForm.get("matricula")?.value,
       fecNacimiento: this.agregarUsuarioForm.get('fechaNacimiento')?.value &&
         moment(this.agregarUsuarioForm.get('fechaNacimiento')?.value).format('YYYY-MM-DD'),
-      paterno: this.agregarUsuarioForm.get("primerApellido")?.value,
-      idOficina: this.agregarUsuarioForm.get("nivel")?.value,
-      idVelatorio: this.agregarUsuarioForm.get("velatorio")?.value,
-      idRol: this.agregarUsuarioForm.get("rol")?.value,
       idDelegacion: this.agregarUsuarioForm.get("delegacion")?.value,
+      idOficina: this.agregarUsuarioForm.get("nivel")?.value,
+      idRol: this.agregarUsuarioForm.get("rol")?.value,
+      idVelatorio: this.agregarUsuarioForm.get("velatorio")?.value,
+      materno: this.agregarUsuarioForm.get("segundoApellido")?.value,
+      nombre: this.agregarUsuarioForm.get("nombre")?.value,
+      paterno: this.agregarUsuarioForm.get("primerApellido")?.value,
     };
   }
 
   creacionVariablesResumen(): void {
-    const rol = this.agregarUsuarioForm.get("rol")?.value;
-    const nivel = this.agregarUsuarioForm.get("nivel")?.value;
-    const delegacion = this.agregarUsuarioForm.get("delegacion")?.value;
-    const velatorio = this.agregarUsuarioForm.get("velatorio")?.value;
-    this.rolResumen = this.catalogoRoles.find(r => r.value === rol)?.label || "";
-    this.nivelResumen = this.catalogoNiveles.find(n => n.value === nivel)?.label || "";
-    this.delegacionResumen = this.catalogoDelegaciones.find(d => d.value === delegacion)?.label || "";
-    this.velatorioResumen = this.catalogoVelatorios.find(v => v.value === velatorio)?.label || "";
+    const idRol = this.agregarUsuarioForm.get("rol")?.value;
+    const idNivel = this.agregarUsuarioForm.get("nivel")?.value;
+    const idDelegacion = this.agregarUsuarioForm.get("delegacion")?.value;
+    const idVelatorio = this.agregarUsuarioForm.get("velatorio")?.value;
+    this.rolResumen = this.catalogoRoles.find(rol => rol.value === idRol)?.label || "";
+    this.nivelResumen = this.catalogoNiveles.find(nivel => nivel.value === idNivel)?.label || "";
+    this.delegacionResumen = this.catalogoDelegaciones.find(delegacion => delegacion.value === idDelegacion)?.label || "";
+    this.velatorioResumen = this.catalogoVelatorios.find(velatorio => velatorio.value === idVelatorio)?.label || "";
   }
 
   validarCurp(): void {
-    const curp: SolicitudCurp = {curp: this.agregarUsuarioForm.get("curp")?.value};
-    if (!curp.curp) return;
-    if (!PATRON_CURP.test(curp.curp)) return;
-    this.usuarioService.validarCurp(curp).pipe(
-      finalize(() => this.validarCurpRenapo(curp.curp))
-    ).subscribe(
-      (respuesta) => {
+    const consulta: SolicitudCurp = {curp: this.agregarUsuarioForm.get("curp")?.value};
+    if (!consulta.curp) return;
+    if (!PATRON_CURP.test(consulta.curp)) return;
+    this.usuarioService.validarCurp(consulta).pipe(
+      finalize(() => this.validarCurpRenapo(consulta.curp))
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_CURP.has(valor)) return;
         const {mensaje, tipo, valido} = MENSAJES_CURP.get(valor);
         this.curpValida = valido;
-        console.log(this.curpValida)
-        this.alertaService.mostrar(tipo, mensaje);
+        if (!valido) {
+          this.alertaService.mostrar(tipo, mensaje);
+        }
       },
-      (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
+      error: (error: HttpErrorResponse): void => {
+        this.mostrarMensajeError("Ocurrio un error", error.message);
+        console.error("ERROR: ", error)
       }
-    );
+    });
   }
 
   validarCurpRenapo(curp: string): void {
-    if (!this.curpValida) return
+    if (!this.curpValida) return;
     this.cargadorService.activar();
     this.usuarioService.consultarCurpRenapo(curp).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
         const {apellido1, apellido2, nombre} = respuesta.datos;
         this.agregarUsuarioForm.get("nombre")?.patchValue(nombre);
         this.agregarUsuarioForm.get("primerApellido")?.patchValue(apellido1);
         this.agregarUsuarioForm.get("segundoApellido")?.patchValue(apellido2);
       },
-      (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
-      });
+      error: (error: HttpErrorResponse): void => {
+        this.mostrarMensajeError("Ocurrio un error", error.message);
+        console.error("ERROR: ", error)
+      }
+    });
   }
 
   validarMatricula(): void {
-    const matricula: SolicitudMatricula = {claveMatricula: this.agregarUsuarioForm.get("matricula")?.value};
-    if (!matricula.claveMatricula) return;
-    this.usuarioService.validarMatricula(matricula).pipe(
-      finalize(() => this.validarCurpMatricula(matricula.claveMatricula))
-    ).subscribe(
-      (respuesta) => {
+    const consulta: SolicitudMatricula = {claveMatricula: this.agregarUsuarioForm.get("matricula")?.value};
+    if (!consulta.claveMatricula) return;
+    this.usuarioService.validarMatricula(consulta).pipe(
+      finalize(() => this.validarMatriculaSiap(consulta.claveMatricula))
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_MATRICULA.has(valor)) return;
         const {mensaje, tipo, valido} = MENSAJES_MATRICULA.get(valor);
         this.matriculaValida = valido;
-        this.alertaService.mostrar(tipo, mensaje);
+        if (!valido) {
+          this.alertaService.mostrar(tipo, mensaje);
+        }
       },
-      (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Matricula no valida');
-        console.error("ERROR: ", error.message)
+      error: (error: HttpErrorResponse): void => {
+        this.mostrarMensajeError("Matricula no valida", error.message);
+        console.error("ERROR: ", error)
       }
-    );
+    });
   }
 
-  validarCurpMatricula(matricula: string): void {
-    if (!this.matriculaValida) return
+  validarMatriculaSiap(matricula: string): void {
+    if (!this.matriculaValida) return;
     this.cargadorService.activar();
     this.usuarioService.consultarMatriculaSiap(matricula).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         console.log(respuesta)
       },
-      (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Ocurrio un error');
-        console.error("ERROR: ", error.message)
-      });
+      error: (error: HttpErrorResponse): void => {
+        this.mostrarMensajeError("Ocurrio un error", error.message);
+        console.error("ERROR: ", error)
+      }
+    });
   }
 
   agregarUsuario(): void {
@@ -217,15 +228,15 @@ export class AgregarUsuarioComponent implements OnInit {
     this.cargadorService.activar();
     this.usuarioService.guardar(this.nuevoUsuario)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        () => {
+      .subscribe({
+        next: (): void => {
           this.ref.close(respuesta)
         },
-        (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-          console.error("ERROR: ", error.message)
+        error: (error: HttpErrorResponse): void => {
+          this.mostrarMensajeError("Alta incorrecta", error.message);
+          console.error("ERROR: ", error)
         }
-      );
+      });
   }
 
   cancelar(): void {
@@ -245,6 +256,19 @@ export class AgregarUsuarioComponent implements OnInit {
 
   get fau() {
     return this.agregarUsuarioForm?.controls;
+  }
+
+  mostrarMensajeError(defaultError: string = '', codigoError: string): void {
+    const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(codigoError));
+    if (errorMsg !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
+      return;
+    }
+    if (defaultError !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, defaultError);
+      return;
+    }
+    this.alertaService.mostrar(TipoAlerta.Error, "Error Desconocido");
   }
 
 }

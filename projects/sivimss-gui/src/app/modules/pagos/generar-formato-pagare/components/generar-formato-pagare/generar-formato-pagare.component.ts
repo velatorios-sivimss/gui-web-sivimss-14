@@ -1,14 +1,14 @@
 import {FormatoPagare} from '../../models/formato-pagare.interface';
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {DialogService, DynamicDialogRef} from 'primeng-lts/dynamicdialog';
-import {OverlayPanel} from 'primeng-lts/overlaypanel';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {CATALOGOS_DUMMIES} from '../../constants/dummies';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {LazyLoadEvent} from 'primeng-lts/api';
+import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {GenerarFormatoPagareService} from '../../services/generar-formato-pagare.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -92,13 +92,13 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}],
-      delegacion: [{value: null, disabled: false}],
-      velatorio: [{value: null, disabled: false}],
-      folio: [{value: null, disabled: false}],
+      idNivel: [{value: null, disabled: false}],
+      idDelegacion: [{value: null, disabled: false}],
+      idVelatorio: [{value: null, disabled: false}],
+      folioODS: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
-      fechaInicial: [{value: null, disabled: false}],
-      fechaFinal: [{value: null, disabled: false}],
+      fecIniODS: [{value: null, disabled: false}],
+      fecFinODS: [{value: null, disabled: false}],
     });
   }
 
@@ -154,8 +154,15 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   crearSolicitudFiltros(): FiltrosFormatoPagare {
     return {
-      claveFolio: this.filtroForm.get("folio")?.value,
-      nomContratante: this.filtroForm.get("nombreContratante")?.value
+      idOficina: this.filtroForm.get("idOficina")?.value,
+      idNivel: this.filtroForm.get("idNivel")?.value,
+      idDelegacion: this.filtroForm.get("idDelegacion")?.value,
+      idVelatorio: this.filtroForm.get("idVelatorio")?.value,
+      folioODS: this.filtroForm.get("folioODS")?.value,
+      nomContratante: this.filtroForm.get("nomContratante")?.value,
+      fecIniODS: this.filtroForm.get("fecIniODS")?.value,
+      fecFinODS: this.filtroForm.get("fecFinODS")?.value,
+      tipoReporte: this.filtroForm.get("tipoReporte")?.value,
     }
   }
 

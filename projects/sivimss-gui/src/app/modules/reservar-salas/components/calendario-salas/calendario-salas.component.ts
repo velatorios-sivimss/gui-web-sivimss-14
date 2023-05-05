@@ -32,8 +32,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
   @ViewChild('calendarioCremacion') calendarioCremacion!: FullCalendarComponent;
   @ViewChild('calendarioEmbalsamamiento') calendarioEmbalsamamiento!: FullCalendarComponent;
 
-  readonly POSICION_CATALOGO_VELATORIOS = 0;
-  readonly POSICION_CATALOGO_DELEGACION = 1;
+  readonly POSICION_CATALOGO_DELEGACION = 0;
 
   fechaCalendario!: Moment;
   calendarApi:any;
@@ -69,10 +68,9 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
-    debugger;
     const respuesta = this.route.snapshot.data['respuesta'];
-    this.velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS]!.datos.map((velatorio: VelatorioInterface) => (
-      {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+    // this.velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS]!.datos.map((velatorio: VelatorioInterface) => (
+    //   {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
 
     this.delegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
@@ -254,6 +252,23 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
       rutaNombreReporte: "reportes/generales/ReporteVerificarDisponibilidadSalas.jrxml",
       tipoReporte: tipoReporte
     }
+  }
+
+  cambiarDelegacion(): void {
+    this.loaderService.activar();
+    this.reservarSalasService.obtenerCatalogoVelatoriosPorDelegacion(this.delegacion).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>)=> {
+
+        this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
+
   }
 
   ngOnDestroy(): void {

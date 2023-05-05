@@ -150,7 +150,7 @@ export class RegistrarEntradaComponent implements OnInit {
           return msj.idMensaje == error.error.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        console.error('ERROR: ', error.message)
+        console.error('ERROR: ', error)
         this.refModal.close(false)
       },
     )

@@ -6,10 +6,10 @@ import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/a
 import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {HttpErrorResponse} from "@angular/common/http";
-import {CATALOGOS} from '../../../usuarios/constants/catalogos_dummies';
 import {RolService} from '../../services/rol.service';
 import {Rol} from "../../models/rol.interface";
 import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
+import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
 
 type NuevoRol = Omit<Rol, "idRol" >;
 
@@ -23,7 +23,7 @@ export class AgregarRolComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  opciones: TipoDropdown[] = CATALOGOS;
+  opciones: TipoDropdown[] = CATALOGO_NIVEL;
   catRol: TipoDropdown[] = [];
   agregarRolForm!: FormGroup;
 
@@ -72,7 +72,7 @@ export class AgregarRolComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-        console.error("ERROR: ", error.message)
+        console.error("ERROR: ", error)
       }
     );
   }

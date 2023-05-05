@@ -14,7 +14,8 @@
 
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
-        <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación">
+        <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación"
+                    (onChange)="cambiarDelegacion()">
         </p-dropdown>
       </div>
       <div class="col-md-6">
@@ -53,7 +54,10 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarEntradaForm.invalid" (click)="abrirModalAgregarEntrada()">Buscar</button>
+            <button *appValidaRol="['CAPILLA_RESERVACION','ALTA']" type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarEntradaForm.invalid"
+                    onCloseOnNavigation  (click)="abrirModalAgregarEntrada()">
+              Buscar
+            </button>
         </div>
       </div>
 
@@ -97,7 +101,8 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarSalidaForm.invalid"  (click)="abrirModalAgregarSalida()" >Registrar salida</button>
+          <button *appValidaRol="['CAPILLA_RESERVACION','MODIFICAR']" onCloseOnNavigation type="button" class="btn btn-primary btn-md ml-5"
+                  [disabled]="registrarSalidaForm.invalid"  (click)="abrirModalAgregarSalida()" >Registrar salida</button>
         </div>
       </div>
     </form>
