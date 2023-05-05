@@ -17,6 +17,7 @@ import {InputSwitchModule} from "primeng/inputswitch";
 import { CancelarFacturaComponent } from './components/cancelar-factura/cancelar-factura.component';
 import { EnviarFacturaComponent } from './components/enviar-factura/enviar-factura.component';
 import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
+import { VerDetalleFacturaComponent } from './components/ver-detalle-factura/ver-detalle-factura.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
     FacturacionComponent,
     SolicitarFacturaComponent,
     CancelarFacturaComponent,
-    EnviarFacturaComponent
+    EnviarFacturaComponent,
+    VerDetalleFacturaComponent
   ],
   imports: [
     CommonModule,
