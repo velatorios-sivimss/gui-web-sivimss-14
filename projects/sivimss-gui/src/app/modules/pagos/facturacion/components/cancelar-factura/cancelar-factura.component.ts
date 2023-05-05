@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-cancelar-factura',
@@ -7,9 +9,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CancelarFacturaComponent implements OnInit {
 
-  constructor() { }
+  motivos: TipoDropdown[] = [];
+  cancelarForm!: FormGroup;
 
-  ngOnInit(): void {
+  constructor(
+    private formBuilder: FormBuilder,
+  ) {
   }
 
+  ngOnInit(): void {
+    this.inicializarCancelarForm();
+  }
+
+  limpiarFiltros(): void {
+
+  }
+
+  private inicializarCancelarForm(): void {
+    this.cancelarForm = this.formBuilder.group({
+      motivoCancelacion: [{value: null, disabled: false}],
+      folioRelacionado: [{value: null, disabled: false}]
+    })
+  }
 }

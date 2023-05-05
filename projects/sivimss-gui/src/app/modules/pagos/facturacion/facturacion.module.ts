@@ -16,6 +16,7 @@ import {TableModule} from "primeng/table";
 import {InputSwitchModule} from "primeng/inputswitch";
 import { CancelarFacturaComponent } from './components/cancelar-factura/cancelar-factura.component';
 import { EnviarFacturaComponent } from './components/enviar-factura/enviar-factura.component';
+import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { EnviarFacturaComponent } from './components/enviar-factura/enviar-factu
     OverlayPanelOpcionesModule,
     TableModule,
     InputSwitchModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    TablePanelModule
   ]
 })
 export class FacturacionModule { }

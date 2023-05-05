@@ -6,7 +6,8 @@
   <div class="datos-usuario">
     <div class="contenedor-imagen-usuario" [ngClass]="{'notificacion': existeNotificacion }">
       <button class="button-user-img" appPopover (click)="notificacionesPopOver.toggle($event)">
-        <img src="../../../assets/images/imagen-icono-usuario.svg" alt="imagen usuario" class="imagen-usuario">
+        <img ngSrc="../../../assets/images/imagen-icono-usuario.svg" alt="imagen usuario" class="imagen-usuario"
+             height="32" width="32">
       </button>
       <app-popover #notificacionesPopOver>
         <ng-container *ngTemplateOutlet="notificacionesTemplate"></ng-container>
