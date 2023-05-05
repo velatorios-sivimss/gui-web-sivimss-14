@@ -105,7 +105,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       editable: false,
 
       locale: 'es-MX',
-      selectable: true,
+      selectable: false,
       dayHeaders: false,
       eventClick: this.mostrarEvento.bind(this),
       eventsSet: this.handleEvents.bind(this),

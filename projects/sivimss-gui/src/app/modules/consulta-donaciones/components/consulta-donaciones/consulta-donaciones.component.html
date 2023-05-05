@@ -68,7 +68,7 @@
 <section class="my-6">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Ataúdes donados</h2>
-    <button type="button" class="btn btn-primary btn-lg" (click)="abrirModarRegistrarDonacion()">
+    <button *appValidaRol="['DONACIONES','ALTA']" type="button" class="btn btn-primary btn-lg" (click)="abrirModarRegistrarDonacion()">
       Registrar donaci&oacute;n</button>
   </div>
 </section>
@@ -86,7 +86,7 @@
         <th scope="col">Fecha de donación</th>
         <th scope="col">Donado por</th>
         <th scope="col">Nombre del donador</th>
-        <th></th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ataudesDonados>
@@ -126,7 +126,7 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" (click)="descargarArchivo('pdf')" alt="exportar pdf">
+            <img class="icon-export-table"  src="assets/images/imagen-icono-pdf.svg" (click)="descargarArchivo('pdf')" alt="exportar pdf">
             <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" (click)="descargarArchivo('xls')"  alt="exportar excel">
           </div>
         </div>
