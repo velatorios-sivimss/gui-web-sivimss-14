@@ -23,9 +23,9 @@ export interface NotificacionInterface {
   styleUrls: ['./sub-header-privado.component.scss'],
   providers: [NotificacionesService]
 })
-
 export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
-   usuarioEnSesion!: UsuarioEnSesion | null;
+
+  usuarioEnSesion!: UsuarioEnSesion | null;
   subs!: Subscription;
   existeNotificacion: boolean;
   notificaciones: NotificacionInterface[] = [];
@@ -53,7 +53,11 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
       (usuarioEnSesion: UsuarioEnSesion | null) => {
         this.usuarioEnSesion = usuarioEnSesion;
         localStorage.setItem('usuario', JSON.stringify(
-          {'idDelegacion':this.usuarioEnSesion?.idDelegacion,'idVelatorio': this.usuarioEnSesion?.idVelatorio}));
+          {
+            'idDelegacion': this.usuarioEnSesion?.idDelegacion,
+            'idVelatorio': this.usuarioEnSesion?.idVelatorio,
+            'idOficina': this.usuarioEnSesion?.idOficina
+          }));
       }
     );
   }
@@ -113,4 +117,5 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   aceptar(): void {
 
   }
+
 }

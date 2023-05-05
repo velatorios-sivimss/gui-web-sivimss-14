@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Usuario} from '../../models/usuario.interface';
 import * as moment from "moment/moment";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {UsuarioService} from "../../services/usuario.service";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
@@ -14,6 +14,7 @@ import {ActivatedRoute} from '@angular/router';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type UsuarioModificado = Omit<Usuario, "password">
 
@@ -42,6 +43,7 @@ export class ModificarUsuarioComponent implements OnInit {
   readonly POSICION_CATALOGO_ROLES: number = 0;
   readonly POSICION_CATALOGO_NIVELES: number = 1;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
+  readonly MSG_USUARIO_MODIFICADO: string = "Usuario modificado correctamente";
 
   constructor(
     private route: ActivatedRoute,
@@ -50,7 +52,8 @@ export class ModificarUsuarioComponent implements OnInit {
     private alertaService: AlertaService,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
-    private cargadorService: LoaderService
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -100,7 +103,8 @@ export class ModificarUsuarioComponent implements OnInit {
         this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
       },
       error: (error: HttpErrorResponse): void => {
-        console.log(error)
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
     });
   }
@@ -137,17 +141,17 @@ export class ModificarUsuarioComponent implements OnInit {
   }
 
   modificarUsuario(): void {
-    const respuesta: RespuestaModalUsuario = {mensaje: "Usuario modificado correctamente", actualizar: true}
+    const respuesta: RespuestaModalUsuario = {mensaje: this.MSG_USUARIO_MODIFICADO, actualizar: true}
     this.cargadorService.activar();
     this.usuarioService.actualizar(this.usuarioModificado)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (): void => {
-          this.ref.close(respuesta)
+          this.ref.close(respuesta);
         },
         error: (error: HttpErrorResponse): void => {
-          this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
-          console.error("ERROR: ", error)
+          console.error("ERROR: ", error);
+          this.mensajesSistemaService.mostrarMensajeError(error.message);
         }
       });
   }

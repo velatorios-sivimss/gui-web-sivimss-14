@@ -1,19 +1,21 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MENU_STEPPER} from '../../../../inventario-vehicular/constants/menu-stepper';
-import {MenuItem} from 'primeng/api';
 import {CATALOGOS_DUMMIES} from '../../../../inventario-vehicular/constants/dummies';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {OverlayPanel} from 'primeng/overlaypanel';
-import {DialogService, DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {ConfirmacionServicio, Vehiculos} from '../../../models/vehiculos.interface';
-import {AbstractControl, FormArray} from "@angular/forms";
-
-import {Funcionalidad} from "projects/sivimss-gui/src/app/modules/roles/models/funcionalidad.interface";
+import {Vehiculos} from '../../../models/vehiculos.interface';
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
-import {ActivatedRoute, Router} from '@angular/router';
-import {DetalleNuevaVerificacionComponent} from '../detalle-nueva-verificacion/detalle-nueva-verificacion.component';
+import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
+import {VehiculoTemp} from "../../../models/vehiculo-temp.interface";
+import {obtenerFechaActual, obtenerHoraActual} from "../../../../../utils/funciones-fechas";
+import {VerificacionInicio} from "../../../models/verificacion-inicio.interface";
+import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {RegistroVerificacionInterface} from "../../../models/registro-verificacion.interface";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {MenuItem} from "primeng/api";
+import {OverlayPanel} from "primeng/overlaypanel";
 
 @Component({
   selector: 'app-nueva-verificacion',
@@ -23,29 +25,21 @@ import {DetalleNuevaVerificacionComponent} from '../detalle-nueva-verificacion/d
 })
 export class NuevaVerificacionComponent implements OnInit {
 
-  @Input() vehiculoSeleccionado!: Vehiculos;
-  @Input() origen!: string;
-  @Output() confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
-  creacionRef!: DynamicDialogRef;
+  vehiculoSeleccionado!: VehiculoTemp;
 
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
-  direccionReferencia: boolean = false;
 
-  responsables: TipoDropdown[] = CATALOGOS_DUMMIES;
-  tiposProveedor: TipoDropdown[] = CATALOGOS_DUMMIES;
-  usos: TipoDropdown[] = CATALOGOS_DUMMIES;
   velatorios: TipoDropdown[] = CATALOGOS_DUMMIES;
-  numerosSerie: TipoDropdown[] = CATALOGOS_DUMMIES;
 
   nuevaVerificacionForm!: FormGroup;
-  selectedNivelAceite: boolean = false;
 
-  nuevaVerificacion!: Vehiculos;
+  nuevaVerificacion!: VerificacionInicio;
   vehiculo: Vehiculos = {};
-  // vehiculoSeleccionado!: Vehiculos;
 
   ventanaConfirmacion: boolean = false;
+  horaActual: string = obtenerHoraActual();
+  fechaActual: string = obtenerFechaActual();
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -59,86 +53,124 @@ export class NuevaVerificacionComponent implements OnInit {
     private alertaService: AlertaService,
     private route: ActivatedRoute,
     private router: Router,
+    private mantenimientoVehicularService: MantenimientoVehicularService
   ) {
-    this.vehiculoSeleccionado = this.config.data;
   }
 
   ngOnInit(): void {
-    if (this.config?.data) {
-      this.origen = this.config.data.origen;
-      this.vehiculoSeleccionado = this.config.data.vehiculo;
-    }
-    this.vehiculoSeleccionado.velatorio;
-    this.inicializarAgregarCapillaForm(this.vehiculoSeleccionado);
+    this.vehiculoSeleccionado = this.config.data.vehiculo;
+    this.inicializarVerificacionForm();
+    this.revisarRuta();
   }
 
-  inicializarAgregarCapillaForm(vehiculoSeleccionado: Vehiculos) {
-    this.nuevaVerificacionForm = this.formBuilder.group({
-      velatorio: [{value: vehiculoSeleccionado.velatorio, disabled: true}],
-      fecha: [{value: vehiculoSeleccionado.fecha, disabled: false}, [Validators.required]],
-      hora: [{value: vehiculoSeleccionado.hora, disabled: false}, [Validators.required]],
-      vehiculo: [{value: vehiculoSeleccionado.vehiculo, disabled: false}, [Validators.required]],
-      placas: [{value: vehiculoSeleccionado.placas, disabled: false}, [Validators.required]],
-      nivelAceite: [{value: vehiculoSeleccionado.nivelAceite, disabled: false}],
-      nivelAgua: [{value: vehiculoSeleccionado.nivelAgua, disabled: false}],
-      calibracionNeumaticosTraseros: [{value: vehiculoSeleccionado.calibracionNeumaticosTraseros, disabled: false}],
-      calibracionNeumaticosDelanteros: [{value: vehiculoSeleccionado.calibracionNeumaticosDelanteros, disabled: false}],
-      nivelCombustible: [{value: vehiculoSeleccionado.nivelCombustible, disabled: false}],
-      nivelBateria: [{value: vehiculoSeleccionado.nivelBateria, disabled: false}],
-      limpiezaInterior: [{value: vehiculoSeleccionado.limpiezaInterior, disabled: false}],
-      limpiezaExterior: [{value: vehiculoSeleccionado.limpiezaExterior, disabled: false}],
-      codigoFalla: [{value: vehiculoSeleccionado.codigoFalla, disabled: false}],
+  revisarRuta(): void {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.ref.close();
+      }
     });
   }
 
-
-  confirmarAgregarServicio(): void {
-    this.ventanaConfirmacion = true;
-    /*
-    * Se mandará solo texto para que el detalle solo lo imprim por lo que se deben llenar las variables
-    * que son 'desc'*/
-    this.vehiculo = {
-      id: this.nuevaVerificacionForm.get("id")?.value,
-      velatorio: this.nuevaVerificacionForm.get("categoria")?.value,
-      fecha: this.nuevaVerificacionForm.get("tipoDeArticulo")?.value,
-      hora: this.nuevaVerificacionForm.get("tipoDeMaterial")?.value,
-      tamanio: this.nuevaVerificacionForm.get("tamanio")?.value,
-      placas: this.nuevaVerificacionForm.get("clasificacionDeProducto")?.value,
-      nivelAceite: this.nuevaVerificacionForm.get("modeloDeArticulo")?.value,
-      nivelAgua: this.nuevaVerificacionForm.get("descripcionDeProducto")?.value,
-      calibracionNeumaticosTraseros: this.nuevaVerificacionForm.get("largo")?.value,
-      calibracionNeumaticosDelanteros: this.nuevaVerificacionForm.get("ancho")?.value,
-      nivelCombustible: this.nuevaVerificacionForm.get("alto")?.value,
-      estatus: this.nuevaVerificacionForm.get("estatus")?.value,
-      nivelBateria: this.nuevaVerificacionForm.get("claveSAT")?.value,
-      limpiezaInterior: this.nuevaVerificacionForm.get("cuentaClave")?.value,
-      limpiezaExterior: this.nuevaVerificacionForm.get("cuentaContable")?.value,
-      codigoFalla: this.nuevaVerificacionForm.get("partidaPresupuestal")?.value,
-    };
+  inicializarVerificacionForm(): void {
+    this.nuevaVerificacionForm = this.formBuilder.group({
+      nivelAceite: [{value: null, disabled: false}, [Validators.required]],
+      nivelAgua: [{value: null, disabled: false}, [Validators.required]],
+      calibracionNeumaticosTraseros: [{value: null, disabled: false}, [Validators.required]],
+      calibracionNeumaticosDelanteros: [{value: null, disabled: false}, [Validators.required]],
+      nivelCombustible: [{value: null, disabled: false}, [Validators.required]],
+      nivelBateria: [{value: null, disabled: false}, [Validators.required]],
+      limpiezaInterior: [{value: null, disabled: false}, [Validators.required]],
+      limpiezaExterior: [{value: null, disabled: false}, [Validators.required]],
+      codigoFalla: [{value: null, disabled: false}, [Validators.required]],
+    });
   }
 
+  obtenerValorNivel(valor: number): string {
+    const valores: number[] = [1, 5, 10];
+    if (!valores.includes(valor)) return "";
+    if (valor === 1) return "BAJO";
+    if (valor === 5) return "MEDIO";
+    return "CORRECTO";
+  }
 
-  regresarPagina(): void {
-    this.indice--;
+  crearResumenNuevaVerificacion(): VerificacionInicio {
+    return {
+      idCalNeuDelanteros: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("calibracionNeumaticosDelanteros")?.value),
+      idCalNeuTraseros: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("calibracionNeumaticosTraseros")?.value),
+      idCodigoFallo: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("codigoFalla")?.value),
+      idLimpiezaExterior: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("limpiezaExterior")?.value),
+      idLimpiezaInterior: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("limpiezaInterior")?.value),
+      idMttoVehicular: null,
+      idMttoVerifInicio: null,
+      idNivelAceite: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("nivelAceite")?.value),
+      idNivelAgua: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("nivelAgua")?.value),
+      idNivelBateria: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("nivelBateria")?.value),
+      idNivelCombustible: this.obtenerValorNivel(+this.nuevaVerificacionForm.get("nivelCombustible")?.value)
+    }
   }
 
   cancelar(): void {
+    if (this.indice === 1) {
+      this.indice--;
+      return;
+    }
     this.ref.close()
   }
 
-  aceptar() {
-    this.ventanaConfirmacion = true;
+  aceptar(): void {
+    this.indice++;
+    this.nuevaVerificacion = this.crearResumenNuevaVerificacion();
   }
 
-  crearNuevaVerificacion() {
-    this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion agregada correctamente');
+  crearNuevaVerificacion(): RegistroVerificacionInterface {
+    return {
+      idMttoVehicular: null,
+      idMttoestado: 1,
+      idVehiculo: 1,
+      idDelegacion: 1,
+      idVelatorio: 1,
+      idEstatus: 1,
+      verificacionInicio: {
+        idMttoVerifInicio: null,
+        idMttoVehicular: null,
+        idCalNeuDelanteros: this.nuevaVerificacionForm.get("calibracionNeumaticosDelanteros")?.value,
+        idCalNeuTraseros: this.nuevaVerificacionForm.get("calibracionNeumaticosTraseros")?.value,
+        idCodigoFallo: this.nuevaVerificacionForm.get("codigoFalla")?.value,
+        idLimpiezaExterior: this.nuevaVerificacionForm.get("limpiezaExterior")?.value,
+        idLimpiezaInterior: this.nuevaVerificacionForm.get("limpiezaInterior")?.value,
+        idNivelAceite: this.nuevaVerificacionForm.get("nivelAceite")?.value,
+        idNivelAgua: this.nuevaVerificacionForm.get("nivelAgua")?.value,
+        idNivelBateria: this.nuevaVerificacionForm.get("nivelBateria")?.value,
+        idNivelCombustible: this.nuevaVerificacionForm.get("nivelCombustible")?.value
+      },
+      solicitud: null,
+      registro: null
+    }
+  }
+
+  guardarNuevaVerificacion(): void {
+    const verificacion: RegistroVerificacionInterface = this.crearNuevaVerificacion();
+    this.mantenimientoVehicularService.guardar(verificacion).subscribe(
+      (respuesta) => {
+        if (!respuesta.datos) return
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion agregada correctamente');
+        this.abrirRegistroMantenimiento();
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
+  }
+
+  abrirRegistroMantenimiento(): void {
     this.ref.close();
-    this.abrirModalRegistroMantenimiento();
-  }
-
-  abrirModalRegistroMantenimiento(): void {
-    this.router.navigate(['detalle-verificacion'], {relativeTo: this.route});
-
+    this.router.navigate(['detalle-verificacion'], {
+      relativeTo: this.route,
+      queryParams: {
+        vehiculo: JSON.stringify(this.vehiculoSeleccionado),
+        solicitud: JSON.stringify(this.nuevaVerificacion)
+      }
+    });
   }
 
   get nvf() {
