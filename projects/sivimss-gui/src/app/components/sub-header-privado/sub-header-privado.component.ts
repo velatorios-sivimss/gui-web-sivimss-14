@@ -83,7 +83,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
       idSala:notificacion.idSala,
     nombreSala: notificacion.nombreSala}
     localStorage.setItem('reserva-sala', JSON.stringify(datos));
-    this.router.navigate([notificacion.path?.toLowerCase()])
+    this.router.navigate(['../',notificacion.path?.toLowerCase()])
   }
 
   registrarMasTarde(notificacion:NotificacionInterface): void {
