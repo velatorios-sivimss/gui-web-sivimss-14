@@ -1,12 +1,10 @@
 export interface EntradaVehiculo {
-  idSala?: any;
-  idOds?: number;
-  idTipoOcupacion?: number;
-  fechaEntrada?: string;
-  horaEntrada?: string;
-  cantidadGasInicial?: number;
-  descripcionMantenimiento?: string;
-  nombreResponsable?: string;
+  idVehiculo: number;
+  idODS: number;
+  fecEntrada: string;
+  horaEntrada: string;
+  gasolinaFinal: string;
+  kmFinal: number;
 }
 
 export interface SalidaVehiculo {

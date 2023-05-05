@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from "moment/moment";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { SalaVelatorioConsultaDia } from "../../models/sala-velatorio.interface";
+import { SalaVelatorioConsultaDia } from "../../models/control-vehiculos.interface";
 import { ControlVehiculosService } from "../../services/control-vehiculos.service";
 import { finalize, map } from "rxjs/operators";
 import { LoaderService } from "../../../../shared/loader/services/loader.service";

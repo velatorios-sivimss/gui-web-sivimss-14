@@ -19,7 +19,7 @@ import { FullCalendarComponent } from "@fullcalendar/angular";
 import { finalize } from "rxjs/operators";
 import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
 import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
-import { ControlVehiculos } from '../../models/control-vehiculos.interface';
+import { ControlVehiculoListado } from '../../models/control-vehiculos.interface';
 
 @Component({
   selector: 'app-calendario-vehiculos',
@@ -31,7 +31,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGO_VELATORIOS = 0;
   readonly POSICION_CATALOGO_DELEGACION = 1;
 
-  @Input() controlVehiculos: ControlVehiculos[] = [];
+  @Input() controlVehiculos: ControlVehiculoListado[] = [];
 
   @ViewChild('calendarioCremacion') calendarioCremacion!: FullCalendarComponent;
 
@@ -82,13 +82,12 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
       selectable: true,
       dayHeaders: false,
       eventClick: this.mostrarEvento.bind(this),
-      dateClick: ((evt: any) => this.mostrarEvento(evt)),
+      // dateClick: ((evt: any) => this.mostrarEvento(evt)),
       eventsSet: this.handleEvents.bind(this),
       dayMaxEventRows: 3,
       titleFormat: { year: 'numeric', month: 'long' },
       events: [
-        { title: 'event 1', date: '2023-04-28' },
-        { title: 'event 2', date: '2023-04-26' }
+        { title: 'BLX6YUI - NISSAN  2010', date: '2023-05-03' }
       ],
       datesSet: event => {
         let mesInicio = +moment(event.start).format("MM");
@@ -98,13 +97,14 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
         } else {
           this.fechaCalendario = moment(event.start);
         }
-        this.calendarioCremacion.getApi().removeAllEvents();
+        // this.calendarioCremacion.getApi().removeAllEvents();
         if (this.velatorio) { this.cambiarMes() }
       },
     };
   }
 
   cambiarMes(): void {
+    debugger
     this.salasDetalle = [];
     this.tituloSalas = [];
     let anio = moment(this.fechaCalendario).format('YYYY').toString();

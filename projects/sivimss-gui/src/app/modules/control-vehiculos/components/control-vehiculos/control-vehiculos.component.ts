@@ -10,7 +10,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { TipoDropdown } from '../../../../models/tipo-dropdown';
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { ControlVehiculos } from '../../models/control-vehiculos.interface';
+import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -32,7 +32,7 @@ export class ControlVehiculosComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
-  controlVehiculos: ControlVehiculos[] = [];
+  controlVehiculos: ControlVehiculoListado[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -79,6 +79,7 @@ export class ControlVehiculosComponent implements OnInit {
     this.controlVehiculosService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
       (respuesta) => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
+        this.controlVehiculos = [];
       },
       (error: HttpErrorResponse) => {
         console.error(error);
@@ -89,7 +90,12 @@ export class ControlVehiculosComponent implements OnInit {
 
   obtenerVehiculos() {
     if (this.filtroForm.valid) {
-      this.controlVehiculosService.obtenerVehiculosDisponibles(1).subscribe(
+      let buscar: BuscarVehiculosDisponibles = {
+        idVelatorio: 1, // this.f.velatorio.value,
+        fecIniRepo: null,
+        fecFinRepo: null,
+      };
+      this.controlVehiculosService.obtenerVehiculosDisponibles(buscar).subscribe(
         (respuesta) => {
           // TO DO mostrar mensaje 45 -  no hay datos
           this.controlVehiculos = respuesta.datos?.content;

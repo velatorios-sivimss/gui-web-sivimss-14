@@ -7,6 +7,8 @@ import { Observable, of } from "rxjs";
 import { TipoDropdown } from "../../../models/tipo-dropdown";
 import { mapearArregloTipoDropdown } from "../../../utils/funciones";
 import { AutenticacionService } from "../../../services/autenticacion.service";
+import { BuscarVehiculosDisponibles } from "../models/control-vehiculos.interface";
+import { EntradaVehiculo } from "../models/registro-vehiculo.interface";
 
 @Injectable()
 export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any> {
@@ -18,8 +20,39 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
       60, "", "veri-consulta-dia", "");
   }
 
-  obtenerVehiculosDisponibles(idVelatorio?: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/disp-vehiculos`, { idVelatorio });
+  obtenerVehiculosDisponibles(buscar: BuscarVehiculosDisponibles): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/disp-vehiculos`, buscar);
+  }
+
+  obtenerDatosVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/vehiculo-disponible`, { idVehiculo });
+  }
+
+  guardarEntrada(entradaVehiculo: EntradaVehiculo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/entrada-vehiculos`, entradaVehiculo);
+  }
+
+  obtenerDatosFolioOds(idODS: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consulta-ods`, { idODS });
+  }
+
+  obtenerOperadores(idVehiculo: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consulta-operador`, { idVehiculo });
+  }
+
+  obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
+    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
+  }
+
+  obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
+    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+  }
+
+  obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body = { idDelegacion: delegacion }
+    return this._http.post<HttpRespuesta<any>>(`http://localhost:8087/mssivimss-oauth/velatorio/consulta`, body);
   }
 
   // ____________________
@@ -56,20 +89,6 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
       { responseType: 'blob' as any });
   }
 
-  obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
-    return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
-  }
-
-  obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
-    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
-  }
-
-  obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body = { idDelegacion: delegacion }
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8087/mssivimss-oauth/velatorio/consulta`, body);
-  }
 }
 
 

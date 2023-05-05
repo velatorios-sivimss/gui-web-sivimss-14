@@ -1,59 +1,250 @@
-<ng-container *ngIf="indice === 0">
-  <app-table-panel>
-    <ng-template appCustomTemplate="left-header">
-      <div class="table-panel-header-column contenedor-inputswitch">
-        <span class="activo font-bold mr-2">ID</span>
-        <span>{{salaSeleccionada.idSala}}</span>
-      </div>
-    </ng-template>
-    <ng-template appCustomTemplate="right-header">
-    </ng-template>
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-        <span>
-        {{salaSeleccionada.nombreSala}}
-        </span>
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">
+        {{datosVehiculo.placas}} - {{datosVehiculo.marca}} {{datosVehiculo.modelo}}
+      </span>
+    </div>
+  </ng-template>
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span>Disponibilidad</span>
+        <div>
+          <span class="disponible-entrada" *ngIf="datosVehiculo.disponibilidad === 1">Disponible</span>
+          <span class="ocupada-entrada" *ngIf="datosVehiculo.disponibilidad !== 1">Ocupada</span>
         </div>
       </div>
     </div>
-  </app-table-panel>
-  <form [formGroup]="registroSalidaForm" (submit)="guardar()">
-    <div class="row mb-3 mt-3">
+  </ng-template>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Marca</label>
+        <span>{{datosVehiculo.marca}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Modelo</label>
+        <span>{{datosVehiculo.modelo}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Placas</label>
+        <span>{{datosVehiculo.placas}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Número de tarjeta de circulación</label>
+        <span>{{datosVehiculo.tarjetaCirculacion}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row" *ngIf="indice === 1">
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Folio de la ODS</label>
+        <span>{{f.folioOds.value}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Nombre del contratante</label>
+        <span>{{f.nombreContratante.value}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nombre del finado</label>
+        <span>{{f.nombreFinado.value}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row" *ngIf="indice === 1">
+    <div class="">
+      <div class="col-md-12">
+        Nombre del destino
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Municipio origen</label>
+        <span>{{f.municipioOrigen.value}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Municipio destino</label>
+        <span>{{f.municipioDestino.value}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row" *ngIf="indice === 1">
+    <div class="">
       <div class="col-md-12">
         Registro de salida
       </div>
     </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="fecha">Fecha <span class="req">*</span>:</label>
-        <p-calendar appendTo="body" id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"></p-calendar>
-        <span class="campo-obligatorio"
-              *ngIf="salidaF.fecha?.errors?.required && (salidaF.fecha?.dirty || salidaF.fecha?.touched)">
-                    Campo obligatorio</span>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="hora">Hora <span class="req">*</span>:</label>
-        <div class="row">
-          <div class="col-md-6">
-            <p-calendar appendTo="body" id="hora" styleClass="form-control" formControlName="hora" [timeOnly]="true"
-            ></p-calendar>
-            <span class="campo-obligatorio"
-                  *ngIf="salidaF.hora?.errors?.required && (salidaF.hora?.dirty || salidaF.hora?.touched)">
-                    Campo obligatorio</span>
-          </div>
-        </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Fecha</label>
+        <span>{{f.fecha.value}}</span>
       </div>
     </div>
-    <div class="row mb-3">
-      <div class="col-md-6 mb-3" *ngIf="!tipoSala && estadoSala != 'MANTENIMIENTO'">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Hora</label>
+        <span>{{f.hora.value}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row" *ngIf="indice === 1">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nivel de gasolina final</label>
+        <span>{{f.nivelGasolinaInicial.value}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Kilometraje final</label>
+        <span>{{f.kilometrajeInicial.value}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nombre del responsable</label>
+        <span>{{f.nombreResponsable.value}}</span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
 
-        <label class="control-label" for="nivelGas">Nivel de gas <span class="req">*</span>:</label>
-        <p-inputNumber [useGrouping]="false" mode="decimal" currency="USD" locale="en-US" [minFractionDigits]="2" [maxFractionDigits]="2" suffix="L"
-                       id="nivelGas" class="form-control" formControlName="nivelGas" [maxlength]="11"></p-inputNumber>
+<ng-container *ngIf="indice === 0">
+  <form [formGroup]="formRegistrarSalida">
+    <div class="row">
+      <div class="col-md-6">
+        <label class="control-label" for="folioOds">Folio ODS<span class="req">*</span>:</label>
+        <input id="folioOds" class="form-control" formControlName="folioOds" placeholder="Ingresa el folio ODS"
+          numbersOnly (blur)="obtenerDatosFolioOds();">
         <span class="campo-obligatorio"
-              *ngIf="salidaF.nivelGas?.errors?.required && (salidaF.nivelGas?.dirty || salidaF.nivelGas?.touched)">
-                    Campo obligatorio</span>
+          *ngIf="f.folioOds?.errors?.required && (f.folioOds?.dirty || f.folioOds?.touched)">
+          Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="nombreContratante">Nombre del contratante<span class="req">*</span>:</label>
+        <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
+          placeholder="Ingresa nombre del contratante">
+        <span class="campo-obligatorio"
+          *ngIf="f.nombreContratante?.errors?.required && (f.nombreContratante?.dirty || f.nombreContratante?.touched)">
+          Campo obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <label class="control-label" for="nombreFinado">Nombre del finado<span class="req">*</span>:</label>
+        <input id="nombreFinado" class="form-control" formControlName="nombreFinado"
+          placeholder="Ingresa nombre del finado">
+        <span class="campo-obligatorio"
+          *ngIf="f.nombreFinado?.errors?.required && (f.nombreFinado?.dirty || f.nombreFinado?.touched)">
+          Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="nombreDestino">Nombre del destino<span class="req">*</span>:</label>
+        <input id="nombreDestino" class="form-control" formControlName="nombreDestino"
+          placeholder="Ingresa nombre del destino">
+        <span class="campo-obligatorio"
+          *ngIf="f.nombreDestino?.errors?.required && (f.nombreDestino?.dirty || f.nombreDestino?.touched)">
+          Campo obligatorio</span>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="indice === 0">
+  <form [formGroup]="formRegistrarSalida">
+    <div class="row mb-3">
+      <div class="col-md-12">
+        Nombre del destino
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label class="control-label" for="municipioOrigen">Municipio origen<span class="req">*</span>:</label>
+        <input id="municipioOrigen" class="form-control" formControlName="municipioOrigen"
+          placeholder="Ingresa municipio origen">
+        <span class="campo-obligatorio"
+          *ngIf="f.municipioOrigen?.errors?.required && (f.municipioOrigen?.dirty || f.municipioOrigen?.touched)">
+          Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="municipioDestino">Municipio destino<span class="req">*</span>:</label>
+        <input id="municipioDestino" class="form-control" formControlName="municipioDestino"
+          placeholder="Ingresa municipio destino">
+        <span class="campo-obligatorio"
+          *ngIf="f.municipioDestino?.errors?.required && (f.municipioDestino?.dirty || f.municipioDestino?.touched)">
+          Campo obligatorio</span>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="indice === 0">
+  <form [formGroup]="formRegistrarSalida">
+    <div class="row mb-3">
+      <div class="col-md-12">
+        Registro de salida
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
+        <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true" placeholder="Fecha"
+          dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio" *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">
+          Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="hora">Hora<span class="req">*</span>:</label>
+        <p-calendar id="hora" styleClass="form-control" formControlName="hora" placeholder="00:00"
+          [timeOnly]="true"></p-calendar>
+        <span class="campo-obligatorio" *ngIf="f.hora?.errors?.required && (f.hora?.dirty || f.hora?.touched)">
+          Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label class="control-label" for="nivelGasolinaInicial">Nivel de gasolina inicial<span
+            class="req">*</span>:</label>
+        <input id="nivelGasolinaInicial" class="form-control" formControlName="nivelGasolinaInicial"
+          placeholder="Ingresa el nivel de gasolina">
+        <span class="campo-obligatorio"
+          *ngIf="f.nivelGasolinaInicial?.errors?.required && (f.nivelGasolinaInicial?.dirty || f.nivelGasolinaInicial?.touched)">
+          Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="kilometrajeInicial">Kilometraje inicial<span class="req">*</span>:</label>
+        <input id="kilometrajeInicial" class="form-control" formControlName="kilometrajeInicial"
+          placeholder="Ingresa el kilometraje">
+        <span class="campo-obligatorio"
+          *ngIf="f.kilometrajeInicial?.errors?.required && (f.kilometrajeInicial?.dirty || f.kilometrajeInicial?.touched)">
+          Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label class="control-label" for="nombreResponsable">Nombre del responsable<span class="req">*</span>:</label>
+        <p-dropdown id="nombreResponsable" class="form-control" formControlName="nombreResponsable" [options]="catalogoResponsables"
+          placeholder="Selecciona el nombre del responsable" [filter]="true" filterBy="label">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="f.nombreResponsable?.errors?.required && (f.nombreResponsable?.dirty || f.nombreResponsable?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
@@ -64,60 +255,10 @@
     <div class="row mb-3">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5"
-                [disabled]="registroSalidaForm.invalid">Aceptar
+        <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="formRegistrarSalida.invalid"
+          (click)="guardar()">Aceptar
         </button>
       </div>
     </div>
-
   </form>
-</ng-container>
-<ng-container *ngIf="indice === 1">
-  <app-table-panel>
-    <ng-template appCustomTemplate="left-header">
-      <div class="table-panel-header-column contenedor-inputswitch">
-        <span class="activo font-bold mr-2">ID</span>
-        <span>{{salaSeleccionada.idSala}}</span>
-      </div>
-    </ng-template>
-    <ng-template appCustomTemplate="right-header">
-    </ng-template>
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-        <span>
-          <h2 class="subtitulo">
-            {{salaSeleccionada.nombreSala}}
-          </h2>
-        </span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-3" *ngIf="!tipoSala && estadoSala != 'MANTENIMIENTO'">
-        <div class="table-panel-column">
-          <label>Nivel del gas</label>
-          <span> {{salidaF.nivelGas.value}} L</span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Registro de salida</label>
-          <span> {{salidaF.fecha.value | date: 'dd/MM/yyyy'}} - {{salidaF.hora.value | date: 'shortTime'}}</span>
-        </div>
-      </div>
-    </div>
-  </app-table-panel>
-  <div class="row mb-5 mt-5">
-    <div class="col-md-12 text-center">
-      ¿Estas seguro de registrar la salida de esta sala?
-    </div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-12 flex justify-content-end">
-      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar
-      </button>
-    </div>
-  </div>
 </ng-container>
