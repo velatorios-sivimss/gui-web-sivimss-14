@@ -252,6 +252,10 @@ export class AgregarUsuarioComponent implements OnInit {
   }
 
   cancelar(): void {
+    if (this.indice === 1) {
+      this.indice--;
+      return;
+    }
     const respuesta: RespuestaModalUsuario = {};
     this.ref.close(respuesta);
   }
