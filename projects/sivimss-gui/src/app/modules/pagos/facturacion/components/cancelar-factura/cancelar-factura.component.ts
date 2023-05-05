@@ -40,7 +40,6 @@ export class CancelarFacturaComponent implements OnInit {
     }
   }
 
-
   cancelar(): void {
     if (this.indice === 1) {
       this.indice--;
