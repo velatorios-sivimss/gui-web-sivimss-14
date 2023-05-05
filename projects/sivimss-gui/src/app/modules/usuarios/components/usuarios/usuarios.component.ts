@@ -164,7 +164,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   paginar(): void {
-    if (!localStorage.getItem('token')) return;
+    if (!localStorage.getItem('sivimss_token')) return;
     this.cargadorService.activar();
     this.usuarioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
