@@ -11,7 +11,7 @@ import {AutenticacionService} from "../../../../services/autenticacion.service";
 @Injectable()
 export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "", "", 23, "consultar-pagares", "", "");
+    super(_http, `${environment.api.mssivimss}`, "", "", 23, "consultar-pagares", "detalle-pagare", "");
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
@@ -34,7 +34,7 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
 
   buscarDatosReportePagos(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
     const body = {idPagoBitacora}
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/datos-rec-pagos`, body);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-pagare`, body);
   }
 
   descargarReporte<T>(body: T): Observable<Blob> {
