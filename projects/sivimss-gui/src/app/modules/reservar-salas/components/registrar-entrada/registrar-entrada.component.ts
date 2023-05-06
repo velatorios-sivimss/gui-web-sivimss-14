@@ -15,6 +15,7 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {SalaVelatorio} from "../../models/sala-velatorio.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {EntradaSala} from "../../models/registro-sala.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-registrar-entrada',
@@ -40,7 +41,8 @@ export class RegistrarEntradaComponent implements OnInit {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private readonly loaderService: LoaderService,
-    private reservarSalasService:ReservarSalasService
+    private reservarSalasService:ReservarSalasService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
     this.iniciarFormRegistroEntrada();
   }
@@ -90,8 +92,12 @@ export class RegistrarEntradaComponent implements OnInit {
         }
       },
     (error:HttpErrorResponse) => {
-      console.error(error);
-      this.alertaService.mostrar(TipoAlerta.Error, error.message);
+
+      const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
+
+      // console.error(error);
+      // this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     );
   }
@@ -145,19 +151,13 @@ export class RegistrarEntradaComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.ref.close(true);
-        const alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-        const mensaje = alertas.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
       },
       (error : HttpErrorResponse) => {
-        console.error("ERROR: ", error.message);
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
     );
   }

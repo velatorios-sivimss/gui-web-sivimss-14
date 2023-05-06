@@ -48,7 +48,7 @@ const respuestaInicioSesionCorrecto = {
   codigo: 200,
   mensaje: "INICIO_SESION_CORRECTO",
   datos: {
-    "token": "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjFcIixcImN2ZU1hdHJpY3VsYVwiOlwiMVwiLFwibm9tYnJlXCI6XCIxIDEgMVwiLFwiY3VycFwiOlwiMVwifSIsImlhdCI6MTY4MzA0Mzk0OCwiZXhwIjoxNjgzNjQ4NzQ4fQ.lzgUw1U3115meofhWZXrYCDMaxP9QFAYpZ6yEbhRGZE"
+    "token": "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjFcIixcImN2ZU1hdHJpY3VsYVwiOlwiMVwiLFwibm9tYnJlXCI6XCIxIDEgMVwiLFwiY3VycFwiOlwiMVwifSIsImlhdCI6MTY4MzEzNzM3MiwiZXhwIjoxNjgzNzQyMTcyfQ._TKsku_zi_PMLtPYnk_ghc7fYe8eainHxy1ehvJmpfU"
   }
 };
 
@@ -455,11 +455,13 @@ export class AutenticacionService {
       try {
         const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(token);
         this.usuarioEnSesionSubject.next(usuario);
-        this.obtenerPermisos(usuario.idRol).subscribe((respuesta: HttpRespuesta<any>) => {
-          this.permisosUsuarioSubject.next(respuesta.datos.permisosUsuario);
-          this.iniciarTemporizadorSesion();
-          this.paginaCargadaSubject.next(true);
-        });
+        setTimeout(() => {
+          this.obtenerPermisos(usuario.idRol).subscribe((respuesta: HttpRespuesta<any>) => {
+            this.permisosUsuarioSubject.next(respuesta.datos.permisosUsuario);
+            this.iniciarTemporizadorSesion();
+            this.paginaCargadaSubject.next(true);
+          });
+        }, 1000);
       } catch (ex) {
         this.cerrarSesion();
         this.paginaCargadaSubject.next(true);
@@ -470,15 +472,13 @@ export class AutenticacionService {
   }
 
   iniciarSesion(usuario: string, contrasenia: string, mostrarMsjContraseniaProxVencer: boolean = true): Observable<string> {
-    //this.http.post<any>(`http://localhost:8080/mssivimss-oauth/acceder`, {usuario, contrasena})
-    this.paginaCargadaSubject.next(false);
-    return of<HttpRespuesta<any>>(respuestaInicioSesionCorrecto).pipe(
-      delay(1000),
+    // this.paginaCargadaSubject.next(false);
+    return this.httpClient.post<any>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/login`, {usuario, contrasenia}).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (this.esInicioSesionCorrecto(respuesta.mensaje) || (respuesta.mensaje === MensajesRespuestaAutenticacion.ContraseniaProximaVencer && !mostrarMsjContraseniaProxVencer)) {
-          const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos.token);
+          const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos);
           return this.obtenerPermisos(usuario.idRol).pipe(map((respuestaPermisos: HttpRespuesta<any>) => {
-            this.crearSesion(respuesta.datos.token, usuario, respuestaPermisos.datos.permisosUsuario);
+            this.crearSesion(respuesta.datos, usuario, respuestaPermisos.datos.permisosUsuario);
             this.paginaCargadaSubject.next(true);
             return MensajesRespuestaAutenticacion.InicioSesionCorrecto;
           }));
@@ -530,16 +530,18 @@ export class AutenticacionService {
 
   obtenerModulosPorIdRol(idRol: string): Observable<HttpRespuesta<Modulo[]>> {
     //this.httpClient.get<RespuestaHttp<Modulo>>('');
-    return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/menu`, {idRol});
+    // return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
   }
 
   actualizarContrasenia(usuario: string, contraseniaAnterior: string, contraseniaNueva: string): Observable<HttpRespuesta<any>> {
-    //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/acceder`, {usuario, contraseniaAnterior, contraseniaNueva})
-    return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/contrasenia/cambiar`, {usuario, contraseniaAnterior, contraseniaNueva});
+    //return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
   }
 
   obtenerPermisos(idRol: string) {
-    return of<HttpRespuesta<any>>(respuestaPermisosUsuario);
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/permisos`, {idRol});
+    // return of<HttpRespuesta<any>>(respuestaPermisosUsuario);
   }
 
   existeFuncionalidadConPermiso(idFuncionalidad: string, idPermiso: string): boolean {
@@ -577,7 +579,7 @@ export class AutenticacionService {
 
   validarCodigoRestablecerContrasenia(usuario: string, codigo: string): Observable<string> {
     //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/valida-codigo`, {usuario,codigo})
-    return of<HttpRespuesta<any>>(respCodigoCorrecto).pipe(
+    return this.httpClient.post<HttpRespuesta<any>>(`/mssivimss-oauth/v1/contrasenia/valida-codigo`, {usuario,codigo}).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (existeMensajeEnEnum(MensajesRespuestaCodigo, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
@@ -589,13 +591,12 @@ export class AutenticacionService {
   }
 
   generarCodigoRestablecerContrasenia(usuario: string): Observable<HttpRespuesta<any>> {
-    //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/genera-codigo`, {usuario})
-    return of<HttpRespuesta<any>>(respCodigoRestablecerContrasenia);
+    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/contrasenia/genera-codigo`, {usuario});
+    // return of<HttpRespuesta<any>>(respCodigoRestablecerContrasenia);
   }
 
   obtenerCatalogos(): void {
-    // this.httpClient.post<HttpRespuesta<any>>('http://localhost:8079/mssivimss-oauth/catalogos/consulta', {})
-    of<HttpRespuesta<any>>(respuestaCatalogos)
+    this.httpClient.post<HttpRespuesta<any>>('https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/catalogos/consulta', {})
       .subscribe({
         next: (respuesta) => {
           const {datos} = respuesta;

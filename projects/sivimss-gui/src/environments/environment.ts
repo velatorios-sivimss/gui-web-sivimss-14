@@ -6,8 +6,8 @@ export const environment = {
   production: false,
   api: {
     mssivimss: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ctrol-permisos/v1/sivimss/service/',
-    login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/acceder',
-    servicios_externos: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-servicios-externos/v1/catalogos/externos/'
+    login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1',
+    servicios_externos: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/catalogos/externos/'
   }
 };
 

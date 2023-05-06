@@ -30,6 +30,7 @@ import * as moment from 'moment'
 import { Moment } from 'moment'
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
 
 @Component({
   selector: 'app-calendario',
@@ -81,7 +82,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
     let respuesta = this.route.snapshot.data['respuesta'];
 
-    this.velatorios = mapearArregloTipoDropdown(respuesta[0]?.datos, 'velatorio', 'id',);
+    // this.velatorios = mapearArregloTipoDropdown(respuesta[0]?.datos, 'velatorio', 'id',);
     this.delegaciones = respuesta[1]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
   }
@@ -104,7 +105,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       editable: false,
 
       locale: 'es-MX',
-      selectable: true,
+      selectable: false,
       dayHeaders: false,
       eventClick: this.mostrarEvento.bind(this),
       eventsSet: this.handleEvents.bind(this),
@@ -291,6 +292,21 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       rutaNombreReporte: "reportes/generales/ReporteVerificarDisponibilidadCapillas.jrxml",
       tipoReporte: tipoReporte
     }
+  }
+
+  cambiarDelegacion(): void {
+    this.loaderService.activar();
+    this.capillaReservacionService.obtenerCatalogoVelatoriosPorDelegacion(this.delegacion).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>)=> {
+        this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
   }
 
   ngOnDestroy(): void {

@@ -7,7 +7,11 @@ import {Component, Input, Output, EventEmitter, HostListener, ElementRef} from '
       <div class="popover-content">
         <ng-content></ng-content>
       </div>
-      <!--      <button class="close-button" (click)="close()">Close</button>-->
+      <div class="flex justify-content-end">
+        <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="close()">
+          Aceptar
+        </button>
+      </div>
     </div>
   `,
   styles: [`
@@ -18,8 +22,9 @@ import {Component, Input, Output, EventEmitter, HostListener, ElementRef} from '
       border: 1px solid #ccc;
       border-radius: 3px;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-      width: 500px;
-      max-height: 400px;
+      width: 530px;
+      max-width:700px;
+      max-height: 800px;
       padding: 10px;
       display: none;
     }
@@ -53,7 +58,7 @@ export class PopoverComponent {
   constructor(private elementRef: ElementRef) {
   }
 
-  toggle(event: MouseEvent) {
+  toggle(event: MouseEvent): void {
     event?.stopPropagation(); // Stop event propagation
     this.visible = !this.visible;
   }

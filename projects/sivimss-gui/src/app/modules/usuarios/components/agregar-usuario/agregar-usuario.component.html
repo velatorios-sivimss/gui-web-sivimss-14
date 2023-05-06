@@ -4,7 +4,7 @@
       <div class="col-md-6">
         <label class="control-label" for="curp">CURP<span class="req">*</span></label>
         <input id="curp" class="form-control" formControlName="curp" placeholder="Inserta el CURP"
-               (blur)="validarCurp();">
+               (blur)="validarCurp();" alphanumericOnly>
         <span class="campo-obligatorio" *ngIf="fau?.curp?.errors?.required && (fau?.curp?.dirty || fau?.curp?.touched)">Campo obligatorio</span>
         <span class="campo-obligatorio" *ngIf="fau?.curp?.errors?.pattern && (fau?.curp?.dirty || fau?.curp?.touched)">Formato incorrecto</span>
       </div>
@@ -101,8 +101,8 @@
         <label class="control-label">Estatus<span class="req">*</span></label>
         <div class="contenedor-inputswitch">
           <p-inputSwitch formControlName="estatus"></p-inputSwitch>
-          <span class="activo" *ngIf="fau.estatus?.value">Activo</span>
-          <span class="inactivo" *ngIf="!fau.estatus?.value">Inactivo</span>
+          <span class="activo" *ngIf="fau?.estatus?.value">Activo</span>
+          <span class="inactivo" *ngIf="!fau?.estatus?.value">Inactivo</span>
         </div>
       </div>
     </div>

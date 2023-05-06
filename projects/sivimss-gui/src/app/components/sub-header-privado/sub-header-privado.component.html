@@ -6,7 +6,8 @@
   <div class="datos-usuario">
     <div class="contenedor-imagen-usuario" [ngClass]="{'notificacion': existeNotificacion }">
       <button class="button-user-img" appPopover (click)="notificacionesPopOver.toggle($event)">
-        <img src="../../../assets/images/imagen-icono-usuario.svg" alt="imagen usuario" class="imagen-usuario">
+        <img ngSrc="../../../assets/images/imagen-icono-usuario.svg" alt="imagen usuario" class="imagen-usuario"
+             height="32" width="32">
       </button>
       <app-popover #notificacionesPopOver>
         <ng-container *ngTemplateOutlet="notificacionesTemplate"></ng-container>
@@ -24,6 +25,18 @@
 
 <ng-template #notificacionesTemplate>
   <ul>
-    <li *ngFor="let notificacion of notificaciones">{{ notificacion }}</li>
+    <li *ngFor="let notificacion of notificaciones">
+      {{ notificacion.mensaje}}
+      <div class="flex justify-content-end" *ngIf="notificacion.path=='reservar-salas'">
+        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">
+          Registrar salida
+        </button>
+        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarMasTarde(notificacion)">
+          Registrar más tarde
+        </button>
+      </div>
+
+    </li>
+
   </ul>
 </ng-template>

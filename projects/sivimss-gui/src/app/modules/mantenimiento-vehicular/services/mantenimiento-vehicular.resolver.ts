@@ -1,19 +1,22 @@
-// TODO: Regresar catalogos
-
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
-    ActivatedRouteSnapshot, Resolve,
-    RouterStateSnapshot
+  ActivatedRouteSnapshot, Resolve,
+  RouterStateSnapshot
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { MantenimientoVehicularService } from './mantenimiento-vehicular.service';
+import {forkJoin, Observable} from 'rxjs';
+import {MantenimientoVehicularService} from './mantenimiento-vehicular.service';
 
 @Injectable()
 export class MantenimientoVehicularResolver implements Resolve<any> {
 
-    constructor(private mantenimientoVehicularResolver: MantenimientoVehicularService) { }
+  constructor(private mantenimientoVehicularService: MantenimientoVehicularService) {
+  }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-        return of([])
-    }
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
+    const niveles$ = this.mantenimientoVehicularService.obtenerCatalogoNiveles();
+    const delegaciones$ = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
+    const proveedores$ = this.mantenimientoVehicularService.obtenerCatalogoProvedores();
+
+    return forkJoin([niveles$, delegaciones$, proveedores$])
+  }
 }

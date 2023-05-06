@@ -27,6 +27,7 @@ import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {PlantillaControlSalida} from "../../models/generar-plantilla-interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-control-salida-donaciones',
@@ -75,6 +76,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     private consultaDonacionesService: ConsultaDonacionesService,
     private descargaArchivosService: DescargaArchivosService,
     private route: ActivatedRoute,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
     moment.locale('es');
   }
@@ -193,16 +195,11 @@ export class ControlSalidaDonacionesComponent implements OnInit {
               return
             }
             this.fds.nacionalidad.setValue(2);
-
           }
         }
       },
       (error: HttpErrorResponse) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        console.log(error);
+        this.mostrarMensajeError("Ocurrio un error",error.error.mensaje)
       }
     )
   }
@@ -236,11 +233,8 @@ export class ControlSalidaDonacionesComponent implements OnInit {
         }
       },
       (error: HttpErrorResponse) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        console.log(error);
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
     )
   }
@@ -277,7 +271,6 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        debugger
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == respuesta.mensaje;
         });
@@ -347,7 +340,6 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   generarDatosPlantilla(): PlantillaControlSalida {
-    debugger;
     let usuario = JSON.parse(localStorage.getItem('usuario') as string)
 
 
@@ -516,5 +508,18 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   get fa() {
     return this.formAtaudes.controls;
+  }
+
+  mostrarMensajeError(defaultError: string = '', codigoError: string): void {
+    const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(codigoError));
+    if (errorMsg !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
+      return;
+    }
+    if (defaultError !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, defaultError);
+      return;
+    }
+    this.alertaService.mostrar(TipoAlerta.Error, "Error Desconocido");
   }
 }

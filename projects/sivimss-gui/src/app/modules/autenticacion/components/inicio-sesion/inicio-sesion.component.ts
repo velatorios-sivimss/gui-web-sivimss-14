@@ -32,6 +32,9 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   mostrarModalFechaContraseniaVencida: boolean = false;
   mostrarModalIntentosFallidos: boolean = false;
   mostrarModalCuentaBloqueada: boolean = false;
+  mostrarModalUsuarioNoExiste = false;
+  mostrarModalSIAPSinConexion = false;
+  mostrarModalSIAPDesactivado = false;
 
 
   constructor(
@@ -87,6 +90,17 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
             break;
           case MensajesRespuestaAutenticacion.UsuarioPreactivo:
             this.mostrarModalPreActivo = true;
+            break;
+          case MensajesRespuestaAutenticacion.UsuarioNoExiste:
+            this.form.get('usuario')?.reset();
+            this.form.get('contrasenia')?.reset();
+            this.mostrarModalUsuarioNoExiste = true;
+            break;
+          case MensajesRespuestaAutenticacion.SIAPSinConexion:
+            this.mostrarModalSIAPSinConexion = true;
+            break;
+          case MensajesRespuestaAutenticacion.SIAPDesactivado:
+            this.mostrarModalSIAPDesactivado = true;
             break;
           case MensajesRespuestaAutenticacion.CuentaBloqueada:
             this.mostrarModalCuentaBloqueada = true;

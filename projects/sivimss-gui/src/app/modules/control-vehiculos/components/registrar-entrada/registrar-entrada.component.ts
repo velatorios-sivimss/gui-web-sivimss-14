@@ -153,7 +153,7 @@ export class RegistrarEntradaComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
       },
       (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error.message);
+        console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error.error.mensaje;
         })

@@ -1,7 +1,8 @@
 <div class="row mb-3">
   <div class="col-md-6">
     <label class="control-label" for="velatorio">Delegación:</label>
-    <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación">
+    <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación"
+    (onChange)="cambiarDelegacion()">
     </p-dropdown>
   </div>
   <div class="col-md-6">
@@ -37,8 +38,8 @@
                     {{salasCremacion.estadoSala}}
                   </td>
                   <td>
-<!--                    <button type="button" *appValidaRol="['SALAS_RESERVACION','ALTA']" class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)">-->
-                    <button type="button"  class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)">
+                    <button type="button" *appValidaRol="['SALAS_RESERVACION','ALTA']" class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)"
+                            onCloseOnNavigation>
                       Registrar {{ salasCremacion.estadoSala != 'DISPONIBLE' ? 'salida' : 'entrada'}}
                     </button>
                   </td>
@@ -46,7 +47,7 @@
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <th colspan="5" class="p-2 text-center font-bold text-xl">
+                  <th scope="col" colspan="5" class="p-2 text-center font-bold text-xl">
                     No hay elementos que coincidan con los parámetros seleccionados
                   </th>
                 </tr>
@@ -76,8 +77,8 @@
                 {{sala.estadoSala}}
               </td>
               <td>
-<!--                <button type="button" *appValidaRol="['SALAS_RESERVACION','MODIFICAR']" class="btn btn-primary btn-md" (click)="registrarActividad(sala)">-->
-                <button type="button" class="btn btn-primary btn-md" (click)="registrarActividad(sala)">
+                <button type="button" *appValidaRol="['SALAS_RESERVACION','MODIFICAR']" class="btn btn-primary btn-md" (click)="registrarActividad(sala)"
+                        onCloseOnNavigation>
                   Registrar {{ sala.estadoSala != 'DISPONIBLE' ? 'salida' : 'entrada'}}
                 </button>
               </td>
@@ -85,7 +86,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <th colspan="5" class="p-2 text-center font-bold text-xl">
+              <th scope="col" colspan="5" class="p-2 text-center font-bold text-xl">
                 No hay elementos que coincidan con los parámetros seleccionados
               </th>
             </tr>

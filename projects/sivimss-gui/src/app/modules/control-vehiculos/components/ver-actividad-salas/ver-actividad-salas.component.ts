@@ -54,7 +54,7 @@ export class VerActividadSalasComponent implements OnInit {
         this.salas = respuesta.datos;
       },
       (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error.message);
+        console.error("ERROR: ", error);
       }
     );
   }

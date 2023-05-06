@@ -30,6 +30,7 @@ import {ControlSalidaDonacionesComponent } from './components/control-salida-don
 import {AgregarFinadoComponent } from './components/control-salida-donaciones/agregar-finado/agregar-finado.component';
 import {AgregarAtaudComponent } from './components/control-salida-donaciones/agregar-ataud/agregar-ataud.component';
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
 
 
 @NgModule({
@@ -62,7 +63,8 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
     RadioButtonModule,
     AccordionModule,
     CheckboxModule,
-    UtileriaModule
+    UtileriaModule,
+    ValidaRolModule,
   ],
   providers: [
     ConsultaDonacionesService
