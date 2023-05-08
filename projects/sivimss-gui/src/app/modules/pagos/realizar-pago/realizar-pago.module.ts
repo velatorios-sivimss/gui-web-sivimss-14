@@ -17,6 +17,7 @@ import {DialogModule} from "primeng/dialog";
 import { PagoOrdenServicioComponent } from './components/pago-orden-servicio/pago-orden-servicio.component';
 import { PagoConvenioComponent } from './components/pago-convenio/pago-convenio.component';
 import { PagoRenovacionConvenioComponent } from './components/pago-renovacion-convenio/pago-renovacion-convenio.component';
+import { RegistrarTipoPagoComponent } from './components/registrar-tipo-pago/registrar-tipo-pago.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { PagoRenovacionConvenioComponent } from './components/pago-renovacion-co
     RealizarPagoComponent,
     PagoOrdenServicioComponent,
     PagoConvenioComponent,
-    PagoRenovacionConvenioComponent
+    PagoRenovacionConvenioComponent,
+    RegistrarTipoPagoComponent
   ],
   imports: [
     CommonModule,

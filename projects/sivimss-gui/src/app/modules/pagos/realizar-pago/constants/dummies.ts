@@ -1,3 +1,5 @@
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+
 export const REGISTROS_PAGOS = [
   {
     fecha: '10/08/2021',
@@ -83,3 +85,38 @@ export const REGISTROS_PAGOS_ODS = [
     diferenciasTotales: '$15000'
   },
 ];
+
+export const TIPO_PAGO_CATALOGOS_ODS: TipoDropdown[] = [
+  {
+    value: 'Vale paritaria',
+    label: 'Vale paritaria'
+  },
+  {
+    value: 'Ayuda de gastos de funeral (AGF)',
+    label: 'Ayuda de gastos de funeral (AGF)'
+  },
+  {
+    value: 'Tarjeta credito',
+    label: 'Tarjeta credito'
+  },
+  {
+    value: 'Tarjeta debito',
+    label: 'Tarjeta debito'
+  },
+  {
+    value: 'Efectivo',
+    label: 'Efectivo'
+  },
+  {
+    value: 'Transferencia',
+    label: 'Transferencia'
+  },
+  {
+    value: 'Deposito',
+    label: 'Deposito'
+  },
+  {
+    value: 'Traslado oficial',
+    label: 'Traslado oficial'
+  }
+]
