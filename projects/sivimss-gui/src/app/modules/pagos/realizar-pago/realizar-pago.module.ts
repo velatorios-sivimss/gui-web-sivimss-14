@@ -20,6 +20,7 @@ import { PagoRenovacionConvenioComponent } from './components/pago-renovacion-co
 import { RegistrarTipoPagoComponent } from './components/registrar-tipo-pago/registrar-tipo-pago.component';
 import { RegistrarAgfComponent } from './components/registrar-agf/registrar-agf.component';
 import { RegistrarValeParitariaComponent } from './components/registrar-vale-paritaria/registrar-vale-paritaria.component';
+import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { RegistrarValeParitariaComponent } from './components/registrar-vale-par
     InputSwitchModule,
     OverlayPanelModule,
     OverlayPanelOpcionesModule,
-    DialogModule
+    DialogModule,
+    TablePanelModule
   ]
 })
 export class RealizarPagoModule { }

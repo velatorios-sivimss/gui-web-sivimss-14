@@ -58,6 +58,7 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   seleccionarPago(): void {
+    this.registrarPago();
     const tipoPago = this.pagoForm.get('tipoPago')?.value;
     if (tipoPago === 1) {
       this.abrirModalValeParitaria();
