@@ -34,6 +34,5 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, pago: any) {
     this.overlayPanel.toggle(event);
-
   }
 }
