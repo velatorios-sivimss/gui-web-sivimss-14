@@ -9,12 +9,12 @@ import { ConsultaDonacionesService } from './consulta-donaciones.service';
 @Injectable()
 export class DonacionesResolver implements Resolve<any> {
 
-  constructor(private donaionesService: ConsultaDonacionesService) { }
-
+  constructor(private donacionesService: ConsultaDonacionesService) { }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const catalogoVelatorios$ = this.donaionesService.obtenerCatalogoVelatorios();
-    const catalogoNiveles$ = this.donaionesService.obtenerCatalogoNiveles();
-    const catalogoDelegaciones$ = this.donaionesService.obtenerCatalogoNiveles();
+    const catalogoVelatorios$ = this.donacionesService.obtenerCatalogoVelatorios();
+    const catalogoNiveles$ = this.donacionesService.obtenerCatalogoNiveles();
+    const catalogoDelegaciones$ = this.donacionesService.obtenerCatalogoDelegaciones();
+
     return forkJoin([
       catalogoVelatorios$,
       catalogoNiveles$,

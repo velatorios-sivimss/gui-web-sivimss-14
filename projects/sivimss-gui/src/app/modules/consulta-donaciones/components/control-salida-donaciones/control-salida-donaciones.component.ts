@@ -28,6 +28,7 @@ import {PlantillaControlSalida} from "../../models/generar-plantilla-interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
 
 @Component({
   selector: 'app-control-salida-donaciones',
@@ -36,6 +37,9 @@ import {MensajesSistemaService} from "../../../../services/mensajes-sistema.serv
   providers: [DialogService,DescargaArchivosService]
 })
 export class ControlSalidaDonacionesComponent implements OnInit {
+
+  readonly POSICION_ESTADOS = 3;
+  readonly POSICION_PAISES = 4;
 
   agregarFinadoRef!: DynamicDialogRef;
   agregarAtaudRef!: DynamicDialogRef;
@@ -50,9 +54,9 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   sexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = NACIONALIDAD;
-  lugarNacimiento: TipoDropdown[] = ESTADO;
-  paisNacimiento: TipoDropdown[] = PAIS;
-  estado: TipoDropdown[] = ESTADO;
+  lugarNacimiento: TipoDropdown[] = [];
+  paisNacimiento: TipoDropdown[] = [];
+  estado: TipoDropdown[] = [];
   finados: FinadoInterface[] = [];
   ataudes: AtaudDonado[] = [];
   backlogAutaudes!: AtaudDonado[];
@@ -73,7 +77,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private loaderService: LoaderService,
-    private consultaDonacionesService: ConsultaDonacionesService,
+    private consultaDonacionesService: GestionarDonacionesService,
     private descargaArchivosService: DescargaArchivosService,
     private route: ActivatedRoute,
     private mensajesSistemaService: MensajesSistemaService
@@ -82,17 +86,17 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    localStorage.setItem("mensajes", JSON.stringify(mensajes));
-    // this.catalogoVelatorios = mapearArregloTipoDropdown(
-    //   respuesta[0]?.datos,
-    //   'NOM_VELATORIO',
-    //   'ID_VELATORIO',
-    // )
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.estado = respuesta[this.POSICION_ESTADOS]!.map((estado: any) => (
+      {label: estado.label, value: estado.value} )) || [];
+    this.lugarNacimiento = respuesta[this.POSICION_ESTADOS]!.map((estado: any) => (
+      {label: estado.label, value: estado.value} )) || [];
+    this.paisNacimiento = respuesta[this.POSICION_PAISES]!.map((pais: any) => (
+      {label: pais.label, value: pais.value} )) || [];
     this.consultarAtaudes();
     this.actualizarBreadcrumb();
     this.inicializarDatosSolicitantesForm();
     this.inicializarAtaudesForm();
-
   }
 
   actualizarBreadcrumb(): void {

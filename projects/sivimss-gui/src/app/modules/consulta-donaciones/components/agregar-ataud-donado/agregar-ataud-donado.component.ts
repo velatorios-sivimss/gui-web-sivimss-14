@@ -10,6 +10,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {ConsultaDonacionesService} from "../../services/consulta-donaciones.service";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
 
 @Component({
   selector: 'app-agregar-ataud-donado',
@@ -31,7 +32,7 @@ export class AgregarAtaudDonadoComponent implements OnInit {
     private formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
     private loaderService: LoaderService,
-    private consultaDonacionesService: ConsultaDonacionesService,
+    private consultaDonacionesService: GestionarDonacionesService,
   ) { }
 
   ngOnInit(): void {

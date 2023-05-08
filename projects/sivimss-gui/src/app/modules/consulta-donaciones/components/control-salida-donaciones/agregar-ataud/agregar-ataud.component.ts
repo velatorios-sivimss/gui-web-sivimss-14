@@ -10,6 +10,7 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {GestionarDonacionesService} from "../../../services/gestionar-donaciones.service";
 
 @Component({
   selector: 'app-agregar-ataud',
@@ -30,7 +31,7 @@ export class AgregarAtaudComponent implements OnInit {
     private formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
     private loaderService: LoaderService,
-    private consultaDonacionesService: ConsultaDonacionesService,
+    private consultaDonacionesService: GestionarDonacionesService,
     public config: DynamicDialogConfig,
   ) { }
 

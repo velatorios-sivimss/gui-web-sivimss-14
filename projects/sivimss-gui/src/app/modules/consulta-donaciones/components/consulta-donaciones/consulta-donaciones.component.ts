@@ -34,6 +34,11 @@ import * as moment from 'moment'
   providers: [DialogService],
 })
 export class ConsultaDonacionesComponent implements OnInit {
+
+  readonly POSICION_VELATORIOS: number = 0;
+  readonly POSICION_NIVELES: number = 1;
+  readonly POSICION_DELEGACIONES: number = 2;
+
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel
 
@@ -49,9 +54,9 @@ export class ConsultaDonacionesComponent implements OnInit {
 
   base64: string = ''
 
-  nivel: TipoDropdown[] = CATALOGOS_DUMMIES
-  delegacion: TipoDropdown[] = CATALOGOS_DUMMIES
-  velatorio: TipoDropdown[] = CATALOGOS_DUMMIES
+  nivel: TipoDropdown[] = [];
+  delegacion: TipoDropdown[] = [];
+  velatorio: TipoDropdown[] = []
   donadoPor: TipoDropdown[] = CATALOGOS_DONADO_POR
 
   numPaginaActual: number = 0
@@ -74,15 +79,22 @@ export class ConsultaDonacionesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    debugger;
     this.inicializarFiltroForm()
     let respuesta = this.route.snapshot.data['respuesta']
     this.velatorios = mapearArregloTipoDropdown(
-      respuesta[0]?.datos,
+      respuesta[this.POSICION_VELATORIOS]?.datos,
       'NOM_VELATORIO',
       'ID_VELATORIO',
     )
     this.niveles = mapearArregloTipoDropdown(
-      respuesta[1]?.datos,
+      respuesta[this.POSICION_NIVELES]?.datos,
+      'DES_NIVELOFICINA',
+      'ID_OFICINA',
+    )
+
+    this.delegacion = mapearArregloTipoDropdown(
+      respuesta[this.POSICION_DELEGACIONES]?.datos,
       'DES_NIVELOFICINA',
       'ID_OFICINA',
     )

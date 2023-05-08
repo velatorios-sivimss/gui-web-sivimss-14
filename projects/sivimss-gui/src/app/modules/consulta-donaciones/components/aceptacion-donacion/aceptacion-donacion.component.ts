@@ -18,6 +18,7 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {PlantillaAceptarDonacion} from "../../models/generar-plantilla-interface";
 import * as moment from "moment/moment";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import { GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
 
 @Component({
   selector: 'app-aceptacion-donacion',
@@ -46,7 +47,7 @@ export class AceptacionDonacionComponent implements OnInit {
     public dialogService: DialogService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private consultaDonacionesService: ConsultaDonacionesService,
+    private consultaDonacionesService: GestionarDonacionesService,
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService
   ) {
