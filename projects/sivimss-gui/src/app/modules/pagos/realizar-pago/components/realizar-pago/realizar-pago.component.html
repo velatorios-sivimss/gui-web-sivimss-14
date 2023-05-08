@@ -1,1 +1,158 @@
-<p>realizar-pago works!</p>
+<app-titulo-principal titulo="Realizar pago"></app-titulo-principal>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+
+        <label class="control-label" for="nivelRealizarPago">Nivel<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="nivelRealizarPago" class="form-control" formControlName="nivel"
+                    [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="velatorioRealizarPago">Delegación<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="velatorioRealizarPago" class="form-control" formControlName="velatorio"
+                    [options]="velatorios" placeholder="Seleccione el velatorio">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="folioOrden">Folio de la orden de servicio inmediato (ODS)<span
+          class="req">*</span></label>
+        <input id="folioOrden" class="form-control" formControlName="folioOrden"
+               placeholder="Ingresar folio">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="folioConvenio">Folio del nuevo convenio de previsión funeraria (PNCPF)<span
+          class="req">*</span></label>
+        <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
+               placeholder="Ingresar folio">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="folioRenovacion">Folio de la renovación de convenios de previsión funeraria
+          (PRCPF)<span class="req">*</span></label>
+        <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion"
+               placeholder="Ingresar folio">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="nombreContratante">Nombre del contratante<span
+          class="req">*</span></label>
+        <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
+               placeholder="Ingresar nombre">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="control-label">
+              Periodo:
+              <span class="req">*</span>:</label>
+          </div>
+          <div class="col-md-6">
+            <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+            </p-calendar>
+          </div>
+          <div class="col-md-6">
+            <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12 control-label">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Registros</h2>
+    <button type="button" class="btn btn-primary btn-lg"
+            (click)="abrirModalPago()">Pago
+    </button>
+  </div>
+  <p-table styleClass="mt-5 mb-8" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
+           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="seleccionarPaginacion($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Fecha</th>
+        <th>Folio</th>
+        <th>Nombre del Contratante</th>
+        <th>Tipo de Pago</th>
+        <th>Total</th>
+        <th>Estatus</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pago>
+      <tr>
+        <td>{{pago.fecha}}</td>
+        <td>{{pago.folio}}</td>
+        <td>{{pago.nombreContratante}}</td>
+        <td>{{pago.tipoPago}}</td>
+        <td>{{pago.total}}</td>
+        <td>{{pago.estatus}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirModalDetallePago(pago)">
+              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+            </a>
+            <a (click)="abrirPanel($event,pago)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="8" class="p-2 text-center font-bold text-xl">
+          No se encontro información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{pagos.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table" *appValidaRol="['USUARIOS','IMPRIMIR']">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                 (click)="guardarPDF()">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                 (click)="guardarExcel()">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Ir a Pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Generar recibo de pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar Pago"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
