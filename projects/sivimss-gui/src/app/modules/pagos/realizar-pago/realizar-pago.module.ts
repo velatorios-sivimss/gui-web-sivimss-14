@@ -18,6 +18,8 @@ import { PagoOrdenServicioComponent } from './components/pago-orden-servicio/pag
 import { PagoConvenioComponent } from './components/pago-convenio/pago-convenio.component';
 import { PagoRenovacionConvenioComponent } from './components/pago-renovacion-convenio/pago-renovacion-convenio.component';
 import { RegistrarTipoPagoComponent } from './components/registrar-tipo-pago/registrar-tipo-pago.component';
+import { RegistrarAgfComponent } from './components/registrar-agf/registrar-agf.component';
+import { RegistrarValeParitariaComponent } from './components/registrar-vale-paritaria/registrar-vale-paritaria.component';
 
 
 @NgModule({
@@ -26,7 +28,9 @@ import { RegistrarTipoPagoComponent } from './components/registrar-tipo-pago/reg
     PagoOrdenServicioComponent,
     PagoConvenioComponent,
     PagoRenovacionConvenioComponent,
-    RegistrarTipoPagoComponent
+    RegistrarTipoPagoComponent,
+    RegistrarAgfComponent,
+    RegistrarValeParitariaComponent
   ],
   imports: [
     CommonModule,
