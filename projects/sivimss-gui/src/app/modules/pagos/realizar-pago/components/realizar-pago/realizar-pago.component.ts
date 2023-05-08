@@ -27,6 +27,8 @@ export class RealizarPagoComponent implements OnInit {
   velatorios: TipoDropdown[] = [];
   pagos: any[] = REGISTROS_PAGOS;
 
+  realizarPagoModal: boolean = false;
+
   constructor(private breadcrumbService: BreadcrumbService,
               private formBuilder: FormBuilder) {
   }
@@ -56,7 +58,7 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   abrirModalPago(): void {
-
+    this.realizarPagoModal = !this.realizarPagoModal;
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {

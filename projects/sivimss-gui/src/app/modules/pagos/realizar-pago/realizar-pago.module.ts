@@ -13,11 +13,18 @@ import {TableModule} from "primeng/table";
 import {InputSwitchModule} from "primeng/inputswitch";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {OverlayPanelOpcionesModule} from "../../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
+import {DialogModule} from "primeng/dialog";
+import { PagoOrdenServicioComponent } from './components/pago-orden-servicio/pago-orden-servicio.component';
+import { PagoConvenioComponent } from './components/pago-convenio/pago-convenio.component';
+import { PagoRenovacionConvenioComponent } from './components/pago-renovacion-convenio/pago-renovacion-convenio.component';
 
 
 @NgModule({
   declarations: [
-    RealizarPagoComponent
+    RealizarPagoComponent,
+    PagoOrdenServicioComponent,
+    PagoConvenioComponent,
+    PagoRenovacionConvenioComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +38,8 @@ import {OverlayPanelOpcionesModule} from "../../../shared/overlay-panel-opciones
     TableModule,
     InputSwitchModule,
     OverlayPanelModule,
-    OverlayPanelOpcionesModule
+    OverlayPanelOpcionesModule,
+    DialogModule
   ]
 })
 export class RealizarPagoModule { }

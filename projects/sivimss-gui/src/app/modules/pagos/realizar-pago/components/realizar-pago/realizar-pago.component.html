@@ -156,3 +156,28 @@
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-dialog header="Modificar" [(visible)]="realizarPagoModal">
+  <div class="border-panel mb-4 w-440 bg-g">
+    <div class="row flex justify-content-center ">
+      Registrar tipo de pago
+    </div>
+  </div>
+  <div class="border-panel w-440">
+    <div class="row flex justify-content-center mb-4 ">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400">
+        Pago de orden de servicios
+      </button>
+    </div>
+    <div class="row flex justify-content-center mb-4 ">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400">
+        Pago de convenios de previsión funeraria
+      </button>
+    </div>
+    <div class="row flex justify-content-center ">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400">
+        Pago de renovación de convenios de previsión funeraria
+      </button>
+    </div>
+  </div>
+</p-dialog>
