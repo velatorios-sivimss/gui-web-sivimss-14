@@ -21,6 +21,7 @@ import { RegistrarTipoPagoComponent } from './components/registrar-tipo-pago/reg
 import { RegistrarAgfComponent } from './components/registrar-agf/registrar-agf.component';
 import { RegistrarValeParitariaComponent } from './components/registrar-vale-paritaria/registrar-vale-paritaria.component';
 import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
+import {CheckboxModule} from "primeng/checkbox";
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
     OverlayPanelModule,
     OverlayPanelOpcionesModule,
     DialogModule,
-    TablePanelModule
+    TablePanelModule,
+    CheckboxModule
   ]
 })
 export class RealizarPagoModule { }

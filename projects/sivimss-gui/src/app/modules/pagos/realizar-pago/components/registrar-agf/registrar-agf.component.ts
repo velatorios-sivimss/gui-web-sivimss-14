@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-registrar-agf',
@@ -6,10 +9,40 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./registrar-agf.component.scss']
 })
 export class RegistrarAgfComponent implements OnInit {
+  agfForm!: FormGroup;
+  ramos: TipoDropdown[] = [];
+  identificaciones: TipoDropdown[] = [];
+  indice: number = 0;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(private formBuilder: FormBuilder, public config: DynamicDialogConfig,
+  public ref: DynamicDialogRef,) {
   }
 
+  ngOnInit(): void {
+    this.inicializarAgfForm();
+  }
+
+  aceptar(): void {
+    if (this.indice === 1) {
+      this.ref.close();
+      return;
+    }
+    this.indice++;
+  }
+
+  private inicializarAgfForm(): void {
+    this.agfForm = this.formBuilder.group({
+      ramo: [{value: null, disabled: false}],
+      identificacionOficial: [{value: null, disabled: false}],
+      numeroIdentificacion: [{value: null, disabled: false}],
+      curp: [{value: null, disabled: false}],
+      actaDefuncion: [{value: null, disabled: false}],
+      cuentaGastos: [{value: null, disabled: false}],
+      documentoNSS: [{value: null, disabled: false}],
+    })
+  }
+
+  cancelar(): void {
+
+  }
 }
