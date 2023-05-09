@@ -1,17 +1,19 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { Funcionalidad } from "projects/sivimss-gui/src/app/modules/roles/models/funcionalidad.interface";
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {Funcionalidad} from "projects/sivimss-gui/src/app/modules/roles/models/funcionalidad.interface";
+import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RolService} from '../../services/rol.service';
 import {Rol} from "../../models/rol.interface";
 import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
-import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
+import {CATALOGO_NIVEL} from '../../../articulos/constants/dummies';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {ActivatedRoute} from "@angular/router";
 
-type NuevoRol = Omit<Rol, "idRol" >;
+type NuevoRol = Omit<Rol, "idRol">;
 
 @Component({
   selector: 'app-agregar-rol',
@@ -23,19 +25,21 @@ export class AgregarRolComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  opciones: TipoDropdown[] = CATALOGO_NIVEL;
-  catRol: TipoDropdown[] = [];
+  catalogoNiveles: TipoDropdown[] = [];
   agregarRolForm!: FormGroup;
 
   formFuncionalidad!: FormGroup;
-  permisos : any;
+  permisos: any;
 
   funcionalidades: Funcionalidad[] = [];
   funcionalidadSeleccionada!: Funcionalidad;
 
+  readonly POSICION_CATALOGO_NIVELES: number = 1;
+
   contadorFuncionalidades = 1;
 
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     private rolService: RolService,
@@ -46,6 +50,12 @@ export class AgregarRolComponent implements OnInit {
   ngOnInit(): void {
     this.breadcrumbService.actualizar(USUARIOS_BREADCRUMB);
     this.inicializarAgregarRolForm();
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
   }
 
   inicializarAgregarRolForm(): void {
@@ -57,13 +67,13 @@ export class AgregarRolComponent implements OnInit {
 
   crearNuevoRol(): any {
     return {
-      desRol : this.agregarRolForm.get("nombre")?.value,
+      desRol: this.agregarRolForm.get("nombre")?.value,
       nivel: this.agregarRolForm.get("nivel")?.value
     };
   }
 
   agregarRol(): void {
-   // utils respuesta: RespuestaModalrol = {mensaje: "Alta satisfactoria", actualizar: true}
+    // utils respuesta: RespuestaModalrol = {mensaje: "Alta satisfactoria", actualizar: true}
     const rolBo: NuevoRol = this.crearNuevoRol();
     const solicitudRol: string = JSON.stringify(rolBo);
     this.rolService.guardar(solicitudRol).subscribe(

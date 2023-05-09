@@ -1,13 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
+import {CATALOGO_NIVEL} from '../../../articulos/constants/dummies';
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RolService} from "../../services/rol.service";
 import {Rol} from '../../models/rol.interface';
 import {RespuestaModalRol} from "../../models/respuestaModal.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {ActivatedRoute} from "@angular/router";
 
 type RolModificado = Omit<Rol, "password">
 
@@ -20,28 +22,39 @@ export class ModificarRolComponent implements OnInit {
 
   modificarRolForm!: FormGroup;
   rolModificado!: RolModificado;
-  opciones: TipoDropdown[] = CATALOGO_NIVEL;
+  catalogoNiveles: TipoDropdown[] = [];
   indice: number = 0;
 
+  readonly POSICION_CATALOGO_NIVELES: number = 1;
+
   constructor(
+    private route: ActivatedRoute,
     private alertaService: AlertaService,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private rolService: RolService,
     private formBuilder: FormBuilder,
-  ) { }
-
-  ngOnInit(): void {
-    const rol =  this.config.data;
-    this.inicializarModificarRolForm(rol);
+  ) {
   }
 
-  inicializarModificarRolForm(rol:Rol): void {
+  ngOnInit(): void {
+    const rol = this.config.data;
+    this.inicializarModificarRolForm(rol);
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
+  }
+
+
+  inicializarModificarRolForm(rol: Rol): void {
     this.modificarRolForm = this.formBuilder.group({
       id: [{value: rol.idRol, disabled: true}, [Validators.required]],
       nombre: [{value: rol.desRol, disabled: false}, [Validators.required, Validators.maxLength(100)]],
       nivel: [{value: rol.nivelOficina, disabled: false}, [Validators.required]],
-      estatus : [{value: rol.estatusRol, disabled: false}],
+      estatus: [{value: rol.estatusRol, disabled: false}],
     });
   }
 

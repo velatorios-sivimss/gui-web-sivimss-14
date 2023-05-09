@@ -27,18 +27,26 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   }
 
   obtenerCatalogoProvedores(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/?servicio=cat-mtto-proveedores`);
+    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/?servicio=cat-mtto-proveedores`);
   }
 
   buscarPorFiltros(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/busqueda-vehiculos-mtto`, {},
+    return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar/busqueda-vehiculos-mtto`, {},
       {params});
   }
 
-  guardarNuevaVerificacion(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/mtto-vehicular-agregar`, t);
+  override guardar(t: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/${this._agregar}`, t);
+  }
+
+  override buscarPorPagina(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+    const params = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio)
+      .append("servicio", this._paginado)
+    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2`, {params})
   }
 }
