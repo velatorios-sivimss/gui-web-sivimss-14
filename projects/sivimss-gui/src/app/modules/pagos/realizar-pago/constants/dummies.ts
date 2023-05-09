@@ -140,3 +140,19 @@ export const TIPO_PAGO_CATALOGOS_CONVENIO: TipoDropdown[] = [
     label: 'Deposito'
   }
 ]
+
+
+export const BENEFICIARIOS = [
+  {
+    curp: 'AFERH648903HG00',
+    nombre: 'Angel Faraón Morales'
+  },
+  {
+    curp: 'FGGRD234890DF45',
+    nombre: 'Fernanda Garcia García'
+  },
+  {
+    curp: 'OFHYF67576PD33F4',
+    nombre: 'Karla Lopez Durán'
+  },
+]

@@ -4,6 +4,9 @@ import {RealizarPagoComponent} from "./components/realizar-pago/realizar-pago.co
 import {PagoOrdenServicioComponent} from "./components/pago-orden-servicio/pago-orden-servicio.component";
 import {PagoConvenioComponent} from "./components/pago-convenio/pago-convenio.component";
 import {PagoRenovacionConvenioComponent} from "./components/pago-renovacion-convenio/pago-renovacion-convenio.component";
+import {
+  SeleccionBeneficiariosAgfComponent
+} from "./components/seleccion-beneficiarios-agf/seleccion-beneficiarios-agf.component";
 
 const routes: Routes = [
   {
@@ -21,6 +24,10 @@ const routes: Routes = [
   {
     path: 'pago-renovacion-convenio-prevision-funeraria',
     component: PagoRenovacionConvenioComponent
+  },
+  {
+    path: 'agf-seleccion-beneficiarios',
+    component: SeleccionBeneficiariosAgfComponent
   }
 ];
 
