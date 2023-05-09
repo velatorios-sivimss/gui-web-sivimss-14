@@ -119,4 +119,24 @@ export const TIPO_PAGO_CATALOGOS_ODS: TipoDropdown[] = [
     value: 8,
     label: 'Traslado oficial'
   }
+];
+
+
+export const TIPO_PAGO_CATALOGOS_CONVENIO: TipoDropdown[] = [
+  {
+    value: 1,
+    label: 'Tarjeta credito'
+  },
+  {
+    value: 2,
+    label: 'Tarjeta debito'
+  },
+  {
+    value: 3,
+    label: 'Transferencia'
+  },
+  {
+    value: 4,
+    label: 'Deposito'
+  }
 ]
