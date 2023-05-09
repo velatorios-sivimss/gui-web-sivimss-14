@@ -41,6 +41,7 @@
         <th>Nivel</th>
         <th>Fecha de creación</th>
         <th>Estatus</th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-roles>
@@ -56,14 +57,16 @@
               <span class="activo" *ngIf="roles.estatusRol">Activo</span>
               <span class="inactivo" *ngIf="!roles.estatusRol">Inactivo</span>
             </div>
-            <div class="contenedor-celda-iconos">
-              <a (click)="abrirModalDetalleRol(roles)">
-                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-              </a>
-              <a (click)="abrirPanel($event,roles)">
-                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-              </a>
-            </div>
+          </div>
+        </td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirModalDetalleRol(roles)">
+              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+            </a>
+            <a (click)="abrirPanel($event,roles)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
           </div>
         </td>
       </tr>
