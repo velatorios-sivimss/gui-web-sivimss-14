@@ -3,28 +3,30 @@
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nivel">Nivel:</label>
-        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+        <label class="control-label" for="nivelFiltroUsuarios">Nivel:</label>
+        <p-dropdown id="nivelFiltroUsuarios" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
                     placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+        <label class="control-label" for="velatorioFiltroUsuarios">Velatorio:</label>
+        <p-dropdown id="velatorioFiltroUsuarios" class="form-control" formControlName="velatorio"
+                    [options]="catalogoVelatorios"
                     placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="delegacion">Delegación:</label>
-        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+        <label class="control-label" for="delegacionFiltroUsuarios">Delegación:</label>
+        <p-dropdown id="delegacionFiltroUsuarios" class="form-control" formControlName="delegacion"
+                    [options]="catalogoDelegaciones"
                     placeholder="Seleccionar la delegación" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="rol">Rol:</label>
-        <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catalogoRoles"
+        <label class="control-label" for="rolFiltroUsuarios">Rol:</label>
+        <p-dropdown id="rolFiltroUsuarios" class="form-control" formControlName="rol" [options]="catalogoRoles"
                     placeholder="Seleccionar el rol" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>

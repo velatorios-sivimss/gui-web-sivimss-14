@@ -2,19 +2,19 @@
   <form [formGroup]="modificarUsuarioForm" (submit)="confirmarModificacion()">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="idModificar">ID</label>
-        <input id="idModificar" class="form-control" formControlName="id" placeholder="ID">
+        <label class="control-label" for="idModificarUsuario">ID</label>
+        <input id="idModificarUsuario" class="form-control" formControlName="id" placeholder="ID">
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="curpModificar">CURP<span class="req">*</span></label>
-        <input id="curpModificar" class="form-control" formControlName="curp" placeholder="Inserta el CURP">
+        <label class="control-label" for="curpModificarUsuario">CURP<span class="req">*</span></label>
+        <input id="curpModificarUsuario" class="form-control" formControlName="curp" placeholder="Inserta el CURP">
         <span class="campo-obligatorio" *ngIf="fmu?.curp?.errors?.required && (fmu?.curp?.dirty || fmu?.curp?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="matriculaModificar">Matrícula<span class="req">*</span></label>
-        <input id="matriculaModificar" class="form-control" formControlName="matricula"
+        <label class="control-label" for="matriculaModificarUsuario">Matrícula<span class="req">*</span></label>
+        <input id="matriculaModificarUsuario" class="form-control" formControlName="matricula"
                placeholder="Inserta la matrícula">
         <span class="campo-obligatorio"
               *ngIf="fmu?.matricula?.errors?.required && (fmu?.matricula?.dirty || fmu?.matricula?.touched)">Campo obligatorio</span>
@@ -22,23 +22,26 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nombreModificar">Nombre(s)<span class="req">*</span></label>
-        <input id="nombreModificar" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
+        <label class="control-label" for="nombreModificarUsuario">Nombre(s)<span class="req">*</span></label>
+        <input id="nombreModificarUsuario" class="form-control" formControlName="nombre"
+               placeholder="Inserta el nombre">
         <span class="campo-obligatorio"
               *ngIf="fmu?.nombre?.errors?.required && (fmu?.nombre?.dirty || fmu?.nombre?.touched)">Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="primerApellidoModificar">Primer apellido<span class="req">*</span></label>
-        <input id="primerApellidoModificar" class="form-control" formControlName="primerApellido"
+        <label class="control-label" for="primerApellidoModificarUsuario">Primer apellido<span
+          class="req">*</span></label>
+        <input id="primerApellidoModificarUsuario" class="form-control" formControlName="primerApellido"
                placeholder="Inserta el primer apellido">
         <span class="campo-obligatorio"
               *ngIf="fmu?.primerApellido?.errors?.required && (fmu?.primerApellido?.dirty || fmu?.primerApellido?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="segundoApellidoModificar">Segundo apellido<span class="req">*</span></label>
-        <input id="segundoApellidoModificar" class="form-control" formControlName="segundoApellido"
+        <label class="control-label" for="segundoApellidoModificarUsuario">Segundo apellido<span
+          class="req">*</span></label>
+        <input id="segundoApellidoModificarUsuario" class="form-control" formControlName="segundoApellido"
                placeholder="Inserta el segundo apellido">
         <span class="campo-obligatorio"
               *ngIf="fmu?.segundoApellido?.errors?.required && (fmu?.segundoApellido?.dirty || fmu?.segundoApellido?.touched)">Campo obligatorio</span>
@@ -46,9 +49,9 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="correoElectronicoModificar">Correo electrónico<span
+        <label class="control-label" for="correoElectronicoModificarUsuario">Correo electrónico<span
           class="req">*</span></label>
-        <input id="correoElectronicoModificar" class="form-control" formControlName="correoElectronico"
+        <input id="correoElectronicoModificarUsuario" class="form-control" formControlName="correoElectronico"
                placeholder="Inserta el correo electrónico">
         <span class="campo-obligatorio"
               *ngIf="fmu?.correoElectronico?.errors?.required && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Campo obligatorio</span>
@@ -56,9 +59,9 @@
               *ngIf="fmu?.correoElectronico?.errors?.pattern && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Formato incorrecto</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="fechaNacimientoModificar">Fecha nacimiento<span
+        <label class="control-label" for="fechaNacimientoModificarUsuario">Fecha nacimiento<span
           class="req">*</span>:</label>
-        <p-calendar id="fechaNacimientoModificar" formControlName="fechaNacimiento" styleClass="form-control"
+        <p-calendar id="fechaNacimientoModificarUsuario" formControlName="fechaNacimiento" styleClass="form-control"
                     [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
                     [maxDate]="fechaActual">
         </p-calendar>
@@ -68,17 +71,17 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nivelAgregarUsuarioModificar">Nivel<span class="req">*</span></label>
-        <p-dropdown appendTo="body" id="nivelAgregarUsuarioModificar" class="form-control" formControlName="nivel"
+        <label class="control-label" for="nivelModificarUsuario">Nivel<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="nivelModificarUsuario" class="form-control" formControlName="nivel"
                     [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
         </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="delegacionAgregarUsuarioModificar">Delegación<span
+        <label class="control-label" for="delegacionModificarUsuario">Delegación<span
           class="req">*</span></label>
-        <p-dropdown appendTo="body" id="delegacionAgregarUsuarioModificar" class="form-control"
+        <p-dropdown appendTo="body" id="delegacionModificarUsuario" class="form-control"
                     formControlName="delegacion" [options]="catalogoDelegaciones" placeholder="Seleccione el nivel"
                     (onChange)="buscarVelatorios()">
         </p-dropdown>
@@ -86,9 +89,9 @@
               *ngIf="fmu?.delegacion?.errors?.required && (fmu?.delegacion?.dirty || fmu?.delegacion?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="velatorioAgregarUsuarioModificar">Velatorio<span
+        <label class="control-label" for="velatorioModificarUsuario">Velatorio<span
           class="req">*</span></label>
-        <p-dropdown appendTo="body" id="velatorioAgregarUsuarioModificar" class="form-control"
+        <p-dropdown appendTo="body" id="velatorioModificarUsuario" class="form-control"
                     formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Seleccione la delegación">
         </p-dropdown>
         <span class="campo-obligatorio"
@@ -97,8 +100,8 @@
     </div>
     <div class="row mb-6">
       <div class="col-md-12">
-        <label class="control-label" for="rolAgregarUsuarioModificar">Rol<span class="req">*</span></label>
-        <p-dropdown appendTo="body" id="rolAgregarUsuarioModificar" class="form-control" formControlName="rol"
+        <label class="control-label" for="rolModificarUsuario">Rol<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="rolModificarUsuario" class="form-control" formControlName="rol"
                     [options]="catalogoRoles" placeholder="Seleccione el rol">
         </p-dropdown>
         <span class="campo-obligatorio" *ngIf="fmu?.rol?.errors?.required && (fmu?.rol?.dirty || fmu?.rol?.touched)">Campo obligatorio</span>
