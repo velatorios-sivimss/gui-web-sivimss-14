@@ -27,6 +27,7 @@ import {VehiculoTemp} from "../../models/vehiculo-temp.interface";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {LazyLoadEvent} from "primeng/api";
+import {relative} from "@angular/compiler-cli";
 
 @Component({
   selector: 'app-programar-mantenimiento-vehicular',
@@ -187,7 +188,24 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
   abrirModalExportarExcel(): void {
   }
 
-  abrirModalDetalleArticulo(articulo: Vehiculos) {
+  abrirModalDetalleArticulo(vehiculo: VehiculoTemp) {
+    if (vehiculo.ID_MTTO_SOLICITUD) {
+      this.router.navigate(['./detalle-solicitud-mantenimiento'], {
+        relativeTo: this.route,
+        queryParams: {id: vehiculo.ID_MTTO_SOLICITUD}
+      });
+      return;
+    }
+    if (vehiculo.ID_MTTO_REGISTRO) {
+      this.router.navigate(['./detalle-registro-mantenimiento'], {relativeTo: this.route});
+      return;
+    }
+    if (vehiculo.ID_MTTOVERIFINICIO) {
+      this.router.navigate(['./detalle-verificacion'], {
+        relativeTo: this.route,
+        queryParams: {id: vehiculo.ID_MTTOVERIFINICIO}
+      });
+    }
   }
 
   abrirPanel(event: MouseEvent, vehiculoSeleccionado: VehiculoTemp): void {

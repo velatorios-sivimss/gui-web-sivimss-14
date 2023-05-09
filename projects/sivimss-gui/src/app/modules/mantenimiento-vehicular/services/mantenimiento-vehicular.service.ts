@@ -49,4 +49,19 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
       .append("servicio", this._paginado)
     return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2`, {params})
   }
+
+  obtenerDetalleVerificacion(id: number): Observable<HttpRespuesta<any>> {
+    const params = new HttpParams()
+      .append("servicio", 'detalle-verificacion-inicio')
+      .append("palabra", id)
+    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar`, {params})
+  }
+
+
+  obtenerDetalleSolicitud(id: number): Observable<HttpRespuesta<any>> {
+    const params = new HttpParams()
+      .append("servicio", 'detalle-solicitud-mtto')
+      .append("palabra", id)
+    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar`, {params})
+  }
 }
