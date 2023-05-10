@@ -64,9 +64,15 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
               private cargadorService: LoaderService,
               private mantenimientoVehicularService: MantenimientoVehicularService) {
     this.route.queryParams.subscribe(params => {
-        this.idRegistro = params.id;
-        this.vehiculoSeleccionado = JSON.parse(params.vehiculo);
-        this.verificacion = JSON.parse(params.solicitud)
+        if (params.id) {
+          this.idRegistro = params.id;
+        }
+        if (params.vehiculo) {
+          this.vehiculoSeleccionado = JSON.parse(params.vehiculo);
+        }
+        if (params.asignacion) {
+          this.verificacion = JSON.parse(params.solicitud);
+        }
       }
     );
   }

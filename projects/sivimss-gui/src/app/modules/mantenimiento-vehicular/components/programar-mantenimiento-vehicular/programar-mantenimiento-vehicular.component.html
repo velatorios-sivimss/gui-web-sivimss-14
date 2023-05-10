@@ -145,8 +145,7 @@
       {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
     </div>
   </div>
-  <div class=" border-panel w-440
-    ">
+  <div class=" border-panel w-440">
     <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTOVERIFINICIO">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400">
         Modificar verificación al inicio
@@ -170,6 +169,23 @@
     <div class="row flex justify-content-center">
       {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
       {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
+    </div>
+  </div>
+  <div class=" border-panel w-440">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTOVERIFINICIO">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('verificacion')">
+        Ver detalle verificación al inicio
+      </button>
+    </div>
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTO_SOLICITUD">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('mtto')">
+        Ver detalle solicitud de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTOVEHICULAR">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('registroMtto')">
+        Ver detalle registro de mantenimiento
+      </button>
     </div>
   </div>
 </p-dialog>

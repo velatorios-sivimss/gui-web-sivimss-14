@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core'
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
-import {CATALOGOS_DUMMIES} from '../../../inventario-vehicular/constants/dummies'
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
 import {ActivatedRoute, Router} from '@angular/router'
@@ -18,7 +17,6 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
 import {MANTENIMIENTO_VEHICULAR_BREADCRUMB} from "../../constants/breadcrumb";
 import {FiltrosMantenimientoVehicular} from "../../models/filtrosMantenimientoVehicular.interface";
-import {VehiculoTemp} from "../../models/vehiculo-temp.interface";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {LazyLoadEvent} from "primeng/api";
@@ -27,6 +25,8 @@ import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+
+type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
 
 @Component({
   selector: 'app-programar-mantenimiento-vehicular',
@@ -56,7 +56,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
-  catalogoVelatorios: TipoDropdown[] = CATALOGOS_DUMMIES
+  catalogoVelatorios: TipoDropdown[] = [];
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
@@ -213,24 +213,22 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   abrirModalExportarExcel(): void {
   }
 
-  abrirModalDetalleArticulo(vehiculo: VehiculoTemp) {
-    if (vehiculo.ID_MTTO_SOLICITUD) {
+  seleccionarDetalle(opcion: OpcionMtto) {
+    if (opcion === 'mtto') {
       this.router.navigate(['./detalle-solicitud-mantenimiento'], {
         relativeTo: this.route,
-        queryParams: {id: vehiculo.ID_MTTO_SOLICITUD}
+        queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD}
       });
       return;
     }
-    if (vehiculo.ID_MTTO_REGISTRO) {
+    if (opcion === 'registroMtto') {
       this.router.navigate(['./detalle-registro-mantenimiento'], {relativeTo: this.route});
       return;
     }
-    if (vehiculo.ID_MTTOVERIFINICIO) {
-      this.router.navigate(['./detalle-verificacion'], {
-        relativeTo: this.route,
-        queryParams: {id: vehiculo.ID_MTTOVERIFINICIO}
-      });
-    }
+    this.router.navigate(['./detalle-verificacion'], {
+      relativeTo: this.route,
+      queryParams: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO}
+    });
   }
 
   abrirPanel(event: MouseEvent, vehiculoSeleccionado: VehiculoMantenimiento): void {
