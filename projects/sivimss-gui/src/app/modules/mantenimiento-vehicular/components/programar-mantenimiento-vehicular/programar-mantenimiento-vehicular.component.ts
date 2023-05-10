@@ -1,10 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core'
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core'
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {CATALOGOS_DUMMIES} from '../../../inventario-vehicular/constants/dummies'
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
-import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service'
 import {ActivatedRoute, Router} from '@angular/router'
 import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion/nueva-verificacion.component'
 import {
@@ -26,6 +25,8 @@ import {LazyLoadEvent} from "primeng/api";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-programar-mantenimiento-vehicular',
@@ -33,7 +34,7 @@ import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
   styleUrls: ['./programar-mantenimiento-vehicular.component.scss'],
   providers: [DialogService]
 })
-export class ProgramarMantenimientoVehicularComponent implements OnInit {
+export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestroy {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
@@ -42,23 +43,20 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
   totalElementos: number = 0;
   paginacionConFiltrado: boolean = false;
   modificarModal: boolean = false;
+  detalleModal: boolean = false;
 
   vehiculos: VehiculoMantenimiento[] = [];
   vehiculoSeleccionado!: VehiculoMantenimiento;
 
   filtroForm!: FormGroup;
 
-  creacionRef!: DynamicDialogRef;
-  detalleRef!: DynamicDialogRef;
-  modificacionRef!: DynamicDialogRef;
+  solicitudMttoRef!: DynamicDialogRef;
+  nuevaVerificacionRef!: DynamicDialogRef;
+  registroMttoRef!: DynamicDialogRef;
 
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
-  tipoServicio: TipoDropdown[] = CATALOGOS_DUMMIES
-  partidaPresupuestal: TipoDropdown[] = CATALOGOS_DUMMIES
-  cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES
-  velatorios: TipoDropdown[] = CATALOGOS_DUMMIES
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES
+  catalogoVelatorios: TipoDropdown[] = CATALOGOS_DUMMIES
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
@@ -67,12 +65,12 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
-    private alertaService: AlertaService,
     public dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cargadorService: LoaderService,
-    private mantenimientoVehicularService: MantenimientoVehicularService
+    private mantenimientoVehicularService: MantenimientoVehicularService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -108,17 +106,17 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
   }
 
   cargarVelatorios(): void {
-    this.velatorios = [];
+    this.catalogoVelatorios = [];
     this.filtroForm.get('velatorio')?.patchValue("");
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
-    console.log(idDelegacion)
     if (!idDelegacion) return;
     this.mantenimientoVehicularService.obtenerVelatorios(idDelegacion).subscribe({
-      next: (respuesta): void => {
-        this.velatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
     })
   }
@@ -144,23 +142,22 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
   }
 
   paginar(): void {
+    if (!localStorage.getItem('sivimss_token')) return;
     this.cargadorService.activar();
     this.mantenimientoVehicularService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
-          this.vehiculos = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
-        },
-        (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
-        }
-      );
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.vehiculos = respuesta!.datos.content;
+        this.totalElementos = respuesta!.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
   paginarConFiltros(): void {
-
   }
 
   buscar(): void {
@@ -177,12 +174,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
     this.filtroForm.reset();
   }
 
-  get f() {
-    return this.filtroForm?.controls;
-  }
-
   abrirModalnuevaVerificacion(): void {
-    this.detalleRef = this.dialogService.open(NuevaVerificacionComponent, {
+    this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
       data: {vehiculo: this.vehiculoSeleccionado},
       header: "Nueva verificación",
       width: "920px"
@@ -190,7 +183,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
   }
 
   abrirModalSolicitudMantenimiento(): void {
-    this.creacionRef = this.dialogService.open(SolicitudMantenimientoComponent, {
+    this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Solicitud de mantenimiento",
       width: "920px",
       data: {vehiculo: this.vehiculoSeleccionado},
@@ -198,7 +191,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
   }
 
   abrirModalRegistroMantenimiento(): void {
-    this.creacionRef = this.dialogService.open(RegistroMantenimientoComponent, {
+    this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Registro de mantenimiento vehicular",
       width: "920px",
       data: {vehiculo: this.vehiculoSeleccionado},
@@ -207,6 +200,11 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
 
   abrirModalModificar(): void {
     this.modificarModal = true;
+  }
+
+  abrirModalDetalle(vehiculoSeleccionado: VehiculoMantenimiento): void {
+    this.vehiculoSeleccionado = vehiculoSeleccionado;
+    this.detalleModal = true;
   }
 
   abrirModalExportarPDF(): void {
@@ -235,24 +233,25 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
     }
   }
 
-  abrirPanel(event: MouseEvent, vehiculoSeleccionado: VehiculoTemp): void {
+  abrirPanel(event: MouseEvent, vehiculoSeleccionado: VehiculoMantenimiento): void {
     this.vehiculoSeleccionado = vehiculoSeleccionado;
     this.overlayPanel.toggle(event);
   }
 
-
-  abrirModalModificarServicio(): void {
-    // this.creacionRef = this.dialogService.open(ModificarArticulosComponent, {
-    //   header:"Modificar artículo",
-    //   width:"920px",
-    // })
-
-    // this.creacionRef.onClose.subscribe((estatus:boolean) => {
-    //   if(estatus){
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo modificado correctamente');
-    //   }
-    // })
+  get f() {
+    return this.filtroForm?.controls;
   }
 
+  ngOnDestroy(): void {
+    if (this.solicitudMttoRef) {
+      this.solicitudMttoRef.destroy();
+    }
+    if (this.nuevaVerificacionRef) {
+      this.nuevaVerificacionRef.destroy();
+    }
+    if (this.registroMttoRef) {
+      this.registroMttoRef.destroy();
+    }
+  }
 
 }

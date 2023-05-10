@@ -18,7 +18,7 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
                     placeholder="Seleccionar el velatorio">
         </p-dropdown>
       </div>
@@ -80,7 +80,7 @@
         <td [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetalleArticulo(vehiculo)">
+            <a (click)="abrirModalDetalle(vehiculo)">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
             <a (click)="abrirPanel($event,vehiculo)">
@@ -121,40 +121,55 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Verificar al inicio"
-                                (click)="abrirModalnuevaVerificacion()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Solicitud de mantenimiento,,"
-                                (click)="abrirModalSolicitudMantenimiento()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Registro de mantenimiento"
-                                (click)="abrirModalRegistroMantenimiento()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificar()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Verificar al inicio" (click)="abrirModalnuevaVerificacion()"
+                                *ngIf="!vehiculoSeleccionado.ID_MTTOVERIFINICIO"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
+                                *ngIf="!vehiculoSeleccionado.ID_MTTO_SOLICITUD"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
+                                *ngIf="!vehiculoSeleccionado.ID_MTTOVEHICULAR"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificar()"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Exportar PDF" (click)="abrirModalExportarPDF()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Exportar Excel" (click)="abrirModalExportarExcel()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-<p-dialog header="Modificar" [(visible)]="modificarModal">
+
+<p-dialog header="Modificar" [(visible)]="modificarModal" *ngIf="vehiculoSeleccionado">
   <div class="border-panel mb-4 w-440 bg-g">
-    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado">
-      {{vehiculoSeleccionado.ID_VEHICULO}} -{{vehiculoSeleccionado.DES_MARCA | uppercase }}
+    <div class="row flex justify-content-center">
+      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
       {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
     </div>
   </div>
-  <div class="border-panel w-440">
-    <div class="row flex justify-content-center mb-4 ">
+  <div class=" border-panel w-440
+    ">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTOVERIFINICIO">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400">
         Modificar verificación al inicio
       </button>
     </div>
-    <div class="row flex justify-content-center mb-4 ">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTO_SOLICITUD">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400">
         Modificar solicitud de mantenimiento
       </button>
     </div>
-    <div class="row flex justify-content-center ">
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTOVEHICULAR">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400">
         Modificar registro de mantenimiento
       </button>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Ver Detalle" [(visible)]="detalleModal" *ngIf="vehiculoSeleccionado">
+  <div class="border-panel mb-4 w-440 bg-g">
+    <div class="row flex justify-content-center">
+      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
+      {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
     </div>
   </div>
 </p-dialog>
