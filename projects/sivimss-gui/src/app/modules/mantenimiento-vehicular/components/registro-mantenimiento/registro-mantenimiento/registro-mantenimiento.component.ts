@@ -127,7 +127,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       registro: {
         idMttoRegistro: null,
         idMttoVehicular: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
-        idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
+        idMttoModalidad: 1,
         idMantenimiento: 1,
         desNotas: this.solicitudMantenimientoForm.get("notas")?.value,
         idProveedor: this.solicitudMantenimientoForm.get("nombreProveedor")?.value,

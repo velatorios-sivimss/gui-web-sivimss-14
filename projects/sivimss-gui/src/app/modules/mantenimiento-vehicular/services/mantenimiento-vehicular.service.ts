@@ -8,8 +8,15 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../services/autenticacion.service";
 import {environment} from "../../../../environments/environment";
 
+interface ConsultaVelatorio {
+  idDelegacion: string | null
+}
+
 @Injectable()
 export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any>, any> {
+
+  readonly _nivel: string = 'catalogo_nivelOficina';
+  readonly _delegacion: string = 'catalogo_delegaciones';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "",
@@ -17,13 +24,18 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    const niveles = this.authService.obtenerCatalogoDeLocalStorage((this._nivel));
     return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage((this._delegacion));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+  }
+
+  obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body: ConsultaVelatorio = {idDelegacion: delegacion}
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
   obtenerCatalogoProvedores(): Observable<HttpRespuesta<any>> {

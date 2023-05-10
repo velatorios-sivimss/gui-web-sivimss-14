@@ -11,7 +11,7 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-                    placeholder="Seleccionar delegación">
+                    placeholder="Seleccionar delegación" (onChange)="cargarVelatorios()">
         </p-dropdown>
       </div>
     </div>
@@ -25,7 +25,7 @@
       <div class="col-md-6">
         <label class="control-label" for="placa">Placa:</label>
         <input id="placa" class="form-control" formControlName="placa"
-               placeholder="Ingresa el articulo" (keyup)="consultaServicioEspecifico()">
+               placeholder="Ingresa el articulo">
       </div>
     </div>
     <div class="row mt-6">
@@ -135,9 +135,9 @@
 </p-overlayPanel>
 <p-dialog header="Modificar" [(visible)]="modificarModal">
   <div class="border-panel mb-4 w-440 bg-g">
-    <div class="row flex justify-content-center ">
-      {{vehiculoSeleccionado?.ID_VEHICULO}} -{{vehiculoSeleccionado?.DES_MARCA | uppercase }}
-      {{vehiculoSeleccionado?.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado?.DES_MODELO | uppercase}}
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado">
+      {{vehiculoSeleccionado.ID_VEHICULO}} -{{vehiculoSeleccionado.DES_MARCA | uppercase }}
+      {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
     </div>
   </div>
   <div class="border-panel w-440">

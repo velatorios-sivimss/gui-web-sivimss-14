@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core'
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes'
-import {Vehiculos} from '../../models/vehiculos.interface'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {CATALOGOS_DUMMIES} from '../../../inventario-vehicular/constants/dummies'
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
@@ -11,9 +10,6 @@ import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificaci
 import {
   RegistroMantenimientoComponent
 } from '../registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component'
-import {
-  DetalleRegistroMantenimientoComponent
-} from '../registro-mantenimiento/detalle-registro-mantenimiento/detalle-registro-mantenimiento.component'
 import {
   SolicitudMantenimientoComponent
 } from '../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component'
@@ -27,7 +23,9 @@ import {VehiculoTemp} from "../../models/vehiculo-temp.interface";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {LazyLoadEvent} from "primeng/api";
-import {relative} from "@angular/compiler-cli";
+import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-programar-mantenimiento-vehicular',
@@ -37,32 +35,30 @@ import {relative} from "@angular/compiler-cli";
 })
 export class ProgramarMantenimientoVehicularComponent implements OnInit {
   @ViewChild(OverlayPanel)
-  overlayPanel!: OverlayPanel
+  overlayPanel!: OverlayPanel;
 
-  numPaginaActual: number = 0
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
-  totalElementos: number = 0
-
-  vehiculos: Vehiculos[] = []
-  vehiculoSeleccionado!: VehiculoTemp;
-
-  filtroForm!: FormGroup
-
+  numPaginaActual: number = 0;
+  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
+  totalElementos: number = 0;
   paginacionConFiltrado: boolean = false;
+  modificarModal: boolean = false;
 
-  creacionRef!: DynamicDialogRef
-  detalleRef!: DynamicDialogRef
-  modificacionRef!: DynamicDialogRef
+  vehiculos: VehiculoMantenimiento[] = [];
+  vehiculoSeleccionado!: VehiculoMantenimiento;
 
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES
+  filtroForm!: FormGroup;
+
+  creacionRef!: DynamicDialogRef;
+  detalleRef!: DynamicDialogRef;
+  modificacionRef!: DynamicDialogRef;
+
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   tipoServicio: TipoDropdown[] = CATALOGOS_DUMMIES
   partidaPresupuestal: TipoDropdown[] = CATALOGOS_DUMMIES
   cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES
   velatorios: TipoDropdown[] = CATALOGOS_DUMMIES
-
-  modificarModal: boolean = false;
+  opciones: TipoDropdown[] = CATALOGOS_DUMMIES
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
@@ -84,6 +80,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
     this.breadcrumbService.actualizar(MANTENIMIENTO_VEHICULAR_BREADCRUMB);
     this.inicializarFiltroForm()
     this.cargarCatalogos();
+    this.cargarDatosUsuario();
   }
 
   cargarCatalogos(): void {
@@ -92,9 +89,43 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
   }
 
-  inicializarFiltroForm() {
+  cargarDatosUsuario(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroForm.get('nivel')?.patchValue(parseInt(usuario.idOficina));
+    this.deshabilitarFiltros(parseInt(usuario.idOficina));
+    this.filtroForm.get('delegacion')?.patchValue(parseInt(usuario.idDelegacion));
+    this.cargarVelatorios();
+    this.filtroForm.get('velatorio')?.patchValue(parseInt(usuario.idVelatorio));
+  }
+
+  deshabilitarFiltros(id: number): void {
+    if (id > 1) {
+      this.filtroForm.get('delegacion')?.disable()
+    }
+    if (id > 2) {
+      this.filtroForm.get('velatorio')?.disable()
+    }
+  }
+
+  cargarVelatorios(): void {
+    this.velatorios = [];
+    this.filtroForm.get('velatorio')?.patchValue("");
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    console.log(idDelegacion)
+    if (!idDelegacion) return;
+    this.mantenimientoVehicularService.obtenerVelatorios(idDelegacion).subscribe({
+      next: (respuesta): void => {
+        this.velatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+      }
+    })
+  }
+
+  inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}, [Validators.required]],
+      nivel: [{value: null, disabled: true}],
       delegacion: [{value: null, disabled: false}, [Validators.required]],
       velatorio: [{value: null, disabled: false}, [Validators.required]],
       placa: [{value: null, disabled: false}, [Validators.required]],
@@ -140,10 +171,6 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit {
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
     return {}
-  }
-
-  consultaServicioEspecifico(): string {
-    return "";
   }
 
   limpiar(): void {
