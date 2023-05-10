@@ -1,51 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {tablaRin} from "../../../constants/tabla-rines";
 import {ActivatedRoute} from "@angular/router";
-import {VehiculoTemp} from "../../../models/vehiculo-temp.interface";
 import {VerificacionInicio} from "../../../models/verificacion-inicio.interface";
 import {obtenerFechaActual} from "../../../../../utils/funciones-fechas";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
 import {finalize} from "rxjs/operators";
-
-interface RespuestaVerificacion {
-  DES_DELEGACION: "AGUASCALIENTES"
-  DES_MARCA: "NIssan"
-  DES_MODELO: "2029"
-  DES_MTTOESTADO: "En tiempo"
-  DES_NIVEL_ACEITE: "Correcto"
-  DES_NIVEL_AGUA: "Medio"
-  DES_NIVEL_BATERIA: "Bajo"
-  DES_NIVEL_CODIGOFALLO: "Bajo"
-  DES_NIVEL_COMBUSTIBLE: "Bajo"
-  DES_NIVEL_LIMPIEZAEXTERIOR: "Bajo"
-  DES_NIVEL_LIMPIEZAINTERIOR: "Bajo"
-  DES_NIVEL_NEUMADELA: "Bajo"
-  DES_NIVEL_NEUMATRASE: "Bajo"
-  DES_NUMMOTOR: "Test1"
-  DES_NUMSERIE: "675765"
-  DES_PLACAS: "T77NBH"
-  DES_USO: "Utilitario administrativo"
-  FEC_ALTA: "2023-04-26T18:36:22.000+00:00"
-  ID_CALNEUDELANTEROS: 1
-  ID_CALNEUTRASEROS: 1
-  ID_CODIGOFALLO: 1
-  ID_DELEGACION: 1
-  ID_LIMPIEZAEXTERIOR: 1
-  ID_LIMPIEZAINTERIOR: 1
-  ID_MTTOESTADO: 1
-  ID_MTTOVEHICULAR: 20
-  ID_MTTOVERIFINICIO: 4
-  ID_NIVELACEITE: 10
-  ID_NIVELAGUA: 5
-  ID_NIVELBATERIA: 1
-  ID_NIVELCOMBUSTIBLE: 1
-  ID_VEHICULO: 1
-  ID_VELATORIO: 1
-  IND_ACTIVO: true
-  IND_ESTATUS: false
-  NOM_VELATORIO: "DOCTORES"
-}
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
+import {RespuestaVerificacion} from "../../../models/respuestaVerificacion.interface";
 
 @Component({
   selector: 'app-detalle-nueva-verificacion',
@@ -55,14 +19,16 @@ interface RespuestaVerificacion {
 export class DetalleNuevaVerificacionComponent implements OnInit {
 
   data = tablaRin;
-  vehiculoSeleccionado!: VehiculoTemp;
+  vehiculoSeleccionado!: VehiculoMantenimiento;
   verificacion!: VerificacionInicio;
   fecha: string = obtenerFechaActual();
   idRegistro!: number;
 
   constructor(private route: ActivatedRoute,
               private cargadorService: LoaderService,
-              private mantenimientoVehicularService: MantenimientoVehicularService) {
+              private mantenimientoVehicularService: MantenimientoVehicularService,
+              private mensajesSistemaService: MensajesSistemaService
+  ) {
     this.route.queryParams.subscribe(params => {
         if (params.id) {
           this.idRegistro = params.id;
@@ -70,7 +36,7 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
         if (params.vehiculo) {
           this.vehiculoSeleccionado = JSON.parse(params.vehiculo);
         }
-        if (params.asignacion) {
+        if (params.solicitud) {
           this.verificacion = JSON.parse(params.solicitud);
         }
       }
@@ -86,19 +52,21 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
     this.cargadorService.activar()
     this.mantenimientoVehicularService.obtenerDetalleVerificacion(this.idRegistro).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta) => {
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.datos.length === 0) return;
         this.obtenerVerificacion(respuesta.datos[0]);
         this.obtenerVehiculo(respuesta.datos[0]);
       },
-      error: (error) => {
-        console.log(error)
+      error: (error): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message)
       }
     })
   }
 
   obtenerVerificacion(respuesta: RespuestaVerificacion): void {
     this.vehiculoSeleccionado = {
+      verificacionDia: false,
       DESCRIPCION: "",
       DES_MARCA: respuesta.DES_MARCA,
       DES_MODALIDAD: "",

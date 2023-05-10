@@ -22,5 +22,6 @@ export interface VehiculoMantenimiento {
   ID_MTTO_SOLICITUD?: number,
   ID_MTTOVERIFINICIO?: number,
   ID_MTTO_REGISTRO?: number,
-  ID_MTTOVEHICULAR: number
+  ID_MTTOVEHICULAR: number,
+  verificacionDia: boolean
 }

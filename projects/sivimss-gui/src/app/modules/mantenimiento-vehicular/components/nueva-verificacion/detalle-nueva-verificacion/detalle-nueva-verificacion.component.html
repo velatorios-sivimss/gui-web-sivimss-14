@@ -98,7 +98,7 @@
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
                     <label>Nivel de aceite</label>
-                    <span>{{verificacion.idNivelAceite}}</span>
+                    <span>{{verificacion.idNivelAceite.toString() | uppercase}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
                     <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
@@ -107,7 +107,7 @@
                 <div class="col-md-6">
                   <div class="table-panel-column col-md-6">
                     <label>Nivel de agua</label>
-                    <span>{{verificacion.idNivelAgua}}</span>
+                    <span>{{verificacion.idNivelAgua.toString() | uppercase}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
                     <img class="icono" src="../../../../../../assets/images/nivelAgua.svg">
@@ -121,7 +121,7 @@
                 <div class="col-md-12">
                   <div class="table-panel-column col-md-6">
                     <label>Calibración de neumáticos traseros</label>
-                    <span>{{verificacion.idCalNeuTraseros}}</span>
+                    <span>{{verificacion.idCalNeuTraseros.toString() | uppercase}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
                     <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg">
@@ -130,7 +130,7 @@
                 <div class="col-md-12">
                   <div class="table-panel-column col-md-6">
                     <label>Calibración de numáticos delanteros</label>
-                    <span>{{verificacion.idCalNeuDelanteros}}</span>
+                    <span>{{verificacion.idCalNeuDelanteros.toString() | uppercase}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
                     <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg">
@@ -166,7 +166,7 @@
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
                     <label>Nivel de Combustible</label>
-                    <span>{{verificacion.idNivelCombustible}}</span>
+                    <span>{{verificacion.idNivelCombustible.toString() | uppercase}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
                     <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
@@ -175,7 +175,7 @@
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
                     <label>Nivel de Bateria </label>
-                    <span>{{verificacion.idNivelBateria}}</span>
+                    <span>{{verificacion.idNivelBateria.toString() | uppercase}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
                     <img class="icono-bateria" src="../../../../../../assets/images/loading.svg">
@@ -184,9 +184,8 @@
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
                     <label>Código de falla</label>
-                    <span>{{verificacion.idCodigoFallo}}</span>
+                    <span>{{verificacion.idCodigoFallo.toString() | uppercase}}</span>
                   </div>
-
                 </div>
               </div>
             </div>

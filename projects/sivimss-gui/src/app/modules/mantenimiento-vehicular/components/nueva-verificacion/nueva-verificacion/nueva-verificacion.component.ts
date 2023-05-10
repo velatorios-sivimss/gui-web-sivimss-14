@@ -6,7 +6,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Vehiculos} from '../../../models/vehiculos.interface';
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
-import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {VehiculoTemp} from "../../../models/vehiculo-temp.interface";
 import {obtenerFechaActual, obtenerHoraActual} from "../../../../../utils/funciones-fechas";
 import {VerificacionInicio} from "../../../models/verificacion-inicio.interface";
@@ -16,6 +16,8 @@ import {RegistroVerificacionInterface} from "../../../models/registro-verificaci
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {MenuItem} from "primeng/api";
 import {OverlayPanel} from "primeng/overlaypanel";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 
 @Component({
   selector: 'app-nueva-verificacion',
@@ -24,6 +26,8 @@ import {OverlayPanel} from "primeng/overlaypanel";
   providers: [DialogService]
 })
 export class NuevaVerificacionComponent implements OnInit {
+  @ViewChild(OverlayPanel)
+  overlayPanel!: OverlayPanel;
 
   vehiculoSeleccionado!: VehiculoTemp;
 
@@ -41,9 +45,6 @@ export class NuevaVerificacionComponent implements OnInit {
   horaActual: string = obtenerHoraActual();
   fechaActual: string = obtenerFechaActual();
 
-  @ViewChild(OverlayPanel)
-  overlayPanel!: OverlayPanel;
-
   constructor(
     private formBuilder: FormBuilder,
     public ref: DynamicDialogRef,
@@ -53,22 +54,14 @@ export class NuevaVerificacionComponent implements OnInit {
     private alertaService: AlertaService,
     private route: ActivatedRoute,
     private router: Router,
-    private mantenimientoVehicularService: MantenimientoVehicularService
+    private mantenimientoVehicularService: MantenimientoVehicularService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
   ngOnInit(): void {
     this.vehiculoSeleccionado = this.config.data.vehiculo;
     this.inicializarVerificacionForm();
-    this.revisarRuta();
-  }
-
-  revisarRuta(): void {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this.ref.close();
-      }
-    });
   }
 
   inicializarVerificacionForm(): void {
@@ -150,16 +143,17 @@ export class NuevaVerificacionComponent implements OnInit {
 
   guardarNuevaVerificacion(): void {
     const verificacion: RegistroVerificacionInterface = this.crearNuevaVerificacion();
-    this.mantenimientoVehicularService.guardar(verificacion).subscribe(
-      (respuesta) => {
+    this.mantenimientoVehicularService.guardar(verificacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return
         this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion agregada correctamente');
         this.abrirRegistroMantenimiento();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error)
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    )
+    })
   }
 
   abrirRegistroMantenimiento(): void {
@@ -176,6 +170,5 @@ export class NuevaVerificacionComponent implements OnInit {
   get nvf() {
     return this.nuevaVerificacionForm.controls;
   }
-
 
 }

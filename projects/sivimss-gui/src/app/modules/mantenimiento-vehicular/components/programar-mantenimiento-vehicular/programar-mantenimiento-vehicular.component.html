@@ -122,7 +122,7 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Verificar al inicio" (click)="abrirModalnuevaVerificacion()"
-                                *ngIf="!vehiculoSeleccionado.ID_MTTOVERIFINICIO"
+                                *ngIf="!vehiculoSeleccionado.verificacionDia"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
                                 *ngIf="!vehiculoSeleccionado.ID_MTTO_SOLICITUD"
@@ -146,7 +146,7 @@
     </div>
   </div>
   <div class=" border-panel w-440">
-    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTOVERIFINICIO">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400">
         Modificar verificación al inicio
       </button>
@@ -156,13 +156,13 @@
         Modificar solicitud de mantenimiento
       </button>
     </div>
-    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTOVEHICULAR">
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTO_REGISTRO">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400">
         Modificar registro de mantenimiento
       </button>
     </div>
     <div class="row flex justify-content-center"
-         *ngIf="!vehiculoSeleccionado.ID_MTTOVERIFINICIO && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTOVEHICULAR ">
+         *ngIf="!vehiculoSeleccionado.verificacionDia && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
       No existen solicitudes registradas previamente.
     </div>
   </div>
@@ -176,7 +176,7 @@
     </div>
   </div>
   <div class=" border-panel w-440">
-    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTOVERIFINICIO">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('verificacion')">
         Ver detalle verificación al inicio
       </button>
@@ -186,13 +186,13 @@
         Ver detalle solicitud de mantenimiento
       </button>
     </div>
-    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTOVEHICULAR">
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTO_REGISTRO">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('registroMtto')">
         Ver detalle registro de mantenimiento
       </button>
     </div>
     <div class="row flex justify-content-center"
-         *ngIf="!vehiculoSeleccionado.ID_MTTOVERIFINICIO && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTOVEHICULAR ">
+         *ngIf="!vehiculoSeleccionado.verificacionDia && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
       No existen solicitudes registradas previamente.
     </div>
   </div>
