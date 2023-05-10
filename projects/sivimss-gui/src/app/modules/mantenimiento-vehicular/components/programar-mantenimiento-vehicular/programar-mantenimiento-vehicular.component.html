@@ -161,6 +161,10 @@
         Modificar registro de mantenimiento
       </button>
     </div>
+    <div class="row flex justify-content-center"
+         *ngIf="!vehiculoSeleccionado.ID_MTTOVERIFINICIO && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTOVEHICULAR ">
+      No existen solicitudes registradas previamente.
+    </div>
   </div>
 </p-dialog>
 
@@ -186,6 +190,10 @@
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('registroMtto')">
         Ver detalle registro de mantenimiento
       </button>
+    </div>
+    <div class="row flex justify-content-center"
+         *ngIf="!vehiculoSeleccionado.ID_MTTOVERIFINICIO && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTOVEHICULAR ">
+      No existen solicitudes registradas previamente.
     </div>
   </div>
 </p-dialog>
