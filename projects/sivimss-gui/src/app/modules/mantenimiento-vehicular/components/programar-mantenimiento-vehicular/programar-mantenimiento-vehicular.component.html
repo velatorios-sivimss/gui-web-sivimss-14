@@ -145,7 +145,7 @@
   </div>
   <div class=" border-panel w-440">
     <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia !== 'false'">
-      <button type="button" class="btn btn-primary btn-lg btn-md w-400">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarVerificacion()" >
         Modificar verificación al inicio
       </button>
     </div>

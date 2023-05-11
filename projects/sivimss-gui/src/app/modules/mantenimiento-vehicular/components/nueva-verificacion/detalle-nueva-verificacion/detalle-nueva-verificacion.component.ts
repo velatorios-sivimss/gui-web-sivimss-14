@@ -54,8 +54,8 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.datos.length === 0) return;
-        this.obtenerVerificacion(respuesta.datos[0]);
-        this.obtenerVehiculo(respuesta.datos[0]);
+        this.llenarInformacionVehiculo(respuesta.datos[0]);
+        this.llenarInformacionVerificacion(respuesta.datos[0]);
       },
       error: (error): void => {
         console.log(error);
@@ -64,7 +64,7 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
     })
   }
 
-  obtenerVerificacion(respuesta: RespuestaVerificacion): void {
+  llenarInformacionVehiculo(respuesta: RespuestaVerificacion): void {
     this.vehiculoSeleccionado = {
       verificacionDia: 'false',
       DESCRIPCION: "",
@@ -92,7 +92,7 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
     }
   }
 
-  obtenerVehiculo(respuesta: RespuestaVerificacion): void {
+  llenarInformacionVerificacion(respuesta: RespuestaVerificacion): void {
     this.verificacion = {
       idCalNeuDelanteros: respuesta.DES_NIVEL_NEUMADELA,
       idCalNeuTraseros: respuesta.DES_NIVEL_NEUMATRASE,

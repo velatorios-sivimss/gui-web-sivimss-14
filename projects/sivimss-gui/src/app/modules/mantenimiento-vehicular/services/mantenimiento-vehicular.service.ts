@@ -19,7 +19,7 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   readonly _delegacion: string = 'catalogo_delegaciones';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "",
+    super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "mtto-vehicular-modificar",
       40, "busqueda-vehiculos-mtto", "", "");
   }
 
@@ -75,5 +75,9 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
       .append("servicio", 'detalle-solicitud-mtto')
       .append("palabra", id)
     return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar`, {params})
+  }
+
+  override actualizar(t: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/${this._actualizar}`, t);
   }
 }

@@ -213,7 +213,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   abrirModalExportarExcel(): void {
   }
 
-  seleccionarDetalle(opcion: OpcionMtto) {
+  seleccionarDetalle(opcion: OpcionMtto): void {
     if (opcion === 'mtto') {
       this.router.navigate(['./detalle-solicitud-mantenimiento'], {
         relativeTo: this.route,
@@ -228,6 +228,15 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.router.navigate(['./detalle-verificacion'], {
       relativeTo: this.route,
       queryParams: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO}
+    });
+  }
+
+  abrirModalModificarVerificacion(): void {
+    this.modificarModal = !this.modificarModal;
+    this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
+      data: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO},
+      header: "Modificar verificación",
+      width: "920px"
     });
   }
 

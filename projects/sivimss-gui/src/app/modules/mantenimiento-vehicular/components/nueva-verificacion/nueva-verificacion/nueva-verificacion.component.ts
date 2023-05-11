@@ -18,6 +18,10 @@ import {MenuItem} from "primeng/api";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {RespuestaVerificacion} from "../../../models/respuestaVerificacion.interface";
+import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-nueva-verificacion',
@@ -29,7 +33,7 @@ export class NuevaVerificacionComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  vehiculoSeleccionado!: VehiculoTemp;
+  vehiculoSeleccionado!: VehiculoMantenimiento;
 
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
@@ -45,6 +49,9 @@ export class NuevaVerificacionComponent implements OnInit {
   horaActual: string = obtenerHoraActual();
   fechaActual: string = obtenerFechaActual();
 
+  idMttoVehicular: number | null = null;
+  idVerificacion: number | null = null;
+
   constructor(
     private formBuilder: FormBuilder,
     public ref: DynamicDialogRef,
@@ -55,12 +62,19 @@ export class NuevaVerificacionComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private mantenimientoVehicularService: MantenimientoVehicularService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private cargadorService: LoaderService,
   ) {
   }
 
   ngOnInit(): void {
-    this.vehiculoSeleccionado = this.config.data.vehiculo;
+    if (this.config.data.vehiculo) {
+      this.vehiculoSeleccionado = this.config.data.vehiculo;
+    }
+    if (this.config.data.id) {
+      const id = this.config.data.id;
+      this.realizarVerificacion(id);
+    }
     this.inicializarVerificacionForm();
   }
 
@@ -115,17 +129,17 @@ export class NuevaVerificacionComponent implements OnInit {
     this.nuevaVerificacion = this.crearResumenNuevaVerificacion();
   }
 
-  crearNuevaVerificacion(): RegistroVerificacionInterface {
+  crearVerificacion(): RegistroVerificacionInterface {
     return {
-      idMttoVehicular: null,
+      idMttoVehicular: this.idMttoVehicular,
       idMttoestado: 1,
-      idVehiculo: 1,
+      idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
-      idVelatorio: 1,
-      idEstatus: 1,
+      idVelatorio: this.vehiculoSeleccionado.ID_VELATORIO,
+      idEstatus: this.idMttoVehicular ? 0 : 1,
       verificacionInicio: {
-        idMttoVerifInicio: null,
-        idMttoVehicular: null,
+        idMttoVerifInicio: this.idVerificacion,
+        idMttoVehicular: this.idMttoVehicular,
         idCalNeuDelanteros: this.nuevaVerificacionForm.get("calibracionNeumaticosDelanteros")?.value,
         idCalNeuTraseros: this.nuevaVerificacionForm.get("calibracionNeumaticosTraseros")?.value,
         idCodigoFallo: this.nuevaVerificacionForm.get("codigoFalla")?.value,
@@ -141,11 +155,19 @@ export class NuevaVerificacionComponent implements OnInit {
     }
   }
 
+  guardarVerificacion(): void {
+    if (this.idMttoVehicular) {
+      this.actualizarVerificacion();
+      return;
+    }
+    this.guardarNuevaVerificacion();
+  }
+
   guardarNuevaVerificacion(): void {
-    const verificacion: RegistroVerificacionInterface = this.crearNuevaVerificacion();
+    const verificacion: RegistroVerificacionInterface = this.crearVerificacion();
     this.mantenimientoVehicularService.guardar(verificacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        if (!respuesta.datos) return
+        if (!respuesta.datos) return;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion agregada correctamente');
         this.abrirRegistroMantenimiento();
       },
@@ -153,7 +175,22 @@ export class NuevaVerificacionComponent implements OnInit {
         console.log(error)
         this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    })
+    });
+  }
+
+  actualizarVerificacion(): void {
+    const verificacion: RegistroVerificacionInterface = this.crearVerificacion();
+    this.mantenimientoVehicularService.actualizar(verificacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (!respuesta.datos) return;
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion modificada correctamente');
+        this.abrirRegistroMantenimiento();
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error)
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
   abrirRegistroMantenimiento(): void {
@@ -165,6 +202,64 @@ export class NuevaVerificacionComponent implements OnInit {
         solicitud: JSON.stringify(this.nuevaVerificacion)
       }
     });
+  }
+
+  realizarVerificacion(id: number): void {
+    this.cargadorService.activar();
+    this.mantenimientoVehicularService.obtenerDetalleVerificacion(id).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos.length === 0) return;
+        this.obtenerVehiculo(respuesta.datos[0]);
+        this.llenarFormulario(respuesta.datos[0]);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error)
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
+  }
+
+  obtenerVehiculo(respuesta: RespuestaVerificacion): void {
+    this.vehiculoSeleccionado = {
+      verificacionDia: 'false',
+      DESCRIPCION: "",
+      DES_MARCA: respuesta.DES_MARCA,
+      DES_MODALIDAD: "",
+      DES_MODELO: respuesta.DES_MODELO,
+      DES_MTTOESTADO: respuesta.DES_MTTOESTADO,
+      DES_MTTO_TIPO: "",
+      DES_NIVELOFICINA: "",
+      DES_NUMMOTOR: respuesta.DES_NUMMOTOR,
+      DES_NUMSERIE: respuesta.DES_NUMSERIE,
+      DES_PLACAS: respuesta.DES_PLACAS,
+      DES_SUBMARCA: respuesta.DES_SUBMARCA,
+      DES_USO: "",
+      ID_MTTOVEHICULAR: 0,
+      ID_OFICINA: 0,
+      ID_USOVEHICULO: 0,
+      ID_VEHICULO: respuesta.ID_VEHICULO,
+      ID_VELATORIO: 0,
+      IMPORTE_PRIMA: 0,
+      IND_ESTATUS: false,
+      NOM_VELATORIO: respuesta.NOM_VELATORIO,
+      TOTAL: 0,
+      DES_DELEGACION: respuesta.DES_DELEGACION
+    }
+  }
+
+  llenarFormulario(respuesta: RespuestaVerificacion): void {
+    this.nuevaVerificacionForm.get('nivelAceite')?.patchValue(respuesta.ID_NIVELACEITE);
+    this.nuevaVerificacionForm.get('nivelAgua')?.patchValue(respuesta.ID_NIVELAGUA);
+    this.nuevaVerificacionForm.get('calibracionNeumaticosTraseros')?.patchValue(respuesta.ID_CALNEUTRASEROS);
+    this.nuevaVerificacionForm.get('calibracionNeumaticosDelanteros')?.patchValue(respuesta.ID_CALNEUDELANTEROS);
+    this.nuevaVerificacionForm.get('nivelCombustible')?.patchValue(respuesta.ID_NIVELCOMBUSTIBLE);
+    this.nuevaVerificacionForm.get('nivelBateria')?.patchValue(respuesta.ID_NIVELBATERIA);
+    this.nuevaVerificacionForm.get('limpiezaInterior')?.patchValue(respuesta.ID_LIMPIEZAINTERIOR);
+    this.nuevaVerificacionForm.get('limpiezaExterior')?.patchValue(respuesta.ID_LIMPIEZAEXTERIOR);
+    this.nuevaVerificacionForm.get('codigoFalla')?.patchValue(respuesta.ID_CODIGOFALLO);
+    this.idMttoVehicular = respuesta.ID_MTTOVEHICULAR;
+    this.idVerificacion = respuesta.ID_MTTOVERIFINICIO;
   }
 
   get nvf() {
