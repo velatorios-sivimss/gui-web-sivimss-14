@@ -35,4 +35,5 @@ export interface RespuestaVerificacion {
   IND_ACTIVO: boolean,
   IND_ESTATUS: boolean,
   NOM_VELATORIO: string,
+  DES_SUBMARCA: string
 }

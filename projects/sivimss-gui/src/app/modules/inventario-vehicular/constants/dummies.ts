@@ -15,7 +15,7 @@ export const CATALOGOS_DUMMIES: TipoDropdown[] = [
         label: 'Opcion 3'
     },
 ]
-export const CATALOGOS_TTIPO_MANTENIMIENTO: TipoDropdown[] = [
+export const CATALOGOS_TIPO_MANTENIMIENTO: TipoDropdown[] = [
     {
         value: '1',
         label: 'CORRECTIVO'

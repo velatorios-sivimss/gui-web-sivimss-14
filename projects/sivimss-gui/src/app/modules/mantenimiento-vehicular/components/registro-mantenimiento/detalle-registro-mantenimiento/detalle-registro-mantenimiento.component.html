@@ -1,8 +1,7 @@
 <app-titulo-principal titulo="VER DETALLE"></app-titulo-principal>
-<p-accordion styleClass="sivimss-accordion sivimss-accordion2">
+<p-accordion styleClass="sivimss-accordion sivimss-accordion2" [activeIndex]="0">
   <p-accordionTab>
     <ng-template pTemplate="header">
-
       <div class="sivimss-acoordion-header">
         <div class="accordion-header-left">
           <span>ID </span>
@@ -51,156 +50,136 @@
         </div>
       </div>
       <hr class="hr-accordion-content">
+      <div class="row">
+        <div class="col col1"></div>
+        <div class="col col2"></div>
+        <div class="col col3"></div>
+        <div class="col col4"></div>
+        <div class="col col5"></div>
+        <div class="col col6"></div>
+        <div class="col col7">
+          <span class="flex flex-column etiqueta-base">Costo de mantenimiento</span>
+          <span class="texto-base"></span>
+        </div>
+      </div>
       <ng-container>
-
         <div class="sivimss-acoordion-header-titulo col-md-8">
           <div class="accordion-header-left col-md-4 ">
             <b class="subtitulos">Verificación diaria</b>
           </div>
           <div class="vertical-line"></div>
-
           <div class="accordion-header-left col-md-4">
             <b class="subtitulos">Solicitud de mantenimiento</b>
           </div>
           <div class="vertical-line"></div>
           <div class="accordion-header-left col-md-4">
-            <b >Registro de mantenimiento</b>
+            <b>Registro de mantenimiento</b>
           </div>
           <div class="vertical-line"></div>
           <div class="col-md-4">
             <b class="subtitulos"></b>
           </div>
         </div>
-
-        <div class="border-panel ">
-          <app-table-panel>
-
-            <div class="row table-panel-row">
-              <div class="col-md-6">
-                <div class="col-md-3">
-                  <div class="table-panel-column col-md-6">
-                    <label>Placas</label>
-                    <span> Medio</span>
-                  </div>
-                  <div class="table-panel-column col-md-6">
-
-                  </div>
+        <app-table-panel>
+          <div class="row table-panel-row">
+            <div class="col-md-6">
+              <div class="col-md-3">
+                <div class="table-panel-column col-md-6">
+                  <label>Placas</label>
+                  <span> Medio</span>
                 </div>
-
-                <div class="col-md-3">
-                  <div class="table-panel-column col-md-6">
-                    <label>Marca</label>
-                    <span> Medio</span>
-                  </div>
-                  <div class="table-panel-column col-md-6">
-
-                  </div>
+                <div class="table-panel-column col-md-6">
                 </div>
-
-                <div class="col-md-3">
-                  <div class="table-panel-column col-md-6">
-                    <label>Año</label>
-                    <span> Medio</span>
-                  </div>
-                  <div class="table-panel-column col-md-6">
-
-                  </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column col-md-6">
+                  <label>Marca</label>
+                  <span> Medio</span>
                 </div>
+                <div class="table-panel-column col-md-6">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column col-md-6">
+                  <label>Año</label>
+                  <span> Medio</span>
+                </div>
+                <div class="table-panel-column col-md-6">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column col-md-6">
+                  <label>Kilometraje</label>
+                  <span> Medio</span>
+                </div>
+                <div class="table-panel-column col-md-6">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+            </div>
+          </div>
+          <div class="row table-panel-row">
+            <div class="col-md-12">
+              <div class="col-md-2">
+                <div class="table-panel-column ">
+                  <label>Tipo de mantenimiento</label>
+                  <span>  Medio </span>
+                </div>
+                <div class="table-panel-column ">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="table-panel-column ">
+                  <label>Tipo de mantenimiento</label>
+                  <span>  Medio </span>
+                </div>
+                <div class="table-panel-column ">
 
-                <div class="col-md-3">
-                  <div class="table-panel-column col-md-6">
-                    <label>Kilometraje</label>
-                    <span> Medio</span>
-                  </div>
-                  <div class="table-panel-column col-md-6">
-
-                  </div>
                 </div>
               </div>
 
-              <div class="col-md-6">
+              <div class="col-md-2">
+                <div class="table-panel-column ">
+                  <label>Modalidad </label>
+                  <span>  Medio </span>
+                </div>
+                <div class="table-panel-column ">
+
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column ">
+                  <label>Mantenimiento preventivo</label>
+                  <span>  Revisión de bateria </span>
+                </div>
+
+              </div>
+
+              <div class="col-md-3">
+                <div class="table-panel-column ">
+                  <label>Notas</label>
+                  <span>  Correcto </span>
+                </div>
 
               </div>
 
             </div>
 
 
-            <div class="row table-panel-row">
-              <div class="col-md-12">
-                <div class="col-md-2">
-                  <div class="table-panel-column ">
-                    <label>Tipo de mantenimiento</label>
-                    <span>  Medio </span>
-                  </div>
-                  <div class="table-panel-column ">
+          </div>
 
-                  </div>
-                </div>
-
-                <div class="col-md-2">
-                  <div class="table-panel-column ">
-                    <label>Tipo de mantenimiento</label>
-                    <span>  Medio </span>
-                  </div>
-                  <div class="table-panel-column ">
-
-                  </div>
-                </div>
-
-                <div class="col-md-2">
-                  <div class="table-panel-column ">
-                    <label>Modalidad </label>
-                    <span>  Medio </span>
-                  </div>
-                  <div class="table-panel-column ">
-
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="table-panel-column ">
-                    <label>Mantenimiento preventivo</label>
-                    <span>  Revisión de bateria </span>
-                  </div>
-
-                </div>
-
-                <div class="col-md-3">
-                  <div class="table-panel-column ">
-                    <label>Notas</label>
-                    <span>  Correcto </span>
-                  </div>
-
-                </div>
-
-              </div>
-
-
-            </div>
-
-          </app-table-panel>
-
-        </div>
+        </app-table-panel>
       </ng-container>
-
-
-
-
     </ng-template>
+
   </p-accordionTab>
 </p-accordion>
-
 <ng-container>
   <div class="flex mt-4 justify-content-end margin">
-    <button class="ml-6 mt-3 btn btn-primary btn-md"  routerLink="../">Aceptar</button>
+    <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../">Aceptar</button>
   </div>
 </ng-container>
-
-
-
-
-
-
-
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">

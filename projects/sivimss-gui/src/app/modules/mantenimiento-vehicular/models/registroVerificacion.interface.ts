@@ -1,4 +1,4 @@
-import {VerificacionInicio} from "./verificacion-inicio.interface";
+import {VerificacionInicio} from "./verificacionInicio.interface";
 
 export interface RegistroVerificacionInterface {
   idDelegacion: number,

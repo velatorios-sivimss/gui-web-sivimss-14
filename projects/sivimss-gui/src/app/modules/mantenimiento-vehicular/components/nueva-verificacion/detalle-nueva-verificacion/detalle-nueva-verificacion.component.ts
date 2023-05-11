@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {tablaRin} from "../../../constants/tabla-rines";
 import {ActivatedRoute} from "@angular/router";
-import {VerificacionInicio} from "../../../models/verificacion-inicio.interface";
+import {VerificacionInicio} from "../../../models/verificacionInicio.interface";
 import {obtenerFechaActual} from "../../../../../utils/funciones-fechas";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
@@ -66,7 +66,7 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
 
   obtenerVerificacion(respuesta: RespuestaVerificacion): void {
     this.vehiculoSeleccionado = {
-      verificacionDia: false,
+      verificacionDia: 'false',
       DESCRIPCION: "",
       DES_MARCA: respuesta.DES_MARCA,
       DES_MODALIDAD: "",
@@ -77,7 +77,7 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
       DES_NUMMOTOR: respuesta.DES_NUMMOTOR,
       DES_NUMSERIE: respuesta.DES_NUMSERIE,
       DES_PLACAS: respuesta.DES_PLACAS,
-      DES_SUBMARCA: "",
+      DES_SUBMARCA: respuesta.DES_SUBMARCA,
       DES_USO: "",
       ID_MTTOVEHICULAR: 0,
       ID_OFICINA: 0,
@@ -87,7 +87,8 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
       IMPORTE_PRIMA: 0,
       IND_ESTATUS: false,
       NOM_VELATORIO: respuesta.NOM_VELATORIO,
-      TOTAL: 0
+      TOTAL: 0,
+      DES_DELEGACION: respuesta.DES_DELEGACION
     }
   }
 

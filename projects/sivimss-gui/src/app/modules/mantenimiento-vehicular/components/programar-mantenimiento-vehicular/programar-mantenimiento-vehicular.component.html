@@ -122,13 +122,11 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Verificar al inicio" (click)="abrirModalnuevaVerificacion()"
-                                *ngIf="!vehiculoSeleccionado.verificacionDia"
+                                *ngIf="vehiculoSeleccionado.verificacionDia === 'false'"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
-                                *ngIf="!vehiculoSeleccionado.ID_MTTO_SOLICITUD"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
-                                *ngIf="!vehiculoSeleccionado.ID_MTTOVEHICULAR"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificar()"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
@@ -146,7 +144,7 @@
     </div>
   </div>
   <div class=" border-panel w-440">
-    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia !== 'false'">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400">
         Modificar verificación al inicio
       </button>
@@ -162,7 +160,7 @@
       </button>
     </div>
     <div class="row flex justify-content-center"
-         *ngIf="!vehiculoSeleccionado.verificacionDia && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
+         *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
       No existen solicitudes registradas previamente.
     </div>
   </div>
@@ -176,7 +174,7 @@
     </div>
   </div>
   <div class=" border-panel w-440">
-    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia !== 'false'">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('verificacion')">
         Ver detalle verificación al inicio
       </button>
@@ -192,7 +190,7 @@
       </button>
     </div>
     <div class="row flex justify-content-center"
-         *ngIf="!vehiculoSeleccionado.verificacionDia && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
+         *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
       No existen solicitudes registradas previamente.
     </div>
   </div>

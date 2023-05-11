@@ -9,10 +9,10 @@ import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/
 import {ActivatedRoute, Router} from '@angular/router';
 import {VehiculoTemp} from "../../../models/vehiculo-temp.interface";
 import {obtenerFechaActual, obtenerHoraActual} from "../../../../../utils/funciones-fechas";
-import {VerificacionInicio} from "../../../models/verificacion-inicio.interface";
+import {VerificacionInicio} from "../../../models/verificacionInicio.interface";
 import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {RegistroVerificacionInterface} from "../../../models/registro-verificacion.interface";
+import {RegistroVerificacionInterface} from "../../../models/registroVerificacion.interface";
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {MenuItem} from "primeng/api";
 import {OverlayPanel} from "primeng/overlaypanel";

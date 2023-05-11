@@ -32,7 +32,6 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-
         <label class="control-label">Modalidad:</label>
         <div class="flex">
           <div class="flex align-items-center mx-2">
@@ -51,7 +50,6 @@
             <label class="control-label m-0 mx-3" [for]="'modalidad'">Frecuente</label>
           </div>
         </div>
-
       </div>
       <div class="col-md-6">
         <label class="control-label" for="fechaRegistro">Fecha de registro<span class="req">*:</span></label>
@@ -68,7 +66,7 @@
         <label class="control-label" for="tipoMantenimiento">Tipo de mantenimiento<span class="req">*:</span></label>
         <p-dropdown appendTo="body" id="tipoMantenimiento" class="form-control" formControlName="tipoMantenimiento"
                     [options]="tiposMantenimiento"
-                    placeholder="Selecciona el tamaño">
+                    placeholder="Selecciona el tipo de mantenimiento">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Campo obligatorio</span>

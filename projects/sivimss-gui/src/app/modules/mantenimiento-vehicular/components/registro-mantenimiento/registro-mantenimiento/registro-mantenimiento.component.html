@@ -38,7 +38,7 @@
         <span class="campo-obligatorio"
               *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Campo obligatorio</span>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" *ngIf="smf?.tipoMantenimiento?.value === '1'">
         <label class="control-label" for="fechaMantenimiento">Fecha de mantenimiento<span class="req">*:</span></label>
         <p-calendar id="fechaMantenimiento" formControlName="fechaMantenimiento" styleClass="form-control"
                     [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
@@ -48,7 +48,36 @@
         obligatorio</span>
       </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '2'">
+      <div class="col-md-6">
+        <label class="control-label">Modalidad:</label>
+        <div class="flex">
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadSemestral" name="modalidad" value="1" formControlName="modalidad"
+                           inputId="semestral"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Semestral</label>
+          </div>
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadAnual" name="modalidad" value="2" formControlName="modalidad"
+                           inputId="anual"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Anual</label>
+          </div>
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadFrecuente" name="modalidad" value="3" formControlName="modalidad"
+                           inputId="frecuente"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Frecuente</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="matPreventivo">Mantenimiento preventivo<span class="req">*:</span></label>
+        <p-dropdown appendTo="body" id="matPreventivo" class="form-control" formControlName="matPreventivo"
+                    [options]="mantenimientosPrev"
+                    placeholder="Selecciona el tamaño">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value">
       <div class="col-md-12">
         <label class="control-label" for="notas">Notas<span class="req">*:</span></label>
         <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa las notas">

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CATALOGOS_TTIPO_MANTENIMIENTO} from '../../../../inventario-vehicular/constants/dummies';
+import {CATALOGOS_TIPO_MANTENIMIENTO} from '../../../../inventario-vehicular/constants/dummies';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -10,6 +10,11 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {
+  CATALOGOS_PREV_ANUALES,
+  CATALOGOS_PREV_EVENTUALES,
+  CATALOGOS_PREV_SEMESTRALES
+} from "../../../constants/catalogos-preventivo";
 
 interface ResumenRegistro {
   tipoMantenimiento: string,
@@ -34,11 +39,12 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   ventanaConfirmacion: boolean = false;
 
-  tiposMantenimiento: TipoDropdown[] = CATALOGOS_TTIPO_MANTENIMIENTO;
+  tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
   catalogoProveedores: TipoDropdown[] = [];
+  mantenimientosPrev: TipoDropdown[] = [];
   vehiculoSeleccionado!: VehiculoTemp;
   resumenRegistro!: ResumenRegistro;
-  solicitudMantenimientoForm!: FormGroup
+  solicitudMantenimientoForm!: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -73,6 +79,8 @@ export class RegistroMantenimientoComponent implements OnInit {
       anio: [{value: vehiculoSeleccionado.DES_MODELO, disabled: true}],
       kilometraje: [{value: null, disabled: false}, [Validators.required]],
       tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
+      modalidad: [{value: null, disabled: false}, [Validators.required]],
+      matPreventivo: [{value: null, disabled: false}],
       fechaMantenimiento: [{value: null, disabled: false}, [Validators.required]],
       notas: [{value: null, disabled: false}, [Validators.required]],
       nombreProveedor: [{value: null, disabled: false}, [Validators.required]],
@@ -80,6 +88,9 @@ export class RegistroMantenimientoComponent implements OnInit {
       taller: [{value: null, disabled: false}, [Validators.required]],
       costoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
     });
+    this.solicitudMantenimientoForm.get("modalidad")?.valueChanges.subscribe(() => {
+      this.asignarOpcionesMantenimiento();
+    })
   }
 
   get smf() {
@@ -97,6 +108,20 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   cerrar(): void {
     this.ref.close()
+  }
+
+  asignarOpcionesMantenimiento(): void {
+    const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
+    if (![1, 2, 3].includes(modalidad)) return;
+    if (modalidad === 1) {
+      this.mantenimientosPrev = CATALOGOS_PREV_SEMESTRALES;
+      return;
+    }
+    if (modalidad === 2) {
+      this.mantenimientosPrev = CATALOGOS_PREV_ANUALES;
+      return;
+    }
+    this.mantenimientosPrev = CATALOGOS_PREV_EVENTUALES;
   }
 
   crearResumenRegistro(): ResumenRegistro {
@@ -127,7 +152,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       registro: {
         idMttoRegistro: null,
         idMttoVehicular: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
-        idMttoModalidad: 1,
+        idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
         idMantenimiento: 1,
         desNotas: this.solicitudMantenimientoForm.get("notas")?.value,
         idProveedor: this.solicitudMantenimientoForm.get("nombreProveedor")?.value,

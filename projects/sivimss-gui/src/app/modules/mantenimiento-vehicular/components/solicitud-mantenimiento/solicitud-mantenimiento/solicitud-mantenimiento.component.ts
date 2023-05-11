@@ -9,13 +9,15 @@ import {
   CATALOGOS_PREV_EVENTUALES,
   CATALOGOS_PREV_SEMESTRALES
 } from "../../../constants/catalogos-preventivo";
-import {CATALOGOS_TTIPO_MANTENIMIENTO} from "../../../../inventario-vehicular/constants/dummies";
-import {RegistroVerificacionInterface} from "../../../models/registro-verificacion.interface";
+import {CATALOGOS_TIPO_MANTENIMIENTO} from "../../../../inventario-vehicular/constants/dummies";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
 import {DatePipe} from "@angular/common";
 import {ResumenAsignacion} from "../../../models/resumenAsignacion.interface";
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {RegistroSolicitudMttoInterface} from "../../../models/registroSolicitudMtto.interface";
 
 @Component({
   selector: 'app-solicitud-mantenimiento',
@@ -31,7 +33,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   solicitudMantenimientoForm!: FormGroup;
   mantenimientosPrev: TipoDropdown[] = [];
-  tiposMantenimiento: TipoDropdown[] = CATALOGOS_TTIPO_MANTENIMIENTO;
+  tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
   modalidades: string[] = ['', 'Semestral', 'Anual', 'Frecuente']
 
   constructor(
@@ -43,7 +45,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private datePipe: DatePipe,
-    private mantenimientoVehicularService: MantenimientoVehicularService
+    private mantenimientoVehicularService: MantenimientoVehicularService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
     this.vehiculoSeleccionado = this.config.data;
   }
@@ -105,7 +108,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     const tipoMantenimiento = this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value;
     const tipoMantenimientoValor = this.tiposMantenimiento.find(m => m.value === tipoMantenimiento)?.label;
     const modalidad = this.solicitudMantenimientoForm.get("modalidad")?.value;
-    const modalidadValor = this.modalidades[modalidad] || "";
+    const modalidadValor: string = this.modalidades[modalidad] || "";
     return {
       kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
       modalidad: modalidadValor,
@@ -116,7 +119,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     }
   }
 
-  crearSolicitudMantenimiento() {
+  crearSolicitudMantenimiento(): RegistroSolicitudMttoInterface {
     return {
       idMttoVehicular: null,
       idMttoestado: 1,
@@ -140,23 +143,28 @@ export class SolicitudMantenimientoComponent implements OnInit {
   }
 
   aceptarSolicitud(): void {
-    const verificacion = this.crearSolicitudMantenimiento();
-    this.mantenimientoVehicularService.guardar(verificacion).subscribe(
-      (respuesta) => {
+    const verificacion: RegistroSolicitudMttoInterface = this.crearSolicitudMantenimiento();
+    this.mantenimientoVehicularService.guardar(verificacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud agregada correctamente');
-        this.ref.close();
-        this.router.navigate(['detalle-verificacion'], {
-            relativeTo: this.route, queryParams: {
-              vehiculo: JSON.stringify(this.vehiculoSeleccionado),
-              solicitud: JSON.stringify(this.resumenAsignacion)
-            }
-          }
-        );
+        this.abrirRegistroSolicitud();
       },
-      (error: HttpErrorResponse) => {
-        console.log(error)
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    )
+    });
+  }
+
+  abrirRegistroSolicitud(): void {
+    this.ref.close();
+    this.router.navigate(['detalle-verificacion'], {
+        relativeTo: this.route, queryParams: {
+          vehiculo: JSON.stringify(this.vehiculoSeleccionado),
+          solicitud: JSON.stringify(this.resumenAsignacion)
+        }
+      }
+    );
   }
 }

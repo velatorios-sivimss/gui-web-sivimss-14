@@ -1,38 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {obtenerFechaActual} from "../../../../../utils/funciones-fechas";
-import {VehiculoTemp} from "../../../models/vehiculo-temp.interface";
 import {ResumenAsignacion} from "../../../models/resumenAsignacion.interface";
 import {ActivatedRoute} from "@angular/router";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
 import {finalize} from "rxjs/operators";
-
-interface RespuestaAsignacion {
-  "DES_USO": string,
-  "DES_NUMMOTOR": string,
-  "NOM_VELATORIO": string,
-  "ID_MTTOMODALIDAD": number,
-  "ID_MTTOMODALIDAD_DET": number,
-  "DES_PLACAS": string,
-  "DES_NUMSERIE": string,
-  "DES_DELEGACION": string,
-  "DES_MTTO_TIPO": string,
-  "DES_MTTO_CORRECTIVO": string,
-  "ID_MTTO_TIPO": number,
-  "ID_MTTOESTADO": number,
-  "DES_MODELO": string,
-  "DES_MODALIDAD": string,
-  "ID_MTTO_SOLICITUD": number,
-  "DES_MARCA": string,
-  "IND_ESTATUS": boolean,
-  "ID_VELATORIO": number,
-  "DES_MTTOESTADO": string,
-  "FEC_REGISTRO": string,
-  "ID_VEHICULO": number,
-  "ID_DELEGACION": number,
-  "FEC_ALTA": string,
-  "IND_ACTIVO": boolean
-}
+import {RespuestaSolicitudMantenimiento} from "../../../models/respuestaSolicitudMantenimiento.interface";
+import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 
 @Component({
   selector: 'app-detalle-solicitud-mantenimiento',
@@ -42,13 +19,15 @@ interface RespuestaAsignacion {
 export class DetalleSolicitudMantenimientoComponent implements OnInit {
 
   fecha: string = obtenerFechaActual();
-  vehiculoSeleccionado!: VehiculoTemp;
+  vehiculoSeleccionado!: VehiculoMantenimiento;
   asignacion!: ResumenAsignacion;
   idRegistro!: number;
 
   constructor(private route: ActivatedRoute,
               private cargadorService: LoaderService,
-              private mantenimientoVehicularService: MantenimientoVehicularService) {
+              private mantenimientoVehicularService: MantenimientoVehicularService,
+              private mensajesSistemaService: MensajesSistemaService
+  ) {
     this.route.queryParams.subscribe(params => {
         if (params.id) {
           this.idRegistro = params.id;
@@ -56,7 +35,7 @@ export class DetalleSolicitudMantenimientoComponent implements OnInit {
         if (params.vehiculo) {
           this.vehiculoSeleccionado = JSON.parse(params.vehiculo);
         }
-        if (params.asignacion) {
+        if (params.solicitud) {
           this.asignacion = JSON.parse(params.solicitud);
         }
       }
@@ -72,19 +51,21 @@ export class DetalleSolicitudMantenimientoComponent implements OnInit {
     this.cargadorService.activar()
     this.mantenimientoVehicularService.obtenerDetalleSolicitud(this.idRegistro).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta) => {
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.datos.length === 0) return;
         this.obtenerAsignacion(respuesta.datos[0]);
         this.obtenerVehiculo(respuesta.datos[0]);
       },
-      error: (error) => {
-        console.log(error)
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
     })
   }
 
-  obtenerAsignacion(respuesta: RespuestaAsignacion): void {
+  obtenerAsignacion(respuesta: RespuestaSolicitudMantenimiento): void {
     this.vehiculoSeleccionado = {
+      verificacionDia: 'false',
       DESCRIPCION: "",
       DES_MARCA: respuesta.DES_MARCA,
       DES_MODALIDAD: "",
@@ -95,7 +76,7 @@ export class DetalleSolicitudMantenimientoComponent implements OnInit {
       DES_NUMMOTOR: respuesta.DES_NUMMOTOR,
       DES_NUMSERIE: respuesta.DES_NUMSERIE,
       DES_PLACAS: respuesta.DES_PLACAS,
-      DES_SUBMARCA: "",
+      DES_SUBMARCA: respuesta.DES_SUBMARCA,
       DES_USO: "",
       ID_MTTOVEHICULAR: 0,
       ID_OFICINA: 0,
@@ -105,11 +86,12 @@ export class DetalleSolicitudMantenimientoComponent implements OnInit {
       IMPORTE_PRIMA: 0,
       IND_ESTATUS: false,
       NOM_VELATORIO: respuesta.NOM_VELATORIO,
-      TOTAL: 0
+      TOTAL: 0,
+      DES_DELEGACION: respuesta.DES_DELEGACION
     }
   }
 
-  obtenerVehiculo(respuesta: RespuestaAsignacion): void {
+  obtenerVehiculo(respuesta: RespuestaSolicitudMantenimiento): void {
     this.asignacion = {
       fechaRegistro: respuesta.FEC_REGISTRO,
       kilometraje: "",
