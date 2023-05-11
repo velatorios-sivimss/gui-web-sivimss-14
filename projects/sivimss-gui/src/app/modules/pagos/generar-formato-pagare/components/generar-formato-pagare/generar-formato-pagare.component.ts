@@ -79,13 +79,11 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   abrirPanel(event: MouseEvent, formatoPagareSeleccionado: ListadoFormato): void {
-    debugger
     this.formatoPagareSeleccionado = formatoPagareSeleccionado;
     this.overlayPanel.toggle(event);
   }
 
   abrirModalformatoPagareTramites(): void {
-    debugger
     this.router.navigate(['generar-formato-pagare'], {
       relativeTo: this.activatedRoute,
       queryParams: {idPagare: this.formatoPagareSeleccionado.id}
@@ -116,7 +114,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   paginar(): void {
-    debugger
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
@@ -133,7 +130,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    debugger
     const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
@@ -166,7 +162,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       nomContratante: this.filtroForm.get("nomContratante")?.value,
       fecIniODS: this.filtroForm.get("fechaInicial")?.value,
       fecFinODS: this.filtroForm.get("fechaFinal")?.value,
-      tipoReporte: this.filtroForm.get("tipoReporte")?.value,
+      tipoReporte: "pdf",
     }
   }
 
@@ -179,9 +175,11 @@ export class GenerarFormatoPagareComponent implements OnInit {
     return this.filtroForm?.controls;
   }
 
-  guardarPDF() {
+
+  guardarListadoPagaresPDF() {
     this.cargadorService.activar();
-    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListado()).pipe(
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
+    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagares(filtros)).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
       (respuesta) => {

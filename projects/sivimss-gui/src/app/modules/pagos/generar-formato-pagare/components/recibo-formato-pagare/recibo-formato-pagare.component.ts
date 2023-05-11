@@ -12,7 +12,9 @@ interface FormatoPagare {
   "hora": string,
   "nomAgente": string,
   "Domicilio": string,
+  "domContratante":string,
   "fechaPago": string,
+  "fechaPagare": string,
   "importe": string,
   "redito": string,
   "nomContratante": string,
@@ -20,7 +22,8 @@ interface FormatoPagare {
   "buenoPor": string,
   "ordenDia": string,
   "porcentaje": string,
-  "rutaNombreReporte": string,
+  "cantidad": string,
+  "nomUsuario": string,
   "tipoReporte": string
 }
 
@@ -101,20 +104,19 @@ export class ReciboFormatoPagareComponent implements OnInit {
   }
 
   generarPdf(): void {
-    this.agregarPagare();
     this.cargadorService.activar();
-    this.generarFormatoPagareService.descargarReporte(this.formatoPagare).pipe(
+    this.generarFormatoPagareService.descargarFormato(this.formatoPagare).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
-
         const downloadURL = window.URL.createObjectURL(respuesta);
         const link = document.createElement('a');
         link.href = downloadURL;
-        link.download = `reporte.pdf`;
+        link.download = `formatoPagare.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        this.agregarPagare();
       },
       error: (error: HttpErrorResponse) => {
         console.error(error)

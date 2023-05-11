@@ -25,7 +25,6 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
   }
 
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    debugger
     const params = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
@@ -34,7 +33,6 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
   }
 
   buscarDatosPagare(id: number): Observable<HttpRespuesta<any>> {
-    debugger
     const body = {id}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._detalle}`, body);
   }
@@ -45,26 +43,22 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
   }
 
 
-  descargarReporte<T>(body: T): Observable<Blob> {
+  descargarFormato<T>(body: T): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
 
-    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`, body,
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-pagare/generarDocumento/pdf`, body,
       {headers, responseType: 'blob' as 'json'})
   }
 
-  descargarListado(): Observable<Blob> {
+  descargarListadoPagares<T>(body: T): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body = {
-      rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
-      tipoReporte: "pdf"
-    }
-    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-rec-pagos/generarDocumento/pdf`
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
 }
