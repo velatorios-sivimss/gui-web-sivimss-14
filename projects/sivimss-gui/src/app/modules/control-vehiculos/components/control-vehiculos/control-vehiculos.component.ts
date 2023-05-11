@@ -4,7 +4,6 @@ import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrum
 import { RESERVAR_SALAS_BREADCRUMB } from '../../constants/breadcrumb';
 import { OpcionesControlVehiculos, SelectButtonOptions } from '../../constants/opciones-reservar-salas';
 import { Router, ActivatedRoute } from '@angular/router';
-import { mensajes } from '../../constants/mensajes'
 import { ControlVehiculosService } from '../../services/control-vehiculos.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
@@ -37,7 +36,6 @@ export class ControlVehiculosComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private breadcrumbService: BreadcrumbService,
-    private router: Router,
     private alertaService: AlertaService,
     private controlVehiculosService: ControlVehiculosService,
     private formBuilder: FormBuilder,
@@ -47,9 +45,6 @@ export class ControlVehiculosComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION];
-
-    localStorage.setItem("mensajes", JSON.stringify(mensajes));
-    const alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
     this.actualizarBreadcrumb();
     this.inicializarFiltroForm();
@@ -88,12 +83,13 @@ export class ControlVehiculosComponent implements OnInit {
     );
   }
 
-  obtenerVehiculos() {
-    if (this.filtroForm.valid) {
+  obtenerVehiculos(evt?: unknown) {
+    if (this.filtroForm.valid && !this.modoCalendario) {
       let buscar: BuscarVehiculosDisponibles = {
-        idVelatorio: 1, // this.f.velatorio.value,
+        idVelatorio: this.f.velatorio.value,
         fecIniRepo: null,
         fecFinRepo: null,
+        paginado: 1,
       };
       this.controlVehiculosService.obtenerVehiculosDisponibles(buscar).subscribe(
         (respuesta) => {

@@ -77,13 +77,13 @@
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Nivel de gasolina inicial</label>
+        <label>Nivel de gasolina final</label>
         <span>{{f.nivelGasolina.value}}</span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Kilometraje final</label>
+        <label>Kilometraje final (km)</label>
         <span>{{f.kilometrajeFinal.value}}</span>
       </div>
     </div>
@@ -99,15 +99,17 @@
     </div>
     <div class="row">
       <div class="col-md-6">
-        <label class="control-label" for="nivelGasolina">Nivel de gasolina inicial<span class="req">*</span>:</label>
+        <label class="control-label" for="nivelGasolina">Nivel de gasolina final<span class="req">*</span>:</label>
         <input id="nivelGasolina" class="form-control" formControlName="nivelGasolina">
         <span class="campo-obligatorio"
           *ngIf="f.nivelGasolina?.errors?.required && (f.nivelGasolina?.dirty || f.nivelGasolina?.touched)">
           Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="kilometrajeFinal">Kilometraje final<span class="req">*</span>:</label>
-        <input id="kilometrajeFinal" class="form-control" formControlName="kilometrajeFinal">
+        <label class="control-label" for="kilometrajeFinal">Kilometraje final (km)<span class="req">*</span>:</label>
+        <p-inputNumber id="kilometrajeFinal" class="form-control" formControlName="kilometrajeFinal" mode="decimal"
+          [minFractionDigits]="2" [maxFractionDigits]="2" suffix=" km" placeholder="Ingresa el kilometraje"
+          [maxlength]="16" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
           *ngIf="f.kilometrajeFinal?.errors?.required && (f.kilometrajeFinal?.dirty || f.kilometrajeFinal?.touched)">
           Campo obligatorio</span>

@@ -8,7 +8,7 @@ import { TipoDropdown } from "../../../models/tipo-dropdown";
 import { mapearArregloTipoDropdown } from "../../../utils/funciones";
 import { AutenticacionService } from "../../../services/autenticacion.service";
 import { BuscarVehiculosDisponibles } from "../models/control-vehiculos.interface";
-import { EntradaVehiculo } from "../models/registro-vehiculo.interface";
+import { EntradaVehiculo, SalidaVehiculo } from "../models/registro-vehiculo.interface";
 
 @Injectable()
 export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any> {
@@ -30,6 +30,10 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
 
   guardarEntrada(entradaVehiculo: EntradaVehiculo): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/entrada-vehiculos`, entradaVehiculo);
+  }
+
+  guardarSalida(salidaVehiculo: SalidaVehiculo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/salida-vehiculos`, salidaVehiculo);
   }
 
   obtenerDatosFolioOds(idODS: string): Observable<HttpRespuesta<any>> {
@@ -55,40 +59,23 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
     return this._http.post<HttpRespuesta<any>>(`http://localhost:8087/mssivimss-oauth/velatorio/consulta`, body);
   }
 
-  // ____________________
-  consultarSalas(idVelatorio?: number, tipoSala?: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-buscar`, { idVelatorio: idVelatorio, tipoSala: tipoSala }, { headers });
-  }
-
   consultarODS(folioODS: number): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-datos`, { folioODS: folioODS }, { headers });
   }
 
-  consultarDetalleDia(fechaConsulta: string, idSala: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-dia`, { fechaConsulta: fechaConsulta, idSala: idSala }, { headers });
+  consultarDetalleDia(idVehiculo: number, fecDia: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/detalle-vehiculo-dia`, { idVehiculo, fecDia });
   }
 
-  consultaMes(mes: number, anio: number, tipoSala: number, idVelatorio: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-mes`,
-      { "mes": mes, "anio": anio, "tipoSala": tipoSala, "idVelatorio": idVelatorio }, { headers });
+  generarReporte(datos: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/gen-doc-vehiculos`
+      , datos, { headers, responseType: 'blob' as 'json' });
   }
-
-  generarReporte(filtroArchivo: any): Observable<Blob> {
-    const tipo = filtroArchivo.tipoReporte;
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/veri-reporte/generarDocumento/` + tipo,
-      {
-        idVelatorio: filtroArchivo.idVelatorio, indTipoSala: filtroArchivo.indTipoSala,
-        mes: filtroArchivo.mes, anio: filtroArchivo.anio, rutaNombreReporte: filtroArchivo.rutaNombreReporte,
-        tipoReporte: filtroArchivo.tipoReporte
-      },
-      { responseType: 'blob' as any });
-  }
-
 }
 
 

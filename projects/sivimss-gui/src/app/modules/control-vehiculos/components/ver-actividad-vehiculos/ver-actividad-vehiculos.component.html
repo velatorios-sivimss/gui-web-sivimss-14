@@ -1,0 +1,93 @@
+<div *ngIf="vehiculos.length > 0">
+  <div class="flex justify-content-between mb-3">
+    <div class="col-md-6">
+      <h2 class="subtitulo">{{vehiculos[0].placas}} - {{vehiculos[0].marca}} {{vehiculos[0].modelo}}</h2>
+    </div>
+    <div class="col-md-3">
+      <p class="text-right"> <span class="font-bold"> {{fechaSeleccionada | date : 'dd/MM/YYYY'}} </span></p>
+    </div>
+  </div>
+  <ng-container *ngFor="let vehiculo of vehiculos">
+    <p-accordion styleClass="sivimss-accordion">
+      <p-accordionTab>
+        <ng-template pTemplate="header">
+          <div class="flex justify-content-end" style="width: 100%">
+            <div class="col-md-4">
+              <span class="etiqueta-base">Salida </span>
+              <b class="texto-base">{{vehiculo?.horaSalida | date: 'HH:mm' }}</b>
+            </div>
+            <div class="col-md-4">
+              <span class="etiqueta-base">Entrada </span>
+              <b class="texto-base">{{vehiculo?.horaEntrada | date: 'HH:mm' }}</b>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="content">
+          <app-table-panel class="mb-6">
+            <div class="row table-panel-row">
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Número de tarjeta de circulación</label>
+                  <span>{{vehiculo?.tarjetaCirculacion}}</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Nombre del contratante</label>
+                  <span>{{vehiculo?.nombreContratante}}</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Nombre del finado(a)</label>
+                  <span>{{vehiculo?.nombreFinado}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row table-panel-row">
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Nombre del destino</label>
+                  <span>{{vehiculo?.nombreDestino}}</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Fecha</label>
+                  <span>{{vehiculo?.fechaSalida}}</span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Hora</label>
+                  <span>{{vehiculo?.horaSalida}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row table-panel-row">
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Nivel de gasolina final</label>
+                  <span>{{vehiculo?.nivelGasolinaFinal}} </span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="table-panel-column">
+                  <label>Kilometraje final</label>
+                  <span>{{vehiculo?.kilometrajeFinal}}</span>
+                </div>
+              </div>
+            </div>
+          </app-table-panel>
+        </ng-template>
+      </p-accordionTab>
+    </p-accordion>
+  </ng-container>
+</div>
+<div class="flex justify-content-end">
+  <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="aceptar()">
+    Aceptar
+  </button>
+</div>

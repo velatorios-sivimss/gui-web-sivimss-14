@@ -56,7 +56,7 @@
         <span>{{f.nombreContratante.value}}</span>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6">
       <div class="table-panel-column">
         <label>Nombre del finado</label>
         <span>{{f.nombreFinado.value}}</span>
@@ -91,7 +91,7 @@
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Fecha</label>
-        <span>{{f.fecha.value}}</span>
+        <span>{{f.fecha.value | date:'dd/MM/YYYY'}}</span>
       </div>
     </div>
     <div class="col-md-3">
@@ -104,24 +104,39 @@
   <div class="row table-panel-row" *ngIf="indice === 1">
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Nivel de gasolina final</label>
+        <label>Nivel de gasolina inicial</label>
         <span>{{f.nivelGasolinaInicial.value}}</span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Kilometraje final</label>
+        <label>Kilometraje inicial (km)</label>
         <span>{{f.kilometrajeInicial.value}}</span>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6">
       <div class="table-panel-column">
         <label>Nombre del responsable</label>
-        <span>{{f.nombreResponsable.value}}</span>
+        <span>{{responsableSeleccionado[0].label}}</span>
       </div>
     </div>
   </div>
 </app-table-panel>
+
+<ng-container *ngIf="indice === 1">
+  <div class="row mb-5 mt-5">
+    <div class="col-md-12 text-center">
+      ¿Estás seguro que deseas registrar la salida de este vehículo?
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar
+      </button>
+    </div>
+  </div>
+</ng-container>
 
 <ng-container *ngIf="indice === 0">
   <form [formGroup]="formRegistrarSalida">
@@ -153,14 +168,14 @@
           *ngIf="f.nombreFinado?.errors?.required && (f.nombreFinado?.dirty || f.nombreFinado?.touched)">
           Campo obligatorio</span>
       </div>
-      <div class="col-md-6">
+      <!-- <div class="col-md-6">
         <label class="control-label" for="nombreDestino">Nombre del destino<span class="req">*</span>:</label>
         <input id="nombreDestino" class="form-control" formControlName="nombreDestino"
           placeholder="Ingresa nombre del destino">
         <span class="campo-obligatorio"
           *ngIf="f.nombreDestino?.errors?.required && (f.nombreDestino?.dirty || f.nombreDestino?.touched)">
           Campo obligatorio</span>
-      </div>
+      </div> -->
     </div>
   </form>
 </ng-container>
@@ -228,9 +243,11 @@
           Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="kilometrajeInicial">Kilometraje inicial<span class="req">*</span>:</label>
-        <input id="kilometrajeInicial" class="form-control" formControlName="kilometrajeInicial"
-          placeholder="Ingresa el kilometraje">
+        <label class="control-label" for="kilometrajeInicial">Kilometraje inicial (km)<span
+            class="req">*</span>:</label>
+        <p-inputNumber id="kilometrajeInicial" class="form-control" formControlName="kilometrajeInicial" mode="decimal"
+          [minFractionDigits]="2" [maxFractionDigits]="2" suffix=" km" placeholder="Ingresa el kilometraje"
+          [maxlength]="16" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
           *ngIf="f.kilometrajeInicial?.errors?.required && (f.kilometrajeInicial?.dirty || f.kilometrajeInicial?.touched)">
           Campo obligatorio</span>
@@ -239,8 +256,9 @@
     <div class="row">
       <div class="col-md-6">
         <label class="control-label" for="nombreResponsable">Nombre del responsable<span class="req">*</span>:</label>
-        <p-dropdown id="nombreResponsable" class="form-control" formControlName="nombreResponsable" [options]="catalogoResponsables"
-          placeholder="Selecciona el nombre del responsable" [filter]="true" filterBy="label">
+        <p-dropdown id="nombreResponsable" class="form-control" formControlName="nombreResponsable"
+          [options]="catalogoResponsables" placeholder="Selecciona el nombre del responsable" [filter]="true"
+          filterBy="label" [showClear]="true">
         </p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="f.nombreResponsable?.errors?.required && (f.nombreResponsable?.dirty || f.nombreResponsable?.touched)">

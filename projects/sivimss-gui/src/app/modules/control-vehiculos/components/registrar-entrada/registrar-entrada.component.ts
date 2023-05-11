@@ -13,6 +13,7 @@ import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { EntradaVehiculo } from "../../models/registro-vehiculo.interface";
 import { ControlVehiculoConsulta, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
+import { mensajes } from '../../../reservar-salas/constants/mensajes';
 
 @Component({
   selector: 'app-registrar-entrada',
@@ -45,9 +46,7 @@ export class RegistrarEntradaComponent implements OnInit {
   idOds!: any;
   tipoSala: number = 0;
   folioValido: boolean = false;
-  opcionesInicio: TipoDropdown[] = [{ label: 'Mantenimiento', value: '1' }, { label: 'Servicio de ODS', value: '2' }];
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
     private alertaService: AlertaService,
@@ -182,12 +181,11 @@ export class RegistrarEntradaComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        this.ref.close(true);
-        const alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-        const mensaje = alertas.filter((msj: any) => {
+        const mensaje = this.alertas?.filter((msj: any) => {
           return msj.idMensaje == respuesta.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+        this.ref.close(true);
       },
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);

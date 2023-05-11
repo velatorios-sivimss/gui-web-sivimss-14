@@ -2,6 +2,7 @@ export interface BuscarVehiculosDisponibles {
   idVelatorio?: number,
   fecIniRepo?: string | null,
   fecFinRepo?: string | null,
+  paginado?: number,
 }
 
 export interface ControlVehiculoListado {
@@ -23,16 +24,4 @@ export interface ControlVehiculoConsulta {
   modelo: string,
   placas: string,
   disponibilidad: number,
-}
-
-
-export interface SalaVelatorioConsultaDia {
-  nombreSala?: string,
-  nombreFinado?: string,
-  horaEntrada?: any,
-  nombreContratante?: string,
-  folio?: string,
-  idSala?: number,
-  horaSalida?: any,
-  idRegistro?: number
 }

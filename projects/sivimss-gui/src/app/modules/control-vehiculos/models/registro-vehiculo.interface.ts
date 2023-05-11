@@ -8,9 +8,11 @@ export interface EntradaVehiculo {
 }
 
 export interface SalidaVehiculo {
-  idSala?: number,
-  fechaSalida?: string,
+  idVehiculo?: number,
+  idODS?: number,
+  fecSalida?: string,
   horaSalida?: string,
-  cantidadGasFinal?: number,
-  idRegistro?: number,
+  gasolinaInicial?: string,
+  kmInicial?: number,
+  idResponsable?: number,
 }

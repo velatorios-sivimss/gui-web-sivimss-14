@@ -15,8 +15,7 @@ import { ControlVehiculoListado } from '../../models/control-vehiculos.interface
 })
 export class ListadoVehiculosComponent implements OnInit, OnDestroy {
   @Input() controlVehiculos: ControlVehiculoListado[] = [];
-  @Output() registrarEntradaEvent = new EventEmitter();
-  @Output() registrarSalidaEvent = new EventEmitter();
+  @Output() actualizarListadoEvent = new EventEmitter();
 
   registrarEntradaRef!: DynamicDialogRef;
   registrarSalidaRef!: DynamicDialogRef;
@@ -52,8 +51,7 @@ export class ListadoVehiculosComponent implements OnInit, OnDestroy {
     });
     this.registrarEntradaRef.onClose.subscribe((respuesta) => {
       if (respuesta) {
-        // TO DO Emitir salida, consultar listado y actualizar vista
-        // this.consultaSalasCremacion();
+        this.actualizarListadoEvent.emit();
       }
     });
   }
@@ -66,8 +64,7 @@ export class ListadoVehiculosComponent implements OnInit, OnDestroy {
     });
     this.registrarSalidaRef.onClose.subscribe((respuesta) => {
       if (respuesta) {
-        // TO DO Emitir salida, consultar listado y actualizar vista
-        // this.consultaSalasCremacion();
+        this.actualizarListadoEvent.emit();
       }
     });
   }

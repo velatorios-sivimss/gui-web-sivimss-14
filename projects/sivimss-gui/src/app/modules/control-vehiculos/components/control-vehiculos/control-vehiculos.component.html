@@ -36,5 +36,6 @@
     </div>
 </form>
 
-<app-listado-vehiculos [controlVehiculos]="controlVehiculos" *ngIf="!modoCalendario"></app-listado-vehiculos>
-<app-calendario-vehiculos [controlVehiculos]="controlVehiculos" *ngIf="modoCalendario"></app-calendario-vehiculos>
+<app-listado-vehiculos *ngIf="!modoCalendario" [controlVehiculos]="controlVehiculos"
+    (actualizarListadoEvent)="obtenerVehiculos($event)"></app-listado-vehiculos>
+<app-calendario-vehiculos *ngIf="modoCalendario" [filtroFormData]="filtroForm.value"></app-calendario-vehiculos>

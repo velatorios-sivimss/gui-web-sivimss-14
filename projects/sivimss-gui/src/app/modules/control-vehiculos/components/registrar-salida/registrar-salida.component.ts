@@ -13,6 +13,7 @@ import { SalidaVehiculo } from "../../models/registro-vehiculo.interface";
 import { ControlVehiculosService } from "../../services/control-vehiculos.service";
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { mensajes } from '../../../reservar-salas/constants/mensajes';
 
 @Component({
   selector: 'app-registrar-salida',
@@ -21,12 +22,12 @@ import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 })
 export class RegistrarSalidaComponent implements OnInit {
 
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
   formRegistrarSalida!: FormGroup;
   indice: number = 0;
   tipoSala: number = 0;
   estadoSala: string = "";
   formRegistrarEntrada!: FormGroup;
+  responsableSeleccionado: TipoDropdown[] = [];
   catalogoResponsables: TipoDropdown[] = [];
   datosVehiculo: ControlVehiculoConsulta = {
     marca: '',
@@ -46,6 +47,7 @@ export class RegistrarSalidaComponent implements OnInit {
     disponible: 0,
     descripcion: ''
   };
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
     private alertaService: AlertaService,
@@ -68,7 +70,6 @@ export class RegistrarSalidaComponent implements OnInit {
       folioOds: new FormControl({ value: null, disabled: false }, [Validators.required]),
       nombreContratante: new FormControl({ value: null, disabled: true }, [Validators.required]),
       nombreFinado: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      nombreDestino: new FormControl({ value: null, disabled: true }, [Validators.required]),
       municipioOrigen: new FormControl({ value: null, disabled: false }, [Validators.required]),
       municipioDestino: new FormControl({ value: null, disabled: false }, [Validators.required]),
       fecha: new FormControl({ value: (new Date()), disabled: false }, [Validators.required]),
@@ -124,25 +125,26 @@ export class RegistrarSalidaComponent implements OnInit {
 
   guardar(): void {
     if (this.indice === 0) {
+      this.handleChangeRespondable();
       this.indice++;
       return;
     }
     this.loaderService.activar();
-    this.controlVehiculosService.actualizar(this.datosGuardar()).pipe(
+    this.controlVehiculosService.guardarSalida(this.datosGuardar()).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        const mensaje = this.alertas.filter((msj: any) => {
+        const mensaje = this.alertas?.filter((msj: any) => {
           return msj.idMensaje == respuesta.mensaje;
         })
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0]?.desMensaje);
         this.ref.close(true);
       },
       (error: HttpErrorResponse) => {
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error.error.mensaje;
         })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
         console.error("ERROR: ", error);
       }
     );
@@ -150,20 +152,14 @@ export class RegistrarSalidaComponent implements OnInit {
   }
 
   datosGuardar(): SalidaVehiculo {
-    if (this.estadoSala == "MANTENIMIENTO" || this.tipoSala) {
-      return {
-        idSala: this.vehiculoSeleccionado.idVehiculo,
-        fechaSalida: moment(this.salidaF.fecha.value).format('yyyy/MM/DD'),
-        horaSalida: moment(this.salidaF.hora.value).format('HH:mm'),
-        idRegistro: this.vehiculoSeleccionado.idVehiculo
-      }
-    }
     return {
-      idSala: this.vehiculoSeleccionado.idVehiculo,
-      fechaSalida: moment(this.salidaF.fecha.value).format('yyyy/MM/DD'),
-      horaSalida: moment(this.salidaF.hora.value).format('HH:mm'),
-      cantidadGasFinal: this.salidaF.nivelGas.value,
-      idRegistro: this.vehiculoSeleccionado.idVehiculo
+      idVehiculo: +this.vehiculoSeleccionado.idVehiculo,
+      idODS: +this.datosVehiculo.idODS,
+      fecSalida: moment(this.f.fecha.value).format('yyyy-MM-DD'),
+      horaSalida: this.f.hora.value,
+      gasolinaInicial: this.f.nivelGasolinaInicial.value,
+      kmInicial: +this.f.kilometrajeInicial.value,
+      idResponsable: +this.f.nombreResponsable.value,
     }
   }
 
@@ -174,10 +170,11 @@ export class RegistrarSalidaComponent implements OnInit {
       ).subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos?.content.length > 0) {
-            const { nombreContratante, nombreDestino, nombreFinado } = respuesta.datos?.content[0];
+            const { nombreContratante, nombreDestino, nombreFinado, nombreOrigen } = respuesta.datos?.content[0];
             this.f.nombreContratante.patchValue(nombreContratante);
             this.f.nombreFinado.patchValue(nombreFinado);
-            this.f.nombreDestino.patchValue(nombreDestino);
+            this.f.municipioOrigen.patchValue(nombreOrigen);
+            this.f.municipioDestino.patchValue(nombreDestino);
           }
         },
         (error: HttpErrorResponse) => {
@@ -197,7 +194,7 @@ export class RegistrarSalidaComponent implements OnInit {
         if (respuesta.datos?.content.length > 0) {
           respuesta.datos?.content.forEach((item: any) => {
             newArray.push({
-              value: item.nombreResponsable,
+              value: item.idResponsable,
               label: item.nombreResponsable,
             })
           })
@@ -225,6 +222,11 @@ export class RegistrarSalidaComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     );
+  }
+
+  handleChangeRespondable() {
+    this.responsableSeleccionado =
+      this.catalogoResponsables.filter((item: TipoDropdown) => item.value === this.f.nombreResponsable.value);
   }
 
   get f() {
