@@ -1,8 +1,10 @@
 export interface FormatoPagare {
-  fOds: string;
-  claveFolio: string;
-  estatusOds?: string;
+  id:number;
+  fechaODS: string;
+  folioODS: string;
+  estatusODS?: string;
   estatusPago?: string;
+  nomContratante?: string;
 }
 
 

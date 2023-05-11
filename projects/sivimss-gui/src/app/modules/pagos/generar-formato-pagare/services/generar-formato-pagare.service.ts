@@ -11,7 +11,7 @@ import {AutenticacionService} from "../../../../services/autenticacion.service";
 @Injectable()
 export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "", "", 23, "consultar-pagares", "detalle-pagare", "");
+    super(_http, `${environment.api.mssivimss}`, "agregar-pagare", "", 22, "consultar-pagares", "detalle-pagare", "");
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
@@ -25,6 +25,7 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
   }
 
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+    debugger
     const params = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
@@ -32,10 +33,17 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       {params});
   }
 
-  buscarDatosReportePagos(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
-    const body = {idPagoBitacora}
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-pagare`, body);
+  buscarDatosPagare(id: number): Observable<HttpRespuesta<any>> {
+    debugger
+    const body = {id}
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._detalle}`, body);
   }
+
+  obtenerImporteLetra(importe: number): Observable<HttpRespuesta<any>> {
+    const body = {importe}
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/importe-pagare`, body);
+  }
+
 
   descargarReporte<T>(body: T): Observable<Blob> {
     const headers = new HttpHeaders({
@@ -43,7 +51,7 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       Accept: 'application/json'
     });
 
-    return this._http.post<any>(this._base + `${this._funcionalidad}/plantilla-rec-pagos/generarDocumento/pdf`, body,
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`, body,
       {headers, responseType: 'blob' as 'json'})
   }
 

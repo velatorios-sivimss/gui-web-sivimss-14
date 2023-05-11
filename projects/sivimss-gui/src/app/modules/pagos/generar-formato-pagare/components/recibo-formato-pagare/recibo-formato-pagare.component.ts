@@ -4,23 +4,24 @@ import {GenerarFormatoPagareService} from "../../services/generar-formato-pagare
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
+import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 
 interface FormatoPagare {
-  "folioOds": string,
-  "fechaOds": string,
+  "folioODS": string,
+  "fechaODS": string,
   "hora": string,
+  "nomAgente": string,
+  "Domicilio": string,
+  "fechaPago": string,
+  "importe": string,
+  "redito": string,
+  "nomContratante": string,
   "folioPagare": string,
   "buenoPor": string,
   "ordenDia": string,
-  "cantidad": string,
-  "cantidadLetra": string,
   "porcentaje": string,
-  "otorgante": string,
-  "domicilio": string,
-  "fecha": string,
-  "agente": string,
   "rutaNombreReporte": string,
-  "tipoReporte": string,
+  "tipoReporte": string
 }
 
 @Component({
@@ -31,47 +32,31 @@ interface FormatoPagare {
 export class ReciboFormatoPagareComponent implements OnInit {
 
   formatoPagare!: any;
+  importeLetra: string = "";
 
   constructor(
     private router: Router,
     private generarFormatoPagareService: GenerarFormatoPagareService,
     private cargadorService: LoaderService,
+    private alertaService: AlertaService
   ) {
-    const idBitacora: string = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idBitacora;
-    this.obtenerValoresRec(+idBitacora);
+    const idPagare: string = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idPagare;
+    this.obtenerValoresPagare(+idPagare);
   }
 
   ngOnInit(): void {
 
   }
 
-  obtenerValoresRec(bitacora: number): void {
-    this.formatoPagare  = {
-        folioOds:"DOC-000001",
-        fechaOds:"15/04/2023",
-        hora:"10:32 am",
-        folioPagare:"DOC-000001",
-        buenoPor: "$35,000.00",
-        nombreCliente: "INSTITUTO MEXICANO DEL SEGURO SOCIAL",
-        ordenDia: "15/04/2023",
-        cantidad:"$50,000.00",
-        cantidadLetra:"(Cincuenta mil pesos)",
-        porcentaje:"6.00",
-        otorgante:"Raul De Jesus Arteaga Balbuena",
-        domicilio:"Calle San Juan, Tapachula,Chiapas,Mx",
-        fecha:"15/04/2023",
-        agente:"Edwin Ruiz Cardenas",
-        rutaNombreReporte:"reportes/plantilla/DetalleGenerarPagare.jrxml", 
-        tipoReporte:"pdf"
-      };
-    
+  obtenerValoresPagare(idPagare: number): void {
     this.cargadorService.activar();
-    this.generarFormatoPagareService.buscarDatosReportePagos(bitacora).pipe(
+    this.generarFormatoPagareService.buscarDatosPagare(idPagare).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
       (response) => {
         if (response.datos.length === 0) return;
-       // this.formatoPagare = response.datos[0]
+        this.formatoPagare = response.datos[0];
+        this.obtenerImporteLetra(this.formatoPagare.importe);
       },
       (error: HttpErrorResponse) => {
         console.log(error)
@@ -79,12 +64,50 @@ export class ReciboFormatoPagareComponent implements OnInit {
     );
   }
 
+  
+  obtenerImporteLetra(importe: number): void {
+    this.cargadorService.activar();
+    this.generarFormatoPagareService.obtenerImporteLetra(importe).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe(
+      (response) => {
+        this.importeLetra = response!.datos
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    );
+  }
+
+  crearNuevoPagare(): any {
+    return {
+      importe : this.formatoPagare.importe,
+      redito: this.formatoPagare.redito
+    };
+  }
+
+  agregarPagare(): void {
+    const pagare: FormatoPagare = this.crearNuevoPagare();
+    const crearPagare: string = JSON.stringify(pagare);
+    this.generarFormatoPagareService.guardar(crearPagare).subscribe(
+      () => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Alta satisfactoria');
+      },
+      (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
+        console.error("ERROR: ", error.message)
+      }
+    );
+  }
+
   generarPdf(): void {
+    this.agregarPagare();
     this.cargadorService.activar();
     this.generarFormatoPagareService.descargarReporte(this.formatoPagare).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
+
         const downloadURL = window.URL.createObjectURL(respuesta);
         const link = document.createElement('a');
         link.href = downloadURL;

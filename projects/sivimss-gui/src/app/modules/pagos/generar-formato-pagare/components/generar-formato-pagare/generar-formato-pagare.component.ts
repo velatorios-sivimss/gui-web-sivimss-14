@@ -79,26 +79,28 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   abrirPanel(event: MouseEvent, formatoPagareSeleccionado: ListadoFormato): void {
+    debugger
     this.formatoPagareSeleccionado = formatoPagareSeleccionado;
     this.overlayPanel.toggle(event);
   }
 
   abrirModalformatoPagareTramites(): void {
+    debugger
     this.router.navigate(['generar-formato-pagare'], {
       relativeTo: this.activatedRoute,
-      queryParams: {idBitacora: this.formatoPagareSeleccionado.idPagoBit}
+      queryParams: {idPagare: this.formatoPagareSeleccionado.id}
     });
   }
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      idNivel: [{value: null, disabled: false}],
-      idDelegacion: [{value: null, disabled: false}],
-      idVelatorio: [{value: null, disabled: false}],
+      nivel: [{value: null, disabled: false}],
+      delegacion: [{value: null, disabled: false}],
+      velatorio: [{value: null, disabled: false}],
       folioODS: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
-      fecIniODS: [{value: null, disabled: false}],
-      fecFinODS: [{value: null, disabled: false}],
+      fechaInicial: [{value: null, disabled: false}],
+      fechaFinal: [{value: null, disabled: false}],
     });
   }
 
@@ -114,6 +116,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   paginar(): void {
+    debugger
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
@@ -130,6 +133,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
+    debugger
     const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
@@ -154,14 +158,14 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   crearSolicitudFiltros(): FiltrosFormatoPagare {
     return {
-      idOficina: this.filtroForm.get("idOficina")?.value,
-      idNivel: this.filtroForm.get("idNivel")?.value,
-      idDelegacion: this.filtroForm.get("idDelegacion")?.value,
-      idVelatorio: this.filtroForm.get("idVelatorio")?.value,
+      idOficina: this.filtroForm.get("oficina")?.value,
+      idNivel: this.filtroForm.get("nivel")?.value,
+      idDelegacion: this.filtroForm.get("delegacion")?.value,
+      idVelatorio: this.filtroForm.get("velatorio")?.value,
       folioODS: this.filtroForm.get("folioODS")?.value,
       nomContratante: this.filtroForm.get("nomContratante")?.value,
-      fecIniODS: this.filtroForm.get("fecIniODS")?.value,
-      fecFinODS: this.filtroForm.get("fecFinODS")?.value,
+      fecIniODS: this.filtroForm.get("fechaInicial")?.value,
+      fecFinODS: this.filtroForm.get("fechaFinal")?.value,
       tipoReporte: this.filtroForm.get("tipoReporte")?.value,
     }
   }
