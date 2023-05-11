@@ -240,6 +240,15 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     });
   }
 
+  abrirModalModificarSolicitud(): void {
+    this.modificarModal = !this.modificarModal;
+    this.registroMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
+      header: "Modificar solicitud de mantenimiento",
+      width: "920px",
+      data: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD},
+    })
+  }
+
   abrirPanel(event: MouseEvent, vehiculoSeleccionado: VehiculoMantenimiento): void {
     this.vehiculoSeleccionado = vehiculoSeleccionado;
     this.overlayPanel.toggle(event);

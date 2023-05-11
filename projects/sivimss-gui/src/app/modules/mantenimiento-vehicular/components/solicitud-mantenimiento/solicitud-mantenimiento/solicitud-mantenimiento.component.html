@@ -2,13 +2,13 @@
   <form [formGroup]="solicitudMantenimientoForm">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="placas">Placas<span class="req">*:</span>:</label>
+        <label class="control-label" for="placas">Placas<span class="req">*</span>:</label>
         <input id="placas" class="form-control" formControlName="placas" placeholder="Ingresa el placas">
         <span class="campo-obligatorio"
               *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="marca">Marca<span class="req">*:</span>:</label>
+        <label class="control-label" for="marca">Marca<span class="req">*</span>:</label>
         <input id="marca" class="form-control" formControlName="marca" placeholder="Ingresa el marca">
         <span class="campo-obligatorio"
               *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Campo obligatorio</span>
@@ -17,13 +17,13 @@
 
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="anio">Año<span class="req">*:</span>:</label>
+        <label class="control-label" for="anio">Año<span class="req">*</span>:</label>
         <input id="anio" class="form-control" formControlName="anio" placeholder="Ingresa el anio">
         <span class="campo-obligatorio"
               *ngIf="smf.anio?.errors?.required && (smf.anio?.dirty || smf.anio?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="kilometraje">Kilometraje<span class="req">*:</span>:</label>
+        <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
         <input id="kilometraje" class="form-control" formControlName="kilometraje" placeholder="Ingresa el kilometraje"
                [maxlength]="6" numbersOnly>
         <span class="campo-obligatorio"
@@ -71,7 +71,7 @@
         <span class="campo-obligatorio"
               *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Campo obligatorio</span>
       </div>
-      <div class="col-md-6" *ngIf="solicitudMantenimientoForm.get('tipoMantenimiento')?.value == 2">
+      <div class="col-md-6" *ngIf="solicitudMantenimientoForm.get('tipoMantenimiento')?.value == 1">
         <label class="control-label" for="matPreventivo">Mantenimiento preventivo<span class="req">*:</span></label>
         <p-dropdown appendTo="body" id="matPreventivo" class="form-control" formControlName="matPreventivo"
                     [options]="mantenimientosPrev"
@@ -201,7 +201,8 @@
   <div class="flex justify-content-end">
     <button class="ml-4 btn btn-default btn-md" (click)="regresar()">Regresar</button>
     <button class="ml-4  btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
-    <button class="ml-4 btn btn-primary btn-md" routerLink="detalle-solicitud-mantenimiento" (click)="aceptarSolicitud()">
+    <button class="ml-4 btn btn-primary btn-md" routerLink="detalle-solicitud-mantenimiento"
+            (click)="guardarSolicitudMtto()">
       Aceptar
     </button>
   </div>

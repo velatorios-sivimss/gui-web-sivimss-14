@@ -7,7 +7,6 @@ import {Vehiculos} from '../../../models/vehiculos.interface';
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {ActivatedRoute, Router} from '@angular/router';
-import {VehiculoTemp} from "../../../models/vehiculo-temp.interface";
 import {obtenerFechaActual, obtenerHoraActual} from "../../../../../utils/funciones-fechas";
 import {VerificacionInicio} from "../../../models/verificacionInicio.interface";
 import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";

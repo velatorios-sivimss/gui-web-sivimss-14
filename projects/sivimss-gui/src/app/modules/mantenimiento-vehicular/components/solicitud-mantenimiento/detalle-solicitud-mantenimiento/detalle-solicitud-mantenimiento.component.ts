@@ -94,10 +94,10 @@ export class DetalleSolicitudMantenimientoComponent implements OnInit {
   obtenerVehiculo(respuesta: RespuestaSolicitudMantenimiento): void {
     this.asignacion = {
       fechaRegistro: respuesta.FEC_REGISTRO,
-      kilometraje: "",
+      kilometraje: respuesta.KILOMETRAJE,
       mantenimientoPreventivo: respuesta.DES_MTTO_CORRECTIVO,
       modalidad: respuesta.DES_MODALIDAD,
-      notas: "",
+      notas: respuesta.DES_NOTAS,
       tipoMantenimiento: respuesta.DES_MTTO_TIPO
     }
   }

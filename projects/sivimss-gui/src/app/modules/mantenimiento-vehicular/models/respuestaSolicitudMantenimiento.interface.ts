@@ -23,5 +23,7 @@ export interface RespuestaSolicitudMantenimiento {
   "ID_DELEGACION": number,
   "FEC_ALTA": string,
   "IND_ACTIVO": boolean,
-  DES_SUBMARCA: string
+  DES_SUBMARCA: string,
+  DES_NOTAS: string,
+  KILOMETRAJE: string
 }
