@@ -13,7 +13,7 @@ import { ConsultaNotaRemision } from '../models/nota-remision.interface';
 export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, any> {
   constructor( _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "generar-notarem", "modificar",
-      54, "consultar-notasrem", "detalle-notasgen", "cambiar-estatus");
+      54, "consultar-notasrem", "detalle-notagen", "cambiar-estatus");
   }
 
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -24,7 +24,7 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
   }
 
   buscarTodasOdsGeneradas(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo?servicio=lista-ods-gen`);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/lista-ods-gen`);
   }
 
   cancelarNotaRemision(obj: any): Observable<HttpRespuesta<any>> {
@@ -32,7 +32,7 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
   }
 
   obtenerDetalleNotaRemision(consultaNotaRemision: ConsultaNotaRemision): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-notasgen`, consultaNotaRemision);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-notagen`, consultaNotaRemision);
   }
 
   obtenerServiciosNotaRemision(consultaServicioRemision: ConsultaNotaRemision): Observable<HttpRespuesta<any>> {

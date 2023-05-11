@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { DetalleNotaRemision } from '../../models/nota-remision.interface';
 
 @Component({
   selector: 'app-detalle-formato-generar-nota-remision',
@@ -50,20 +51,20 @@ export class DetalleFormatoGenerarNotaRemisionComponent implements OnInit {
     }
   }
 
-  inicializarNotaRemisionForm(detalle?: any, servicios?: any) {
+  inicializarNotaRemisionForm(detalle?: DetalleNotaRemision, servicios?: any) {
     this.notaRemisionForm = this.formBuilder.group({
-      versionDocumento: [{ value: "1.2", disabled: true }],
+      versionDocumento: [{ value: null, disabled: true }],
       fecha: [{ value: new Date(), disabled: true }],
-      velatorio: [{ value: 'No. 22 Villahermosa', disabled: true }],
-      remisionServicios: [{ value: 'DOC-000001', disabled: true }],
-      direccion: [{ value: 'Prolongación Av. México No. 1203, Col. Sabina, C.P. 86153, Villahermosa, San Luis Potosí.', disabled: true }],
-      nombreSolicitante: [{ value: 'Miranda Fernendez Guisa', disabled: true }],
-      direccionSolicitante: [{ value: 'Av. Congreso de la Unión, Iztacalco, CP 201, CDMX', disabled: true }],
-      curpSolicitante: [{ value: 'FEGM560117MDFMPRO7', disabled: true }],
-      velatorioSolicitante: [{ value: 'No. 22 Villahermosa', disabled: true }],
-      finado: [{ value: 'Pedro Lomas Morales', disabled: true }],
-      parentesco: [{ value: 'Abuelo', disabled: true }],
-      folioOds: [{ value: 'DOC-000001', disabled: true }],
+      velatorio: [{ value: null, disabled: true }],
+      remisionServicios: [{ value: null, disabled: true }],
+      direccion: [{ value: null, disabled: true }],
+      nombreSolicitante: [{ value: null, disabled: true }],
+      direccionSolicitante: [{ value: null, disabled: true }],
+      curpSolicitante: [{ value: null, disabled: true }],
+      velatorioSolicitante: [{ value: null, disabled: true }],
+      finado: [{ value: null, disabled: true }],
+      parentesco: [{ value: null, disabled: true }],
+      folioOds: [{ value: null, disabled: true }],
       nombreConformidad: [{ value: null, disabled: true }],
       nombreRepresentante: [{ value: null, disabled: true }],
     });
