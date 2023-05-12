@@ -106,16 +106,14 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     this.abrirModalGenerandoNotaRemision();
     this.generarNotaRemisionService.guardar({ idOrden: 1 }).subscribe(
       (respuesta) => {
-        if (respuesta && respuesta.codigo === 200) {
-          this.creacionRef.close();
-          const mensaje = this.alertas?.filter((msj: any) => {
-            return msj.idMensaje == respuesta.mensaje;
-          });
-          if (mensaje && mensaje.length > 0) {
-            this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
-          }
-          this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+        this.creacionRef.close();
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == respuesta.mensaje;
+        });
+        if (mensaje && mensaje.length > 0) {
+          this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
         }
+        this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
       },
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
