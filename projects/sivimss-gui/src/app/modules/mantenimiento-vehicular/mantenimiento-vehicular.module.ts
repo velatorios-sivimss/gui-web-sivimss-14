@@ -46,6 +46,8 @@ import {StepsModule} from "primeng/steps";
 import {AccordionModule} from "primeng/accordion";
 import {CheckboxModule} from "primeng/checkbox";
 import {RadioButtonModule} from "primeng/radiobutton";
+import {DetalleMantenimientoComponent} from "./components/detalle-mantenimiento/detalle-mantenimiento.component";
+import {TabViewModule} from "primeng/tabview";
 
 @NgModule({
   declarations: [
@@ -58,28 +60,30 @@ import {RadioButtonModule} from "primeng/radiobutton";
     DetalleRegistroMantenimientoComponent,
     MantenimientoPredictivoComponent,
     ReporteEncargadoComponent,
+    DetalleMantenimientoComponent
   ],
-    imports: [
-        CalendarModule,
-        CommonModule,
-        DialogModule,
-        DropdownModule,
-        DynamicDialogModule,
-        FormsModule,
-        InputSwitchModule,
-        MantenimientoVehicularRoutingModule,
-        OverlayPanelModule,
-        OverlayPanelOpcionesModule,
-        ReactiveFormsModule,
-        TableModule,
-        TablePanelModule,
-        TituloPrincipalModule,
-        StepsModule,
-        AccordionModule,
-        CheckboxModule,
-        RadioButtonModule,
-        UtileriaModule,
-    ],
+  imports: [
+    CalendarModule,
+    CommonModule,
+    DialogModule,
+    DropdownModule,
+    DynamicDialogModule,
+    FormsModule,
+    InputSwitchModule,
+    MantenimientoVehicularRoutingModule,
+    OverlayPanelModule,
+    OverlayPanelOpcionesModule,
+    ReactiveFormsModule,
+    TableModule,
+    TablePanelModule,
+    TituloPrincipalModule,
+    StepsModule,
+    AccordionModule,
+    CheckboxModule,
+    RadioButtonModule,
+    UtileriaModule,
+    TabViewModule,
+  ],
   providers: [MantenimientoVehicularService]
 })
 export class MantenimientoVehicularModule {

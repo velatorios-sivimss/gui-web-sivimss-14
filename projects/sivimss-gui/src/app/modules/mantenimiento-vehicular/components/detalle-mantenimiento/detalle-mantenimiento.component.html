@@ -1,0 +1,286 @@
+<app-titulo-principal titulo="VER DETALLE"></app-titulo-principal>
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor" [activeIndex]="0">
+  <p-accordionTab>
+    <ng-template pTemplate="header">
+    </ng-template>
+    <ng-template pTemplate="content">
+      <div class="row grid">
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Delegación</span>
+          <span class="texto-base"></span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Velatorio</span>
+          <span class="texto-base"></span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Fecha</span>
+          <span class="texto-base"></span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Vehiculo</span>
+          <span
+            class="texto-base"></span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Placas</span>
+          <span class="texto-base"></span>
+        </div>
+        <div class="col">
+          <span class="flex flex-column etiqueta-base">Kilometraje</span>
+          <span class="texto-base"></span>
+        </div>
+        <div class="col-2">
+          <span class="flex flex-column etiqueta-base">Fecha de mantenimiento</span>
+          <span class="texto-base"></span>
+        </div>
+      </div>
+      <hr class="hr-accordion-content">
+      <div class="row grid">
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <div class="col-2">
+          <span class="flex flex-column etiqueta-base">Costo de mantenimiento</span>
+          <span class="texto-base"></span>
+        </div>
+      </div>
+      <ng-container>
+        <p-tabView>
+          <p-tabPanel header="Verificación diaria">
+            <app-table-panel>
+              <div class="row table-panel-row">
+                <div class="table-panel-column ml-4">
+                  <label>Fecha Actual</label>
+                  <span></span>
+                </div>
+              </div>
+              <div class="row table-panel-row">
+                <div class="col-md-4">
+                  <div class="row">
+                    <div class="table-panel-column col-md-8">
+                      <label class="ml-4">Nivel de aceite</label>
+                      <span class="ml-4"></span>
+                    </div>
+                    <div class="table-panel-column col-md-4">
+                      <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="table-panel-column col-md-8">
+                    <label>Nivel de agua</label>
+                    <span></span>
+                  </div>
+                  <div class="table-panel-column col-md-4">
+                    <img class="icono" src="../../../../../../assets/images/nivelAgua.svg">
+                  </div>
+                </div>
+                <div class="col-md-4"></div>
+              </div>
+
+              <div class="row table-panel-row">
+                <div class="col-md-4">
+                  <div class="grid">
+                    <div class="col-12 mt-3">
+                      <div class="table-panel-column col-md-8">
+                        <label class="ml-4">Calibración de neumáticos traseros</label>
+                        <span class="ml-4"></span>
+                      </div>
+                      <div class="table-panel-column col-md-4">
+                        <img class="icono" src="../../../../../../assets/images/velocimetroBajo.svg">
+                      </div>
+                    </div>
+                    <div class="col-12 mt-3">
+                      <div class="table-panel-column col-md-8">
+                        <label class="ml-4">Calibración de numáticos delanteros</label>
+                        <span class="ml-4"></span>
+                      </div>
+                      <div class="table-panel-column col-md-4">
+                        <img class="icono" src="../../../../../../assets/images/belocimetroAlto.svg">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 border-left-1 border-gray">
+                  <div class="row">
+                    <div class="col-md-8 m-4">
+                      <label>Presion recomendada</label>
+                      <p-table [value]="data" [styleClass]="'p-datatable-sm'">
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th>Rin</th>
+                            <th>Precisión</th>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-item>
+                          <tr>
+                            <td>{{ item.rin }}</td>
+                            <td>{{ item.precision }}</td>
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row table-panel-row ">
+                <div class="col-md-4">
+                  <div class="row">
+                    <div class="table-panel-column col-md-8">
+                      <label class="ml-4">Nivel de Combustible</label>
+                      <span class="ml-4"></span>
+                    </div>
+                    <div class="table-panel-column col-md-4">
+                      <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="row">
+                    <div class="table-panel-column col-md-8">
+                      <label>Nivel de Bateria </label>
+                      <span></span>
+                    </div>
+                    <div class="table-panel-column col-md-4">
+                      <img class="icono-bateria" src="../../../../../../assets/images/loading.svg">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="row">
+                    <div class="table-panel-column col-md-6">
+                      <label>Código de falla</label>
+                      <span></span>
+                    </div>
+                    <div class="col-md-6"></div>
+                  </div>
+                </div>
+              </div>
+            </app-table-panel>
+          </p-tabPanel>
+          <p-tabPanel header="Solicitud de mantenimiento">
+            <app-table-panel>
+              <div class="row table-panel-row">
+                <div class="col-md-7">
+                  <div class="row grid">
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base ml-4">Placas</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Marca</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Año</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Kilometraje</label>
+                      <span></span>
+                    </div>
+                    <div class="col-3 table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Fecha registro</label>
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-5"></div>
+              </div>
+              <div class="row table-panel-row">
+                <div class="col-md-7">
+                  <div class="grid">
+                    <div class="col-4">
+                      <div class="table-panel-column ">
+                        <label>Tipo de mantenimiento</label>
+                        <span></span>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="table-panel-column ">
+                        <label>Modalidad </label>
+                        <span></span>
+                      </div>
+                    </div>
+                    <div class="col-5">
+                      <div class="table-panel-column ">
+                        <label>Mantenimiento preventivo</label>
+                        <span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="table-panel-column ">
+                    <label class="flex flex-column etiqueta-base">Notas</label>
+                    <span></span>
+                  </div>
+                </div>
+              </div>
+            </app-table-panel>
+          </p-tabPanel>
+          <p-tabPanel header="Registro de seguimiento">
+            <app-table-panel>
+              <div class="row table-panel-row">
+                <div class="col-md-6">
+                  <div class="row grid">
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base ml-4">Placas</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Marca</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Año</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Kilometraje</label>
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6"></div>
+              </div>
+              <div class="row table-panel-row">
+                <div class="col-md-12">
+                  <div class="row grid">
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base ml-4">Tipo de mantenimiento</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Modalidad</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Número de contrato</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Nombre de proveedor</label>
+                      <span></span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Taller</label>
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </app-table-panel>
+          </p-tabPanel>
+        </p-tabView>
+      </ng-container>
+    </ng-template>
+  </p-accordionTab>
+</p-accordion>

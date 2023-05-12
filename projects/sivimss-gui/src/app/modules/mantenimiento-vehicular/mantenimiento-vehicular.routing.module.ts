@@ -27,6 +27,7 @@ import {
 } from './components/mantenimiento-predictivo/mantenimiento-predictivo.component'
 import {ReporteEncargadoComponent} from './components/reporte-encargado/reporte-encargado.component'
 import {ModificarArticulosComponent} from '../articulos/components/modificar-articulos/modificar-articulos.component'
+import {DetalleMantenimientoComponent} from "./components/detalle-mantenimiento/detalle-mantenimiento.component";
 
 const routes: Route[] = [
   {
@@ -69,9 +70,9 @@ const routes: Route[] = [
     component: ReporteEncargadoComponent,
   },
   {
-    path: 'modificar',
-    component: ModificarArticulosComponent,
-  },
+    path: 'detalle-mantenimiento',
+    component: DetalleMantenimientoComponent
+  }
 ]
 
 @NgModule({
