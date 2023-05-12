@@ -11,7 +11,6 @@ interface FormatoPagare {
   "fechaODS": string,
   "hora": string,
   "nomAgente": string,
-  "Domicilio": string,
   "domContratante":string,
   "fechaPago": string,
   "fechaPagare": string,
@@ -19,9 +18,6 @@ interface FormatoPagare {
   "redito": string,
   "nomContratante": string,
   "folioPagare": string,
-  "buenoPor": string,
-  "ordenDia": string,
-  "porcentaje": string,
   "cantidad": string,
   "nomUsuario": string,
   "tipoReporte": string

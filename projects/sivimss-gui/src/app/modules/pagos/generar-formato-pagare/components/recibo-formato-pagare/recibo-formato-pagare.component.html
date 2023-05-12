@@ -43,8 +43,8 @@
 
             <section class="flex justify-content-between info-gral-body mt-7 col-md-7">
                 <span class="etiqueta-formato">Pagaré <span
-          class="etiqueta-formato-val">DOC-000001</span> </span>
-                <span class="etiqueta-formato">Bueno por <span class="etiqueta-formato-val">$35,000.00</span>
+          class="etiqueta-formato-val">{{formatoPagare.folioPagare}}</span> </span>
+                <span class="etiqueta-formato">Bueno por $ <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
                 </span>
 
 
@@ -56,9 +56,9 @@
                 <div class="mt-5">
                     <span class="col-md-12 etiqueta-formato">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera</span>
 
-                    <span class="col-md-12 etiqueta-formato-val">al {{formatoPagare.nomContratante}}
+                    <span class="col-md-12 etiqueta-formato-val">al INSTITUTO MEXICANO DEL SEGURO SOCIAL
             <span class="etiqueta-base"> o a su orden el dia </span>
-                    <span class="etiqueta-formato-val"> 15/04/2023 </span>
+                    <span class="etiqueta-formato-val"> {{formatoPagare.fechaODS}} </span>
                     <!--
             <span class="etiqueta-base"> de </span>
             <span class="etiqueta-formato-val"> Abril </span>
@@ -66,7 +66,7 @@
             <span class="etiqueta-formato-val"> 2021 </span>
             -->
                     </span>
-                    <span class="col-md-12 etiqueta-base mt-3">la cantidad de
+                    <span class="col-md-12 etiqueta-base mt-3">la cantidad de $
             <span class="etiqueta-formato-val">{{formatoPagare.importe}}  </span>
                     <span class="etiqueta-formato-val">{{importeLetra}}</span>
                     </span>
@@ -101,7 +101,7 @@
                     <div class="grid-container">
                         <div class="grid-item">
                             <span class="etiqueta-formato">Otorgante <span
-                class="etiqueta-formato-val">Edwin Ruiz Cardenas</span></span>
+                class="etiqueta-formato-val">{{formatoPagare.nomContratante}}</span></span>
                         </div>
                         <div class="grid-item">
 
@@ -110,7 +110,7 @@
 
                         <div class="grid-item">
                             <span class="etiqueta-formato">Domicilio <span
-                class="etiqueta-formato-val ">{{formatoPagare.Domicilio}}</span></span>
+                class="etiqueta-formato-val ">{{formatoPagare.domContratante}}</span></span>
                         </div>
                         <div class="grid-item">
                             <span class="etiqueta-formato">Fecha <span
@@ -120,7 +120,7 @@
                         <div class="grid-item"></div>
                         <div class="grid-item">
                             <span class="etiqueta-formato">Agente <span
-                class="etiqueta-formato-val">{{formatoPagare.nomAgente}}</span></span>
+                class="etiqueta-formato-val">{{formatoPagare.nomUsuario}}</span></span>
                         </div>
                         <div class="grid-item">
 
