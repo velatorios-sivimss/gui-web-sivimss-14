@@ -25,6 +25,10 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/disp-vehiculos`, buscar);
   }
 
+  obtenerVehiculosCalendario(buscar: BuscarVehiculosDisponibles): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/VehiculosDisponibles-Calendario`, buscar);
+  }
+
   obtenerDatosVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/vehiculo-disponible`, { idVehiculo });
   }

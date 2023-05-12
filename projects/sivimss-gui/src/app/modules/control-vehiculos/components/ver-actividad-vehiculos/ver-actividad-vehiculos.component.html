@@ -14,11 +14,11 @@
           <div class="flex justify-content-end" style="width: 100%">
             <div class="col-md-4">
               <span class="etiqueta-base">Salida </span>
-              <b class="texto-base">{{vehiculo?.horaSalida | date: 'HH:mm' }}</b>
+              <b class="texto-base">{{vehiculo?.horaSalida}}</b>
             </div>
             <div class="col-md-4">
               <span class="etiqueta-base">Entrada </span>
-              <b class="texto-base">{{vehiculo?.horaEntrada | date: 'HH:mm' }}</b>
+              <b class="texto-base">{{vehiculo?.horaEntrada}}</b>
             </div>
           </div>
         </ng-template>
@@ -70,13 +70,13 @@
               <div class="col-md-4">
                 <div class="table-panel-column">
                   <label>Nivel de gasolina final</label>
-                  <span>{{vehiculo?.nivelGasolinaFinal}} </span>
+                  <span>{{vehiculo?.nivelGasFin}} </span>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="table-panel-column">
                   <label>Kilometraje final</label>
-                  <span>{{vehiculo?.kilometrajeFinal}}</span>
+                  <span>{{vehiculo?.kmFin}}</span>
                 </div>
               </div>
             </div>

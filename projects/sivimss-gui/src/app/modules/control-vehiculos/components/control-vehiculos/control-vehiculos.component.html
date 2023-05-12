@@ -22,7 +22,7 @@
             <label class="control-label" for="delegacion">Delegación:</label>
             <p-dropdown id="delegacion" class="form-control" formControlName="delegacion"
                 [options]="catalogoDelegaciones" placeholder="Seleccionar la delegación" [filter]="true"
-                filterBy="label" (onChange)='obtenerVelatorios();'>
+                filterBy="label" (onChange)='obtenerVelatorios(); obtenerVehiculos();'>
             </p-dropdown>
         </div>
     </div>
@@ -37,5 +37,5 @@
 </form>
 
 <app-listado-vehiculos *ngIf="!modoCalendario" [controlVehiculos]="controlVehiculos"
-    (actualizarListadoEvent)="obtenerVehiculos($event)"></app-listado-vehiculos>
+    (actualizarListadoEvent)="obtenerVehiculos()"></app-listado-vehiculos>
 <app-calendario-vehiculos *ngIf="modoCalendario" [filtroFormData]="filtroForm.value"></app-calendario-vehiculos>

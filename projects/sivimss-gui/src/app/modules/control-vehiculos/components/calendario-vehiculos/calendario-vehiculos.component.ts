@@ -97,7 +97,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
         } else {
           this.fechaCalendario = moment(event.start);
         }
-        if (this.filtroFormData.velatorio) { this.obtenerVehiculos() }
+        this.obtenerVehiculos();
       },
     };
   }
@@ -147,27 +147,27 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
   }
 
   obtenerVehiculos() {
-    if (this.filtroFormData.velatorio) {
-      this.calendarioVehiculos.getApi().removeAllEvents();
-      let buscar: BuscarVehiculosDisponibles = {
-        idVelatorio: this.filtroFormData.velatorio,
-        fecIniRepo: moment(this.fechaCalendario).startOf('month').format('YYYY-MM-DD'),
-        fecFinRepo: moment(this.fechaCalendario).endOf('month').format('YYYY-MM-DD'),
-      };
-      this.controlVehiculosService.obtenerVehiculosDisponibles(buscar).pipe().subscribe(
-        (respuesta: HttpRespuesta<any>) => {
-          respuesta.datos.forEach((vehiculo: any) => {
-            this.calendarioVehiculos.getApi().addEvent(
-              { id: vehiculo.idVehiculo, title: 'BLX6YUI - NISSAN  2010', start: vehiculo.fecha, textColor: '#376ED9', borderColor: '#484848', backgroundColor: 'white' },
-            );
-          })
-        },
-        (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
-        }
-      );
-    }
+    this.calendarioVehiculos.getApi().removeAllEvents();
+    let buscar: BuscarVehiculosDisponibles = {
+      idDelegacion: this.filtroFormData.delegacion,
+      idVelatorio: this.filtroFormData.velatorio,
+      fecIniRepo: moment(this.fechaCalendario).startOf('month').format('YYYY-MM-DD'),
+      fecFinRepo: moment(this.fechaCalendario).endOf('month').format('YYYY-MM-DD'),
+    };
+    this.controlVehiculosService.obtenerVehiculosCalendario(buscar).pipe().subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        respuesta.datos.forEach((vehiculo: any) => {
+          const title: string = `${vehiculo.placas} - ${vehiculo.marca} ${vehiculo.modelo}`
+          this.calendarioVehiculos.getApi().addEvent(
+            { id: vehiculo.idVehiculo, title, start: vehiculo.fecha, textColor: '#376ED9', borderColor: '#484848', backgroundColor: 'white' },
+          );
+        })
+      },
+      (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    );
   }
 
   ngOnDestroy(): void {

@@ -1,8 +1,8 @@
 export interface BuscarVehiculosDisponibles {
+  idDelegacion?: number,
   idVelatorio?: number,
   fecIniRepo?: string | null,
   fecFinRepo?: string | null,
-  paginado?: number,
 }
 
 export interface ControlVehiculoListado {

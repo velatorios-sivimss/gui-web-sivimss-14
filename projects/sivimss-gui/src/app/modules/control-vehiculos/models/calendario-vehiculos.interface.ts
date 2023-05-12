@@ -23,8 +23,9 @@ export interface ControlVehiculoConsultaDia {
   horaSalida?: string,
   horaEntrada?: string,
   fechaSalida?: string,
-  nivelGasolinaFinal?: string,
-  kilometrajeFinal?: string,
+  fechaEntrada?: string,
+  nivelGasFin?: string,
+  kmFin?: number,
   marca: string,
   nombreDestino: string,
   idVehiculo: string,
@@ -34,6 +35,7 @@ export interface ControlVehiculoConsultaDia {
   modelo: string,
   placas: string,
   disponibilidad: number,
+  disponible: number,
 }
 
 export interface GenerarReporteCalendar {

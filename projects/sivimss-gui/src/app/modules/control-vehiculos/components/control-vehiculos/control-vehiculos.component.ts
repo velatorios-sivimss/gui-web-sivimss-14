@@ -60,9 +60,10 @@ export class ControlVehiculosComponent implements OnInit {
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
       nivel: new FormControl({ value: 1, disabled: true }, [Validators.required]),
-      delegacion: new FormControl({ value: null, disabled: false }, Validators.required),
-      velatorio: new FormControl({ value: null, disabled: false }, Validators.required),
+      delegacion: new FormControl({ value: null, disabled: false }),
+      velatorio: new FormControl({ value: null, disabled: false }),
     });
+    this.obtenerVehiculos();
   }
 
   handleCambioVista(opcion: { value: SelectButtonOptions }): void {
@@ -85,13 +86,13 @@ export class ControlVehiculosComponent implements OnInit {
     );
   }
 
-  obtenerVehiculos(evt?: unknown) {
+  obtenerVehiculos() {
     if (this.filtroForm.valid && !this.modoCalendario) {
       let buscar: BuscarVehiculosDisponibles = {
+        idDelegacion: this.f.delegacion.value,
         idVelatorio: this.f.velatorio.value,
         fecIniRepo: null,
-        fecFinRepo: null,
-        paginado: 1,
+        fecFinRepo: null
       };
       this.controlVehiculosService.obtenerVehiculosDisponibles(buscar).subscribe(
         (respuesta) => {
