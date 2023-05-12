@@ -5,7 +5,7 @@ import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { MENU_SALAS } from "../../constants/menu-salas";
 import interactionPlugin from "@fullcalendar/interaction";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { FiltroFormData } from "../../models/calendario-vehiculos.interface";
+import { FiltroFormData, GenerarReporteCalendar } from "../../models/calendario-vehiculos.interface";
 import { VerActividadVehiculosComponent } from "../ver-actividad-vehiculos/ver-actividad-vehiculos.component";
 import { ActivatedRoute } from "@angular/router";
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
@@ -116,7 +116,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     this.currentEvents = events;
   }
 
-  generarArchivo(tipoReporte: string): void {
+  generarReporteCalendar(tipoReporte: string): void {
     const configuracionArchivo: OpcionesArchivos = {};
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
@@ -126,7 +126,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     this.loaderService.activar();
     const busqueda = this.filtrosArchivos(tipoReporte);
 
-    this.descargaArchivosService.descargarArchivo(this.controlVehiculosService.generarReporte(busqueda), configuracionArchivo).pipe(
+    this.descargaArchivosService.descargarArchivo(this.controlVehiculosService.generarReporteCalendar(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta) => {
@@ -138,9 +138,8 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     )
   }
 
-  filtrosArchivos(tipoReporte: string) {
+  filtrosArchivos(tipoReporte: string): GenerarReporteCalendar {
     return {
-      // idVelatorio: this.filtroFormData.velatorio,
       fecIniRepo: moment(this.fechaCalendario).startOf('month').format('YYYY-MM-DD'),
       fecFinRepo: moment(this.fechaCalendario).endOf('month').format('YYYY-MM-DD'),
       tipoReporte,

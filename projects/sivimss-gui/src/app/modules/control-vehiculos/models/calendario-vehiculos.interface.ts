@@ -35,3 +35,9 @@ export interface ControlVehiculoConsultaDia {
   placas: string,
   disponibilidad: number,
 }
+
+export interface GenerarReporteCalendar {
+  fecIniRepo?: string;
+  fecFinRepo?: string;
+  tipoReporte?: string;
+}

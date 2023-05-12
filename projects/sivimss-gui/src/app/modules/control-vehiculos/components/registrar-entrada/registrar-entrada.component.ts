@@ -94,8 +94,16 @@ export class RegistrarEntradaComponent implements OnInit {
           // }
         },
         (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+          console.error("ERROR: ", error);
+          
+
+          console.error("ERROR: ", error);
+          const mensaje = this.alertas.filter((msj: any) => {
+            return msj.idMensaje == error.error.mensaje;
+          })
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+
+
         }
       );
     }

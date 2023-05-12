@@ -11,6 +11,7 @@ import { TipoDropdown } from '../../../../models/tipo-dropdown';
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { mensajes } from '../../../reservar-salas/constants/mensajes';
 
 @Component({
   selector: 'app-control-vehiculos',
@@ -32,6 +33,8 @@ export class ControlVehiculosComponent implements OnInit {
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   controlVehiculos: ControlVehiculoListado[] = [];
+
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
     private route: ActivatedRoute,
@@ -77,8 +80,7 @@ export class ControlVehiculosComponent implements OnInit {
         this.controlVehiculos = [];
       },
       (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        console.error("ERROR: ", error);
       }
     );
   }
@@ -93,12 +95,25 @@ export class ControlVehiculosComponent implements OnInit {
       };
       this.controlVehiculosService.obtenerVehiculosDisponibles(buscar).subscribe(
         (respuesta) => {
-          // TO DO mostrar mensaje 45 -  no hay datos
-          this.controlVehiculos = respuesta.datos?.content;
+          if (respuesta.datos?.content.length > 0) {
+            this.controlVehiculos = respuesta.datos?.content;
+          } else {
+            const mensaje = this.alertas?.filter((msj: any) => {
+              return msj.idMensaje == respuesta.mensaje;
+            });
+            if (mensaje && mensaje.length > 0) {
+              this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+            }
+          }
         },
         (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+          console.error("ERROR: ", error);
+          const mensaje = this.alertas.filter((msj: any) => {
+            return msj.idMensaje == error.error.mensaje;
+          })
+          if (mensaje && mensaje.length > 0) {
+            this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+          }
         }
       );
     }

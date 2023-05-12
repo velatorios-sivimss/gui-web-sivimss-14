@@ -9,6 +9,7 @@ import { mapearArregloTipoDropdown } from "../../../utils/funciones";
 import { AutenticacionService } from "../../../services/autenticacion.service";
 import { BuscarVehiculosDisponibles } from "../models/control-vehiculos.interface";
 import { EntradaVehiculo, SalidaVehiculo } from "../models/registro-vehiculo.interface";
+import { GenerarReporteCalendar } from "../models/calendario-vehiculos.interface";
 
 @Injectable()
 export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any> {
@@ -68,13 +69,13 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/detalle-vehiculo-dia`, { idVehiculo, fecDia });
   }
 
-  generarReporte(datos: any): Observable<Blob> {
+  generarReporteCalendar(generarReporteCalendar: GenerarReporteCalendar): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
     return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/gen-doc-vehiculos`
-      , datos, { headers, responseType: 'blob' as 'json' });
+      , generarReporteCalendar, { headers, responseType: 'blob' as 'json' });
   }
 }
 

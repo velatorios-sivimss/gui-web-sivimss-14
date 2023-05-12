@@ -26,16 +26,14 @@
         <label class="control-label" for="folio">Folio de la ODS<span class="req"
             *ngIf="hayCamposObligatorios">*</span>:</label>
         <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="foliosGenerados"
-          optionLabel="label" placeholder="Selecciona el folio" (onChange)="fechasOpcionales()" [filter]="true"
-          filterBy="label">
+          optionLabel="label" placeholder="Selecciona el folio" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="fechaInicial">Rango de fechas<span class="req"
             *ngIf="hayCamposObligatorios">*</span>:</label>
         <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true"
-          placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="f!.fechaFinal!.value"
-          (onSelect)="folioOpcional();">
+          placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="f!.fechaFinal!.value" [maxDate]="fechaActual">
         </p-calendar>
       </div>
       <div class="col-md-4 pt-5">
@@ -43,7 +41,7 @@
           <div class="col-md-12">
             <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
               dateFormat="dd/mm/yy" placeholder="Fecha final" [minDate]="f!.fechaInicial!.value"
-              (onSelect)="folioOpcional();">
+              [maxDate]="fechaActual">
             </p-calendar>
           </div>
         </div>
@@ -108,9 +106,9 @@
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-              (click)="descargarDocumento('pdf')">
+              (click)="generarReporteTabla('pdf')">
             <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-              (click)="descargarDocumento('excel')">
+              (click)="generarReporteTabla('xls')">
           </div>
         </div>
       </div>
@@ -125,9 +123,10 @@
         (click)="generarNotaRemision()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ver" *ngIf="notaRemisionSeleccionada?.estatus !== 1"
         (click)="verDetalleNotaRemision()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Descargar PDF" (click)="descargarDocumento('pdf')"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Descargar Excel"
-        (click)="descargarDocumento('excel')"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Descargar PDF" *ngIf="notaRemisionSeleccionada?.estatus === 2"
+        (click)="generarReporteNotaRemision('pdf')"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Descargar Excel" *ngIf="notaRemisionSeleccionada?.estatus === 2"
+        (click)="generarReporteNotaRemision('xls')"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Cancelar" *ngIf="notaRemisionSeleccionada?.estatus === 2"
         (click)="cancelarNotaRemision()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
