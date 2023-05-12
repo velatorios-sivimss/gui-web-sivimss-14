@@ -10,6 +10,7 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
 import {RespuestaVerificacion} from "../../../models/respuestaVerificacion.interface";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-detalle-nueva-verificacion',
@@ -57,11 +58,11 @@ export class DetalleNuevaVerificacionComponent implements OnInit {
         this.llenarInformacionVehiculo(respuesta.datos[0]);
         this.llenarInformacionVerificacion(respuesta.datos[0]);
       },
-      error: (error): void => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
         this.mensajesSistemaService.mostrarMensajeError(error.message)
       }
-    })
+    });
   }
 
   llenarInformacionVehiculo(respuesta: RespuestaVerificacion): void {

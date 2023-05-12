@@ -5,7 +5,6 @@ import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import {VehiculoTemp} from "../../../models/vehiculo-temp.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
@@ -18,6 +17,11 @@ import {
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {ResumenRegistro} from "../../../models/resumenRegistro.interface";
 import {RegistroMantenimiento} from "../../../models/registroMantenimiento.interface";
+import {finalize} from "rxjs/operators";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {RespuestaRegistroMantenimiento} from "../../../models/respuestaRegistroMantenimiento.interface";
+import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
 
 
 @Component({
@@ -35,7 +39,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
   catalogoProveedores: TipoDropdown[] = [];
   mantenimientosPrev: TipoDropdown[] = [];
-  vehiculoSeleccionado!: VehiculoTemp;
+  vehiculoSeleccionado!: VehiculoMantenimiento;
   contratos: TipoDropdown[] = [];
   resumenRegistro!: ResumenRegistro;
   solicitudMantenimientoForm!: FormGroup;
@@ -52,12 +56,18 @@ export class RegistroMantenimientoComponent implements OnInit {
     private route: ActivatedRoute,
     private mantenimientoVehicularService: MantenimientoVehicularService,
     private router: Router,
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
   ngOnInit(): void {
     if (this.config.data.vehiculo) {
       this.vehiculoSeleccionado = this.config.data.vehiculo;
+    }
+    if (this.config.data.id) {
+      const id = this.config.data.id;
+      this.realizarRegistro(id);
     }
     this.inicializarRegistroMantenimientoForm();
     this.cargarCatalogos();
@@ -164,13 +174,16 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   aceptarSolicitud(): void {
     const verificacion: RegistroMantenimiento = this.crearSolicitudMantenimiento();
-    this.mantenimientoVehicularService.guardar(verificacion).subscribe({
+    this.cargadorService.activar();
+    this.mantenimientoVehicularService.guardar(verificacion).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
         this.abrirRegistroSolicitud();
       },
       error: (error: HttpErrorResponse): void => {
-        console.log(error)
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
     });
   }
@@ -213,10 +226,6 @@ export class RegistroMantenimientoComponent implements OnInit {
     }
   }
 
-  get smf() {
-    return this.solicitudMantenimientoForm.controls;
-  }
-
   asignarContrato(): void {
     const tipoMtto = this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value;
     if (tipoMtto.toString() !== '1') return;
@@ -225,4 +234,69 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("noContrato")?.setValue(contrato);
     console.log(tipoMtto, proveedor, contrato)
   }
+
+  realizarRegistro(id: number): void {
+    this.cargadorService.activar();
+    this.mantenimientoVehicularService.obtenerDetalleRegistro(id).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos.length === 0) return;
+        this.llenarVehiculo(respuesta.datos[0]);
+        this.llenarFormulario(respuesta.datos[0]);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
+  }
+
+  llenarVehiculo(respuesta: RespuestaRegistroMantenimiento): void {
+    this.vehiculoSeleccionado = {
+      verificacionDia: 'false',
+      DESCRIPCION: "",
+      DES_MARCA: respuesta.DES_MARCA,
+      DES_MODALIDAD: "",
+      DES_MODELO: respuesta.DES_MODELO,
+      DES_MTTOESTADO: respuesta.DES_MTTOESTADO,
+      DES_MTTO_TIPO: "",
+      DES_NIVELOFICINA: "",
+      DES_NUMMOTOR: respuesta.DES_NUMMOTOR,
+      DES_NUMSERIE: respuesta.DES_NUMSERIE,
+      DES_PLACAS: respuesta.DES_PLACAS,
+      DES_SUBMARCA: respuesta.DES_SUBMARCA,
+      DES_USO: "",
+      ID_MTTOVEHICULAR: 0,
+      ID_OFICINA: 0,
+      ID_USOVEHICULO: 0,
+      ID_VEHICULO: respuesta.ID_VEHICULO,
+      ID_VELATORIO: 0,
+      IMPORTE_PRIMA: 0,
+      IND_ESTATUS: false,
+      NOM_VELATORIO: respuesta.NOM_VELATORIO,
+      TOTAL: 0,
+      DES_DELEGACION: respuesta.DES_DELEGACION
+    }
+  }
+
+  llenarFormulario(respuesta: RespuestaRegistroMantenimiento): void {
+    this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS)
+    this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA)
+    this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO)
+    this.solicitudMantenimientoForm.get('kilometraje')?.patchValue(respuesta.KILOMETRAJE)
+    // this.solicitudMantenimientoForm.get('tipoMantenimiento')?.patchValue(respuesta.)
+    this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD)
+    // this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta)
+    // this.solicitudMantenimientoForm.get('fechaMantenimiento')?.patchValue(respuesta)
+    this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS)
+    this.solicitudMantenimientoForm.get('nombreProveedor')?.patchValue(respuesta.NOM_PROVEEDOR)
+    this.solicitudMantenimientoForm.get('noContrato')?.patchValue(respuesta.DES_NUMCONTRATO)
+    this.solicitudMantenimientoForm.get('taller')?.patchValue(respuesta.DES_NOMBRE_TALLER)
+    this.solicitudMantenimientoForm.get('costoMantenimiento')?.patchValue(respuesta.COSTO_MTTO)
+  }
+
+  get smf() {
+    return this.solicitudMantenimientoForm.controls;
+  }
+
 }

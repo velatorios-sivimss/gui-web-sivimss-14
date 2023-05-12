@@ -53,8 +53,8 @@ export class DetalleSolicitudMantenimientoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.datos.length === 0) return;
-        this.obtenerAsignacion(respuesta.datos[0]);
-        this.obtenerVehiculo(respuesta.datos[0]);
+        this.llenarInformacionVehiculo(respuesta.datos[0]);
+        this.llenarInformacionSolicitud(respuesta.datos[0]);
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -63,7 +63,7 @@ export class DetalleSolicitudMantenimientoComponent implements OnInit {
     })
   }
 
-  obtenerAsignacion(respuesta: RespuestaSolicitudMantenimiento): void {
+  llenarInformacionVehiculo(respuesta: RespuestaSolicitudMantenimiento): void {
     this.vehiculoSeleccionado = {
       verificacionDia: 'false',
       DESCRIPCION: "",
@@ -91,7 +91,7 @@ export class DetalleSolicitudMantenimientoComponent implements OnInit {
     }
   }
 
-  obtenerVehiculo(respuesta: RespuestaSolicitudMantenimiento): void {
+  llenarInformacionSolicitud(respuesta: RespuestaSolicitudMantenimiento): void {
     this.asignacion = {
       fechaRegistro: respuesta.FEC_REGISTRO,
       kilometraje: respuesta.KILOMETRAJE,

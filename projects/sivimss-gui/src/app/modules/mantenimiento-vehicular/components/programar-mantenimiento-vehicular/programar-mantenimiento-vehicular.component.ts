@@ -195,7 +195,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       header: "Registro de mantenimiento vehicular",
       width: "920px",
       data: {vehiculo: this.vehiculoSeleccionado},
-    })
+    });
   }
 
   abrirModalModificar(): void {
@@ -222,7 +222,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       return;
     }
     if (opcion === 'registroMtto') {
-      this.router.navigate(['./detalle-registro-mantenimiento'], {relativeTo: this.route});
+      this.router.navigate(['./detalle-registro-mantenimiento'],
+        {relativeTo: this.route, queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO}});
       return;
     }
     this.router.navigate(['./detalle-verificacion'], {
@@ -246,7 +247,16 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       header: "Modificar solicitud de mantenimiento",
       width: "920px",
       data: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD},
-    })
+    });
+  }
+
+  abrirModalModificarRegistro(): void {
+    this.modificarModal = !this.modificarModal;
+    this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
+      header: "Modificar registro de mantenimiento vehicular",
+      width: "920px",
+      data: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO},
+    });
   }
 
   abrirPanel(event: MouseEvent, vehiculoSeleccionado: VehiculoMantenimiento): void {
