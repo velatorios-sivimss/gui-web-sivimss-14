@@ -120,15 +120,15 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Generar nota de remisión" *ngIf="notaRemisionSeleccionada?.estatus === 1"
-        (click)="generarNotaRemision()"></app-overlay-panel-opcion>
+        (click)="generarNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ver" *ngIf="notaRemisionSeleccionada?.estatus !== 1"
-        (click)="verDetalleNotaRemision()"></app-overlay-panel-opcion>
+        (click)="verDetalleNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Descargar PDF" *ngIf="notaRemisionSeleccionada?.estatus === 2"
-        (click)="generarReporteNotaRemision('pdf')"></app-overlay-panel-opcion>
+        (click)="generarReporteNotaRemision('pdf'); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Descargar Excel" *ngIf="notaRemisionSeleccionada?.estatus === 2"
-        (click)="generarReporteNotaRemision('xls')"></app-overlay-panel-opcion>
+        (click)="generarReporteNotaRemision('xls'); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Cancelar" *ngIf="notaRemisionSeleccionada?.estatus === 2"
-        (click)="cancelarNotaRemision()"></app-overlay-panel-opcion>
+        (click)="cancelarNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

@@ -109,11 +109,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   verDetalleNotaRemision(): void {
-    this.router.navigate([`detalle-formato/1/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
   }
 
   cancelarNotaRemision(): void {
-    this.router.navigate([`cancelar-formato/1/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
   }
 
   abrirPanel(event: MouseEvent, notaRemisionSeleccionada: NotaRemision): void {
