@@ -11,6 +11,8 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RespuestaRegistroMantenimiento} from "../../../models/respuestaRegistroMantenimiento.interface";
 
+type VehiculoDetalle = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
+
 @Component({
   selector: 'app-detalle-registro-mantenimiento',
   templateUrl: './detalle-registro-mantenimiento.component.html',
@@ -19,7 +21,7 @@ import {RespuestaRegistroMantenimiento} from "../../../models/respuestaRegistroM
 export class DetalleRegistroMantenimientoComponent implements OnInit {
 
   fecha: string = obtenerFechaActual();
-  vehiculoSeleccionado!: VehiculoMantenimiento;
+  vehiculoSeleccionado!: VehiculoDetalle;
   registro!: ResumenRegistro;
   idRegistro!: number;
 

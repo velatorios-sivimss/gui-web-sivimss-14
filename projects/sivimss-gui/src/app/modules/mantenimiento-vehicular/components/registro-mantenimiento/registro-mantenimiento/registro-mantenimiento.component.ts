@@ -23,6 +23,7 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {RespuestaRegistroMantenimiento} from "../../../models/respuestaRegistroMantenimiento.interface";
 import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
 
+type VehiculoRegistro = Omit<VehiculoMantenimiento, "ID_MTTOVERIFINICIO" | "ID_MTTO_SOLICITUD" | "ID_MTTO_REGISTRO">
 
 @Component({
   selector: 'app-registro-mantenimiento',
@@ -39,7 +40,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
   catalogoProveedores: TipoDropdown[] = [];
   mantenimientosPrev: TipoDropdown[] = [];
-  vehiculoSeleccionado!: VehiculoMantenimiento;
+  vehiculoSeleccionado!: VehiculoRegistro;
   contratos: TipoDropdown[] = [];
   resumenRegistro!: ResumenRegistro;
   solicitudMantenimientoForm!: FormGroup;

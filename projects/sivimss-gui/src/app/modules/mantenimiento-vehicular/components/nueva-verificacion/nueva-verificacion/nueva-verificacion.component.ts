@@ -3,7 +3,6 @@ import {MENU_STEPPER} from '../../../../inventario-vehicular/constants/menu-step
 import {CATALOGOS_DUMMIES} from '../../../../inventario-vehicular/constants/dummies';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Vehiculos} from '../../../models/vehiculos.interface';
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {ActivatedRoute, Router} from '@angular/router';
@@ -22,6 +21,8 @@ import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.inter
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 
+type VehiculoVerificacion = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
+
 @Component({
   selector: 'app-nueva-verificacion',
   templateUrl: './nueva-verificacion.component.html',
@@ -32,7 +33,7 @@ export class NuevaVerificacionComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  vehiculoSeleccionado!: VehiculoMantenimiento;
+  vehiculoSeleccionado!: VehiculoVerificacion;
 
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
@@ -42,7 +43,6 @@ export class NuevaVerificacionComponent implements OnInit {
   nuevaVerificacionForm!: FormGroup;
 
   nuevaVerificacion!: VerificacionInicio;
-  vehiculo: Vehiculos = {};
 
   ventanaConfirmacion: boolean = false;
   horaActual: string = obtenerHoraActual();

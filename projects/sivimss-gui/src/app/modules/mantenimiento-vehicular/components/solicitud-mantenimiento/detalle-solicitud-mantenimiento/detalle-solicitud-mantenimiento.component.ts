@@ -11,6 +11,8 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 
+type VehiculoDetalle = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
+
 @Component({
   selector: 'app-detalle-solicitud-mantenimiento',
   templateUrl: './detalle-solicitud-mantenimiento.component.html',
@@ -19,7 +21,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 export class DetalleSolicitudMantenimientoComponent implements OnInit {
 
   fecha: string = obtenerFechaActual();
-  vehiculoSeleccionado!: VehiculoMantenimiento;
+  vehiculoSeleccionado!: VehiculoDetalle;
   asignacion!: ResumenAsignacion;
   idRegistro!: number;
 

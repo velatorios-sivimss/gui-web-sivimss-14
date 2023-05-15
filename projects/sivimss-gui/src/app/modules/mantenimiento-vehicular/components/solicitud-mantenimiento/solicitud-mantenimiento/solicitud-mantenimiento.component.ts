@@ -23,6 +23,7 @@ import {RespuestaSolicitudMantenimiento} from "../../../models/respuestaSolicitu
 import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
 import {diferenciaUTC} from "../../../../../utils/funciones";
 
+type VehiculoSolicitud = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
 @Component({
   selector: 'app-solicitud-mantenimiento',
   templateUrl: './solicitud-mantenimiento.component.html',
@@ -32,7 +33,7 @@ import {diferenciaUTC} from "../../../../../utils/funciones";
 export class SolicitudMantenimientoComponent implements OnInit {
   ventanaConfirmacion: boolean = false;
 
-  vehiculoSeleccionado!: VehiculoMantenimiento;
+  vehiculoSeleccionado!: VehiculoSolicitud;
   resumenAsignacion!: ResumenAsignacion;
 
   solicitudMantenimientoForm!: FormGroup;
@@ -219,8 +220,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   llenarVehiculo(respuesta: RespuestaSolicitudMantenimiento): void {
     this.vehiculoSeleccionado = {
-      verificacionDia: 'false',
       DESCRIPCION: "",
+      DES_DELEGACION: respuesta.DES_DELEGACION,
       DES_MARCA: respuesta.DES_MARCA,
       DES_MODALIDAD: "",
       DES_MODELO: respuesta.DES_MODELO,
@@ -241,7 +242,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       IND_ESTATUS: false,
       NOM_VELATORIO: respuesta.NOM_VELATORIO,
       TOTAL: 0,
-      DES_DELEGACION: respuesta.DES_DELEGACION
+      verificacionDia: 'false'
     }
   }
 

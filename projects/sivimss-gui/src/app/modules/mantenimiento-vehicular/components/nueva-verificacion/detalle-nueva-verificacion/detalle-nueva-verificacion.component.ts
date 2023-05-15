@@ -12,6 +12,8 @@ import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.inter
 import {RespuestaVerificacion} from "../../../models/respuestaVerificacion.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 
+type VehiculoDetalle = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
+
 @Component({
   selector: 'app-detalle-nueva-verificacion',
   templateUrl: './detalle-nueva-verificacion.component.html',
@@ -20,7 +22,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class DetalleNuevaVerificacionComponent implements OnInit {
 
   data = tablaRin;
-  vehiculoSeleccionado!: VehiculoMantenimiento;
+  vehiculoSeleccionado!: VehiculoDetalle;
   verificacion!: VerificacionInicio;
   fecha: string = obtenerFechaActual();
   idRegistro!: number;

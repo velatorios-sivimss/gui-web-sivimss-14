@@ -65,12 +65,12 @@
       </div>
       <ng-container>
         <p-tabView>
-          <p-tabPanel header="Verificación diaria">
+          <p-tabPanel header="Verificación diaria" *ngIf="verificacion">
             <app-table-panel>
               <div class="row table-panel-row">
                 <div class="table-panel-column ml-4">
-                  <label>Fecha Actual</label>
-                  <span></span>
+                  <label>Fecha</label>
+                  <span>{{verificacion.FEC_ALTA | date: 'dd/MM/YYYY'}}</span>
                 </div>
               </div>
               <div class="row table-panel-row">
@@ -78,7 +78,7 @@
                   <div class="row">
                     <div class="table-panel-column col-md-8">
                       <label class="ml-4">Nivel de aceite</label>
-                      <span class="ml-4"></span>
+                      <span class="ml-4">{{verificacion.DES_NIVEL_ACEITE | uppercase}}</span>
                     </div>
                     <div class="table-panel-column col-md-4">
                       <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
@@ -88,7 +88,7 @@
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-8">
                     <label>Nivel de agua</label>
-                    <span></span>
+                    <span>{{verificacion.DES_NIVEL_AGUA | uppercase}}</span>
                   </div>
                   <div class="table-panel-column col-md-4">
                     <img class="icono" src="../../../../../../assets/images/nivelAgua.svg">
@@ -96,14 +96,13 @@
                 </div>
                 <div class="col-md-4"></div>
               </div>
-
               <div class="row table-panel-row">
                 <div class="col-md-4">
                   <div class="grid">
                     <div class="col-12 mt-3">
                       <div class="table-panel-column col-md-8">
-                        <label class="ml-4">Calibración de neumáticos traseros</label>
-                        <span class="ml-4"></span>
+                        <label>Calibración de neumáticos traseros</label>
+                        <span>{{verificacion.DES_NIVEL_NEUMATRASE | uppercase}}</span>
                       </div>
                       <div class="table-panel-column col-md-4">
                         <img class="icono" src="../../../../../../assets/images/velocimetroBajo.svg">
@@ -111,8 +110,8 @@
                     </div>
                     <div class="col-12 mt-3">
                       <div class="table-panel-column col-md-8">
-                        <label class="ml-4">Calibración de numáticos delanteros</label>
-                        <span class="ml-4"></span>
+                        <label>Calibración de numáticos delanteros</label>
+                        <span>{{verificacion.DES_NIVEL_NEUMADELA | uppercase}}</span>
                       </div>
                       <div class="table-panel-column col-md-4">
                         <img class="icono" src="../../../../../../assets/images/belocimetroAlto.svg">
@@ -150,7 +149,7 @@
                   <div class="row">
                     <div class="table-panel-column col-md-8">
                       <label class="ml-4">Nivel de Combustible</label>
-                      <span class="ml-4"></span>
+                      <span class="ml-4">{{verificacion.DES_NIVEL_COMBUSTIBLE | uppercase}}</span>
                     </div>
                     <div class="table-panel-column col-md-4">
                       <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
@@ -160,8 +159,8 @@
                 <div class="col-md-4">
                   <div class="row">
                     <div class="table-panel-column col-md-8">
-                      <label>Nivel de Bateria </label>
-                      <span></span>
+                      <label class="ml-4">Nivel de Bateria </label>
+                      <span class="ml-4">{{verificacion.DES_NIVEL_BATERIA | uppercase}}</span>
                     </div>
                     <div class="table-panel-column col-md-4">
                       <img class="icono-bateria" src="../../../../../../assets/images/loading.svg">
@@ -172,7 +171,7 @@
                   <div class="row">
                     <div class="table-panel-column col-md-6">
                       <label>Código de falla</label>
-                      <span></span>
+                      <span>{{verificacion.DES_NIVEL_CODIGOFALLO | uppercase}}</span>
                     </div>
                     <div class="col-md-6"></div>
                   </div>
@@ -180,7 +179,7 @@
               </div>
             </app-table-panel>
           </p-tabPanel>
-          <p-tabPanel header="Solicitud de mantenimiento">
+          <p-tabPanel header="Solicitud de mantenimiento" *ngIf="solicitudRegistro">
             <app-table-panel>
               <div class="row table-panel-row">
                 <div class="col-md-7">
@@ -241,7 +240,7 @@
               </div>
             </app-table-panel>
           </p-tabPanel>
-          <p-tabPanel header="Registro de seguimiento">
+          <p-tabPanel header="Registro de seguimiento" *ngIf="registro">
             <app-table-panel>
               <div class="row table-panel-row">
                 <div class="col-md-6">
@@ -299,7 +298,6 @@
     </ng-template>
   </p-accordionTab>
 </p-accordion>
-
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
