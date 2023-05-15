@@ -121,19 +121,28 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
-    if (!this.filtroFormData.velatorio) { return }
 
     this.loaderService.activar();
     const busqueda = this.filtrosArchivos(tipoReporte);
 
-    this.descargaArchivosService.descargarArchivo(this.controlVehiculosService.generarReporteCalendar(busqueda), configuracionArchivo).pipe(
+    this.controlVehiculosService.generarReporteCalendar(busqueda).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta) => {
-        console.log(respuesta)
+        if (respuesta.codigo === 200) {
+          const file = new Blob(
+            [this.descargaArchivosService.base64_2Blob(
+              respuesta.datos,
+              this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+            { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          const url = window.URL.createObjectURL(file);
+          window.open(url);
+        } else {
+          console.error(respuesta.mensaje);
+        }
       },
       (error) => {
-        console.log(error)
+        console.error(error);
       },
     )
   }

@@ -73,13 +73,12 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/detalle-vehiculo-dia`, { idVehiculo, fecDia });
   }
 
-  generarReporteCalendar(generarReporteCalendar: GenerarReporteCalendar): Observable<Blob> {
+  generarReporteCalendar(generarReporteCalendar: GenerarReporteCalendar): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/gen-doc-vehiculos`
-      , generarReporteCalendar, { headers, responseType: 'blob' as 'json' });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/gen-doc-vehiculos`, generarReporteCalendar);
   }
 }
 
