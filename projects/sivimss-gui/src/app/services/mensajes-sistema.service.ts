@@ -4,6 +4,7 @@ import {HttpRespuesta} from "projects/sivimss-gui/src/app/models/http-respuesta.
 import {MensajeSistema} from "projects/sivimss-gui/src/app/models/mensaje-sistema";
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
+import { environment } from "../../environments/environment.prod";
 import {AlertaService, TipoAlerta} from "../shared/alerta/services/alerta.service";
 
 @Injectable()
@@ -43,7 +44,7 @@ export class MensajesSistemaService {
         }]
     }
     //return this.httpClient.get<HttpRespuesta<any>>('http://localhost:8079/mssivimss-oauth/mensajes');
-    return this.httpClient.post<HttpRespuesta<any>>('https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/mensajes', {}).pipe(
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + '/mensajes', {}).pipe(
       map((respuesta: HttpRespuesta<any>) => {
         return respuesta.datos as MensajeSistema[];
       })
