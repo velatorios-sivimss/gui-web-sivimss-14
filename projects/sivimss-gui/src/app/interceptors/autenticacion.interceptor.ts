@@ -1,7 +1,6 @@
 import {HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {SIVIMSS_TOKEN} from "projects/sivimss-gui/src/app/utils/constantes";
-import {EMPTY} from "rxjs";
 
 @Injectable()
 export class AutenticacionInterceptor implements HttpInterceptor {

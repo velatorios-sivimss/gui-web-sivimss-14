@@ -20,6 +20,8 @@ import {LazyLoadEvent} from "primeng/api";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {ActivatedRoute} from "@angular/router";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 const MAX_WIDTH: string = "920px";
 
@@ -58,14 +60,16 @@ export class VelatoriosComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private velatorioService: VelatorioService,
               private route: ActivatedRoute,
-              private cargadorService: LoaderService) {
+              private cargadorService: LoaderService,) {
   }
 
   ngOnInit(): void {
+    const usuario = JSON.parse(localStorage.getItem("usuario") as string);
     this.actualizarBreadcrumb();
-    this.inicializarFiltroForm();
     this.cargarCatalogos();
+    this.inicializarFiltroForm(usuario);
   }
+
 
   cargarCatalogos(): void {
     this.niveles = this.route.snapshot.data["respuesta"];
@@ -110,9 +114,9 @@ export class VelatoriosComponent implements OnInit, OnDestroy {
     this.creacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
   }
 
-  inicializarFiltroForm(): void {
+  inicializarFiltroForm(usuario: UsuarioEnSesion): void {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}],
+      nivel: [{value: usuario.idOficina, disabled: true}],
       velatorio: [{value: null, disabled: false}],
       velatorioEspecifico: [{value: null, disabled: false}]
     })
@@ -138,11 +142,11 @@ export class VelatoriosComponent implements OnInit, OnDestroy {
     this.velatorioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe(
-        (respuesta) => {
+        (respuesta: HttpRespuesta<any>): void => {
           this.listaVelatorios = respuesta!.datos.content || [];
           this.totalElementos = respuesta!.datos.totalElements || 0;
         },
-        (error: HttpErrorResponse) => {
+        (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }

@@ -7,6 +7,8 @@ import { FormBuilder } from '@angular/forms';
 import { CapillaReservacionService } from '../../services/capilla-reservacion.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as moment from 'moment'
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 type NuevaSalida = Omit<registrarSalida, 'idSalida'>
 @Component({
   selector: 'app-registrar-salida',
@@ -41,9 +43,9 @@ export class RegistrarSalidaComponent implements OnInit {
     public config: DynamicDialogConfig,
     private readonly ref: DynamicDialogRef,
     public capillaReservacionService: CapillaReservacionService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
     this.registrarSalida = this.config.data;
-    // this.crearSalidaModificada()
   }
 
   ngOnInit(): void {
@@ -52,13 +54,6 @@ export class RegistrarSalidaComponent implements OnInit {
     this.fechaSalida = this.registrarSalida.fecha?.fecha;
     this.horaSalida = this.registrarSalida.fecha?.hora;
     this.obtenerDatosCapilla();
-
-
-
-    // this.crearSalidaModificada();
-    // this.idDisponibilidad =  this.registrarSalida.idCapilla;
-    // this.fechaSalida =  this.registrarSalida.fechaSalida;
-    // this.horaSalida =  this.registrarSalida.horaSalida;
   }
 
   obtenerDatosCapilla(): void {
@@ -73,9 +68,6 @@ export class RegistrarSalidaComponent implements OnInit {
               return
             }
           });
-          // this.capilla = respuesta!.datos.map((capilla: any) => {
-          //   return { label: capilla.nomCapilla, value: capilla.idCapilla };
-          // });
         }
       },
       (error: HttpErrorResponse) => {
@@ -84,16 +76,6 @@ export class RegistrarSalidaComponent implements OnInit {
       }
     );
   }
-
-
-
-
-
-
-
-
-
-
 
   crearSalidaModificada(): registrarSalida{
     return {
@@ -109,17 +91,14 @@ export class RegistrarSalidaComponent implements OnInit {
     const registrarEntradaBo: NuevaSalida = this.crearSalidaModificada()
     const solicitudEntrada: string = JSON.stringify(registrarEntradaBo)
     this.capillaReservacionService.registrarSalida(solicitudEntrada).subscribe(
-      () => {
-        this.alertaService.mostrar(
-          TipoAlerta.Exito,
-          'Has registrado la entrada/inicio del servicio correctamente.',
-        )
+      (respuesta: HttpRespuesta<any>) => {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.ref.close(true)
       },
       (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta')
-        this.ref.close(false)
-        console.error('ERROR: ', error)
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       },
     )
   }
@@ -127,5 +106,4 @@ export class RegistrarSalidaComponent implements OnInit {
   cancelar(): void {
     this.ref.close(false);
   }
-
 }

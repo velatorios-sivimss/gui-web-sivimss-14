@@ -27,6 +27,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import * as moment from 'moment'
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 type NuevaEntrada = Omit<registrarEntrada, 'idRol'>
 
 @Component({
@@ -79,7 +80,8 @@ export class RegistrarEntradaComponent implements OnInit {
     public capillaReservacionService: CapillaReservacionService,
     private route: ActivatedRoute,
     private readonly loaderService: LoaderService,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
     this.entradaRegistrada = this.config.data
     this.inicializarRegistrarEntradaForm(this.entradaRegistrada)
@@ -138,20 +140,13 @@ export class RegistrarEntradaComponent implements OnInit {
     const solicitudEntrada: string = JSON.stringify(registrarEntradaBo)
     this.capillaReservacionService.guardar(solicitudEntrada).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        })
-        this.generarPlantillaEntregaCapilla();
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.refModal.close(true)
       },
       (error: HttpErrorResponse) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        console.error('ERROR: ', error)
-        this.refModal.close(false)
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       },
     )
   }
@@ -174,19 +169,15 @@ export class RegistrarEntradaComponent implements OnInit {
           this.idOds = respuesta.datos[0]?.idOds;
           this.ref.nombreContratante.setValue(respuesta.datos[0]?.nombreContratante);
           this.ref.nombreFinado.setValue(respuesta.datos[0]?.finado);
-          if((respuesta.datos[0].nombreContratante &&
-            respuesta.datos[0]?.finado)
-          ){
-            this.folioOdsEstatus = true;
-          }
         }else{
+          this.folioOdsEstatus = true;
           this.alertaService.mostrar(TipoAlerta.Precaucion, "El número de folio no existe.\n" +
             "Verifica tu información.\n")
         }
       },
       (error:HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
     );
   }

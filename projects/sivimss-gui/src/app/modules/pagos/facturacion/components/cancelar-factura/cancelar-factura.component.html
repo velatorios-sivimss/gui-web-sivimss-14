@@ -1,0 +1,42 @@
+<app-titulo-principal titulo="Cancelar Factura"></app-titulo-principal>
+<form [formGroup]="cancelarForm">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span class="ml-2 font-bold">Folio de la factura DOC-000001</span>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Folio Fiscal</label>
+          <span>DOC-000002</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <div class="row mb-3 mt-3">
+    <div class="col-md-6">
+      <label class="control-label" for="motivoCancelacion">Motivo de cancelación<span class="req">*</span>:</label>
+      <p-dropdown id="motivoCancelacion" class="form-control" formControlName="motivoCancelacion" [options]="motivos"
+                  placeholder="Selecciona el motivo de cancelación">
+      </p-dropdown>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="folioRelacionado">Folio relacionado<span class="req">*</span>:</label>
+      <input id="folioRelacionado" class="form-control" formControlName="folioRelacionado"
+             placeholder="Inserta el folio relacionado">
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <span class="control-label">*Campos obligatorios</span>
+    </div>
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-default btn-md" (click)="limpiarFiltros()">Limpiar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5">Aceptar</button>
+    </div>
+  </div>
+</form>

@@ -18,6 +18,7 @@ export class VerActividadSalasComponent implements OnInit {
   fechaSeleccionada: string = "";
   idSala:number = 0;
   salas: SalaVelatorioConsultaDia[] = [];
+  mostrarNombre:boolean = false;
 
   constructor(
     private readonly ref: DynamicDialogRef,
@@ -37,7 +38,7 @@ export class VerActividadSalasComponent implements OnInit {
     this.reservarSalasService.consultarDetalleDia(this.fechaSeleccionada,this.idSala).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
-      (respuesta: any) => {
+      (respuesta: any) => {;
         respuesta.datos.forEach((SalaVelatorioConsultaDia:SalaVelatorioConsultaDia) => {
           const [hoursEntrada, minutesEntrada, secondsEntrada] = SalaVelatorioConsultaDia.horaEntrada.split(':');
           const [hoursSalida, minutesSalida] = SalaVelatorioConsultaDia.horaSalida.split(':');
@@ -52,6 +53,7 @@ export class VerActividadSalasComponent implements OnInit {
           }
         });
         this.salas = respuesta.datos;
+        this.mostrarNombre = true;
       },
       (error:HttpErrorResponse) => {
         console.error("ERROR: ", error);

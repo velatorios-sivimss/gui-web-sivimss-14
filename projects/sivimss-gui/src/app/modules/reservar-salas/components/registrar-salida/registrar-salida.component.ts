@@ -12,6 +12,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {SalidaSala} from "../../models/registro-sala.interface";
 import {ReservarSalasService} from "../../services/reservar-salas.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-registrar-salida',
@@ -36,7 +37,8 @@ export class RegistrarSalidaComponent implements OnInit {
     private readonly loaderService: LoaderService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
-    private reservarSalasService:ReservarSalasService
+    private reservarSalasService:ReservarSalasService,
+    private mensajesSistemaService: MensajesSistemaService
   ) { }
 
   ngOnInit(): void {
@@ -85,18 +87,13 @@ export class RegistrarSalidaComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.ref.close(true);
       },
       (error : HttpErrorResponse) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        console.error("ERROR: ", error);
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
     );
 

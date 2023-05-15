@@ -17,6 +17,7 @@ import {TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION} from "projects/sivimss-gui
 import {BehaviorSubject, Observable, of, Subscription, throwError} from 'rxjs';
 import {concatMap, delay, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import { environment } from '../../environments/environment.prod';
 
 export interface Modulo {
   idModuloPadre: string | null;
@@ -473,7 +474,7 @@ export class AutenticacionService {
 
   iniciarSesion(usuario: string, contrasenia: string, mostrarMsjContraseniaProxVencer: boolean = true): Observable<string> {
     // this.paginaCargadaSubject.next(false);
-    return this.httpClient.post<any>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/login`, {usuario, contrasenia}).pipe(
+    return this.httpClient.post<any>(environment.api.login + `/login`, {usuario, contrasenia}).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (this.esInicioSesionCorrecto(respuesta.mensaje) || (respuesta.mensaje === MensajesRespuestaAutenticacion.ContraseniaProximaVencer && !mostrarMsjContraseniaProxVencer)) {
           const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos);
@@ -530,17 +531,17 @@ export class AutenticacionService {
 
   obtenerModulosPorIdRol(idRol: string): Observable<HttpRespuesta<Modulo[]>> {
     //this.httpClient.get<RespuestaHttp<Modulo>>('');
-    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/menu`, {idRol});
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/menu`, {idRol});
     // return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
   }
 
   actualizarContrasenia(usuario: string, contraseniaAnterior: string, contraseniaNueva: string): Observable<HttpRespuesta<any>> {
-    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/contrasenia/cambiar`, {usuario, contraseniaAnterior, contraseniaNueva});
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/cambiar`, {usuario, contraseniaAnterior, contraseniaNueva});
     //return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
   }
 
   obtenerPermisos(idRol: string) {
-    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/permisos`, {idRol});
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/permisos`, {idRol});
     // return of<HttpRespuesta<any>>(respuestaPermisosUsuario);
   }
 
@@ -579,7 +580,7 @@ export class AutenticacionService {
 
   validarCodigoRestablecerContrasenia(usuario: string, codigo: string): Observable<string> {
     //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/valida-codigo`, {usuario,codigo})
-    return this.httpClient.post<HttpRespuesta<any>>(`/mssivimss-oauth/v1/contrasenia/valida-codigo`, {usuario,codigo}).pipe(
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/valida-codigo`, {usuario,codigo}).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (existeMensajeEnEnum(MensajesRespuestaCodigo, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
@@ -591,12 +592,12 @@ export class AutenticacionService {
   }
 
   generarCodigoRestablecerContrasenia(usuario: string): Observable<HttpRespuesta<any>> {
-    return this.httpClient.post<HttpRespuesta<any>>(`https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/contrasenia/genera-codigo`, {usuario});
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/genera-codigo`, {usuario});
     // return of<HttpRespuesta<any>>(respCodigoRestablecerContrasenia);
   }
 
   obtenerCatalogos(): void {
-    this.httpClient.post<HttpRespuesta<any>>('https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1/catalogos/consulta', {})
+    this.httpClient.post<HttpRespuesta<any>>(environment.api.login + '/catalogos/consulta', {})
       .subscribe({
         next: (respuesta) => {
           const {datos} = respuesta;

@@ -101,8 +101,8 @@
         <label class="control-label">Estatus<span class="req">*</span></label>
         <div class="contenedor-inputswitch">
           <p-inputSwitch formControlName="estatus"></p-inputSwitch>
-          <span class="activo" *ngIf="fau.estatus?.value">Activo</span>
-          <span class="inactivo" *ngIf="!fau.estatus?.value">Inactivo</span>
+          <span class="activo" *ngIf="fau?.estatus?.value">Activo</span>
+          <span class="inactivo" *ngIf="!fau?.estatus?.value">Inactivo</span>
         </div>
       </div>
     </div>

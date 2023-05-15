@@ -8,6 +8,7 @@ import {TrimmerDirective} from './directives/trimmer.directive';
 import {TextDirective} from './directives/only-text.directive';
 import {OnCloseOnNavigationDirective} from "./directives/close-on-navigation.directive";
 import {PopoverDirective} from "./directives/popover.directive";
+import {TextColorDirective} from "./directives/text-color.directive";
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {PopoverDirective} from "./directives/popover.directive";
     TrimmerDirective,
     TextDirective,
     OnCloseOnNavigationDirective,
-    PopoverDirective
+    PopoverDirective,
+    TextColorDirective
   ],
   imports: [
     CommonModule
@@ -31,7 +33,8 @@ import {PopoverDirective} from "./directives/popover.directive";
     TrimmerDirective,
     TextDirective,
     OnCloseOnNavigationDirective,
-    PopoverDirective
+    PopoverDirective,
+    TextColorDirective
   ]
 })
 export class UtileriaModule {

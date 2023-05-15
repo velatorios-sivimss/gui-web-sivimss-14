@@ -1,12 +1,26 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ConfirmacionServicio, Vehiculos} from '../../../models/vehiculos.interface';
-import {DialogService, DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {CATALOGOS_DUMMIES} from '../../../../inventario-vehicular/constants/dummies';
+import {Component, OnInit} from '@angular/core';
+import {CATALOGOS_TTIPO_MANTENIMIENTO} from '../../../../inventario-vehicular/constants/dummies';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {ActivatedRoute} from '@angular/router';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {ActivatedRoute, Router} from '@angular/router';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {VehiculoTemp} from "../../../models/vehiculo-temp.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+
+interface ResumenRegistro {
+  tipoMantenimiento: string,
+  fechaMantenimiento: string,
+  notas: string,
+  nombreProveedor: string,
+  numeroContrato: string,
+  taller: string,
+  costo: string,
+  kilometraje: string
+}
 
 @Component({
   selector: 'app-registro-mantenimiento',
@@ -16,16 +30,15 @@ import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/
 })
 export class RegistroMantenimientoComponent implements OnInit {
 
+  readonly POSICION_CATALOGOS_PROVEEDORES: number = 2;
+
   ventanaConfirmacion: boolean = false;
 
-  @Input() vehiculoSeleccionado!: Vehiculos;
-  @Input() origen!: string;
-  @Output() confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
-  creacionRef!: DynamicDialogRef;
-
-  solicitudMantenimientoForm!: FormGroup;
-  tiposProveedor: TipoDropdown[] = CATALOGOS_DUMMIES;
-
+  tiposMantenimiento: TipoDropdown[] = CATALOGOS_TTIPO_MANTENIMIENTO;
+  catalogoProveedores: TipoDropdown[] = [];
+  vehiculoSeleccionado!: VehiculoTemp;
+  resumenRegistro!: ResumenRegistro;
+  solicitudMantenimientoForm!: FormGroup
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,41 +48,37 @@ export class RegistroMantenimientoComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     private route: ActivatedRoute,
+    private mantenimientoVehicularService: MantenimientoVehicularService,
+    private router: Router,
   ) {
     this.vehiculoSeleccionado = this.config.data;
   }
 
   ngOnInit(): void {
-    if (this.config?.data) {
-      this.origen = this.config.data.origen;
-      this.vehiculoSeleccionado = this.config.data.vehiculo;
-    }
-    this.vehiculoSeleccionado.velatorio
-    this.inicializarAgregarCapillaForm(this.vehiculoSeleccionado);
+    this.vehiculoSeleccionado = this.config.data.vehiculo;
+    this.inicializarRegistroMantenimientoForm(this.vehiculoSeleccionado);
+    this.cargarCatalogos();
   }
 
-  inicializarAgregarCapillaForm(vehiculoSeleccionado: Vehiculos) {
-    this.solicitudMantenimientoForm = this.formBuilder.group({
-      velatorio: [{value: vehiculoSeleccionado.velatorio, disabled: true}],
-      fecha: [{value: vehiculoSeleccionado.fecha, disabled: false}, [Validators.required]],
-      hora: [{value: vehiculoSeleccionado.hora, disabled: false}, [Validators.required]],
-      vehiculo: [{value: vehiculoSeleccionado.vehiculo, disabled: false}, [Validators.required]],
-      placas: [{value: vehiculoSeleccionado.placas, disabled: false}, [Validators.required]],
-      nivelAceite: [{value: vehiculoSeleccionado.nivelAceite, disabled: false}],
-      nivelAgua: [{value: vehiculoSeleccionado.nivelAgua, disabled: false}],
-      calibracionNeumaticosTraseros: [{value: vehiculoSeleccionado.calibracionNeumaticosTraseros, disabled: false}],
-      calibracionNeumaticosDelanteros: [{value: vehiculoSeleccionado.calibracionNeumaticosDelanteros, disabled: false}],
-      nivelCombustible: [{value: vehiculoSeleccionado.nivelCombustible, disabled: false}],
-      nivelBateria: [{value: vehiculoSeleccionado.nivelBateria, disabled: false}],
-      limpiezaInterior: [{value: vehiculoSeleccionado.limpiezaInterior, disabled: false}],
-      limpiezaExterior: [{value: vehiculoSeleccionado.limpiezaExterior, disabled: false}],
-      codigoFalla: [{value: vehiculoSeleccionado.codigoFalla, disabled: false}],
-      marca: [{value: vehiculoSeleccionado.marca, disabled: false}],
-      anio: [{value: vehiculoSeleccionado.anio, disabled: false}],
-      kilometraje: [{value: vehiculoSeleccionado.kilometraje, disabled: false}],
-      tipoMantenimiento: [{value: vehiculoSeleccionado.tipoMantenimiento, disabled: false}],
-      fechaMantenimiento: [{value: vehiculoSeleccionado.fechaMantenimiento, disabled: false}],
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    const catalogos = respuesta[this.POSICION_CATALOGOS_PROVEEDORES].datos;
+    this.catalogoProveedores = mapearArregloTipoDropdown(catalogos, "NOM_PROVEEDOR", "ID_PROVEEDOR");
+  }
 
+  inicializarRegistroMantenimientoForm(vehiculoSeleccionado: VehiculoTemp) {
+    this.solicitudMantenimientoForm = this.formBuilder.group({
+      placas: [{value: vehiculoSeleccionado.DES_PLACAS, disabled: true}],
+      marca: [{value: vehiculoSeleccionado.DES_MARCA, disabled: true}],
+      anio: [{value: vehiculoSeleccionado.DES_MODELO, disabled: true}],
+      kilometraje: [{value: null, disabled: false}, [Validators.required]],
+      tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
+      fechaMantenimiento: [{value: null, disabled: false}, [Validators.required]],
+      notas: [{value: null, disabled: false}, [Validators.required]],
+      nombreProveedor: [{value: null, disabled: false}, [Validators.required]],
+      noContrato: [{value: null, disabled: false}, [Validators.required]],
+      taller: [{value: null, disabled: false}, [Validators.required]],
+      costoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
@@ -79,6 +88,7 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   agregar(): void {
     this.ventanaConfirmacion = true;
+    this.resumenRegistro = this.crearResumenRegistro();
   }
 
   regresar(): void {
@@ -87,6 +97,58 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   cerrar(): void {
     this.ref.close()
+  }
+
+  crearResumenRegistro(): ResumenRegistro {
+    const tipoMantenimiento = this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value;
+    const tipoMantenimientoValor = this.tiposMantenimiento.find(m => m.value === tipoMantenimiento)?.label;
+    return {
+      tipoMantenimiento: tipoMantenimientoValor || "",
+      fechaMantenimiento: this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value,
+      notas: this.solicitudMantenimientoForm.get("notas")?.value,
+      nombreProveedor: this.solicitudMantenimientoForm.get("nombreProveedor")?.value,
+      numeroContrato: this.solicitudMantenimientoForm.get("noContrato")?.value,
+      taller: this.solicitudMantenimientoForm.get("taller")?.value,
+      costo: this.solicitudMantenimientoForm.get("costoMantenimiento")?.value,
+      kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value
+    }
+  }
+
+  crearSolicitudMantenimiento() {
+    return {
+      idMttoVehicular: null,
+      idMttoestado: 1,
+      idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
+      idDelegacion: 1,
+      idVelatorio: 1,
+      idEstatus: 1,
+      verificacionInicio: null,
+      solicitud: null,
+      registro: {
+        idMttoRegistro: null,
+        idMttoVehicular: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
+        idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
+        idMantenimiento: 1,
+        desNotas: this.solicitudMantenimientoForm.get("notas")?.value,
+        idProveedor: this.solicitudMantenimientoForm.get("nombreProveedor")?.value,
+        desNumcontrato: this.solicitudMantenimientoForm.get("noContrato")?.value
+      }
+    }
+  }
+
+  aceptarSolicitud(): void {
+    const verificacion = this.crearSolicitudMantenimiento();
+    this.mantenimientoVehicularService.guardar(verificacion).subscribe(
+      (respuesta) => {
+        if (!respuesta.datos) return
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
+        this.ref.close();
+        this.router.navigate(['detalle-registro-mantenimiento'], {relativeTo: this.route});
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
   }
 
 }
