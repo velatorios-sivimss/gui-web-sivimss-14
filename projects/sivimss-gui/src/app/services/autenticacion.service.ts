@@ -17,7 +17,7 @@ import {TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION} from "projects/sivimss-gui
 import {BehaviorSubject, Observable, of, Subscription, throwError} from 'rxjs';
 import {concatMap, delay, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 
 export interface Modulo {
   idModuloPadre: string | null;
