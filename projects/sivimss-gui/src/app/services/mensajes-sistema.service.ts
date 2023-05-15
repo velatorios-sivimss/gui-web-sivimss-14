@@ -4,7 +4,7 @@ import {HttpRespuesta} from "projects/sivimss-gui/src/app/models/http-respuesta.
 import {MensajeSistema} from "projects/sivimss-gui/src/app/models/mensaje-sistema";
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
-import { environment } from "../../environments/environment.prod";
+import { environment } from "../../environments/environment";
 import {AlertaService, TipoAlerta} from "../shared/alerta/services/alerta.service";
 
 @Injectable()
