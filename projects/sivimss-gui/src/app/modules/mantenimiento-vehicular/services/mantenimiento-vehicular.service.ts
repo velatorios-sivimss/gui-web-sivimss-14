@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, of} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
 import {BaseService} from "../../../utils/base-service";
@@ -17,6 +17,9 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   readonly _nivel: string = 'catalogo_nivelOficina';
   readonly _delegacion: string = 'catalogo_delegaciones';
+
+  private vehiculo$ = new BehaviorSubject<any>({});
+  vehiculoSeleccionado$ = this.vehiculo$.asObservable();
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "mtto-vehicular-modificar",
@@ -86,5 +89,14 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   override actualizar(t: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/${this._actualizar}`, t);
+  }
+
+  setVehiculo(vehiculo: any): void {
+    this.vehiculo$.next(vehiculo);
+  }
+
+  obtenerRegistroVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
+    const body = {idVehiculo}
+    return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar/${this._paginado}`, body)
   }
 }

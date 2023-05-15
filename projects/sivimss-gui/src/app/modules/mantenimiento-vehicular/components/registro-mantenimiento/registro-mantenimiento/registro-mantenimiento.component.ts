@@ -232,7 +232,6 @@ export class RegistroMantenimientoComponent implements OnInit {
     const proveedor = this.solicitudMantenimientoForm.get("nombreProveedor")?.value;
     const contrato = this.contratos.find(c => c.label === proveedor)?.value;
     this.solicitudMantenimientoForm.get("noContrato")?.setValue(contrato);
-    console.log(tipoMtto, proveedor, contrato)
   }
 
   realizarRegistro(id: number): void {

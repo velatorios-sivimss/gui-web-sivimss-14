@@ -1,22 +1,22 @@
 export interface RegistroSolicitudMttoInterface {
-  idMttoVehicular: null | number,
-  idMttoestado: null | number,
-  idVehiculo: null | number,
-  idDelegacion: null | number,
-  idVelatorio: null | number,
-  idEstatus: null | number,
-  verificacionInicio: null | number,
+  idMttoVehicular: number,
+  idMttoestado: number,
+  idVehiculo: number,
+  idDelegacion: number,
+  idVelatorio: number,
+  idEstatus: number,
+  verificacionInicio: number,
   solicitud: {
-    idMttoSolicitud: null | number,
-    idMttoVehicular: null | number,
+    idMttoSolicitud: number,
+    idMttoVehicular: number,
     idMttoTipo: string,
     idMttoModalidad: string,
-    fecRegistro: string | null,
+    fecRegistro: string,
     desMttoCorrectivo: string,
-    idMttoModalidadDet: null | number,
-    idEstatus: null | number,
+    idMttoModalidadDet: number,
+    idEstatus: number,
     kilometraje: number,
     desNotas: string
   },
-  registro: null | number
+  registro: number
 }

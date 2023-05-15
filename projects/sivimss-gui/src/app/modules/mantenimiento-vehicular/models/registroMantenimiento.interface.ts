@@ -1,5 +1,5 @@
 export interface RegistroMantenimiento {
-  idMttoVehicular: null | number,
+  idMttoVehicular: number,
   idMttoestado: number,
   idVehiculo: number,
   idDelegacion: number,
@@ -8,10 +8,10 @@ export interface RegistroMantenimiento {
   verificacionInicio: null,
   solicitud: null,
   registro: {
-    idMttoRegistro: null | number,
-    idMttoVehicular: null | number,
-    idMttoModalidad: null | string,
-    idMantenimiento: null | number,
+    idMttoRegistro: number,
+    idMttoVehicular: number,
+    idMttoModalidad: string,
+    idMantenimiento: number,
     desNotas: string,
     idProveedor: number,
     desNumcontrato: string,

@@ -80,7 +80,8 @@
         <td [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetalle(vehiculo)">
+            <!--  <a (click)="abrirModalDetalle(vehiculo)"> -->
+            <a [routerLink]="['detalle-mantenimiento', vehiculo.ID_VEHICULO]">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
             <a (click)="abrirPanel($event,vehiculo)">

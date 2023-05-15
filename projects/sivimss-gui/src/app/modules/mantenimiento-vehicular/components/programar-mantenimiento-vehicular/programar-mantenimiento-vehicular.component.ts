@@ -3,7 +3,7 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
-import {ActivatedRoute, Router} from '@angular/router'
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router'
 import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion/nueva-verificacion.component'
 import {
   RegistroMantenimientoComponent
@@ -25,6 +25,7 @@ import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {BehaviorSubject} from "rxjs";
 
 type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
 

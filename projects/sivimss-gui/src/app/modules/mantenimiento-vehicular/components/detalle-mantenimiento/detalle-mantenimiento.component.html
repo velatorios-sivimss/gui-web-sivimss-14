@@ -5,14 +5,14 @@
       <div class="sivimss-acoordion-header">
         <div class="accordion-header-left">
           <span>ID </span>
-          <b></b>
+          <b>{{ vehiculo.ID_VEHICULO }}</b>
         </div>
         <div class="accordion-header-right">
           <div class="estatus">
             <span>Estado de mantenimiento</span>
-            <b></b>
+            <b [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</b>
           </div>
-          <a>
+          <a (click)="abrirPanel($event)">
             <i class="fs fs-barras-horizontales"></i>
           </a>
         </div>
@@ -22,11 +22,11 @@
       <div class="row grid">
         <div class="col">
           <span class="flex flex-column etiqueta-base">Delegación</span>
-          <span class="texto-base"></span>
+          <span class="texto-base">{{vehiculo.DES_DELEGACION}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Velatorio</span>
-          <span class="texto-base"></span>
+          <span class="texto-base">{{vehiculo.NOM_VELATORIO}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Fecha</span>
@@ -35,11 +35,11 @@
         <div class="col">
           <span class="flex flex-column etiqueta-base">Vehiculo</span>
           <span
-            class="texto-base"></span>
+            class="texto-base">{{vehiculo.DES_MARCA}} {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Placas</span>
-          <span class="texto-base"></span>
+          <span class="texto-base">{{vehiculo.DES_PLACAS}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Kilometraje</span>
@@ -299,3 +299,14 @@
     </ng-template>
   </p-accordionTab>
 </p-accordion>
+
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Exportar PDF"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Exportar Excel"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
