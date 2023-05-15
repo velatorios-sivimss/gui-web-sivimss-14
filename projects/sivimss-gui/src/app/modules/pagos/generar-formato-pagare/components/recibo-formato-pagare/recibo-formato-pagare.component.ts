@@ -14,7 +14,7 @@ interface FormatoPagare {
   "domContratante":string,
   "fechaPago": string,
   "fechaPagare": string,
-  "importe": string,
+  "importe": number,
   "redito": string,
   "nomContratante": string,
   "folioPagare": string,
@@ -30,7 +30,7 @@ interface FormatoPagare {
 })
 export class ReciboFormatoPagareComponent implements OnInit {
 
-  formatoPagare!: any;
+  formatoPagare!: FormatoPagare;
   importeLetra: string = "";
 
   constructor(
@@ -55,6 +55,7 @@ export class ReciboFormatoPagareComponent implements OnInit {
       (response) => {
         if (response.datos.length === 0) return;
         this.formatoPagare = response.datos[0];
+        this.formatoPagare.tipoReporte = "pdf";
         this.obtenerImporteLetra(this.formatoPagare.importe);
       },
       (error: HttpErrorResponse) => {

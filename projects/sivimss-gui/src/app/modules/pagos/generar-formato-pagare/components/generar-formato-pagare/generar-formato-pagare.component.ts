@@ -130,7 +130,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros("");
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
@@ -152,7 +152,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-  crearSolicitudFiltros(): FiltrosFormatoPagare {
+  crearSolicitudFiltros(tipoReporte: string): FiltrosFormatoPagare {
     return {
       idOficina: this.filtroForm.get("oficina")?.value,
       idNivel: this.filtroForm.get("nivel")?.value,
@@ -162,7 +162,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       nomContratante: this.filtroForm.get("nomContratante")?.value,
       fecIniODS: this.filtroForm.get("fechaInicial")?.value,
       fecFinODS: this.filtroForm.get("fechaFinal")?.value,
-      tipoReporte: "pdf",
+      tipoReporte: tipoReporte,
     }
   }
 
@@ -176,9 +176,10 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
 
-  guardarListadoPagaresPDF() {
+  guardarListadoPagares(tipoReporte: string) {
+
     this.cargadorService.activar();
-    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros(tipoReporte);
     this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagares(filtros)).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
