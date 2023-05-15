@@ -3,8 +3,7 @@
     <div class="col-md-12">
       <label class="control-label" for="ataud">Ataúd <span class="req">*</span></label>
       <p-dropdown appendTo="body" id="ataud" class="form-control" formControlName="ataud"
-                  [options]="ataud"
-                  placeholder="Selecciona el ataúd">
+                  [options]="ataud" placeholder="Selecciona el ataúd" (onChange)="tomarFolioAtaudDonado()">
       </p-dropdown>
       <span class="campo-obligatorio"
             *ngIf="f.ataud?.errors?.required && (f.ataud?.dirty || f.ataud?.touched)">Campo obligatorio</span>

@@ -10,14 +10,14 @@
                 *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Campo obligatorio</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="folio">Nombre del contratante</label>
+          <label class="control-label" for="nombreContratante">Nombre del contratante</label>
           <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
                  placeholder="Ingresa el nombre del contratante">
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="folio">Nombre del finado</label>
+          <label class="control-label" for="nombreFinado">Nombre del finado</label>
           <input id="nombreFinado" class="form-control" formControlName="nombreFinado" placeholder="Ingresa el nombre del finado">
         </div>
         <div class="col-md-6">
@@ -69,7 +69,7 @@
             <tr>
               <td> {{ataudDonado.desTipoMaterial}} </td>
               <td> {{ataudDonado.desModeloArticulo}} </td>
-              <td> {{ataudDonado.idArticulo}} </td>
+              <td> {{ataudDonado.folioArticulo}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -131,7 +131,7 @@
               <tr>
                 <td> {{ataudDonado.desTipoMaterial}} </td>
                 <td> {{ataudDonado.desModeloArticulo}} </td>
-                <td> {{ataudDonado.idArticulo}} </td>
+                <td> {{ataudDonado.folioArticulo}} </td>
               </tr>
             </ng-template>
           </p-table>
@@ -154,7 +154,7 @@
 </ng-container>
 <div class="flex justify-content-end mb-4">
   <button class="ml-4 btn btn-gold btn-md" routerLink="../">Cancelar</button>
-  <button class="ml-4 btn btn-primary btn-md" [disabled]="donacionForm.invalid" *ngIf="!confirmacion" (click)="abrirConfirmacion()">
+  <button class="ml-4 btn btn-primary btn-md" [disabled]="donacionForm.invalid || ataudDonado.length < 1" *ngIf="!confirmacion" (click)="abrirConfirmacion()">
     Guardar
   </button>
   <button class="ml-4 btn btn-primary btn-md" *ngIf="confirmacion" (click)="guardar()">

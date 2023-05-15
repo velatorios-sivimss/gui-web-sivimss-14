@@ -13,7 +13,7 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegaci&oacute;n<span class="req">*</span></label>
         <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
-                    [options]="delegacion" placeholder="Selecciona la delegación">
+                    [options]="delegacion" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()" >
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="ff.delegacion?.errors?.required && (ff.delegacion?.dirty || ff.delegacion?.touched)">Campo

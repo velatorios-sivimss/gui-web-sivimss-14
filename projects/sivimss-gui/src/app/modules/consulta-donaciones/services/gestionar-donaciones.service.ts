@@ -22,18 +22,19 @@ export class GestionarDonacionesService extends BaseService<HttpRespuesta<any>, 
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
+
   obtenerCatalogoPaises(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_pais'));
-    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+    const paises = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_pais'));
+    return of(mapearArregloTipoDropdown(paises, "desc", "id"));
   }
 
   obtenerCatalogoEstados():Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_estados'));
-    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+    const estados = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_estados'));
+    return of(mapearArregloTipoDropdown(estados, "desc", "id"));
   }
 
   consultaContratantePorFolioODS(claveFolio: string): Observable<HttpRespuesta<any>> {

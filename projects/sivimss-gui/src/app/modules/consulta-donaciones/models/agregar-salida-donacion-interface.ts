@@ -12,7 +12,9 @@ export interface AgregarSalidaDonacionInterface{
   desCorreo?: string;
   tipoPersona?: string;
   claveMatricula?: string;
-  idCodigoPostal?: number;
+  desCodigoPostal?: number;
+  desEstado?: string;
+  desMunicipio?: string;
   desCalle?: string;
   numExterior?: string;
   numInterior?: string;

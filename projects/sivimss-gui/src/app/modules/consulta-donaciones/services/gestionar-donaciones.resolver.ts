@@ -13,9 +13,11 @@ export class GestionarDonacionesResolver implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const catalogoEstados$ = this.donacionesService.obtenerCatalogoEstados();
     const catalogoPaises$ = this.donacionesService.obtenerCatalogoPaises();
+    const catalogoDelegaciones$ = this.donacionesService.obtenerCatalogoDelegaciones();
     return forkJoin([
       catalogoEstados$,
-      catalogoPaises$
+      catalogoPaises$,
+      catalogoDelegaciones$
     ]);
   }
 }

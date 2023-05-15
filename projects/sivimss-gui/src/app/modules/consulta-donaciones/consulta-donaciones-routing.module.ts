@@ -20,7 +20,10 @@ const routes: Routes = [
   },
   {
     path:'aceptacion-donacion',
-    component: AceptacionDonacionComponent
+    component: AceptacionDonacionComponent,
+    resolve: {
+      respuesta: GestionarDonacionesResolver,
+    }
   },
   {
     path:'control-salida-donaciones',
@@ -36,7 +39,8 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: [
-    DonacionesResolver
+    DonacionesResolver,
+    GestionarDonacionesResolver
   ]
 })
 
