@@ -61,6 +61,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   };
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -93,15 +94,16 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
-  inicializarFiltroForm() {
+  async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: 1, disabled: true }],
-      delegacion: [{ value: null, disabled: false }],
-      velatorio: [{ value: null, disabled: false }],
+      nivel: [{ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
+      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }],
+      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }],
       folio: [{ value: null, disabled: false }],
       fechaInicial: [{ value: null, disabled: false }],
       fechaFinal: [{ value: null, disabled: false }],
     });
+    await this.obtenerVelatorios();
   }
 
   generarNotaRemision(): void {
@@ -228,7 +230,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     );
   }
 
-  obtenerVelatorios() {
+  async obtenerVelatorios() {
     this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
       (respuesta) => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");

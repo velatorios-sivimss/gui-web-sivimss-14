@@ -47,6 +47,7 @@ export class VelacionDomicilioComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   foliosGenerados: TipoDropdown[] = [];
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -81,15 +82,16 @@ export class VelacionDomicilioComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
-  inicializarFiltroForm(): void {
+  async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl({ value: 1, disabled: true }, [Validators.required]),
-      delegacion: new FormControl({ value: null, disabled: false }, []),
-      velatorio: new FormControl({ value: null, disabled: false }, []),
+      nivel: new FormControl({ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }, []),
+      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }, []),
       folioODS: new FormControl({ value: null, disabled: false }, []),
       fechaInicio: new FormControl({ value: null, disabled: false }, []),
       fechaFinal: new FormControl({ value: null, disabled: false }, []),
     });
+    await this.obtenerVelatorios();
   }
 
   paginar(event?: LazyLoadEvent): void {
@@ -312,7 +314,7 @@ export class VelacionDomicilioComponent implements OnInit {
     this.filtroForm.get('velatorio')?.updateValueAndValidity();
   }
 
-  obtenerVelatorios() {
+  async obtenerVelatorios() {
     this.foliosGenerados = [];
     this.velacionDomicilioService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
       (respuesta) => {

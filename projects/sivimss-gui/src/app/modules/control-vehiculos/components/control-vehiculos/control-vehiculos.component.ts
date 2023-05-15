@@ -35,6 +35,7 @@ export class ControlVehiculosComponent implements OnInit {
   controlVehiculos: ControlVehiculoListado[] = [];
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -57,13 +58,14 @@ export class ControlVehiculosComponent implements OnInit {
     this.breadcrumbService.actualizar(RESERVAR_SALAS_BREADCRUMB);
   }
 
-  inicializarFiltroForm() {
+  async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl({ value: 1, disabled: true }, [Validators.required]),
-      delegacion: new FormControl({ value: null, disabled: false }),
-      velatorio: new FormControl({ value: null, disabled: false }),
+      nivel: new FormControl({ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }, [Validators.required]),
+      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }, []),
     });
-    this.obtenerVehiculos();
+    await this.obtenerVelatorios();
+    await this.obtenerVehiculos();
   }
 
   handleCambioVista(opcion: { value: SelectButtonOptions }): void {
@@ -74,7 +76,7 @@ export class ControlVehiculosComponent implements OnInit {
     }
   }
 
-  obtenerVelatorios() {
+  async obtenerVelatorios() {
     this.controlVehiculosService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
       (respuesta) => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
@@ -86,8 +88,8 @@ export class ControlVehiculosComponent implements OnInit {
     );
   }
 
-  obtenerVehiculos() {
-    if (this.filtroForm.valid && !this.modoCalendario) {
+  async obtenerVehiculos() {
+    if (!this.modoCalendario) {
       let buscar: BuscarVehiculosDisponibles = {
         idDelegacion: this.f.delegacion.value,
         idVelatorio: this.f.velatorio.value,
