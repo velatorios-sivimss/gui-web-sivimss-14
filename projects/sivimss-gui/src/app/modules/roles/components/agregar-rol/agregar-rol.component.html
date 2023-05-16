@@ -6,12 +6,13 @@
             <div class="row mb-2">
                 <div class="col-md-9">
                     <label class="control-label" for="nombre">Nombre del rol<span class="req">*</span></label>
-                    <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
+                    <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre"
+                           lettersOnly (keyup.space)="noEspaciosAlPrincipio()" maxlength="100">
                     <span class="campo-obligatorio" *ngIf="f?.nombre?.errors?.required && (f?.nombre?.dirty || f?.nombre?.touched)">Campo obligatorio</span>
                 </div>
                 <div class="col-md-3">
                 <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
-                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="opciones" placeholder="Seleccionar el nivel">
+                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogo_nivelOficina" placeholder="Seleccionar el nivel">
                 </p-dropdown>
                 <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Campo obligatorio</span>
             </div>
@@ -23,17 +24,17 @@
             </div>
         </div>
     </section>
-   
-     
-   
-      
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
+
+
+
+
 
     <div class="flex justify-content-end mb-6">
         <button class="btn btn-default btn-md" routerLink="../">Regresar</button>

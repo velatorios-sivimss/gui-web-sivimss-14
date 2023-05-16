@@ -41,7 +41,7 @@ export class RolesComponent implements OnInit {
   paginacionConFiltrado: boolean = false;
   filtroForm!: FormGroup;
 
-  opciones: TipoDropdown[] = CATALOGO_NIVEL;
+  catalogo_nivelOficina!: TipoDropdown[];
   catRol: Rol[] = [];
   roles: Rol[] = [];
   rolSeleccionado!: Rol;
@@ -61,8 +61,9 @@ export class RolesComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(USUARIOS_BREADCRUMB);
-    const roles = this.route.snapshot.data["respuesta"].datos;
-    this.catRol = roles.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
+    const roles = this.route.snapshot.data["respuesta"];
+    this.catRol = roles[0].datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
+    this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.inicializarFiltroForm();
   }
 
