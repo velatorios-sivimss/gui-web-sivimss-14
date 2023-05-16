@@ -193,13 +193,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   abrirRegistroSolicitud(): void {
     this.ref.close();
-    this.router.navigate(['detalle-verificacion'], {
-        relativeTo: this.route, queryParams: {
-          vehiculo: JSON.stringify(this.vehiculoSeleccionado),
-          solicitud: JSON.stringify(this.resumenAsignacion)
-        }
-      }
-    );
+    this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO], {relativeTo: this.route});
   }
 
   realizarSolicitud(id: number): void {

@@ -191,13 +191,7 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   abrirRegistroSolicitud(): void {
     this.ref.close();
-    this.router.navigate(['detalle-registro-mantenimiento'], {
-        relativeTo: this.route, queryParams: {
-          vehiculo: JSON.stringify(this.vehiculoSeleccionado),
-          solicitud: JSON.stringify(this.resumenRegistro)
-        }
-      }
-    );
+    this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO], {relativeTo: this.route});
   }
 
   gestionarCampos(): void {
