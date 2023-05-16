@@ -19,6 +19,7 @@ import { TablePanelModule } from "../../shared/table-panel/table-panel.module";
 import { PermisosPipe } from './pipes/permisos.pipe';
 import { VerDetalleRolComponent } from './components/ver-detalle-rol/ver-detalle-rol.component';
 import { ModificarRolComponent } from './components/modificar-rol/modificar-rol.component';
+import {UtileriaModule} from "../../shared/utileria/utileria.module";
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { ModificarRolComponent } from './components/modificar-rol/modificar-rol.
     OverlayPanelModule,
     OverlayPanelOpcionesModule,
     TablePanelModule,
-    CeldaStickyModule
+    CeldaStickyModule,
+    UtileriaModule
   ],
   providers: [
     RolService
