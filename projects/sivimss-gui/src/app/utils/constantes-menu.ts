@@ -63,6 +63,14 @@ export const idsModulos: DatoModulo = {
     ruta: '/salas',
     icono: ''
   },
+  '20': {
+    ruta: '',
+    icono: 'operacion-sivimss.svg'
+  },
+  '21': {
+    ruta: '/salas',
+    icono: ''
+  },
   '70': {
     ruta: '/gestionar-tramites',
     icono: ''

@@ -37,6 +37,7 @@ export class MenuSidebarComponent implements OnInit, OnDestroy {
 
   agregarPropiedadesExtras(modulos: Modulo[]): Modulo[] {
     return modulos.map((modulo) => {
+      debugger;
       const moduloConPropiedadesExtras = {
         ...modulo,
         ruta: idsModulos[modulo.idModulo].ruta,
