@@ -8,6 +8,14 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 
+interface ConsultaVelatorio {
+  idDelegacion: string | null
+}
+
+interface PeticionDescarga {
+  tipoReporte: "pdf" | "xls"
+}
+
 @Injectable()
 export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
@@ -22,6 +30,12 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
     const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+  }
+
+
+  obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body: ConsultaVelatorio = {idDelegacion: delegacion}
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -53,12 +67,24 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       {headers, responseType: 'blob' as 'json'})
   }
 
-  descargarListadoPagares<T>(body: T): Observable<Blob> {
+  descargarListadoPagaresPDF(): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
+    const body: PeticionDescarga = { tipoReporte: "pdf"}
     return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
+
+  descargarListadoPagaresExcel(): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    const body: PeticionDescarga = { tipoReporte: "xls"}
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
+  }
+
 }

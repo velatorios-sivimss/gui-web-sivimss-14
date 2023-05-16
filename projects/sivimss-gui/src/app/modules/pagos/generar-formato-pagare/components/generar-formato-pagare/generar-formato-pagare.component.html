@@ -16,7 +16,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label class="control-label" for="velatorio">Velatorio:</label>
-                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="opciones" placeholder="Selecciona el velatorio">
+                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
                 </p-dropdown>
             </div>
             <div class="col-md-6">
@@ -99,8 +99,8 @@
                 <div class="export-table">
                     <span class="export-table-text">Exportar tabla</span>
                     <div class="export-table-icons">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf" (click)="guardarListadoPagares('pdf');">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel" (click)="guardarListadoPagares('xls');">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf" (click)="guardarListadoPagaresPDF();">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel" (click)="guardarListadoPagaresExcel();">
                     </div>
                 </div>
             </div>
