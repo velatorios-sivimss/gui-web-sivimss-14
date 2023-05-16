@@ -20,7 +20,7 @@ export class ModificarRolComponent implements OnInit {
 
   modificarRolForm!: FormGroup;
   rolModificado!: RolModificado;
-  opciones: TipoDropdown[] = CATALOGO_NIVEL;
+  catalogo_nivelOficina!: TipoDropdown[];
   indice: number = 0;
 
   constructor(
@@ -33,6 +33,7 @@ export class ModificarRolComponent implements OnInit {
 
   ngOnInit(): void {
     const rol =  this.config.data;
+    this.consultarCatalogoNiveles();
     this.inicializarModificarRolForm(rol);
   }
 
@@ -65,6 +66,20 @@ export class ModificarRolComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
         console.error("ERROR: ", error)
       }
+    );
+  }
+
+  consultarCatalogoNiveles(): void {
+    this.rolService.obtenerCatNivel().subscribe(
+      (respuesta:TipoDropdown[]) => {
+        this.catalogo_nivelOficina = respuesta.map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
+      }
+    );
+  }
+
+  noEspaciosAlPrincipio(): void {
+    this.f.nombre.setValue(
+      this.f.nombre.value.trimStart()
     );
   }
 

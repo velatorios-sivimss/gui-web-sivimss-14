@@ -175,11 +175,15 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
+<!--            <label class="control-label" for="estado">Estado <span class="req">*</span></label>-->
+<!--            <p-dropdown appendTo="body" id="estado" class="form-control" formControlName="estado"-->
+<!--                        [options]="estado"-->
+<!--                        placeholder="Selecciona el estado">-->
+<!--            </p-dropdown>-->
+<!--            <span class="campo-obligatorio"-->
+<!--                  *ngIf="fds.estado?.errors?.required && (fds.estado?.dirty || fds.estado?.touched)">Campo obligatorio</span>-->
             <label class="control-label" for="estado">Estado <span class="req">*</span></label>
-            <p-dropdown appendTo="body" id="estado" class="form-control" formControlName="estado"
-                        [options]="estado"
-                        placeholder="Selecciona el estado">
-            </p-dropdown>
+            <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fds.estado?.errors?.required && (fds.estado?.dirty || fds.estado?.touched)">Campo obligatorio</span>
           </div>
@@ -273,7 +277,7 @@
             <tr>
               <td> {{ataudes.desTipoMaterial}} </td>
               <td> {{ataudes.desModeloArticulo}} </td>
-              <td> {{ataudes.idArticulo}} </td>
+              <td> {{ataudes.folioArticulo}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -455,7 +459,7 @@
               <tr>
                 <td> {{ataudes.desTipoMaterial}} </td>
                 <td> {{ataudes.desModeloArticulo}} </td>
-                <td> {{ataudes.idArticulo}} </td>
+                <td> {{ataudes.folioArticulo}} </td>
               </tr>
             </ng-template>
           </p-table>
@@ -519,8 +523,14 @@
     <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
     <button type="submit" *ngIf="indice == 0" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
             [disabled]="formDatosSolicitante.invalid">Siguiente</button>
-    <button type="submit" *ngIf="indice == 1" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
-            [disabled]=" formAtaudes.invalid ">Siguiente</button>
+
+    <button type="submit" *ngIf="indice==1" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
+            [disabled]="fds.nombreInstitucion.value && finados.length == 0 ">Siguiente</button>
+
+
+    <button type="submit" *ngIf="indice == 2" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
+            [disabled]=" formAtaudes.invalid || ataudes.length < 1 ">Siguiente</button>
+
     <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
   </div>
 </div>

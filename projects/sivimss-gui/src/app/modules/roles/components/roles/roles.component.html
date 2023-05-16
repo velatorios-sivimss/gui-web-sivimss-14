@@ -4,12 +4,14 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label class="control-label" for="rol">Rol:</label>
-                <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" placeholder="Seleccionar el rol">
+                <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" placeholder="Seleccionar el rol"
+                [filter]="true" filterBy="label">
                 </p-dropdown>
             </div>
             <div class="col-md-6">
                 <label class="control-label" for="nivel">Nivel:</label>
-                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="opciones" placeholder="Seleccionar el nivel">
+                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogo_nivelOficina"
+                            placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
                 </p-dropdown>
             </div>
         </div>

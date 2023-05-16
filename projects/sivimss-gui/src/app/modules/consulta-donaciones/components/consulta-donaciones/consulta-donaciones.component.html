@@ -13,7 +13,7 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegaci&oacute;n<span class="req">*</span></label>
         <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
-                    [options]="delegacion" placeholder="Selecciona la delegación">
+                    [options]="delegacion" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()" >
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="ff.delegacion?.errors?.required && (ff.delegacion?.dirty || ff.delegacion?.touched)">Campo
@@ -68,7 +68,7 @@
 <section class="my-6">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Ataúdes donados</h2>
-    <button *appValidaRol="['DONACIONES','ALTA']" type="button" class="btn btn-primary btn-lg" (click)="abrirModarRegistrarDonacion()">
+    <button *appValidaRol="['CONSULTAR_DONADOS','ALTA']" type="button" class="btn btn-primary btn-lg" (click)="abrirModarRegistrarDonacion()">
       Registrar donaci&oacute;n</button>
   </div>
 </section>

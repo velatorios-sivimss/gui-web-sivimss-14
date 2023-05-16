@@ -31,6 +31,7 @@ import {AgregarFinadoComponent } from './components/control-salida-donaciones/ag
 import {AgregarAtaudComponent } from './components/control-salida-donaciones/agregar-ataud/agregar-ataud.component';
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
+import {GestionarDonacionesService} from "./services/gestionar-donaciones.service";
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
     ValidaRolModule,
   ],
   providers: [
-    ConsultaDonacionesService
+    ConsultaDonacionesService,
+    GestionarDonacionesService
   ]
 })
 
