@@ -71,7 +71,8 @@ export class ReciboFormatoPagareComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
       (response) => {
-        this.importeLetra = response!.datos
+        this.importeLetra = response!.datos;
+        this.formatoPagare.cantidad = response!.datos;
       },
       (error: HttpErrorResponse) => {
         console.log(error)
