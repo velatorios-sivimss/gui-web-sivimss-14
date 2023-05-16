@@ -44,8 +44,8 @@ export const idsModulos: DatoModulo = {
     icono: ''
   },
   '9': {
-    icono: '',
-    ruta: ''
+    ruta: 'reservar-salas',
+    icono: ''
   },
   '10': {
     ruta: '/proveedores',
