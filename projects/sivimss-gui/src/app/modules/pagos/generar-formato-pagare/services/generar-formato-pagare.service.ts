@@ -8,10 +8,18 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 
+interface ConsultaVelatorio {
+  idDelegacion: string | null
+}
+
+interface PeticionDescarga {
+  tipoReporte: "pdf" | "xls"
+}
+
 @Injectable()
 export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "", "", 23, "consultar-pagares", "", "");
+    super(_http, `${environment.api.mssivimss}`, "agregar-pagare", "", 22, "consultar-pagares", "detalle-pagare", "");
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
@@ -24,6 +32,12 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
+
+  obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body: ConsultaVelatorio = {idDelegacion: delegacion}
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
+  }
+
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params = new HttpParams()
       .append("pagina", pagina)
@@ -32,31 +46,45 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       {params});
   }
 
-  buscarDatosReportePagos(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
-    const body = {idPagoBitacora}
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/datos-rec-pagos`, body);
+  buscarDatosPagare(id: number): Observable<HttpRespuesta<any>> {
+    const body = {id}
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._detalle}`, body);
   }
 
-  descargarReporte<T>(body: T): Observable<Blob> {
+  obtenerImporteLetra(importe: number): Observable<HttpRespuesta<any>> {
+    const body = {importe}
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/importe-pagare`, body);
+  }
+
+
+  descargarFormato<T>(body: T): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
 
-    return this._http.post<any>(this._base + `${this._funcionalidad}/plantilla-rec-pagos/generarDocumento/pdf`, body,
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-pagare/generarDocumento/pdf`, body,
       {headers, responseType: 'blob' as 'json'})
   }
 
-  descargarListado(): Observable<Blob> {
+  descargarListadoPagaresPDF(): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body = {
-      rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
-      tipoReporte: "pdf"
-    }
-    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-rec-pagos/generarDocumento/pdf`
+    const body: PeticionDescarga = { tipoReporte: "pdf"}
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
+
+  descargarListadoPagaresExcel(): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    const body: PeticionDescarga = { tipoReporte: "xls"}
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
+  }
+
 }

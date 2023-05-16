@@ -1,145 +1,144 @@
 <div class="row">
-  <h3>Pagaré</h3>
+    <h3>Pagaré</h3>
 </div>
 
 <div class="row mb-4">
-  <div class="col-md-12 border seccion-folio flex justify-content-between">
-    <div>
-      <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo">{{formatoPagare.folio}}</span></span>
+    <div class="col-md-12 border seccion-folio flex justify-content-between">
+        <div>
+            <span class="subtitulo texto-centrado">Folio {{formatoPagare.folioODS}}</span>
+        </div>
+        <div class="table-panel-header-column">
+            <div class="flex flex-column ml-5">
+                <a>
+                    <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="table-panel-header-column">
-      <div class="flex flex-column ml-5">
-        <a>
-          <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-        </a>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-md-12 border">
-    <div class="body">
-      <section class="logos">
-        <div class="logo-imss float-left">
-          <span class="texto-imss">IMSS</span>
-        </div>
-        <div class="logo-fibeso float-right ">
-          <span class="texto-fibeso">FIBESO</span>
-        </div>
-        <div class="float-right ">
-          <div class="grid-item">
-            <span class="etiqueta-formato">Fecha <span class="etiqueta-formato-val">15/04/2023 </span></span>
-          </div>
-          <div class="grid-item">
-            <span class="etiqueta-formato">Hora <span class="etiqueta-formato-val">10:32 am</span>
-            </span>
-          </div>
-        </div>
-      </section>
-      <section class="titulo-body">
-        
-      </section>
+    <div class="col-md-12 border">
+        <div class="body">
+            <section class="logos">
+                <div class="logo-imss float-left">
+                    <span class="texto-imss">IMSS</span>
+                </div>
+                <div class="logo-fibeso float-right ">
+                    <span class="texto-fibeso">FIBESO</span>
+                </div>
+                <div class="float-right ">
+                    <div class="grid-item">
+                        <span class="etiqueta-formato">Fecha <span class="etiqueta-formato-val">{{formatoPagare.fechaODS}}</span></span>
+                    </div>
+                    <div class="grid-item">
+                        <span class="etiqueta-formato">Hora <span class="etiqueta-formato-val">{{formatoPagare.hora}}</span>
+                        </span>
+                    </div>
+                </div>
+            </section>
+            <section class="titulo-body">
 
-      <hr class="solid">
+            </section>
 
-      <section class="flex justify-content-between info-gral-body mt-7 col-md-7">
-        <span class="etiqueta-formato">Pagaré <span
+            <hr class="solid">
+
+            <section class="flex justify-content-between info-gral-body mt-7 col-md-7">
+                <span class="etiqueta-formato">Pagaré <span
           class="etiqueta-formato-val">{{formatoPagare.folioPagare}}</span> </span>
-        <span class="etiqueta-formato">Bueno por <span class="etiqueta-formato-val">{{formatoPagare.buenoPor}}</span>
-        </span>
+                <span class="etiqueta-formato">Bueno por $ <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
+                </span>
 
-      
-        
-      </section>
-   
 
-      <section class="border contenido-body">
-        <div class="mt-5">
-          <span class="col-md-12 etiqueta-formato">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera</span>
 
-          <span class="col-md-12 etiqueta-formato-val">al {{formatoPagare.nombreCliente}}
+            </section>
+
+
+            <section class="border contenido-body">
+                <div class="mt-5">
+                    <span class="col-md-12 etiqueta-formato">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera</span>
+
+                    <span class="col-md-12 etiqueta-formato-val">al INSTITUTO MEXICANO DEL SEGURO SOCIAL
             <span class="etiqueta-base"> o a su orden el dia </span>
-            <span class="etiqueta-formato-val"> {{formatoPagare.ordenDia}} </span>
-            <!--
+                    <span class="etiqueta-formato-val"> {{formatoPagare.fechaODS}} </span>
+                    <!--
             <span class="etiqueta-base"> de </span>
             <span class="etiqueta-formato-val"> Abril </span>
             <span class="etiqueta-base"> de </span>
             <span class="etiqueta-formato-val"> 2021 </span>
             -->
-          </span>
-          <span class="col-md-12 etiqueta-base mt-3">la cantidad de
-            <span class="etiqueta-formato-val">{{formatoPagare.cantidad}}</span>
-            <span class="etiqueta-formato-val">{{formatoPagare.cantidadLetra}}</span>
-          </span>
-        </div>
+                    </span>
+                    <span class="col-md-12 etiqueta-base mt-3">la cantidad de $
+            <span class="etiqueta-formato-val">{{formatoPagare.importe}}  </span>
+                    <span class="etiqueta-formato-val">{{importeLetra}}</span>
+                    </span>
+                </div>
 
-        <div>
-          <span class="col-md-12 etiqueta-base mt-7 mb-3">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente 
+                <div>
+                    <span class="col-md-12 etiqueta-base mt-7 mb-3">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente 
             pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en 
             cualquier otra en que se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente pagaré reconozco 
             deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que
              se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera.
           </span>
 
-          <span class="col-md-12 etiqueta-base mt-7 mb-3">de <span class="etiqueta-formato-val">{{formatoPagare.porcentaje}}</span>
-          por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen
-          </span>
+                    <span class="col-md-12 etiqueta-base mt-7 mb-3">de <span class="etiqueta-formato-val">{{formatoPagare.redito}}</span> por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen
+                    </span>
 
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-          
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
 
-          <div class="row flex justify-content-between mt-7">
-            <div class="card border">
-              <div class="container-card">
-                <hr class="solid">
-                <div class="flex justify-content-between mt-5">
-                  <div class="column-card etiqueta-card">Firma</div>
+
+                    <div class="row flex justify-content-between mt-7">
+                        <div class="card border">
+                            <div class="container-card">
+                                <hr class="solid">
+                                <div class="flex justify-content-between mt-5">
+                                    <div class="column-card etiqueta-card">Firma</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-container">
+                        <div class="grid-item">
+                            <span class="etiqueta-formato">Otorgante <span
+                class="etiqueta-formato-val">{{formatoPagare.nomContratante}}</span></span>
+                        </div>
+                        <div class="grid-item">
+
+                        </div>
+                        <div class="grid-item"></div>
+
+                        <div class="grid-item">
+                            <span class="etiqueta-formato">Domicilio <span
+                class="etiqueta-formato-val ">{{formatoPagare.domContratante}}</span></span>
+                        </div>
+                        <div class="grid-item">
+                            <span class="etiqueta-formato">Fecha <span
+                class="etiqueta-formato-val">{{formatoPagare.fechaPago}}</span>
+                            </span>
+                        </div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item">
+                            <span class="etiqueta-formato">Agente <span
+                class="etiqueta-formato-val">{{formatoPagare.nomUsuario}}</span></span>
+                        </div>
+                        <div class="grid-item">
+
+                        </div>
+
+
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                    </div>
+
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="grid-container">
-            <div class="grid-item">
-              <span class="etiqueta-formato">Otorgante <span
-                class="etiqueta-formato-val">{{formatoPagare.otorgante}}</span></span>
-            </div>
-            <div class="grid-item">
-             
-            </div>
-            <div class="grid-item"></div>
-
-            <div class="grid-item">
-              <span class="etiqueta-formato">Domicilio <span
-                class="etiqueta-formato-val ">{{formatoPagare.domicilio}}</span></span>
-            </div>
-            <div class="grid-item">
-              <span class="etiqueta-formato">Fecha <span
-                class="etiqueta-formato-val">{{formatoPagare.fecha}}</span>
-              </span>
-            </div>
-            <div class="grid-item"></div>
-            <div class="grid-item">
-              <span class="etiqueta-formato">Agente <span
-                class="etiqueta-formato-val">{{formatoPagare.agente}}</span></span>
-            </div>
-            <div class="grid-item">
-             
-            </div>
-
-        
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-          </div>
-
+            </section>
         </div>
-
-      </section>
     </div>
-  </div>
 </div>
 
 <div class="row flex justify-content-end mb-4">
-  <button class="btn btn-default btn-md" [routerLink]="'../'">Cancelar</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato de pagaré</button>
+    <button class="btn btn-default btn-md" [routerLink]="'../'">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato de pagaré</button>
 </div>
