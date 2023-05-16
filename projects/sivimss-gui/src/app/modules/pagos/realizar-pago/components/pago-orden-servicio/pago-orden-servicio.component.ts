@@ -61,15 +61,15 @@ export class PagoOrdenServicioComponent implements OnInit {
     this.registrarPago();
     const tipoPago = this.pagoForm.get('tipoPago')?.value;
     this.pagoForm.reset();
-    if (tipoPago === 1) {
+    if (tipoPago === 'Vale paritaria') {
       this.abrirModalValeParitaria();
       return;
     }
-    if (tipoPago === 2) {
+    if (tipoPago === 'Ayuda de gastos de funeral (AGF)') {
       this.abrirModalAGF();
       return;
     }
-    this.abrirModalPago();
+    this.abrirModalPago(tipoPago);
   }
 
   abrirModalValeParitaria(): void {
@@ -88,10 +88,11 @@ export class PagoOrdenServicioComponent implements OnInit {
     this.dialogService.open(RegistrarAgfComponent, REGISTRAR_PAGO_CONFIG)
   }
 
-  abrirModalPago(): void {
+  abrirModalPago(tipoPago: string): void {
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Registrar tipo de pago",
       width: MAX_WIDTH,
+      data: tipoPago
     }
     this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
   }

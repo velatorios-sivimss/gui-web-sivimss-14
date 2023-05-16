@@ -88,35 +88,35 @@ export const REGISTROS_PAGOS_ODS = [
 
 export const TIPO_PAGO_CATALOGOS_ODS: TipoDropdown[] = [
   {
-    value: 1,
+    value: 'Vale paritaria',
     label: 'Vale paritaria'
   },
   {
-    value: 2,
+    value: 'Ayuda de gastos de funeral (AGF)',
     label: 'Ayuda de gastos de funeral (AGF)'
   },
   {
-    value: 3,
+    value: 'Tarjeta credito',
     label: 'Tarjeta credito'
   },
   {
-    value: 4,
+    value: 'Tarjeta debito',
     label: 'Tarjeta debito'
   },
   {
-    value: 5,
+    value: 'Efectivo',
     label: 'Efectivo'
   },
   {
-    value: 6,
+    value: 'Transferencia',
     label: 'Transferencia'
   },
   {
-    value: 7,
+    value: 'Deposito',
     label: 'Deposito'
   },
   {
-    value: 8,
+    value: 'Traslado oficial',
     label: 'Traslado oficial'
   }
 ];

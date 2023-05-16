@@ -30,7 +30,8 @@ export class RealizarPagoComponent implements OnInit {
   realizarPagoModal: boolean = false;
 
   constructor(private breadcrumbService: BreadcrumbService,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              ) {
   }
 
   ngOnInit(): void {
