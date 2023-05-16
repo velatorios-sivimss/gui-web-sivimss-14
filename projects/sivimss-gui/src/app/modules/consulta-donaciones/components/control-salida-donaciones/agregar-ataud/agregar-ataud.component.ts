@@ -10,6 +10,7 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {GestionarDonacionesService} from "../../../services/gestionar-donaciones.service";
 
 @Component({
   selector: 'app-agregar-ataud',
@@ -24,13 +25,14 @@ export class AgregarAtaudComponent implements OnInit {
 
   ataudSeleccionado: any;
   backlogAutaudes!: AtaudDonado[];
+  folioAtaudSeleccionado: string = "";
 
 
   constructor(
     private formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
     private loaderService: LoaderService,
-    private consultaDonacionesService: ConsultaDonacionesService,
+    private consultaDonacionesService: GestionarDonacionesService,
     public config: DynamicDialogConfig,
   ) { }
 
@@ -47,7 +49,7 @@ export class AgregarAtaudComponent implements OnInit {
 
   agregar(): void {
     this.ataudSeleccionado = this.backlogAutaudes.filter( (ataud:AtaudDonado) => {
-      return ataud.idArticulo == this.f.ataud.value;
+      return ataud.folioArticulo == this.folioAtaudSeleccionado;
     })
     this.ref.close(...this.ataudSeleccionado);
   }
@@ -59,16 +61,25 @@ export class AgregarAtaudComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>)=> {
         this.backlogAutaudes = respuesta.datos;
-        this.ataud = mapearArregloTipoDropdown(respuesta.datos,"desModeloArticulo","idArticulo");
+        this.ataud = mapearArregloTipoDropdown(respuesta.datos,"desModeloArticulo","folioArticulo");
         this.config.data.forEach((elemento:AtaudDonado) => {
           this.ataud = this.ataud.filter(ataud => {
-            return ataud.value != elemento.idArticulo;
+            return ataud.value != elemento.folioArticulo;
           });
         });
       },
       (error: HttpErrorResponse) => {
       }
     )
+  }
+
+  tomarFolioAtaudDonado(): void {
+    this.backlogAutaudes.forEach((elemento: any)  => {
+      if(this.f.ataud.value == elemento.folioArticulo){
+        this.folioAtaudSeleccionado = elemento.folioArticulo;
+
+      }
+    })
   }
 
   cancelar(): void {
