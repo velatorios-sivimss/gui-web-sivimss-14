@@ -18,7 +18,7 @@ import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
-type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula">;
+type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula" | "usuario">;
 type SolicitudCurp = Pick<Usuario, "curp">;
 type SolicitudMatricula = Pick<Usuario, "claveMatricula">;
 
@@ -176,7 +176,7 @@ export class AgregarUsuarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
-        if (respuesta.datos.mensaje !== '') {
+        if (respuesta.datos.message !== '') {
           this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje, this.DEFAULT_ERROR_RENAPO);
           this.curpValida = !this.curpValida;
           return;

@@ -77,6 +77,7 @@ export class ModificarUsuarioComponent implements OnInit {
       id: [{value: usuario.id, disabled: true}, [Validators.required]],
       curp: [{value: usuario.curp, disabled: true}, [Validators.required, Validators.maxLength(18)]],
       matricula: [{value: usuario.matricula, disabled: true}, [Validators.required, Validators.maxLength(10)]],
+      usuario: [{value: usuario.usuario, disabled: true}],
       nombre: [{value: usuario.nombre, disabled: true}, [Validators.required, Validators.maxLength(20)]],
       primerApellido: [{value: usuario.paterno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
       segundoApellido: [{value: usuario.materno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
@@ -111,6 +112,7 @@ export class ModificarUsuarioComponent implements OnInit {
 
   crearUsuarioModificado(): UsuarioModificado {
     return {
+      usuario: this.modificarUsuarioForm.get("usuario")?.value,
       claveMatricula: this.modificarUsuarioForm.get("matricula")?.value,
       correo: this.modificarUsuarioForm.get("correoElectronico")?.value,
       curp: this.modificarUsuarioForm.get("curp")?.value,
