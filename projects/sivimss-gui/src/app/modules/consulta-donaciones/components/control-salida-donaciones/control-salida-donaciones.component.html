@@ -62,7 +62,7 @@
             <label class="control-label" for="sexo">Sexo <span class="req">*</span></label>
             <p-dropdown appendTo="body" id="sexo" class="form-control" formControlName="sexo"
                         [options]="sexo" (onChange)="cambiarSexo()"
-                        placeholder="Selecciona el sexo">
+                        placeholder="Selecciona el sexo" [filter]="true" filterBy="label">
             </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fds.sexo?.errors?.required && (fds.sexo?.dirty || fds.sexo?.touched)">Campo obligatorio</span>
@@ -82,7 +82,7 @@
             <label class="control-label" for="nacionalidad">Nacionalidad <span class="req">*</span></label>
             <p-dropdown appendTo="body" id="nacionalidad" class="form-control" formControlName="nacionalidad"
                         [options]="nacionalidad" (onChange)="cambiarNacionalidad()"
-                        placeholder="Selecciona la nacionalidad">
+                        placeholder="Selecciona la nacionalidad" [filter]="true" filterBy="label">
             </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fds.nacionalidad?.errors?.required && (fds.nacionalidad?.dirty || fds.nacionalidad?.touched)">Campo obligatorio</span>
@@ -93,7 +93,7 @@
               <label class="control-label" for="lugarNacimiento">Lugar de nacimiento <span class="req">*</span></label>
               <p-dropdown appendTo="body" id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
                           [options]="lugarNacimiento"
-                          placeholder="Selecciona el lugar de nacimiento">
+                          placeholder="Selecciona el lugar de nacimiento" [filter]="true" filterBy="label">
               </p-dropdown>
               <span class="campo-obligatorio"
                     *ngIf="fds.lugarNacimiento?.errors?.required && (fds.lugarNacimiento?.dirty || fds.lugarNacimiento?.touched)">Campo obligatorio</span>
@@ -105,7 +105,7 @@
               <label class="control-label" for="paisNacimiento">País de nacimiento <span class="req">*</span></label>
               <p-dropdown appendTo="body" id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
                           [options]="paisNacimiento"
-                          placeholder="Selecciona el lugar de nacimiento">
+                          placeholder="Selecciona el lugar de nacimiento" [filter]="true" filterBy="label">
               </p-dropdown>
               <span class="campo-obligatorio"
                     *ngIf="fds.paisNacimiento?.errors?.required && (fds.paisNacimiento?.dirty || fds.paisNacimiento?.touched)">Campo obligatorio</span>
