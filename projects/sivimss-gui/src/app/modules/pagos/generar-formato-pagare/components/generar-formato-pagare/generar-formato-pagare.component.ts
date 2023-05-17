@@ -21,7 +21,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
-type ListadoFormato = Required<FormatoPagare> & { idPagoBit: string }
+type ListadoFormato = Required<FormatoPagare> & { idODS: string }
 
 @Component({
   selector: 'app-generar-formato-pagare',
@@ -96,7 +96,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   abrirModalformatoPagareTramites(): void {
     this.router.navigate(['generar-formato-pagare'], {
       relativeTo: this.activatedRoute,
-      queryParams: {idPagare: this.formatoPagareSeleccionado.id}
+      queryParams: {idODS: this.formatoPagareSeleccionado.id}
     });
   }
 
