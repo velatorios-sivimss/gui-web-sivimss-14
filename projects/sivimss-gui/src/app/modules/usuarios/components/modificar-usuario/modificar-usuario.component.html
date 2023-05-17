@@ -1,235 +1,239 @@
-<ng-container *ngIf="indice === 0">
-  <form [formGroup]="modificarUsuarioForm" (submit)="confirmarModificacion()">
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="idModificar">ID</label>
-        <input id="idModificar" class="form-control" formControlName="id" placeholder="ID">
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="curpModificar">CURP<span class="req">*</span>:</label>
-        <input id="curpModificar" class="form-control" formControlName="curp" placeholder="Inserta el CURP">
-        <span class="campo-obligatorio" *ngIf="fmu?.curp?.errors?.required && (fmu?.curp?.dirty || fmu?.curp?.touched)">Campo obligatorio</span>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="matriculaModificar">Matrícula<span class="req">*</span>:</label>
-        <input id="matriculaModificar" class="form-control" formControlName="matricula"
-               placeholder="Inserta la matrícula">
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.matricula?.errors?.required && (fmu?.matricula?.dirty || fmu?.matricula?.touched)">Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="nombreModificar">Nombre(s)<span class="req">*</span>:</label>
-        <input id="nombreModificar" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.nombre?.errors?.required && (fmu?.nombre?.dirty || fmu?.nombre?.touched)">Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="primerApellidoModificar">Primer apellido<span class="req">*</span>:</label>
-        <input id="primerApellidoModificar" class="form-control" formControlName="primerApellido"
-               placeholder="Inserta el primer apellido">
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.primerApellido?.errors?.required && (fmu?.primerApellido?.dirty || fmu?.primerApellido?.touched)">Campo obligatorio</span>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="segundoApellidoModificar">Segundo apellido<span class="req">*</span>:</label>
-        <input id="segundoApellidoModificar" class="form-control" formControlName="segundoApellido"
-               placeholder="Inserta el segundo apellido">
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.segundoApellido?.errors?.required && (fmu?.segundoApellido?.dirty || fmu?.segundoApellido?.touched)">Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="correoElectronicoModificar">Correo electrónico<span
-          class="req">*</span></label>
-        <input id="correoElectronicoModificar" class="form-control" formControlName="correoElectronico"
-               placeholder="Inserta el correo electrónico">
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.correoElectronico?.errors?.required && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Campo obligatorio</span>
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.correoElectronico?.errors?.pattern && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Formato incorrecto</span>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="fechaNacimientoModificar">Fecha nacimiento<span
-          class="req">*</span>:</label>
-        <p-calendar id="fechaNacimientoModificar" formControlName="fechaNacimiento" styleClass="form-control"
-                    [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                    [maxDate]="fechaActual">
-        </p-calendar>
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.fechaNacimiento?.errors?.required && (fmu?.fechaNacimiento?.dirty || fmu?.fechaNacimiento?.touched)">Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="nivelAgregarUsuarioModificar">Nivel<span class="req">*</span>:</label>
-        <p-dropdown appendTo="body" id="nivelAgregarUsuarioModificar" class="form-control" formControlName="nivel"
-                    [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
-        </p-dropdown>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="delegacionAgregarUsuarioModificar">Delegación<span
-          class="req">*</span></label>
-        <p-dropdown appendTo="body" id="delegacionAgregarUsuarioModificar" class="form-control"
-                    formControlName="delegacion" [options]="catalogoDelegaciones" placeholder="Seleccione el nivel"
-                    (onChange)="buscarVelatorios()">
-        </p-dropdown>
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.delegacion?.errors?.required && (fmu?.delegacion?.dirty || fmu?.delegacion?.touched)">Campo obligatorio</span>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="velatorioAgregarUsuarioModificar">Velatorio<span
-          class="req">*</span></label>
-        <p-dropdown appendTo="body" id="velatorioAgregarUsuarioModificar" class="form-control"
-                    formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Seleccione la delegación">
-        </p-dropdown>
-        <span class="campo-obligatorio"
-              *ngIf="fmu?.velatorio?.errors?.required && (fmu?.velatorio?.dirty || fmu?.velatorio?.touched)">Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-6">
-      <div class="col-md-12">
-        <label class="control-label" for="rolAgregarUsuarioModificar">Rol<span class="req">*</span>:</label>
-        <p-dropdown appendTo="body" id="rolAgregarUsuarioModificar" class="form-control" formControlName="rol"
-                    [options]="catalogoRoles" placeholder="Seleccione el rol">
-        </p-dropdown>
-        <span class="campo-obligatorio" *ngIf="fmu?.rol?.errors?.required && (fmu?.rol?.dirty || fmu?.rol?.touched)">Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <label class="control-label">Estatus<span class="req">*</span>:</label>
-        <div class="contenedor-inputswitch">
-          <p-inputSwitch formControlName="estatus"></p-inputSwitch>
-          <span class="activo" *ngIf="fmu.estatus?.value">Activo</span>
-          <span class="inactivo" *ngIf="!fmu.estatus?.value">Inactivo</span>
+<ng-container [ngSwitch]="pasoModificarUsuario">
+  <ng-container *ngSwitchCase="CAPTURA_DE_USUARIO">
+    <form [formGroup]="modificarUsuarioForm" (submit)="confirmarModificacion()">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="idModificar">ID</label>
+          <input id="idModificar" class="form-control" formControlName="id" placeholder="ID">
         </div>
       </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <span>*Campos obligatorios</span>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="curpModificar">CURP<span class="req">*</span>:</label>
+          <input id="curpModificar" class="form-control" formControlName="curp" placeholder="Inserta el CURP">
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.curp?.errors?.required && (fmu?.curp?.dirty || fmu?.curp?.touched)">Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="matriculaModificar">Matrícula<span class="req">*</span>:</label>
+          <input id="matriculaModificar" class="form-control" formControlName="matricula"
+                 placeholder="Inserta la matrícula">
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.matricula?.errors?.required && (fmu?.matricula?.dirty || fmu?.matricula?.touched)">Campo obligatorio</span>
+        </div>
       </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="nombreModificar">Nombre(s)<span class="req">*</span>:</label>
+          <input id="nombreModificar" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.nombre?.errors?.required && (fmu?.nombre?.dirty || fmu?.nombre?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="primerApellidoModificar">Primer apellido<span class="req">*</span>:</label>
+          <input id="primerApellidoModificar" class="form-control" formControlName="primerApellido"
+                 placeholder="Inserta el primer apellido">
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.primerApellido?.errors?.required && (fmu?.primerApellido?.dirty || fmu?.primerApellido?.touched)">Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="segundoApellidoModificar">Segundo apellido<span
+            class="req">*</span>:</label>
+          <input id="segundoApellidoModificar" class="form-control" formControlName="segundoApellido"
+                 placeholder="Inserta el segundo apellido">
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.segundoApellido?.errors?.required && (fmu?.segundoApellido?.dirty || fmu?.segundoApellido?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="correoElectronicoModificar">Correo electrónico<span
+            class="req">*</span></label>
+          <input id="correoElectronicoModificar" class="form-control" formControlName="correoElectronico"
+                 placeholder="Inserta el correo electrónico">
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.correoElectronico?.errors?.required && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Campo obligatorio</span>
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.correoElectronico?.errors?.pattern && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Formato incorrecto</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="fechaNacimientoModificar">Fecha nacimiento<span
+            class="req">*</span>:</label>
+          <p-calendar id="fechaNacimientoModificar" formControlName="fechaNacimiento" styleClass="form-control"
+                      [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
+                      [maxDate]="fechaActual">
+          </p-calendar>
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.fechaNacimiento?.errors?.required && (fmu?.fechaNacimiento?.dirty || fmu?.fechaNacimiento?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="nivelAgregarUsuarioModificar">Nivel<span class="req">*</span>:</label>
+          <p-dropdown appendTo="body" id="nivelAgregarUsuarioModificar" class="form-control" formControlName="nivel"
+                      [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="delegacionAgregarUsuarioModificar">Delegación<span
+            class="req">*</span></label>
+          <p-dropdown appendTo="body" id="delegacionAgregarUsuarioModificar" class="form-control"
+                      formControlName="delegacion" [options]="catalogoDelegaciones" placeholder="Seleccione el nivel"
+                      (onChange)="buscarVelatorios()">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.delegacion?.errors?.required && (fmu?.delegacion?.dirty || fmu?.delegacion?.touched)">Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="velatorioAgregarUsuarioModificar">Velatorio<span
+            class="req">*</span></label>
+          <p-dropdown appendTo="body" id="velatorioAgregarUsuarioModificar" class="form-control"
+                      formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Seleccione la delegación">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fmu?.velatorio?.errors?.required && (fmu?.velatorio?.dirty || fmu?.velatorio?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-6">
+        <div class="col-md-12">
+          <label class="control-label" for="rolAgregarUsuarioModificar">Rol<span class="req">*</span>:</label>
+          <p-dropdown appendTo="body" id="rolAgregarUsuarioModificar" class="form-control" formControlName="rol"
+                      [options]="catalogoRoles" placeholder="Seleccione el rol">
+          </p-dropdown>
+          <span class="campo-obligatorio" *ngIf="fmu?.rol?.errors?.required && (fmu?.rol?.dirty || fmu?.rol?.touched)">Campo obligatorio</span>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <label class="control-label">Estatus<span class="req">*</span>:</label>
+          <div class="contenedor-inputswitch">
+            <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+            <span class="activo" *ngIf="fmu.estatus?.value">Activo</span>
+            <span class="inactivo" *ngIf="!fmu.estatus?.value">Inactivo</span>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <span>*Campos obligatorios</span>
+        </div>
+      </div>
+      <div class="flex justify-content-end row">
+        <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="modificarUsuarioForm.invalid">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="RESUMEN_DE_USUARIO">
+    <app-table-panel>
+      <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+          <span class="font-bold">ID</span>
+          <span class="ml-2 font-bold">{{usuarioModificado.id}}</span>
+        </div>
+      </ng-template>
+      <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column">
+          <div class="flex flex-column">
+            <span>Estatus</span>
+            <span class="activo" *ngIf="usuarioModificado.estatus">Activo</span>
+            <span class="inactivo" *ngIf="!usuarioModificado.estatus">Inactivo</span>
+          </div>
+        </div>
+      </ng-template>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>CURP</label>
+            <span>{{usuarioModificado.curp}}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Matrícula</label>
+            <span>{{usuarioModificado.matricula}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Nombre</label>
+            <span>{{usuarioModificado.nombre}}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Usuario</label>
+            <span>{{usuarioModificado.usuario}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Primer apellido</label>
+            <span>{{usuarioModificado.paterno}}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Segundo apellido</label>
+            <span>{{usuarioModificado.materno}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Correo electrónico</label>
+            <span>{{usuarioModificado.correo}}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Nivel</label>
+            <span>{{nivelResumen}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Delegación</label>
+            <span>{{delegacionResumen}}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Velatorio</label>
+            <span>{{velatorioResumen}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-12">
+          <div class="table-panel-column">
+            <label>Rol</label>
+            <span>{{rolResumen}}</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <div class="mb-3 mt-3 row text-center">
+      ¿Estas seguro de modificar el registro de este nuevo usuario?
     </div>
-    <div class="flex justify-content-end row">
+    <div class="flex justify-content-end mt-5">
       <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="modificarUsuarioForm.invalid">
+      <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarModificacion();">
         Guardar
       </button>
     </div>
-  </form>
-</ng-container>
-<ng-container *ngIf="indice === 1">
-  <app-table-panel>
-    <ng-template appCustomTemplate="left-header">
-      <div class="table-panel-header-column">
-        <span class="font-bold">ID</span>
-        <span class="ml-2 font-bold">{{usuarioModificado.id}}</span>
-      </div>
-    </ng-template>
-    <ng-template appCustomTemplate="right-header">
-      <div class="table-panel-header-column">
-        <div class="flex flex-column">
-          <span>Estatus</span>
-          <span class="activo" *ngIf="usuarioModificado.estatus">Activo</span>
-          <span class="inactivo" *ngIf="!usuarioModificado.estatus">Inactivo</span>
-        </div>
-      </div>
-    </ng-template>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>CURP</label>
-          <span>{{usuarioModificado.curp}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Matrícula</label>
-          <span>{{usuarioModificado.matricula}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Nombre</label>
-          <span>{{usuarioModificado.nombre}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Usuario</label>
-          <span>{{usuarioModificado.usuario}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Primer apellido</label>
-          <span>{{usuarioModificado.paterno}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Segundo apellido</label>
-          <span>{{usuarioModificado.materno}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Correo electrónico</label>
-          <span>{{usuarioModificado.correo}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Nivel</label>
-          <span>{{nivelResumen}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Delegación</label>
-          <span>{{delegacionResumen}}</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Velatorio</label>
-          <span>{{velatorioResumen}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-12">
-        <div class="table-panel-column">
-          <label>Rol</label>
-          <span>{{rolResumen}}</span>
-        </div>
-      </div>
-    </div>
-  </app-table-panel>
-  <div class="mb-3 mt-3 row text-center">
-    ¿Estas seguro de modificar el registro de este nuevo usuario?
-  </div>
-  <div class="flex justify-content-end mt-5">
-    <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarModificacion();">
-      Guardar
-    </button>
-  </div>
+  </ng-container>
 </ng-container>
