@@ -8,12 +8,12 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="curpModificar">CURP<span class="req">*</span></label>
+        <label class="control-label" for="curpModificar">CURP<span class="req">*</span>:</label>
         <input id="curpModificar" class="form-control" formControlName="curp" placeholder="Inserta el CURP">
         <span class="campo-obligatorio" *ngIf="fmu?.curp?.errors?.required && (fmu?.curp?.dirty || fmu?.curp?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="matriculaModificar">Matrícula<span class="req">*</span></label>
+        <label class="control-label" for="matriculaModificar">Matrícula<span class="req">*</span>:</label>
         <input id="matriculaModificar" class="form-control" formControlName="matricula"
                placeholder="Inserta la matrícula">
         <span class="campo-obligatorio"
@@ -22,7 +22,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nombreModificar">Nombre(s)<span class="req">*</span></label>
+        <label class="control-label" for="nombreModificar">Nombre(s)<span class="req">*</span>:</label>
         <input id="nombreModificar" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
         <span class="campo-obligatorio"
               *ngIf="fmu?.nombre?.errors?.required && (fmu?.nombre?.dirty || fmu?.nombre?.touched)">Campo obligatorio</span>
@@ -30,14 +30,14 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="primerApellidoModificar">Primer apellido<span class="req">*</span></label>
+        <label class="control-label" for="primerApellidoModificar">Primer apellido<span class="req">*</span>:</label>
         <input id="primerApellidoModificar" class="form-control" formControlName="primerApellido"
                placeholder="Inserta el primer apellido">
         <span class="campo-obligatorio"
               *ngIf="fmu?.primerApellido?.errors?.required && (fmu?.primerApellido?.dirty || fmu?.primerApellido?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="segundoApellidoModificar">Segundo apellido<span class="req">*</span></label>
+        <label class="control-label" for="segundoApellidoModificar">Segundo apellido<span class="req">*</span>:</label>
         <input id="segundoApellidoModificar" class="form-control" formControlName="segundoApellido"
                placeholder="Inserta el segundo apellido">
         <span class="campo-obligatorio"
@@ -68,7 +68,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nivelAgregarUsuarioModificar">Nivel<span class="req">*</span></label>
+        <label class="control-label" for="nivelAgregarUsuarioModificar">Nivel<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="nivelAgregarUsuarioModificar" class="form-control" formControlName="nivel"
                     [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
         </p-dropdown>
@@ -97,7 +97,7 @@
     </div>
     <div class="row mb-6">
       <div class="col-md-12">
-        <label class="control-label" for="rolAgregarUsuarioModificar">Rol<span class="req">*</span></label>
+        <label class="control-label" for="rolAgregarUsuarioModificar">Rol<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="rolAgregarUsuarioModificar" class="form-control" formControlName="rol"
                     [options]="catalogoRoles" placeholder="Seleccione el rol">
         </p-dropdown>
@@ -106,7 +106,7 @@
     </div>
     <div class="row mb-4">
       <div class="col-md-12">
-        <label class="control-label">Estatus<span class="req">*</span></label>
+        <label class="control-label">Estatus<span class="req">*</span>:</label>
         <div class="contenedor-inputswitch">
           <p-inputSwitch formControlName="estatus"></p-inputSwitch>
           <span class="activo" *ngIf="fmu.estatus?.value">Activo</span>

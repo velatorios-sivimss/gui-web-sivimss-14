@@ -2,14 +2,14 @@
   <form [formGroup]="agregarUsuarioForm" (submit)="confirmarCreacion()">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="curp">CURP<span class="req">*</span></label>
+        <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
         <input id="curp" class="form-control" formControlName="curp" placeholder="Inserta el CURP"
                (blur)="validarCurp();" alphanumericOnly>
         <span class="campo-obligatorio" *ngIf="fau?.curp?.errors?.required && (fau?.curp?.dirty || fau?.curp?.touched)">Campo obligatorio</span>
         <span class="campo-obligatorio" *ngIf="fau?.curp?.errors?.pattern && (fau?.curp?.dirty || fau?.curp?.touched)">Formato incorrecto</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="matricula">Matrícula<span class="req">*</span></label>
+        <label class="control-label" for="matricula">Matrícula<span class="req">*</span>:</label>
         <input id="matricula" class="form-control" formControlName="matricula" placeholder="Inserta la matrícula"
                (blur)="validarMatricula();">
         <span class="campo-obligatorio"
@@ -18,7 +18,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span></label>
+        <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span>:</label>
         <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
         <span class="campo-obligatorio"
               *ngIf="fau?.nombre?.errors?.required && (fau?.nombre?.dirty || fau?.nombre?.touched)">Campo obligatorio</span>
@@ -26,14 +26,14 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span></label>
+        <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
         <input id="primerApellido" class="form-control" formControlName="primerApellido"
                placeholder="Inserta el primer apellido">
         <span class="campo-obligatorio"
               *ngIf="fau?.primerApellido?.errors?.required && (fau?.primerApellido?.dirty || fau?.primerApellido?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span></label>
+        <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
         <input id="segundoApellido" class="form-control" formControlName="segundoApellido"
                placeholder="Inserta el segundo apellido">
         <span class="campo-obligatorio"
@@ -42,7 +42,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span></label>
+        <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
         <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
                placeholder="Inserta el correo electrónico">
         <span class="campo-obligatorio"
@@ -62,7 +62,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nivelAgregarUsuario">Nivel<span class="req">*</span></label>
+        <label class="control-label" for="nivelAgregarUsuario">Nivel<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="nivelAgregarUsuario" class="form-control" formControlName="nivel"
                     [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
         </p-dropdown>
@@ -70,7 +70,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="delegacionAgregarUsuario">Delegación<span class="req">*</span></label>
+        <label class="control-label" for="delegacionAgregarUsuario">Delegación<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="delegacionAgregarUsuario" class="form-control" formControlName="delegacion"
                     [options]="catalogoDelegaciones" placeholder="Seleccione el nivel" (onChange)="buscarVelatorios()">
         </p-dropdown>
@@ -78,7 +78,7 @@
               *ngIf="fau?.delegacion?.errors?.required && (fau?.delegacion?.dirty || fau?.delegacion?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="velatorioAgregarUsuario">Velatorio<span class="req">*</span></label>
+        <label class="control-label" for="velatorioAgregarUsuario">Velatorio<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="velatorioAgregarUsuario" class="form-control" formControlName="velatorio"
                     [options]="catalogoVelatorios" placeholder="Seleccione la delegación">
         </p-dropdown>
@@ -88,7 +88,7 @@
     </div>
     <div class="row mb-6">
       <div class="col-md-12">
-        <label class="control-label" for="rolAgregarUsuario">Rol<span class="req">*</span></label>
+        <label class="control-label" for="rolAgregarUsuario">Rol<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="rolAgregarUsuario" class="form-control" formControlName="rol"
                     [options]="catalogoRoles"
                     placeholder="Seleccione el rol">
@@ -98,7 +98,7 @@
     </div>
     <div class="row mb-4">
       <div class="col-md-12">
-        <label class="control-label">Estatus<span class="req">*</span></label>
+        <label class="control-label">Estatus<span class="req">*</span>:</label>
         <div class="contenedor-inputswitch">
           <p-inputSwitch formControlName="estatus"></p-inputSwitch>
           <span class="activo" *ngIf="fau?.estatus?.value">Activo</span>
