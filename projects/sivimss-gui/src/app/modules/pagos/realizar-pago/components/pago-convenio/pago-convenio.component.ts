@@ -53,9 +53,11 @@ export class PagoConvenioComponent implements OnInit {
 
   abrirModalPago(): void {
     this.registrarPago();
+    const tipoPago = this.pagoForm.get('tipoPago')?.value;
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Registrar tipo de pago",
       width: MAX_WIDTH,
+      data: tipoPago
     }
     this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
   }

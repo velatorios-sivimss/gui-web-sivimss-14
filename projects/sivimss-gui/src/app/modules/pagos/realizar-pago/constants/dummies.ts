@@ -124,19 +124,19 @@ export const TIPO_PAGO_CATALOGOS_ODS: TipoDropdown[] = [
 
 export const TIPO_PAGO_CATALOGOS_CONVENIO: TipoDropdown[] = [
   {
-    value: 1,
+    value: 'Tarjeta credito',
     label: 'Tarjeta credito'
   },
   {
-    value: 2,
+    value: 'Tarjeta debito',
     label: 'Tarjeta debito'
   },
   {
-    value: 3,
+    value: 'Transferencia',
     label: 'Transferencia'
   },
   {
-    value: 4,
+    value: 'Deposito',
     label: 'Deposito'
   }
 ]
