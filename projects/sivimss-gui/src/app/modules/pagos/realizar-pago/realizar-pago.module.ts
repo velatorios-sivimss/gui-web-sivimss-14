@@ -23,6 +23,7 @@ import { RegistrarValeParitariaComponent } from './components/registrar-vale-par
 import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 import {CheckboxModule} from "primeng/checkbox";
 import { SeleccionBeneficiariosAgfComponent } from './components/seleccion-beneficiarios-agf/seleccion-beneficiarios-agf.component';
+import { DetalleMetodoPagoComponent } from './components/detalle-metodo-pago/detalle-metodo-pago.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { SeleccionBeneficiariosAgfComponent } from './components/seleccion-benef
     RegistrarTipoPagoComponent,
     RegistrarAgfComponent,
     RegistrarValeParitariaComponent,
-    SeleccionBeneficiariosAgfComponent
+    SeleccionBeneficiariosAgfComponent,
+    DetalleMetodoPagoComponent
   ],
   imports: [
     CommonModule,
