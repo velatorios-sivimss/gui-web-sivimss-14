@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {BnNgIdleService} from 'bn-ng-idle';
@@ -15,9 +15,9 @@ import {MensajesRespuestaCodigo} from "projects/sivimss-gui/src/app/utils/mensaj
 import {dummyMenuResponse} from "projects/sivimss-gui/src/app/utils/menu-dummy";
 import {TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION} from "projects/sivimss-gui/src/app/utils/tokens";
 import {BehaviorSubject, Observable, of, Subscription, throwError} from 'rxjs';
-import {concatMap, delay, map} from "rxjs/operators";
+import {catchError, concatMap, delay, map, tap,} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
-import { environment } from '../../environments/environment';
+import {environment} from '../../environments/environment';
 
 export interface Modulo {
   idModuloPadre: string | null;
@@ -488,7 +488,7 @@ export class AutenticacionService {
         } else {
           return throwError('Ocurrió un error al intentar iniciar sesión');
         }
-      })
+      }),
     );
   }
 
@@ -536,7 +536,11 @@ export class AutenticacionService {
   }
 
   actualizarContrasenia(usuario: string, contraseniaAnterior: string, contraseniaNueva: string): Observable<HttpRespuesta<any>> {
-    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/cambiar`, {usuario, contraseniaAnterior, contraseniaNueva});
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/cambiar`, {
+      usuario,
+      contraseniaAnterior,
+      contraseniaNueva
+    });
     //return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
   }
 
@@ -580,7 +584,10 @@ export class AutenticacionService {
 
   validarCodigoRestablecerContrasenia(usuario: string, codigo: string): Observable<string> {
     //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/valida-codigo`, {usuario,codigo})
-    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/valida-codigo`, {usuario,codigo}).pipe(
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/valida-codigo`, {
+      usuario,
+      codigo
+    }).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (existeMensajeEnEnum(MensajesRespuestaCodigo, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
