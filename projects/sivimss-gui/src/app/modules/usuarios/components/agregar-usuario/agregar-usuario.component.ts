@@ -102,6 +102,8 @@ export class AgregarUsuarioComponent implements OnInit {
     const idNivel = this.agregarUsuarioForm.get('nivel')?.value;
     this.catalogoRoles = [];
     this.agregarUsuarioForm.get('rol')?.patchValue(null);
+    this.agregarUsuarioForm.get('delegacion')?.patchValue(null);
+    this.agregarUsuarioForm.get('velatorio')?.patchValue(null);
     this.cargadorService.activar();
     this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
       finalize(() => this.cargadorService.desactivar())

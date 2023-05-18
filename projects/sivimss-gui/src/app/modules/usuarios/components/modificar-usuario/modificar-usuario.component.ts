@@ -98,7 +98,11 @@ export class ModificarUsuarioComponent implements OnInit {
   cargarRoles(cargaInicial: boolean = false): void {
     const idNivel = this.modificarUsuarioForm.get('nivel')?.value;
     this.catalogoRoles = [];
-    if (!cargaInicial) this.modificarUsuarioForm.get('rol')?.patchValue(null);
+    if (!cargaInicial) {
+      this.modificarUsuarioForm.get('rol')?.patchValue(null);
+      this.modificarUsuarioForm.get('velatorio')?.patchValue(null);
+      this.modificarUsuarioForm.get('delegacion')?.patchValue(null);
+    }
     this.cargadorService.activar();
     this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
       finalize(() => this.cargadorService.desactivar())
