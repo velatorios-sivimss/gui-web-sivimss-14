@@ -5,7 +5,8 @@
     </div>
     <div class="flex justify-content-end mt-4">
       <button class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-      <button class="btn btn-primary btn-md ml-5" (click)="pasoRestablecerContrasena = CAPTURA_DE_USUARIO">Aceptar</button>
+      <button class="btn btn-primary btn-md ml-5" (click)="pasoRestablecerContrasena = CAPTURA_DE_USUARIO">Aceptar
+      </button>
     </div>
   </ng-container>
   <ng-container *ngSwitchCase="CAPTURA_DE_USUARIO">
@@ -53,5 +54,12 @@
         </button>
       </div>
     </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="REDIRIGIR_RESTABLECER_CONTRASENIA">
+    <div class="flex justify-content-center mt-4">
+      <button type="button" class="btn btn-primary btn-md ml-5"
+              (click)="restablecerContrasenia()">Restablecer Contraseña
+      </button>
+    </div>
   </ng-container>
 </ng-container>

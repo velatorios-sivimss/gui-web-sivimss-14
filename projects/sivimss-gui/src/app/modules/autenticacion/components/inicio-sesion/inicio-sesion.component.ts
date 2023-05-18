@@ -26,7 +26,6 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
 
   form!: FormGroup;
 
-
   mostrarModalPreActivo: boolean = false;
   mostrarModalContraseniaProxVencer: boolean = false;
   mostrarModalFechaContraseniaVencida: boolean = false;
@@ -35,7 +34,6 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   mostrarModalUsuarioNoExiste = false;
   mostrarModalSIAPSinConexion = false;
   mostrarModalSIAPDesactivado = false;
-
 
   constructor(
     private readonly formBuilder: FormBuilder,
