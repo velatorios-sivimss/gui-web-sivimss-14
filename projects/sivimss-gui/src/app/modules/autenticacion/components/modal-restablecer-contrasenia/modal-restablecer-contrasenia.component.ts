@@ -9,6 +9,7 @@ import {MensajesRespuestaCodigo} from "projects/sivimss-gui/src/app/utils/mensaj
 import {Subscription} from "rxjs";
 import {finalize} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
+import {MensajesRespuestaAutenticacion} from "../../../../utils/mensajes-respuesta-autenticacion.enum";
 
 @Component({
   selector: 'app-modal-restablecer-contrasenia',
@@ -57,7 +58,11 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
     this.subGeneracionCodigo = this.autenticacionService.generarCodigoRestablecerContrasenia(usuario).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
-      () => {
+      (respuesta) => {
+        if (respuesta.error) {
+          this.alertaService.mostrar(TipoAlerta.Error, 'El usuario que ingresaste no existe en el sistema.');
+          return
+        }
         this.pasoRestablecerContrasena = this.CAPTURA_DE_CODIGO;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Código enviado.');
       },
