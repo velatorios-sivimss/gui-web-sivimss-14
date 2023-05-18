@@ -73,7 +73,7 @@
         <div class="col-md-6">
           <label class="control-label" for="nivelAgregarUsuarioModificar">Nivel<span class="req">*</span>:</label>
           <p-dropdown appendTo="body" id="nivelAgregarUsuarioModificar" class="form-control" formControlName="nivel"
-                      [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
+                      [options]="catalogoNiveles" placeholder="Seleccionar el nivel" (onChange)="cargarRoles()">
           </p-dropdown>
         </div>
       </div>

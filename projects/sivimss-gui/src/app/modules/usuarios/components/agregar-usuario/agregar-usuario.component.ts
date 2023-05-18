@@ -50,9 +50,8 @@ export class AgregarUsuarioComponent implements OnInit {
   delegacionResumen: string = "";
   velatorioResumen: string = "";
 
-  readonly POSICION_CATALOGO_ROLES: number = 0;
-  readonly POSICION_CATALOGO_NIVELES: number = 1;
-  readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
+  readonly POSICION_CATALOGO_NIVELES: number = 0;
+  readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
   readonly DEFAULT_ERROR_RENAPO: string = "La CURP no se encuentra en la base de datos";
   readonly ERROR_ALTA_USUARIO: string = "Alta incorrecta";
   readonly MSG_ALTA_USUARIO: string = "Usuario agregado correctamente";
@@ -76,8 +75,6 @@ export class AgregarUsuarioComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const roles = respuesta[this.POSICION_CATALOGO_ROLES].datos
-    this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
   }
@@ -94,10 +91,29 @@ export class AgregarUsuarioComponent implements OnInit {
         [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
       nivel: [{value: null, disabled: false}, [Validators.required]],
-      delegacion: [{value: null, disabled: false}, [Validators.required]],
-      velatorio: [{value: null, disabled: false}, [Validators.required]],
+      delegacion: [{value: null, disabled: false}],
+      velatorio: [{value: null, disabled: false}],
       rol: [{value: null, disabled: false}, [Validators.required]],
       estatus: [{value: true, disabled: false}, [Validators.required]]
+    });
+  }
+
+  cargarRoles(): void {
+    const idNivel = this.agregarUsuarioForm.get('nivel')?.value;
+    this.catalogoRoles = [];
+    this.agregarUsuarioForm.get('rol')?.patchValue(null);
+    this.cargadorService.activar();
+    this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const roles = respuesta.datos;
+        this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
     });
   }
 

@@ -43,9 +43,8 @@ export class ModificarUsuarioComponent implements OnInit {
   delegacionResumen: string = "";
   velatorioResumen: string = "";
 
-  readonly POSICION_CATALOGO_ROLES: number = 0;
-  readonly POSICION_CATALOGO_NIVELES: number = 1;
-  readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
+  readonly POSICION_CATALOGO_NIVELES: number = 0;
+  readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
   readonly MSG_USUARIO_MODIFICADO: string = "Usuario modificado correctamente";
   pasoModificarUsuario: number = 1;
 
@@ -69,8 +68,6 @@ export class ModificarUsuarioComponent implements OnInit {
 
   cargarCatalogos(delegacion: string): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const roles = respuesta[this.POSICION_CATALOGO_ROLES].datos
-    this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     this.buscarVelatorios(delegacion);
@@ -94,6 +91,25 @@ export class ModificarUsuarioComponent implements OnInit {
       velatorio: [{value: usuario.idVelatorio, disabled: false}, [Validators.required]],
       rol: [{value: usuario.idRol, disabled: false}, [Validators.required]],
       estatus: [{value: usuario.estatus, disabled: false}, [Validators.required]]
+    });
+  }
+
+  cargarRoles(): void {
+    const idNivel = this.modificarUsuarioForm.get('nivel')?.value;
+    this.catalogoRoles = [];
+    this.modificarUsuarioForm.get('rol')?.patchValue(null);
+    this.cargadorService.activar();
+    this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const roles = respuesta.datos;
+        this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
     });
   }
 
