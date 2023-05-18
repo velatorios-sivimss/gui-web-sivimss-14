@@ -51,7 +51,16 @@ export class AgregarRolComponent implements OnInit {
 
   ngOnInit(): void {
     const roles = this.route.snapshot.data["respuesta"];
-    this.breadcrumbService.actualizar(USUARIOS_BREADCRUMB);
+    this.breadcrumbService.actualizar([
+      {
+        icono: 'imagen-icono-operacion-sivimss.svg',
+        titulo: 'Administración de catálogos'
+      },
+      {
+        icono: '',
+        titulo: 'Administrar roles a nivel oficina'
+      }
+    ]);
     this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.inicializarAgregarRolForm();
   }

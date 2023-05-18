@@ -1,4 +1,4 @@
 export interface FiltrosRol {
-  idRol: number,
-  nivel: number
+  idRol?: number;
+  idOficina?: number;
 }

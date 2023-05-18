@@ -14,7 +14,7 @@
           <div class="col-md-9">
             <label class="control-label" for="nombre">Nombre del rol<span class="req">*</span></label>
             <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre"
-                   lettersOnly (keyup.space)="noEspaciosAlPrincipio()" maxlength="100">
+                   (keyup.space)="noEspaciosAlPrincipio()" maxlength="100">
             <span class="campo-obligatorio" *ngIf="f?.nombre?.errors?.required && (f?.nombre?.dirty || f?.nombre?.touched)">Campo obligatorio</span>
           </div>
           <div class="col-md-3">

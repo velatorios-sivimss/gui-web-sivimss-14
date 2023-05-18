@@ -19,6 +19,7 @@ import {ModificarRolComponent} from "../modificar-rol/modificar-rol.component";
 import {RespuestaModalRol} from "../../models/respuestaModal.interface";
 import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
 import { LazyLoadEvent } from 'primeng/api';
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 const MAX_WIDTH: string = "876px";
 
@@ -56,11 +57,21 @@ export class RolesComponent implements OnInit {
     private alertaService: AlertaService,
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
   ngOnInit(): void {
-    this.breadcrumbService.actualizar(USUARIOS_BREADCRUMB);
+    this.breadcrumbService.actualizar([
+      {
+        icono: 'imagen-icono-operacion-sivimss.svg',
+        titulo: 'Administración de catálogos'
+      },
+      {
+        icono: '',
+        titulo: 'Administrar roles a nivel oficina'
+      }
+    ]);
     const roles = this.route.snapshot.data["respuesta"];
     this.catRol = roles[0].datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
     this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
@@ -104,8 +115,13 @@ export class RolesComponent implements OnInit {
     const solicitudFiltros = JSON.stringify(filtros);
     this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe(
       (respuesta) => {
-        this.roles = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        if(respuesta.datos.content.length > 0 ){
+          this.roles = respuesta!.datos.content;
+          this.totalElementos = respuesta!.datos.totalElements;
+          return;
+        }
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
       },
       (error: HttpErrorResponse) => {
         console.error(error);
@@ -123,7 +139,7 @@ export class RolesComponent implements OnInit {
   crearSolicitudFiltros(): FiltrosRol {
     return {
       idRol: this.filtroForm.get("rol")?.value,
-      nivel: this.filtroForm.get("nivel")?.value
+      idOficina: this.filtroForm.get("nivel")?.value
     };
   }
 
