@@ -36,6 +36,8 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   mostrarModalUsuarioNoExiste = false;
   mostrarModalSIAPSinConexion = false;
   mostrarModalSIAPDesactivado = false;
+  usuarioIncorrecto: boolean = false;
+  contraseniaIncorrecta: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -65,6 +67,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
     }
     const {usuario, contrasenia} = this.form.value;
     this.loaderService.activar();
+    this.usuarioIncorrecto = false;
     this.autenticacionService.iniciarSesion(usuario, contrasenia, mostrarMsjContraseniaProxVencer)
       .pipe(
         finalize(() => this.loaderService.desactivar())
@@ -79,7 +82,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
             break;
           case MensajesRespuestaAutenticacion.CredencialesIncorrectas:
             this.form.get('contrasenia')?.reset();
-            this.alertaService.mostrar(TipoAlerta.Error, 'Usuario o contraseña incorrecta');
+            this.contraseniaIncorrecta = !this.contraseniaIncorrecta;
             break;
           case MensajesRespuestaAutenticacion.CantidadMaximaIntentosFallidos:
             this.mostrarModalIntentosFallidos = true;
@@ -94,7 +97,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
           case MensajesRespuestaAutenticacion.UsuarioNoExiste:
             this.form.get('usuario')?.reset();
             this.form.get('contrasenia')?.reset();
-            this.mostrarModalUsuarioNoExiste = true;
+            this.usuarioIncorrecto = !this.usuarioIncorrecto;
             break;
           case MensajesRespuestaAutenticacion.SIAPSinConexion:
             this.mostrarModalSIAPSinConexion = true;
