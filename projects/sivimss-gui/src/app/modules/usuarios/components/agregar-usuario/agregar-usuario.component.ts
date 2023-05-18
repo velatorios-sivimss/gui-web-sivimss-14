@@ -18,7 +18,7 @@ import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
-type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula">;
+type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula" | "usuario">;
 type SolicitudCurp = Pick<Usuario, "curp">;
 type SolicitudMatricula = Pick<Usuario, "claveMatricula">;
 
@@ -29,6 +29,8 @@ type SolicitudMatricula = Pick<Usuario, "claveMatricula">;
 })
 export class AgregarUsuarioComponent implements OnInit {
 
+  readonly CAPTURA_DE_USUARIO: number = 1;
+  readonly RESUMEN_DE_USUARIO: number = 2;
 
   agregarUsuarioForm!: FormGroup;
 
@@ -54,6 +56,7 @@ export class AgregarUsuarioComponent implements OnInit {
   readonly DEFAULT_ERROR_RENAPO: string = "La CURP no se encuentra en la base de datos";
   readonly ERROR_ALTA_USUARIO: string = "Alta incorrecta";
   readonly MSG_ALTA_USUARIO: string = "Usuario agregado correctamente";
+  pasoAgregarUsuario: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -176,7 +179,7 @@ export class AgregarUsuarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
-        if (respuesta.datos.mensaje !== '') {
+        if (respuesta.datos.message !== '') {
           this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje, this.DEFAULT_ERROR_RENAPO);
           this.curpValida = !this.curpValida;
           return;
@@ -252,13 +255,17 @@ export class AgregarUsuarioComponent implements OnInit {
   }
 
   cancelar(): void {
+    if (this.pasoAgregarUsuario === this.RESUMEN_DE_USUARIO) {
+      this.pasoAgregarUsuario = this.CAPTURA_DE_USUARIO;
+      return;
+    }
     const respuesta: RespuestaModalUsuario = {};
     this.ref.close(respuesta);
   }
 
   confirmarCreacion(): void {
-    if (this.indice === 0) {
-      this.indice++;
+    if (this.pasoAgregarUsuario === this.CAPTURA_DE_USUARIO) {
+      this.pasoAgregarUsuario = this.RESUMEN_DE_USUARIO;
       this.nuevoUsuario = this.crearUsuario();
       this.creacionVariablesResumen();
       return;

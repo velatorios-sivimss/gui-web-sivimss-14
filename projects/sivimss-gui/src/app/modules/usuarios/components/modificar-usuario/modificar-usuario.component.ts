@@ -25,6 +25,9 @@ type UsuarioModificado = Omit<Usuario, "password">
 })
 export class ModificarUsuarioComponent implements OnInit {
 
+  readonly CAPTURA_DE_USUARIO: number = 1;
+  readonly RESUMEN_DE_USUARIO: number = 2;
+
   modificarUsuarioForm!: FormGroup;
   usuarioModificado!: UsuarioModificado;
 
@@ -44,6 +47,7 @@ export class ModificarUsuarioComponent implements OnInit {
   readonly POSICION_CATALOGO_NIVELES: number = 1;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
   readonly MSG_USUARIO_MODIFICADO: string = "Usuario modificado correctamente";
+  pasoModificarUsuario: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -77,6 +81,7 @@ export class ModificarUsuarioComponent implements OnInit {
       id: [{value: usuario.id, disabled: true}, [Validators.required]],
       curp: [{value: usuario.curp, disabled: true}, [Validators.required, Validators.maxLength(18)]],
       matricula: [{value: usuario.matricula, disabled: true}, [Validators.required, Validators.maxLength(10)]],
+      usuario: [{value: usuario.usuario, disabled: true}],
       nombre: [{value: usuario.nombre, disabled: true}, [Validators.required, Validators.maxLength(20)]],
       primerApellido: [{value: usuario.paterno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
       segundoApellido: [{value: usuario.materno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
@@ -111,6 +116,7 @@ export class ModificarUsuarioComponent implements OnInit {
 
   crearUsuarioModificado(): UsuarioModificado {
     return {
+      usuario: this.modificarUsuarioForm.get("usuario")?.value,
       claveMatricula: this.modificarUsuarioForm.get("matricula")?.value,
       correo: this.modificarUsuarioForm.get("correoElectronico")?.value,
       curp: this.modificarUsuarioForm.get("curp")?.value,
@@ -157,8 +163,8 @@ export class ModificarUsuarioComponent implements OnInit {
   }
 
   cancelar(): void {
-    if (this.indice === 1) {
-      this.indice--;
+    if (this.pasoModificarUsuario === this.RESUMEN_DE_USUARIO) {
+      this.pasoModificarUsuario = this.CAPTURA_DE_USUARIO;
       return;
     }
     const respuesta: RespuestaModalUsuario = {};
@@ -166,8 +172,8 @@ export class ModificarUsuarioComponent implements OnInit {
   }
 
   confirmarModificacion(): void {
-    if (this.indice === 0) {
-      this.indice++;
+    if (this.pasoModificarUsuario === this.CAPTURA_DE_USUARIO) {
+      this.pasoModificarUsuario = this.RESUMEN_DE_USUARIO;
       this.usuarioModificado = this.crearUsuarioModificado();
       this.creacionVariablesResumen();
       return;
