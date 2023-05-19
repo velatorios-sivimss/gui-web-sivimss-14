@@ -5,9 +5,9 @@
     <div class="form-group">
       <label class="control-label" for="usuario">Usuario<span class="req">*</span>:</label>
       <input class="form-control" id="usuario" formControlName="usuario"
-             placeholder="Ingresar usuario" type="text" [maxlength]="16" (blur)="usuarioIncorrecto = false" >
+             placeholder="Ingresar usuario" type="text" [maxlength]="16" (blur)="usuarioIncorrecto = false">
       <span class="campo-obligatorio"
-            *ngIf="f.usuario?.errors?.required && (f.usuario?.dirty || f.usuario?.touched)">Campo obligatorio</span>
+            *ngIf="f.usuario?.errors?.required && (f.usuario?.dirty || f.usuario?.touched)">Debes capturar tu usuario.</span>
       <span class="campo-obligatorio"
             *ngIf="usuarioIncorrecto">El usuario ingresado no es válido.</span>
     </div>
@@ -18,12 +18,13 @@
       </div>
       <div class="form-icon">
         <input #input class="form-control" id="contrasenia" formControlName="contrasenia"
-               placeholder="Ingresar contraseña" type="password" [maxlength]="16" (blur)="contraseniaIncorrecta = false" >
+               placeholder="Ingresar contraseña" type="password" [maxlength]="16"
+               (blur)="contraseniaIncorrecta = false">
         <i class="cursor-pointer icon pi pi-eye"
            (click)="input.type = input.type==='password'?'text':'password'"></i>
       </div>
       <span class="campo-obligatorio"
-            *ngIf="f.contrasenia?.errors?.required && (f.contrasenia?.dirty || f.contrasenia?.touched)">Campo obligatorio</span>
+            *ngIf="f.contrasenia?.errors?.required && (f.contrasenia?.dirty || f.contrasenia?.touched)">Debes capturar tu contraseña.</span>
       <span class="campo-obligatorio"
             *ngIf="contraseniaIncorrecta">La contraseña ingresada no es válida.</span>
     </div>
