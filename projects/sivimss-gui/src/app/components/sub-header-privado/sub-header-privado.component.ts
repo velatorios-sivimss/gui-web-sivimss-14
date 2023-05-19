@@ -41,18 +41,18 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     private mensajesSistemaService: MensajesSistemaService
   ) {
     this.existeNotificacion = false;
-    // this.notificacionService.consultaNotificacion().subscribe(
-    //   (respuesta:HttpRespuesta<any>) => {
-    //     if (respuesta.datos.length < 1){return}
-    //     this.notificaciones = respuesta.datos.filter((sala:any) => {
-    //       return sala.mensaje.trim() != ""
-    //     });
-    //     if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
-    //   },
-    //   (error: HttpErrorResponse) => {
-    //     console.log(error)
-    //   }
-    // )
+    this.notificacionService.consultaNotificacion().subscribe(
+      (respuesta:HttpRespuesta<any>) => {
+        if (respuesta.datos.length < 1){return}
+        this.notificaciones = respuesta.datos.filter((sala:any) => {
+          return sala.mensaje.trim() != ""
+        });
+        if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
   }
 
   ngOnInit(): void {

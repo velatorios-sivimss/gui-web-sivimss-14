@@ -284,6 +284,18 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     )
   }
 
+  descargarPDF(): void {
+    const busqueda = this.filtrosArchivos("pdf");
+    this.capillaReservacionService.generarReporte(busqueda).subscribe(
+      (respuesta:any) => {
+        debugger;
+        const file = new Blob([respuesta], {type: 'application/pdf'});
+        const url = window.URL.createObjectURL(file);
+        window.open(url);
+      }
+    );
+  }
+
   filtrosArchivos(tipoReporte: string) {
     return {
       idVelatorio: this.velatorio,
