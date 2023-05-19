@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OverlayPanel } from "primeng-lts/overlaypanel";
+import { OverlayPanel } from "primeng/overlaypanel";
 import { Funcionalidad } from "projects/sivimss-gui/src/app/modules/roles/models/funcionalidad.interface";
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
@@ -25,7 +25,7 @@ export class ModificarCreditoComponent implements OnInit {
   contadorFuncionalidades = 1;
   datosValidar: any[]=[];
   datosSolicitudCredito: any[]=[];
-  
+
   formaRecuperacion: any[] = [
     {
       label: 'Quincena',
@@ -64,11 +64,11 @@ export class ModificarCreditoComponent implements OnInit {
       estatusCredi: [{value: null, disabled: true}],
       fcertificacion: [{value: null, disabled: true}],
       proveedor: [{value: null, disabled: false}, [Validators.required]],
-      velatoriosFibeso: [{value: null, disabled: false}, [Validators.required]], 
-      importeEjerc: [{value: null, disabled: false}, [Validators.required]], 
-      importeLetra: [{value: null, disabled: false}, [Validators.required]], 
-      respUnidad: [{value: null, disabled: false}, [Validators.required]], 
-      velatorio: [{value: null, disabled: false}, [Validators.required]], 
+      velatoriosFibeso: [{value: null, disabled: false}, [Validators.required]],
+      importeEjerc: [{value: null, disabled: false}, [Validators.required]],
+      importeLetra: [{value: null, disabled: false}, [Validators.required]],
+      respUnidad: [{value: null, disabled: false}, [Validators.required]],
+      velatorio: [{value: null, disabled: false}, [Validators.required]],
       servicio: [{value: null, disabled: false}, [Validators.required]]
     });
   }
@@ -96,7 +96,7 @@ export class ModificarCreditoComponent implements OnInit {
       servicio: this.actualizarCreditoForm.get("servicio")?.value,
     }
   }
-  
+
   actualizarCredito(): void {
     this.datosSolicitudCredito = this.datosActualizarCredito();
   }
@@ -105,5 +105,5 @@ export class ModificarCreditoComponent implements OnInit {
    get f() {
     return this.actualizarCreditoForm.controls;
   }
-  
+
 }

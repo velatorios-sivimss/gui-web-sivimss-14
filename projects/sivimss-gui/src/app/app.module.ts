@@ -25,7 +25,7 @@ import {BreadcrumbModule} from "./shared/breadcrumb/breadcrumb.module";
 import {PopoverModule} from "./shared/popover/popover.module";
 import {UtileriaModule} from "./shared/utileria/utileria.module";
 import {NgOptimizedImage} from "@angular/common";
-import {BadgeModule} from "primeng/badge";
+import { DialogModule } from 'primeng/dialog';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json')
@@ -62,7 +62,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     PopoverModule,
     UtileriaModule,
     NgOptimizedImage,
-    BadgeModule,
+    DialogModule
   ],
   providers: [
     AutenticacionService,

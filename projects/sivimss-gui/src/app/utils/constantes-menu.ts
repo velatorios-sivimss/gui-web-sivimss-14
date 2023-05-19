@@ -44,8 +44,8 @@ export const idsModulos: DatoModulo = {
     icono: ''
   },
   '9': {
-    icono: '',
-    ruta: ''
+    ruta: 'reservar-salas',
+    icono: ''
   },
   '10': {
     ruta: '/proveedores',
@@ -61,6 +61,18 @@ export const idsModulos: DatoModulo = {
   },
   '19': {
     ruta: '/salas',
+    icono: ''
+  },
+  '20': {
+    ruta: '',
+    icono: 'operacion-sivimss.svg'
+  },
+  '21': {
+    ruta: '/salas',
+    icono: ''
+  },
+  '22': {
+    ruta: '/reservar-capilla',
     icono: ''
   },
   '70': {

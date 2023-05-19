@@ -15,6 +15,7 @@ export class GenerarFormatoPagareResolver implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const niveles$ = this.generarFormatoPagareService.obtenerCatalogoNiveles();
     const delegaciones$ = this.generarFormatoPagareService.obtenerCatalogoDelegaciones();
-    return forkJoin([niveles$, delegaciones$])
+    const velatorios$ = this.generarFormatoPagareService.obtenerVelatorios();
+    return forkJoin([niveles$, delegaciones$, velatorios$])
   }
 }

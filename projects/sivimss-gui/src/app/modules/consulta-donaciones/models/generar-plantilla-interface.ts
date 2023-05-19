@@ -12,6 +12,10 @@ export interface PlantillaAceptarDonacion {
   mes?: string,
   anio?:number,
   tipoReporte?:string
+  modeloAtaud?:string,
+  tipoAtaud?: string,
+  numInventarios?: string,
+  ooadNom?: string
 }
 
 

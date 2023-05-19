@@ -7,7 +7,7 @@
   <ng-template appCustomTemplate="right-header">
     <div class="table-panel-header-column">
       <div class="flex flex-column">
-        <span>Estatus</span>
+        <span class="ml-5">Estatus</span>
         <div class="contenedor-inputswitch">
           <p-inputSwitch [(ngModel)]="usuarioSeleccionado.estatus" [disabled]="true"></p-inputSwitch>
           <span class="activo" *ngIf="usuarioSeleccionado.estatus">Activo</span>
@@ -44,7 +44,7 @@
     <div class="col-md-6">
       <div class="table-panel-column">
         <label>Usuario</label>
-        <span>{{usuarioSeleccionado.claveMatricula}}</span>
+        <span>{{usuarioSeleccionado.usuario}}</span>
       </div>
     </div>
   </div>

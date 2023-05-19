@@ -8,6 +8,7 @@ import {
   ControlSalidaDonacionesComponent
 } from "./components/control-salida-donaciones/control-salida-donaciones.component";
 import { DonacionesResolver } from "./services/donaciones.resolver";
+import {GestionarDonacionesResolver} from "./services/gestionar-donaciones.resolver";
 
 const routes: Routes = [
   {
@@ -19,11 +20,17 @@ const routes: Routes = [
   },
   {
     path:'aceptacion-donacion',
-    component: AceptacionDonacionComponent
+    component: AceptacionDonacionComponent,
+    resolve: {
+      respuesta: GestionarDonacionesResolver,
+    }
   },
   {
     path:'control-salida-donaciones',
     component: ControlSalidaDonacionesComponent,
+    resolve: {
+      respuesta: GestionarDonacionesResolver,
+    }
   },
 
 ];
@@ -32,7 +39,8 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: [
-    DonacionesResolver
+    DonacionesResolver,
+    GestionarDonacionesResolver
   ]
 })
 

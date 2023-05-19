@@ -1,13 +1,15 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { DynamicDialogRef } from "primeng/dynamicdialog";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
-import { MensajesRespuestaCodigo } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-codigo.enum";
-import { Subscription } from "rxjs";
-import { finalize } from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {DynamicDialogRef} from "primeng/dynamicdialog";
+import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import {LoaderService} from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
+import {MensajesRespuestaCodigo} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-codigo.enum";
+import {Subscription} from "rxjs";
+import {finalize} from "rxjs/operators";
+import {ActivatedRoute, Router} from "@angular/router";
+import {MensajesRespuestaAutenticacion} from "../../../../utils/mensajes-respuesta-autenticacion.enum";
 
 @Component({
   selector: 'app-modal-restablecer-contrasenia',
@@ -15,9 +17,10 @@ import { finalize } from "rxjs/operators";
   styleUrls: ['./modal-restablecer-contrasenia.component.scss']
 })
 export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
-  readonly CONFIRMACION_RESTABLECER_CONTRASENIA = 1;
+  readonly CONFIRMACION_RESTABLECER_CONTRASENIA: number = 1;
   readonly CAPTURA_DE_USUARIO: number = 2;
   readonly CAPTURA_DE_CODIGO: number = 3;
+  readonly REDIRIGIR_RESTABLECER_CONTRASENIA: number = 4;
   formRestContraUsuario!: FormGroup;
   formRestContraCodigo!: FormGroup;
   pasoRestablecerContrasena: number = 1;
@@ -29,7 +32,9 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
     private readonly ref: DynamicDialogRef,
     private readonly autenticacionService: AutenticacionService,
     private readonly alertaService: AlertaService,
-    private readonly loaderService: LoaderService
+    private readonly loaderService: LoaderService,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly router: Router,
   ) {
   }
 
@@ -53,7 +58,11 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
     this.subGeneracionCodigo = this.autenticacionService.generarCodigoRestablecerContrasenia(usuario).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
-      () => {
+      (respuesta) => {
+        if (respuesta.error) {
+          this.alertaService.mostrar(TipoAlerta.Error, 'El usuario que ingresaste no existe en el sistema.');
+          return
+        }
         this.pasoRestablecerContrasena = this.CAPTURA_DE_CODIGO;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Código enviado.');
       },
@@ -75,7 +84,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
         switch (respuesta) {
           case MensajesRespuestaCodigo.CodigoCorrecto:
             this.alertaService.mostrar(TipoAlerta.Exito, 'Código ingresado correctamente');
-            this.cerrarModal();
+            this.pasoRestablecerContrasena = this.REDIRIGIR_RESTABLECER_CONTRASENIA;
             break;
           case MensajesRespuestaCodigo.CodigoIncorrecto:
             this.alertaService.mostrar(TipoAlerta.Error, 'Código incorrecto');
@@ -94,8 +103,17 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
     )
   }
 
-  cerrarModal() {
+  cerrarModal(): void {
     this.ref.close(true);
+  }
+
+  restablecerContrasenia(): void {
+    const {usuario} = this.formRestContraUsuario.value;
+    this.router.navigate(["inicio-sesion/restablecer-contrasenia"], {
+      relativeTo: this.activatedRoute,
+      queryParams: {usuario}
+    });
+    this.cerrarModal();
   }
 
   get frcu() {

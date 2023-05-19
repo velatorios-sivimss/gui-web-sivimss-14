@@ -3,7 +3,8 @@
     <div class="row mb-3">
       <div class="col-md-12">
         <label class="control-label" for="nombre">Nombre (s) <span class="req">*</span></label>
-        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre">
+        <input id="nombre" class="form-control" formControlName="nombre"
+               placeholder="Ingresa el nombre" maxlength="30" lettersOnly (keyup.space)="noEspaciosAlPrincipio(0)" >
         <span class="campo-obligatorio"
               *ngIf="f.nombre?.errors?.required && (f.nombre?.dirty || f.nombre?.touched)">Campo obligatorio</span>
       </div>
@@ -11,7 +12,8 @@
     <div class="row mb-3">
       <div class="col-md-12">
         <label class="control-label" for="primerApellido">Primer apellido <span class="req">*</span></label>
-        <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa el primer apellido">
+        <input id="primerApellido" class="form-control" formControlName="primerApellido"
+               placeholder="Ingresa el primer apellido" maxlength="20" lettersOnly (keyup.space)="noEspaciosAlPrincipio(1)">
         <span class="campo-obligatorio"
               *ngIf="f.primerApellido?.errors?.required && (f.primerApellido?.dirty || f.primerApellido?.touched)">Campo obligatorio</span>
       </div>
@@ -19,7 +21,8 @@
     <div class="row mb-3">
       <div class="col-md-12">
         <label class="control-label" for="segundo apellido">Segundo apellido <span class="req">*</span></label>
-        <input id="segundo apellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa el segundo apellido">
+        <input id="segundo apellido" class="form-control" formControlName="segundoApellido"
+               placeholder="Ingresa el segundo apellido" maxlength="20" lettersOnly (keyup.space)="noEspaciosAlPrincipio(2)">
         <span class="campo-obligatorio"
               *ngIf="f.segundoApellido?.errors?.required && (f.segundoApellido?.dirty || f.segundoApellido?.touched)">Campo obligatorio</span>
       </div>
