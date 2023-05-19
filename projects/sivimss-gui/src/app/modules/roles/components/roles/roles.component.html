@@ -2,18 +2,24 @@
 <div class="border-panel">
     <form [formGroup]="filtroForm">
         <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="rol">Rol:</label>
-                <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" placeholder="Seleccionar el rol"
-                [filter]="true" filterBy="label">
-                </p-dropdown>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" for="nivel">Nivel:</label>
-                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogo_nivelOficina"
-                            placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
-                </p-dropdown>
-            </div>
+          <div class="col-md-4">
+              <label class="control-label" for="nivel">Nivel:</label>
+              <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogo_nivelOficina"
+                          placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
+              </p-dropdown>
+          </div>
+          <div class="col-md-4">
+              <label class="control-label" for="rol">Rol:</label>
+              <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" placeholder="Seleccionar el rol"
+              [filter]="true" filterBy="label">
+              </p-dropdown>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" for="estatus">Estatus:</label>
+            <p-dropdown id="estatus" class="form-control" formControlName="estatus" [options]="estatus"
+                        placeholder="Seleccionar el estatus" [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
         </div>
         <div class="row mt-6">
             <div class="col-md-12 flex justify-content-end">

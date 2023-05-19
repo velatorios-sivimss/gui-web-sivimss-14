@@ -34,7 +34,7 @@ export class RolService extends BaseService<HttpRespuesta<any>, any> {
     .append("pagina", pagina)
     .append("tamanio", tamanio)
     .append("servicio", 'consulta-roles')
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, {headers, params})
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, { params})
   }
 
 

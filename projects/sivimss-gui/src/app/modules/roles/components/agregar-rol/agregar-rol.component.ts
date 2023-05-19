@@ -33,6 +33,8 @@ export class AgregarRolComponent implements OnInit {
   formFuncionalidad!: FormGroup;
   permisos : any;
 
+  confirmacion: boolean = false;
+
   funcionalidades: Funcionalidad[] = [];
   funcionalidadSeleccionada!: Funcionalidad;
 
@@ -85,7 +87,7 @@ export class AgregarRolComponent implements OnInit {
     this.rolService.guardar(solicitudRol).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg + " " +  this.f.nombre.value);
         this.router.navigate(["roles"]);
       },
       (error: HttpErrorResponse) => {
