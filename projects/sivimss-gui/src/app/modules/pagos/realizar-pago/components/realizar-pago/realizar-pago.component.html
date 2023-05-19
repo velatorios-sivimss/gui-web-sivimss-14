@@ -108,7 +108,7 @@
         <td>{{pago.estatus}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetallePago(pago)">
+            <a (click)="abrirModalDetallePago(pago)" [routerLink]="'./detalle-de-pago'">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
             <a (click)="abrirPanel($event,pago)">
@@ -132,7 +132,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table" *appValidaRol="['USUARIOS','IMPRIMIR']">
+        <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
