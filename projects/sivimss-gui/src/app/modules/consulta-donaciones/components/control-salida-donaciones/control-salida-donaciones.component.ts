@@ -40,6 +40,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   readonly POSICION_ESTADOS = 0;
   readonly POSICION_PAISES = 1;
+  readonly POSICION_DELEGACION = 2;
 
   agregarFinadoRef!: DynamicDialogRef;
   agregarAtaudRef!: DynamicDialogRef;
@@ -57,6 +58,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   lugarNacimiento: TipoDropdown[] = [];
   paisNacimiento: TipoDropdown[] = [];
   estado: TipoDropdown[] = [];
+  delegacion: TipoDropdown[] = [];
   finados: FinadoInterface[] = [];
   ataudes: AtaudDonado[] = [];
   backlogAutaudes!: AtaudDonado[];
@@ -94,6 +96,8 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       {label: estado.label, value: estado.value} )) || [];
     this.paisNacimiento = respuesta[this.POSICION_PAISES]!.map((pais: any) => (
       {label: pais.label, value: pais.value} )) || [];
+    this.delegacion = respuesta[this.POSICION_DELEGACION]!.map((delegacion: any) => (
+      {label: delegacion.label, value: delegacion.value} )) || [];
     this.consultarAtaudes();
     this.actualizarBreadcrumb();
     this.inicializarDatosSolicitantesForm();
@@ -245,8 +249,8 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if(!this.fds.cp.value){return}
+    this.loaderService.activar();
     this.consultaDonacionesService.consutaCP(this.fds.cp.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
@@ -360,7 +364,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       nomAdministrador:'Raúl de Jesús',
       lugar:'Col. Doctores, CDMX',
 
-      ooadNom:'AGUASCALIENTES',
+      ooadNom:this.nombreOoad(usuario.idDelegacion),
       velatorioId:usuario.idVelatorio,
       velatorioNom:'DOCTORES',
       version:5.2,
@@ -396,6 +400,16 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     });
     tipoAtaud = tipoAtaud.substr(0, tipoAtaud.length - 1);
     return tipoAtaud;
+  }
+
+  nombreOoad(idOoad: number): string {
+    let nombreDelegacion: TipoDropdown[];
+
+    nombreDelegacion = this.delegacion.filter((nombre => {
+      return idOoad == nombre.value;
+    }));
+
+    return nombreDelegacion[0].label;
   }
 
   numInventario(): string {
