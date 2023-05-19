@@ -7,7 +7,7 @@
           <input id="curp" class="form-control" formControlName="curp" placeholder="Inserta el CURP"
                  (blur)="validarCurp();" alphanumericOnly>
           <span class="campo-obligatorio"
-                *ngIf="fau?.curp?.errors?.required && (fau?.curp?.dirty || fau?.curp?.touched)">Campo obligatorio</span>
+                *ngIf="fau?.curp?.errors?.required && (fau?.curp?.dirty || fau?.curp?.touched)">Este campo es obligatorio *.</span>
           <span class="campo-obligatorio"
                 *ngIf="fau?.curp?.errors?.pattern && (fau?.curp?.dirty || fau?.curp?.touched)">Formato incorrecto</span>
         </div>
@@ -16,7 +16,7 @@
           <input id="matricula" class="form-control" formControlName="matricula" placeholder="Inserta la matrícula"
                  (blur)="validarMatricula();">
           <span class="campo-obligatorio"
-                *ngIf="fau?.matricula?.errors?.required && (fau?.matricula?.dirty || fau?.matricula?.touched)">Campo obligatorio</span>
+                *ngIf="fau?.matricula?.errors?.required && (fau?.matricula?.dirty || fau?.matricula?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -24,7 +24,7 @@
           <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span>:</label>
           <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
           <span class="campo-obligatorio"
-                *ngIf="fau?.nombre?.errors?.required && (fau?.nombre?.dirty || fau?.nombre?.touched)">Campo obligatorio</span>
+                *ngIf="fau?.nombre?.errors?.required && (fau?.nombre?.dirty || fau?.nombre?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -33,14 +33,14 @@
           <input id="primerApellido" class="form-control" formControlName="primerApellido"
                  placeholder="Inserta el primer apellido">
           <span class="campo-obligatorio"
-                *ngIf="fau?.primerApellido?.errors?.required && (fau?.primerApellido?.dirty || fau?.primerApellido?.touched)">Campo obligatorio</span>
+                *ngIf="fau?.primerApellido?.errors?.required && (fau?.primerApellido?.dirty || fau?.primerApellido?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
           <input id="segundoApellido" class="form-control" formControlName="segundoApellido"
                  placeholder="Inserta el segundo apellido">
           <span class="campo-obligatorio"
-                *ngIf="fau?.segundoApellido?.errors?.required && (fau?.segundoApellido?.dirty || fau?.segundoApellido?.touched)">Campo obligatorio</span>
+                *ngIf="fau?.segundoApellido?.errors?.required && (fau?.segundoApellido?.dirty || fau?.segundoApellido?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -49,7 +49,7 @@
           <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
                  placeholder="Inserta el correo electrónico">
           <span class="campo-obligatorio"
-                *ngIf="fau?.correoElectronico?.errors?.required && (fau?.correoElectronico?.dirty || fau?.correoElectronico?.touched)">Campo obligatorio</span>
+                *ngIf="fau?.correoElectronico?.errors?.required && (fau?.correoElectronico?.dirty || fau?.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           <span class="campo-obligatorio"
                 *ngIf="fau?.correoElectronico?.errors?.pattern && (fau?.correoElectronico?.dirty || fau?.correoElectronico?.touched)">Formato incorrecto</span>
         </div>
@@ -60,34 +60,32 @@
                       [maxDate]="fechaActual">
           </p-calendar>
           <span class="campo-obligatorio"
-                *ngIf="fau?.fechaNacimiento?.errors?.required && (fau?.fechaNacimiento?.dirty || fau?.fechaNacimiento?.touched)">Campo obligatorio</span>
+                *ngIf="fau?.fechaNacimiento?.errors?.required && (fau?.fechaNacimiento?.dirty || fau?.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="nivelAgregarUsuario">Nivel<span class="req">*</span>:</label>
           <p-dropdown appendTo="body" id="nivelAgregarUsuario" class="form-control" formControlName="nivel"
-                      [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
+                      [options]="catalogoNiveles" placeholder="Seleccionar el nivel" (onChange)="cargarRoles()">
           </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fau?.nivel?.errors?.required && (fau?.nivel?.dirty || fau?.nivel?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="delegacionAgregarUsuario">Delegación<span class="req">*</span>:</label>
+          <label class="control-label" for="nivelAgregarUsuario">Delegación</label>
           <p-dropdown appendTo="body" id="delegacionAgregarUsuario" class="form-control" formControlName="delegacion"
                       [options]="catalogoDelegaciones" placeholder="Seleccione el nivel"
                       (onChange)="buscarVelatorios()">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fau?.delegacion?.errors?.required && (fau?.delegacion?.dirty || fau?.delegacion?.touched)">Campo obligatorio</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="velatorioAgregarUsuario">Velatorio<span class="req">*</span>:</label>
+          <label class="control-label" for="velatorioAgregarUsuario">Velatorio</label>
           <p-dropdown appendTo="body" id="velatorioAgregarUsuario" class="form-control" formControlName="velatorio"
                       [options]="catalogoVelatorios" placeholder="Seleccione la delegación">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fau?.velatorio?.errors?.required && (fau?.velatorio?.dirty || fau?.velatorio?.touched)">Campo obligatorio</span>
         </div>
       </div>
       <div class="row mb-6">
@@ -97,7 +95,7 @@
                       [options]="catalogoRoles"
                       placeholder="Seleccione el rol">
           </p-dropdown>
-          <span class="campo-obligatorio" *ngIf="fau?.rol?.errors?.required && (fau?.rol?.dirty || fau?.rol?.touched)">Campo obligatorio</span>
+          <span class="campo-obligatorio" *ngIf="fau?.rol?.errors?.required && (fau?.rol?.dirty || fau?.rol?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-4">

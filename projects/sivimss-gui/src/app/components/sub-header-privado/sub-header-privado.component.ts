@@ -1,11 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {UsuarioEnSesion} from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
-import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
-import {Subscription} from "rxjs";
-import {NotificacionesService} from "../../services/notificaciones.service";
-import {HttpRespuesta} from "../../models/http-respuesta.interface";
-import {HttpErrorResponse} from "@angular/common/http";
-import {Router} from "@angular/router";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UsuarioEnSesion } from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
+import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import { Subscription } from "rxjs";
+import { NotificacionesService } from "../../services/notificaciones.service";
+import { HttpRespuesta } from "../../models/http-respuesta.interface";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { MensajesSistemaService } from '../../services/mensajes-sistema.service';
 
 export interface NotificacionInterface {
   path?: string;
@@ -29,10 +30,16 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   subs!: Subscription;
   existeNotificacion: boolean;
   notificaciones: NotificacionInterface[] = [];
+  mostrarModalConfirmacion: boolean = false;
+  MENSAJE_CONFIRMACION_ID: number = 2;
+  msgConfirmacion: string = "";
 
-  constructor(private readonly autenticacionService: AutenticacionService,
-              private readonly notificacionService: NotificacionesService,
-              private router: Router,) {
+  constructor(
+    private readonly autenticacionService: AutenticacionService,
+    private readonly notificacionService: NotificacionesService,
+    private router: Router,
+    private mensajesSistemaService: MensajesSistemaService
+  ) {
     this.existeNotificacion = false;
     // this.notificacionService.consultaNotificacion().subscribe(
     //   (respuesta:HttpRespuesta<any>) => {
@@ -64,6 +71,11 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   }
 
   cerrarSesion(): void {
+    this.msgConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(this.MENSAJE_CONFIRMACION_ID);
+    this.mostrarModalConfirmacion = true;
+  }
+
+  cerrarSesionConfirmacion(): void {
     this.autenticacionService.cerrarSesion();
   }
 
@@ -73,24 +85,26 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     }
   }
 
-  seleccionarNotificacion(notificacion:NotificacionInterface): void {
+  seleccionarNotificacion(notificacion: NotificacionInterface): void {
 
   }
 
-  registrarSalida(notificacion:NotificacionInterface):void {
-    let datos = {estadoSala:notificacion.usoSala,
-      tipoSala:notificacion.indTipoSala,
-      idRegistro:notificacion.idRegistro,
-      idSala:notificacion.idSala,
-    nombreSala: notificacion.nombreSala}
+  registrarSalida(notificacion: NotificacionInterface): void {
+    let datos = {
+      estadoSala: notificacion.usoSala,
+      tipoSala: notificacion.indTipoSala,
+      idRegistro: notificacion.idRegistro,
+      idSala: notificacion.idSala,
+      nombreSala: notificacion.nombreSala
+    }
     localStorage.setItem('reserva-sala', JSON.stringify(datos));
-    this.router.navigate(['../',notificacion.path?.toLowerCase()])
+    this.router.navigate(['../', notificacion.path?.toLowerCase()])
   }
 
-  registrarMasTarde(notificacion:NotificacionInterface): void {
+  registrarMasTarde(notificacion: NotificacionInterface): void {
     const idRegistro = notificacion.idRegistro;
     this.notificacionService.renovarNotificacion(idRegistro).subscribe(
-      (respuesta:HttpRespuesta<any>) => {
+      (respuesta: HttpRespuesta<any>) => {
         this.renovarNotificaciones();
       },
       (error: HttpErrorResponse) => {
@@ -102,12 +116,12 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   renovarNotificaciones(): void {
     this.existeNotificacion = false;
     this.notificacionService.consultaNotificacion().subscribe(
-      (respuesta:HttpRespuesta<any>) => {
-        if (respuesta.datos.length < 1){return}
-        this.notificaciones = respuesta.datos.filter((sala:any) => {
+      (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos.length < 1) { return }
+        this.notificaciones = respuesta.datos.filter((sala: any) => {
           return sala.mensaje.trim() != ""
         });
-        if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
+        if (this.notificaciones.length > 0) { this.existeNotificacion = true }
       },
       (error: HttpErrorResponse) => {
         console.log(error)
