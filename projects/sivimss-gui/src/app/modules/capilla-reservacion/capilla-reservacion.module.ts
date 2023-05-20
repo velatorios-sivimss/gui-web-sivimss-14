@@ -26,9 +26,13 @@ import {AutoCompleteModule} from "primeng/autocomplete";
 import {TableModule} from "primeng/table";
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import {
+  PrevisualizacionArchivoComponent
+} from "./components/calendario/previsualizacion-archivo/previsualizacion-archivo.component";
+import {PdfViewerModule} from "ng2-pdf-viewer";
 
 @NgModule({
-  declarations:[CapillaReservacionComponent, RegistrarEntradaComponent, RegistrarSalidaComponent, CalendarioComponent, DetalleActividadDiaComponent],
+  declarations:[CapillaReservacionComponent, RegistrarEntradaComponent, RegistrarSalidaComponent, CalendarioComponent, DetalleActividadDiaComponent,PrevisualizacionArchivoComponent],
   imports: [
     CommonModule,
     CapillaReservacionRoutingModule,
@@ -49,7 +53,8 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
     AutoCompleteModule,
     TableModule,
     ValidaRolModule,
-    UtileriaModule
+    UtileriaModule,
+    PdfViewerModule
   ],
   providers:[
     CapillaReservacionService

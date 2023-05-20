@@ -18,14 +18,14 @@
                       placeholder="Selecciona la capilla">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="ref.capilla?.errors?.required && (ref.capilla?.dirty || ref.capilla?.touched)">Campo obligatorio</span>
+                *ngIf="ref.capilla?.errors?.required && (ref.capilla?.dirty || ref.capilla?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="folioODS">Folio de la ODS <span class="req">*</span>:</label>
           <input id="folioODS" type="text" class="form-control" formControlName="folioODS" (blur)="consultaODS()"
                  placeholder="Ingresa el folio de la ODS">
           <span class="campo-obligatorio"
-                *ngIf="ref.folioODS?.errors?.required && (ref.folioODS?.dirty || ref.folioODS?.touched)">Campo obligatorio</span>
+                *ngIf="ref.folioODS?.errors?.required && (ref.folioODS?.dirty || ref.folioODS?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -34,14 +34,14 @@
           <input id="nombreContratante" type="text" class="form-control" formControlName="nombreContratante"
                  placeholder="Ingresa el nombre del contratante">
           <span class="campo-obligatorio"
-                *ngIf="ref.nombreContratante?.errors?.required && (ref.nombreContratante?.dirty || ref.nombreContratante?.touched)">Campo obligatorio</span>
+                *ngIf="ref.nombreContratante?.errors?.required && (ref.nombreContratante?.dirty || ref.nombreContratante?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="nombreFinado">Nombre del finado <span class="req">*</span>:</label>
           <input id="nombreFinado" type="text" class="form-control" formControlName="nombreFinado"
                  placeholder="Ingresa el nombre del finado">
           <span class="campo-obligatorio"
-                *ngIf="ref.nombreFinado?.errors?.required && (ref.nombreFinado?.dirty || ref.nombreFinado?.touched)">Campo obligatorio</span>
+                *ngIf="ref.nombreFinado?.errors?.required && (ref.nombreFinado?.dirty || ref.nombreFinado?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -51,13 +51,13 @@
           <p-calendar id="fechaEntrada" styleClass="form-control" formControlName="fechaEntrada" placeholder="Selecciona la fecha"
                       dateFormat="dd/mm/yy"></p-calendar>
           <span class="campo-obligatorio"
-                *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Campo obligatorio</span>
+                *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6 pt-2 mt-5">
           <p-calendar id="horaEntrada" styleClass="form-control" formControlName="horaEntrada" placeholder="00:00"
                       [timeOnly]="true"></p-calendar>
           <span class="campo-obligatorio"
-                *ngIf="ref.horaEntrada?.errors?.required && (ref.horaEntrada?.dirty || ref.horaEntrada?.touched)">Campo obligatorio</span>
+                *ngIf="ref.horaEntrada?.errors?.required && (ref.horaEntrada?.dirty || ref.horaEntrada?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -122,8 +122,8 @@
   </app-table-panel>
 
   <div class="flex mt-3 justify-content-center">
-    <div class="col-md-6">
-      <p class="text-center">¿Estás seguro de registrar esta entrada?</p>
+    <div class="col-md-12">
+      <p class="text-center">¿Estás seguro de registrar la entrada a esta capilla?</p>
     </div>
   </div>
   <div class="row mb-3">

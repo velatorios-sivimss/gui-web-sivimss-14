@@ -143,6 +143,8 @@ export class RegistrarEntradaComponent implements OnInit {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.refModal.close(true)
+        this.generarPlantillaEntregaCapilla();
+
       },
       (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
@@ -183,13 +185,14 @@ export class RegistrarEntradaComponent implements OnInit {
   }
 
   generarPlantillaEntregaCapilla(): void {
-    const configuracionArchivo: OpcionesArchivos = {};
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Entrega de capilla"};
     this.loaderService.activar();
     const busqueda = this.filtrosArchivos();
     this.descargaArchivosService.descargarArchivo(this.capillaReservacionService.generarFormatEntregaCapilla(busqueda), configuracionArchivo).pipe(
       finalize( () => this.loaderService.desactivar())
     ).subscribe(
       (respuesta) => {
+
         console.log(respuesta)
       },
       (error) => {
