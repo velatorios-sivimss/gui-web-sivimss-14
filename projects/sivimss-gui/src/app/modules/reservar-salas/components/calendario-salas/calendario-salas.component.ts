@@ -235,7 +235,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
         finalize( () => this.loaderService.desactivar())
     ).subscribe(
       (respuesta) => {
-        console.log(respuesta)
+        this.alertaService.mostrar(TipoAlerta.Exito,"El archivo se guardó correctamente.")
       },
       (error) => {
         console.log(error)
