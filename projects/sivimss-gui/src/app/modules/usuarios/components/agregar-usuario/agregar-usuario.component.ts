@@ -176,10 +176,10 @@ export class AgregarUsuarioComponent implements OnInit {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_CURP.has(valor)) return;
-        const {mensaje, tipo, valido} = MENSAJES_CURP.get(valor);
+        const {valido} = MENSAJES_CURP.get(valor);
         this.curpValida = valido;
         if (!valido) {
-          this.alertaService.mostrar(tipo, mensaje);
+          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -224,10 +224,10 @@ export class AgregarUsuarioComponent implements OnInit {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_MATRICULA.has(valor)) return;
-        const {mensaje, tipo, valido} = MENSAJES_MATRICULA.get(valor);
+        const {valido} = MENSAJES_MATRICULA.get(valor);
         this.matriculaValida = valido;
         if (!valido) {
-          this.alertaService.mostrar(tipo, mensaje);
+          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
         }
       },
       error: (error: HttpErrorResponse): void => {
