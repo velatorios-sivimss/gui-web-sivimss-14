@@ -245,7 +245,8 @@ export class AgregarUsuarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.error) {
-          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
+          const mensaje = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
+          this.mensajesSistemaService.mostrarMensajeError(mensaje);
           this.matriculaValida = !this.matriculaValida;
         }
       },
