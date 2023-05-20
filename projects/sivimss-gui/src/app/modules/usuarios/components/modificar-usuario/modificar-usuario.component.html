@@ -56,7 +56,7 @@
           <span class="campo-obligatorio"
                 *ngIf="fmu?.correoElectronico?.errors?.required && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           <span class="campo-obligatorio"
-                *ngIf="fmu?.correoElectronico?.errors?.pattern && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Formato incorrecto</span>
+                *ngIf="fmu?.correoElectronico?.errors?.pattern && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Tu correo electrónico no es válido.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="fechaNacimientoModificar">Fecha nacimiento<span
