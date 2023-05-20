@@ -1,0 +1,11 @@
+<pdf-viewer [src]="blob"
+            [render-text]="true"
+            [original-size]="false"
+            style="width: 880px; height: 500px"
+></pdf-viewer>
+<div class="flex justify-content-end mb-6">
+  <button class="ml-4 btn btn-gold btn-md" (click)="cancelar()" >Cancelar</button>
+  <button class="ml-4 btn btn-primary btn-md" (click)="guardar()">
+    Guardar/Imprimir
+  </button>
+</div>

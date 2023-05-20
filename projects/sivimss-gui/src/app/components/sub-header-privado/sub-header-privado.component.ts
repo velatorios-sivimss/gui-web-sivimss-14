@@ -90,6 +90,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   }
 
   registrarSalida(notificacion: NotificacionInterface): void {
+    let validacionRuta: boolean = false;
     let datos = {
       estadoSala: notificacion.usoSala,
       tipoSala: notificacion.indTipoSala,
@@ -98,7 +99,10 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
       nombreSala: notificacion.nombreSala
     }
     localStorage.setItem('reserva-sala', JSON.stringify(datos));
-    this.router.navigate(['../', notificacion.path?.toLowerCase()])
+    if(this.router.url.includes('/reservar-salas/(salas:salas)')){validacionRuta = true}
+    this.router.navigate(['../../', notificacion.path?.toLowerCase(), {outlets: {salas:"salas"}}]).then(()=> {
+      if(validacionRuta){window.location.reload()}
+    })
   }
 
   registrarMasTarde(notificacion: NotificacionInterface): void {

@@ -95,9 +95,6 @@ export class RegistrarEntradaComponent implements OnInit {
 
       const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
       this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
-
-      // console.error(error);
-      // this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     );
   }
