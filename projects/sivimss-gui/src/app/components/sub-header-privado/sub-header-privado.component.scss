@@ -1,13 +1,15 @@
-:host{
+:host {
   display: block;
   background-color: #235B4E;
 }
+
 .sub-header {
   display: grid;
   grid-template-columns:70px 3fr 2fr 1fr;
   grid-template-rows: 70px;
   align-items: center;
   max-width: var(--sivimss-max-width);
+
   .btn-mostrar-menu {
     display: flex;
     justify-content: center;
@@ -85,23 +87,6 @@
       display: inline-block;
     }
   }
-}
-
-
-.notificacion {
-  position: relative;
-  display: inline-block;
-}
-
-.notificacion::before {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: red;
 }
 
 .button-user-img {

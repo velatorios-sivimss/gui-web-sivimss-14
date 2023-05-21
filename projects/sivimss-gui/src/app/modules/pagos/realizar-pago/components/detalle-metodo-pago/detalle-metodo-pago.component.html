@@ -1,0 +1,30 @@
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">Folio DOC-000001</span>
+    </div>
+  </ng-template>
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span class="ml-5">Estatus</span>
+        <div class="contenedor-inputswitch">
+          <span>Pendiente</span>
+        </div>
+      </div>
+      <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
+        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+      </a>
+    </div>
+  </ng-template>
+</app-table-panel>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion class="text-center" titulo="Pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion class="text-center" titulo="Recibo"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion class="text-center" titulo="Modificar"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

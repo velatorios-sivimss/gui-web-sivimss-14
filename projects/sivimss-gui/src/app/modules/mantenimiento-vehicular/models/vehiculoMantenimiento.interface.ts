@@ -1,4 +1,4 @@
-export interface VehiculoTemp {
+export interface VehiculoMantenimiento {
   DESCRIPCION: string,
   DES_MARCA: string,
   DES_MODALIDAD: string,
@@ -18,5 +18,11 @@ export interface VehiculoTemp {
   IMPORTE_PRIMA: number,
   IND_ESTATUS: boolean,
   NOM_VELATORIO: string,
-  TOTAL: number
+  TOTAL: number,
+  ID_MTTO_SOLICITUD: number,
+  ID_MTTOVERIFINICIO: number,
+  ID_MTTO_REGISTRO: number,
+  ID_MTTOVEHICULAR: number,
+  verificacionDia: string,
+  DES_DELEGACION: string
 }
