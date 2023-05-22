@@ -25,7 +25,7 @@
   border-bottom: 1px solid #DDDDDD;
 }
 
-.ultima-celda-sticky.p-datatable .p-datatable-thead > tr > th {
+.ultima-celda-sticky.p-datatable .p-datatable-thead > tr > th:last-child {
   position: sticky;
   right: 0;
   border-left: 1px solid #DDDDDD;
@@ -69,7 +69,7 @@
   color: #484848;
 }
 
-.ultima-celda-sticky.p-datatable .p-datatable-tbody > tr > td {
+.ultima-celda-sticky.p-datatable .p-datatable-tbody > tr > td:last-child {
   background-color: white;
   position: sticky;
   right: 0;

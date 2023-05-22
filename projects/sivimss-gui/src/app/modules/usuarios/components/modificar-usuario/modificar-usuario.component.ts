@@ -45,7 +45,7 @@ export class ModificarUsuarioComponent implements OnInit {
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
-  readonly MSG_USUARIO_MODIFICADO: string = "Usuario modificado correctamente";
+  readonly MSG_USUARIO_MODIFICADO: string = "Usuario modificado correctamente.";
   pasoModificarUsuario: number = 1;
 
   constructor(

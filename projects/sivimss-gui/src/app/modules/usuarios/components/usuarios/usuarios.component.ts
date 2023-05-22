@@ -101,7 +101,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   abrirModalAgregarUsuario(): void {
     const CREACION_CONFIG: DynamicDialogConfig = {
-      header: "Agregar usuario",
+      header: "Registro de usuario nuevo",
       width: MAX_WIDTH,
     }
     this.creacionRef = this.dialogService.open(AgregarUsuarioComponent, CREACION_CONFIG);

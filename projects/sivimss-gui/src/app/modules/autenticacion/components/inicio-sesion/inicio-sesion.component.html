@@ -24,7 +24,7 @@
            (click)="input.type = input.type==='password'?'text':'password'"></i>
       </div>
       <span class="campo-obligatorio"
-            *ngIf="f.contrasenia?.errors?.required && (f.contrasenia?.dirty || f.contrasenia?.touched)">Campo obligatorio</span>
+            *ngIf="f.contrasenia?.errors?.required && (f.contrasenia?.dirty || f.contrasenia?.touched)">Debes capturar tu contraseña.</span>
       <span class="campo-obligatorio"
             *ngIf="contraseniaIncorrecta">La contraseña ingresada no es válida.</span>
     </div>

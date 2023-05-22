@@ -52,9 +52,9 @@ export class AgregarUsuarioComponent implements OnInit {
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
-  readonly DEFAULT_ERROR_RENAPO: string = "La CURP no se encuentra en la base de datos";
-  readonly ERROR_ALTA_USUARIO: string = "Alta incorrecta";
-  readonly MSG_ALTA_USUARIO: string = "Usuario agregado correctamente";
+  readonly NOT_FOUND_ERROR_RENAPO: string = "No se encontro información relacionada a tu búsqueda.";
+  readonly ERROR_ALTA_USUARIO: string = "Error al guardar la información del usuario. Intenta nuevamente.";
+  readonly MSG_ALTA_USUARIO: string = "Usuario agregado correctamente.";
   pasoAgregarUsuario: number = 1;
 
   constructor(
@@ -176,10 +176,10 @@ export class AgregarUsuarioComponent implements OnInit {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_CURP.has(valor)) return;
-        const {mensaje, tipo, valido} = MENSAJES_CURP.get(valor);
+        const {valido} = MENSAJES_CURP.get(valor);
         this.curpValida = valido;
         if (!valido) {
-          this.alertaService.mostrar(tipo, mensaje);
+          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -198,7 +198,7 @@ export class AgregarUsuarioComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
         if (respuesta.datos.message !== '') {
-          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje, this.DEFAULT_ERROR_RENAPO);
+          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje, this.NOT_FOUND_ERROR_RENAPO);
           this.curpValida = !this.curpValida;
           return;
         }
@@ -224,10 +224,10 @@ export class AgregarUsuarioComponent implements OnInit {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_MATRICULA.has(valor)) return;
-        const {mensaje, tipo, valido} = MENSAJES_MATRICULA.get(valor);
+        const {valido} = MENSAJES_MATRICULA.get(valor);
         this.matriculaValida = valido;
         if (!valido) {
-          this.alertaService.mostrar(tipo, mensaje);
+          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -245,7 +245,8 @@ export class AgregarUsuarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.error) {
-          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
+          const mensaje = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
+          this.mensajesSistemaService.mostrarMensajeError(mensaje);
           this.matriculaValida = !this.matriculaValida;
         }
       },
@@ -263,10 +264,10 @@ export class AgregarUsuarioComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (): void => {
-          this.ref.close(respuesta)
+          this.ref.close(respuesta);
         },
         error: (error: HttpErrorResponse): void => {
-          console.error("ERROR: ", error)
+          console.error("ERROR: ", error);
           this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_ALTA_USUARIO);
         }
       });
