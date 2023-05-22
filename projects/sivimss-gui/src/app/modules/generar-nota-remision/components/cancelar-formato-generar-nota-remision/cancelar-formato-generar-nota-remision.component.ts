@@ -6,6 +6,8 @@ import { ModalNotaRemisionComponent } from '../modal/modal-nota-remision/modal-n
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ArticulosServicios, DetalleNotaRemision } from '../../models/nota-remision.interface';
+import { mensajes } from '../../../reservar-salas/constants/mensajes';
 
 @Component({
   selector: 'app-cancelar-formato-generar-nota-remision',
@@ -20,10 +22,14 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
 
   @Input() confirmarCancelacion: boolean = false;
 
-  notaRemisionForm!: FormGroup;
   creacionRef!: DynamicDialogRef;
   idNota: number = 0;
   idOds: number = 0;
+  datos!: DetalleNotaRemision;
+  servicios: ArticulosServicios[] = [];
+  cancelarRemisionForm!: FormGroup;
+
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,6 +43,7 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarCatalogos();
+    this.inicializarCancelarRemisionForm();
   }
 
   cargarCatalogos(): void {
@@ -47,35 +54,19 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
     if (!this.idNota || !this.idOds) {
       this.btnAceptarDetalle();
     }
-    const detalleNotaRemision = respuesta[this.POSICION_DETALLE].datos;
-    const serviciosNotaRemision = respuesta[this.POSICION_SERVICIOS].datos;
-    this.inicializarNotaRemisionForm(detalleNotaRemision, serviciosNotaRemision);
+
+    this.datos = respuesta[this.POSICION_DETALLE]?.datos[0];
+    this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
   }
 
-  inicializarNotaRemisionForm(detalle: any, servicios: any) {
-    this.notaRemisionForm = this.formBuilder.group({
-      versionDocumento: [{ value: "1.2", disabled: true }],
-      fecha: [{ value: new Date(), disabled: true }],
-      velatorio: [{ value: 'No. 22 Villahermosa', disabled: true }],
-      remisionServicios: [{ value: 'DOC-000001', disabled: true }],
-      direccion: [{ value: 'Prolongación Av. México No. 1203, Col. Sabina, C.P. 86153, Villahermosa, San Luis Potosí.', disabled: true }],
-      nombreSolicitante: [{ value: 'Miranda Fernendez Guisa', disabled: true }],
-      direccionSolicitante: [{ value: 'Av. Congreso de la Unión, Iztacalco, CP 201, CDMX', disabled: true }],
-      curpSolicitante: [{ value: 'FEGM560117MDFMPRO7', disabled: true }],
-      velatorioSolicitante: [{ value: 'No. 22 Villahermosa', disabled: true }],
-      finado: [{ value: 'Pedro Lomas Morales', disabled: true }],
-      parentesco: [{ value: 'Abuelo', disabled: true }],
-      folioOds: [{ value: 'DOC-000001', disabled: true }],
-      nombreConformidad: [{ value: null, disabled: true }],
-      nombreRepresentante: [{ value: null, disabled: true }],
-      motivoCancelacion: [{ value: null, disabled: false }, Validators.required],
+  inicializarCancelarRemisionForm() {
+    this.cancelarRemisionForm = this.formBuilder.group({
+      motivoCancelacion: [{ value: null, disabled: false }, [Validators.maxLength(50), Validators.required]]
     });
-
-    this.notaRemisionForm.markAllAsTouched();
   }
 
   regresar() {
-    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
   }
 
   abrirModalCancelandoNotaRemision(): void {
@@ -98,14 +89,23 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
       }
       this.generarNotaRemisionService.cancelarNotaRemision(obj).subscribe(
         (respuesta) => {
-          if (respuesta && respuesta.codigo === 200) {
-            this.creacionRef.close();
-            this.alertaService.mostrar(TipoAlerta.Exito, 'Nota de remisión cancelada correctamente');
-            this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+          this.creacionRef.close();
+          const mensaje = this.alertas?.filter((msj: any) => {
+            return msj.idMensaje == respuesta.mensaje;
+          });
+          if (mensaje && mensaje.length > 0) {
+            this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
           }
+          this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
         },
         (error: HttpErrorResponse) => {
-          console.error(error);
+          console.error("ERROR: ", error);
+          const mensaje = this.alertas.filter((msj: any) => {
+            return msj.idMensaje == error.error.mensaje;
+          })
+          if (mensaje && mensaje.length > 0) {
+            this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+          }
           this.creacionRef.close();
         }
       );
@@ -117,6 +117,6 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   get f() {
-    return this.notaRemisionForm?.controls;
+    return this.cancelarRemisionForm.controls;
   }
 }

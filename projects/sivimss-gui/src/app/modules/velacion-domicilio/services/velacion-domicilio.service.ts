@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { BaseService } from "../../../utils/base-service";
 import { HttpRespuesta } from "../../../models/http-respuesta.interface";
 import { AutenticacionService } from "../../../services/autenticacion.service";
@@ -7,9 +7,11 @@ import { environment } from "projects/sivimss-gui/src/environments/environment";
 import { Observable, of } from "rxjs";
 import { TipoDropdown } from "../../../models/tipo-dropdown";
 import { mapearArregloTipoDropdown } from "../../../utils/funciones";
+import { BuscarFoliosOds, ControlMovimiento, ReporteTabla } from "../models/velacion-domicilio.interface";
 
 @Injectable()
 export class VelacionDomicilioService extends BaseService<HttpRespuesta<any>, any> {
+  auth_token2: any;
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "crear", "modificar",
       58, "consultar", "detalle", "cambiar-estatus");
@@ -29,9 +31,32 @@ export class VelacionDomicilioService extends BaseService<HttpRespuesta<any>, an
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-vales-salida`, {}, { params });
   }
 
+  obtenerOds(datos: BuscarFoliosOds): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-vs-folios-osd`, datos);
+  }
 
-  buscarTodasOdsGeneradas(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo?servicio=consultar-vs-folios-osd`);
+  obtenerDetalleValeSalida(idValeSalida: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idValeSalida}?servicio=consultar-vale-salida-detalle`);
+  }
+
+  obtenerDatosFolioOds(datos: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-vs-datos-ods`, datos);
+  }
+
+  crearValeSalida(datos: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/crear-vale-salida`, datos);
+  }
+
+  actualizarValeSalida(datos: any): Observable<HttpRespuesta<any>> {
+    return this._http.put<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/actualizar-vale-salida`, datos);
+  }
+
+  eliminarVale(idValeSalida: number): Observable<HttpRespuesta<any>> {
+    return this._http.put<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/cambiar-estatus-vale-salida`, { idValeSalida });
+  }
+
+  registrarSalida(datos: any): Observable<HttpRespuesta<any>> {
+    return this._http.put<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/registrar-entrada-vale-salida`, datos);
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
@@ -44,8 +69,26 @@ export class VelacionDomicilioService extends BaseService<HttpRespuesta<any>, an
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
-  obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+  obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body = { idDelegacion: delegacion }
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8079/mssivimss-oauth/velatorio/consulta`, body);
+    return this._http.post<HttpRespuesta<any>>(`http://localhost:8087/mssivimss-oauth/velatorio/consulta`, body);
+  }
+
+  descargarValeSalida(controlMovimiento: ControlMovimiento): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/reporte-vale-salida/generarDocumento/pdf`
+      , controlMovimiento, { headers, responseType: 'blob' as 'json' });
+  }
+
+  descargarRegistrosTabla(reporteTabla: ReporteTabla): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/reporte-tabla-vale-salida/generarDocumento/${reporteTabla.tipoReporte}`
+      , reporteTabla, { headers, responseType: 'blob' as 'json' });
   }
 }

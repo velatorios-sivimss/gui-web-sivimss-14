@@ -11,16 +11,21 @@ import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrum
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LazyLoadEvent } from 'primeng/api';
 import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
-import { mapearArregloTipoDropdown, validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { ClavesEstatus, NotaRemision } from '../../models/nota-remision.interface';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { BusquedaFiltro, ClavesEstatus, GenerarReporte, NotaRemision } from '../../models/nota-remision.interface';
 import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
 import * as moment from "moment/moment";
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { finalize } from 'rxjs';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { mensajes } from '../../../reservar-salas/constants/mensajes';
 
 @Component({
   selector: 'app-generar-nota-remision',
   templateUrl: './generar-nota-remision.component.html',
   styleUrls: ['./generar-nota-remision.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class GenerarNotaRemisionComponent implements OnInit {
   readonly POSICION_NIVELES: number = 0;
@@ -35,13 +40,16 @@ export class GenerarNotaRemisionComponent implements OnInit {
   totalElementos: number = 0;
 
   notasRemision: NotaRemision[] = [];
-  notaRemisionSeleccionada: NotaRemision = {};
+  notaRemisionSeleccionada: NotaRemision = {
+    id: 0,
+    idNota: 0
+  };
   filtroForm!: FormGroup;
   creacionRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
   modificacionRef!: DynamicDialogRef;
   hayCamposObligatorios: boolean = false;
-
+  fechaActual: Date = new Date();
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
@@ -52,6 +60,9 @@ export class GenerarNotaRemisionComponent implements OnInit {
     3: 'Cancelada',
   };
 
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -61,6 +72,8 @@ export class GenerarNotaRemisionComponent implements OnInit {
     private generarNotaRemisionService: GenerarNotaRemisionService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private descargaArchivosService: DescargaArchivosService,
+    private readonly loaderService: LoaderService,
   ) { }
 
 
@@ -81,28 +94,28 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
-  inicializarFiltroForm() {
+  async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: 1, disabled: true }],
-      delegacion: [{ value: null, disabled: false }],
-      velatorio: [{ value: null, disabled: false }],
+      nivel: [{ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
+      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }],
+      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }],
       folio: [{ value: null, disabled: false }],
-      nombreContratante: [{ value: null, disabled: false }],
       fechaInicial: [{ value: null, disabled: false }],
       fechaFinal: [{ value: null, disabled: false }],
     });
+    await this.obtenerVelatorios();
   }
 
   generarNotaRemision(): void {
-    this.router.navigate([`formato/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
   }
 
   verDetalleNotaRemision(): void {
-    this.router.navigate([`detalle-formato/1/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
   }
 
   cancelarNotaRemision(): void {
-    this.router.navigate([`cancelar-formato/1/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
   }
 
   abrirPanel(event: MouseEvent, notaRemisionSeleccionada: NotaRemision): void {
@@ -118,63 +131,70 @@ export class GenerarNotaRemisionComponent implements OnInit {
     }
     this.generarNotaRemisionService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
       (respuesta) => {
-        this.notasRemision = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        if (respuesta!.datos?.content.length > 0) {
+          this.notasRemision = respuesta!.datos.content;
+          this.totalElementos = respuesta!.datos.totalElements;
+        } else {
+          const mensaje = this.alertas?.filter((msj: any) => {
+            return msj.idMensaje == respuesta.mensaje;
+          });
+          if (mensaje && mensaje.length > 0) {
+            this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
+          }
+        }
       },
       (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas.filter((msj: any) => {
+          return msj.idMensaje == error.error.mensaje;
+        })
+        if (mensaje && mensaje.length > 0) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+        }
       }
     );
   }
 
   buscarFoliosNotaRemision() {
-    let camposObligatorios = {
-      folio: this.f.folio.value,
-      fechaInicial: this.f.fechaInicial.value,
-      fechaFinal: this.f.fechaFinal.value,
-    };
-    this.hayCamposObligatorios = false;
-    if (validarAlMenosUnCampoConValor(camposObligatorios) && this.filtroForm.valid) {
-      this.numPaginaActual = 0;
-      this.buscarPorFiltros();
-    } else {
-      this.f.folio.setValidators(Validators.required);
-      this.f.folio.updateValueAndValidity();
-      this.f.fechaInicial.setValidators(Validators.required);
-      this.f.fechaInicial.updateValueAndValidity();
-      this.f.fechaFinal.setValidators(Validators.required);
-      this.f.fechaFinal.updateValueAndValidity();
-      this.filtroForm.markAllAsTouched();
-      this.hayCamposObligatorios = true;
-    }
+    this.numPaginaActual = 0;
+    this.buscarPorFiltros();
   }
 
   buscarPorFiltros(): void {
     this.generarNotaRemisionService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual, this.cantElementosPorPagina).subscribe(
       (respuesta) => {
-        if (respuesta!.datos.content.length === 0) {
-          this.notasRemision = [];
-          this.totalElementos = 0;
-          this.alertaService.mostrar(TipoAlerta.Precaucion, 'No se encontró información relacionada a tu búsqueda.');
-        } else {
+        if (respuesta!.datos?.content.length > 0) {
           this.notasRemision = respuesta!.datos.content;
           this.totalElementos = respuesta!.datos.totalElements;
+        } else {
+          this.notasRemision = [];
+          this.totalElementos = 0;
+          const mensaje = this.alertas?.filter((msj: any) => {
+            return msj.idMensaje == respuesta.mensaje;
+          });
+          if (mensaje && mensaje.length > 0) {
+            this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
+          }
         }
       },
       (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas.filter((msj: any) => {
+          return msj.idMensaje == error.error.mensaje;
+        })
+        if (mensaje && mensaje.length > 0) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+        }
       }
     );
   }
 
-  obtenerObjetoParaFiltrado(): object {
+  obtenerObjetoParaFiltrado(): BusquedaFiltro {
     return {
-      idNivel: +this.f.nivel.value,
-      idDelegacion: +this.f.delegacion.value,
-      idVelatorio: +this.f.velatorio.value,
-      folioODS: +this.f.folio.value?.label,
+      idNivel: +this.f.nivel.value || null,
+      idDelegacion: +this.f.delegacion.value || null,
+      idVelatorio: +this.f.velatorio.value || null,
+      folioODS: this.f.folio.value?.label,
       fecIniODS: this.f.fechaInicial.value ? moment(this.f.fechaInicial.value).format('DD/MM/YYYY') : null,
       fecFinODS: this.f.fechaFinal.value ? moment(this.f.fechaFinal.value).format('DD/MM/YYYY') : null,
     }
@@ -186,31 +206,6 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.filtroForm.reset();
     this.f.nivel.setValue(1);
     this.paginar();
-  }
-
-  fechasOpcionales() {
-    this.f.fechaInicial.clearValidators();
-    this.f.fechaInicial.updateValueAndValidity();
-    this.f.fechaFinal.clearValidators();
-    this.f.fechaFinal.updateValueAndValidity();
-    this.hayCamposObligatorios = false;
-  }
-
-  folioOpcional() {
-    if (this.f.fechaInicial.value && this.f.fechaFinal.value) {
-      this.f.folio.clearValidators();
-      this.f.folio.updateValueAndValidity();
-      this.hayCamposObligatorios = false;
-    }
-
-    if (!this.f.fechaInicial.value || !this.f.fechaFinal.value) {
-      this.f.fechaInicial.setValidators(Validators.required);
-      this.f.fechaInicial.updateValueAndValidity();
-      this.f.fechaFinal.setValidators(Validators.required);
-      this.f.fechaFinal.updateValueAndValidity();
-      this.filtroForm.markAllAsTouched();
-      this.hayCamposObligatorios = true;
-    }
   }
 
   obtenerFoliosGenerados() {
@@ -230,25 +225,71 @@ export class GenerarNotaRemisionComponent implements OnInit {
         }
       },
       (error: HttpErrorResponse) => {
-        console.error(error);
+        console.error("ERROR: ", error);
       }
     );
   }
 
-  obtenerVelatorios() {
+  async obtenerVelatorios() {
     this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
       (respuesta) => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
       },
       (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        console.error("ERROR: ", error);
       }
     );
   }
 
-  descargarDocumento(tipoDocumento: string) {
+  generarReporteNotaRemision(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
+    }
 
+    this.loaderService.activar();
+    const busqueda = this.filtrosArchivos(tipoReporte);
+
+    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta);
+      },
+      (error) => {
+        console.log(error);
+      },
+    )
+  }
+
+  generarReporteTabla(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
+    }
+
+    this.loaderService.activar();
+    let busqueda = this.obtenerObjetoParaFiltrado();
+    busqueda = { ...busqueda, tipoReporte }
+
+    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteTabla(busqueda), configuracionArchivo).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta);
+      },
+      (error) => {
+        console.log(error);
+      },
+    )
+  }
+
+  filtrosArchivos(tipoReporte: string): GenerarReporte {
+    return {
+      idNota: this.notaRemisionSeleccionada.idNota,
+      idOrden: this.notaRemisionSeleccionada.id,
+      tipoReporte,
+    }
   }
 
   get f() {

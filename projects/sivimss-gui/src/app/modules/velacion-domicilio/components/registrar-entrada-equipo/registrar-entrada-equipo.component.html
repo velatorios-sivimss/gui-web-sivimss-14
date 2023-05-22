@@ -3,34 +3,39 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="fechaEntrada">Fecha de entrada<span class="req">*</span>:</label>
-        <p-calendar id="fechaEntrada" formControlName="fechaEntrada" styleClass="form-control"
-                    [showIcon]="true" placeholder="Selecciona la fecha de entrada" dateFormat="dd/mm/yy">
+        <p-calendar id="fechaEntrada" formControlName="fechaEntrada" styleClass="form-control" [showIcon]="true"
+          placeholder="Selecciona la fecha de entrada" dateFormat="dd/mm/yy">
         </p-calendar>
-        <span class="campo-obligatorio" *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Campo
-            obligatorio</span>
+        <span class="campo-obligatorio"
+          *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Campo
+          obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="responsableEquiposVelacion">Responsable de los equipos de velación<span class="req">*</span>:</label>
-        <input id="responsableEquiposVelacion" type="text" class="form-control" formControlName="responsableEquiposVelacion"
-               placeholder="Ingresa nombre">
+        <label class="control-label" for="nombreResponsableEntrega">Responsable de los equipos de velación<span
+            class="req">*</span>:</label>
+        <input id="nombreResponsableEntrega" type="text" class="form-control" formControlName="nombreResponsableEntrega"
+          placeholder="Ingresa nombre" maxlength="70">
         <span class="campo-obligatorio"
-              *ngIf="ref.responsableEquiposVelacion?.errors?.required && (ref.responsableEquiposVelacion?.dirty || ref.responsableEquiposVelacion?.touched)">Campo obligatorio</span>
+          *ngIf="ref.nombreResponsableEntrega?.errors?.required && (ref.nombreResponsableEntrega?.dirty || ref.nombreResponsableEntrega?.touched)">Campo
+          obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="matriculaResponsable">Matrícula del responsable<span class="req">*</span>:</label>
-        <input id="matriculaResponsable" type="text" class="form-control" formControlName="matriculaResponsable"
-               placeholder="Ingresa nombre del panteón">
+        <label class="control-label" for="matriculaResponsableEntrega">Matrícula del responsable<span
+            class="req">*</span>:</label>
+        <input id="matriculaResponsableEntrega" type="text" class="form-control" maxlength="70"
+          formControlName="matriculaResponsableEntrega" placeholder="Ingresa nombre del panteón" numbersOnly>
         <span class="campo-obligatorio"
-              *ngIf="ref.matriculaResponsable?.errors?.required && (ref.matriculaResponsable?.dirty || ref.matriculaResponsable?.touched)">Campo obligatorio</span>
+          *ngIf="ref.matriculaResponsableEntrega?.errors?.required && (ref.matriculaResponsableEntrega?.dirty || ref.matriculaResponsableEntrega?.touched)">Campo
+          obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-12">
-      <span class="mensaje-inferior-campo-obligatorio">
-              *Campos obligatorios
-      </span>
+        <span class="mensaje-inferior-campo-obligatorio">
+          *Campos obligatorios
+        </span>
       </div>
     </div>
   </form>
@@ -41,7 +46,7 @@
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Fecha de entrada</label>
-          <span> {{ref.fechaEntrada.value}}</span>
+          <span> {{ref.fechaEntrada.value | date:'dd/MM/YYYY'}}</span>
         </div>
       </div>
     </div>
@@ -49,13 +54,13 @@
       <div class="col-md-6">
         <div class="table-panel-column">
           <label>Responsable de los equipos de velación</label>
-          <span> {{ref.responsableEquiposVelacion.value}}</span>
+          <span> {{ref.nombreResponsableEntrega.value}}</span>
         </div>
       </div>
       <div class="col-md-6">
         <div class="table-panel-column">
           <label>Matrícula del responsable</label>
-          <span> {{ref.matriculaResponsable.value}}</span>
+          <span> {{ref.matriculaResponsableEntrega.value}}</span>
         </div>
       </div>
     </div>
@@ -68,11 +73,12 @@
 <section>
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end align-items-center">
-      <button class="btn btn-md btn-default" *ngIf="confirmacion" (click)="confirmacion = false" >Regresar</button>
+      <button class="btn btn-md btn-default" *ngIf="confirmacion" (click)="confirmacion = false">Regresar</button>
       <button class="ml-6 btn btn-md btn-gold" (click)="cancelar()">Cancelar</button>
-      <button class="ml-6 btn btn-md btn-primary" *ngIf="confirmacion" [disabled]="registrarEntradaForm.invalid"  (click)="aceptar()">Aceptar</button>
-      <button class="ml-6 btn btn-md btn-primary" *ngIf="!confirmacion" [disabled]="registrarEntradaForm.invalid"  (click)="confirmacion = true">Registrar entrada</button>
+      <button class="ml-6 btn btn-md btn-primary" *ngIf="confirmacion" [disabled]="registrarEntradaForm.invalid"
+        (click)="registrarEntrada()">Aceptar</button>
+      <button class="ml-6 btn btn-md btn-primary" *ngIf="!confirmacion" [disabled]="registrarEntradaForm.invalid"
+        (click)="confirmacion = true">Registrar entrada</button>
     </div>
   </div>
 </section>
-

@@ -14,6 +14,5 @@ export class ReservarSalasResolver implements Resolve<HttpRespuesta<any>> {
     const catNiveles$ = this.controlVehiculosService.obtenerCatalogoNiveles();
     const catDelegacion$ = this.controlVehiculosService.obtenerCatalogoDelegaciones();
     return forkJoin([catNiveles$, catDelegacion$]);
-
   }
 }

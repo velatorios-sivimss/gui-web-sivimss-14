@@ -8,13 +8,12 @@ import * as moment from 'moment';
 
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { LoaderService } from "../../../../shared/loader/services/loader.service";
-
 import { ControlVehiculosService } from "../../services/control-vehiculos.service";
-
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { SalaVelatorio } from "../../models/sala-velatorio.interface";
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { EntradaVehiculo } from "../../models/registro-vehiculo.interface";
+import { ControlVehiculoConsulta, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
+import { mensajes } from '../../../reservar-salas/constants/mensajes';
 
 @Component({
   selector: 'app-registrar-entrada',
@@ -23,16 +22,31 @@ import { EntradaVehiculo } from "../../models/registro-vehiculo.interface";
 })
 export class RegistrarEntradaComponent implements OnInit {
 
-  registroEntradaForm!: FormGroup;
-  salaSeleccionada: SalaVelatorio = {};
+  formRegistrarEntrada!: FormGroup;
+  datosVehiculo: ControlVehiculoConsulta = {
+    marca: '',
+    nombreDestino: '',
+    idVehiculo: '',
+    nombreFinado: '',
+    nombreContratante: '',
+    folioODS: '',
+    tarjetaCirculacion: '',
+    modelo: '',
+    placas: '',
+    disponibilidad: 0,
+    idODS: 0,
+  };
+  vehiculoSeleccionado: ControlVehiculoListado = {
+    idVehiculo: 0,
+    disponible: 0,
+    descripcion: ''
+  };
 
   indice: number = 0;
   idOds!: any;
   tipoSala: number = 0;
   folioValido: boolean = false;
-  opcionesInicio: TipoDropdown[] = [{ label: 'Mantenimiento', value: '1' }, { label: 'Servicio de ODS', value: '2' }];
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
     private alertaService: AlertaService,
@@ -41,33 +55,63 @@ export class RegistrarEntradaComponent implements OnInit {
     public config: DynamicDialogConfig,
     private readonly loaderService: LoaderService,
     private controlVehiculosService: ControlVehiculosService
-  ) {
-    this.iniciarFormRegistroEntrada();
+  ) { }
+
+  ngOnInit(): void {
+    this.vehiculoSeleccionado = this.config.data.vehiculo;
+    this.iniciarFormRegistrarEntrada();
+    this.obtenerDatosVehiculo();
   }
 
-  iniciarFormRegistroEntrada(): void {
-    this.registroEntradaForm = this.formBuilder.group({
-      inicioDe: [{ value: null, disabled: false }, [Validators.required]],
-      descripcionMantenimiento: [{ value: null, disabled: false }],
-      folioODS: [{ value: null, disabled: false }, [Validators.required]],
-      nombreContratante: [{ value: null, disabled: true }, [Validators.required]],
-      nombreFinado: [{ value: null, disabled: true }, [Validators.required]],
-      nombreResponsable: [{ value: null, disabled: false }, [Validators.required]],
-      nivelGas: [{ value: null, disabled: false }, [Validators.required]],
-      fecha: [{ value: null, disabled: false }, [Validators.required]],
-      hora: [{ value: null, disabled: false }, [Validators.required]],
+  iniciarFormRegistrarEntrada(): void {
+    this.formRegistrarEntrada = this.formBuilder.group({
+      nivelGasolina: [{ value: null, disabled: false }, [Validators.required]],
+      kilometrajeFinal: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
-  ngOnInit(): void {
-    this.salaSeleccionada = this.config.data.sala;
-    this.tipoSala = this.config.data.tipoSala;
-    this.confFormTipoSala(this.tipoSala);
+  obtenerDatosVehiculo() {
+    if (this.vehiculoSeleccionado.idVehiculo) {
+      this.controlVehiculosService.obtenerDatosVehiculo(this.vehiculoSeleccionado.idVehiculo).pipe(
+        finalize(() => this.loaderService.desactivar())
+      ).subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          // TO DO mostrar mensaje 45 -  no hay datos
+          if (respuesta.datos.length > 0) {
+            this.datosVehiculo = respuesta.datos[0];
+          }
+          // if (respuesta.datos) {
+          //   this.folioValido = true;
+          //   this.idOds = respuesta.datos[0]?.idODS;
+          //   this.f.nombreContratante.setValue(respuesta.datos[0]?.nombreContratante);
+          //   this.f.nombreFinado.setValue(respuesta.datos[0]?.nombreFinado);
+          // } else {
+          //   this.folioValido = false;
+          //   this.f.nombreContratante.patchValue(null);
+          //   this.f.nombreFinado.patchValue(null);
+          //   this.alertaService.mostrar(TipoAlerta.Precaucion, "El número de folio no existe.\n" +
+          //     "Verifica tu información.\n")
+          // }
+        },
+        (error: HttpErrorResponse) => {
+          console.error("ERROR: ", error);
+          
+
+          console.error("ERROR: ", error);
+          const mensaje = this.alertas.filter((msj: any) => {
+            return msj.idMensaje == error.error.mensaje;
+          })
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+
+
+        }
+      );
+    }
   }
 
   consultaODS(): void {
     this.loaderService.activar();
-    const folioODS = +this.entradaF.folioODS.value;
+    const folioODS = +this.f.folioODS.value;
     if (!folioODS) {
       this.loaderService.desactivar();
       return;
@@ -79,12 +123,12 @@ export class RegistrarEntradaComponent implements OnInit {
         if (respuesta.datos) {
           this.folioValido = true;
           this.idOds = respuesta.datos[0]?.idODS;
-          this.entradaF.nombreContratante.setValue(respuesta.datos[0]?.nombreContratante);
-          this.entradaF.nombreFinado.setValue(respuesta.datos[0]?.nombreFinado);
+          this.f.nombreContratante.setValue(respuesta.datos[0]?.nombreContratante);
+          this.f.nombreFinado.setValue(respuesta.datos[0]?.nombreFinado);
         } else {
           this.folioValido = false;
-          this.entradaF.nombreContratante.patchValue(null);
-          this.entradaF.nombreFinado.patchValue(null);
+          this.f.nombreContratante.patchValue(null);
+          this.f.nombreFinado.patchValue(null);
           this.alertaService.mostrar(TipoAlerta.Precaucion, "El número de folio no existe.\n" +
             "Verifica tu información.\n")
         }
@@ -98,38 +142,38 @@ export class RegistrarEntradaComponent implements OnInit {
 
   cambioInicioDe(event: any): void {
     if (event.value == 2) {
-      this.entradaF.descripcionMantenimiento.disabled;
-      this.entradaF.descripcionMantenimiento.clearValidators();
-      this.entradaF.descripcionMantenimiento.setValue("");
+      this.f.descripcionMantenimiento.disabled;
+      this.f.descripcionMantenimiento.clearValidators();
+      this.f.descripcionMantenimiento.setValue("");
 
-      this.entradaF.folioODS.enabled;
-      this.entradaF.folioODS.setValidators([Validators.required]);
-      this.entradaF.nombreContratante.enabled;
-      this.entradaF.nombreContratante.setValidators([Validators.required]);
-      this.entradaF.nombreFinado.enabled;
-      this.entradaF.nombreFinado.setValidators([Validators.required]);
-      this.entradaF.nivelGas.enabled;
-      this.entradaF.nivelGas.setValidators([Validators.required]);
+      this.f.folioODS.enabled;
+      this.f.folioODS.setValidators([Validators.required]);
+      this.f.nombreContratante.enabled;
+      this.f.nombreContratante.setValidators([Validators.required]);
+      this.f.nombreFinado.enabled;
+      this.f.nombreFinado.setValidators([Validators.required]);
+      this.f.nivelGas.enabled;
+      this.f.nivelGas.setValidators([Validators.required]);
       this.folioValido = false;
     } else {
-      this.entradaF.descripcionMantenimiento.enabled;
-      this.entradaF.descripcionMantenimiento.setValidators([Validators.required]);
+      this.f.descripcionMantenimiento.enabled;
+      this.f.descripcionMantenimiento.setValidators([Validators.required]);
 
-      this.entradaF.folioODS.disabled;
-      this.entradaF.folioODS.clearValidators();
-      this.entradaF.folioODS.setValue("");
+      this.f.folioODS.disabled;
+      this.f.folioODS.clearValidators();
+      this.f.folioODS.setValue("");
 
-      this.entradaF.nombreContratante.disabled;
-      this.entradaF.nombreContratante.clearValidators();
-      this.entradaF.nombreContratante.setValue("");
+      this.f.nombreContratante.disabled;
+      this.f.nombreContratante.clearValidators();
+      this.f.nombreContratante.setValue("");
 
-      this.entradaF.nombreFinado.disabled;
-      this.entradaF.nombreFinado.clearValidators();
-      this.entradaF.nombreFinado.setValue("");
+      this.f.nombreFinado.disabled;
+      this.f.nombreFinado.clearValidators();
+      this.f.nombreFinado.setValue("");
 
-      this.entradaF.nivelGas.disabled;
-      this.entradaF.nivelGas.clearValidators();
-      this.entradaF.nivelGas.setValue("");
+      this.f.nivelGas.disabled;
+      this.f.nivelGas.clearValidators();
+      this.f.nivelGas.setValue("");
 
       this.folioValido = true;
     }
@@ -141,16 +185,15 @@ export class RegistrarEntradaComponent implements OnInit {
       return;
     }
     this.loaderService.activar();
-    this.controlVehiculosService.guardar(this.datosGuardar()).pipe(
+    this.controlVehiculosService.guardarEntrada(this.datosGuardar()).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        this.ref.close(true);
-        const alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-        const mensaje = alertas.filter((msj: any) => {
+        const mensaje = this.alertas?.filter((msj: any) => {
           return msj.idMensaje == respuesta.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+        this.ref.close(true);
       },
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
@@ -164,14 +207,12 @@ export class RegistrarEntradaComponent implements OnInit {
 
   datosGuardar(): EntradaVehiculo {
     return {
-      idSala: this.salaSeleccionada.idSala,
-      idOds: this.idOds ? this.idOds : null,
-      idTipoOcupacion: +this.entradaF.inicioDe.value,
-      fechaEntrada: moment(this.entradaF.fecha.value).format('yyyy/MM/DD'),
-      horaEntrada: moment(this.entradaF.hora.value).format('HH:mm'),
-      cantidadGasInicial: this.entradaF.nivelGas.value,
-      nombreResponsable: this.quitarEspacios(this.entradaF.nombreResponsable.value),
-      descripcionMantenimiento: this.quitarEspacios(this.entradaF.descripcionMantenimiento.value),
+      idVehiculo: this.vehiculoSeleccionado.idVehiculo,
+      idODS: +this.datosVehiculo.idODS,
+      fecEntrada: moment().format('yyyy/MM/DD'),
+      horaEntrada: moment().format('HH:mm'),
+      gasolinaFinal: this.f.nivelGasolina.value,
+      kmFinal: +this.f.kilometrajeFinal.value,
     }
   }
 
@@ -179,17 +220,9 @@ export class RegistrarEntradaComponent implements OnInit {
     return cadena.replace(/\s{2,}/g, ' ').trim();
   }
 
-  confFormTipoSala(sala: number): void {
-    if (sala) {
-      this.entradaF.nivelGas.disabled;
-      this.entradaF.nivelGas.clearValidators();
-      this.entradaF.nivelGas.setValue("");
-    }
-  }
-
   noEspaciosAlPrincipio() {
-    this.entradaF.nombreResponsable.setValue(
-      this.entradaF.nombreResponsable.value.trimStart());
+    this.f.nombreResponsable.setValue(
+      this.f.nombreResponsable.value.trimStart());
   }
 
   cancelar(): void {
@@ -200,7 +233,7 @@ export class RegistrarEntradaComponent implements OnInit {
     this.ref.close()
   }
 
-  get entradaF() {
-    return this.registroEntradaForm.controls;
+  get f() {
+    return this.formRegistrarEntrada.controls;
   }
 }

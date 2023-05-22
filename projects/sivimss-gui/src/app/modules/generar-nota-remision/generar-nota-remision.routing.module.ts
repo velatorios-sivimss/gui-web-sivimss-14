@@ -6,6 +6,7 @@ import { DetalleFormatoGenerarNotaRemisionComponent } from './components/detalle
 import { CancelarFormatoGenerarNotaRemisionComponent } from './components/cancelar-formato-generar-nota-remision/cancelar-formato-generar-nota-remision.component';
 import { GenerarNotaRemisionResolver } from './services/generar-nota-remision.resolver';
 import { DetalleNotaRemisionResolver } from "./services/detalle-nota-remision.resolver";
+import { DetalleOrderServicioResolver } from "./services/detalle-orden-servicio.resolver";
 
 const routes: Route[] = [
     {
@@ -16,10 +17,10 @@ const routes: Route[] = [
         }
     },
     {
-        path: 'formato/:idOds',
+        path: 'detalle-orden-servicio/:idOds',
         component: FormatoGenerarNotaRemisionComponent,
         resolve: {
-            respuesta: DetalleNotaRemisionResolver
+            respuesta: DetalleOrderServicioResolver
         }
     },
     {
@@ -44,6 +45,7 @@ const routes: Route[] = [
     providers: [
         GenerarNotaRemisionResolver,
         DetalleNotaRemisionResolver,
+        DetalleOrderServicioResolver,
     ]
 })
 export class GenerarReciboRoutingModule { }
