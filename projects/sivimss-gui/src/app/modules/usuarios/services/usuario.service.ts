@@ -55,8 +55,10 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/siap/${matricula}`);
   }
 
-  obtenerCatalogoRoles(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/${this._roles}`,);
+  obtenerCatalogoRoles(idNivel: string): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", this._roles)
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idNivel}`, {params});
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {

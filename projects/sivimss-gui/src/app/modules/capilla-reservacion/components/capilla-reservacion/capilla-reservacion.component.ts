@@ -117,7 +117,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
   obtenerObjetoParaRegistrarEntrada() {
     return {
-      idVelatorio: this.velatorioListado,
+      idVelatorio: this.velatorioListado ? this.velatorioListado : null,
       fechaEntrada: this.fe.fechaEntrada.value,
       horaEntrada: this.fe.horaEntrada.value,
       registroEntrada:  this.fe.horaEntrada.value

@@ -1,1 +1,70 @@
-<p>enviar-factura works!</p>
+<app-titulo-principal titulo="Enviar Factura"></app-titulo-principal>
+<ng-container *ngIf="indice === 0">
+  <form [formGroup]="enviarForm" (submit)="guardar()">
+    <app-table-panel>
+      <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+          <span class="ml-2 font-bold">Folio de la factura DOC-000001</span>
+        </div>
+      </ng-template>
+      <div class="row table-panel-row">
+        <div class="col-md-12">
+          <div class="table-panel-column">
+            <label>Folio Fiscal</label>
+            <span>DOC-000002</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <div class="row mb-3 mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="correoElectronico">Correo electrónico*:<span class="req">*</span>:</label>
+        <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
+               placeholder="Inserta el correo electrónico">
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Aceptar</button>
+      </div>
+    </div>
+  </form>
+</ng-container>
+<ng-container *ngIf="indice === 1">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span class="ml-2 font-bold">Folio de la factura DOC-000001</span>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <label>Folio Fiscal</label>
+          <span>DOC-000002</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <label>Correo electrónico</label>
+          <span>gerbralo123@gmail.com</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <div class="mb-3 mt-3 row text-center">
+    ¿Estás seguro que deseas enviar esta factura?
+  </div>
+  <div class="flex justify-content-end mt-5">
+    <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+    <button type="button" class="ml-4 btn btn-primary btn-md">
+      Aceptar
+    </button>
+  </div>
+</ng-container>

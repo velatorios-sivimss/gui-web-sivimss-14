@@ -1,11 +1,12 @@
 <ng-container [ngSwitch]="pasoRestablecerContrasena">
   <ng-container *ngSwitchCase="CONFIRMACION_RESTABLECER_CONTRASENIA">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-center">¿Deseas restablecer tu contraseña?</span>
+      <span class="text-center">¿Desea restablecer su contraseña?</span>
     </div>
-    <div class="flex justify-content-end mt-4">
-      <button class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-      <button class="btn btn-primary btn-md ml-5" (click)="pasoRestablecerContrasena = CAPTURA_DE_USUARIO">Aceptar</button>
+    <div class="flex justify-content-center mt-4">
+      <button class="btn btn-gold btn-md" (click)="cerrarModal()">No</button>
+      <button class="btn btn-primary btn-md ml-5" (click)="pasoRestablecerContrasena = CAPTURA_DE_USUARIO">Si
+      </button>
     </div>
   </ng-container>
   <ng-container *ngSwitchCase="CAPTURA_DE_USUARIO">
@@ -18,7 +19,7 @@
         <input id="usuarioRestCont" class="form-control" formControlName="usuario"
                placeholder="Ingresar usuario">
         <span class="campo-obligatorio"
-              *ngIf="frcu?.usuario?.errors?.required && (frcu?.usuario?.dirty || frcu?.usuario?.touched)">Campo obligatorio</span>
+              *ngIf="frcu?.usuario?.errors?.required && (frcu?.usuario?.dirty || frcu?.usuario?.touched)">Este campo es obligatorio *.</span>
         <div class="mt-3">
           <span>*Campo obligatorio</span>
         </div>
@@ -53,5 +54,12 @@
         </button>
       </div>
     </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="REDIRIGIR_RESTABLECER_CONTRASENIA">
+    <div class="flex justify-content-center mt-4">
+      <button type="button" class="btn btn-primary btn-md ml-5"
+              (click)="restablecerContrasenia()">Restablecer Contraseña
+      </button>
+    </div>
   </ng-container>
 </ng-container>

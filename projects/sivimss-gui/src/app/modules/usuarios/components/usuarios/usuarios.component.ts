@@ -61,10 +61,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   modificacionRef!: DynamicDialogRef;
   cambioEstatusRef!: DynamicDialogRef;
 
-  readonly POSICION_CATALOGO_ROLES: number = 0;
-  readonly POSICION_CATALOGO_NIVELES: number = 1;
-  readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
-  readonly POSICION_CATALOGO_VELATORIOS: number = 3;
+  readonly POSICION_CATALOGO_NIVELES: number = 0;
+  readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGO_VELATORIOS: number = 2;
   readonly MSG_CAMBIO_ESTATUS: string = "Cambio de estatus realizado";
   readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
@@ -89,9 +88,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const roles = respuesta[this.POSICION_CATALOGO_ROLES].datos;
     const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
-    this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
@@ -104,7 +101,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   abrirModalAgregarUsuario(): void {
     const CREACION_CONFIG: DynamicDialogConfig = {
-      header: "Agregar usuario",
+      header: "Registro de usuario nuevo",
       width: MAX_WIDTH,
     }
     this.creacionRef = this.dialogService.open(AgregarUsuarioComponent, CREACION_CONFIG);
@@ -139,8 +136,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       width: MAX_WIDTH,
       data: usuario.id
     }
-    this.creacionRef = this.dialogService.open(VerDetalleUsuarioComponent, DETALLE_CONFIG);
-    this.creacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
+    this.detalleRef = this.dialogService.open(VerDetalleUsuarioComponent, DETALLE_CONFIG);
+    this.detalleRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
   }
 
   inicializarFiltroForm(): void {
@@ -161,6 +158,25 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     } else {
       this.paginar();
     }
+  }
+
+  cargarRoles(): void {
+    const idNivel = this.filtroForm.get('nivel')?.value;
+    this.catalogoRoles = [];
+    this.filtroForm.get('rol')?.patchValue(null);
+    this.cargadorService.activar();
+    this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const roles = respuesta.datos;
+        this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
   paginar(): void {

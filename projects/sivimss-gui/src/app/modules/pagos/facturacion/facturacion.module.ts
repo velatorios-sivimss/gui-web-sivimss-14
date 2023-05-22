@@ -17,6 +17,8 @@ import {InputSwitchModule} from "primeng/inputswitch";
 import { CancelarFacturaComponent } from './components/cancelar-factura/cancelar-factura.component';
 import { EnviarFacturaComponent } from './components/enviar-factura/enviar-factura.component';
 import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
+import { VerDetalleFacturaComponent } from './components/ver-detalle-factura/ver-detalle-factura.component';
+import {AccordionModule} from "primeng/accordion";
 
 
 @NgModule({
@@ -24,24 +26,26 @@ import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
     FacturacionComponent,
     SolicitarFacturaComponent,
     CancelarFacturaComponent,
-    EnviarFacturaComponent
+    EnviarFacturaComponent,
+    VerDetalleFacturaComponent
   ],
-  imports: [
-    CommonModule,
-    FacturacionRoutingModule,
-    TituloPrincipalModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    CalendarModule,
-    UtileriaModule,
-    ValidaRolModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    TableModule,
-    InputSwitchModule,
-    NgOptimizedImage,
-    TablePanelModule
-  ]
+    imports: [
+        CommonModule,
+        FacturacionRoutingModule,
+        TituloPrincipalModule,
+        FormsModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        CalendarModule,
+        UtileriaModule,
+        ValidaRolModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        TableModule,
+        InputSwitchModule,
+        NgOptimizedImage,
+        TablePanelModule,
+        AccordionModule
+    ]
 })
 export class FacturacionModule { }

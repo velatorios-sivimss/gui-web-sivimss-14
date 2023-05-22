@@ -33,6 +33,8 @@ export class AgregarRolComponent implements OnInit {
   formFuncionalidad!: FormGroup;
   permisos : any;
 
+  confirmacion: boolean = false;
+
   funcionalidades: Funcionalidad[] = [];
   funcionalidadSeleccionada!: Funcionalidad;
 
@@ -51,7 +53,16 @@ export class AgregarRolComponent implements OnInit {
 
   ngOnInit(): void {
     const roles = this.route.snapshot.data["respuesta"];
-    this.breadcrumbService.actualizar(USUARIOS_BREADCRUMB);
+    this.breadcrumbService.actualizar([
+      {
+        icono: 'imagen-icono-operacion-sivimss.svg',
+        titulo: 'Administración de catálogos'
+      },
+      {
+        icono: '',
+        titulo: 'Administrar roles a nivel oficina'
+      }
+    ]);
     this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.inicializarAgregarRolForm();
   }
@@ -76,7 +87,7 @@ export class AgregarRolComponent implements OnInit {
     this.rolService.guardar(solicitudRol).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg + " " +  this.f.nombre.value);
         this.router.navigate(["roles"]);
       },
       (error: HttpErrorResponse) => {

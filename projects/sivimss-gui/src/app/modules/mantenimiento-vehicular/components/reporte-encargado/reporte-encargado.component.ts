@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {Vehiculos} from '../../models/vehiculos.interface';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {CATALOGOS_DUMMIES} from '../../../inventario-vehicular/constants/dummies';
@@ -9,6 +8,7 @@ import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services
 import {ActivatedRoute, Router} from '@angular/router';
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
+import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 
 @Component({
   selector: 'app-reporte-encargado',
@@ -28,8 +28,8 @@ export class ReporteEncargadoComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
   totalElementos: number = 0
 
-  vehiculos: Vehiculos[] = []
-  vehiculoSeleccionado: Vehiculos = {}
+  vehiculos: VehiculoMantenimiento[] = []
+  vehiculoSeleccionado!: VehiculoMantenimiento;
 
   filtroForm!: FormGroup
 
@@ -66,7 +66,7 @@ export class ReporteEncargadoComponent implements OnInit {
     return this.filtroForm?.controls;
   }
 
-  inicializarFiltroForm() {
+  inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       tipoReporte: [{value: null, disabled: false}, [Validators.required]],
       placa: [{value: null, disabled: false}, [Validators.required]],
@@ -79,11 +79,11 @@ export class ReporteEncargadoComponent implements OnInit {
     return "";
   }
 
-  buscar() {
+  buscar(): void {
     this.mostrarTabla = true
   }
 
-  abrirDetallereporteEncargado(articulo: Vehiculos) {
+  abrirDetallereporteEncargado(articulo: VehiculoMantenimiento): void {
     this.mostrarDetalle = true;
   }
 

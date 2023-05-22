@@ -18,7 +18,7 @@ import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
-type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula">;
+type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula" | "usuario">;
 type SolicitudCurp = Pick<Usuario, "curp">;
 type SolicitudMatricula = Pick<Usuario, "claveMatricula">;
 
@@ -29,6 +29,8 @@ type SolicitudMatricula = Pick<Usuario, "claveMatricula">;
 })
 export class AgregarUsuarioComponent implements OnInit {
 
+  readonly CAPTURA_DE_USUARIO: number = 1;
+  readonly RESUMEN_DE_USUARIO: number = 2;
 
   agregarUsuarioForm!: FormGroup;
 
@@ -48,12 +50,12 @@ export class AgregarUsuarioComponent implements OnInit {
   delegacionResumen: string = "";
   velatorioResumen: string = "";
 
-  readonly POSICION_CATALOGO_ROLES: number = 0;
-  readonly POSICION_CATALOGO_NIVELES: number = 1;
-  readonly POSICION_CATALOGO_DELEGACIONES: number = 2;
-  readonly DEFAULT_ERROR_RENAPO: string = "La CURP no se encuentra en la base de datos";
-  readonly ERROR_ALTA_USUARIO: string = "Alta incorrecta";
-  readonly MSG_ALTA_USUARIO: string = "Usuario agregado correctamente";
+  readonly POSICION_CATALOGO_NIVELES: number = 0;
+  readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+  readonly NOT_FOUND_ERROR_RENAPO: string = "No se encontro información relacionada a tu búsqueda.";
+  readonly ERROR_ALTA_USUARIO: string = "Error al guardar la información del usuario. Intenta nuevamente.";
+  readonly MSG_ALTA_USUARIO: string = "Usuario agregado correctamente.";
+  pasoAgregarUsuario: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -73,8 +75,6 @@ export class AgregarUsuarioComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const roles = respuesta[this.POSICION_CATALOGO_ROLES].datos
-    this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
   }
@@ -91,10 +91,31 @@ export class AgregarUsuarioComponent implements OnInit {
         [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
       fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
       nivel: [{value: null, disabled: false}, [Validators.required]],
-      delegacion: [{value: null, disabled: false}, [Validators.required]],
-      velatorio: [{value: null, disabled: false}, [Validators.required]],
+      delegacion: [{value: null, disabled: false}],
+      velatorio: [{value: null, disabled: false}],
       rol: [{value: null, disabled: false}, [Validators.required]],
       estatus: [{value: true, disabled: false}, [Validators.required]]
+    });
+  }
+
+  cargarRoles(): void {
+    const idNivel = this.agregarUsuarioForm.get('nivel')?.value;
+    this.catalogoRoles = [];
+    this.agregarUsuarioForm.get('rol')?.patchValue(null);
+    this.agregarUsuarioForm.get('delegacion')?.patchValue(null);
+    this.agregarUsuarioForm.get('velatorio')?.patchValue(null);
+    this.cargadorService.activar();
+    this.usuarioService.obtenerCatalogoRoles(idNivel).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const roles = respuesta.datos;
+        this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
     });
   }
 
@@ -155,10 +176,10 @@ export class AgregarUsuarioComponent implements OnInit {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_CURP.has(valor)) return;
-        const {mensaje, tipo, valido} = MENSAJES_CURP.get(valor);
+        const {valido} = MENSAJES_CURP.get(valor);
         this.curpValida = valido;
         if (!valido) {
-          this.alertaService.mostrar(tipo, mensaje);
+          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -176,8 +197,8 @@ export class AgregarUsuarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
-        if (respuesta.datos.mensaje !== '') {
-          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje, this.DEFAULT_ERROR_RENAPO);
+        if (respuesta.datos.message !== '') {
+          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje, this.NOT_FOUND_ERROR_RENAPO);
           this.curpValida = !this.curpValida;
           return;
         }
@@ -203,10 +224,10 @@ export class AgregarUsuarioComponent implements OnInit {
         if (!respuesta.datos || respuesta.datos.length === 0) return;
         const {valor} = respuesta.datos[0];
         if (!MENSAJES_MATRICULA.has(valor)) return;
-        const {mensaje, tipo, valido} = MENSAJES_MATRICULA.get(valor);
+        const {valido} = MENSAJES_MATRICULA.get(valor);
         this.matriculaValida = valido;
         if (!valido) {
-          this.alertaService.mostrar(tipo, mensaje);
+          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -224,7 +245,8 @@ export class AgregarUsuarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.error) {
-          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
+          const mensaje = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
+          this.mensajesSistemaService.mostrarMensajeError(mensaje);
           this.matriculaValida = !this.matriculaValida;
         }
       },
@@ -242,23 +264,27 @@ export class AgregarUsuarioComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (): void => {
-          this.ref.close(respuesta)
+          this.ref.close(respuesta);
         },
         error: (error: HttpErrorResponse): void => {
-          console.error("ERROR: ", error)
+          console.error("ERROR: ", error);
           this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_ALTA_USUARIO);
         }
       });
   }
 
   cancelar(): void {
+    if (this.pasoAgregarUsuario === this.RESUMEN_DE_USUARIO) {
+      this.pasoAgregarUsuario = this.CAPTURA_DE_USUARIO;
+      return;
+    }
     const respuesta: RespuestaModalUsuario = {};
     this.ref.close(respuesta);
   }
 
   confirmarCreacion(): void {
-    if (this.indice === 0) {
-      this.indice++;
+    if (this.pasoAgregarUsuario === this.CAPTURA_DE_USUARIO) {
+      this.pasoAgregarUsuario = this.RESUMEN_DE_USUARIO;
       this.nuevoUsuario = this.crearUsuario();
       this.creacionVariablesResumen();
       return;
