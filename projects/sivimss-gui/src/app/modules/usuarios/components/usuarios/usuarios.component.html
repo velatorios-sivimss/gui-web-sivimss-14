@@ -80,7 +80,7 @@
             <div class="contenedor-inputswitch flex mr-4">
               <p-inputSwitch [(ngModel)]="usuario.estatus" (ngModelChange)="cambiarEstatus(usuario.id);"
                              [disabled]="true"></p-inputSwitch>
-              <span class="activo" *ngIf="usuario.estatus">Activo</span>
+              <span class="activo mr-3" *ngIf="usuario.estatus">Activo</span>
               <span class="inactivo" *ngIf="!usuario.estatus">Inactivo</span>
             </div>
             <a (click)="abrirModalDetalleUsuario(usuario)" *appValidaRol="['USUARIOS','CONSULTA']" onCloseOnNavigation>
