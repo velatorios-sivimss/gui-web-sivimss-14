@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {FormGroup} from "@angular/forms";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
+import {REGISTROS_PAGOS} from "../../constants/dummies";
 
 @Component({
   selector: 'app-solicitar-factura',
@@ -7,9 +11,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SolicitarFacturaComponent implements OnInit {
 
-  constructor() { }
+
+  solicitudForm!: FormGroup;
+  indice: number = 0;
+  tiposFactura: TipoDropdown[] = [];
+  folios: TipoDropdown[] = [];
+  datosContratanteForm!: FormGroup;
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
 
+  protected readonly DIEZ_ELEMENTOS_POR_PAGINA = DIEZ_ELEMENTOS_POR_PAGINA;
+  servicios: any[] = REGISTROS_PAGOS;
 }

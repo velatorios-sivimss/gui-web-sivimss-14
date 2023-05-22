@@ -177,6 +177,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'pagos/realizar-pago',
+    loadChildren: () => import('./modules/pagos/realizar-pago/realizar-pago.module').then(m => m.RealizarPagoModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: 'reservar-salas',
     loadChildren: () => import('./modules/reservar-salas/reservar-salas.module').then(m => m.ReservarSalasModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
@@ -198,7 +203,6 @@ const routes: Routes = [
     path: '**',
     component: PaginaNoEncontradaComponent,
   },
-
 ];
 
 @NgModule({

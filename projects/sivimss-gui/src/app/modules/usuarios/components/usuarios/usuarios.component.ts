@@ -136,8 +136,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       width: MAX_WIDTH,
       data: usuario.id
     }
-    this.creacionRef = this.dialogService.open(VerDetalleUsuarioComponent, DETALLE_CONFIG);
-    this.creacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
+    this.detalleRef = this.dialogService.open(VerDetalleUsuarioComponent, DETALLE_CONFIG);
+    this.detalleRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
   }
 
   inicializarFiltroForm(): void {

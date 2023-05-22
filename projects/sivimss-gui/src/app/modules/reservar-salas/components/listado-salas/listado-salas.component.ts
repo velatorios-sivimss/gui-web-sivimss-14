@@ -99,6 +99,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
     this.registrarSalidaRef.onClose.subscribe((respuesta) => {
       if(respuesta){
         this.consultaSalasCremacion();
+
       }
     });
   }

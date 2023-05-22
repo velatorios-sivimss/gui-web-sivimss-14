@@ -7,12 +7,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InicioComponent implements OnInit {
 
+  anuncio: any[] = [];
+  
   constructor() {
   }
 
   ngOnInit() {
-
+      this.anuncio =  [
+        {
+          image: "slide1.jpg"
+        },
+        {
+          image: "slide2.jpg",
+        }
+      ];
   }
-
+  
 
 }

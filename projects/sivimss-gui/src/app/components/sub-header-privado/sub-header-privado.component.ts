@@ -41,18 +41,18 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     private mensajesSistemaService: MensajesSistemaService
   ) {
     this.existeNotificacion = false;
-    // this.notificacionService.consultaNotificacion().subscribe(
-    //   (respuesta:HttpRespuesta<any>) => {
-    //     if (respuesta.datos.length < 1){return}
-    //     this.notificaciones = respuesta.datos.filter((sala:any) => {
-    //       return sala.mensaje.trim() != ""
-    //     });
-    //     if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
-    //   },
-    //   (error: HttpErrorResponse) => {
-    //     console.log(error)
-    //   }
-    // )
+    this.notificacionService.consultaNotificacion().subscribe(
+      (respuesta:HttpRespuesta<any>) => {
+        if (respuesta.datos.length < 1){return}
+        this.notificaciones = respuesta.datos.filter((sala:any) => {
+          return sala.mensaje.trim() != ""
+        });
+        if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
   }
 
   ngOnInit(): void {
@@ -90,6 +90,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
   }
 
   registrarSalida(notificacion: NotificacionInterface): void {
+    let validacionRuta: boolean = false;
     let datos = {
       estadoSala: notificacion.usoSala,
       tipoSala: notificacion.indTipoSala,
@@ -98,7 +99,10 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
       nombreSala: notificacion.nombreSala
     }
     localStorage.setItem('reserva-sala', JSON.stringify(datos));
-    this.router.navigate(['../', notificacion.path?.toLowerCase()])
+    if(this.router.url.includes('/reservar-salas/(salas:salas)')){validacionRuta = true}
+    this.router.navigate(['../../', notificacion.path?.toLowerCase(), {outlets: {salas:"salas"}}]).then(()=> {
+      if(validacionRuta){window.location.reload()}
+    })
   }
 
   registrarMasTarde(notificacion: NotificacionInterface): void {
