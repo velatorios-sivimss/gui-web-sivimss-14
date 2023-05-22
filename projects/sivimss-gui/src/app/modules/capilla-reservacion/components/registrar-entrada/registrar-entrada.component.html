@@ -48,7 +48,7 @@
         <div class="col-md-6">
 
           <label class="control-label" for="fechaEntrada">Registro de entrada <span class="req">*</span>:</label>
-          <p-calendar id="fechaEntrada" styleClass="form-control" formControlName="fechaEntrada" placeholder="Selecciona la fecha"
+          <p-calendar appendTo="body" id="fechaEntrada" styleClass="form-control" formControlName="fechaEntrada" placeholder="Selecciona la fecha"
                       dateFormat="dd/mm/yy"></p-calendar>
           <span class="campo-obligatorio"
                 *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Este campo es obligatorio *.</span>
@@ -129,7 +129,7 @@
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Registrar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar</button>
     </div>
   </div>
 
