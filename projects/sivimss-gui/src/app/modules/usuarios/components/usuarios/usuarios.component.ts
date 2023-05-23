@@ -23,8 +23,6 @@ import {LazyLoadEvent} from "primeng/api";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {CambioEstatusUsuarioComponent} from "../cambio-estatus-usuario/cambio-estatus-usuario.component";
-import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
-import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
@@ -34,7 +32,7 @@ type SolicitudEstatus = Pick<Usuario, "id">;
   selector: 'app-usuarios',
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService]
 })
 export class UsuariosComponent implements OnInit, OnDestroy {
 
@@ -65,7 +63,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
   readonly POSICION_CATALOGO_VELATORIOS: number = 2;
   readonly MSG_CAMBIO_ESTATUS: string = "Cambio de estatus realizado";
-  readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
   constructor(
     private route: ActivatedRoute,
@@ -75,7 +72,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
     private cargadorService: LoaderService,
-    private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
   }
@@ -260,36 +256,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     if (respuesta.modificar) {
       this.abrirModalModificarUsuario();
     }
-  }
-
-  guardarPDF(): void {
-    this.cargadorService.activar();
-    this.descargaArchivosService.descargarArchivo(this.usuarioService.descargarListado()).pipe(
-      finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta) => {
-        console.log(respuesta)
-      },
-      error: (error) => {
-        this.mensajesSistemaService.mostrarMensajeError(error.message, "Error al guardar el archivo");
-        console.log(error)
-      },
-    })
-  }
-
-  guardarExcel(): void {
-    this.cargadorService.activar();
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
-    this.descargaArchivosService.descargarArchivo(this.usuarioService.descargarListadoExcel(),
-      configuracionArchivo).pipe(
-      finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta): void => {
-        console.log(respuesta)
-      },
-      error: (error): void => {
-        this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
-        console.log(error)
-      },
-    })
   }
 
 
