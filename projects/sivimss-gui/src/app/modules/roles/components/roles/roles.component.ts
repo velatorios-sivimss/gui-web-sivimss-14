@@ -21,6 +21,7 @@ import {
   ConfirmacionMovimientoComponent
 } from "../confirmacion-movimiento/confirmacion-movimiento/confirmacion-movimiento.component";
 import {validarUsuarioLogueado} from "../../../../utils/funciones";
+import {ROLES_BREADCRUMB} from "../../constants/breadcrumb";
 
 const MAX_WIDTH: string = "876px";
 
@@ -65,16 +66,7 @@ export class RolesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.breadcrumbService.actualizar([
-      {
-        icono: 'imagen-icono-operacion-sivimss.svg',
-        titulo: 'Administración de catálogos'
-      },
-      {
-        icono: '',
-        titulo: 'Administrar roles a nivel oficina'
-      }
-    ]);
+    this.breadcrumbService.actualizar(ROLES_BREADCRUMB);
     const roles = this.route.snapshot.data["respuesta"];
     this.catRol = roles[0].datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
     this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
