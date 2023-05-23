@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Observable, of} from "rxjs";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
@@ -10,12 +10,6 @@ import {AutenticacionService} from "../../../services/autenticacion.service";
 
 interface ConsultaVelatorio {
   idDelegacion: string | null
-}
-
-interface PeticionDescarga {
-  idNota: number,
-  idOrden: number,
-  tipoReporte: "pdf" | "xls"
 }
 
 @Injectable()
@@ -74,25 +68,5 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body: ConsultaVelatorio = {idDelegacion: delegacion}
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
-  }
-
-  descargarListado(): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    const body: PeticionDescarga = {idNota: 1, idOrden: 1, tipoReporte: "pdf"}
-    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-usuarios/generarDocumento/pdf`
-      , body, {headers, responseType: 'blob' as 'json'});
-  }
-
-  descargarListadoExcel(): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    const body: PeticionDescarga = {idNota: 1, idOrden: 1, tipoReporte: "xls"}
-    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-usuarios/generarDocumento/pdf`
-      , body, {headers, responseType: 'blob' as 'json'});
   }
 }
