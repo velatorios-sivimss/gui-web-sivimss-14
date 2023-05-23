@@ -1,13 +1,15 @@
-:host{
+:host {
   display: block;
   background-color: #235B4E;
 }
+
 .sub-header {
   display: grid;
   grid-template-columns:70px 3fr 2fr 1fr;
   grid-template-rows: 70px;
   align-items: center;
   max-width: var(--sivimss-max-width);
+
   .btn-mostrar-menu {
     display: flex;
     justify-content: center;
@@ -85,4 +87,38 @@
       display: inline-block;
     }
   }
+}
+
+.button-user-img {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  background-image: url('../../../assets/images/imagen-icono-usuario.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  cursor: pointer;
+}
+
+app-popover {
+  position: absolute;
+  z-index: 1000;
+  top: 16%;
+  right: 71%;
+}
+
+ul {
+  list-style: none;
+}
+
+ul li::before {
+  content: "\2022";
+  color: red;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+  font-size: 30px;
+  text-align: justify;
 }

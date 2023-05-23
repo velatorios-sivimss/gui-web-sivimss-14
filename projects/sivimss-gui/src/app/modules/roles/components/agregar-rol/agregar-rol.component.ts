@@ -6,10 +6,13 @@ import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/a
 import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {HttpErrorResponse} from "@angular/common/http";
-import {CATALOGOS} from '../../../usuarios/constants/catalogos_dummies';
 import {RolService} from '../../services/rol.service';
 import {Rol} from "../../models/rol.interface";
 import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
+import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
+import {ActivatedRoute, Router} from "@angular/router";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 type NuevoRol = Omit<Rol, "idRol" >;
 
@@ -23,12 +26,14 @@ export class AgregarRolComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  opciones: TipoDropdown[] = CATALOGOS;
+  catalogo_nivelOficina!: TipoDropdown[];
   catRol: TipoDropdown[] = [];
   agregarRolForm!: FormGroup;
 
   formFuncionalidad!: FormGroup;
   permisos : any;
+
+  confirmacion: boolean = false;
 
   funcionalidades: Funcionalidad[] = [];
   funcionalidadSeleccionada!: Funcionalidad;
@@ -36,15 +41,29 @@ export class AgregarRolComponent implements OnInit {
   contadorFuncionalidades = 1;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private alertaService: AlertaService,
     private breadcrumbService: BreadcrumbService,
+    private formBuilder: FormBuilder,
+    private mensajesSistemaService: MensajesSistemaService,
     private rolService: RolService,
-    private alertaService: AlertaService
+    private router: Router,
   ) {
   }
 
   ngOnInit(): void {
-    this.breadcrumbService.actualizar(USUARIOS_BREADCRUMB);
+    const roles = this.route.snapshot.data["respuesta"];
+    this.breadcrumbService.actualizar([
+      {
+        icono: 'imagen-icono-operacion-sivimss.svg',
+        titulo: 'Administración de catálogos'
+      },
+      {
+        icono: '',
+        titulo: 'Administrar roles a nivel oficina'
+      }
+    ]);
+    this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.inicializarAgregarRolForm();
   }
 
@@ -63,17 +82,25 @@ export class AgregarRolComponent implements OnInit {
   }
 
   agregarRol(): void {
-   // utils respuesta: RespuestaModalrol = {mensaje: "Alta satisfactoria", actualizar: true}
     const rolBo: NuevoRol = this.crearNuevoRol();
     const solicitudRol: string = JSON.stringify(rolBo);
     this.rolService.guardar(solicitudRol).subscribe(
-      () => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Alta satisfactoria');
+      (respuesta: HttpRespuesta<any>) => {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg + " " +  this.f.nombre.value);
+        this.router.navigate(["roles"]);
       },
       (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-        console.error("ERROR: ", error.message)
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, msg);
+        console.error("ERROR: ", error)
       }
+    );
+  }
+
+  noEspaciosAlPrincipio(): void {
+    this.f.nombre.setValue(
+      this.f.nombre.value.trimStart()
     );
   }
 

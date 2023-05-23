@@ -1,91 +1,99 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ConfirmacionServicio, Vehiculos } from '../../../models/vehiculos.interface';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import { AlertaService } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute } from '@angular/router';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { CATALOGOS_DUMMIES, CATALOGOS_TTIPO_MANTENIMIENTO } from '../../../../inventario-vehicular/constants/dummies';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {
+  CATALOGOS_PREV_ANUALES,
+  CATALOGOS_PREV_EVENTUALES,
+  CATALOGOS_PREV_SEMESTRALES
+} from "../../../constants/catalogos-preventivo";
+import {CATALOGOS_TIPO_MANTENIMIENTO} from "../../../../inventario-vehicular/constants/dummies";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
+import {DatePipe} from "@angular/common";
+import {ResumenAsignacion} from "../../../models/resumenAsignacion.interface";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {RegistroSolicitudMttoInterface} from "../../../models/registroSolicitudMtto.interface";
+import {finalize} from "rxjs/operators";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {RespuestaSolicitudMantenimiento} from "../../../models/respuestaSolicitudMantenimiento.interface";
+import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
+import {diferenciaUTC} from "../../../../../utils/funciones";
 
+type VehiculoSolicitud = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
 @Component({
   selector: 'app-solicitud-mantenimiento',
   templateUrl: './solicitud-mantenimiento.component.html',
   styleUrls: ['./solicitud-mantenimiento.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DatePipe]
 })
 export class SolicitudMantenimientoComponent implements OnInit {
   ventanaConfirmacion: boolean = false;
 
-  @Input() vehiculoSeleccionado!: Vehiculos;
-  @Input() origen!: string;
-  @Output() confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
-  creacionRef!: DynamicDialogRef;
+  vehiculoSeleccionado!: VehiculoSolicitud;
+  resumenAsignacion!: ResumenAsignacion;
 
   solicitudMantenimientoForm!: FormGroup;
-  tiposProveedor: TipoDropdown[] = CATALOGOS_DUMMIES;
-  tipoMantenimiento: TipoDropdown[] = CATALOGOS_TTIPO_MANTENIMIENTO;
-  mantPreventivo: boolean = false
-  mantcorrectivo: boolean = false
-  opcionesMantenimiento: boolean = false
+  mantenimientosPrev: TipoDropdown[] = [];
+  tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
+  modalidades: string[] = ['', 'Semestral', 'Anual', 'Frecuente'];
 
+  idMttoVehicular: number | null = null;
+  idSolicitudMtto: number | null = null;
 
   constructor(
     private formBuilder: FormBuilder,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     public dialogService: DialogService,
-    private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     private route: ActivatedRoute,
-  ) {this.vehiculoSeleccionado = this.config.data;}
+    private router: Router,
+    private datePipe: DatePipe,
+    private mantenimientoVehicularService: MantenimientoVehicularService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private cargadorService: LoaderService,
+  ) {
+
+  }
 
   ngOnInit(): void {
-    if (this.config?.data) {
-      this.origen = this.config.data.origen;
-        this.vehiculoSeleccionado = this.config.data.vehiculo;
+    if (this.config.data.vehiculo) {
+      this.vehiculoSeleccionado = this.config.data.vehiculo;
     }
-    this.vehiculoSeleccionado
-    this.vehiculoSeleccionado.velatorio
-    this.inicializarAgregarCapillaForm(this.vehiculoSeleccionado);
+    if (this.config.data.id) {
+      const id = this.config.data.id;
+      this.realizarSolicitud(id);
+    }
+    this.inicializarSolicitudForm();
   }
 
-  inicializarAgregarCapillaForm(vehiculoSeleccionado: Vehiculos) {
+  inicializarSolicitudForm(): void {
     this.solicitudMantenimientoForm = this.formBuilder.group({
-      velatorio: [{value: vehiculoSeleccionado.velatorio, disabled: true}],
-      fecha: [{value: vehiculoSeleccionado.fecha, disabled: false}, [Validators.required]],
-      hora: [{value: vehiculoSeleccionado.hora, disabled: false}, [Validators.required]],
-      vehiculo: [{value: vehiculoSeleccionado.vehiculo, disabled: false}, [Validators.required]],
-      placas: [{value: vehiculoSeleccionado.placas, disabled: true}, [Validators.required]],
-      nivelAceite: [{value: vehiculoSeleccionado.nivelAceite, disabled: false}],
-      nivelAgua: [{value: vehiculoSeleccionado.nivelAgua, disabled: false}],
-      calibracionNeumaticosTraseros: [{value: vehiculoSeleccionado.calibracionNeumaticosTraseros, disabled: false}],
-      calibracionNeumaticosDelanteros: [{value: vehiculoSeleccionado.calibracionNeumaticosDelanteros, disabled: false}],
-      nivelCombustible: [{value: vehiculoSeleccionado.nivelCombustible, disabled: false}],
-      nivelBateria: [{value: vehiculoSeleccionado.nivelBateria, disabled: false}],
-      limpiezaInterior: [{value: vehiculoSeleccionado.limpiezaInterior, disabled: false}],
-      limpiezaExterior: [{value: vehiculoSeleccionado.limpiezaExterior, disabled: false}],
-      codigoFalla: [{value: vehiculoSeleccionado.codigoFalla, disabled: false}],
-      marca: [{value: vehiculoSeleccionado.marca, disabled: true}],
-      anio: [{value: vehiculoSeleccionado.anio, disabled: true}],
-      kilometraje: [{value: vehiculoSeleccionado.kilometraje, disabled: false}],
-      tipoMantenimiento: [{value: vehiculoSeleccionado.tipoMantenimientoNumber, disabled: false}],
-      fechaMantenimiento: [{value: vehiculoSeleccionado.fechaMantenimiento, disabled: false}],
-      modalidad: [{value: vehiculoSeleccionado.modalidadNumber, disabled: false}],
-      fechaRegistro: [{value: vehiculoSeleccionado.fechaRegistro, disabled: false}],
-
+      placas: [{value: "", disabled: true}],
+      marca: [{value: "", disabled: true}],
+      anio: [{value: "", disabled: true}],
+      kilometraje: [{value: null, disabled: false}, [Validators.required]],
+      tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
+      matPreventivo: [{value: null, disabled: false}],
+      modalidad: [{value: null, disabled: false}, [Validators.required]],
+      fechaRegistro: [{value: null, disabled: false}, [Validators.required]],
+      notas: [{value: null, disabled: false}, [Validators.required]],
     });
+    this.solicitudMantenimientoForm.get("modalidad")?.valueChanges.subscribe(() => {
+      this.asignarOpcionesMantenimiento();
+    })
   }
 
-  get smf() {
-    return this.solicitudMantenimientoForm.controls;
-  }
-
-  agregar():void{
+  agregar(): void {
+    this.resumenAsignacion = this.crearResumenAsignacion();
     this.ventanaConfirmacion = true;
   }
 
-  regresar(): void{
+  regresar(): void {
     this.ventanaConfirmacion = false;
   }
 
@@ -93,16 +101,162 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.ref.close()
   }
 
+  asignarOpcionesMantenimiento(): void {
+    const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
+    if (![1, 2, 3].includes(modalidad)) return;
+    if (modalidad === 1) {
+      this.mantenimientosPrev = CATALOGOS_PREV_SEMESTRALES;
+      return;
+    }
+    if (modalidad === 2) {
+      this.mantenimientosPrev = CATALOGOS_PREV_ANUALES;
+      return;
+    }
+    this.mantenimientosPrev = CATALOGOS_PREV_EVENTUALES;
+  }
 
-  mostrarOpcionesDeMantenimiento(){
-this.opcionesMantenimiento = true
-
-    if(this.mantPreventivo == false){
-      this.mantPreventivo = true
-    }else{
-      this.mantPreventivo = false
+  crearResumenAsignacion(): ResumenAsignacion {
+    const tipoMantenimiento = this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value;
+    const tipoMantenimientoValor = this.tiposMantenimiento.find(m => m.value === tipoMantenimiento)?.label;
+    const modalidad = this.solicitudMantenimientoForm.get("modalidad")?.value;
+    const modalidadValor: string = this.modalidades[modalidad] || "";
+    return {
+      kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
+      modalidad: modalidadValor,
+      fechaRegistro: this.solicitudMantenimientoForm.get("fechaRegistro")?.value,
+      tipoMantenimiento: tipoMantenimientoValor || "",
+      mantenimientoPreventivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
+      notas: this.solicitudMantenimientoForm.get("notas")?.value
     }
   }
 
+  crearSolicitudMantenimiento(): RegistroSolicitudMttoInterface {
+    return {
+      idMttoVehicular: this.idMttoVehicular,
+      idMttoestado: 1,
+      idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
+      idDelegacion: 1,
+      idVelatorio: this.vehiculoSeleccionado.ID_VELATORIO,
+      idEstatus: 1,
+      verificacionInicio: null,
+      solicitud: {
+        idMttoSolicitud: this.idSolicitudMtto,
+        idMttoVehicular: this.idMttoVehicular,
+        idMttoTipo: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
+        idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
+        fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaRegistro")?.value, 'YYYY-MM-dd'),
+        desMttoCorrectivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
+        idMttoModalidadDet: 1,
+        idEstatus: 1,
+        kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
+        desNotas: this.solicitudMantenimientoForm.get("notas")?.value
+      },
+      registro: null
+    }
+  }
+
+  guardarSolicitudMtto(): void {
+    if (this.idSolicitudMtto) {
+      this.actualizarSolicitudMtto();
+      return;
+    }
+    this.guardarNuevaSolicitudMtto();
+  }
+
+  guardarNuevaSolicitudMtto(): void {
+    const verificacion: RegistroSolicitudMttoInterface = this.crearSolicitudMantenimiento();
+    this.mantenimientoVehicularService.guardar(verificacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud agregada correctamente');
+        this.abrirRegistroSolicitud();
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
+  }
+
+  actualizarSolicitudMtto(): void {
+    const verificacion: RegistroSolicitudMttoInterface = this.crearSolicitudMantenimiento();
+    this.mantenimientoVehicularService.actualizar(verificacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud modificada correctamente');
+        this.abrirRegistroSolicitud();
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
+  }
+
+  abrirRegistroSolicitud(): void {
+    this.ref.close();
+    this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO], {relativeTo: this.route});
+  }
+
+  realizarSolicitud(id: number): void {
+    this.cargadorService.activar()
+    this.mantenimientoVehicularService.obtenerDetalleSolicitud(id).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos.length === 0) return;
+        this.llenarVehiculo(respuesta.datos[0]);
+        this.llenarFormulario(respuesta.datos[0]);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
+  }
+
+  llenarVehiculo(respuesta: RespuestaSolicitudMantenimiento): void {
+    this.vehiculoSeleccionado = {
+      DESCRIPCION: "",
+      DES_DELEGACION: respuesta.DES_DELEGACION,
+      DES_MARCA: respuesta.DES_MARCA,
+      DES_MODALIDAD: "",
+      DES_MODELO: respuesta.DES_MODELO,
+      DES_MTTOESTADO: respuesta.DES_MTTOESTADO,
+      DES_MTTO_TIPO: respuesta.DES_MTTO_TIPO,
+      DES_NIVELOFICINA: "",
+      DES_NUMMOTOR: respuesta.DES_NUMMOTOR,
+      DES_NUMSERIE: respuesta.DES_NUMSERIE,
+      DES_PLACAS: respuesta.DES_PLACAS,
+      DES_SUBMARCA: respuesta.DES_SUBMARCA,
+      DES_USO: "",
+      ID_MTTOVEHICULAR: 0,
+      ID_OFICINA: 0,
+      ID_USOVEHICULO: 0,
+      ID_VEHICULO: respuesta.ID_VEHICULO,
+      ID_VELATORIO: 0,
+      IMPORTE_PRIMA: 0,
+      IND_ESTATUS: false,
+      NOM_VELATORIO: respuesta.NOM_VELATORIO,
+      TOTAL: 0,
+      verificacionDia: 'false'
+    }
+  }
+
+  llenarFormulario(respuesta: RespuestaSolicitudMantenimiento): void {
+    this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS);
+    this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA);
+    this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO);
+    this.solicitudMantenimientoForm.get('kilometraje')?.patchValue(respuesta.KILOMETRAJE);
+    this.solicitudMantenimientoForm.get('tipoMantenimiento')?.patchValue(respuesta.ID_MTTO_TIPO.toString());
+    if (respuesta.DES_MTTO_CORRECTIVO) {
+      this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.DES_MTTO_CORRECTIVO);
+    }
+    this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD);
+    this.solicitudMantenimientoForm.get('fechaRegistro')?.patchValue(new Date(diferenciaUTC(respuesta.FEC_REGISTRO)));
+    this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
+    this.idSolicitudMtto = respuesta.ID_MTTO_SOLICITUD;
+  }
+
+  get smf() {
+    return this.solicitudMantenimientoForm.controls;
+  }
 
 }

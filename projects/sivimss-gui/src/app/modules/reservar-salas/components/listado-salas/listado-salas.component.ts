@@ -11,7 +11,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ReservarSalasService} from "../../services/reservar-salas.service";
 import {Catalogo} from "../../../../models/catalogos.interface";
 import {VelatorioInterface} from "../../models/velatorio.interface";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {TabView} from "primeng/tabview";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -25,8 +25,7 @@ import {finalize} from "rxjs/operators";
 })
 export class ListadoSalasComponent implements OnInit, OnDestroy {
 
-  readonly POSICION_CATALOGO_VELATORIOS = 0;
-  readonly POSICION_CATALOGO_DELEGACION = 1;
+  readonly POSICION_CATALOGO_DELEGACION = 0;
 
   velatorios: TipoDropdown[] = [];
   delegaciones: TipoDropdown[] = [];
@@ -48,6 +47,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private alertaService: AlertaService,
     public dialogService: DialogService,
     private readonly loaderService: LoaderService,
@@ -56,12 +56,18 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
-    this.velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS]!.datos.map((velatorio: VelatorioInterface) => (
-      {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+    // this.velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS]!.datos.map((velatorio: VelatorioInterface) => (
+    //   {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
 
     this.delegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
+
+    let tipoSala = JSON.parse(localStorage.getItem('reserva-sala') as string);
+    localStorage.removeItem('reserva-sala');
+    if(tipoSala){
+      this.registrarSalida(tipoSala);
     }
+  }
 
   registrarActividad(sala: SalaVelatorio): void {
     if (sala.estadoSala != "DISPONIBLE") {
@@ -93,6 +99,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
     this.registrarSalidaRef.onClose.subscribe((respuesta) => {
       if(respuesta){
         this.consultaSalasCremacion();
+
       }
     });
   }
@@ -105,6 +112,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
 
   consultaSalasCremacion(): void {
+    if(this.velatorio == 0){return}
     this.loaderService.activar();
     this.reservarSalasService.consultarSalas(this.velatorio,this.posicionPestania).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -121,6 +129,23 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     );
+  }
+
+  cambiarDelegacion(): void {
+    this.loaderService.activar();
+    this.reservarSalasService.obtenerCatalogoVelatoriosPorDelegacion(this.delegacion).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>)=> {
+
+        this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
+
   }
 
   retornarColor(estatus:string): string {

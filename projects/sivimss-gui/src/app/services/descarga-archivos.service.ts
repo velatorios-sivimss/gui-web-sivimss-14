@@ -1,17 +1,33 @@
-import {Injectable} from "@angular/core";
-import {Observable, of} from "rxjs";
-import {catchError, switchMap} from "rxjs/operators";
-import {OpcionesArchivos} from "../models/opciones-archivos.interface";
+import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
+import { catchError, switchMap } from "rxjs/operators";
+import { OpcionesArchivos } from "../models/opciones-archivos.interface";
 
 @Injectable()
 export class DescargaArchivosService {
 
-  readonly pdf_ext = {'application/pdf': ['.pdf']};
+  readonly pdf_ext = { 'application/pdf': ['.pdf'] };
   readonly pdf_nom = "PDF";
-  readonly excel_ext = {'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']};
+  readonly excel_ext = { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] };
   readonly excel_nom = "Excel workbook";
 
   constructor() {
+  }
+
+  base64_2Blob(base64: string, contentType: string): Blob {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: contentType });
+    return blob;
+  }
+
+  obtenerContentType(options: OpcionesArchivos = {}): string {
+    const ext: "pdf" | "xlsx" = options.ext || "pdf";
+    return ext === "pdf" ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   }
 
   descargarArchivo(archivo$: Observable<Blob>, options: OpcionesArchivos = {}) {
@@ -38,8 +54,7 @@ export class DescargaArchivosService {
         });
       }),
       catchError((error) => {
-        console.error('Error al guardar el archivo:', error);
-        return of(false);
+        throw 'Error al guardar el archivo:';
       })
     );
   }

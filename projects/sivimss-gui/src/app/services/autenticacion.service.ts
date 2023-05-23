@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {BnNgIdleService} from 'bn-ng-idle';
@@ -15,8 +15,9 @@ import {MensajesRespuestaCodigo} from "projects/sivimss-gui/src/app/utils/mensaj
 import {dummyMenuResponse} from "projects/sivimss-gui/src/app/utils/menu-dummy";
 import {TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION} from "projects/sivimss-gui/src/app/utils/tokens";
 import {BehaviorSubject, Observable, of, Subscription, throwError} from 'rxjs';
-import {concatMap, delay, map} from "rxjs/operators";
+import {catchError, concatMap, delay, map, tap,} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import {environment} from '../../environments/environment';
 
 export interface Modulo {
   idModuloPadre: string | null;
@@ -48,7 +49,7 @@ const respuestaInicioSesionCorrecto = {
   codigo: 200,
   mensaje: "INICIO_SESION_CORRECTO",
   datos: {
-    "token": "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjFcIixcImN2ZU1hdHJpY3VsYVwiOlwiMVwiLFwibm9tYnJlXCI6XCIxIDEgMVwiLFwiY3VycFwiOlwiMVwifSIsImlhdCI6MTY4MTMyMDkyMSwiZXhwIjoxNjgxOTI1NzIxfQ.6O92d4wazrJdHWiByF_YaoVScQshV8CPUEgK0O-4PpA"
+    "token": "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjFcIixcImN2ZU1hdHJpY3VsYVwiOlwiMVwiLFwibm9tYnJlXCI6XCIxIDEgMVwiLFwiY3VycFwiOlwiMVwifSIsImlhdCI6MTY4MzEzNzM3MiwiZXhwIjoxNjgzNzQyMTcyfQ._TKsku_zi_PMLtPYnk_ghc7fYe8eainHxy1ehvJmpfU"
   }
 };
 
@@ -57,7 +58,7 @@ const respuestaContraseniaProxVencer = {
   codigo: 200,
   mensaje: "CONTRASENIA_PROXIMA_VENCER",
   datos: {
-    "token": "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjFcIixcImN2ZU1hdHJpY3VsYVwiOlwiMVwiLFwibm9tYnJlXCI6XCIxIDEgMVwiLFwiY3VycFwiOlwiMVwifSIsImlhdCI6MTY4MDAyNDAyMCwiZXhwIjoxNjgwNjI4ODIwfQ.959sn4V9p9tjhk0s4-dS95d4E2SjJ_gPndbewLWM-Wk"
+    "token": "eyJzaXN0ZW1hIjoic2l2aW1zcyIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJ7XCJpZFZlbGF0b3Jpb1wiOlwiMVwiLFwiaWRSb2xcIjpcIjFcIixcImRlc1JvbFwiOlwiQ09PUkRJTkFET1IgREUgQ0VOVFJcIixcImlkRGVsZWdhY2lvblwiOlwiMVwiLFwiaWRPZmljaW5hXCI6XCIxXCIsXCJpZFVzdWFyaW9cIjpcIjFcIixcImN2ZVVzdWFyaW9cIjpcIjFcIixcImN2ZU1hdHJpY3VsYVwiOlwiMVwiLFwibm9tYnJlXCI6XCIxIDEgMVwiLFwiY3VycFwiOlwiMVwifSIsImlhdCI6MTY4MzA0Mzk0OCwiZXhwIjoxNjgzNjQ4NzQ4fQ.lzgUw1U3115meofhWZXrYCDMaxP9QFAYpZ6yEbhRGZE"
   }
 };
 
@@ -455,11 +456,13 @@ export class AutenticacionService {
       try {
         const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(token);
         this.usuarioEnSesionSubject.next(usuario);
-        this.obtenerPermisos(usuario.idRol).subscribe((respuesta: HttpRespuesta<any>) => {
-          this.permisosUsuarioSubject.next(respuesta.datos.permisosUsuario);
-          this.iniciarTemporizadorSesion();
-          this.paginaCargadaSubject.next(true);
-        });
+        setTimeout(() => {
+          this.obtenerPermisos(usuario.idRol).subscribe((respuesta: HttpRespuesta<any>) => {
+            this.permisosUsuarioSubject.next(respuesta.datos.permisosUsuario);
+            this.iniciarTemporizadorSesion();
+            this.paginaCargadaSubject.next(true);
+          });
+        }, 1000);
       } catch (ex) {
         this.cerrarSesion();
         this.paginaCargadaSubject.next(true);
@@ -470,32 +473,30 @@ export class AutenticacionService {
   }
 
   iniciarSesion(usuario: string, contrasenia: string, mostrarMsjContraseniaProxVencer: boolean = true): Observable<string> {
-    //this.http.post<any>(`http://localhost:8080/mssivimss-oauth/acceder`, {usuario, contrasena})
-    this.paginaCargadaSubject.next(false);
-    return of<HttpRespuesta<any>>(respuestaInicioSesionCorrecto).pipe(
-      delay(1000),
+    // this.paginaCargadaSubject.next(false);
+    return this.httpClient.post<any>(environment.api.login + `/login`, {usuario, contrasenia}).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (this.esInicioSesionCorrecto(respuesta.mensaje) || (respuesta.mensaje === MensajesRespuestaAutenticacion.ContraseniaProximaVencer && !mostrarMsjContraseniaProxVencer)) {
-          const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos.token);
+          const usuario: UsuarioEnSesion = this.obtenerUsuarioDePayload(respuesta.datos);
           return this.obtenerPermisos(usuario.idRol).pipe(map((respuestaPermisos: HttpRespuesta<any>) => {
-            this.crearSesion(respuesta.datos.token, usuario, respuestaPermisos.datos.permisosUsuario);
+            this.crearSesion(respuesta.datos, usuario, respuestaPermisos.datos.permisosUsuario);
             this.paginaCargadaSubject.next(true);
             return MensajesRespuestaAutenticacion.InicioSesionCorrecto;
           }));
-        } else if (this.esMensajeRespuestaValido(MensajesRespuestaAutenticacion,respuesta.mensaje)) {
+        } else if (this.esMensajeRespuestaValido(MensajesRespuestaAutenticacion, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
         } else {
           return throwError('Ocurrió un error al intentar iniciar sesión');
         }
-      })
+      }),
     );
   }
 
-  esMensajeRespuestaValido(enumObj: { [s: string]: string }, mensaje: string):boolean {
+  esMensajeRespuestaValido(enumObj: { [s: string]: string }, mensaje: string): boolean {
     return existeMensajeEnEnum(MensajesRespuestaAutenticacion, mensaje);
   }
 
-  esInicioSesionCorrecto(mensaje:string):boolean{
+  esInicioSesionCorrecto(mensaje: string): boolean {
     return mensaje === MensajesRespuestaAutenticacion.InicioSesionCorrecto;
   }
 
@@ -530,16 +531,22 @@ export class AutenticacionService {
 
   obtenerModulosPorIdRol(idRol: string): Observable<HttpRespuesta<Modulo[]>> {
     //this.httpClient.get<RespuestaHttp<Modulo>>('');
-    return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/menu`, {idRol});
+    // return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
   }
 
   actualizarContrasenia(usuario: string, contraseniaAnterior: string, contraseniaNueva: string): Observable<HttpRespuesta<any>> {
-    //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/acceder`, {usuario, contraseniaAnterior, contraseniaNueva})
-    return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/cambiar`, {
+      usuario,
+      contraseniaAnterior,
+      contraseniaNueva
+    });
+    //return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
   }
 
   obtenerPermisos(idRol: string) {
-    return of<HttpRespuesta<any>>(respuestaPermisosUsuario);
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/permisos`, {idRol});
+    // return of<HttpRespuesta<any>>(respuestaPermisosUsuario);
   }
 
   existeFuncionalidadConPermiso(idFuncionalidad: string, idPermiso: string): boolean {
@@ -577,7 +584,10 @@ export class AutenticacionService {
 
   validarCodigoRestablecerContrasenia(usuario: string, codigo: string): Observable<string> {
     //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/valida-codigo`, {usuario,codigo})
-    return of<HttpRespuesta<any>>(respCodigoCorrecto).pipe(
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/valida-codigo`, {
+      usuario,
+      codigo
+    }).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (existeMensajeEnEnum(MensajesRespuestaCodigo, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
@@ -589,13 +599,12 @@ export class AutenticacionService {
   }
 
   generarCodigoRestablecerContrasenia(usuario: string): Observable<HttpRespuesta<any>> {
-    //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/genera-codigo`, {usuario})
-    return of<HttpRespuesta<any>>(respCodigoRestablecerContrasenia);
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/genera-codigo`, {usuario});
+    // return of<HttpRespuesta<any>>(respCodigoRestablecerContrasenia);
   }
 
   obtenerCatalogos(): void {
-    // this.httpClient.post<HttpRespuesta<any>>('http://localhost:8079/mssivimss-oauth/catalogos/consulta', {})
-    of<HttpRespuesta<any>>(respuestaCatalogos)
+    this.httpClient.post<HttpRespuesta<any>>(environment.api.login + '/catalogos/consulta', {})
       .subscribe({
         next: (respuesta) => {
           const {datos} = respuesta;

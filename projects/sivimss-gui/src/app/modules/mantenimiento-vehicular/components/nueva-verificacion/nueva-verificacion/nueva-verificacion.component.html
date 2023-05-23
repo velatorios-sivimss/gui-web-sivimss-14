@@ -1,95 +1,59 @@
-<ng-container *ngIf="!ventanaConfirmacion">
+<ng-container *ngIf="indice === 0">
   <app-table-panel>
     <form [formGroup]="nuevaVerificacionForm">
-      <ng-template appCustomTemplate="left-header">
-        <div class="table-panel-header-column">
-          <span class="font-bold">ID {{vehiculoSeleccionado.id}}</span>
-        </div>
-      </ng-template>
-      <ng-template>
-        <div class="table-panel-header-column">
-          <div class="flex flex-column">
-            <span>Estatus</span>
-            <div class="contenedor-inputswitch">
-              <!-- <p-inputSwitch [(ngModel)]="vehiculoSeleccionado.estatus"></p-inputSwitch>
-            <span class="activo" *ngIf="vehiculoSeleccionado.estatus">Activo</span>
-            <span class="inactivo" *ngIf="!vehiculoSeleccionado.estatus">Inactivo</span> -->
-            </div>
-          </div>
-          <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
-            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-          </a>
-        </div>
-      </ng-template>
-      <ng-template>
-        <div class="table-panel-header-column">
-          <div class="flex flex-column">
-            <span>Estatus</span>
-            <div class="contenedor-inputswitch">
-              <!-- <span class="activo" *ngIf="vehiculoSeleccionado.estatus">Activo</span>
-            <span class="inactivo" *ngIf="!vehiculoSeleccionado.estatus">Inactivo</span> -->
-            </div>
-          </div>
-        </div>
-      </ng-template>
       <div class="row table-panel-row">
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Velatorio</label>
-            <span> {{vehiculoSeleccionado.velatorio}} </span>
+            <span> {{vehiculoSeleccionado.NOM_VELATORIO}} </span>
           </div>
         </div>
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Fecha</label>
-            <span> {{vehiculoSeleccionado.fecha}} </span>
+            <span> {{fechaActual}} </span>
           </div>
         </div>
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Hora</label>
-            <span> {{vehiculoSeleccionado.hora}} </span>
+            <span> {{horaActual}} </span>
           </div>
         </div>
       </div>
-
-
-
-
       <div class="row table-panel-row">
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Vehiculo</label>
-            <span> {{vehiculoSeleccionado.vehiculo}} </span>
+            <span> {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}} {{vehiculoSeleccionado.DES_MODELO}}</span>
           </div>
         </div>
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Placas</label>
-            <span> {{vehiculoSeleccionado.placas}} </span>
+            <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
           </div>
         </div>
       </div>
-
       <div class="row table-panel-row">
         <div class="col-md-6">
           <div class="table-panel-column">
             <label class="control-label">Nivel de aceite:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelAceiteBajo" name="nivelAceite" value="0" formControlName="nivelAceite"
-                  inputId="bajo"></p-radioButton>
+                <p-radioButton id="nivelAceiteBajo" name="nivelAceite" value="1" formControlName="nivelAceite"
+                               inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'nivelAceite'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelAceiteMedio" name="nivelAceite" value="1" formControlName="nivelAceite"
-                  inputId="medio"></p-radioButton>
+                <p-radioButton id="nivelAceiteMedio" name="nivelAceite" value="5" formControlName="nivelAceite"
+                               inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'nivelAceite'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelAceiteCorrecto" name="nivelAceite" value="2" formControlName="nivelAceite"
-                  inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'nivelAceite'">Medio</label>
+                <p-radioButton id="nivelAceiteCorrecto" name="nivelAceite" value="10" formControlName="nivelAceite"
+                               inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'nivelAceite'">Correcto</label>
               </div>
             </div>
           </div>
@@ -99,47 +63,48 @@
             <label class="control-label">Nivel de agua:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelAguaBajo" name="nivelAgua" value="0" formControlName="nivelAgua"
-                  inputId="bajo"></p-radioButton>
+                <p-radioButton id="nivelAguaBajo" name="nivelAgua" value="1" formControlName="nivelAgua"
+                               inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'nivelAgua'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelAguaMedio" name="nivelAgua" value="1" formControlName="nivelAgua"
-                  inputId="medio"></p-radioButton>
+                <p-radioButton id="nivelAguaMedio" name="nivelAgua" value="5" formControlName="nivelAgua"
+                               inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'nivelAgua'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelAguaCorrecto" name="nivelAgua" value="2" formControlName="nivelAgua"
-                  inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'nivelAgua'">Medio</label>
+                <p-radioButton id="nivelAguaCorrecto" name="nivelAgua" value="10" formControlName="nivelAgua"
+                               inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'nivelAgua'">Correcto</label>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-
       <div class="row table-panel-row">
         <div class="col-md-6">
           <div class="table-panel-column">
             <label class="control-label">Calibración de neumáticos traseros:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="calibracionNeumaticosTraserosBajo" name="calibracionNeumaticosTraseros" value="0"
-                  formControlName="calibracionNeumaticosTraseros" inputId="bajo"></p-radioButton>
+                <p-radioButton id="calibracionNeumaticosTraserosBajo" name="calibracionNeumaticosTraseros" value="1"
+                               formControlName="calibracionNeumaticosTraseros" inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosTraseros'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="calibracionNeumaticosTraserosMedio" name="calibracionNeumaticosTraseros" value="1"
-                  formControlName="calibracionNeumaticosTraseros" inputId="medio"></p-radioButton>
+                <p-radioButton id="calibracionNeumaticosTraserosMedio" name="calibracionNeumaticosTraseros" value="5"
+                               formControlName="calibracionNeumaticosTraseros" inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosTraseros'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="calibracionNeumaticosTraserosCorrecto" name="calibracionNeumaticosTraseros" value="2"
-                  formControlName="calibracionNeumaticosTraseros" inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosTraseros'">Medio</label>
+                <p-radioButton id="calibracionNeumaticosTraserosCorrecto" name="calibracionNeumaticosTraseros" value="10"
+                               formControlName="calibracionNeumaticosTraseros" inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosTraseros'">Correcto</label>
               </div>
             </div>
+            <span class="campo-obligatorio"
+                  *ngIf="nvf.calibracionNeumaticosTraseros?.errors?.required && (nvf.calibracionNeumaticosTraseros?.dirty || nvf.calibracionNeumaticosTraseros?.touched)">
+              Campo obligatorio</span>
           </div>
         </div>
         <div class="col-md-6">
@@ -147,21 +112,26 @@
             <label class="control-label">Calibración de neumáticos delanteros:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="calibracionNeumaticosDelanterosBajo" name="calibracionNeumaticosDelanteros" value="0"
-                  formControlName="calibracionNeumaticosDelanteros" inputId="bajo"></p-radioButton>
+                <p-radioButton id="calibracionNeumaticosDelanterosBajo" name="calibracionNeumaticosDelanteros" value="1"
+                               formControlName="calibracionNeumaticosDelanteros" inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosDelanteros'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
                 <p-radioButton id="calibracionNeumaticosDelanterosMedio" name="calibracionNeumaticosDelanteros"
-                  value="1" formControlName="calibracionNeumaticosDelanteros" inputId="medio"></p-radioButton>
+                               value="5" formControlName="calibracionNeumaticosDelanteros"
+                               inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosDelanteros'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
                 <p-radioButton id="calibracionNeumaticosDelanterosCorrecto" name="calibracionNeumaticosDelanteros"
-                  value="2" formControlName="calibracionNeumaticosDelanteros" inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosDelanteros'">Medio</label>
+                               value="10" formControlName="calibracionNeumaticosDelanteros"
+                               inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosDelanteros'">Correcto</label>
               </div>
             </div>
+            <span class="campo-obligatorio"
+                  *ngIf="nvf.calibracionNeumaticosDelanterosCorrecto?.errors?.required && (nvf.calibracionNeumaticosDelanterosCorrecto?.dirty || nvf.calibracionNeumaticosDelanterosCorrecto?.touched)">
+              Campo obligatorio</span>
           </div>
         </div>
       </div>
@@ -172,21 +142,24 @@
             <label class="control-label">Nivel de combustible:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelCombustibleBajo" name="nivelCombustible" value="0"
-                  formControlName="nivelCombustible" inputId="bajo"></p-radioButton>
+                <p-radioButton id="nivelCombustibleBajo" name="nivelCombustible" value="1"
+                               formControlName="nivelCombustible" inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'nivelCombustible'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelCombustibleMedio" name="nivelCombustible" value="1"
-                  formControlName="nivelCombustible" inputId="medio"></p-radioButton>
+                <p-radioButton id="nivelCombustibleMedio" name="nivelCombustible" value="5"
+                               formControlName="nivelCombustible" inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'nivelCombustible'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelCombustibleCorrecto" name="nivelCombustible" value="2"
-                  formControlName="nivelCombustible" inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'nivelCombustible'">Medio</label>
+                <p-radioButton id="nivelCombustibleCorrecto" name="nivelCombustible" value="10"
+                               formControlName="nivelCombustible" inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'nivelCombustible'">Correcto</label>
               </div>
             </div>
+            <span class="campo-obligatorio"
+                  *ngIf="nvf.nivelCombustibleCorrecto?.errors?.required && (nvf.nivelCombustibleCorrecto?.dirty || nvf.nivelCombustibleCorrecto?.touched)">
+              Campo obligatorio</span>
           </div>
         </div>
         <div class="col-md-6">
@@ -194,21 +167,24 @@
             <label class="control-label">Nivel de bateria:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelBateriaBajo" name="nivelBateria" value="0" formControlName="nivelBateria"
-                  inputId="bajo"></p-radioButton>
+                <p-radioButton id="nivelBateriaBajo" name="nivelBateria" value="1" formControlName="nivelBateria"
+                               inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'nivelBateria'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelBateriaMedio" name="nivelBateria" value="1" formControlName="nivelBateria"
-                  inputId="medio"></p-radioButton>
+                <p-radioButton id="nivelBateriaMedio" name="nivelBateria" value="5" formControlName="nivelBateria"
+                               inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'nivelBateria'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="nivelBateriaCorrecto" name="nivelBateria" value="2" formControlName="nivelBateria"
-                  inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'nivelBateria'">Medio</label>
+                <p-radioButton id="nivelBateriaCorrecto" name="nivelBateria" value="10" formControlName="nivelBateria"
+                               inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'nivelBateria'">Correcto</label>
               </div>
             </div>
+            <span class="campo-obligatorio"
+                  *ngIf="nvf.nivelBateriaBajo?.errors?.required && (nvf.nivelBateriaBajo?.dirty || nvf.nivelBateriaBajo?.touched)">
+              Campo obligatorio</span>
           </div>
         </div>
       </div>
@@ -219,21 +195,24 @@
             <label class="control-label">Limpieza interior:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="limpiezaExteriorBajo" name="limpiezaExterior" value="0"
-                  formControlName="limpiezaExterior" inputId="bajo"></p-radioButton>
+                <p-radioButton id="limpiezaExteriorBajo" name="limpiezaExterior" value="1"
+                               formControlName="limpiezaExterior" inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'limpiezaExterior'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="limpiezaExteriorMedio" name="limpiezaExterior" value="1"
-                  formControlName="limpiezaExterior" inputId="medio"></p-radioButton>
+                <p-radioButton id="limpiezaExteriorMedio" name="limpiezaExterior" value="5"
+                               formControlName="limpiezaExterior" inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'limpiezaExterior'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="limpiezaExteriorCorrecto" name="limpiezaExterior" value="2"
-                  formControlName="limpiezaExterior" inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'limpiezaExterior'">Medio</label>
+                <p-radioButton id="limpiezaExteriorCorrecto" name="limpiezaExterior" value="10"
+                               formControlName="limpiezaExterior" inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'limpiezaExterior'">Correcto</label>
               </div>
             </div>
+            <span class="campo-obligatorio"
+                  *ngIf="nvf.limpiezaExteriorBajo?.errors?.required && (nvf.limpiezaExteriorBajo?.dirty || nvf.limpiezaExteriorBajo?.touched)">
+              Campo obligatorio</span>
           </div>
         </div>
         <div class="col-md-6">
@@ -241,238 +220,180 @@
             <label class="control-label">Limpieza interior:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="limpiezaInteriorBajo" name="limpiezaInterior" value="0"
-                  formControlName="limpiezaInterior" inputId="bajo"></p-radioButton>
+                <p-radioButton id="limpiezaInteriorBajo" name="limpiezaInterior" value="1"
+                               formControlName="limpiezaInterior" inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'limpiezaInterior'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="limpiezaInteriorMedio" name="limpiezaInterior" value="1"
-                  formControlName="limpiezaInterior" inputId="medio"></p-radioButton>
+                <p-radioButton id="limpiezaInteriorMedio" name="limpiezaInterior" value="5"
+                               formControlName="limpiezaInterior" inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'limpiezaInterior'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="limpiezaInteriorCorrecto" name="limpiezaInterior" value="2"
-                  formControlName="limpiezaInterior" inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'limpiezaInterior'">Medio</label>
+                <p-radioButton id="limpiezaInteriorCorrecto" name="limpiezaInterior" value="10"
+                               formControlName="limpiezaInterior" inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'limpiezaInterior'">Correcto</label>
               </div>
             </div>
+            <span class="campo-obligatorio"
+                  *ngIf="nvf.limpiezaInteriorCorrecto?.errors?.required && (nvf.limpiezaInteriorCorrecto?.dirty || nvf.limpiezaInteriorCorrecto?.touched)">
+              Campo obligatorio</span>
           </div>
         </div>
       </div>
-
       <div class="row table-panel-row">
         <div class="col-md-6">
           <div class="table-panel-column">
             <label class="control-label">Código de falla:</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="codigoFallaBajo" name="codigoFalla" value="0" formControlName="codigoFalla"
-                  inputId="bajo"></p-radioButton>
+                <p-radioButton id="codigoFallaBajo" name="codigoFalla" value="1" formControlName="codigoFalla"
+                               inputId="bajo"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'codigoFalla'">Bajo</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="codigoFallaMedio" name="codigoFalla" value="1" formControlName="codigoFalla"
-                  inputId="medio"></p-radioButton>
+                <p-radioButton id="codigoFallaMedio" name="codigoFalla" value="5" formControlName="codigoFalla"
+                               inputId="medio"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'codigoFalla'">Medio</label>
               </div>
               <div class="flex align-items-center mx-2">
-                <p-radioButton id="codigoFallaCorrecto" name="codigoFalla" value="2" formControlName="codigoFalla"
-                  inputId="correcto"></p-radioButton>
-                <label class="control-label m-0 mx-3" [for]="'codigoFalla'">Medio</label>
+                <p-radioButton id="codigoFallaCorrecto" name="codigoFalla" value="10" formControlName="codigoFalla"
+                               inputId="correcto"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'codigoFalla'">Correcto</label>
               </div>
             </div>
+            <span class="campo-obligatorio"
+                  *ngIf="nvf.codigoFallaCorrecto?.errors?.required && (nvf.codigoFallaCorrecto?.dirty || nvf.codigoFallaCorrecto?.touched)">
+              Campo obligatorio</span>
           </div>
         </div>
       </div>
     </form>
   </app-table-panel>
-
-
   <ng-container>
-    <div class="row mb-2">
+    <div class="row mb-2 mt-2">
       <div class="col-md-12">
         <span>*Campos obligatorios</span>
       </div>
     </div>
   </ng-container>
-
-  <!-- <ng-container>
-    <div class="flex justify-content-center">
-    </div>
-  </ng-container>
-  <ng-container>
-    <div class="flex justify-content-end">
-    </div>
-  </ng-container> -->
-
   <ng-container>
     <div class="flex mt-4 justify-content-end">
       <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-      <button class="ml-6 mt-3 btn btn-primary btn-md" (click)="aceptar()">Aceptar</button>
+      <button class="ml-6 mt-3 btn btn-primary btn-md" (click)="aceptar()" [disabled]="nuevaVerificacionForm.invalid">
+        Aceptar
+      </button>
     </div>
   </ng-container>
-
-
-
-
-
-  <p-overlayPanel #overlayPanel>
-    <ng-template pTemplate="content">
-      <app-overlay-panel-opciones>
-        <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
-      </app-overlay-panel-opciones>
-    </ng-template>
-  </p-overlayPanel>
 </ng-container>
-<!--
-<ng-container *ngIf="abrirModificar">
-  <app-modificar-articulos></app-modificar-articulos>
-</ng-container> -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<ng-container *ngIf="ventanaConfirmacion">
+<ng-container *ngIf="indice === 1">
   <app-table-panel>
-
     <ng-template appCustomTemplate="left-header">
-           <div class="table-panel-header-column">
-             <span class="font-bold">ID {{vehiculoSeleccionado.id}}</span>
-           </div>
-         </ng-template>
-
-         <ng-template>
-         </ng-template>
-         <ng-template>
-           <div class="table-panel-header-column">
-             <div class="flex flex-column">
-               <span>Estatus</span>
-               <div class="contenedor-inputswitch">
-                 <!-- <span class="activo" *ngIf="vehiculoSeleccionado.estatus">Activo</span>
-               <span class="inactivo" *ngIf="!vehiculoSeleccionado.estatus">Inactivo</span> -->
-               </div>
-             </div>
-           </div>
-         </ng-template>
-         <div class="row table-panel-row">
-           <div class="col-md-4">
-             <div class="table-panel-column">
-               <label>Velatorio</label>
-               <span> {{vehiculoSeleccionado.velatorio}} </span>
-             </div>
-           </div>
-           <div class="col-md-4">
-             <div class="table-panel-column">
-               <label>Fecha</label>
-               <span> {{vehiculoSeleccionado.fecha}} </span>
-             </div>
-           </div>
-           <div class="col-md-4">
-             <div class="table-panel-column">
-               <label>Hora</label>
-               <span> {{vehiculoSeleccionado.hora}} </span>
-             </div>
-           </div>
-         </div>
-
-
-
-
-         <div class="row table-panel-row">
-           <div class="col-md-4">
-             <div class="table-panel-column">
-               <label>Vehiculo</label>
-               <span> {{vehiculoSeleccionado.vehiculo}} </span>
-             </div>
-           </div>
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Placas</label>
-               <span> {{vehiculoSeleccionado.placas}} </span>
-             </div>
-           </div>
-         </div>
-         <div class="row table-panel-row">
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Nivel de aceite</label>
-               <span> {{vehiculoSeleccionado.vehiculo}} </span>
-             </div>
-           </div>
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Nivel de agua</label>
-               <span> {{vehiculoSeleccionado.placas}} </span>
-             </div>
-           </div>
-         </div>
-         <div class="row table-panel-row">
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Calibración de neumáticos traseros</label>
-               <span> {{vehiculoSeleccionado.vehiculo}} </span>
-             </div>
-           </div>
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Calibración de neumáticos delanteros</label>
-               <span> {{vehiculoSeleccionado.placas}} </span>
-             </div>
-           </div>
-         </div>
-         <div class="row table-panel-row">
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Nivel de combustible</label>
-               <span> {{vehiculoSeleccionado.vehiculo}} </span>
-             </div>
-           </div>
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Nivel de bateria</label>
-               <span> {{vehiculoSeleccionado.placas}} </span>
-             </div>
-           </div>
-         </div>
-         <div class="row table-panel-row">
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Limpieza interior</label>
-               <span> {{vehiculoSeleccionado.vehiculo}} </span>
-             </div>
-           </div>
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Limpiesa exterior</label>
-               <span> {{vehiculoSeleccionado.placas}} </span>
-             </div>
-           </div>
-         </div>
-         <div class="row table-panel-row">
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Código de falla</label>
-               <span> {{vehiculoSeleccionado.vehiculo}} </span>
-             </div>
-           </div>
-         </div>
-        </app-table-panel>
-   </ng-container>
-
-   <ng-container *ngIf="ventanaConfirmacion">
-    <div class="flex mt-4 justify-content-end">
-      <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-      <button class="ml-6 mt-3 btn btn-primary btn-md" (click)="crearNuevaVerificacion()">Aceptar</button>
+      <div class="table-panel-header-column">
+        <span class="font-bold">ID {{vehiculoSeleccionado.ID_VEHICULO}}</span>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Velatorio</label>
+          <span> {{vehiculoSeleccionado.NOM_VELATORIO}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha</label>
+          <span> {{fechaActual}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Hora</label>
+          <span> {{horaActual}} </span>
+        </div>
+      </div>
     </div>
-  </ng-container>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Vehiculo</label>
+          <span> {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}} {{vehiculoSeleccionado.DES_MODELO}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Placas</label>
+          <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nivel de aceite</label>
+          <span> {{nuevaVerificacion.idNivelAceite}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nivel de agua</label>
+          <span> {{nuevaVerificacion.idNivelAgua}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Calibración de neumáticos traseros</label>
+          <span> {{nuevaVerificacion.idCalNeuTraseros}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Calibración de neumáticos delanteros</label>
+          <span> {{nuevaVerificacion.idCalNeuDelanteros}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nivel de combustible</label>
+          <span> {{nuevaVerificacion.idNivelCombustible}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nivel de bateria</label>
+          <span> {{nuevaVerificacion.idNivelBateria}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Limpieza interior</label>
+          <span> {{nuevaVerificacion.idLimpiezaInterior}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Limpiesa exterior</label>
+          <span> {{nuevaVerificacion.idLimpiezaExterior}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Código de falla</label>
+          <span> {{nuevaVerificacion.idCodigoFallo}} </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <div class="flex mt-4 justify-content-end">
+    <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
+    <button class="ml-6 mt-3 btn btn-primary btn-md" (click)="guardarVerificacion()">Aceptar</button>
+  </div>
+</ng-container>

@@ -1,17 +1,18 @@
 export interface Usuario {
-  id: number;
-  curp: string;
+  usuario: string;
   claveMatricula: string;
-  matricula: string;
-  password: string;
-  nombre: string;
-  paterno: string;
-  materno: string;
-  fecNacimiento:string;
   correo: string;
+  curp: string;
   estatus: number;
-  idOficina: number;
+  fecNacimiento: string;
+  id: number;
   idDelegacion: number;
-  idVelatorio: number;
+  idOficina: number;
   idRol: number;
+  idVelatorio: number;
+  materno: string;
+  matricula: string;
+  nombre: string;
+  password: string;
+  paterno: string;
 }

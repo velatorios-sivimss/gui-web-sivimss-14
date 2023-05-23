@@ -19,6 +19,9 @@ import { TablePanelModule } from "../../shared/table-panel/table-panel.module";
 import { PermisosPipe } from './pipes/permisos.pipe';
 import { VerDetalleRolComponent } from './components/ver-detalle-rol/ver-detalle-rol.component';
 import { ModificarRolComponent } from './components/modificar-rol/modificar-rol.component';
+import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import {CalendarModule} from "primeng/calendar";
+import { ConfirmacionMovimientoComponent } from './components/confirmacion-movimiento/confirmacion-movimiento/confirmacion-movimiento.component';
 
 
 @NgModule({
@@ -27,7 +30,8 @@ import { ModificarRolComponent } from './components/modificar-rol/modificar-rol.
     AgregarRolComponent,
     PermisosPipe,
     VerDetalleRolComponent,
-    ModificarRolComponent
+    ModificarRolComponent,
+    ConfirmacionMovimientoComponent
   ],
   imports: [
     CommonModule,
@@ -43,7 +47,9 @@ import { ModificarRolComponent } from './components/modificar-rol/modificar-rol.
     OverlayPanelModule,
     OverlayPanelOpcionesModule,
     TablePanelModule,
-    CeldaStickyModule
+    CeldaStickyModule,
+    UtileriaModule,
+    CalendarModule
   ],
   providers: [
     RolService

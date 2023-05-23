@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes, UrlSerializer } from '@angular/router';
-import { PaginaNoEncontradaComponent } from './components/pagina-no-encontrada/pagina-no-encontrada.component';
-import { BloqueaUsuarioLogueadoGuard } from 'projects/sivimss-gui/src/app/guards/bloquea-usuario-logueado.guard';
-import { PermiteUsuarioLogueadoGuard } from 'projects/sivimss-gui/src/app/guards/permite-usuario-logueado.guard';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes, UrlSerializer} from '@angular/router';
+import {PaginaNoEncontradaComponent} from './components/pagina-no-encontrada/pagina-no-encontrada.component';
+import {BloqueaUsuarioLogueadoGuard} from 'projects/sivimss-gui/src/app/guards/bloquea-usuario-logueado.guard';
+import {PermiteUsuarioLogueadoGuard} from 'projects/sivimss-gui/src/app/guards/permite-usuario-logueado.guard';
 
 const routes: Routes = [
   {
@@ -167,6 +167,21 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'pagos/generar-formato-pagare',
+    loadChildren: () => import('./modules/pagos/generar-formato-pagare/generar-formato-pagare.module').then(m => m.GenerarFormatoPagareModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'pagos/facturacion',
+    loadChildren: () => import('./modules/pagos/facturacion/facturacion.module').then(m => m.FacturacionModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'pagos/realizar-pago',
+    loadChildren: () => import('./modules/pagos/realizar-pago/realizar-pago.module').then(m => m.RealizarPagoModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: 'reservar-salas',
     loadChildren: () => import('./modules/reservar-salas/reservar-salas.module').then(m => m.ReservarSalasModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
@@ -176,14 +191,18 @@ const routes: Routes = [
     loadChildren: () => import('./modules/generar-nota-remision/generar-nota-remision.module').then(m => m.GenerarNotaRemisionModule)
   },
   {
-  path: 'programar-mantenimiento-vehicular',
-  loadChildren: () => import('./modules/mantenimiento-vehicular/mantenimiento-vehicular.module').then(m => m.MantenimientoVehicularModule),
+    path: 'programar-mantenimiento-vehicular',
+    loadChildren: () => import('./modules/mantenimiento-vehicular/mantenimiento-vehicular.module').then(m => m.MantenimientoVehicularModule),
+  },
+  {
+    path: 'control-de-vehiculos',
+    loadChildren: () => import('./modules/control-vehiculos/control-vehiculos.module').then(m => m.ControlVehiculosModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: '**',
     component: PaginaNoEncontradaComponent,
   },
-
 ];
 
 @NgModule({

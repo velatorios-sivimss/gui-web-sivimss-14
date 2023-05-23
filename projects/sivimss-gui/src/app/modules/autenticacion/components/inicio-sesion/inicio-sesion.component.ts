@@ -1,14 +1,16 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DialogService } from "primeng/dynamicdialog";
-import { ModalRestablecerContraseniaComponent } from "projects/sivimss-gui/src/app/modules/autenticacion/components/modal-restablecer-contrasenia/modal-restablecer-contrasenia.component";
-import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { MensajesRespuestaAutenticacion } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
-import { finalize } from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {DialogService} from "primeng/dynamicdialog";
+import {
+  ModalRestablecerContraseniaComponent
+} from "projects/sivimss-gui/src/app/modules/autenticacion/components/modal-restablecer-contrasenia/modal-restablecer-contrasenia.component";
+import {LoaderService} from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
+import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import {MensajesRespuestaAutenticacion} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
+import {finalize, tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -26,13 +28,16 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
 
   form!: FormGroup;
 
-
   mostrarModalPreActivo: boolean = false;
   mostrarModalContraseniaProxVencer: boolean = false;
   mostrarModalFechaContraseniaVencida: boolean = false;
   mostrarModalIntentosFallidos: boolean = false;
   mostrarModalCuentaBloqueada: boolean = false;
-
+  mostrarModalUsuarioNoExiste = false;
+  mostrarModalSIAPSinConexion = false;
+  mostrarModalSIAPDesactivado = false;
+  usuarioIncorrecto: boolean = false;
+  contraseniaIncorrecta: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -62,6 +67,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
     }
     const {usuario, contrasenia} = this.form.value;
     this.loaderService.activar();
+    this.usuarioIncorrecto = false;
     this.autenticacionService.iniciarSesion(usuario, contrasenia, mostrarMsjContraseniaProxVencer)
       .pipe(
         finalize(() => this.loaderService.desactivar())
@@ -76,7 +82,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
             break;
           case MensajesRespuestaAutenticacion.CredencialesIncorrectas:
             this.form.get('contrasenia')?.reset();
-            this.alertaService.mostrar(TipoAlerta.Error, 'Usuario o contraseña incorrecta');
+            this.contraseniaIncorrecta = !this.contraseniaIncorrecta;
             break;
           case MensajesRespuestaAutenticacion.CantidadMaximaIntentosFallidos:
             this.mostrarModalIntentosFallidos = true;
@@ -87,6 +93,17 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
             break;
           case MensajesRespuestaAutenticacion.UsuarioPreactivo:
             this.mostrarModalPreActivo = true;
+            break;
+          case MensajesRespuestaAutenticacion.UsuarioNoExiste:
+            this.form.get('usuario')?.reset();
+            this.form.get('contrasenia')?.reset();
+            this.usuarioIncorrecto = !this.usuarioIncorrecto;
+            break;
+          case MensajesRespuestaAutenticacion.SIAPSinConexion:
+            this.mostrarModalSIAPSinConexion = true;
+            break;
+          case MensajesRespuestaAutenticacion.SIAPDesactivado:
+            this.mostrarModalSIAPDesactivado = true;
             break;
           case MensajesRespuestaAutenticacion.CuentaBloqueada:
             this.mostrarModalCuentaBloqueada = true;

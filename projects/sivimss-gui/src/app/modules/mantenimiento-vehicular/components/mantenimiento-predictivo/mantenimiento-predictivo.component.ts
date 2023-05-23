@@ -1,14 +1,14 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {Vehiculos} from '../../models/vehiculos.interface';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {CATALOGOS_DUMMIES} from '../../../inventario-vehicular/constants/dummies';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 
 @Component({
   selector: 'app-mantenimiento-predictivo',
@@ -29,8 +29,8 @@ export class MantenimientoPredictivoComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
   totalElementos: number = 0
 
-  vehiculos: Vehiculos[] = []
-  vehiculoSeleccionado: Vehiculos = {}
+  vehiculos: VehiculoMantenimiento[] = []
+  vehiculoSeleccionado!: VehiculoMantenimiento;
 
   filtroForm!: FormGroup
 
@@ -69,7 +69,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     return this.filtroForm?.controls;
   }
 
-  inicializarFiltroForm() {
+  inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: null, disabled: false}, [Validators.required]],
       velatorio: [{value: null, disabled: false}, [Validators.required]],
@@ -85,7 +85,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     return "";
   }
 
-  buscar() {
+  buscar(): void {
     this.verDetallePredictivo = true
   }
 

@@ -1,0 +1,41 @@
+<app-titulo-principal titulo="CONTROL DE VEHÍCULOS"></app-titulo-principal>
+<div class="row">
+    <div class="col-md-12 flex justify-content-start mb-3">
+        <p-selectButton [options]="OpcionesControlVehiculos" optionLabel="icon" (onChange)="handleCambioVista($event)"
+            [(ngModel)]="opcionControlVehiculo" optionDisabled="inactive">
+            <ng-template let-item>
+                <i [class]="item.icon"></i>
+            </ng-template>
+        </p-selectButton>
+    </div>
+</div>
+
+<form [formGroup]="filtroForm">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="control-label" for="nivel">Nivel:</label>
+            <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+                placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
+            </p-dropdown>
+        </div>
+        <div class="col-md-6">
+            <label class="control-label" for="delegacion">Delegación:</label>
+            <p-dropdown id="delegacion" class="form-control" formControlName="delegacion"
+                [options]="catalogoDelegaciones" placeholder="Seleccionar la delegación" [filter]="true"
+                filterBy="label" (onChange)='obtenerVelatorios(); obtenerVehiculos();'>
+            </p-dropdown>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="control-label" for="velatorio">Velatorio:</label>
+            <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+                placeholder="Selecciona el velatorio" [filter]="true" filterBy="label" (onChange)='obtenerVehiculos();'>
+            </p-dropdown>
+        </div>
+    </div>
+</form>
+
+<app-listado-vehiculos *ngIf="!modoCalendario" [controlVehiculos]="controlVehiculos"
+    (actualizarListadoEvent)="obtenerVehiculos()"></app-listado-vehiculos>
+<app-calendario-vehiculos *ngIf="modoCalendario" [filtroFormData]="filtroForm.value"></app-calendario-vehiculos>

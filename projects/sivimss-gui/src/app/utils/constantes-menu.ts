@@ -17,7 +17,7 @@ export const idsModulos: DatoModulo = {
   },
   '2': {
     ruta: '/usuarios',
-    icono: 'administracion-usuarios.svg'
+    icono: ''
   },
   '3': {
     ruta: '/roles-permisos',
@@ -44,8 +44,8 @@ export const idsModulos: DatoModulo = {
     icono: ''
   },
   '9': {
-    icono: '',
-    ruta: ''
+    ruta: 'reservar-salas',
+    icono: ''
   },
   '10': {
     ruta: '/proveedores',
@@ -53,6 +53,30 @@ export const idsModulos: DatoModulo = {
   },
   '11': {
     ruta: '/contratantes',
+    icono: ''
+  },
+  '14': {
+    ruta: '/inventario-interno',
+    icono: ''
+  },
+  '19': {
+    ruta: '/salas',
+    icono: ''
+  },
+  '20': {
+    ruta: '',
+    icono: 'operacion-sivimss.svg'
+  },
+  '21': {
+    ruta: '/salas',
+    icono: ''
+  },
+  '22': {
+    ruta: '/reservar-capilla',
+    icono: ''
+  },
+  '70': {
+    ruta: '/gestionar-tramites',
     icono: ''
   }
 };

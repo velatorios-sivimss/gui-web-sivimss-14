@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { RESERVAR_SALAS_BREADCRUMB } from '../../constants/breadcrumb';
 import { OpcionesReservarSalas, SelectButtonOptions } from '../../constants/opciones-reservar-salas';
-import { Router, ActivatedRoute } from '@angular/router';
-import {mensajes} from '../../constants/mensajes'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reservar-salas',
@@ -20,13 +19,11 @@ export class ReservarSalasComponent implements OnInit {
   opcionSala: any = OpcionesReservarSalas[0];
 
   constructor(private breadcrumbService: BreadcrumbService,
-    private router: Router) { }
+    private router: Router) {
+  }
 
   ngOnInit(): void {
-    localStorage.setItem("mensajes", JSON.stringify(mensajes));
-    const alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-    this.router.navigate(["/reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]);
-
+    this.router.navigate(["../../reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]);
     this.actualizarBreadcrumb();
   }
 

@@ -1,6 +1,6 @@
 export interface FiltrosUsuario {
+  idDelegacion: number,
   idOficina: number,
-  idVelatorio: number,
   idRol: number,
-  idDelegacion: number
+  idVelatorio: number
 }

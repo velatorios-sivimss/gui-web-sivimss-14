@@ -6,7 +6,10 @@ export const funcionalidades: { [valor: string]: string } = {
   'ARTICULOS': '6',
   'SERVICIOS': '7',
   'VELATORIOS': '8',
-  'SALAS_RESERVACION': '9'//Agregar los que falten.
+  'SALAS_RESERVACION': '9',
+  'CAPILLA_RESERVACION': '31',
+  'GESTIONAR_DONACIONES':'59',
+  'CONSULTAR_DONADOS': '64',//Agregar los que falten.
 }
 export const permisos: { [valor: string]: string } = {
   'ALTA': '1',

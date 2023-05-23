@@ -1,13 +1,11 @@
-import { ConsultaDonacionesService } from './../../services/consulta-donaciones.service'
+import { ConsultaDonacionesService } from '../../services/consulta-donaciones.service'
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { BreadcrumbService } from '../../../../shared/breadcrumb/services/breadcrumb.service'
+import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb'
 import { OverlayPanel } from 'primeng/overlaypanel'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { TipoDropdown } from '../../../../models/tipo-dropdown'
-import {
-  CATALOGOS_DONADO_POR,
-  CATALOGOS_DUMMIES,
-} from '../../../servicios-funerarios/constants/dummies'
+import {CATALOGOS_DONADO_POR} from '../../../servicios-funerarios/constants/dummies'
 import { LazyLoadEvent } from 'primeng/api'
 import {
   ConsultaDonacionesInterface,
@@ -25,6 +23,10 @@ import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies'
 import { ActivatedRoute } from '@angular/router'
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones'
 import * as moment from 'moment'
+import {finalize} from "rxjs/operators";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
 
 @Component({
   selector: 'app-consulta-donaciones',
@@ -32,9 +34,18 @@ import * as moment from 'moment'
   styleUrls: ['./consulta-donaciones.component.scss'],
   providers: [DialogService],
 })
+
 export class ConsultaDonacionesComponent implements OnInit {
+
+  readonly POSICION_VELATORIOS: number = 0;
+  readonly POSICION_NIVELES: number = 1;
+  readonly POSICION_DELEGACIONES: number = 2;
+
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel
+
+
+  rolLocaleStorage = JSON.parse(localStorage.getItem('usuario')as string);
 
   registrarDonacionRef!: DynamicDialogRef
   paginacionConFiltrado: boolean = false
@@ -48,9 +59,9 @@ export class ConsultaDonacionesComponent implements OnInit {
 
   base64: string = ''
 
-  nivel: TipoDropdown[] = CATALOGOS_DUMMIES
-  delegacion: TipoDropdown[] = CATALOGOS_DUMMIES
-  velatorio: TipoDropdown[] = CATALOGOS_DUMMIES
+  nivel: TipoDropdown[] = [];
+  delegacion: TipoDropdown[] = [];
+  velatorio: TipoDropdown[] = []
   donadoPor: TipoDropdown[] = CATALOGOS_DONADO_POR
 
   numPaginaActual: number = 0
@@ -70,33 +81,36 @@ export class ConsultaDonacionesComponent implements OnInit {
     private consultaDonacionesService: ConsultaDonacionesService,
     private alertaService: AlertaService,
     private route: ActivatedRoute,
+    private readonly loaderService: LoaderService,
   ) {}
 
   ngOnInit(): void {
     this.inicializarFiltroForm()
     let respuesta = this.route.snapshot.data['respuesta']
-    this.velatorios = mapearArregloTipoDropdown(
-      respuesta[0]?.datos,
-      'NOM_VELATORIO',
-      'ID_VELATORIO',
-    )
-    this.niveles = mapearArregloTipoDropdown(
-      respuesta[1]?.datos,
-      'DES_NIVELOFICINA',
-      'ID_OFICINA',
-    )
+    this.niveles = mapearArregloTipoDropdown(respuesta[this.POSICION_NIVELES]?.datos,'DES_NIVELOFICINA','ID_OFICINA');
+    this.delegacion = mapearArregloTipoDropdown(respuesta[this.POSICION_DELEGACIONES],'label','value');
+    this.validarFiltros();
   }
-
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: null, disabled: false }, [Validators.required]],
-      delegacion: [{ value: null, disabled: false }, [Validators.required]],
-      velatorio: [{ value: null, disabled: false }, [Validators.required]],
-      donadoPor: [{ value: null, disabled: false }],
+           nivel: [{ value: null, disabled: +this.rolLocaleStorage.idRol != 1 }, [Validators.required]],
+      delegacion: [{ value: null, disabled: +this.rolLocaleStorage.idRol != 1 }, [Validators.required]],
+       velatorio: [{ value: null, disabled: +this.rolLocaleStorage.idRol == 3 }, [Validators.required]],
+       donadoPor: [{ value: null, disabled: false }],
       fechaDesde: [{ value: null, disabled: false }],
       fechaHasta: [{ value: null, disabled: false }],
     })
   }
+
+  validarFiltros(): void {
+    if(+this.rolLocaleStorage.idRol == 1){return}
+    this.ff.nivel.setValue(this.rolLocaleStorage.idRol);
+    this.ff.delegacion.setValue(this.rolLocaleStorage.idDelegacion);
+    if(+this.rolLocaleStorage.idRol == 3){
+      this.ff.velatorio.setValue(this.rolLocaleStorage.idVelatorio);
+    }
+    this.cambiarDelegacion();
+}
 
   obtenerObjetoParaFiltrado(): FiltroDonacionesInterface {
     let fechaHasta = this.filtroForm.get('fechaHasta')?.value
@@ -222,6 +236,21 @@ export class ConsultaDonacionesComponent implements OnInit {
         header: 'Registrar donación',
         width: '920px',
       },
+    )
+  }
+
+  cambiarDelegacion(): void {
+    this.loaderService.activar();
+    this.consultaDonacionesService.obtenerCatalogoVelatoriosPorDelegacion(this.ff.delegacion.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+
+      },(error: HttpErrorResponse) => {
+        console.log(error);
+      }
     )
   }
 

@@ -1,0 +1,92 @@
+<ng-container *ngIf="indice === 0">
+  <form [formGroup]="valeParitariaForm" (submit)="aceptar()">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="matricula">Matricula<span
+          class="req">*</span></label>
+        <input id="matricula" class="form-control" formControlName="matricula"
+               placeholder="Ingresar matrícula">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="delegacion">Delegación<span class="req">*</span></label>
+        <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
+                    [options]="delegaciones" placeholder="Seleccione el velatorio">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="importePrestamo">Importe del préstamo<span
+          class="req">*</span></label>
+        <input id="importePrestamo" class="form-control" formControlName="importePrestamo"
+               placeholder="Ingresar importe">
+      </div>
+      <div class="col-md-6">
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12 control-label">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="flex justify-content-end mt-5">
+      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="ml-4 btn btn-primary btn-md">
+        Guardar
+      </button>
+    </div>
+  </form>
+</ng-container>
+<ng-container *ngIf="indice === 1">
+  <app-table-panel>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Matrícula</label>
+          <span>DOC-000001</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Delegación</label>
+          <span>Edo. México Poniente</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Importe del préstamo</label>
+          <span>$ 30,000.00</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <div class="mb-3 mt-3 row text-center">
+    ¿Estás seguro que deseas registrar en el SIAP la solicitud del Vale Paritaria?
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="submit" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="indice === 2">
+  <div class="mb-3 mt-3 row text-center">
+    No hay registro en SIAP.
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-center">
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="indice === 3">
+  <div class="mb-3 mt-3 row text-center">
+    El trabajador no es candidato para un Vale paritaria.
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-center">
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+    </div>
+  </div>
+</ng-container>

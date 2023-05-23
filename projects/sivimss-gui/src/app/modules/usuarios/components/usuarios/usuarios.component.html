@@ -1,11 +1,11 @@
-<app-titulo-principal titulo="administracion de usuarios"></app-titulo-principal>
+<app-titulo-principal titulo="administración de usuarios"></app-titulo-principal>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
         <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-                    placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
+                    placeholder="Seleccionar el nivel" [filter]="true" filterBy="label" (onChange)="cargarRoles()">
         </p-dropdown>
       </div>
       <div class="col-md-6">
@@ -46,42 +46,47 @@
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="usuarios" [paginator]="usuarios.length > 0" [rows]="cantElementosPorPagina"
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="seleccionarPaginacion($event)">
+           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>CURP</th>
-        <th>Matrícula</th>
-        <th>Usuario</th>
-        <th>Nombre</th>
-        <th>Primer apellido</th>
-        <th>Segundo apellido</th>
+        <th pResizableColumn>ID</th>
+        <th pResizableColumn>CURP</th>
+        <th pResizableColumn>Matrícula</th>
+        <th pResizableColumn>Usuario</th>
+        <th pResizableColumn>Nombre</th>
+        <th pResizableColumn>Primer apellido</th>
+        <th pResizableColumn>Segundo apellido</th>
+        <th pResizableColumn>Correo electrónico</th>
+        <th pResizableColumn>Nivel</th>
+        <th pResizableColumn>Rol</th>
         <th>Estatus</th>
-        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-usuario>
       <tr>
-        <td>{{usuario.id}}</td>
-        <td>{{usuario.curp}}</td>
-        <td>{{usuario.matricula}}</td>
-        <td>{{usuario.claveMatricula}}</td>
-        <td>{{usuario.nombre}}</td>
-        <td>{{usuario.paterno}}</td>
-        <td>{{usuario.materno}}</td>
-        <td>
-          <div class="contenedor-inputswitch">
-            <p-inputSwitch [(ngModel)]="usuario.estatus" (ngModelChange)="cambiarEstatus(usuario.id);"
-                           [disabled]="true"></p-inputSwitch>
-            <span class="activo" *ngIf="usuario.estatus">Activo</span>
-            <span class="inactivo" *ngIf="!usuario.estatus">Inactivo</span>
-          </div>
+        <td pResizableColumn>{{usuario.id}}</td>
+        <td pResizableColumn>{{usuario.curp}}</td>
+        <td pResizableColumn>{{usuario.matricula}}</td>
+        <td pResizableColumn>{{usuario.usuario}}</td>
+        <td pResizableColumn>{{usuario.nombre}}</td>
+        <td pResizableColumn>{{usuario.paterno}}</td>
+        <td pResizableColumn>{{usuario.materno}}</td>
+        <td pResizableColumn>{{usuario.correo}}</td>
+        <td pResizableColumn>{{usuario.desOficina}}</td>
+        <td pResizableColumn>{{usuario.desRol}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetalleUsuario(usuario)" *appValidaRol="['USUARIOS','CONSULTA']">
+            <div class="contenedor-inputswitch flex mr-4">
+              <p-inputSwitch [(ngModel)]="usuario.estatus" (ngModelChange)="cambiarEstatus(usuario.id);"
+                             [disabled]="true"></p-inputSwitch>
+              <span class="activo mr-3" *ngIf="usuario.estatus">Activo</span>
+              <span class="inactivo" *ngIf="!usuario.estatus">Inactivo</span>
+            </div>
+            <a (click)="abrirModalDetalleUsuario(usuario)" *appValidaRol="['USUARIOS','CONSULTA']" onCloseOnNavigation>
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
-            <a (click)="abrirPanel($event,usuario)" *appValidaRol="['USUARIOS','MODIFICAR']">
+            <a (click)="abrirPanel($event,usuario)" *appValidaRol="['USUARIOS','MODIFICAR']" onCloseOnNavigation>
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
@@ -90,8 +95,8 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="9" class="p-2 text-center font-bold text-xl">
-          No se encontro información relacionada a tu búsqueda
+        <th colspan="11" class="p-2 text-center font-bold text-xl">
+          No se encontro información relacionada a tu búsqueda.
         </th>
       </tr>
     </ng-template>
@@ -101,17 +106,6 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
-        <div class="export-table" *appValidaRol="['USUARIOS','IMPRIMIR']">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-                 (click)="guardarPDF()">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-                 (click)="guardarExcel()">
-          </div>
-        </div>
-      </div>
     </ng-template>
   </p-table>
 </section>

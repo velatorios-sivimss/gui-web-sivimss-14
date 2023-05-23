@@ -1,23 +1,21 @@
 <ng-container *ngIf="!ventanaConfirmacion">
   <form [formGroup]="solicitudMantenimientoForm">
-
     <div class="row mb-3">
-        <div class="col-md-6">
+      <div class="col-md-6">
         <label class="control-label" for="placas">Placas<span class="req">*</span>:</label>
         <input id="placas" class="form-control" formControlName="placas" placeholder="Ingresa el placas">
         <span class="campo-obligatorio"
               *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Campo obligatorio</span>
       </div>
-        <div class="col-md-6">
+      <div class="col-md-6">
         <label class="control-label" for="marca">Marca<span class="req">*</span>:</label>
         <input id="marca" class="form-control" formControlName="marca" placeholder="Ingresa el marca">
         <span class="campo-obligatorio"
               *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Campo obligatorio</span>
       </div>
     </div>
-
     <div class="row mb-3">
-        <div class="col-md-6">
+      <div class="col-md-6">
         <label class="control-label" for="anio">Año<span class="req">*</span>:</label>
         <input id="anio" class="form-control" formControlName="anio" placeholder="Ingresa el anio">
         <span class="campo-obligatorio"
@@ -30,31 +28,56 @@
               *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Campo obligatorio</span>
       </div>
     </div>
-
-
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="tipoMantenimiento">Tipo de mantenimiento<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="tipoMantenimiento" class="form-control" formControlName="tipoMantenimiento"
-                    [options]="tiposProveedor"
-                    placeholder="Selecciona el tamaño">
+                    [options]="tiposMantenimiento"
+                    placeholder="Selecciona el tamaño" (onChange)="gestionarCampos()">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Campo obligatorio</span>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" *ngIf="smf?.tipoMantenimiento?.value === '2'">
         <label class="control-label" for="fechaMantenimiento">Fecha de mantenimiento<span class="req">*:</span></label>
         <p-calendar id="fechaMantenimiento" formControlName="fechaMantenimiento" styleClass="form-control"
-        [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
-      </p-calendar>
-      <span class="campo-obligatorio"
-        *ngIf="smf?.fecha?.errors?.required && (smf?.fecha?.dirty || smf?.fecha?.touched)">Campo
+                    [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+        </p-calendar>
+        <span class="campo-obligatorio"
+              *ngIf="smf?.fecha?.errors?.required && (smf?.fecha?.dirty || smf?.fecha?.touched)">Campo
         obligatorio</span>
       </div>
     </div>
-
-
-    <div class="row mb-3">
+    <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '1'">
+      <div class="col-md-6">
+        <label class="control-label">Modalidad:</label>
+        <div class="flex">
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadSemestral" name="modalidad" value="1" formControlName="modalidad"
+                           inputId="semestral"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Semestral</label>
+          </div>
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadAnual" name="modalidad" value="2" formControlName="modalidad"
+                           inputId="anual"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Anual</label>
+          </div>
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadFrecuente" name="modalidad" value="3" formControlName="modalidad"
+                           inputId="frecuente"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Frecuente</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="matPreventivo">Mantenimiento preventivo<span class="req">*:</span></label>
+        <p-dropdown appendTo="body" id="matPreventivo" class="form-control" formControlName="matPreventivo"
+                    [options]="mantenimientosPrev"
+                    placeholder="Selecciona el tamaño">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value">
       <div class="col-md-12">
         <label class="control-label" for="notas">Notas<span class="req">*:</span></label>
         <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa las notas">
@@ -62,45 +85,38 @@
               *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Campo obligatorio</span>
       </div>
     </div>
-
-
     <div class="row mb-3">
       <div class="col-md-6">
-      <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
-      <input id="nombreProveedor" class="form-control" formControlName="nombreProveedor" placeholder="Ingresa el nombre del proveedor">
-      <span class="campo-obligatorio"
-            *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Campo obligatorio</span>
-    </div>
+        <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
+        <p-dropdown appendTo="body" id="nombreProveedor" class="form-control" formControlName="nombreProveedor"
+                    [options]="catalogoProveedores"
+                    placeholder="Ingresa el nombre del proveedor" (onChange)="asignarContrato()" >
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Campo obligatorio</span>
+      </div>
       <div class="col-md-6">
-      <label class="control-label" for="noContrato">Número de contrato<span class="req">*</span>:</label>
-      <input id="noContrato" class="form-control" formControlName="noContrato" placeholder="Ingresa el marnúmero ca">
-      <span class="campo-obligatorio"
-            *ngIf="smf.noContrato?.errors?.required && (smf.noContrato?.dirty || smf.noContrato?.touched)">Campo obligatorio</span>
+        <label class="control-label" for="noContrato">Número de contrato<span class="req">*</span>:</label>
+        <input id="noContrato" class="form-control" formControlName="noContrato" placeholder="Ingresa el marnúmero ca">
+        <span class="campo-obligatorio"
+              *ngIf="smf.noContrato?.errors?.required && (smf.noContrato?.dirty || smf.noContrato?.touched)">Campo obligatorio</span>
+      </div>
     </div>
-  </div>
-
-  <div class="row mb-3">
+    <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '2'">
       <div class="col-md-6">
-      <label class="control-label" for="taller">Taller<span class="req">*</span>:</label>
-      <input id="taller" class="form-control" formControlName="taller" placeholder="Ingresa el taller">
-      <span class="campo-obligatorio"
-            *ngIf="smf.taller?.errors?.required && (smf.taller?.dirty || smf.taller?.touched)">Campo obligatorio</span>
+        <label class="control-label" for="taller">Taller<span class="req">*</span>:</label>
+        <input id="taller" class="form-control" formControlName="taller" placeholder="Ingresa el taller">
+        <span class="campo-obligatorio"
+              *ngIf="smf.taller?.errors?.required && (smf.taller?.dirty || smf.taller?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="costoMantenimiento">Costo de mantenimiento<span class="req">*</span>:</label>
+        <input id="costoMantenimiento" class="form-control" formControlName="costoMantenimiento"
+               placeholder="Ingresa el costo de mantenimiento">
+        <span class="campo-obligatorio"
+              *ngIf="smf.costoMantenimiento?.errors?.required && (smf.costoMantenimiento?.dirty || smf.costoMantenimiento?.touched)">Campo obligatorio</span>
+      </div>
     </div>
-    <div class="col-md-6">
-      <label class="control-label" for="costoMantenimiento">Costo de mantenimiento<span class="req">*</span>:</label>
-      <input id="costoMantenimiento" class="form-control" formControlName="costoMantenimiento" placeholder="Ingresa el costo de mantenimiento">
-      <span class="campo-obligatorio"
-            *ngIf="smf.costoMantenimiento?.errors?.required && (smf.costoMantenimiento?.dirty || smf.costoMantenimiento?.touched)">Campo obligatorio</span>
-    </div>
-  </div>
-
-
-
-
-
-
-
-
     <div class="row mb-4">
       <div class="col-md-12">
         <span>*Campos obligatorios</span>
@@ -108,131 +124,119 @@
     </div>
   </form>
   <div class="flex justify-content-end">
-    <button class="btn btn-default btn-md" >Cancelar</button>
-    <button class="ml-4 btn btn-primary btn-md" (click)="agregar()">Agregar </button>
+    <button class="btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="agregar()" [disabled]="solicitudMantenimientoForm.invalid">
+      Agregar
+    </button>
   </div>
 </ng-container>
-
 
 <ng-container *ngIf="ventanaConfirmacion">
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
-           <div class="table-panel-header-column">
-             <span class="font-bold">ID {{vehiculoSeleccionado.id}}</span>
-           </div>
-         </ng-template>
-         <ng-template>
-         </ng-template>
-         <ng-template>
-           <div class="table-panel-header-column">
-             <div class="flex flex-column">
-               <div class="contenedor-inputswitch">
-               </div>
-             </div>
-           </div>
-         </ng-template>
-
-         <div class="row table-panel-row">
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Placas</label>
-               <span> {{vehiculoSeleccionado.placas}} </span>
-             </div>
-           </div>
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Marca</label>
-               <span> {{vehiculoSeleccionado.marca}} </span>
-             </div>
-           </div>
-         </div>
-
-         <div class="row table-panel-row">
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Kilometraje</label>
-               <span> {{vehiculoSeleccionado.kilometraje}} </span>
-             </div>
-           </div>
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Año</label>
-               <span> {{vehiculoSeleccionado.anio}} </span>
-             </div>
-           </div>
-         </div>
-
-         <div class="row table-panel-row">
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Tipo de mantenimiento</label>
-               <span> {{vehiculoSeleccionado.vehiculo}} </span>
-             </div>
-           </div>
-           <div class="col-md-6">
-             <div class="table-panel-column">
-               <label>Fecha de mantenimiento</label>
-               <span> {{vehiculoSeleccionado.placas}} </span>
-             </div>
-           </div>
-         </div>
-
-         <div class="row table-panel-row">
-           <div class="col-md-12">
-             <div class="table-panel-column">
-               <label>Notas</label>
-               <span> {{vehiculoSeleccionado.vehiculo}} </span>
-             </div>
-           </div>
-         </div>
-
-
-
-
-         <div class="row table-panel-row">
-          <div class="col-md-6">
-            <div class="table-panel-column">
-              <label>nombre de proveedor</label>
-              <span> {{vehiculoSeleccionado.vehiculo}} </span>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="table-panel-column">
-              <label>numero de contrato</label>
-              <span> {{vehiculoSeleccionado.placas}} </span>
-            </div>
+      <div class="table-panel-header-column">
+        <span class="font-bold">ID {{vehiculoSeleccionado.ID_VEHICULO}}</span>
+      </div>
+    </ng-template>
+    <ng-template>
+    </ng-template>
+    <ng-template>
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <div class="contenedor-inputswitch">
           </div>
         </div>
-
-         <div class="row table-panel-row">
-          <div class="col-md-6">
-            <div class="table-panel-column">
-              <label>taller</label>
-              <span> {{vehiculoSeleccionado.vehiculo}} </span>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="table-panel-column">
-              <label>costo de mantenimiento</label>
-              <span> {{vehiculoSeleccionado.placas}} </span>
-            </div>
-          </div>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Placas</label>
+          <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
         </div>
-
-
-        </app-table-panel>
-
-        <ng-container>
-          <div class="flex justify-content-center">
-            <div class="mt-4 col-md-7">
-              ¿Estás seguro que deseas registrar este mantenimiento vehícular?
-            </div>
-          </div>
-        </ng-container>
-        <div class="flex justify-content-end">
-          <button class="ml-4 btn btn-default btn-md" (click)="regresar()">Regresar</button>
-          <button class="ml-4  btn btn-default btn-md" (click)="cerrar()" >Cancelar</button>
-          <button class="ml-4 btn btn-primary btn-md" routerLink="detalle-registro-mantenimiento" (click)="cerrar()">Aceptar</button>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Marca</label>
+          <span> {{vehiculoSeleccionado.DES_MARCA}} </span>
         </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Kilometraje</label>
+          <span> {{resumenRegistro.kilometraje}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Año</label>
+          <span> {{vehiculoSeleccionado.DES_MODELO}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Tipo de mantenimiento</label>
+          <span> {{resumenRegistro.tipoMantenimiento}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Fecha de mantenimiento</label>
+          <span> {{resumenRegistro.fechaMantenimiento | date:'dd/MM/YYYY'}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Notas</label>
+          <span> {{resumenRegistro.notas}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>nombre de proveedor</label>
+          <span> {{resumenRegistro.nombreProveedor}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>numero de contrato</label>
+          <span> {{resumenRegistro.numeroContrato}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>taller</label>
+          <span> {{resumenRegistro.taller}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>costo de mantenimiento</label>
+          <span> {{resumenRegistro.costo}} </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <ng-container>
+    <div class="mt-4 mb-4 col-12 text-center">
+      ¿Estás seguro que deseas registrar este mantenimiento vehícular?
+    </div>
+  </ng-container>
+  <div class="flex justify-content-end">
+    <button class="ml-4 btn btn-default btn-md" (click)="regresar()">Regresar</button>
+    <button class="ml-4  btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="aceptarSolicitud()">Aceptar
+    </button>
+  </div>
 </ng-container>
 

@@ -8,9 +8,9 @@
       <div></div>
       <div class="table-panel-header-column">
         <div class="flex flex-column ml-5">
-          <a (click)="overlayPanel.toggle($event)">
+          <!-- <a (click)="overlayPanel.toggle($event)">
             <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-          </a>
+          </a> -->
         </div>
       </div>
     </div>
@@ -39,11 +39,11 @@
                 <label class="control-label" for="versionDocumento">Versión del documento<span
                     class="req">*</span>:</label>
                 <input id="versionDocumento" class="form-control" formControlName="versionDocumento"
-                  placeholder="Ingresa la versión">
+                  placeholder="">
               </div>
               <div class="float-right ">
-                <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
-                <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
+                <label class="control-label" for="fechaNota">Fecha<span class="req">*</span>:</label>
+                <p-calendar id="fechaNota" formControlName="fechaNota" styleClass="form-control" [showIcon]="true"
                   placeholder="Fecha inicial" dateFormat="dd/mm/yy">
                 </p-calendar>
               </div>
@@ -54,22 +54,22 @@
             <div class="col-md-12 sub-content">
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
-                  <input id="velatorio" class="form-control" formControlName="velatorio"
-                    placeholder="Ingresa el velatorio">
+                  <label class="control-label" for="nomVelatorio">Velatorio<span class="req">*</span>:</label>
+                  <input id="nomVelatorio" class="form-control" formControlName="nomVelatorio"
+                    placeholder="">
                 </div>
                 <div class="col-md-6">
-                  <label class="control-label" for="remisionServicios">Remisión de servicios:</label>
-                  <input id="remisionServicios" class="form-control" formControlName="remisionServicios"
-                    placeholder="Ingresa la remisión de servicios">
+                  <label class="control-label" for="folioNota">Remisión de servicios:</label>
+                  <input id="folioNota" class="form-control" formControlName="folioNota"
+                    placeholder="">
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <label class="control-label" for="direccion">Dirección<span class="req">*</span>:</label>
-                  <input id="direccion" class="form-control" formControlName="direccion"
-                    placeholder="Ingresa el velatorio">
+                  <label class="control-label" for="dirVelatorio">Dirección<span class="req">*</span>:</label>
+                  <input id="dirVelatorio" class="form-control" formControlName="dirVelatorio"
+                    placeholder="">
                 </div>
               </div>
             </div>
@@ -80,22 +80,22 @@
               <span class="titulo-content">Datos del solicitante del servicio</span>
               <div class="row mt-7 mb-3">
                 <div class="col-md-3 subtitulo">
-                  <label class="control-label" for="nombreSolicitante">Nombre</label>
+                  <label class="control-label" for="nomSolicitante">Nombre</label>
                 </div>
                 <div class="col-md-9">
-                  <label class="control-label" for="nombreSolicitante">Nombre<span class="req">*</span>:</label>
-                  <input id="nombreSolicitante" class="form-control" formControlName="nombreSolicitante"
+                  <label class="control-label" for="nomSolicitante">Nombre<span class="req">*</span>:</label>
+                  <input id="nomSolicitante" class="form-control" formControlName="nomSolicitante"
                     placeholder="Ingresa el nombre">
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="col-md-3 subtitulo">
-                  <label class="control-label" for="direccionSolicitante">Dirección</label>
+                  <label class="control-label" for="dirSolicitante">Dirección</label>
                 </div>
                 <div class="col-md-9">
-                  <label class="control-label" for="direccionSolicitante">Dirección<span class="req">*</span>:</label>
-                  <input id="direccionSolicitante" class="form-control" formControlName="direccionSolicitante"
+                  <label class="control-label" for="dirSolicitante">Dirección<span class="req">*</span>:</label>
+                  <input id="dirSolicitante" class="form-control" formControlName="dirSolicitante"
                     placeholder="Ingresa la dirección">
                 </div>
               </div>
@@ -113,11 +113,11 @@
 
               <div class="row mb-3">
                 <div class="col-md-3 subtitulo">
-                  <label class="control-label" for="velatorioSolicitante">Velatorio origen del convenio</label>
+                  <label class="control-label" for="velatorioOrigen">Velatorio origen del convenio</label>
                 </div>
                 <div class="col-md-9">
-                  <label class="control-label" for="velatorioSolicitante">Velatorio origen:</label>
-                  <input id="velatorioSolicitante" class="form-control" formControlName="velatorioSolicitante"
+                  <label class="control-label" for="velatorioOrigen">Velatorio origen:</label>
+                  <input id="velatorioOrigen" class="form-control" formControlName="velatorioOrigen"
                     placeholder="Ingresa el velatorio origen">
                 </div>
               </div>
@@ -135,52 +135,12 @@
                   <label class="control-label">Cantidad</label>
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-3" *ngFor="let servicio of servicios">
                 <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Embalsamamiento" disabled>
+                  <input id="" class="form-control" [placeholder]="servicio.nomServicio" disabled>
                 </div>
                 <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Cremación" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Velación" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Traslado" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Ataúd" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Urna" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">2</label>
+                  <label class="control-label">{{servicio.cantidad}}</label>
                 </div>
               </div>
             </div>
@@ -189,22 +149,22 @@
           <section class="mb-7">
             <div class="row mb-3">
               <div class="col-md-4">
-                <label class="control-label" for="finado">Finado<span class="req">*</span>:</label>
-                <input id="finado" class="form-control" formControlName="finado" placeholder="Ingresa el folio">
+                <label class="control-label" for="nomFinado">Finado<span class="req">*</span>:</label>
+                <input id="nomFinado" class="form-control" formControlName="nomFinado" placeholder="">
               </div>
 
               <div class="col-md-4">
-                <label class="control-label" for="parentesco">Parentesco:</label>
-                <input id="parentesco" class="form-control" formControlName="parentesco" placeholder="Ingresa el folio">
+                <label class="control-label" for="parFinado">Parentesco:</label>
+                <input id="parFinado" class="form-control" formControlName="parFinado" placeholder="">
               </div>
 
               <div class="col-md-4">
-                <label class="control-label" for="folioOds">Folio ODS<span class="req">*</span>:</label>
-                <input id="folioOds" class="form-control" formControlName="folioOds" placeholder="Ingresa el folio">
+                <label class="control-label" for="folioODS">Folio ODS<span class="req">*</span>:</label>
+                <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="">
               </div>
             </div>
 
-            <span class="etiqueta-form">Orden de servicio DOC-000001-01/01/2022 Proporcionada por reembolso de previsión
+            <span class="etiqueta-form">Orden de servicio {{f.folioODS.value}} Proporcionada por reembolso de previsión
               funeraria
             </span>
           </section>
@@ -219,8 +179,7 @@
               <div class="row mt-3 mb-3">
                 <div class="col-md-12">
                   <label class="control-label" for="nombreConformidad">Nombre:</label>
-                  <input id="nombreConformidad" class="form-control" formControlName="nombreConformidad"
-                    placeholder="Ingresa el nombre">
+                  <input id="nombreConformidad" class="form-control" formControlName="nombreConformidad" placeholder="">
                 </div>
               </div>
             </div>
@@ -243,7 +202,7 @@
                 <div class="col-md-12">
                   <label class="control-label" for="nombreRepresentante">Nombre:</label>
                   <input id="nombreRepresentante" class="form-control" formControlName="nombreRepresentante"
-                    placeholder="Ingresa el nombre">
+                    placeholder="">
                 </div>
               </div>
             </div>
@@ -272,7 +231,7 @@
     <p-overlayPanel #overlayPanel>
       <ng-template pTemplate="content">
         <app-overlay-panel-opciones>
-          <app-overlay-panel-opcion titulo="Vista previa"></app-overlay-panel-opcion>
+          <app-overlay-panel-opcion titulo="Vista previa" (click)="generarReporteOrdenServicio('pdf'); overlayPanel.toggle($event);"></app-overlay-panel-opcion>
         </app-overlay-panel-opciones>
       </ng-template>
     </p-overlayPanel>
@@ -280,8 +239,7 @@
   </div>
 
   <div class="row flex justify-content-end mb-4">
-    <button type="button" class="btn btn-default btn-md">Regresar</button>
-    <button type="button" class="ml-4 btn btn-danger btn-md">Cancelar</button>
+    <button type="button" class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
     <button type="button" class="ml-4 btn btn-primary btn-md" (click)="formatoGenerar = false">Generar nota de
       remisión</button>
   </div>

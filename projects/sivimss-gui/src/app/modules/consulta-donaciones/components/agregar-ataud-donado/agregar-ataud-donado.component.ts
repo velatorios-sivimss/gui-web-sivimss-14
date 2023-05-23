@@ -2,8 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {CATALOGOS_DUMMIES} from "../../../convenios-prevision-funeraria/constants/dummies";
-import {DynamicDialogRef} from "primeng/dynamicdialog";
-import {AtaudDonado} from "../../models/consulta-donaciones-interface";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {AtaudDonado, ConsultaAtaudesDonados} from "../../models/consulta-donaciones-interface";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {ConsultaDonacionesService} from "../../services/consulta-donaciones.service";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
 
 @Component({
   selector: 'app-agregar-ataud-donado',
@@ -13,16 +20,26 @@ import {AtaudDonado} from "../../models/consulta-donaciones-interface";
 export class AgregarAtaudDonadoComponent implements OnInit {
 
   agregarAtaudForm!: FormGroup;
-  ataudDonado: TipoDropdown[] = CATALOGOS_DUMMIES;
-  ataudSeleccionado: AtaudDonado = {};
+  ataudDonado!: TipoDropdown[];
+  backlogAutaudes!: AtaudDonado[];
+  ataudSeleccionado: any;
+  folioAtaudSeleccionado: string = "";
+
+
+  cargaInfoInicial!: ConsultaAtaudesDonados;
 
   constructor(
-    private ref: DynamicDialogRef,
+    private readonly ref: DynamicDialogRef,
     private formBuilder: FormBuilder,
+    public config: DynamicDialogConfig,
+    private loaderService: LoaderService,
+    private consultaDonacionesService: GestionarDonacionesService,
   ) { }
 
   ngOnInit(): void {
+    this.cargaInfoInicial = this.config.data;
     this.inicializarAgregarAtaudForm();
+    this.ataudesDonados();
   }
 
   inicializarAgregarAtaudForm(): void {
@@ -32,17 +49,46 @@ export class AgregarAtaudDonadoComponent implements OnInit {
   }
 
   agregar(): void {
-    this.ataudSeleccionado = {
-      idAtaud: 1,
-      material: "Madera ecológica con detalles religiosos",
-      modelo: "Mod-001",
-      noInventario: "019283"
-    }
-    this.ref.close(this.ataudSeleccionado);
+    this.ataudSeleccionado = this.backlogAutaudes.filter( (ataud:AtaudDonado) => {
+      return ataud.folioArticulo == this.folioAtaudSeleccionado;
+    })
+    this.ref.close(...this.ataudSeleccionado);
+  }
+
+  ataudesDonados(){
+    if(!this.config.data.folio){return}
+    this.loaderService.activar();
+    this.consultaDonacionesService.consultaAceptacionAtaudDonado(this.cargaInfoInicial.folio).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta:HttpRespuesta<any>)=> {
+        if(respuesta.datos.length > 0){
+          this.backlogAutaudes = respuesta.datos;
+          this.ataudDonado = mapearArregloTipoDropdown(respuesta.datos,"desModeloArticulo","folioArticulo");
+          this.config.data.ataudes.forEach( (elemento:any) => {
+            this.ataudDonado = this.ataudDonado.filter( ataud => {
+              return ataud.label != elemento.desModeloArticulo;
+            })
+          })
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
+  }
+
+  tomarFolioAtaudDonado(): void {
+    this.backlogAutaudes.forEach((elemento: any)  => {
+      if(this.f.ataudDonado.value == elemento.folioArticulo){
+        this.folioAtaudSeleccionado = elemento.folioArticulo;
+
+      }
+    })
   }
 
   cancelar(): void {
-
+    this.ref.close();
   }
 
   get f() {
