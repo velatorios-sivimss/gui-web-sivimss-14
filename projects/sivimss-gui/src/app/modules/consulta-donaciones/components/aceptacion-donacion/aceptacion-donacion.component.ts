@@ -106,7 +106,7 @@ export class AceptacionDonacionComponent implements OnInit {
         console.log(error);
         if(error.error.datos.length > 0){
           const mensaje = this.alertas.filter((msj: any) => {
-            return msj.idMensaje == error.error.mensaje;
+            return msj.idMensaje == error?.error?.mensaje;
           })
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
         }
@@ -198,7 +198,7 @@ export class AceptacionDonacionComponent implements OnInit {
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
+          return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
       }

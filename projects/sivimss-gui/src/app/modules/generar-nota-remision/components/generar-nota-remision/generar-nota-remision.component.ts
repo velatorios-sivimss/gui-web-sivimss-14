@@ -146,7 +146,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
+          return msj.idMensaje == error?.error?.mensaje;
         })
         if (mensaje && mensaje.length > 0) {
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
@@ -180,7 +180,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
+          return msj.idMensaje == error?.error?.mensaje;
         })
         if (mensaje && mensaje.length > 0) {
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
@@ -204,7 +204,16 @@ export class GenerarNotaRemisionComponent implements OnInit {
   limpiar(): void {
     this.alertaService.limpiar();
     this.filtroForm.reset();
-    this.f.nivel.setValue(1);
+    this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
+
+    if(+this.rolLocalStorage.idRol >= 2) {
+      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
+    }
+
+    if(+this.rolLocalStorage.idRol === 3) {
+      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
+    }
+
     this.paginar();
   }
 

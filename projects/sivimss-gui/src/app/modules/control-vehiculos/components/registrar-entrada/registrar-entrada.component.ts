@@ -99,7 +99,7 @@ export class RegistrarEntradaComponent implements OnInit {
 
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
-            return msj.idMensaje == error.error.mensaje;
+            return msj.idMensaje == error?.error?.mensaje;
           })
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
 
@@ -198,7 +198,7 @@ export class RegistrarEntradaComponent implements OnInit {
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
+          return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
       }

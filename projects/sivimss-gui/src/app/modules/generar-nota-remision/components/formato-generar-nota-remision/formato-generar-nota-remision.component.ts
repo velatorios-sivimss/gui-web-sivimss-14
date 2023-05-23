@@ -118,7 +118,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
+          return msj.idMensaje == error?.error?.mensaje;
         })
         if (mensaje && mensaje.length > 0) {
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
