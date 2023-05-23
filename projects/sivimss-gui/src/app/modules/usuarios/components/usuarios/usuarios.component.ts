@@ -18,7 +18,7 @@ import {FiltrosUsuario} from "../../models/filtrosUsuario.interface";
 import {VerDetalleUsuarioComponent} from "../ver-detalle-usuario/ver-detalle-usuario.component";
 import {RespuestaModalUsuario} from "../../models/respuestaModal.interface";
 import {ModificarUsuarioComponent} from "../modificar-usuario/modificar-usuario.component";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
 import {LazyLoadEvent} from "primeng/api";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
@@ -146,6 +146,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
     }
@@ -176,7 +177,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   paginar(): void {
-    if (!localStorage.getItem('sivimss_token')) return;
     this.cargadorService.activar();
     this.usuarioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({

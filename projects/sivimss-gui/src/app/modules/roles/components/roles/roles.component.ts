@@ -1,28 +1,26 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
 import {OverlayPanel} from "primeng/overlaypanel";
-import { USUARIOS_BREADCRUMB } from '../../../usuarios/constants/breadcrumb';
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {Rol} from "../../models/rol.interface";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {HttpErrorResponse} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
-import { CATALOGOS } from '../../../usuarios/constants/catalogos_dummies';
-import { RolService } from '../../services/rol.service';
+import {RolService} from '../../services/rol.service';
 import {Catalogo} from 'projects/sivimss-gui/src/app/models/catalogos.interface';
-import { FiltrosRol } from '../../models/filtrosRol.interface';
+import {FiltrosRol} from '../../models/filtrosRol.interface';
 import {VerDetalleRolComponent} from "../ver-detalle-rol/ver-detalle-rol.component";
 import {ModificarRolComponent} from "../modificar-rol/modificar-rol.component";
 import {RespuestaModalRol} from "../../models/respuestaModal.interface";
-import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
-import { LazyLoadEvent } from 'primeng/api';
+import {LazyLoadEvent} from 'primeng/api';
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {
   ConfirmacionMovimientoComponent
 } from "../confirmacion-movimiento/confirmacion-movimiento/confirmacion-movimiento.component";
+import {validarUsuarioLogueado} from "../../../../utils/funciones";
 
 const MAX_WIDTH: string = "876px";
 
@@ -80,21 +78,22 @@ export class RolesComponent implements OnInit {
     const roles = this.route.snapshot.data["respuesta"];
     this.catRol = roles[0].datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
     this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
-    this.estatus = [{label: "Activo", value: 1},{label: "Inactivo", value: 0}];
+    this.estatus = [{label: "Activo", value: 1}, {label: "Inactivo", value: 0}];
     this.inicializarFiltroForm();
   }
 
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
     if (event) {
-    this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
     }
     if (this.paginacionConFiltrado) {
-    this.paginarConFiltros();
+      this.paginarConFiltros();
     } else {
-    this.paginarConFiltros();
+      this.paginarConFiltros();
     }
-    }
+  }
 
   paginar(): void {
     this.rolService.obtenerCatRolesPaginadoSinFiltro(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
@@ -121,7 +120,7 @@ export class RolesComponent implements OnInit {
     const solicitudFiltros = JSON.stringify(filtros);
     this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe(
       (respuesta) => {
-        if(respuesta.datos.content.length > 0 ){
+        if (respuesta.datos.content.length > 0) {
           this.roles = respuesta!.datos.content;
           this.totalElementos = respuesta!.datos.totalElements;
           return;
@@ -167,8 +166,8 @@ export class RolesComponent implements OnInit {
     }
     this.cambiarEstatusRef = this.dialogService.open(ConfirmacionMovimientoComponent, DETALLE_CONFIG);
 
-    this.cambiarEstatusRef.onClose.subscribe((respuesta:any) => {
-      if(respuesta.estatus){
+    this.cambiarEstatusRef.onClose.subscribe((respuesta: any) => {
+      if (respuesta.estatus) {
         const rolEstatus = {
           "idRol": respuesta.datosRol.idRol,
           "estatusRol": respuesta.datosRol.estatusRol ? 1 : 0
@@ -176,9 +175,9 @@ export class RolesComponent implements OnInit {
         const solicitudId = JSON.stringify(rolEstatus);
         this.rolService.cambiarEstatus(solicitudId).subscribe(
           () => {
-            if(rolEstatus.estatusRol){
+            if (rolEstatus.estatusRol) {
               this.alertaService.mostrar(TipoAlerta.Exito, 'Activado correctamente. ' + rol.desRol);
-            }else{
+            } else {
               this.alertaService.mostrar(TipoAlerta.Exito, 'Desactivado correctamente. ' + rol.desRol);
 
             }
@@ -198,10 +197,9 @@ export class RolesComponent implements OnInit {
     return;
 
 
-
   }
 
-  inicializarFiltroForm():void {
+  inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       rol: [{value: null, disabled: false}],
       nivel: [{value: null, disabled: false}],
@@ -209,7 +207,7 @@ export class RolesComponent implements OnInit {
     });
   }
 
-  abrirPanel(event: MouseEvent, rolSeleccionado: Rol):void {
+  abrirPanel(event: MouseEvent, rolSeleccionado: Rol): void {
     this.rolSeleccionado = rolSeleccionado;
     this.overlayPanel.toggle(event);
   }
