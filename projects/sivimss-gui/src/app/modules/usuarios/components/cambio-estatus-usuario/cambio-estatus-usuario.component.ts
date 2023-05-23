@@ -63,8 +63,8 @@ export class CambioEstatusUsuarioComponent implements OnInit {
 
   cambiarEstatus(): void {
     const idUsuario: SolicitudEstatus = {id: this.id}
-    const estatus: string = this.usuarioSeleccionado.estatus ? "desactivado" : "activado";
-    const mensaje: string = `Usuario ${estatus} correctamente`;
+    const estatus: string = this.usuarioSeleccionado.estatus ? "Desactivado" : "Activado";
+    const mensaje: string = `${estatus} correctamente`;
     const respuesta: RespuestaModalUsuario = {actualizar: false};
     this.cargadorService.activar();
     this.usuarioService.cambiarEstatus(idUsuario)
