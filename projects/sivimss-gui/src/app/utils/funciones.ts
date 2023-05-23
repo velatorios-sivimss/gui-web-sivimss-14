@@ -1,4 +1,4 @@
-import { TipoDropdown } from "../models/tipo-dropdown";
+import {TipoDropdown} from "../models/tipo-dropdown";
 
 export function diferenciaUTC(fecha: string): number {
   const objetoFecha = new Date(fecha);
@@ -14,8 +14,8 @@ export function validarAlMenosUnCampoConValor(values: object) {
 
 export function mapearArregloTipoDropdown(arr: [] = [], label: string, value: string): TipoDropdown[] {
   return arr.map(obj => ({
-      label: obj[label],
-      value: obj[value]
+    label: obj[label],
+    value: obj[value]
   }));
 }
 
@@ -53,4 +53,8 @@ function esAnioBisiesto(anio: number): boolean {
 export function existeMensajeEnEnum(enumObj: { [s: string]: string }, valor: string): boolean {
   const valores = Object.values(enumObj);
   return valores.includes(valor);
+}
+
+export function validarUsuarioLogueado(): boolean {
+  return !localStorage.getItem('sivimss_token');
 }
