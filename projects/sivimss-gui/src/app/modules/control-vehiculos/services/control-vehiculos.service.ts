@@ -61,7 +61,7 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
 
   obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body = { idDelegacion: delegacion }
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8087/mssivimss-oauth/velatorio/consulta`, body);
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
   consultarODS(folioODS: number): Observable<HttpRespuesta<any>> {
