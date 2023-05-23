@@ -1,20 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { Funcionalidad } from "projects/sivimss-gui/src/app/modules/roles/models/funcionalidad.interface";
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RolService} from '../../services/rol.service';
 import {Rol} from "../../models/rol.interface";
-import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
-import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
 import {ActivatedRoute, Router} from "@angular/router";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {ROLES_BREADCRUMB} from "../../constants/breadcrumb";
 
-type NuevoRol = Omit<Rol, "idRol" >;
+type NuevoRol = Omit<Rol, "idRol">;
 
 @Component({
   selector: 'app-agregar-rol',
@@ -23,22 +21,21 @@ type NuevoRol = Omit<Rol, "idRol" >;
 })
 export class AgregarRolComponent implements OnInit {
 
+  readonly CAPTURA_DE_ROL: number = 1;
+  readonly RESUMEN_DE_ROL: number = 2;
+
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
   catalogo_nivelOficina!: TipoDropdown[];
-  catRol: TipoDropdown[] = [];
   agregarRolForm!: FormGroup;
 
   formFuncionalidad!: FormGroup;
-  permisos : any;
+  permisos: any;
 
   confirmacion: boolean = false;
 
-  funcionalidades: Funcionalidad[] = [];
-  funcionalidadSeleccionada!: Funcionalidad;
-
-  contadorFuncionalidades = 1;
+  pasoAgregarRol: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,16 +50,7 @@ export class AgregarRolComponent implements OnInit {
 
   ngOnInit(): void {
     const roles = this.route.snapshot.data["respuesta"];
-    this.breadcrumbService.actualizar([
-      {
-        icono: 'imagen-icono-operacion-sivimss.svg',
-        titulo: 'Administración de catálogos'
-      },
-      {
-        icono: '',
-        titulo: 'Administrar roles a nivel oficina'
-      }
-    ]);
+    this.breadcrumbService.actualizar(ROLES_BREADCRUMB);
     this.catalogo_nivelOficina = roles[1].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.inicializarAgregarRolForm();
   }
@@ -76,7 +64,7 @@ export class AgregarRolComponent implements OnInit {
 
   crearNuevoRol(): any {
     return {
-      desRol : this.agregarRolForm.get("nombre")?.value,
+      desRol: this.agregarRolForm.get("nombre")?.value,
       nivel: this.agregarRolForm.get("nivel")?.value
     };
   }
@@ -87,7 +75,7 @@ export class AgregarRolComponent implements OnInit {
     this.rolService.guardar(solicitudRol).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Exito, msg + " " +  this.f.nombre.value);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg + " " + this.f.nombre.value);
         this.router.navigate(["roles"]);
       },
       (error: HttpErrorResponse) => {
@@ -99,9 +87,7 @@ export class AgregarRolComponent implements OnInit {
   }
 
   noEspaciosAlPrincipio(): void {
-    this.f.nombre.setValue(
-      this.f.nombre.value.trimStart()
-    );
+    this.f.nombre.setValue(this.f.nombre.value.trimStart());
   }
 
   get f() {
