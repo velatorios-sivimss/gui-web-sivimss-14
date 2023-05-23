@@ -30,7 +30,7 @@
         <p-calendar appendTo="body" id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"></p-calendar>
         <span class="campo-obligatorio"
               *ngIf="salidaF.fecha?.errors?.required && (salidaF.fecha?.dirty || salidaF.fecha?.touched)">
-                    Campo obligatorio</span>
+                    Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="hora">Hora <span class="req">*</span>:</label>
@@ -40,7 +40,7 @@
             ></p-calendar>
             <span class="campo-obligatorio"
                   *ngIf="salidaF.hora?.errors?.required && (salidaF.hora?.dirty || salidaF.hora?.touched)">
-                    Campo obligatorio</span>
+                    Este campo es obligatorio *.</span>
           </div>
         </div>
       </div>
@@ -53,7 +53,7 @@
                        id="nivelGas" class="form-control" formControlName="nivelGas" [maxlength]="11"></p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="salidaF.nivelGas?.errors?.required && (salidaF.nivelGas?.dirty || salidaF.nivelGas?.touched)">
-                    Campo obligatorio</span>
+                    Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
@@ -65,7 +65,7 @@
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
         <button type="submit" class="btn btn-primary btn-md ml-5"
-                [disabled]="registroSalidaForm.invalid">Aceptar
+                [disabled]="registroSalidaForm.invalid">Guardar
         </button>
       </div>
     </div>
@@ -110,7 +110,7 @@
   </app-table-panel>
   <div class="row mb-5 mt-5">
     <div class="col-md-12 text-center">
-      ¿Estas seguro de registrar la salida de esta sala?
+      ¿Estás seguro de registrar la salida en esta sala?
     </div>
   </div>
   <div class="row mb-3">

@@ -62,7 +62,7 @@
             <label class="control-label" for="sexo">Sexo <span class="req">*</span></label>
             <p-dropdown appendTo="body" id="sexo" class="form-control" formControlName="sexo"
                         [options]="sexo" (onChange)="cambiarSexo()"
-                        placeholder="Selecciona el sexo">
+                        placeholder="Selecciona el sexo" [filter]="true" filterBy="label">
             </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fds.sexo?.errors?.required && (fds.sexo?.dirty || fds.sexo?.touched)">Campo obligatorio</span>
@@ -82,7 +82,7 @@
             <label class="control-label" for="nacionalidad">Nacionalidad <span class="req">*</span></label>
             <p-dropdown appendTo="body" id="nacionalidad" class="form-control" formControlName="nacionalidad"
                         [options]="nacionalidad" (onChange)="cambiarNacionalidad()"
-                        placeholder="Selecciona la nacionalidad">
+                        placeholder="Selecciona la nacionalidad" [filter]="true" filterBy="label">
             </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fds.nacionalidad?.errors?.required && (fds.nacionalidad?.dirty || fds.nacionalidad?.touched)">Campo obligatorio</span>
@@ -93,7 +93,7 @@
               <label class="control-label" for="lugarNacimiento">Lugar de nacimiento <span class="req">*</span></label>
               <p-dropdown appendTo="body" id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
                           [options]="lugarNacimiento"
-                          placeholder="Selecciona el lugar de nacimiento">
+                          placeholder="Selecciona el lugar de nacimiento" [filter]="true" filterBy="label">
               </p-dropdown>
               <span class="campo-obligatorio"
                     *ngIf="fds.lugarNacimiento?.errors?.required && (fds.lugarNacimiento?.dirty || fds.lugarNacimiento?.touched)">Campo obligatorio</span>
@@ -105,7 +105,7 @@
               <label class="control-label" for="paisNacimiento">País de nacimiento <span class="req">*</span></label>
               <p-dropdown appendTo="body" id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
                           [options]="paisNacimiento"
-                          placeholder="Selecciona el lugar de nacimiento">
+                          placeholder="Selecciona el lugar de nacimiento" [filter]="true" filterBy="label">
               </p-dropdown>
               <span class="campo-obligatorio"
                     *ngIf="fds.paisNacimiento?.errors?.required && (fds.paisNacimiento?.dirty || fds.paisNacimiento?.touched)">Campo obligatorio</span>
@@ -175,11 +175,15 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
+<!--            <label class="control-label" for="estado">Estado <span class="req">*</span></label>-->
+<!--            <p-dropdown appendTo="body" id="estado" class="form-control" formControlName="estado"-->
+<!--                        [options]="estado"-->
+<!--                        placeholder="Selecciona el estado">-->
+<!--            </p-dropdown>-->
+<!--            <span class="campo-obligatorio"-->
+<!--                  *ngIf="fds.estado?.errors?.required && (fds.estado?.dirty || fds.estado?.touched)">Campo obligatorio</span>-->
             <label class="control-label" for="estado">Estado <span class="req">*</span></label>
-            <p-dropdown appendTo="body" id="estado" class="form-control" formControlName="estado"
-                        [options]="estado"
-                        placeholder="Selecciona el estado">
-            </p-dropdown>
+            <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fds.estado?.errors?.required && (fds.estado?.dirty || fds.estado?.touched)">Campo obligatorio</span>
           </div>
@@ -273,7 +277,7 @@
             <tr>
               <td> {{ataudes.desTipoMaterial}} </td>
               <td> {{ataudes.desModeloArticulo}} </td>
-              <td> {{ataudes.idArticulo}} </td>
+              <td> {{ataudes.folioArticulo}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -455,7 +459,7 @@
               <tr>
                 <td> {{ataudes.desTipoMaterial}} </td>
                 <td> {{ataudes.desModeloArticulo}} </td>
-                <td> {{ataudes.idArticulo}} </td>
+                <td> {{ataudes.folioArticulo}} </td>
               </tr>
             </ng-template>
           </p-table>
@@ -519,8 +523,14 @@
     <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
     <button type="submit" *ngIf="indice == 0" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
             [disabled]="formDatosSolicitante.invalid">Siguiente</button>
-    <button type="submit" *ngIf="indice == 1" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
-            [disabled]=" formAtaudes.invalid ">Siguiente</button>
+
+    <button type="submit" *ngIf="indice==1" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
+            [disabled]="fds.nombreInstitucion.value && finados.length == 0 ">Siguiente</button>
+
+
+    <button type="submit" *ngIf="indice == 2" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
+            [disabled]=" formAtaudes.invalid || ataudes.length < 1 ">Siguiente</button>
+
     <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
   </div>
 </div>

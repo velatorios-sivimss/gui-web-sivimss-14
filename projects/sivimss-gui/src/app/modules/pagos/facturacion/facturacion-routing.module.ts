@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {FacturacionComponent} from "./components/facturacion/facturacion.component";
 import {CancelarFacturaComponent} from "./components/cancelar-factura/cancelar-factura.component";
 import {EnviarFacturaComponent} from "./components/enviar-factura/enviar-factura.component";
+import {SolicitarFacturaComponent} from "./components/solicitar-factura/solicitar-factura.component";
 
 const routes: Routes = [
   {
@@ -16,7 +17,11 @@ const routes: Routes = [
   {
     path: 'enviar-factura',
     component: EnviarFacturaComponent
-  }
+  },
+  {
+    path: 'solicitar-factura',
+    component: SolicitarFacturaComponent
+  },
 ];
 
 @NgModule({

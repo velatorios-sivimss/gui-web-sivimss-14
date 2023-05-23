@@ -9,7 +9,7 @@
                       placeholder="Selecciona el tipo">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="fmp.tipoReporte?.errors?.required && (fmp.tipoReporte?.dirty || fmp.tipoReporte?.touched)">
+          >
             Campo obligatorio</span>
         </div>
         <div class="col-md-6">
@@ -17,7 +17,7 @@
           <input id="placa" class="form-control" formControlName="placa" placeholder="Ingresa placa"
                  (keyup)="consultaServicioEspecifico()">
           <span class="campo-obligatorio"
-                *ngIf="fmp.placa?.errors?.required && (fmp.placa?.dirty || fmp.placa?.touched)">
+          >
             Campo obligatorio</span>
         </div>
       </div>
@@ -33,16 +33,14 @@
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
                           [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy">
               </p-calendar>
-              <span class="campo-obligatorio"
-                    *ngIf="fmp.fechaVigenciaDesde?.errors?.required && (fmp.fechaVigenciaDesde?.dirty || fmp.fechaVigenciaDesde?.touched)">
+              <span class="campo-obligatorio">
                 Campo obligatorio</span>
             </div>
             <div class="col-md-6">
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
                           [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body">
               </p-calendar>
-              <span class="campo-obligatorio"
-                    *ngIf="fmp.fecahVigenciaHasta?.errors?.required && (fmp.fecahVigenciaHasta?.dirty || fmp.fecahVigenciaHasta?.touched)">
+              <span class="campo-obligatorio">
                 Campo obligatorio</span>
             </div>
           </div>

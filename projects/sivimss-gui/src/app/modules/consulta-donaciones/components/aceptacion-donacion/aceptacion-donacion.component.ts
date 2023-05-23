@@ -6,7 +6,7 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AgregarAtaudDonadoComponent} from "../agregar-ataud-donado/agregar-ataud-donado.component";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {ConsultaDonacionesService} from "../../services/consulta-donaciones.service";
 import {finalize} from "rxjs/operators";
@@ -18,6 +18,9 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {PlantillaAceptarDonacion} from "../../models/generar-plantilla-interface";
 import * as moment from "moment/moment";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import { GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
 @Component({
   selector: 'app-aceptacion-donacion',
@@ -32,13 +35,14 @@ export class AceptacionDonacionComponent implements OnInit {
   donacionForm!: FormGroup;
 
   ataudDonado: AtaudDonado[] = [];
+  delegacion: TipoDropdown[] = [];
   confirmacion : boolean = false;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   idOrdenServicio!: number;
-  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  // alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
   constructor(
     private alertaService: AlertaService,
@@ -46,15 +50,19 @@ export class AceptacionDonacionComponent implements OnInit {
     public dialogService: DialogService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private consultaDonacionesService: ConsultaDonacionesService,
+    private consultaDonacionesService: GestionarDonacionesService,
     private loaderService: LoaderService,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private route: ActivatedRoute,
   ) {
     moment.locale('es');
   }
 
   ngOnInit(): void {
-    localStorage.setItem("mensajes", JSON.stringify(mensajes));
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.delegacion = respuesta[2]!.map((estado: any) => (
+      {label: estado.label, value: estado.value} )) || [];
     this.actualizarBreadcrumb();
     this.inicializarDonacionForm();
   }
@@ -88,28 +96,24 @@ export class AceptacionDonacionComponent implements OnInit {
   }
 
   guardar(): void {
+    const plantilla = this.modeloPlantillaDonacion();
     this.loaderService.activar();
     const registro = this.modeloAgregarDonacion();
     this.consultaDonacionesService.guardarAgregarDonacion(registro).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        })
         this.generarArchivo();
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
-        this.router.navigate(["consulta-donaciones"]);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
 
+        this.router.navigate(["../consulta-donaciones"]);
       },
       (error: HttpErrorResponse) => {
         console.log(error);
-        if(error.error.datos.length > 0){
-          const mensaje = this.alertas.filter((msj: any) => {
-            return msj.idMensaje == error?.error?.mensaje;
-          })
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        }
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
+
       }
     )
   }
@@ -141,6 +145,11 @@ export class AceptacionDonacionComponent implements OnInit {
       version: 5.2,
       velatorioId: usuario.idVelatorio,
       ooadId: usuario.idDelegacion,
+      ooadNom: this.nombreOoad(usuario.idDelegacion),
+      modeloAtaud: this.modeloAtaudes(),
+      tipoAtaud: this.tipoAtaud(),
+      numInventarios: this.numInventario(),
+
       nomFinado: this.f.nombreFinado.value,
       nomResponsableAlmacen: this.f.responsableAlmacen.value,
       nomContratante: this.f.nombreContratante.value,
@@ -190,20 +199,54 @@ export class AceptacionDonacionComponent implements OnInit {
           this.consultarFinadoPorFolioODS();
           return;
         }
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
       },
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error?.error?.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
     )
   }
+
+  nombreOoad(idOoad: number): string {
+    let nombreDelegacion: TipoDropdown[];
+
+    nombreDelegacion = this.delegacion.filter((nombre => {
+      return idOoad == nombre.value;
+    }));
+
+    return nombreDelegacion[0].label;
+  }
+
+  modeloAtaudes(): string{
+    let modeloAtaud:string = "";
+    this.ataudDonado.forEach( ataud => {
+      modeloAtaud += ataud.desModeloArticulo + ',';
+    });
+    modeloAtaud = modeloAtaud.substr(0,modeloAtaud.length -1);
+    return modeloAtaud;
+  }
+
+  tipoAtaud(): string {
+    let tipoAtaud = "";
+    this.ataudDonado.forEach( ataud => {
+      tipoAtaud += ataud.desTipoMaterial + ',';
+    });
+    tipoAtaud = tipoAtaud.substr(0, tipoAtaud.length - 1);
+    return tipoAtaud;
+  }
+
+  numInventario(): string {
+    let numInventario = "";
+    this.ataudDonado.forEach( ataud => {
+      numInventario += ataud.folioArticulo + ',';
+    });
+    numInventario = numInventario.substr(0, numInventario.length - 1)
+    return numInventario;
+  }
+
 
   consultarFinadoPorFolioODS(){
     this.loaderService.activar()
@@ -217,10 +260,6 @@ export class AceptacionDonacionComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     )
-  }
-
-  generarPlantilla(): void {
-
   }
 
   noEspaciosAlPrincipio() {

@@ -28,6 +28,7 @@ import {PlantillaControlSalida} from "../../models/generar-plantilla-interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
 
 @Component({
   selector: 'app-control-salida-donaciones',
@@ -36,6 +37,10 @@ import {MensajesSistemaService} from "../../../../services/mensajes-sistema.serv
   providers: [DialogService,DescargaArchivosService]
 })
 export class ControlSalidaDonacionesComponent implements OnInit {
+
+  readonly POSICION_ESTADOS = 0;
+  readonly POSICION_PAISES = 1;
+  readonly POSICION_DELEGACION = 2;
 
   agregarFinadoRef!: DynamicDialogRef;
   agregarAtaudRef!: DynamicDialogRef;
@@ -50,9 +55,10 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   sexo: TipoDropdown[] = CATALOGO_SEXO;
   nacionalidad: TipoDropdown[] = NACIONALIDAD;
-  lugarNacimiento: TipoDropdown[] = ESTADO;
-  paisNacimiento: TipoDropdown[] = PAIS;
-  estado: TipoDropdown[] = ESTADO;
+  lugarNacimiento: TipoDropdown[] = [];
+  paisNacimiento: TipoDropdown[] = [];
+  estado: TipoDropdown[] = [];
+  delegacion: TipoDropdown[] = [];
   finados: FinadoInterface[] = [];
   ataudes: AtaudDonado[] = [];
   backlogAutaudes!: AtaudDonado[];
@@ -73,7 +79,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private loaderService: LoaderService,
-    private consultaDonacionesService: ConsultaDonacionesService,
+    private consultaDonacionesService: GestionarDonacionesService,
     private descargaArchivosService: DescargaArchivosService,
     private route: ActivatedRoute,
     private mensajesSistemaService: MensajesSistemaService
@@ -82,17 +88,20 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    localStorage.setItem("mensajes", JSON.stringify(mensajes));
-    // this.catalogoVelatorios = mapearArregloTipoDropdown(
-    //   respuesta[0]?.datos,
-    //   'NOM_VELATORIO',
-    //   'ID_VELATORIO',
-    // )
+    const respuesta = this.route.snapshot.data['respuesta'];
+
+    this.estado = respuesta[this.POSICION_ESTADOS]!.map((estado: any) => (
+      {label: estado.label, value: estado.value} )) || [];
+    this.lugarNacimiento = respuesta[this.POSICION_ESTADOS]!.map((estado: any) => (
+      {label: estado.label, value: estado.value} )) || [];
+    this.paisNacimiento = respuesta[this.POSICION_PAISES]!.map((pais: any) => (
+      {label: pais.label, value: pais.value} )) || [];
+    this.delegacion = respuesta[this.POSICION_DELEGACION]!.map((delegacion: any) => (
+      {label: delegacion.label, value: delegacion.value} )) || [];
     this.consultarAtaudes();
     this.actualizarBreadcrumb();
     this.inicializarDatosSolicitantesForm();
     this.inicializarAtaudesForm();
-
   }
 
   actualizarBreadcrumb(): void {
@@ -190,11 +199,11 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.primerApellido.setValue(respuesta.datos.apellido1);
             this.fds.segundoApellido.setValue(respuesta.datos.apellido2);
             this.fds.fechaNacimiento.setValue(fecha);
-            if(respuesta.datos.nacionalidad.includes("MEX")){
-              this.fds.nacionalidad.setValue(1);
-              return
-            }
-            this.fds.nacionalidad.setValue(2);
+            // if(respuesta.datos.nacionalidad.includes("MEX")){
+            //   this.fds.nacionalidad.setValue(1);
+            //   return
+            // }
+            // this.fds.nacionalidad.setValue(2);
           }
         }
       },
@@ -240,14 +249,22 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   consultaCP(): void {
+    if(!this.fds.cp.value){return}
     this.loaderService.activar();
     this.consultaDonacionesService.consutaCP(this.fds.cp.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        if(respuesta){
         this.fds.municipio.setValue(respuesta.datos[0].localidad.municipio.nombre);
-        this.fds.estado.setValue(+respuesta.datos[0].localidad.municipio.entidadFederativa.clave);
+        this.fds.estado.setValue(respuesta.datos[0].localidad.municipio.entidadFederativa.nombre);
         this.fds.colonia.setValue(respuesta.datos[11].nombre);
+          return
+        }
+        this.fds.municipio.patchValue(null);
+        this.fds.estado.reset();
+        this.fds.colonia.patchValue(null);
+
       },
       (error: HttpErrorResponse) => {
         console.log(error);
@@ -271,12 +288,9 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        });
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.generarArchivo();
-
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
         this.router.navigate(["consulta-donaciones"]);
       },
       (error: HttpErrorResponse) => {
@@ -321,11 +335,13 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       desTelefono: this.fds.telefono.value,
       desCorreo: this.fds.correoElectronico.value,
       tipoPersona: this.fds.otro.value,
-      idCodigoPostal: this.fds.cp.value,
+      desCodigoPostal: this.fds.cp.value,
       desCalle: this.fds.calle.value,
       numExterior: this.fds.numeroExterior.value,
       numInterior: this.fds.numeroInterior.value,
       desColonia: this.fds.colonia.value,
+      desEstado: this.fds.estado.value,
+      desMunicipio: this.fds.municipio.value,
       nomInstitucion: this.fds.nombreInstitucion.value,
       fecNacimiento: moment(this.fds.fechaNacimiento.value).format('yyyy-MM-DD'),
       numTotalAtaudes:this.ataudes.length,
@@ -348,7 +364,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       nomAdministrador:'Raúl de Jesús',
       lugar:'Col. Doctores, CDMX',
 
-      ooadNom:'AGUASCALIENTES',
+      ooadNom:this.nombreOoad(usuario.idDelegacion),
       velatorioId:usuario.idVelatorio,
       velatorioNom:'DOCTORES',
       version:5.2,
@@ -386,6 +402,16 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     return tipoAtaud;
   }
 
+  nombreOoad(idOoad: number): string {
+    let nombreDelegacion: TipoDropdown[];
+
+    nombreDelegacion = this.delegacion.filter((nombre => {
+      return idOoad == nombre.value;
+    }));
+
+    return nombreDelegacion[0].label;
+  }
+
   numInventario(): string {
     let numInventario = "";
     this.ataudes.forEach( ataud => {
@@ -419,19 +445,24 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   formatoAtaud(): AtaudesDonados[] {
     this.backlogAutaudes.forEach(ataud => {
-      this.ataudLista.push(
-        {
-          idArticulo:ataud.idArticulo,
-          folioArticulo:ataud.folioArticulo
+      this.ataudes.forEach(ataudSeleccionado => {
+        if(ataud.folioArticulo == ataudSeleccionado.folioArticulo){
+          this.ataudLista.push(
+            {
+              idArticulo:ataudSeleccionado.idArticulo,
+              folioArticulo:ataudSeleccionado.folioArticulo
+            }
+          );
         }
-      );
+      })
     });
     return this.ataudLista;
   }
 
   cambiarSexo(): void {
-    this.fds.otro.enabled;
-    this.fds.otro.setValidators(Validators.required);
+    this.fds.otro.disabled;
+    this.fds.otro.clearValidators();
+    this.fds.otro.reset();
     if(this.fds.sexo.value == 3){
       this.otroTipoSexo = true;
       this.fds.otro.disabled;

@@ -2,16 +2,18 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {BreadcrumbService} from "../../../../../shared/breadcrumb/services/breadcrumb.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
+import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constantes";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {LazyLoadEvent} from "primeng/api";
 import {FACTURACION_BREADCRUMB} from "../../constants/breadcrumb";
-import {Usuario} from "../../../../usuarios/models/usuario.interface";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {VerDetalleFacturaComponent} from "../ver-detalle-factura/ver-detalle-factura.component";
 
 @Component({
   selector: 'app-facturacion',
   templateUrl: './facturacion.component.html',
-  styleUrls: ['./facturacion.component.scss']
+  styleUrls: ['./facturacion.component.scss'],
+  providers: [DialogService]
 })
 export class FacturacionComponent implements OnInit {
 
@@ -21,6 +23,8 @@ export class FacturacionComponent implements OnInit {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+
+  detalleRef!: DynamicDialogRef;
 
   velatorios: TipoDropdown[] = [];
   filtroForm!: FormGroup;
@@ -38,6 +42,7 @@ export class FacturacionComponent implements OnInit {
   constructor(
     private breadcrumbService: BreadcrumbService,
     private formBuilder: FormBuilder,
+    private dialogService: DialogService
   ) {
   }
 
@@ -74,7 +79,13 @@ export class FacturacionComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
-  protected readonly DIEZ_ELEMENTOS_POR_PAGINA = DIEZ_ELEMENTOS_POR_PAGINA;
+  abrirModalDetalleFacturacion(): void {
+    const DETALLE_CONFIG: DynamicDialogConfig = {
+      header: "Ver detalle",
+      width: MAX_WIDTH,
+    }
+    this.detalleRef = this.dialogService.open(VerDetalleFacturaComponent, DETALLE_CONFIG);
+  }
 
   guardarPDF(): void {
 

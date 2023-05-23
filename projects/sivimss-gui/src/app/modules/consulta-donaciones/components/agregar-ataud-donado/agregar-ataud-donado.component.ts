@@ -10,6 +10,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {ConsultaDonacionesService} from "../../services/consulta-donaciones.service";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
 
 @Component({
   selector: 'app-agregar-ataud-donado',
@@ -22,6 +23,7 @@ export class AgregarAtaudDonadoComponent implements OnInit {
   ataudDonado!: TipoDropdown[];
   backlogAutaudes!: AtaudDonado[];
   ataudSeleccionado: any;
+  folioAtaudSeleccionado: string = "";
 
 
   cargaInfoInicial!: ConsultaAtaudesDonados;
@@ -31,7 +33,7 @@ export class AgregarAtaudDonadoComponent implements OnInit {
     private formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
     private loaderService: LoaderService,
-    private consultaDonacionesService: ConsultaDonacionesService,
+    private consultaDonacionesService: GestionarDonacionesService,
   ) { }
 
   ngOnInit(): void {
@@ -48,7 +50,7 @@ export class AgregarAtaudDonadoComponent implements OnInit {
 
   agregar(): void {
     this.ataudSeleccionado = this.backlogAutaudes.filter( (ataud:AtaudDonado) => {
-      return ataud.idArticulo == this.f.ataudDonado.value;
+      return ataud.folioArticulo == this.folioAtaudSeleccionado;
     })
     this.ref.close(...this.ataudSeleccionado);
   }
@@ -62,10 +64,10 @@ export class AgregarAtaudDonadoComponent implements OnInit {
       (respuesta:HttpRespuesta<any>)=> {
         if(respuesta.datos.length > 0){
           this.backlogAutaudes = respuesta.datos;
-          this.ataudDonado = mapearArregloTipoDropdown(respuesta.datos,"desModeloArticulo","idArticulo");
+          this.ataudDonado = mapearArregloTipoDropdown(respuesta.datos,"desModeloArticulo","folioArticulo");
           this.config.data.ataudes.forEach( (elemento:any) => {
             this.ataudDonado = this.ataudDonado.filter( ataud => {
-              return ataud.value != elemento.idArticulo;
+              return ataud.label != elemento.desModeloArticulo;
             })
           })
         }
@@ -74,6 +76,15 @@ export class AgregarAtaudDonadoComponent implements OnInit {
         console.log(error);
       }
     )
+  }
+
+  tomarFolioAtaudDonado(): void {
+    this.backlogAutaudes.forEach((elemento: any)  => {
+      if(this.f.ataudDonado.value == elemento.folioArticulo){
+        this.folioAtaudSeleccionado = elemento.folioArticulo;
+
+      }
+    })
   }
 
   cancelar(): void {

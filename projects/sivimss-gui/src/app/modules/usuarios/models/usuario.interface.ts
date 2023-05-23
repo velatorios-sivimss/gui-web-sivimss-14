@@ -1,4 +1,5 @@
 export interface Usuario {
+  usuario: string;
   claveMatricula: string;
   correo: string;
   curp: string;

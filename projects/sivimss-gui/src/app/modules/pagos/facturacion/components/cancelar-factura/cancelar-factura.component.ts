@@ -11,6 +11,7 @@ export class CancelarFacturaComponent implements OnInit {
 
   motivos: TipoDropdown[] = [];
   cancelarForm!: FormGroup;
+  indice: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -30,5 +31,19 @@ export class CancelarFacturaComponent implements OnInit {
       motivoCancelacion: [{value: null, disabled: false}],
       folioRelacionado: [{value: null, disabled: false}]
     })
+  }
+
+  guardar(): void {
+    if (this.indice === 0) {
+      this.indice++;
+      return;
+    }
+  }
+
+  cancelar(): void {
+    if (this.indice === 1) {
+      this.indice--;
+      return;
+    }
   }
 }

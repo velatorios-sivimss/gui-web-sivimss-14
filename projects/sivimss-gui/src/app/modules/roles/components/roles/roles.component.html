@@ -1,17 +1,25 @@
-<app-titulo-principal titulo="Administrar roles"></app-titulo-principal>
+<app-titulo-principal titulo="Administrar roles a nivel oficina"></app-titulo-principal>
 <div class="border-panel">
     <form [formGroup]="filtroForm">
         <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="rol">Rol:</label>
-                <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" placeholder="Seleccionar el rol">
-                </p-dropdown>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" for="nivel">Nivel:</label>
-                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="opciones" placeholder="Seleccionar el nivel">
-                </p-dropdown>
-            </div>
+          <div class="col-md-4">
+              <label class="control-label" for="nivel">Nivel:</label>
+              <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogo_nivelOficina"
+                          placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
+              </p-dropdown>
+          </div>
+          <div class="col-md-4">
+              <label class="control-label" for="rol">Rol:</label>
+              <p-dropdown id="rol" class="form-control" formControlName="rol" [options]="catRol" placeholder="Seleccionar el rol"
+              [filter]="true" filterBy="label">
+              </p-dropdown>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" for="estatus">Estatus:</label>
+            <p-dropdown id="estatus" class="form-control" formControlName="estatus" [options]="estatus"
+                        placeholder="Seleccionar el estatus" [filter]="true" filterBy="label">
+            </p-dropdown>
+          </div>
         </div>
         <div class="row mt-6">
             <div class="col-md-12 flex justify-content-end">
@@ -34,8 +42,8 @@
     (onLazyLoad)="seleccionarPaginacion($event)">
         <ng-template pTemplate="header">
             <tr>
-                <th>ID</th>
-                <th>Nombre</th>
+                <th>Identificador del rol</th>
+                <th>Nombre del rol</th>
                 <th>Nivel</th>
                 <th>Fecha de creación</th>
                 <th>Estatus</th>
@@ -55,9 +63,9 @@
                             <span class="inactivo" *ngIf="!roles.estatusRol">Inactivo</span>
                         </div>
                         <div class="contenedor-celda-iconos">
-                            <a (click)="abrirModalDetalleRol(roles)">
-                                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-                            </a>
+<!--                            <a (click)="abrirModalDetalleRol(roles)">-->
+<!--                                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">-->
+<!--                            </a>-->
                             <a (click)="abrirPanel($event,roles)">
                                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
                             </a>
@@ -74,11 +82,11 @@
         <ng-template pTemplate="paginatorright">
             <div class="paginator-template">
                 <div class="export-table">
-                    <span class="export-table-text">Exportar tabla</span>
-                    <div class="export-table-icons">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" (click)="descargarArchivo('pdf')" alt="exportar pdf">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" (click)="descargarArchivo('xls')"  alt="exportar excel">
-                    </div>
+<!--                    <span class="export-table-text">Exportar tabla</span>-->
+<!--                    <div class="export-table-icons">-->
+<!--                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" (click)="descargarArchivo('pdf')" alt="exportar pdf">-->
+<!--                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" (click)="descargarArchivo('xls')"  alt="exportar excel">-->
+<!--                    </div>-->
                 </div>
             </div>
         </ng-template>

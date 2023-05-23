@@ -11,21 +11,21 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-                    placeholder="Seleccionar delegación">
+                    placeholder="Seleccionar delegación" (onChange)="cargarVelatorios()">
         </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
                     placeholder="Seleccionar el velatorio">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="placa">Placa:</label>
         <input id="placa" class="form-control" formControlName="placa"
-               placeholder="Ingresa el articulo" (keyup)="consultaServicioEspecifico()">
+               placeholder="Ingresa el articulo">
       </div>
     </div>
     <div class="row mt-6">
@@ -80,7 +80,8 @@
         <td [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetalleArticulo(vehiculo)">
+            <!--  <a (click)="abrirModalDetalle(vehiculo)"> -->
+            <a [routerLink]="['detalle-mantenimiento', vehiculo.ID_VEHICULO]">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
             <a (click)="abrirPanel($event,vehiculo)">
@@ -121,40 +122,77 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Verificar al inicio"
-                                (click)="abrirModalnuevaVerificacion()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Solicitud de mantenimiento,,"
-                                (click)="abrirModalSolicitudMantenimiento()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Registro de mantenimiento"
-                                (click)="abrirModalRegistroMantenimiento()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificar()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Verificar al inicio" (click)="abrirModalnuevaVerificacion()"
+                                *ngIf="vehiculoSeleccionado.verificacionDia === 'false'"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificar()"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Exportar PDF" (click)="abrirModalExportarPDF()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Exportar Excel" (click)="abrirModalExportarExcel()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-<p-dialog header="Modificar" [(visible)]="modificarModal">
+
+<p-dialog header="Modificar" [(visible)]="modificarModal" *ngIf="vehiculoSeleccionado">
   <div class="border-panel mb-4 w-440 bg-g">
-    <div class="row flex justify-content-center ">
-      {{vehiculoSeleccionado.ID_VEHICULO}} -{{vehiculoSeleccionado.DES_MARCA | uppercase }}
+    <div class="row flex justify-content-center">
+      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
       {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
     </div>
   </div>
-  <div class="border-panel w-440">
-    <div class="row flex justify-content-center mb-4 ">
-      <button type="button" class="btn btn-primary btn-lg btn-md w-400">
+  <div class=" border-panel w-440">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia !== 'false'">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarVerificacion()">
         Modificar verificación al inicio
       </button>
     </div>
-    <div class="row flex justify-content-center mb-4 ">
-      <button type="button" class="btn btn-primary btn-lg btn-md w-400">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTO_SOLICITUD">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarSolicitud()">
         Modificar solicitud de mantenimiento
       </button>
     </div>
-    <div class="row flex justify-content-center ">
-      <button type="button" class="btn btn-primary btn-lg btn-md w-400">
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTO_REGISTRO">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarRegistro()">
         Modificar registro de mantenimiento
       </button>
+    </div>
+    <div class="row flex justify-content-center"
+         *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
+      No existen solicitudes registradas previamente.
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Ver Detalle" [(visible)]="detalleModal" *ngIf="vehiculoSeleccionado">
+  <div class="border-panel mb-4 w-440 bg-g">
+    <div class="row flex justify-content-center">
+      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
+      {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
+    </div>
+  </div>
+  <div class=" border-panel w-440">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia !== 'false'">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('verificacion')">
+        Ver detalle verificación al inicio
+      </button>
+    </div>
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTO_SOLICITUD">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('mtto')">
+        Ver detalle solicitud de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTO_REGISTRO">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('registroMtto')">
+        Ver detalle registro de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center"
+         *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
+      No existen solicitudes registradas previamente.
     </div>
   </div>
 </p-dialog>

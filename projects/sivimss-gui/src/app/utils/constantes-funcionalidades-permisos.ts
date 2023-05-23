@@ -8,7 +8,8 @@ export const funcionalidades: { [valor: string]: string } = {
   'VELATORIOS': '8',
   'SALAS_RESERVACION': '9',
   'CAPILLA_RESERVACION': '31',
-  'DONACIONES': '63',//Agregar los que falten.
+  'GESTIONAR_DONACIONES':'59',
+  'CONSULTAR_DONADOS': '64',//Agregar los que falten.
 }
 export const permisos: { [valor: string]: string } = {
   'ALTA': '1',
