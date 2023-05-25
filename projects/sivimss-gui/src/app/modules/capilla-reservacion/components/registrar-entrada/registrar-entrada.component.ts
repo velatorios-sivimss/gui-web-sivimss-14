@@ -109,10 +109,13 @@ export class RegistrarEntradaComponent implements OnInit {
   obtenerCapillaPorIdVelatorio() {
     this.capillaReservacionService.buscarPorIdVelatorio(+this.entradaRegistrada.idVelatorio!).subscribe(
       (respuesta) => {
-        if (respuesta.datos) {
+        if (respuesta.datos.length > 0) {
           this.registros2 = respuesta!.datos.map((capilla: any) => {
             return { label: capilla.nomCapilla, value: capilla.idCapilla };
           });
+        }else{
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            "No contamos con capillas disponibles por el momento.Intenta más tarde.");
         }
       },
       (error: HttpErrorResponse) => {

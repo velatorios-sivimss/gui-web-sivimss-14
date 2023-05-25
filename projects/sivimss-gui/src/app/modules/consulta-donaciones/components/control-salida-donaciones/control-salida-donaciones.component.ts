@@ -314,7 +314,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         console.log(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+        this.alertaService.mostrar(TipoAlerta.Error, error?.error?.mensaje);
       }
     )
   }

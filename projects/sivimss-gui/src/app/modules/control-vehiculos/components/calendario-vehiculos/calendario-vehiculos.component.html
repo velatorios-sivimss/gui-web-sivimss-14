@@ -1,26 +1,12 @@
-<div class="flex justify-content-end">
-  <ng-container *ngIf="tituloSalas">
-    <div class="flex col-md-6 justify-content-around col-absolute">
-      <ng-container *ngFor="let titulo of tituloSalas">
-        <div>
-          <span class="circle" [style.background-color]="titulo.borderColor"></span>
-          <b class="texto-base" [style.color]="titulo.textColor"> {{titulo.title}}</b>
-        </div>
-      </ng-container>
-    </div>
-  </ng-container>
-</div>
-<full-calendar #calendarioCremacion [options]="calendarOptions"></full-calendar>
-<ng-template pTemplate="paginatorright">
-  <div class="flex justify-content-end paginator-template">
-    <div class="export-table">
-      <span class="export-table-text">Exportar tabla</span>
-      <div class="export-table-icons">
-        <img class="icon-export-table" (click)="generarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg"
-          alt="exportar pdf">
-        <img class="icon-export-table" (click)="generarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
-          alt="exportar excel">
-      </div>
+<full-calendar #calendarioVehiculos [options]="calendarOptions"></full-calendar>
+<div class="flex justify-content-end paginator-template">
+  <div class="export-table">
+    <span class="export-table-text">Exportar tabla</span>
+    <div class="export-table-icons">
+      <img class="icon-export-table" (click)="generarReporteCalendar('pdf')" src="assets/images/imagen-icono-pdf.svg"
+        alt="exportar pdf">
+      <img class="icon-export-table" (click)="generarReporteCalendar('xls')" src="assets/images/imagen-icono-excel.svg"
+        alt="exportar excel">
     </div>
   </div>
-</ng-template>
+</div>

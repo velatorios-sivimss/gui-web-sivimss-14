@@ -80,7 +80,7 @@
             <div class="contenedor-inputswitch flex mr-4">
               <p-inputSwitch [(ngModel)]="usuario.estatus" (ngModelChange)="cambiarEstatus(usuario.id);"
                              [disabled]="true"></p-inputSwitch>
-              <span class="activo" *ngIf="usuario.estatus">Activo</span>
+              <span class="activo mr-3" *ngIf="usuario.estatus">Activo</span>
               <span class="inactivo" *ngIf="!usuario.estatus">Inactivo</span>
             </div>
             <a (click)="abrirModalDetalleUsuario(usuario)" *appValidaRol="['USUARIOS','CONSULTA']" onCloseOnNavigation>
@@ -106,17 +106,6 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
-        <div class="export-table" *appValidaRol="['USUARIOS','IMPRIMIR']">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-                 (click)="guardarPDF()">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-                 (click)="guardarExcel()">
-          </div>
-        </div>
-      </div>
     </ng-template>
   </p-table>
 </section>

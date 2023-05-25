@@ -245,7 +245,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
       (error: HttpErrorResponse) => {
         const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
+          return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
