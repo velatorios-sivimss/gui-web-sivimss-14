@@ -15,7 +15,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {mensajes} from "../../../reservar-salas/constants/mensajes";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
-import {PlantillaAceptarDonacion} from "../../models/generar-plantilla-interface";
+import {DatosAdministrador, PlantillaAceptarDonacion} from "../../models/generar-plantilla-interface";
 import * as moment from "moment/moment";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import { GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
@@ -42,7 +42,7 @@ export class AceptacionDonacionComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   idOrdenServicio!: number;
-  // alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  datosAdministrador!: DatosAdministrador;
 
   constructor(
     private alertaService: AlertaService,
@@ -65,6 +65,7 @@ export class AceptacionDonacionComponent implements OnInit {
       {label: estado.label, value: estado.value} )) || [];
     this.actualizarBreadcrumb();
     this.inicializarDonacionForm();
+    this.consultarDatosAdministrador();
   }
 
   actualizarBreadcrumb(): void {
@@ -96,7 +97,6 @@ export class AceptacionDonacionComponent implements OnInit {
   }
 
   guardar(): void {
-    const plantilla = this.modeloPlantillaDonacion();
     this.loaderService.activar();
     const registro = this.modeloAgregarDonacion();
     this.consultaDonacionesService.guardarAgregarDonacion(registro).pipe(
@@ -120,7 +120,7 @@ export class AceptacionDonacionComponent implements OnInit {
 
   generarArchivo(): void{
     this.loaderService.activar();
-    const configuracionArchivo: OpcionesArchivos = {};
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Aceptación y control de ataúdes de donación"};
     const plantilla = this.modeloPlantillaDonacion();
     this.descargaArchivosService.descargarArchivo(
       this.consultaDonacionesService.generarPlantillaAgregarDonacion(plantilla),configuracionArchivo
@@ -139,22 +139,23 @@ export class AceptacionDonacionComponent implements OnInit {
   modeloPlantillaDonacion(): PlantillaAceptarDonacion {
     const usuario = JSON.parse(localStorage.getItem('usuario') as string)
     return {
-      numContrato: "234234234234",
-      nomAdministrador: "Raúl de Jesús",
-      lugar: "Col. Doctores, Ciudad de México",
       version: 5.2,
-      velatorioId: usuario.idVelatorio,
-      ooadId: usuario.idDelegacion,
       ooadNom: this.nombreOoad(usuario.idDelegacion),
+      velatorioId: usuario.idVelatorio,
+      numContrato: this.f.folio.value,
       modeloAtaud: this.modeloAtaudes(),
       tipoAtaud: this.tipoAtaud(),
       numInventarios: this.numInventario(),
-
+      claveResponsableAlmacen: this.f.matricula.value,
       nomFinado: this.f.nombreFinado.value,
       nomResponsableAlmacen: this.f.responsableAlmacen.value,
       nomContratante: this.f.nombreContratante.value,
+      nomAdministrador: this.datosAdministrador.nombreAdministrador,
+      claveAdministrador: this.datosAdministrador.matriculaAdministrador,
+      lugar: this.datosAdministrador.lugardonacion,
+      ooadId: usuario.idDelegacion,
       dia: parseInt(moment().format('DD')),
-      mes: moment().format('MMMM'),
+      mes: moment().format('MMMM').toUpperCase(),
       anio: parseInt(moment().format('yyyy')),
       tipoReporte: 'pdf'
     }
@@ -227,6 +228,26 @@ export class AceptacionDonacionComponent implements OnInit {
     });
     modeloAtaud = modeloAtaud.substr(0,modeloAtaud.length -1);
     return modeloAtaud;
+  }
+
+  consultarDatosAdministrador(): void {
+    this.loaderService.activar();
+    const usuario = JSON.parse(localStorage.getItem('usuario') as string)
+
+    this.consultaDonacionesService.consultarDatosAdministrador(usuario.idVelatorio).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        this.datosAdministrador = {
+          nombreAdministrador: respuesta.datos[0].nombreAdministrador,
+          lugardonacion: respuesta.datos[0].lugardonacion,
+          matriculaAdministrador: respuesta.datos[0].matriculaAdministrador
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
   }
 
   tipoAtaud(): string {

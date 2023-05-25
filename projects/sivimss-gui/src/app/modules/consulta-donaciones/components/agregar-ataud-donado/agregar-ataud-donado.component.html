@@ -6,8 +6,7 @@
                   placeholder="Selecciona el ataúd" (onChange)="tomarFolioAtaudDonado()" [filter]="true" filterBy="label">
       </p-dropdown>
       <span class="campo-obligatoriso"
-            *ngIf="f.ataudDonado?.errors?.required && (f.ataudDonado?.dirty || f.ataudDonado?.touched)">
-                      Campo obligatorio</span>
+            *ngIf="f.ataudDonado?.errors?.required && (f.ataudDonado?.dirty || f.ataudDonado?.touched)">Este campo es obligatorio *.</span>
     </div>
   </div>
   <div class="row">
