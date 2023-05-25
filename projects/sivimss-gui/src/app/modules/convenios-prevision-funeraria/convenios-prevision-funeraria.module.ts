@@ -8,7 +8,7 @@ import {
 import { TituloPrincipalModule } from "../../shared/titulo-principal/titulo-principal.module";
 
 import { TablePanelModule } from "projects/sivimss-gui/src/app/shared/table-panel/table-panel.module";
-
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {ConveniosPrevisionFunerariaRoutingModule} from "./convenios-prevision-funeraria-routing.module";
 import {ConsultaConveniosService} from "./services/consulta-convenios.service";
 
@@ -66,7 +66,8 @@ import { AgregarBeneficiarioConveniosPrevisionFunerariaComponent } from './compo
     RadioButtonModule,
   ],
   providers:[
-    ConsultaConveniosService
+    ConsultaConveniosService,
+    DescargaArchivosService
   ]
 
 })

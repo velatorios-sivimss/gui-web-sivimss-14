@@ -3,7 +3,7 @@ import {OverlayPanel} from "primeng/overlaypanel";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
@@ -14,6 +14,14 @@ import {AfiliadoInterface} from "../../models/afiliado.interface";
 import {VigenciaConvenioInterface} from "../../models/vigencia-convenio.interface";
 import {FacturaConvenioInterface} from "../../models/factura-convenio.interface";
 import {SinisestroInterface} from "../../models/sinisestro.interface";
+import {finalize} from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
+import { ConsultaConveniosService } from '../../services/consulta-convenios.service';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { FiltrosConvenioInterface } from '../../models/filtros-convenio.interface';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {
   DetalleConvenioPrevisionFunerariaComponent
 } from "../detalle-convenio-prevision-funeraria/detalle-convenio-prevision-funeraria.component";
@@ -60,7 +68,8 @@ export class ConsultaConveniosComponent implements OnInit {
   siniestro: SinisestroInterface[] = [];
 
   convenioSeleccionado: ConveniosPrevisionFunerariaInterface = {};
-
+  readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
+  
   detalleRef!: DynamicDialogRef;
 
   constructor(
@@ -68,6 +77,10 @@ export class ConsultaConveniosComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     public dialogService: DialogService,
+    private consultaConvenioService: ConsultaConveniosService,
+    private cargadorService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService
   ) { }
 
   ngOnInit(): void {
@@ -89,6 +102,49 @@ export class ConsultaConveniosComponent implements OnInit {
       curp: [{value: null, disabled:false}],
       estatusConvenio: [{value: null, disabled:false}]
     });
+  }
+
+  paginarConvenios(): void {
+    this.cargadorService.activar();
+    this.consultaConvenioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe(
+        (respuesta) => {
+          this.convenioPrevision = respuesta!.datos.content;
+          this.totalElementos = respuesta!.datos.totalElements;
+        },
+        (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      );
+  }
+
+  paginarConFiltros(): void {
+    const filtros: FiltrosConvenioInterface = this.crearSolicitudFiltros();
+    this.cargadorService.activar();
+    this.consultaConvenioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe(
+        (respuesta) => {
+          this.convenioPrevision = respuesta!.datos.content;
+          this.totalElementos = respuesta!.datos.totalElements;
+        },
+        (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      );
+  }
+
+  crearSolicitudFiltros(): FiltrosConvenioInterface {
+    return {
+      folioConvenio: this.filtroForm.get("folioConvenio")?.value,
+      rfc: this.filtroForm.get("rfc")?.value,
+      nomCliente: this.filtroForm.get("nombre")?.value,
+      curp: this.filtroForm.get("curp")?.value,
+      estatus: this.filtroForm.get("estatusConvenio")?.value
+    }
   }
 
   paginar(event: LazyLoadEvent): void {
@@ -275,5 +331,36 @@ export class ConsultaConveniosComponent implements OnInit {
     return this.filtroForm.controls;
   }
 
+  guardarListadoPagaresPDF() {
+    this.cargadorService.activar();
+    const filtros: FiltrosConvenioInterface = this.crearSolicitudFiltros();
+    this.descargaArchivosService.descargarArchivo(this.consultaConvenioService.descargarListadoPagaresPDF()).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta)
+      },
+      (error) => {
+        console.log(error)
+      },
+    )
+  }
+
+  guardarListadoPagaresExcel() {
+    this.cargadorService.activar();
+    const filtros: FiltrosConvenioInterface = this.crearSolicitudFiltros();
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    this.descargaArchivosService.descargarArchivo(this.consultaConvenioService.descargarListadoPagaresExcel(),
+    configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta): void => {
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
+        console.log(error)
+      },
+    })
+  }
 
 }
