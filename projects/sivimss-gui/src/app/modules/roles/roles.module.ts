@@ -23,7 +23,6 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {CalendarModule} from "primeng/calendar";
 import { ConfirmacionMovimientoComponent } from './components/confirmacion-movimiento/confirmacion-movimiento/confirmacion-movimiento.component';
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
-import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -35,26 +34,25 @@ import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
     ModificarRolComponent,
     ConfirmacionMovimientoComponent
   ],
-  imports: [
-    CommonModule,
-    RolesRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    TituloPrincipalModule,
-    TableModule,
-    InputSwitchModule,
-    DialogModule,
-    CheckboxModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    TablePanelModule,
-    CeldaStickyModule,
-    UtileriaModule,
-    CalendarModule,
-    ValidaRolModule,
-    BtnRegresarModule
-  ],
+    imports: [
+        CommonModule,
+        RolesRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        TituloPrincipalModule,
+        TableModule,
+        InputSwitchModule,
+        DialogModule,
+        CheckboxModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        TablePanelModule,
+        CeldaStickyModule,
+        UtileriaModule,
+        CalendarModule,
+        ValidaRolModule
+    ],
   providers: [
     RolService
   ]
