@@ -13,13 +13,13 @@
     <div class="row mb-3">
 
       <div class="col-md-6">
-        <label class="control-label" for="delegacion">Delegación:</label>
+        <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
         <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación"
                     (onChange)="cambiarDelegacion()">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio:</label>
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="velatorio" class="form-control" [(ngModel)]="velatorioListado"
                     [options]="velatorios" (onChange)="obtenerCapillaPorIdVelatorio()"
                     placeholder="Selecciona el velatorio">
@@ -52,7 +52,8 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-            <button *appValidaRol="['CAPILLA_RESERVACION','ALTA']" type="button" class="btn btn-primary btn-md ml-5" [disabled]="registrarEntradaForm.invalid"
+            <button *appValidaRol="['CAPILLA_RESERVACION','ALTA']" type="button" class="btn btn-primary btn-md ml-5"
+                    [disabled]="registrarEntradaForm.invalid || !delegacion || !velatorioListado"
                     onCloseOnNavigation  (click)="abrirModalAgregarEntrada()">
               Buscar
             </button>
