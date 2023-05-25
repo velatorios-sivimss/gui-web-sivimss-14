@@ -167,6 +167,9 @@ export class AgregarUsuarioComponent implements OnInit {
 
   validarCurp(): void {
     const consulta: SolicitudCurp = {curp: this.agregarUsuarioForm.get("curp")?.value};
+    this.agregarUsuarioForm.get('nombre')?.patchValue(null);
+    this.agregarUsuarioForm.get('primerApellido')?.patchValue(null);
+    this.agregarUsuarioForm.get('segundoApellido')?.patchValue(null);
     if (!consulta.curp) return;
     if (!PATRON_CURP.test(consulta.curp)) return;
     this.usuarioService.validarCurp(consulta).pipe(
