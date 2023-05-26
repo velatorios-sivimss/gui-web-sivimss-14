@@ -5,7 +5,7 @@
         <div class="col-md-6">
           <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
           <input id="curp" class="form-control" formControlName="curp" placeholder="Inserta el CURP"
-                 (blur)="validarCurp();" alphanumericOnly>
+                 (blur)="validarCurp();" alphanumericOnly [maxlength]="18">
           <span class="campo-obligatorio"
                 *ngIf="fau?.curp?.errors?.required && (fau?.curp?.dirty || fau?.curp?.touched)">Este campo es obligatorio *.</span>
           <span class="campo-obligatorio"
@@ -14,7 +14,7 @@
         <div class="col-md-6">
           <label class="control-label" for="matricula">Matrícula<span class="req">*</span>:</label>
           <input id="matricula" class="form-control" formControlName="matricula" placeholder="Inserta la matrícula"
-                 (blur)="validarMatricula();">
+                 (blur)="validarMatricula();" [maxlength]="10">
           <span class="campo-obligatorio"
                 *ngIf="fau?.matricula?.errors?.required && (fau?.matricula?.dirty || fau?.matricula?.touched)">Este campo es obligatorio *.</span>
         </div>
@@ -223,7 +223,7 @@
     <div class="flex justify-content-end mt-5">
       <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
       <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarCreacion();">
-        Guardar
+        Aceptar
       </button>
     </div>
   </ng-container>

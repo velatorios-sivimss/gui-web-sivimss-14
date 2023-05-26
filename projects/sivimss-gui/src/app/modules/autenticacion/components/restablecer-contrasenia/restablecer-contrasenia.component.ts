@@ -58,7 +58,7 @@ export class RestablecerContraseniaComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<unknown>): void => {
         if (respuesta.codigo === 200) {
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada');
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada correctamente.');
           this.router.navigate(["../"], {
             relativeTo: this.activatedRoute
           });
