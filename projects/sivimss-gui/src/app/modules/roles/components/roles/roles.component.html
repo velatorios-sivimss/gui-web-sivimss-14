@@ -70,9 +70,9 @@
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-inputswitch" onCloseOnNavigation>
-              <p-inputSwitch [(ngModel)]="roles.estatus" (ngModelChange)="cambiarEstatus(roles);"></p-inputSwitch>
-              <span class="activo" *ngIf="roles.estatus">Activo</span>
-              <span class="inactivo" *ngIf="!roles.estatus">Inactivo</span>
+              <p-inputSwitch [(ngModel)]="roles.estatusRol" (ngModelChange)="cambiarEstatus(roles);"></p-inputSwitch>
+              <span class="activo" *ngIf="roles.estatusRol">Activo</span>
+              <span class="inactivo" *ngIf="!roles.estatusRol">Inactivo</span>
             </div>
             <div class="contenedor-celda-iconos">
               <a (click)="abrirPanel($event,roles)" *appValidaRol="['ROLES','MODIFICAR']" onCloseOnNavigation>
