@@ -48,7 +48,7 @@
     <div class="row mb-3">
       <div class="col-md-6 mb-3" *ngIf="!tipoSala && estadoSala != 'MANTENIMIENTO'">
 
-        <label class="control-label" for="nivelGas">Nivel de gas <span class="req">*</span>:</label>
+        <label class="control-label" for="nivelGas">Nivel de gas final(litros) <span class="req">*</span>:</label>
         <p-inputNumber [useGrouping]="false" mode="decimal" currency="USD" locale="en-US" [minFractionDigits]="2" [maxFractionDigits]="2" suffix="L"
                        id="nivelGas" class="form-control" formControlName="nivelGas" [maxlength]="11"></p-inputNumber>
         <span class="campo-obligatorio"

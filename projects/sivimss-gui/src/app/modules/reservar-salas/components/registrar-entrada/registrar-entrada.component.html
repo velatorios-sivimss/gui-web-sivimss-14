@@ -52,18 +52,12 @@
                       Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6 mb-3">
-          <label class="control-label" for="nombreContratante">Nombre del contratante <span class="req">*</span>:</label>
+          <label class="control-label" for="nombreContratante">Nombre del contratante :</label>
           <input id="nombreContratante" class="form-control" formControlName="nombreContratante">
-          <span class="campo-obligatorio"
-                *ngIf="entradaF.nombreContratante?.errors?.required && (entradaF.nombreContratante?.dirty || entradaF.nombreContratante?.touched)">
-                      Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6 mb-3">
-          <label class="control-label" for="nombreFinado">Nombre del finado(a) <span class="req">*</span>:</label>
+          <label class="control-label" for="nombreFinado">Nombre del finado(a):</label>
           <input id="nombreFinado" class="form-control" formControlName="nombreFinado">
-          <span class="campo-obligatorio"
-                *ngIf="entradaF.nombreFinado?.errors?.required && (entradaF.nombreFinado?.dirty || entradaF.nombreFinado?.touched)">
-                      Este campo es obligatorio *.</span>
         </div>
       </ng-container>
 
@@ -79,7 +73,7 @@
                     Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6 mb-3" *ngIf="!tipoSala && entradaF.inicioDe?.value === '2'">
-          <label class="control-label" for="nivelGas">Nivel de gas <span class="req">*</span>:</label>
+          <label class="control-label" for="nivelGas">Nivel de gas inicial(litros)<span class="req">*</span>:</label>
           <p-inputNumber [useGrouping]="false" mode="decimal" currency="USD" locale="en-US" [minFractionDigits]="2" [maxFractionDigits]="2" suffix="L"
             id="nivelGas" class="form-control" formControlName="nivelGas" [maxlength]="11"></p-inputNumber>
           <span class="campo-obligatorio"
