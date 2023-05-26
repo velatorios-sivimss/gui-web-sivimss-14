@@ -7,6 +7,6 @@ export const USUARIOS_BREADCRUMB: ElementoBreadcrumb[] = [
   },
   {
     icono: '',
-    titulo: 'Administrar roles'
+    titulo: 'Administración de usuarios del sistema'
   }
 ]

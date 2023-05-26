@@ -8,8 +8,7 @@
           <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="niveles"
                       placeholder="Seleccionar el nivel">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fmp.nivel?.errors?.required && (fmp.nivel?.dirty || fmp.nivel?.touched)">
+          <span class="campo-obligatorio">
         Campo obligatorio</span>
         </div>
         <div class="col-md-6">
@@ -17,8 +16,7 @@
           <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
                       placeholder="Selecciona el velatorio">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fmp.velatorio?.errors?.required && (fmp.velatorio?.dirty || fmp.velatorio?.touched)">
+          <span class="campo-obligatorio">
         Campo obligatorio</span>
         </div>
       </div>
@@ -28,8 +26,7 @@
           <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="delegaciones"
                       placeholder="Selecciona la delegacion">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fmp.delegacion?.errors?.required && (fmp.delegacion?.dirty || fmp.delegacion?.touched)">
+          <span class="campo-obligatorio">
         Campo obligatorio</span>
         </div>
         <div class="col-md-6">
@@ -37,8 +34,7 @@
           <input id="placa" class="form-control" formControlName="placa"
                  placeholder="Ingresa placa" (keyup)="consultaServicioEspecifico()">
 
-          <span class="campo-obligatorio"
-                *ngIf="fmp.placa?.errors?.required && (fmp.placa?.dirty || fmp.placa?.touched)">
+          <span class="campo-obligatorio">
                Campo obligatorio</span>
         </div>
       </div>
@@ -49,8 +45,7 @@
                       [options]="tipoMantenimientos"
                       placeholder="Selecciona el tipo">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fmp.tipoMantenimiento?.errors?.required && (fmp.tipoMantenimiento?.dirty || fmp.tipoMantenimiento?.touched)">
+          <span class="campo-obligatorio">
         Campo obligatorio</span>
         </div>
         <div class="col-md-6">
@@ -64,8 +59,7 @@
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde"
                           styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy">
               </p-calendar>
-              <span class="campo-obligatorio"
-                    *ngIf="fmp.fechaVigenciaDesde?.errors?.required && (fmp.fechaVigenciaDesde?.dirty || fmp.fechaVigenciaDesde?.touched)">
+              <span class="campo-obligatorio">
                       Campo obligatorio</span>
             </div>
             <div class="col-md-6">
@@ -73,8 +67,7 @@
                           styleClass="form-control" [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy"
                           appendTo="body">
               </p-calendar>
-              <span class="campo-obligatorio"
-                    *ngIf="fmp.fecahVigenciaHasta?.errors?.required && (fmp.fecahVigenciaHasta?.dirty || fmp.fecahVigenciaHasta?.touched)">
+              <span class="campo-obligatorio">
                       Campo obligatorio</span>
             </div>
           </div>
@@ -164,7 +157,7 @@
           <div class="col-md-7">
             <div class="table-panel-column">
               <label>Placas</label>
-              <span> {{vehiculoSeleccionado.placas}} </span>
+              <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
             </div>
           </div>
         </div>

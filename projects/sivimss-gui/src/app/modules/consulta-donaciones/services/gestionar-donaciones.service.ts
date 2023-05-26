@@ -86,6 +86,11 @@ export class GestionarDonacionesService extends BaseService<HttpRespuesta<any>, 
       {responseType: 'blob' as any});
   }
 
+  consultarDatosAdministrador(idVelatorio:number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-aceptacion-donacion`,
+      {idVelatorio: idVelatorio});
+  }
+
 
   guardarControlSalidaDonacion(informacion:AgregarSalidaDonacionInterface): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/agregar-salida-donacion`, informacion);

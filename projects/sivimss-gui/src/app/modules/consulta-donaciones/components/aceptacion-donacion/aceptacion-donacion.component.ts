@@ -5,17 +5,14 @@ import {AtaudDonado, GuardarAgregarDonacion} from "../../models/consulta-donacio
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AgregarAtaudDonadoComponent} from "../agregar-ataud-donado/agregar-ataud-donado.component";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {LazyLoadEvent} from "primeng/api";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {ConsultaDonacionesService} from "../../services/consulta-donaciones.service";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {mensajes} from "../../../reservar-salas/constants/mensajes";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
-import {PlantillaAceptarDonacion} from "../../models/generar-plantilla-interface";
+import {DatosAdministrador, PlantillaAceptarDonacion} from "../../models/generar-plantilla-interface";
 import * as moment from "moment/moment";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import { GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
@@ -42,7 +39,7 @@ export class AceptacionDonacionComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   idOrdenServicio!: number;
-  // alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  datosAdministrador!: DatosAdministrador;
 
   constructor(
     private alertaService: AlertaService,
@@ -65,6 +62,7 @@ export class AceptacionDonacionComponent implements OnInit {
       {label: estado.label, value: estado.value} )) || [];
     this.actualizarBreadcrumb();
     this.inicializarDonacionForm();
+    this.consultarDatosAdministrador();
   }
 
   actualizarBreadcrumb(): void {
@@ -96,65 +94,65 @@ export class AceptacionDonacionComponent implements OnInit {
   }
 
   guardar(): void {
-    const plantilla = this.modeloPlantillaDonacion();
     this.loaderService.activar();
     const registro = this.modeloAgregarDonacion();
     this.consultaDonacionesService.guardarAgregarDonacion(registro).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.generarArchivo();
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
 
         this.router.navigate(["../consulta-donaciones"]);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
 
       }
-    )
+    });
   }
 
   generarArchivo(): void{
     this.loaderService.activar();
-    const configuracionArchivo: OpcionesArchivos = {};
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Aceptación y control de ataúdes de donación"};
     const plantilla = this.modeloPlantillaDonacion();
     this.descargaArchivosService.descargarArchivo(
       this.consultaDonacionesService.generarPlantillaAgregarDonacion(plantilla),configuracionArchivo
     ).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta) => {
         console.log(respuesta);
       },
-      (error) => {
+      error: (error) => {
         console.log(error);
       }
-    );
+    });
   }
 
   modeloPlantillaDonacion(): PlantillaAceptarDonacion {
     const usuario = JSON.parse(localStorage.getItem('usuario') as string)
     return {
-      numContrato: "234234234234",
-      nomAdministrador: "Raúl de Jesús",
-      lugar: "Col. Doctores, Ciudad de México",
       version: 5.2,
-      velatorioId: usuario.idVelatorio,
-      ooadId: usuario.idDelegacion,
       ooadNom: this.nombreOoad(usuario.idDelegacion),
+      velatorioId: usuario.idVelatorio,
+      numContrato: this.f.folio.value,
       modeloAtaud: this.modeloAtaudes(),
       tipoAtaud: this.tipoAtaud(),
       numInventarios: this.numInventario(),
-
+      claveResponsableAlmacen: this.f.matricula.value,
       nomFinado: this.f.nombreFinado.value,
       nomResponsableAlmacen: this.f.responsableAlmacen.value,
       nomContratante: this.f.nombreContratante.value,
+      nomAdministrador: this.datosAdministrador.nombreAdministrador,
+      claveAdministrador: this.datosAdministrador.matriculaAdministrador,
+      lugar: this.datosAdministrador.lugardonacion,
+      ooadId: usuario.idDelegacion,
       dia: parseInt(moment().format('DD')),
-      mes: moment().format('MMMM'),
+      mes: moment().format('MMMM').toUpperCase(),
       anio: parseInt(moment().format('yyyy')),
       tipoReporte: 'pdf'
     }
@@ -188,8 +186,8 @@ export class AceptacionDonacionComponent implements OnInit {
     this.loaderService.activar()
     this.consultaDonacionesService.consultaContratantePorFolioODS(this.f.folio.value).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.idOrdenServicio = 0;
         this.f.nombreContratante.patchValue(null);
         this.f.nombreFinado.patchValue(null);
@@ -202,12 +200,12 @@ export class AceptacionDonacionComponent implements OnInit {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
-    )
+    });
   }
 
   nombreOoad(idOoad: number): string {
@@ -225,8 +223,28 @@ export class AceptacionDonacionComponent implements OnInit {
     this.ataudDonado.forEach( ataud => {
       modeloAtaud += ataud.desModeloArticulo + ',';
     });
-    modeloAtaud = modeloAtaud.substr(0,modeloAtaud.length -1);
+    modeloAtaud = modeloAtaud.substring(0,modeloAtaud.length -1);
     return modeloAtaud;
+  }
+
+  consultarDatosAdministrador(): void {
+    this.loaderService.activar();
+    const usuario = JSON.parse(localStorage.getItem('usuario') as string)
+
+    this.consultaDonacionesService.consultarDatosAdministrador(usuario.idVelatorio).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.datosAdministrador = {
+          nombreAdministrador: respuesta.datos[0].nombreAdministrador,
+          lugardonacion: respuesta.datos[0].lugardonacion,
+          matriculaAdministrador: respuesta.datos[0].matriculaAdministrador
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    });
   }
 
   tipoAtaud(): string {
@@ -234,7 +252,7 @@ export class AceptacionDonacionComponent implements OnInit {
     this.ataudDonado.forEach( ataud => {
       tipoAtaud += ataud.desTipoMaterial + ',';
     });
-    tipoAtaud = tipoAtaud.substr(0, tipoAtaud.length - 1);
+    tipoAtaud = tipoAtaud.substring(0, tipoAtaud.length - 1);
     return tipoAtaud;
   }
 
@@ -243,7 +261,7 @@ export class AceptacionDonacionComponent implements OnInit {
     this.ataudDonado.forEach( ataud => {
       numInventario += ataud.folioArticulo + ',';
     });
-    numInventario = numInventario.substr(0, numInventario.length - 1)
+    numInventario = numInventario.substring(0, numInventario.length - 1)
     return numInventario;
   }
 
@@ -252,14 +270,14 @@ export class AceptacionDonacionComponent implements OnInit {
     this.loaderService.activar()
     this.consultaDonacionesService.consultaFinadoPorFolioODS(this.f.folio.value).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.f.nombreFinado.setValue(respuesta.datos[0].nombreFinado);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
       }
-    )
+    });
   }
 
   noEspaciosAlPrincipio() {

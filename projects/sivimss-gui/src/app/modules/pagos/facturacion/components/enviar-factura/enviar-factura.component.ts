@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-enviar-factura',
@@ -7,9 +8,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EnviarFacturaComponent implements OnInit {
 
-  constructor() { }
+  enviarForm!: FormGroup;
+  indice: number = 0;
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
 
+  guardar(): void {
+    if (this.indice === 0) {
+      this.indice++;
+      return;
+    }
+  }
+
+  cancelar(): void {
+    if (this.indice === 1) {
+      this.indice--;
+      return;
+    }
+  }
 }

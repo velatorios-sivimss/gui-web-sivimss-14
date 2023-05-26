@@ -17,6 +17,7 @@ import { VerOrdenComplementariaComponent } from "projects/sivimss-gui/src/app/mo
 import {
   VerOrdenServicioComponent
 } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/ver-orden-de-servicio/ver-orden-servicio.component";
+import {GenerarOrdenServicioResolver} from "./services/generar-orden-servicio.resolver";
 
 const routes: Routes = [
   {
@@ -25,7 +26,10 @@ const routes: Routes = [
   },
   {
     path: 'generar-orden-de-servicio',
-    component: GenerarOrdenServicioComponent
+    component: GenerarOrdenServicioComponent,
+    resolve: {
+      respuesta: GenerarOrdenServicioResolver
+    }
   },
   {
     path: 'cancelar-orden-de-servicio',
@@ -59,7 +63,10 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    GenerarOrdenServicioResolver
+  ]
 })
 export class OrdenesServicioRoutingModule {
 }

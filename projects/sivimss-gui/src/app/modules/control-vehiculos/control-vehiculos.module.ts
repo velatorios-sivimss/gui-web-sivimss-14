@@ -11,7 +11,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TableModule } from 'primeng/table';
-import { VerActividadSalasComponent } from './components/ver-actividad-salas/ver-actividad-salas.component';
+import { VerActividadVehiculosComponent } from './components/ver-actividad-vehiculos/ver-actividad-vehiculos.component';
 import { TabViewModule } from 'primeng/tabview';
 import { RegistrarEntradaComponent } from './components/registrar-entrada/registrar-entrada.component';
 import { TablePanelModule } from "../../shared/table-panel/table-panel.module";
@@ -29,7 +29,7 @@ import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
     ControlVehiculosComponent,
     ListadoVehiculosComponent,
     CalendarioVehiculosComponent,
-    VerActividadSalasComponent,
+    VerActividadVehiculosComponent,
     RegistrarEntradaComponent,
     RegistrarSalidaComponent,
   ],

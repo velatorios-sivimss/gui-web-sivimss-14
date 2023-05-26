@@ -7,49 +7,50 @@
         <p-dropdown appendTo="body" id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
           placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
         </p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="ff.nivel?.errors?.required && (ff.nivel?.dirty || ff.nivel?.touched)">Campo obligatorio</span>
+        <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Campo
+          obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
+        <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
-          [options]="catalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true" filterBy="label">
+          [options]="catalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true" filterBy="label"
+          (onChange)='obtenerVelatorios();' [showClear]="+rolLocalStorage.idRol < 2">
         </p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="ff.delegacion?.errors?.required && (ff.delegacion?.dirty || ff.delegacion?.touched)">Campo
+          *ngIf="f.delegacion?.errors?.required && (f.delegacion?.dirty || f.delegacion?.touched)">Campo
           obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+        <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
-          [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
+          [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label"
+          (onChange)="obtenerFoliosGenerados();" [showClear]="+rolLocalStorage.idRol < 3">
         </p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="ff.velatorio?.errors?.required && (ff.velatorio?.dirty || ff.velatorio?.touched)">Campo
+          *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo
           obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="folioODS">Folio de la ODS<span class="req">*</span>:</label>
+        <label class="control-label" for="folioODS">Folio de la ODS:</label>
         <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados"
-          optionLabel="label" placeholder="Ingresa el folio de la ODS" [filter]="true" filterBy="label">
+          optionLabel="label" placeholder="Ingresa el folio de la ODS" [filter]="true" filterBy="label"
+          [showClear]="true">
         </p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="ff.folioODS?.errors?.required && (ff.folioODS?.dirty || ff.folioODS?.touched)">Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-3">
-        <label class="control-label" for="fechaInicio">Rango de fechas de prestación<span class="req">*</span>:</label>
+        <label class="control-label" for="fechaInicio">Rango de fechas de prestación:</label>
         <p-calendar styleClass="form-control" id="fechaInicio" formControlName="fechaInicio" [showIcon]="true"
-          dateFormat="dd/mm/yy" placeholder="Fecha inicial" [maxDate]="ff!.fechaFinal!.value"></p-calendar>
+          dateFormat="dd/mm/yy" placeholder="Fecha inicial" [maxDate]="f!.fechaFinal!.value"></p-calendar>
       </div>
       <div class="col-md-3 pt-5">
         <div class="row mt-2">
           <div class="col-md-12">
             <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
-              dateFormat="dd/mm/yy" placeholder="Fecha final" [minDate]="ff!.fechaInicio!.value"></p-calendar>
+              dateFormat="dd/mm/yy" placeholder="Fecha final" [minDate]="f!.fechaInicio!.value"></p-calendar>
           </div>
         </div>
       </div>
@@ -67,7 +68,7 @@
 <section class="my-3">
   <div class="flex justify-content-between align-items-center mb-3">
     <h2 class="subtitulo">Vales de salida</h2>
-    <button type="button" class="btn btn-primary btn-lg" routerLink="generar-vale-salida">Generar Vale de
+    <button type="button" class="btn btn-primary btn-lg" routerLink="generar-vale-salida">Generar vale de
       salida</button>
   </div>
 
@@ -89,12 +90,12 @@
     </ng-template>
     <ng-template pTemplate="body" let-vale>
       <tr>
-        <td> {{vale.velatorio}} </td>
-        <td> {{vale.folioODS}} </td>
+        <td> {{vale.nombreVelatorio}} </td>
+        <td> {{vale.folioOds}} </td>
         <td> {{vale.nombreContratante}} </td>
         <td> {{vale.fechaSalida}} </td>
         <td> {{vale.fechaEntrada}} </td>
-        <td> {{vale.responsableInstalacion}} </td>
+        <td> {{vale.nombreResponsableInstalacion}} </td>
         <td> {{vale.totalArticulos}} </td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'40px 80px'}">
@@ -124,8 +125,10 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="descargarRegistrosTabla('pdf')">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="descargarRegistrosTabla('xls')">
           </div>
         </div>
       </div>
@@ -137,8 +140,11 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar entrada de equipo"
+      <app-overlay-panel-opcion titulo="Registrar entrada de equipo" *ngIf="valeSeleccionado.idEstatus !== 2"
         (click)="abrirModalRegistroEntradaEquipo()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Eliminar" (click)="eliminarVale()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Descargar control de movimiento de equipo de velación"
+        (click)="descargarControlMovimiento()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

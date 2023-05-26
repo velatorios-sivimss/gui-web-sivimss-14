@@ -4,14 +4,14 @@ import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrum
 import { RESERVAR_SALAS_BREADCRUMB } from '../../constants/breadcrumb';
 import { OpcionesControlVehiculos, SelectButtonOptions } from '../../constants/opciones-reservar-salas';
 import { Router, ActivatedRoute } from '@angular/router';
-import { mensajes } from '../../constants/mensajes'
 import { ControlVehiculosService } from '../../services/control-vehiculos.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { TipoDropdown } from '../../../../models/tipo-dropdown';
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { ControlVehiculos } from '../../models/control-vehiculos.interface';
+import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { mensajes } from '../../../reservar-salas/constants/mensajes';
 
 @Component({
   selector: 'app-control-vehiculos',
@@ -32,12 +32,14 @@ export class ControlVehiculosComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
-  controlVehiculos: ControlVehiculos[] = [];
+  controlVehiculos: ControlVehiculoListado[] = [];
+
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
     private breadcrumbService: BreadcrumbService,
-    private router: Router,
     private alertaService: AlertaService,
     private controlVehiculosService: ControlVehiculosService,
     private formBuilder: FormBuilder,
@@ -48,9 +50,6 @@ export class ControlVehiculosComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION];
 
-    localStorage.setItem("mensajes", JSON.stringify(mensajes));
-    const alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-
     this.actualizarBreadcrumb();
     this.inicializarFiltroForm();
   }
@@ -59,12 +58,14 @@ export class ControlVehiculosComponent implements OnInit {
     this.breadcrumbService.actualizar(RESERVAR_SALAS_BREADCRUMB);
   }
 
-  inicializarFiltroForm() {
+  async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl({ value: 1, disabled: true }, [Validators.required]),
-      delegacion: new FormControl({ value: null, disabled: false }, Validators.required),
-      velatorio: new FormControl({ value: null, disabled: false }, Validators.required),
+      nivel: new FormControl({ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }, [Validators.required]),
+      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }, []),
     });
+    await this.obtenerVelatorios();
+    await this.obtenerVehiculos();
   }
 
   handleCambioVista(opcion: { value: SelectButtonOptions }): void {
@@ -75,28 +76,47 @@ export class ControlVehiculosComponent implements OnInit {
     }
   }
 
-  obtenerVelatorios() {
+  async obtenerVelatorios() {
     this.controlVehiculosService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
       (respuesta) => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
+        this.controlVehiculos = [];
       },
       (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        console.error("ERROR: ", error);
       }
     );
   }
 
-  obtenerVehiculos() {
-    if (this.filtroForm.valid) {
-      this.controlVehiculosService.obtenerVehiculosDisponibles(1).subscribe(
+  async obtenerVehiculos() {
+    if (!this.modoCalendario) {
+      let buscar: BuscarVehiculosDisponibles = {
+        idDelegacion: this.f.delegacion.value,
+        idVelatorio: this.f.velatorio.value,
+        fecIniRepo: null,
+        fecFinRepo: null
+      };
+      this.controlVehiculosService.obtenerVehiculosDisponibles(buscar).subscribe(
         (respuesta) => {
-          // TO DO mostrar mensaje 45 -  no hay datos
-          this.controlVehiculos = respuesta.datos?.content;
+          if (respuesta.datos?.content.length > 0) {
+            this.controlVehiculos = respuesta.datos?.content;
+          } else {
+            const mensaje = this.alertas?.filter((msj: any) => {
+              return msj.idMensaje == respuesta.mensaje;
+            });
+            if (mensaje && mensaje.length > 0) {
+              this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+            }
+          }
         },
         (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+          console.error("ERROR: ", error);
+          const mensaje = this.alertas.filter((msj: any) => {
+            return msj.idMensaje == error?.error?.mensaje;
+          })
+          if (mensaje && mensaje.length > 0) {
+            this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+          }
         }
       );
     }

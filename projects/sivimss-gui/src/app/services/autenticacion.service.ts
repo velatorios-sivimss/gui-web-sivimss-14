@@ -12,12 +12,11 @@ import {SIVIMSS_TOKEN} from "projects/sivimss-gui/src/app/utils/constantes";
 import {existeMensajeEnEnum} from "projects/sivimss-gui/src/app/utils/funciones";
 import {MensajesRespuestaAutenticacion} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
 import {MensajesRespuestaCodigo} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-codigo.enum";
-import {dummyMenuResponse} from "projects/sivimss-gui/src/app/utils/menu-dummy";
 import {TIEMPO_MAXIMO_INACTIVIDAD_PARA_CERRAR_SESION} from "projects/sivimss-gui/src/app/utils/tokens";
-import {BehaviorSubject, Observable, of, Subscription, throwError} from 'rxjs';
-import {concatMap, delay, map} from "rxjs/operators";
+import {BehaviorSubject, Observable, of, Subscription} from 'rxjs';
+import {concatMap, map} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
-import { environment } from '../../environments/environment';
+import {environment} from '../../environments/environment';
 
 export interface Modulo {
   idModuloPadre: string | null;
@@ -473,7 +472,6 @@ export class AutenticacionService {
   }
 
   iniciarSesion(usuario: string, contrasenia: string, mostrarMsjContraseniaProxVencer: boolean = true): Observable<string> {
-    // this.paginaCargadaSubject.next(false);
     return this.httpClient.post<any>(environment.api.login + `/login`, {usuario, contrasenia}).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (this.esInicioSesionCorrecto(respuesta.mensaje) || (respuesta.mensaje === MensajesRespuestaAutenticacion.ContraseniaProximaVencer && !mostrarMsjContraseniaProxVencer)) {
@@ -486,9 +484,9 @@ export class AutenticacionService {
         } else if (this.esMensajeRespuestaValido(MensajesRespuestaAutenticacion, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
         } else {
-          return throwError('Ocurrió un error al intentar iniciar sesión');
+          return 'Ocurrió un error al intentar iniciar sesión';
         }
-      })
+      }),
     );
   }
 
@@ -530,19 +528,21 @@ export class AutenticacionService {
   }
 
   obtenerModulosPorIdRol(idRol: string): Observable<HttpRespuesta<Modulo[]>> {
-    //this.httpClient.get<RespuestaHttp<Modulo>>('');
     return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/menu`, {idRol});
-    // return of<HttpRespuesta<Modulo[]>>(dummyMenuResponse);
   }
 
   actualizarContrasenia(usuario: string, contraseniaAnterior: string, contraseniaNueva: string): Observable<HttpRespuesta<any>> {
-    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/cambiar`, {usuario, contraseniaAnterior, contraseniaNueva});
-    //return of<HttpRespuesta<any>>(respuestaCambioContrasenia);
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/cambiar`, {
+      usuario,
+      contraseniaAnterior,
+      contraseniaNueva
+    });
+    //return of<HttpRespuesta<any>>(respuestaCambioContrasenia); NOSONAR
   }
 
   obtenerPermisos(idRol: string) {
     return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/permisos`, {idRol});
-    // return of<HttpRespuesta<any>>(respuestaPermisosUsuario);
+    // return of<HttpRespuesta<any>>(respuestaPermisosUsuario); NOSONAR
   }
 
   existeFuncionalidadConPermiso(idFuncionalidad: string, idPermiso: string): boolean {
@@ -579,13 +579,15 @@ export class AutenticacionService {
   }
 
   validarCodigoRestablecerContrasenia(usuario: string, codigo: string): Observable<string> {
-    //return this.http.post<HttpRespuesta>(`http://localhost:8080/mssivimss-oauth/contrasenia/valida-codigo`, {usuario,codigo})
-    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/valida-codigo`, {usuario,codigo}).pipe(
+    return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/valida-codigo`, {
+      usuario,
+      codigo
+    }).pipe(
       concatMap((respuesta: HttpRespuesta<any>) => {
         if (existeMensajeEnEnum(MensajesRespuestaCodigo, respuesta.mensaje)) {
           return of<string>(respuesta.mensaje);
         } else {
-          return throwError('Ocurrió un error al intentar validar el código para recuperar contraseña');
+          return 'Ocurrió un error al intentar validar el código para recuperar contraseña';
         }
       })
     );
@@ -593,7 +595,6 @@ export class AutenticacionService {
 
   generarCodigoRestablecerContrasenia(usuario: string): Observable<HttpRespuesta<any>> {
     return this.httpClient.post<HttpRespuesta<any>>(environment.api.login + `/contrasenia/genera-codigo`, {usuario});
-    // return of<HttpRespuesta<any>>(respCodigoRestablecerContrasenia);
   }
 
   obtenerCatalogos(): void {

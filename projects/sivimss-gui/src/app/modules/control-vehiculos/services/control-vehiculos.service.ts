@@ -7,6 +7,9 @@ import { Observable, of } from "rxjs";
 import { TipoDropdown } from "../../../models/tipo-dropdown";
 import { mapearArregloTipoDropdown } from "../../../utils/funciones";
 import { AutenticacionService } from "../../../services/autenticacion.service";
+import { BuscarVehiculosDisponibles } from "../models/control-vehiculos.interface";
+import { EntradaVehiculo, SalidaVehiculo } from "../models/registro-vehiculo.interface";
+import { GenerarReporteCalendar } from "../models/calendario-vehiculos.interface";
 
 @Injectable()
 export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any> {
@@ -18,42 +21,32 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
       60, "", "veri-consulta-dia", "");
   }
 
-  obtenerVehiculosDisponibles(idVelatorio?: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/disp-vehiculos`, { idVelatorio });
+  obtenerVehiculosDisponibles(buscar: BuscarVehiculosDisponibles): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/disp-vehiculos`, buscar);
   }
 
-  // ____________________
-  consultarSalas(idVelatorio?: number, tipoSala?: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-buscar`, { idVelatorio: idVelatorio, tipoSala: tipoSala }, { headers });
+  obtenerVehiculosCalendario(buscar: BuscarVehiculosDisponibles): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/VehiculosDisponibles-Calendario`, buscar);
   }
 
-  consultarODS(folioODS: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-datos`, { folioODS: folioODS }, { headers });
+  obtenerDatosVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/vehiculo-disponible`, { idVehiculo });
   }
 
-  consultarDetalleDia(fechaConsulta: string, idSala: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-dia`, { fechaConsulta: fechaConsulta, idSala: idSala }, { headers });
+  guardarEntrada(entradaVehiculo: EntradaVehiculo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/entrada-vehiculos`, entradaVehiculo);
   }
 
-  consultaMes(mes: number, anio: number, tipoSala: number, idVelatorio: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-mes`,
-      { "mes": mes, "anio": anio, "tipoSala": tipoSala, "idVelatorio": idVelatorio }, { headers });
+  guardarSalida(salidaVehiculo: SalidaVehiculo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/salida-vehiculos`, salidaVehiculo);
   }
 
-  generarReporte(filtroArchivo: any): Observable<Blob> {
-    const tipo = filtroArchivo.tipoReporte;
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/veri-reporte/generarDocumento/` + tipo,
-      {
-        idVelatorio: filtroArchivo.idVelatorio, indTipoSala: filtroArchivo.indTipoSala,
-        mes: filtroArchivo.mes, anio: filtroArchivo.anio, rutaNombreReporte: filtroArchivo.rutaNombreReporte,
-        tipoReporte: filtroArchivo.tipoReporte
-      },
-      { responseType: 'blob' as any });
+  obtenerDatosFolioOds(idODS: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consulta-ods`, { idODS });
+  }
+
+  obtenerOperadores(idVehiculo: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consulta-operador`, { idVehiculo });
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
@@ -68,7 +61,24 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
 
   obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body = { idDelegacion: delegacion }
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8087/mssivimss-oauth/velatorio/consulta`, body);
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
+  }
+
+  consultarODS(folioODS: number): Observable<HttpRespuesta<any>> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-datos`, { folioODS: folioODS }, { headers });
+  }
+
+  consultarDetalleDia(idVehiculo: number, fecDia: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/detalle-vehiculo-dia`, { idVehiculo, fecDia });
+  }
+
+  generarReporteCalendar(generarReporteCalendar: GenerarReporteCalendar): Observable<HttpRespuesta<any>> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/gen-doc-vehiculos`, generarReporteCalendar);
   }
 }
 

@@ -73,7 +73,7 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Registros</h2>
-    <button type="button" class="btn btn-primary btn-lg">Solicitar factura
+    <button type="button" class="btn btn-primary btn-lg" [routerLink]="'./solicitar-factura'">Solicitar factura
     </button>
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="registros" [paginator]="registros.length > 0" [rows]="cantElementosPorPagina"
@@ -141,7 +141,8 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Ver factura" class="text-center"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver factura" class="text-center" onCloseOnNavigation
+      (click)="abrirModalDetalleFacturacion()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" [routerLink]="'./cancelar-factura'">

@@ -4,6 +4,7 @@ import {OperacionesComunes} from './operaciones-comunes.interface';
 
 export abstract class BaseService<T, ID> implements OperacionesComunes<T, ID> {
 
+
   protected constructor(
     protected _http: HttpClient,
     protected _base: string,

@@ -109,10 +109,13 @@ export class RegistrarEntradaComponent implements OnInit {
   obtenerCapillaPorIdVelatorio() {
     this.capillaReservacionService.buscarPorIdVelatorio(+this.entradaRegistrada.idVelatorio!).subscribe(
       (respuesta) => {
-        if (respuesta.datos) {
+        if (respuesta.datos.length > 0) {
           this.registros2 = respuesta!.datos.map((capilla: any) => {
             return { label: capilla.nomCapilla, value: capilla.idCapilla };
           });
+        }else{
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            "No contamos con capillas disponibles por el momento.Intenta más tarde.");
         }
       },
       (error: HttpErrorResponse) => {
@@ -143,6 +146,8 @@ export class RegistrarEntradaComponent implements OnInit {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.refModal.close(true)
+        this.generarPlantillaEntregaCapilla();
+
       },
       (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
@@ -183,13 +188,14 @@ export class RegistrarEntradaComponent implements OnInit {
   }
 
   generarPlantillaEntregaCapilla(): void {
-    const configuracionArchivo: OpcionesArchivos = {};
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Entrega de capilla"};
     this.loaderService.activar();
     const busqueda = this.filtrosArchivos();
     this.descargaArchivosService.descargarArchivo(this.capillaReservacionService.generarFormatEntregaCapilla(busqueda), configuracionArchivo).pipe(
       finalize( () => this.loaderService.desactivar())
     ).subscribe(
       (respuesta) => {
+
         console.log(respuesta)
       },
       (error) => {

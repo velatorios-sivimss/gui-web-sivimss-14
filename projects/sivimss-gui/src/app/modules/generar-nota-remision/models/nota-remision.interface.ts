@@ -1,5 +1,6 @@
 export interface NotaRemision {
-  id?: number;
+  id: number;
+  idNota: number;
   fechaODS?: string;
   nomFinado?: string;
   idContratante?: number;
@@ -15,6 +16,44 @@ export type ClavesEstatus = {
 };
 
 export interface ConsultaNotaRemision {
+  idNota: number | null;
+  idOrden: number | null;
+}
+export interface DetalleNotaRemision {
+  versionDocumento?: string;
+  fechaNota?: string;
+  velatorioOrigen?: string;
+  folioNota?: string;
+  nomFinado?: string;
+  dirVelatorio?: string;
+  parFinado?: string;
+  curpSolicitante?: string;
+  folioODS?: string;
+  nomVelatorio?: string;
+  nomSolicitante?: string;
+  dirSolicitante?: string;
+  nombreConformidad?: string;
+  nombreRepresentante?: string;
+}
+
+export interface ArticulosServicios {
+  nomPaquete?: string;
+  cantidad?: number;
+  nomServicio?: string;
+}
+
+export interface GenerarReporte {
   idNota: number;
   idOrden: number;
+  tipoReporte: string;
+}
+
+export interface BusquedaFiltro {
+  idNivel: number | null;
+  idVelatorio: number | null;
+  idDelegacion: number | null;
+  folioODS: string | null;
+  fecIniODS: string | null;
+  fecFinODS: string | null;
+  tipoReporte?: string;
 }

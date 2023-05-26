@@ -31,6 +31,8 @@ import { Moment } from 'moment'
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
+import {RegistrarEntradaComponent} from "../registrar-entrada/registrar-entrada.component";
+import {PrevisualizacionArchivoComponent} from "./previsualizacion-archivo/previsualizacion-archivo.component";
 
 @Component({
   selector: 'app-calendario',
@@ -60,6 +62,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   tituloCapillas: CalendarioCapillas[] = [];
   capillasDetalle: CalendarioCapillas[] = [];
   currentEvents: EventApi[] = [];
+  archivoRef!: DynamicDialogRef
 
   fechaCalendario!: Moment;
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
@@ -94,7 +97,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   }
 
   inicializarCalendario(): void {
-    console.log('se está inicializando el calendar ');
     this.calendarOptions = {
       headerToolbar: { end: 'next', center: 'title', start: 'prev' },
 
@@ -202,7 +204,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   }
 
   consultarCapillas(): void {
-    console.log(this.fechaCalendario)
     let parametros = {
       anio: this.fechaCalendario.format('YYYY'),
       mes: this.fechaCalendario.format('MM'),
@@ -240,12 +241,11 @@ export class CalendarioComponent implements OnInit, OnDestroy {
             });
           }
         });
-        console.log('capillas__:', this.calendarioCapillas);
       },
 
       (error: HttpErrorResponse) => {
         const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
+          return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
@@ -265,7 +265,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   }
 
   generarArchivo(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {};
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Disponibilidad de capillas"};
     if(tipoReporte == "xls"){
       configuracionArchivo.ext = "xlsx"
     }
@@ -282,6 +282,36 @@ export class CalendarioComponent implements OnInit, OnDestroy {
         console.log(error)
       },
     )
+  }
+
+  descargarPDF(): void {
+    const busqueda = this.filtrosArchivos("pdf");
+    this.capillaReservacionService.generarReporte(busqueda).subscribe(
+      (respuesta:any) => {
+        const file = new Blob([respuesta], {type: 'application/pdf'});
+        const url = window.URL.createObjectURL(file);
+        this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
+          data: url,
+          header: "",
+          width: "920px",
+        })
+      }
+    );
+  }
+
+  descargarExcel(): void {
+    const busqueda = this.filtrosArchivos("xls");
+    this.capillaReservacionService.generarReporte(busqueda).subscribe(
+      (respuesta:any) => {
+        const file = new Blob([respuesta], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'});
+        const url = window.URL.createObjectURL(file);
+        this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
+          data: url,
+          header: "",
+          width: "920px",
+        })
+      }
+    );
   }
 
   filtrosArchivos(tipoReporte: string) {

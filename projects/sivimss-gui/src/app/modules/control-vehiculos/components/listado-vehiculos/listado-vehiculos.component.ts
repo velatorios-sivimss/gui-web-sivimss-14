@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { TipoDropdown } from '../../../../models/tipo-dropdown';
-import { SalaVelatorio } from '../../models/sala-velatorio.interface';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { RegistrarEntradaComponent } from "../registrar-entrada/registrar-entrada.component";
 import { RegistrarSalidaComponent } from "../registrar-salida/registrar-salida.component";
 import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { ControlVehiculos } from '../../models/control-vehiculos.interface';
+import { ControlVehiculoListado } from '../../models/control-vehiculos.interface';
 
 @Component({
   selector: 'app-listado-vehiculos',
@@ -15,9 +14,8 @@ import { ControlVehiculos } from '../../models/control-vehiculos.interface';
   providers: [DialogService]
 })
 export class ListadoVehiculosComponent implements OnInit, OnDestroy {
-  @Input() controlVehiculos: ControlVehiculos[] = [];
-  @Output() registrarEntradaEvent = new EventEmitter();
-  @Output() registrarSalidaEvent = new EventEmitter();
+  @Input() controlVehiculos: ControlVehiculoListado[] = [];
+  @Output() actualizarListadoEvent = new EventEmitter();
 
   registrarEntradaRef!: DynamicDialogRef;
   registrarSalidaRef!: DynamicDialogRef;
@@ -37,38 +35,36 @@ export class ListadoVehiculosComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void { }
 
-  registrarActividad(sala: SalaVelatorio): void {
-    if (sala.estadoSala != "DISPONIBLE") {
-      this.registrarSalida(sala);
+  registrarActividad(vehiculo: ControlVehiculoListado): void {
+    if (vehiculo.disponible == 1) {
+      this.registrarSalida(vehiculo);
       return;
     }
-    this.registrarEntrada(sala);
+    this.registrarEntrada(vehiculo);
   }
 
-  registrarEntrada(sala: SalaVelatorio): void {
+  registrarEntrada(vehiculo: ControlVehiculoListado): void {
     this.registrarEntradaRef = this.dialogService.open(RegistrarEntradaComponent, {
       header: 'Registrar Entrada',
       width: '920px',
-      data: { sala: sala },
+      data: { vehiculo },
     });
     this.registrarEntradaRef.onClose.subscribe((respuesta) => {
       if (respuesta) {
-        // TO DO Emitir salida, consultar listado y actualizar vista
-        // this.consultaSalasCremacion();
+        this.actualizarListadoEvent.emit();
       }
     });
   }
 
-  private registrarSalida(sala: SalaVelatorio): void {
+  registrarSalida(vehiculo: ControlVehiculoListado): void {
     this.registrarSalidaRef = this.dialogService.open(RegistrarSalidaComponent, {
-      header: 'Registrar Salida',
+      header: 'Elección de vehículo',
       width: '920px',
-      data: { sala: sala },
+      data: { vehiculo },
     });
     this.registrarSalidaRef.onClose.subscribe((respuesta) => {
       if (respuesta) {
-        // TO DO Emitir salida, consultar listado y actualizar vista
-        // this.consultaSalasCremacion();
+        this.actualizarListadoEvent.emit();
       }
     });
   }

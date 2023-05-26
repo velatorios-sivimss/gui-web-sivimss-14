@@ -24,7 +24,7 @@ import {CATALOGO_SEXO, ESTADO, NACIONALIDAD, PAIS} from "../../constants/catalog
 import * as moment from 'moment'
 import {AgregarSalidaDonacionInterface, AtaudesDonados, Finado} from "../../models/agregar-salida-donacion-interface";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
-import {PlantillaControlSalida} from "../../models/generar-plantilla-interface";
+import {DatosAdministrador, PlantillaControlSalida} from "../../models/generar-plantilla-interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
@@ -40,6 +40,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   readonly POSICION_ESTADOS = 0;
   readonly POSICION_PAISES = 1;
+  readonly POSICION_DELEGACION = 2;
 
   agregarFinadoRef!: DynamicDialogRef;
   agregarAtaudRef!: DynamicDialogRef;
@@ -57,6 +58,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   lugarNacimiento: TipoDropdown[] = [];
   paisNacimiento: TipoDropdown[] = [];
   estado: TipoDropdown[] = [];
+  delegacion: TipoDropdown[] = [];
   finados: FinadoInterface[] = [];
   ataudes: AtaudDonado[] = [];
   backlogAutaudes!: AtaudDonado[];
@@ -67,6 +69,8 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   formAtaudes!: FormGroup;
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
   catalogoVelatorios: TipoDropdown[] = [];
+  datosAdministrador!: DatosAdministrador;
+  existeStock: boolean = true;
 
 
 
@@ -94,10 +98,13 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       {label: estado.label, value: estado.value} )) || [];
     this.paisNacimiento = respuesta[this.POSICION_PAISES]!.map((pais: any) => (
       {label: pais.label, value: pais.value} )) || [];
+    this.delegacion = respuesta[this.POSICION_DELEGACION]!.map((delegacion: any) => (
+      {label: delegacion.label, value: delegacion.value} )) || [];
     this.consultarAtaudes();
     this.actualizarBreadcrumb();
     this.inicializarDatosSolicitantesForm();
     this.inicializarAtaudesForm();
+    this.consultarDatosAdministrador();
   }
 
   actualizarBreadcrumb(): void {
@@ -156,17 +163,33 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   abrirModalAtaud(): void {
-    this.agregarAtaudRef = this.dialogService.open(AgregarAtaudComponent, {
-      header: 'Agregar ataúd',
-      width:"920px",
-      data: this.ataudes
-    })
 
-    this.agregarAtaudRef.onClose.subscribe((ataud:AtaudDonado) => {
-      if(ataud){
-        this.ataudes.push(ataud);
+    this.loaderService.activar();
+    this.consultaDonacionesService.consultaControlSalidaAtaudes().pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>)=> {
+        if(respuesta.datos.length > 0 && this.existeStock){
+          this.agregarAtaudRef = this.dialogService.open(AgregarAtaudComponent, {
+            header: 'Agregar ataúd',
+            width:"920px",
+            data: this.ataudes
+          })
+          this.agregarAtaudRef.onClose.subscribe((ataud:any) => {
+            if(!ataud.existeStock){this.existeStock = false}
+              if(ataud.ataud){
+                this.ataudes.push(ataud.ataud[0]);
+                return;
+              }
+          })
+          return;
+        }
+        this.alertaService.mostrar(TipoAlerta.Info, "Ya no hay stock de este artículo.");
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
       }
-    })
+    )
   }
 
   consultaCURP(): void {
@@ -245,8 +268,8 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if(!this.fds.cp.value){return}
+    this.loaderService.activar();
     this.consultaDonacionesService.consutaCP(this.fds.cp.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
@@ -284,16 +307,14 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        this.generarArchivo();
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
-        this.generarArchivo();
         this.router.navigate(["consulta-donaciones"]);
       },
       (error: HttpErrorResponse) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+        console.log(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error?.error?.mensaje);
       }
     )
   }
@@ -301,7 +322,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
   generarArchivo(): void{
     this.loaderService.activar();
-    const configuracionArchivo: OpcionesArchivos = {};
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Control de salida de ataúdes de donación"};
     const plantilla = this.generarDatosPlantilla();
     this.descargaArchivosService.descargarArchivo(
       this.consultaDonacionesService.generarPlantillaControlSalida(plantilla),configuracionArchivo
@@ -318,51 +339,85 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   generarDatosControlSalida():AgregarSalidaDonacionInterface {
-    return {
-      rfc: this.fds.rfc.value,
-      curp: this.fds.curp.value,
-      nss: "",
-      nomPersona: this.fds.nombre.value,
-      nomPersonaPaterno:this.fds.primerApellido.value,
-      nomPersonaMaterno: this.fds.segundoApellido.value,
-      numSexo: this.fds.sexo.value,
-      idPais:this.fds.paisNacimiento.value?this.fds.paisNacimiento.value:119,
-      idEstado:this.fds.lugarNacimiento.value,
-      desTelefono: this.fds.telefono.value,
-      desCorreo: this.fds.correoElectronico.value,
-      tipoPersona: this.fds.otro.value,
-      desCodigoPostal: this.fds.cp.value,
-      desCalle: this.fds.calle.value,
-      numExterior: this.fds.numeroExterior.value,
-      numInterior: this.fds.numeroInterior.value,
-      desColonia: this.fds.colonia.value,
-      desEstado: this.fds.estado.value,
-      desMunicipio: this.fds.municipio.value,
-      nomInstitucion: this.fds.nombreInstitucion.value,
-      fecNacimiento: moment(this.fds.fechaNacimiento.value).format('yyyy-MM-DD'),
-      numTotalAtaudes:this.ataudes.length,
-      estudioSocieconomico: this.fa.estudioSocioeconomico.value?1:0,
-      estudioLibre: this.fa.estudioLibre.value? 1:0,
-      fecSolicitad: moment(this.fa.fechaSolicitud.value).format('yyyy-MM-DD'),
-      responsableAlmacen: this.fa.responsableAlmacenAtaud.value,
-      matricularesponsable:this.fa.matriculaResponsable.value,
-      ataudesDonados: this.formatoAtaud(),
-      agregarFinados: this.formatoFinados()
-    };
+    if(this.finados.length > 0){
+      return {
+        rfc: this.fds.rfc.value ? this.fds.rfc.value : "",
+        curp: this.fds.curp.value,
+        nss: "",
+        nomPersona: this.fds.nombre.value,
+        nomPersonaPaterno:this.fds.primerApellido.value,
+        nomPersonaMaterno: this.fds.segundoApellido.value,
+        numSexo: this.fds.sexo.value,
+        idPais:this.fds.paisNacimiento.value?this.fds.paisNacimiento.value:119,
+        idEstado:this.fds.lugarNacimiento.value,
+        desTelefono: this.fds.telefono.value,
+        desCorreo: this.fds.correoElectronico.value,
+        tipoPersona: this.fds.otro.value,
+        desCalle: this.fds.calle.value,
+        numExterior: this.fds.numeroExterior.value,
+        numInterior: this.fds.numeroInterior.value,
+        desCodigoPostal: +this.fds.cp.value,
+        desColonia: this.fds.colonia.value,
+        desMunicipio: this.fds.municipio.value,
+        desEstado: this.fds.estado.value,
+        nomInstitucion: this.fds.nombreInstitucion.value,
+        fecNacimiento: moment(this.fds.fechaNacimiento.value).format('yyyy-MM-DD'),
+        numTotalAtaudes:this.ataudes.length,
+        estudioSocieconomico: this.fa.estudioSocioeconomico.value?1:0,
+        estudioLibre: this.fa.estudioLibre.value? 1:0,
+        fecSolicitad: moment(this.fa.fechaSolicitud.value).format('yyyy-MM-DD'),
+        responsableAlmacen: this.fa.responsableAlmacenAtaud.value,
+        matricularesponsable:this.fa.matriculaResponsable.value,
+        ataudesDonados: this.formatoAtaud(),
+        agregarFinados: this.formatoFinados()
+      };
+    }else {
+      return {
+        rfc: this.fds.rfc.value ? this.fds.rfc.value : "",
+        curp: this.fds.curp.value,
+        nss: "",
+        nomPersona: this.fds.nombre.value,
+        nomPersonaPaterno:this.fds.primerApellido.value,
+        nomPersonaMaterno: this.fds.segundoApellido.value,
+        numSexo: this.fds.sexo.value,
+        idPais:this.fds.paisNacimiento.value?this.fds.paisNacimiento.value:119,
+        idEstado:this.fds.lugarNacimiento.value,
+        desTelefono: this.fds.telefono.value,
+        desCorreo: this.fds.correoElectronico.value,
+        tipoPersona: this.fds.otro.value,
+        desCalle: this.fds.calle.value,
+        numExterior: this.fds.numeroExterior.value,
+        numInterior: this.fds.numeroInterior.value,
+        desCodigoPostal: +this.fds.cp.value,
+        desColonia: this.fds.colonia.value,
+        desMunicipio: this.fds.municipio.value,
+        desEstado: this.fds.estado.value,
+        nomInstitucion: this.fds.nombreInstitucion.value,
+        fecNacimiento: moment(this.fds.fechaNacimiento.value).format('yyyy-MM-DD'),
+        numTotalAtaudes:this.ataudes.length,
+        estudioSocieconomico: this.fa.estudioSocioeconomico.value?1:0,
+        estudioLibre: this.fa.estudioLibre.value? 1:0,
+        fecSolicitad: moment(this.fa.fechaSolicitud.value).format('yyyy-MM-DD'),
+        responsableAlmacen: this.fa.responsableAlmacenAtaud.value,
+        matricularesponsable:this.fa.matriculaResponsable.value,
+        ataudesDonados: this.formatoAtaud(),
+      };
+    }
+
   }
 
   generarDatosPlantilla(): PlantillaControlSalida {
     let usuario = JSON.parse(localStorage.getItem('usuario') as string)
 
-
     return {
-      nomSolicitantes:'',
-      nomAdministrador:'Raúl de Jesús',
-      lugar:'Col. Doctores, CDMX',
-
-      ooadNom:'AGUASCALIENTES',
+      nomSolicitantes: this.fds.nombre.value + " " + this.fds.primerApellido.value + " " + this.fds.segundoApellido.value,
+      nomAdministrador: this.datosAdministrador.nombreAdministrador,
+      claveAdministrador:this.datosAdministrador.matriculaAdministrador,
+      lugar: this.datosAdministrador.lugardonacion,
+      ooadNom:usuario.idVelatorio,
       velatorioId:usuario.idVelatorio,
-      velatorioNom:'DOCTORES',
+      velatorioNom: this.consultaNombreVelatorio(),
+      claveResponsableAlmacen: this.fa.matriculaResponsable.value,
       version:5.2,
       numAtaudes:this.ataudes.length,
       modeloAtaud: this.modeloAtaudes(),
@@ -371,13 +426,37 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       nomFinados: this.nombreFinados(),
       fecSolicitud:moment(this.fa.fechaSolicitud.value).format('DD/MM/yyyy'),
       nomResponsableAlmacen:this.fa.responsableAlmacenAtaud.value,
-      nomSolicitante:this.fds.nombre.value,
+      nomSolicitante:this.fds.nombre.value + " " + this.fds.primerApellido.value + " " + this.fds.segundoApellido.value,
       dia: parseInt(moment().format('DD')),
-      mes:moment().format('MMMM'),
+      mes:moment().format('MMMM').toUpperCase(),
       anio: parseInt(moment().format('yyyy')) ,
       tipoReporte:'pdf'
     }
+  }
 
+  consultarDatosAdministrador(): void {
+    this.loaderService.activar();
+    const usuario = JSON.parse(localStorage.getItem('usuario') as string)
+
+    this.consultaDonacionesService.consultarDatosAdministrador(usuario.idVelatorio).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        this.datosAdministrador = {
+          nombreAdministrador: respuesta.datos[0].nombreAdministrador,
+          lugardonacion: respuesta.datos[0].lugardonacion,
+          matriculaAdministrador: respuesta.datos[0].matriculaAdministrador
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
+  }
+
+  consultaNombreVelatorio(): string {
+    let velatorio = this.datosAdministrador.lugardonacion?.split(',')
+    return velatorio![0];
   }
 
   modeloAtaudes(): string{
@@ -398,6 +477,16 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     return tipoAtaud;
   }
 
+  nombreOoad(idOoad: number): string {
+    let nombreDelegacion: TipoDropdown[];
+
+    nombreDelegacion = this.delegacion.filter((nombre => {
+      return idOoad == nombre.value;
+    }));
+
+    return nombreDelegacion[0].label;
+  }
+
   numInventario(): string {
     let numInventario = "";
     this.ataudes.forEach( ataud => {
@@ -410,13 +499,13 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   nombreFinados(): string {
     let nombreFinados = "";
     this.finados.forEach( finado => {
-      nombreFinados += finado.nombre + ',';
+      nombreFinados += finado.nombre + " " + finado.primerApellido + " " + finado.segundoApellido +  ',';
     });
     nombreFinados = nombreFinados.substr(0 , nombreFinados.length - 1);
     return nombreFinados;
   }
 
-  formatoFinados(): Finado[] {
+  formatoFinados(): Finado[] | string {
     this.finados.forEach( finado => {
       this.finadoLista.push(
         {
@@ -426,7 +515,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
         }
       )
     });
-    return this.finadoLista;
+    return this.finadoLista ? this.finadoLista : "";
   }
 
   formatoAtaud(): AtaudesDonados[] {

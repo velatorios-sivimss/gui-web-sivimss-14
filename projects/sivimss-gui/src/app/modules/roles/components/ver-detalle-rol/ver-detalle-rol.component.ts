@@ -6,6 +6,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {RolService} from "../../services/rol.service";
 import {RespuestaModalRol} from "../../models/respuestaModal.interface";
 import {ModificarRolComponent} from "../modificar-rol/modificar-rol.component";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 const MAX_WIDTH: string = "876px";
 
@@ -31,24 +32,23 @@ export class VerDetalleRolComponent implements OnInit {
 
   ngOnInit(): void {
     this.rolSeleccionado = this.config.data;
-   // this.obtenerRol(this.rolSeleccionado);
   }
 
   cambiarEstatus(rol: Rol): void {
-    const rolEstatus = {
+    const rolEstatus: { idRol: number | undefined; estatusRol: number } = {
       "idRol": rol.idRol,
       "estatusRol": rol.estatusRol ? 1 : 0
     }
-    const solicitudId = JSON.stringify(rolEstatus);
-    this.rolService.cambiarEstatus(solicitudId).subscribe(
-      () => {
+    const solicitudId: string = JSON.stringify(rolEstatus);
+    this.rolService.cambiarEstatus(solicitudId).subscribe({
+      next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus realizado');
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   aceptar(): void {
@@ -67,15 +67,15 @@ export class VerDetalleRolComponent implements OnInit {
   }
 
   obtenerRol(id: number): void {
-    this.rolService.buscarPorId(id).subscribe(
-      (respuesta) => {
+    this.rolService.buscarPorId(id).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.rolSeleccionado = respuesta.datos[0];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   procesarRespuestaModal(respuesta: RespuestaModalRol = {}): void {

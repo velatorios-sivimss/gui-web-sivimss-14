@@ -1,53 +1,70 @@
-<ng-container *ngIf="indice === 0">
-  <form [formGroup]="modificarRolForm">
-    <section>
-      <h2 class="subtitulo">Datos generales</h2>
-      <div class="px-4 mt-3">
-        <div class="row mb-2">
-          <div class="col-md-3">
-            <label class="control-label" for="id">ID<span class="req">*</span></label>
-            <input id="id" class="form-control" formControlName="id" placeholder="Inserta el ID">
-            <span class="campo-obligatorio" *ngIf="f?.id?.errors?.required && (f?.id?.dirty || f?.id?.touched)">Campo obligatorio</span>
+<ng-container [ngSwitch]="pasoModificarRol">
+  <ng-container *ngSwitchCase="CAPTURA_DE_ROL">
+    <form [formGroup]="modificarRolForm">
+      <section>
+        <h2 class="subtitulo">Datos generales</h2>
+        <div class="px-4 mt-3">
+          <div class="row mb-2">
+            <div class="col-md-3">
+              <label class="control-label" for="id">ID<span class="req">*</span></label>
+              <input id="id" class="form-control" formControlName="id" placeholder="Inserta el ID">
+              <span class="campo-obligatorio" *ngIf="f?.id?.errors?.required && (f?.id?.dirty || f?.id?.touched)">Este campo es obligatorio *.</span>
+            </div>
           </div>
-        </div>
-        <div class="row mb-2">
-          <div class="col-md-9">
-            <label class="control-label" for="nombre">Nombre del rol<span class="req">*</span></label>
-            <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre"
-                   lettersOnly (keyup.space)="noEspaciosAlPrincipio()" maxlength="100">
-            <span class="campo-obligatorio" *ngIf="f?.nombre?.errors?.required && (f?.nombre?.dirty || f?.nombre?.touched)">Campo obligatorio</span>
+          <div class="row mb-2">
+            <div class="col-md-9">
+              <label class="control-label" for="nombre">Nombre del rol<span class="req">*</span></label>
+              <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre"
+                     alphanumericOnly (keyup.space)="noEspaciosAlPrincipio()" maxlength="100">
+              <span class="campo-obligatorio"
+                    *ngIf="f?.nombre?.errors?.required && (f?.nombre?.dirty || f?.nombre?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-3">
+              <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
+              <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogo_nivelOficina"
+                          placeholder="Seleccionar el nivel">
+              </p-dropdown>
+              <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Este campo es obligatorio *.</span>
+            </div>
           </div>
-          <div class="col-md-3">
-            <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
-            <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogo_nivelOficina" placeholder="Seleccionar el nivel">
-            </p-dropdown>
-            <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Campo obligatorio</span>
+          <div class="row mb-4" >
+            <div class="col-md-6">
+              <label class="control-label" for="fechaCreacion">Fecha creación<span class="req">*</span>:</label>
+              <p-calendar id="fechaCreacion" styleClass="form-control" formControlName="fechaCreacion" [showIcon]="true"
+                          dateFormat="dd/mm/yy" placeholder="Ingresa fecha"></p-calendar>
+              <span class="campo-obligatorio"
+                    *ngIf="f.fechaCreacion?.errors?.required && (f.fechaCreacion?.dirty || f.fechaCreacion?.touched)">Este campo es obligatorio *.</span>
+            </div>
           </div>
-        </div>
-        <div class="row mb-4">
-          <div class="col-md-12">
-            <span class="campos-obligatorios-texto">*Campos obligatorios</span>
+          <div class="row mb-4">
+            <div class="col-md-12">
+              <span class="campos-obligatorios-texto">*Campos obligatorios</span>
+            </div>
           </div>
-        </div>
-        <div class="row mb-4">
-          <div class="col-md-12">
+          <div class="row mb-4">
+            <div class="col-md-12">
               <label class="control-label">Estatus<span class="req">*</span></label>
               <div class="contenedor-inputswitch">
-                  <p-inputSwitch formControlName="estatus"></p-inputSwitch>
-                  <span class="activo" *ngIf="f.estatus?.value">Activo</span>
-                  <span class="inactivo" *ngIf="!f.estatus?.value">Inactivo</span>
+                <p-inputSwitch formControlName="estatus"></p-inputSwitch>
+                <span class="activo" *ngIf="f.estatus?.value">Activo</span>
+                <span class="inactivo" *ngIf="!f.estatus?.value">Inactivo</span>
               </div>
+            </div>
           </div>
         </div>
+      </section>
+      <div class="flex justify-content-end mb-6">
+        <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="ml-4 btn btn-primary btn-md" [disabled]="modificarRolForm.invalid"
+                (click)="confirmarModificacion()">
+          Modificar
+        </button>
       </div>
-    </section>
-    <div class="flex justify-content-end mb-6">
-      <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="button" class="ml-4 btn btn-primary btn-md" [disabled]="modificarRolForm.invalid" (click)="confirmarModificacion()">
-        Aceptar
-      </button>
-    </div>
-  </form>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="RESUMEN_DE_ROL">
+    <app-confirmacion-movimiento [origen]="1" [datosRolModificar]="datosConfirmacion"
+                                 (confirmacionAceptar)="modificarRol($event)">
+    </app-confirmacion-movimiento>
+  </ng-container>
 </ng-container>
-
-

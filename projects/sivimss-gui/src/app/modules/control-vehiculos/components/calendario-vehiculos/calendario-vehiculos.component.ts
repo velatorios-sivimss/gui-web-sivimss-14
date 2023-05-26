@@ -1,12 +1,12 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CalendarOptions, EventApi, EventClickArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { MENU_SALAS } from "../../constants/menu-salas";
 import interactionPlugin from "@fullcalendar/interaction";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { CalendarioVehiculos } from "../../models/calendario-vehiculos.interface";
-import { VerActividadSalasComponent } from "../ver-actividad-salas/ver-actividad-salas.component";
+import { FiltroFormData, GenerarReporteCalendar } from "../../models/calendario-vehiculos.interface";
+import { VerActividadVehiculosComponent } from "../ver-actividad-vehiculos/ver-actividad-vehiculos.component";
 import { ActivatedRoute } from "@angular/router";
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -19,41 +19,44 @@ import { FullCalendarComponent } from "@fullcalendar/angular";
 import { finalize } from "rxjs/operators";
 import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
 import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
-import { ControlVehiculos } from '../../models/control-vehiculos.interface';
+import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
 
 @Component({
   selector: 'app-calendario-vehiculos',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendario-vehiculos.component.html',
   styleUrls: ['./calendario-vehiculos.component.scss'],
   providers: [DialogService, DescargaArchivosService]
 })
 export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
+  @ViewChild('calendarioVehiculos') calendarioVehiculos!: FullCalendarComponent;
+
   readonly POSICION_CATALOGO_VELATORIOS = 0;
   readonly POSICION_CATALOGO_DELEGACION = 1;
 
-  @Input() controlVehiculos: ControlVehiculos[] = [];
+  private _filtroFormData!: FiltroFormData;
 
-  @ViewChild('calendarioCremacion') calendarioCremacion!: FullCalendarComponent;
+  @Input() controlVehiculos: ControlVehiculoListado[] = [];
+
+  @Input()
+  set filtroFormData(filtroFormData: FiltroFormData) {
+    this._filtroFormData = filtroFormData;
+    if (this.calendarioVehiculos) {
+      this.obtenerVehiculos();
+    }
+  }
+
+  get filtroFormData(): FiltroFormData {
+    return this._filtroFormData;
+  }
 
   fechaCalendario!: Moment;
   calendarApi: any;
-
   calendarOptions!: CalendarOptions;
-  velatorios: TipoDropdown[] = [];
   delegaciones: TipoDropdown[] = [];
   menu: string[] = MENU_SALAS;
-
-  posicionPestania: number = 0;
-  velatorio!: number;
-  delegacion!: number;
-
   base64: any;
-
-  fechaSeleccionada: string = "";
   actividadRef!: DynamicDialogRef;
-
-  tituloSalas: CalendarioVehiculos[] = [];
-  salasDetalle: CalendarioVehiculos[] = [];
   currentEvents: EventApi[] = [];
 
   constructor(
@@ -63,8 +66,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private controlVehiculosService: ControlVehiculosService,
     private descargaArchivosService: DescargaArchivosService
-  ) {
-  }
+  ) { }
 
   ngOnInit(): void {
     this.inicializarCalendario();
@@ -82,14 +84,11 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
       selectable: true,
       dayHeaders: false,
       eventClick: this.mostrarEvento.bind(this),
-      dateClick: ((evt: any) => this.mostrarEvento(evt)),
+      // dateClick: ((evt: any) => this.mostrarEvento(evt)),
       eventsSet: this.handleEvents.bind(this),
       dayMaxEventRows: 3,
       titleFormat: { year: 'numeric', month: 'long' },
-      events: [
-        { title: 'event 1', date: '2023-04-28' },
-        { title: 'event 2', date: '2023-04-26' }
-      ],
+      events: [],
       datesSet: event => {
         let mesInicio = +moment(event.start).format("MM");
         let mesFinal = +moment(event.end).format("MM");
@@ -98,67 +97,18 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
         } else {
           this.fechaCalendario = moment(event.start);
         }
-        this.calendarioCremacion.getApi().removeAllEvents();
-        if (this.velatorio) { this.cambiarMes() }
+        this.obtenerVehiculos();
       },
     };
   }
 
-  cambiarMes(): void {
-    this.salasDetalle = [];
-    this.tituloSalas = [];
-    let anio = moment(this.fechaCalendario).format('YYYY').toString();
-    let mes = moment(this.fechaCalendario).format('MM').toString();
-    this.calendarApi = this.calendarioCremacion.getApi()
-    this.calendarApi.removeAllEvents();
-    if (this.velatorio) {
-      this.controlVehiculosService.consultaMes(+mes, +anio, this.posicionPestania, this.velatorio).pipe(
-      ).subscribe(
-        (respuesta: HttpRespuesta<any>) => {
-          respuesta.datos.forEach((sala: any) => {
-            let bandera: boolean = false;
-            this.calendarioCremacion.getApi().addEvent(
-              { id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala },
-            );
-            this.tituloSalas.forEach((tituloSala: any) => {
-              if (tituloSala.id == sala.idSala) {
-                bandera = true;
-                return;
-              }
-            });
-            if (!bandera) {
-              this.tituloSalas.push(
-                {
-                  borderColor: sala.colorSala,
-                  textColor: sala.colorSala,
-                  title: sala.nombreSala,
-                  id: sala.idSala
-                }
-              )
-            }
-          })
-          this.tituloSalas = [...this.tituloSalas]
-        },
-        (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
-        }
-      )
-    }
-  }
-
   mostrarEvento(clickInfo: EventClickArg): void {
-    let obj = {
-      ...clickInfo,
-      dateStr: '',
-    }
-    // const idSala: number = +clickInfo.event._def.publicId;
-    // this.fechaSeleccionada = moment(clickInfo.event._instance?.range.end).format('yyyy-MM-DD');
-    this.fechaSeleccionada = obj.dateStr;
-    this.actividadRef = this.dialogService.open(VerActividadSalasComponent, {
+    const idVehiculo: number = +clickInfo.event._def.publicId;
+    const fechaSeleccionada: string = moment(clickInfo.event._instance?.range.end).format('yyyy-MM-DD');
+    this.actividadRef = this.dialogService.open(VerActividadVehiculosComponent, {
       header: 'Ver actividad del día',
       width: "920px",
-      data: { fecha: this.fechaSeleccionada, idSala: 1 }
+      data: { fechaSeleccionada, idVehiculo }
     })
   }
 
@@ -166,50 +116,67 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     this.currentEvents = events;
   }
 
-  cambiarPestania(pestania?: any): void {
-    setTimeout(() => {
-      this.posicionPestania = pestania?.index;
-      this.velatorio = 0;
-      this.delegacion = 0;
-      this.tituloSalas = [];
-      this.calendarioCremacion?.getApi().removeAllEvents();
-      this.calendarioCremacion?.getApi().gotoDate(new Date());
-      if (this.velatorio) { this.cambiarMes() }
-    }, 300)
-  }
-
-  generarArchivo(tipoReporte: string): void {
+  generarReporteCalendar(tipoReporte: string): void {
     const configuracionArchivo: OpcionesArchivos = {};
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
-    if (!this.velatorio) { return }
-    if (!this.tituloSalas.length) { return }
 
     this.loaderService.activar();
     const busqueda = this.filtrosArchivos(tipoReporte);
 
-    this.descargaArchivosService.descargarArchivo(this.controlVehiculosService.generarReporte(busqueda), configuracionArchivo).pipe(
+    this.controlVehiculosService.generarReporteCalendar(busqueda).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta) => {
-        console.log(respuesta)
+        if (respuesta.codigo === 200) {
+          const file = new Blob(
+            [this.descargaArchivosService.base64_2Blob(
+              respuesta.datos,
+              this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+            { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          const url = window.URL.createObjectURL(file);
+          window.open(url);
+        } else {
+          console.error(respuesta.mensaje);
+        }
       },
       (error) => {
-        console.log(error)
+        console.error(error);
       },
     )
   }
 
-  filtrosArchivos(tipoReporte: string) {
+  filtrosArchivos(tipoReporte: string): GenerarReporteCalendar {
     return {
-      idVelatorio: this.velatorio,
-      indTipoSala: this.posicionPestania,
-      mes: moment(this.fechaCalendario).format('MM').toString(),
-      anio: moment(this.fechaCalendario).format('YYYY').toString(),
-      rutaNombreReporte: "reportes/generales/ReporteVerificarDisponibilidadSalas.jrxml",
-      tipoReporte: tipoReporte
+      fecIniRepo: moment(this.fechaCalendario).startOf('month').format('YYYY-MM-DD'),
+      fecFinRepo: moment(this.fechaCalendario).endOf('month').format('YYYY-MM-DD'),
+      tipoReporte,
     }
+  }
+
+  obtenerVehiculos() {
+    this.calendarioVehiculos.getApi().removeAllEvents();
+    let buscar: BuscarVehiculosDisponibles = {
+      idDelegacion: this.filtroFormData.delegacion,
+      idVelatorio: this.filtroFormData.velatorio,
+      fecIniRepo: moment(this.fechaCalendario).startOf('month').format('YYYY-MM-DD'),
+      fecFinRepo: moment(this.fechaCalendario).endOf('month').format('YYYY-MM-DD'),
+    };
+    this.controlVehiculosService.obtenerVehiculosCalendario(buscar).pipe().subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        respuesta.datos.forEach((vehiculo: any) => {
+          const title: string = `${vehiculo.placas} - ${vehiculo.marca} ${vehiculo.modelo}`
+          this.calendarioVehiculos.getApi().addEvent(
+            { id: vehiculo.idVehiculo, title, start: vehiculo.fecha, textColor: '#376ED9', borderColor: '#484848', backgroundColor: 'white' },
+          );
+        })
+      },
+      (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    );
   }
 
   ngOnDestroy(): void {

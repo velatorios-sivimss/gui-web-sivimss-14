@@ -22,7 +22,8 @@
             <label class="control-label" for="delegacion">Delegación:</label>
             <p-dropdown id="delegacion" class="form-control" formControlName="delegacion"
                 [options]="catalogoDelegaciones" placeholder="Seleccionar la delegación" [filter]="true"
-                filterBy="label" (onChange)='obtenerVelatorios();'>
+                filterBy="label" (onChange)='obtenerVelatorios(); obtenerVehiculos();'
+                [showClear]="+rolLocalStorage.idRol < 2">
             </p-dropdown>
         </div>
     </div>
@@ -30,11 +31,13 @@
         <div class="col-md-6">
             <label class="control-label" for="velatorio">Velatorio:</label>
             <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                placeholder="Selecciona el velatorio" [filter]="true" filterBy="label" (onChange)='obtenerVehiculos();'>
+                placeholder="Selecciona el velatorio" [filter]="true" filterBy="label" (onChange)='obtenerVehiculos();'
+                [showClear]="+rolLocalStorage.idRol < 3">
             </p-dropdown>
         </div>
     </div>
 </form>
 
-<app-listado-vehiculos [controlVehiculos]="controlVehiculos" *ngIf="!modoCalendario"></app-listado-vehiculos>
-<app-calendario-vehiculos [controlVehiculos]="controlVehiculos" *ngIf="modoCalendario"></app-calendario-vehiculos>
+<app-listado-vehiculos *ngIf="!modoCalendario" [controlVehiculos]="controlVehiculos"
+    (actualizarListadoEvent)="obtenerVehiculos()"></app-listado-vehiculos>
+<app-calendario-vehiculos *ngIf="modoCalendario" [filtroFormData]="filtroForm.value"></app-calendario-vehiculos>

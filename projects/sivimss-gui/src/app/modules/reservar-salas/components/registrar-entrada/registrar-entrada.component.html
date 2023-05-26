@@ -33,14 +33,14 @@
                     placeholder="Seleccione el inicio de" (onChange)="cambioInicioDe($event)"></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="entradaF.inicioDe?.errors?.required && (entradaF.inicioDe?.dirty || entradaF.inicioDe?.touched)">
-                    Campo obligatorio</span>
+                    Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6 mb-3" *ngIf="entradaF.inicioDe?.value === '1'">
         <label class="control-label" for="descripcionMantenimiento">Tipo de mantenimiento <span class="req">*</span>:</label>
         <input id="descripcionMantenimiento" class="form-control" formControlName="descripcionMantenimiento" maxlength="50">
         <span class="campo-obligatorio"
               *ngIf="entradaF.descripcionMantenimiento?.errors?.required && (entradaF.descripcionMantenimiento?.dirty || entradaF.descripcionMantenimiento?.touched)">
-                    Campo obligatorio</span>
+                    Este campo es obligatorio *.</span>
       </div>
 
       <ng-container *ngIf="entradaF.inicioDe?.value === '2'">
@@ -49,21 +49,15 @@
           <input id="folioODS" class="form-control" formControlName="folioODS" (blur)="consultaODS()">
           <span class="campo-obligatorio"
                 *ngIf="entradaF.folioODS?.errors?.required && (entradaF.folioODS?.dirty || entradaF.folioODS?.touched)">
-                      Campo obligatorio</span>
+                      Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6 mb-3">
-          <label class="control-label" for="nombreContratante">Nombre del contratante <span class="req">*</span>:</label>
+          <label class="control-label" for="nombreContratante">Nombre del contratante :</label>
           <input id="nombreContratante" class="form-control" formControlName="nombreContratante">
-          <span class="campo-obligatorio"
-                *ngIf="entradaF.nombreContratante?.errors?.required && (entradaF.nombreContratante?.dirty || entradaF.nombreContratante?.touched)">
-                      Campo obligatorio</span>
         </div>
         <div class="col-md-6 mb-3">
-          <label class="control-label" for="nombreFinado">Nombre del finado(a) <span class="req">*</span>:</label>
+          <label class="control-label" for="nombreFinado">Nombre del finado(a):</label>
           <input id="nombreFinado" class="form-control" formControlName="nombreFinado">
-          <span class="campo-obligatorio"
-                *ngIf="entradaF.nombreFinado?.errors?.required && (entradaF.nombreFinado?.dirty || entradaF.nombreFinado?.touched)">
-                      Campo obligatorio</span>
         </div>
       </ng-container>
 
@@ -76,15 +70,15 @@
         <input id="nombreResponsable" (keyup.space)="noEspaciosAlPrincipio()" class="form-control" formControlName="nombreResponsable" maxlength="50" lettersOnly>
         <span class="campo-obligatorio"
               *ngIf="entradaF.nombreResponsable?.errors?.required && (entradaF.nombreResponsable?.dirty || entradaF.nombreResponsable?.touched)">
-                    Campo obligatorio</span>
+                    Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6 mb-3" *ngIf="!tipoSala && entradaF.inicioDe?.value === '2'">
-          <label class="control-label" for="nivelGas">Nivel de gas <span class="req">*</span>:</label>
+          <label class="control-label" for="nivelGas">Nivel de gas inicial(litros)<span class="req">*</span>:</label>
           <p-inputNumber [useGrouping]="false" mode="decimal" currency="USD" locale="en-US" [minFractionDigits]="2" [maxFractionDigits]="2" suffix="L"
             id="nivelGas" class="form-control" formControlName="nivelGas" [maxlength]="11"></p-inputNumber>
           <span class="campo-obligatorio"
                 *ngIf="entradaF.nivelGas?.errors?.required && (entradaF.nivelGas?.dirty || entradaF.nivelGas?.touched)">
-                      Campo obligatorio</span>
+                      Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
@@ -98,7 +92,7 @@
         <p-calendar appendTo="body" id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"></p-calendar>
         <span class="campo-obligatorio"
               *ngIf="entradaF.fecha?.errors?.required && (entradaF.fecha?.dirty || entradaF.fecha?.touched)">
-                    Campo obligatorio</span>
+                    Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="hora">Hora <span class="req">*</span>:</label>
@@ -108,7 +102,7 @@
             ></p-calendar>
             <span class="campo-obligatorio"
                   *ngIf="entradaF.hora?.errors?.required && (entradaF.hora?.dirty || entradaF.hora?.touched)">
-                    Campo obligatorio</span>
+                    Este campo es obligatorio *.</span>
           </div>
         </div>
       </div>
@@ -122,7 +116,7 @@
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
         <button type="submit" class="btn btn-primary btn-md ml-5"
-                [disabled]="registroEntradaForm.invalid || !folioValido">Aceptar
+                [disabled]="registroEntradaForm.invalid || !folioValido">Guardar
         </button>
       </div>
     </div>
@@ -222,7 +216,7 @@
   </app-table-panel>
   <div class="row mb-5 mt-5">
     <div class="col-md-12 text-center">
-      ¿Estas seguro de registrar la entrada de esta sala?
+      ¿Estás seguro de registrar la entrada a esta sala?
     </div>
   </div>
   <div class="row mb-3">
