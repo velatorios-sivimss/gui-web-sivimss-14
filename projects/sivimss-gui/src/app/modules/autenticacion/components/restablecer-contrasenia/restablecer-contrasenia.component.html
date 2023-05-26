@@ -27,7 +27,7 @@
       </span>
     </div>
     <div class="form-group mb-3">
-      <label class="control-label" for="contraseniaConfirmacion">Confirmar contraseña<span class="req">*</span>:</label>
+      <label class="control-label" for="contraseniaConfirmacion">Confirmar nueva contraseña<span class="req">*</span>:</label>
       <div class="form-icon">
         <input #contraseniaConfirmacion class="form-control" id="contraseniaConfirmacion"
                formControlName="contraseniaConfirmacion"
@@ -43,12 +43,11 @@
     </div>
     <div class="my-4" *ngIf="form.errors">
       <span class="validacion-contrasenias" *ngIf="form.errors?.contraseniasDiferentes">
-        La contraseña nueva no coincide con la confirmación de la contraseña.
+        Las contraseñas ingresadas no coinciden.
       </span>
     </div>
     <div class="flex justify-content-end align-items-center mt-3 mb-4 flex-wrap">
-      <button class="btn btn-default btn-lg" routerLink="../">Regresar</button>
-      <button class="btn btn-primary btn-lg ml-5" [disabled]="form.invalid">Guardar</button>
+      <button class="btn btn-primary btn-lg ml-5" [disabled]="form.invalid">Restablacer</button>
     </div>
   </form>
 </div>
