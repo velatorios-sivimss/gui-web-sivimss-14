@@ -42,6 +42,8 @@ import { ModalDonarArticuloComponent } from './components/modal-donar-articulo/m
 import { ModalAgregarPanteonComponent } from './components/modal-agregar-panteon/modal-agregar-panteon.component';
 import { ModificarDatosFinadoComponent } from './components/modificar-datos-finado/modificar-datos-finado.component';
 import { ModificarInformacionServicioComponent } from './components/modificar-informacion-servicio/modificar-informacion-servicio.component';
+import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import {GenerarOrdenServicioService} from "./services/generar-orden-servicio.service";
 
 @NgModule({
   declarations: [
@@ -90,9 +92,11 @@ import { ModificarInformacionServicioComponent } from './components/modificar-in
     RadioButtonModule,
     AccordionModule,
     DynamicDialogModule,
-    EtapasModule
+    EtapasModule,
+    UtileriaModule
   ],
   providers: [
+    GenerarOrdenServicioService,
     DialogService
   ]
 })

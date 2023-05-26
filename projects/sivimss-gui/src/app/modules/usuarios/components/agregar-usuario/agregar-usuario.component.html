@@ -9,7 +9,7 @@
           <span class="campo-obligatorio"
                 *ngIf="fau?.curp?.errors?.required && (fau?.curp?.dirty || fau?.curp?.touched)">Este campo es obligatorio *.</span>
           <span class="campo-obligatorio"
-                *ngIf="fau?.curp?.errors?.pattern && (fau?.curp?.dirty || fau?.curp?.touched)">CURP no valido.</span>
+                *ngIf="fau?.curp?.errors?.pattern && (fau?.curp?.dirty || fau?.curp?.touched)">CURP no válido.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="matricula">Matrícula<span class="req">*</span>:</label>
@@ -218,7 +218,7 @@
       </div>
     </app-table-panel>
     <div class="mb-3 mt-3 row text-center">
-      ¿Estas seguro de agregar este nuevo registro de usuario?
+      ¿Estás seguro de agregar este nuevo registro de usuario?
     </div>
     <div class="flex justify-content-end mt-5">
       <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>

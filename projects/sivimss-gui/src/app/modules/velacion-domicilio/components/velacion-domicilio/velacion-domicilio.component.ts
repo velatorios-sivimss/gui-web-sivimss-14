@@ -296,9 +296,17 @@ export class VelacionDomicilioComponent implements OnInit {
   limpiar(): void {
     this.alertaService.limpiar();
     this.filtroForm.reset();
-    this.f.nivel.patchValue(1);
+    this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
+
+    if (+this.rolLocalStorage.idRol >= 2) {
+      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
+    }
+
+    if (+this.rolLocalStorage.idRol === 3) {
+      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
+    }
+
     this.obtenerFoliosGenerados();
-    // this.validarCampoOds();
     this.paginar();
   }
 

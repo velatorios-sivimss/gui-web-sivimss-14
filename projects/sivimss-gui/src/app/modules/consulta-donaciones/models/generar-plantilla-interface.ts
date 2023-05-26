@@ -1,6 +1,8 @@
 export interface PlantillaAceptarDonacion {
   numContrato?: string,
   nomAdministrador?: string,
+  claveAdministrador?: string,
+  claveResponsableAlmacen?: string,
   lugar?: string,
   version?:number,
   velatorioId?:number,
@@ -22,7 +24,9 @@ export interface PlantillaAceptarDonacion {
 export interface PlantillaControlSalida {
   nomSolicitantes?: string,
   nomAdministrador?: string,
+  claveAdministrador?: string,
   lugar?: string,
+  claveResponsableAlmacen?: string,
 
 
   version?: number,
@@ -41,6 +45,12 @@ export interface PlantillaControlSalida {
   mes?: string,
   anio?: number,
   tipoReporte?: string
+}
+
+export interface DatosAdministrador {
+  nombreAdministrador?: string;
+  lugardonacion?: string;
+  matriculaAdministrador?: string;
 }
 
 

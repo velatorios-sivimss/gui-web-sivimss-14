@@ -5,9 +5,9 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="folio">Folio ODS<span class="req">*</span></label>
-          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS" (blur)="consultaContratantePorFolioODS()">
+          <input numbersOnly id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS" (blur)="consultaContratantePorFolioODS()">
           <span class="campo-obligatorio"
-                *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Campo obligatorio</span>
+                *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="nombreContratante">Nombre del contratante</label>
@@ -26,16 +26,17 @@
                  (keyup.space)="noEspaciosAlPrincipio()" lettersOnly maxlength="70">
           <span class="campo-obligatorio"
                 *ngIf="f.responsableAlmacen?.errors?.required && (f.responsableAlmacen?.dirty || f.responsableAlmacen?.touched)">
-            Campo obligatorio
+            Este campo es obligatorio *.
           </span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="matricula">Matrícula del responsable<span class="req">*</span></label>
-          <input id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula del responsable">
+          <input alphanumericOnly id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula del responsable"
+          maxlength="45">
           <span class="campo-obligatorio"
-                *ngIf="f.matricula?.errors?.required && (f.matricula?.dirty || f.matricula?.touched)">Campo obligatorio</span>
+                *ngIf="f.matricula?.errors?.required && (f.matricula?.dirty || f.matricula?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
     </form>
