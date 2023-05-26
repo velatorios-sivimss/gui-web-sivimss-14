@@ -52,7 +52,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
     ).subscribe(
       (response) => {
         if (response.datos.length === 0) return;
-        this.recibo = response.datos[0]
+        this.recibo = response.datos[0];
       },
       (error: HttpErrorResponse) => {
         console.log(error)

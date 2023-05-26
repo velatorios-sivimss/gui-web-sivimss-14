@@ -80,7 +80,6 @@ export class GenerarReciboPagoComponent implements OnInit {
   }
 
   private cargarCatalogos(): void {
-    debugger
     const respuesta = this.route.snapshot.data["respuesta"];
     const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];

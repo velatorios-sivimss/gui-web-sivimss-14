@@ -16,7 +16,6 @@ interface PeticionDescarga {
   tipoReporte: "pdf" | "xls"
 }
 
-
 @Injectable()
 export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
