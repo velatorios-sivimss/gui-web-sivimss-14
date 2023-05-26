@@ -82,8 +82,8 @@ export class ActualizarContraseniaComponent implements OnInit {
     this.loaderService.activar();
     this.autenticacionService.actualizarContrasenia(usuario, contraseniaAnterior, contraseniaNueva).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<unknown>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<unknown>) => {
         if (respuesta.codigo === 200) {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada');
           this.router.navigate(["../"], {
@@ -91,11 +91,11 @@ export class ActualizarContraseniaComponent implements OnInit {
           });
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
       }
-    );
+  });
   }
 
   get f() {

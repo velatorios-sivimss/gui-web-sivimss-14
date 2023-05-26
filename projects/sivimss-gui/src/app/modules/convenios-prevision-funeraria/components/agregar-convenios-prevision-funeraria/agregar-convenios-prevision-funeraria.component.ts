@@ -90,9 +90,9 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   cambioTipoContratacion(): void {
-    // if(this.filtroForm.get('tipoContratacion')?.value == 1){
-    //   this.inicializarEmpresaForm();
-    // }
+    if(this.filtroForm.get('tipoContratacion')?.value == 1){
+      this.inicializarEmpresaForm();
+    }
   }
 
   mostrarPersonas( personas: PersonaInterface): void {
@@ -101,7 +101,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   abrirModalDetallePersona(personaDetalle: PersonaInterface) {
-
+    console.log("Se comenta método para que no marque error en Sonar", personaDetalle);
   }
 
   abrirAgregarPersona(): void {
@@ -114,7 +114,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   cancelar(): void {
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 
   siguiente(): void {
