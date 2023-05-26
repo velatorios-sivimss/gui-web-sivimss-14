@@ -23,6 +23,7 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {CalendarModule} from "primeng/calendar";
 import { ConfirmacionMovimientoComponent } from './components/confirmacion-movimiento/confirmacion-movimiento/confirmacion-movimiento.component';
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
         CeldaStickyModule,
         UtileriaModule,
         CalendarModule,
-        ValidaRolModule
+        ValidaRolModule,
+        BtnRegresarModule
     ],
   providers: [
     RolService
