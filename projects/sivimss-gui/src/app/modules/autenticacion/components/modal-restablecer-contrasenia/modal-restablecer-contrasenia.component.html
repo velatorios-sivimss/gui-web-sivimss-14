@@ -34,8 +34,7 @@
   </ng-container>
   <ng-container *ngSwitchCase="CAPTURA_DE_CODIGO">
     <form [formGroup]="formRestContraCodigo" class="form-restablecer-contrasena">
-      <span class="block text-center mb-4">Te hemos enviado un código a {{formRestContraUsuario.get('usuario')?.value}}
-        para establecer tu contraseña</span>
+      <span class="block text-center mb-4">Te hemos enviado un código para restablecer tu contraseña a {{correo}}.</span>
       <div>
         <label class="control-label" for="codigoRestCont">Código<span
           class="req">*</span>:</label>
@@ -56,6 +55,7 @@
     </form>
   </ng-container>
   <ng-container *ngSwitchCase="REDIRIGIR_RESTABLECER_CONTRASENIA">
+    <span class="block text-center mb-4">Te hemos enviado un código para restablecer tu contraseña a {{correo}}.</span>
     <div class="flex justify-content-center mt-4">
       <button type="button" class="btn btn-primary btn-md ml-5"
               (click)="restablecerContrasenia()">Restablecer Contraseña

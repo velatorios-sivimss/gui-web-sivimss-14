@@ -26,6 +26,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
   pasoRestablecerContrasena: number = 1;
   subGeneracionCodigo!: Subscription;
   subValidacionCodigo!: Subscription;
+  correo: string = '';
 
   constructor(
     private readonly formBuilder: FormBuilder,
