@@ -21,7 +21,7 @@ import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/fu
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
-type ListadoRecibo = Required<ReciboPago> & { idPagoBit: string }
+type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
 
 @Component({
   selector: 'app-generar-recibo-pago',
@@ -95,7 +95,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   abrirModalReciboPagoTramites(): void {
     this.router.navigate(['generar-recibo-pago-tramites'], {
       relativeTo: this.activatedRoute,
-      queryParams: {idBitacora: this.reciboPagoSeleccionado.idPagoBit}
+      queryParams: {idPagoBitacora: this.reciboPagoSeleccionado.idPagoBitacora}
     });
   }
 

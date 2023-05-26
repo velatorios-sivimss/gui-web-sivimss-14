@@ -37,8 +37,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
     private generarReciboService: GenerarReciboService,
     private cargadorService: LoaderService,
   ) {
-    const idBitacora: string = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idBitacora;
-    this.obtenerValoresRec(+idBitacora);
+    const idPagoBitacora: string = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idPagoBitacora;
+    this.obtenerValoresRec(+idPagoBitacora);
   }
 
   ngOnInit(): void {
