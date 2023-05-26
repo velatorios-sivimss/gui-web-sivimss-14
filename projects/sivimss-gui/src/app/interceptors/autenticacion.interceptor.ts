@@ -5,9 +5,6 @@ import {SIVIMSS_TOKEN} from "projects/sivimss-gui/src/app/utils/constantes";
 @Injectable()
 export class AutenticacionInterceptor implements HttpInterceptor {
 
-  constructor() {
-  }
-
   intercept(request: HttpRequest<any>, next: HttpHandler): any {
     const token = localStorage.getItem(SIVIMSS_TOKEN);
     if (token) {

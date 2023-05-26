@@ -8,7 +8,6 @@ import { OverlayPanel } from "primeng/overlaypanel";
 import { VerDetalleSalasComponent } from '../ver-detalle-salas/ver-detalle-salas.component';
 import { Sala } from '../../models/salas.interface';
 import { Accion } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { CURP, EMAIL } from 'projects/sivimss-gui/src/app/utils/regex';
 
 interface HttpResponse {
   respuesta: string;

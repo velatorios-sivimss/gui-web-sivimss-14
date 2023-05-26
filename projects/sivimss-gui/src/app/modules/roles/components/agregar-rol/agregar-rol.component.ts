@@ -72,18 +72,18 @@ export class AgregarRolComponent implements OnInit {
   agregarRol(): void {
     const rolBo: NuevoRol = this.crearNuevoRol();
     const solicitudRol: string = JSON.stringify(rolBo);
-    this.rolService.guardar(solicitudRol).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    this.rolService.guardar(solicitudRol).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg + " " + this.f.nombre.value);
         this.router.navigate(["roles"]);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, msg);
         console.error("ERROR: ", error)
       }
-    );
+    });
   }
 
   noEspaciosAlPrincipio(): void {

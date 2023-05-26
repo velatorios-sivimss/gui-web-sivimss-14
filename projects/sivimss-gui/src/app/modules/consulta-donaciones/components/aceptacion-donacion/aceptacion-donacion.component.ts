@@ -5,15 +5,12 @@ import {AtaudDonado, GuardarAgregarDonacion} from "../../models/consulta-donacio
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AgregarAtaudDonadoComponent} from "../agregar-ataud-donado/agregar-ataud-donado.component";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {LazyLoadEvent} from "primeng/api";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {ConsultaDonacionesService} from "../../services/consulta-donaciones.service";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {mensajes} from "../../../reservar-salas/constants/mensajes";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {DatosAdministrador, PlantillaAceptarDonacion} from "../../models/generar-plantilla-interface";
 import * as moment from "moment/moment";
@@ -101,21 +98,21 @@ export class AceptacionDonacionComponent implements OnInit {
     const registro = this.modeloAgregarDonacion();
     this.consultaDonacionesService.guardarAgregarDonacion(registro).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.generarArchivo();
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
 
         this.router.navigate(["../consulta-donaciones"]);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
 
       }
-    )
+    });
   }
 
   generarArchivo(): void{
@@ -126,14 +123,14 @@ export class AceptacionDonacionComponent implements OnInit {
       this.consultaDonacionesService.generarPlantillaAgregarDonacion(plantilla),configuracionArchivo
     ).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta) => {
         console.log(respuesta);
       },
-      (error) => {
+      error: (error) => {
         console.log(error);
       }
-    );
+    });
   }
 
   modeloPlantillaDonacion(): PlantillaAceptarDonacion {
@@ -189,8 +186,8 @@ export class AceptacionDonacionComponent implements OnInit {
     this.loaderService.activar()
     this.consultaDonacionesService.consultaContratantePorFolioODS(this.f.folio.value).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.idOrdenServicio = 0;
         this.f.nombreContratante.patchValue(null);
         this.f.nombreFinado.patchValue(null);
@@ -203,12 +200,12 @@ export class AceptacionDonacionComponent implements OnInit {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
-    )
+    });
   }
 
   nombreOoad(idOoad: number): string {
@@ -226,7 +223,7 @@ export class AceptacionDonacionComponent implements OnInit {
     this.ataudDonado.forEach( ataud => {
       modeloAtaud += ataud.desModeloArticulo + ',';
     });
-    modeloAtaud = modeloAtaud.substr(0,modeloAtaud.length -1);
+    modeloAtaud = modeloAtaud.substring(0,modeloAtaud.length -1);
     return modeloAtaud;
   }
 
@@ -236,18 +233,18 @@ export class AceptacionDonacionComponent implements OnInit {
 
     this.consultaDonacionesService.consultarDatosAdministrador(usuario.idVelatorio).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.datosAdministrador = {
           nombreAdministrador: respuesta.datos[0].nombreAdministrador,
           lugardonacion: respuesta.datos[0].lugardonacion,
           matriculaAdministrador: respuesta.datos[0].matriculaAdministrador
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    });
   }
 
   tipoAtaud(): string {
@@ -255,7 +252,7 @@ export class AceptacionDonacionComponent implements OnInit {
     this.ataudDonado.forEach( ataud => {
       tipoAtaud += ataud.desTipoMaterial + ',';
     });
-    tipoAtaud = tipoAtaud.substr(0, tipoAtaud.length - 1);
+    tipoAtaud = tipoAtaud.substring(0, tipoAtaud.length - 1);
     return tipoAtaud;
   }
 
@@ -264,7 +261,7 @@ export class AceptacionDonacionComponent implements OnInit {
     this.ataudDonado.forEach( ataud => {
       numInventario += ataud.folioArticulo + ',';
     });
-    numInventario = numInventario.substr(0, numInventario.length - 1)
+    numInventario = numInventario.substring(0, numInventario.length - 1)
     return numInventario;
   }
 
@@ -273,14 +270,14 @@ export class AceptacionDonacionComponent implements OnInit {
     this.loaderService.activar()
     this.consultaDonacionesService.consultaFinadoPorFolioODS(this.f.folio.value).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.f.nombreFinado.setValue(respuesta.datos[0].nombreFinado);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
       }
-    )
+    });
   }
 
   noEspaciosAlPrincipio() {
