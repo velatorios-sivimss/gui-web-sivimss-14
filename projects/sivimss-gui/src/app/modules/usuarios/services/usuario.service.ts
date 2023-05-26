@@ -51,7 +51,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
 
   obtenerCatalogoRoles(idNivel: string): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
-      .append("servicio", this._roles)
+      .append("servicio", this._roles);
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idNivel}`, {params});
   }
 
@@ -66,7 +66,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body: ConsultaVelatorio = {idDelegacion: delegacion}
+    const body: ConsultaVelatorio = {idDelegacion: delegacion};
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 }

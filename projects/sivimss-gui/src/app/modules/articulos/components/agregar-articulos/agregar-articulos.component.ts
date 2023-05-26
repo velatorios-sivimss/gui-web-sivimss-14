@@ -140,20 +140,20 @@ export class AgregarArticulosComponent implements OnInit {
   }
 
   agregarArticulo() {
-    this.articulosService.guardar(this.obtenerArticuloAgregar()).subscribe(
-      (respuesta) => {
+    this.articulosService.guardar(this.obtenerArticuloAgregar()).subscribe({
+      next: (respuesta) => {
         if (respuesta) {
           this.ref.close(true);
         }
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         if (err.error.mensaje === "Registro repetido") {
           this.alertaService.mostrar(TipoAlerta.Error, this.MSG017);
         } else {
           this.alertaService.mostrar(TipoAlerta.Error, err.error.mensaje);
         }
       }
-    );
+  });
   }
 
   obtenerArticuloAgregar() {

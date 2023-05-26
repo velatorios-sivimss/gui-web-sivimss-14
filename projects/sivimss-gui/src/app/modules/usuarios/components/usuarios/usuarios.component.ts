@@ -181,8 +181,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.usuarioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.usuarios = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.usuarios = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -197,8 +197,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.usuarioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.usuarios = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.usuarios = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);

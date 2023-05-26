@@ -1,4 +1,3 @@
-// TODO: En implementación eliminar catalogos dummies
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';

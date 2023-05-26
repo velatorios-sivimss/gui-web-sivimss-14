@@ -2,10 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AtaudDonado} from "../../../models/consulta-donaciones-interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../../../articulos/constants/dummies";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {ConsultaDonacionesService} from "../../../services/consulta-donaciones.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -68,20 +66,20 @@ export class AgregarAtaudComponent implements OnInit {
     this.loaderService.activar();
     this.consultaDonacionesService.consultaControlSalidaAtaudes().pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>)=> {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.backlogAutaudes = respuesta.datos;
-          this.ataud = mapearArregloTipoDropdown(respuesta.datos,"desModeloArticulo","folioArticulo");
-          this.config.data.forEach((elemento:AtaudDonado) => {
-            this.ataud = this.ataud.filter(ataud => {
-              return ataud.value != elemento.folioArticulo;
-            });
-
+        this.ataud = mapearArregloTipoDropdown(respuesta.datos, "desModeloArticulo", "folioArticulo");
+        this.config.data.forEach((elemento: AtaudDonado) => {
+          this.ataud = this.ataud.filter(ataud => {
+            return ataud.value != elemento.folioArticulo;
           });
+
+        });
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
       }
-    )
+    });
   }
 
   tomarFolioAtaudDonado(): void {

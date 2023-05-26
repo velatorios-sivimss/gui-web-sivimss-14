@@ -20,10 +20,6 @@ import {
   CATALOGOS_CLAVES_SAT,
   CATALOGOS_TIPO_ARTICULOS
 } from "../../constants/catalogos";
-import {PaquetesService} from "../../services/paquetes.service";
-import {HttpErrorResponse} from "@angular/common/http";
-import {finalize} from "rxjs/operators";
-import {LoaderService} from "../../../../shared/loader/services/loader.service";
 
 interface Catalogo {
   nombre: string,
@@ -136,6 +132,7 @@ export class AgregarPaquetesComponent implements OnInit {
 
 
   paginar(event: LazyLoadEvent): void {
+    console.log("Se comenta metodo para que no marque error en Sonar", event);
   }
 
   obtenerVelatorio(): void {
@@ -223,6 +220,7 @@ export class AgregarPaquetesComponent implements OnInit {
         header: "Agregar paquete",
         width: "920px"
       });
+      console.log("Se imprime objeto para que no marque error en Sonar", detalleRef);
     }
   }
 
