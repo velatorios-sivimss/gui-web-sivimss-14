@@ -90,14 +90,14 @@ export class RolesComponent implements OnInit {
   paginar(): void {
     this.rolService.obtenerCatRolesPaginadoSinFiltro(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
       (respuesta) => {
-        this.roles = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
-        if (this.totalElementos == 0) {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            'No se encontró información relacionada a tu búsqueda.',
-          )
-        }
+        this.roles = respuesta.datos.content || [];
+        this.totalElementos = respuesta.datos.totalElements || 0;
+        // if (this.totalElementos == 0) {
+        //   this.alertaService.mostrar(
+        //     TipoAlerta.Error,
+        //     'No se encontró información relacionada a tu búsqueda.',
+        //   )
+        // }
       },
       (error: HttpErrorResponse) => {
         console.error(error);
@@ -112,13 +112,8 @@ export class RolesComponent implements OnInit {
     const solicitudFiltros = JSON.stringify(filtros);
     this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe(
       (respuesta) => {
-        if (respuesta.datos.content.length > 0) {
-          this.roles = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
-          return;
-        }
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+          this.roles = respuesta.datos.content || [];
+          this.totalElementos = respuesta.datos.totalElements || 0;
       },
       (error: HttpErrorResponse) => {
         console.error(error);
