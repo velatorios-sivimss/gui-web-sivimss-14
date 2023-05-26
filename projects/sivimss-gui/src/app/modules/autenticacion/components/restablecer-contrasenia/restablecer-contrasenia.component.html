@@ -9,8 +9,6 @@
       </div>
       <span class="campo-obligatorio"
             *ngIf="f.usuario?.errors?.required && (f.usuario?.dirty || f.usuario?.touched)">Este campo es obligatorio *.</span>
-      <span class="campo-obligatorio"
-            *ngIf="f.usuario?.errors?.pattern && (f.usuario?.dirty || f.usuario?.touched)">Error de formato.</span>
     </div>
     <div class="form-group mb-3">
       <label class="control-label" for="contraseniaNueva">Nueva contraseña<span class="req">*</span>:</label>
@@ -22,7 +20,11 @@
       </div>
       <span class="campo-obligatorio"
             *ngIf="f.contraseniaNueva?.errors?.required && (f.contraseniaNueva?.dirty || f.contraseniaNueva?.touched)">Este campo es obligatorio *.</span>
-      {{ f.contraseniaNueva?.errors | json}}
+      <span class="campo-obligatorio"
+            *ngIf="f.contraseniaNueva?.errors?.pattern && (f.contraseniaNueva?.dirty || f.contraseniaNueva?.touched)">La contraseña debe cumplir con:
+            Mínimo 8 caracteres, una mayúscula, una letra minúscula, un dígito numérico,un carácter especial, no debe de tener dos dígitos iguales juntos,
+            en caso de que se repitan 2 letras de forma consecutiva la segunda se cambiará por un carácter especial.
+      </span>
     </div>
     <div class="form-group mb-3">
       <label class="control-label" for="contraseniaConfirmacion">Confirmar contraseña<span class="req">*</span>:</label>
