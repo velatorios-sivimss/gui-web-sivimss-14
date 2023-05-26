@@ -1,5 +1,5 @@
 import {CapillaService} from './../../services/capilla.service';
-import {Capilla, ConfirmacionServicio} from './../../models/capilla.interface';
+import {Capilla} from './../../models/capilla.interface';
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -115,15 +115,15 @@ export class AgregarCapillaComponent implements OnInit {
     const respuesta: RespuestaModalcapilla = {mensaje: "Alta satisfactoria", actualizar: true}
     const capilla: Nuevacapilla = this.crearNuevaCapilla();
     const solicitudUsuario: string = JSON.stringify(capilla);
-    this.capillaService.guardar(solicitudUsuario).subscribe(
-      () => {
+    this.capillaService.guardar(solicitudUsuario).subscribe({
+      next: () => {
         this.ref.close(respuesta)
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
         console.error("ERROR: ", error)
       }
-    );
+    });
   }
 
 
