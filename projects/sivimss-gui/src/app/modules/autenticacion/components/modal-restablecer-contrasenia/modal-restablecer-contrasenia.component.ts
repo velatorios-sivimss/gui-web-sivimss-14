@@ -93,7 +93,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
             this.formRestContraCodigo.get('codigo')?.reset();
             break;
           case MensajesRespuestaCodigo.CodigoExpirado:
-            this.alertaService.mostrar(TipoAlerta.Error, 'Código expirado');
+            this.alertaService.mostrar(TipoAlerta.Error, 'Tu código ya caduco, debes solicitar el envío de un nuevo código.');
             this.cerrarModal();
             break;
         }
