@@ -55,8 +55,8 @@ export class RestablecerContraseniaComponent implements OnInit {
     this.loaderService.activar();
     this.autenticacionService.actualizarContrasenia(form.usuario, "", form.contraseniaNueva).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<unknown>): void => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<unknown>): void => {
         if (respuesta.codigo === 200) {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada correctamente.');
           this.router.navigate(["../"], {
@@ -64,11 +64,11 @@ export class RestablecerContraseniaComponent implements OnInit {
           });
         }
       },
-      (error: HttpErrorResponse): void => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
       }
-    );
+    });
   }
 
   get f() {

@@ -10,7 +10,7 @@ import {LoaderService} from "projects/sivimss-gui/src/app/shared/loader/services
 import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import {MensajesRespuestaAutenticacion} from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
-import {finalize, tap} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -61,7 +61,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
     });
   }
 
-  acceder(mostrarMsjContraseniaProxVencer: boolean = true) {
+  acceder(mostrarMsjContraseniaProxVencer: boolean = true): void {
     if (this.form.invalid) {
       return;
     }
@@ -70,9 +70,8 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
     this.usuarioIncorrecto = false;
     this.autenticacionService.iniciarSesion(usuario, contrasenia, mostrarMsjContraseniaProxVencer)
       .pipe(
-        finalize(() => this.loaderService.desactivar())
-      ).subscribe(
-      (respuesta: string) => {
+        finalize(() => this.loaderService.desactivar())).subscribe({
+      next: (respuesta: string): void => {
         switch (respuesta) {
           case MensajesRespuestaAutenticacion.InicioSesionCorrecto:
             this.router.navigate(["/inicio"]);
@@ -110,24 +109,24 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
             break;
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
       }
-    );
+    });
   }
 
-  actualizarContrasenia() {
+  actualizarContrasenia(): void {
     this.mostrarModalPreActivo = false;
     this.router.navigate(["actualizar-contrasenia"], {
       relativeTo: this.activatedRoute
     });
   }
 
-  empezarTemporizadorPorExcederIntentos() {
+  empezarTemporizadorPorExcederIntentos(): void {
 
-    let duracionEnSegundos = this.existeTemporizadorEnCurso() ? Number(localStorage.getItem('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
-    let refTemporador = setInterval(() => {
+    let duracionEnSegundos: number = this.existeTemporizadorEnCurso() ? Number(localStorage.getItem('segundos_temporizador_intentos_sivimss')) : this.SEGUNDOS_TEMPORIZADOR_INTENTOS;
+    let refTemporador: NodeJS.Timer = setInterval((): void => {
       let minutos: string | number = Math.floor(duracionEnSegundos / 60);
       let segundos: string | number = duracionEnSegundos % 60;
       minutos = minutos < 10 ? '0' + minutos : minutos;
