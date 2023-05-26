@@ -153,7 +153,6 @@ export class AgregarProveedorComponent implements OnInit {
     if(event && event.origen == "agregar"){
       this.ventanaConfirmacion = false;
       this.ref.close(true);
-      return;
     }
   }
 
@@ -168,12 +167,12 @@ export class AgregarProveedorComponent implements OnInit {
   }
 
   abrirAgregarDireccionReferencia() {
-   if(this.direccionReferencia == false){
+   if(this.direccionReferencia){
+     this.direccionReferencia = false;
+     this.formDireccionReferencia.reset //NOSONAR;
+   } else{
      this.direccionReferencia = true;
      this.inicializarDireccionReferenciaForm();
-   }else{
-    this.direccionReferencia = false;
-    this.formDireccionReferencia.reset;
    }
 
 }
