@@ -1,4 +1,3 @@
-
 <ng-container *ngIf="origen == 1; else confirmacionEstatus">
 
   <app-table-panel>
@@ -45,12 +44,10 @@
   </app-table-panel>
 
   <div class="flex mt-4 justify-content-center">
-    <div class="col-md-8 text-center" >
+    <div class="col-md-8 text-center">
       ¿Estás seguro de modificar el registro {{datosRolModificar.desRol}}?
     </div>
-
   </div>
-
 </ng-container>
 
 
@@ -59,7 +56,7 @@
     <ng-template appCustomTemplate="left-header">
       <div class="table-panel-header-column">
               <span class="font-bold">
-                  ID <span [ngClass]="datosRol.estatusRol ? 'activo' : 'inactivo'">{{datosRol.idRol}}</span>
+                  ID <span [ngClass]="datosRol.estatus ? 'inactivo' : 'activo'">{{datosRol.idRol}}</span>
               </span>
       </div>
     </ng-template>
@@ -68,8 +65,8 @@
         <div class="flex flex-column">
           <span>Estatus</span>
           <div>
-            <span class="activo" *ngIf="datosRol.estatusRol">Activo</span>
-            <span class="inactivo" *ngIf="!datosRol.estatusRol">Inactivo</span>
+            <span class="activo" *ngIf="!datosRol.estatus">Activo</span>
+            <span class="inactivo" *ngIf="datosRol.estatus">Inactivo</span>
           </div>
         </div>
       </div>
@@ -98,17 +95,13 @@
     </div>
   </app-table-panel>
   <div class="flex mt-4 justify-content-center">
-      <div class="col-md-8 text-center" >
-        ¿Estás seguro de {{datosRol.estatusRol ? 'activar' : 'desactivar'}} el registro seleccionado {{datosRol.desRol}}?
-      </div>
+    <div class="col-md-8 text-center">
+      ¿Estás seguro de {{datosRol.estatus ? 'activar' : 'desactivar'}} el registro seleccionado {{datosRol.desRol}}?
+    </div>
   </div>
 </ng-template>
 
-
-
-
-
 <div class="flex justify-content-end mt-6 mb-6">
-  <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cancelar()" >Cancelar</button>
+  <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
   <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmar()"> Aceptar</button>
 </div>
