@@ -105,7 +105,7 @@ export class RolesComponent implements OnInit {
 
   paginarConFiltros(): void {
     const filtros: FiltrosRol = this.crearSolicitudFiltros();
-    const solicitudFiltros: string = JSON.stringify(filtros);
+    const solicitudFiltros = filtros;
     this.cargadorService.activar();
     this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -145,7 +145,7 @@ export class RolesComponent implements OnInit {
   }
 
   cambiarEstatus(rol: Rol): void {
-    const titulo: string = rol.estatus ? "Activar" : "Desactivar"
+    const titulo: string = rol.estatusRol ? "Activar" : "Desactivar"
     const DETALLE_CONFIG: DynamicDialogConfig = {
       header: titulo + " rol",
       width: MAX_WIDTH,
@@ -157,9 +157,9 @@ export class RolesComponent implements OnInit {
       if (respuesta && respuesta.estatus) {
         const rolEstatus = {
           "idRol": respuesta.datosRol.idRol,
-          "estatusRol": respuesta.datosRol.estatus ? 1 : 0
+          "estatusRol": respuesta.datosRol.estatusRol ? 1 : 0
         }
-        const solicitudId: string = JSON.stringify(rolEstatus);
+        const solicitudId = rolEstatus;
         this.rolService.cambiarEstatus(solicitudId).subscribe({
           next: (): void => {
             if (rolEstatus.estatusRol === 1) {

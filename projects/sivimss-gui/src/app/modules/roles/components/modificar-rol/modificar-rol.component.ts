@@ -50,7 +50,7 @@ export class ModificarRolComponent implements OnInit {
       id: [{value: rol.idRol, disabled: true}, [Validators.required]],
       nombre: [{value: rol.desRol, disabled: false}, [Validators.required, Validators.maxLength(100)]],
       nivel: [{value: rol.nivelOficina, disabled: false}, [Validators.required]],
-      estatus: [{value: rol.estatus, disabled: false}],
+      estatus: [{value: rol.estatusRol, disabled: false}],
       fechaCreacion: [{value: rol.fCreacion, disabled: true}]
     });
   }
