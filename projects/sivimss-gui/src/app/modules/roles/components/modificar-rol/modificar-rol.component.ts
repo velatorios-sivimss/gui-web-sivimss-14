@@ -50,7 +50,7 @@ export class ModificarRolComponent implements OnInit {
       id: [{value: rol.idRol, disabled: true}, [Validators.required]],
       nombre: [{value: rol.desRol, disabled: false}, [Validators.required, Validators.maxLength(100)]],
       nivel: [{value: rol.nivelOficina, disabled: false}, [Validators.required]],
-      estatus: [{value: rol.estatusRol, disabled: false}],
+      estatus: [{value: rol.estatus, disabled: false}],
       fechaCreacion: [{value: rol.fCreacion, disabled: true}]
     });
   }
@@ -65,28 +65,25 @@ export class ModificarRolComponent implements OnInit {
   }
 
   modificarRol(event?: boolean): void {
-    if (!event) {
-      return
-    }
-    const respuesta: RespuestaModalRol = {mensaje: "Actualización satisfactoria", actualizar: true}
+    if (!event) return
     this.rolModificado = this.crearUsuarioModificado();
-    const solicitudUsuario = JSON.stringify(this.rolModificado);
-    this.rolService.actualizar(solicitudUsuario).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    const solicitudUsuario: string = JSON.stringify(this.rolModificado);
+    this.rolService.actualizar(solicitudUsuario).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg + " " + this.f.nombre.value);
-        this.ref.close(respuesta)
+        this.ref.close({actualizar: true})
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
         console.error("ERROR: ", error)
       }
-    );
+    });
   }
 
   consultarCatalogoNiveles(): void {
     this.rolService.obtenerCatNivel().subscribe(
-      (respuesta: TipoDropdown[]) => {
+      (respuesta: TipoDropdown[]): void => {
         this.catalogo_nivelOficina = respuesta.map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
       }
     );
