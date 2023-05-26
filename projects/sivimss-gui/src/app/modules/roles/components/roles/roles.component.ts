@@ -22,6 +22,7 @@ import {
 } from "../confirmacion-movimiento/confirmacion-movimiento/confirmacion-movimiento.component";
 import {validarUsuarioLogueado} from "../../../../utils/funciones";
 import {ROLES_BREADCRUMB} from "../../constants/breadcrumb";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 const MAX_WIDTH: string = "876px";
 
@@ -89,17 +90,11 @@ export class RolesComponent implements OnInit {
 
   paginar(): void {
     this.rolService.obtenerCatRolesPaginadoSinFiltro(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        this.roles = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
-        if (this.totalElementos == 0) {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            'No se encontró información relacionada a tu búsqueda.',
-          )
-        }
+      (respuesta: HttpRespuesta<any>): void => {
+        this.roles = respuesta.datos.content || [];
+        this.totalElementos = respuesta.datos.totalElements || 0;
       },
-      (error: HttpErrorResponse) => {
+      (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
@@ -108,19 +103,14 @@ export class RolesComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros = this.crearSolicitudFiltros();
-    const solicitudFiltros = JSON.stringify(filtros);
+    const filtros: FiltrosRol = this.crearSolicitudFiltros();
+    const solicitudFiltros: string = JSON.stringify(filtros);
     this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        if (respuesta.datos.content.length > 0) {
-          this.roles = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
-          return;
-        }
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+      (respuesta: HttpRespuesta<any>): void => {
+        this.roles = respuesta.datos.content || [];
+        this.totalElementos = respuesta.datos.totalElements || 0;
       },
-      (error: HttpErrorResponse) => {
+      (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
