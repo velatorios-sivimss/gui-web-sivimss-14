@@ -26,6 +26,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
   pasoRestablecerContrasena: number = 1;
   subGeneracionCodigo!: Subscription;
   subValidacionCodigo!: Subscription;
+  correo: string = '';
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -65,6 +66,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
         }
         this.pasoRestablecerContrasena = this.CAPTURA_DE_CODIGO;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Código enviado.');
+        this.correo = respuesta.datos.correo;
       },
       (error: HttpErrorResponse) => {
         console.error('Ha ocurrido un error en el servicio', error);

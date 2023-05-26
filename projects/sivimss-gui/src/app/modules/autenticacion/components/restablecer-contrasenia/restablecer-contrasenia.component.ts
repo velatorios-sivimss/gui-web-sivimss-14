@@ -8,6 +8,7 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {confirmacionContraseniadValidator} from "../actualizar-contrasenia/actualizar-contrasenia.component";
+import {PATRON_CONTRASENIA} from "../../../../utils/regex";
 
 @Component({
   selector: 'app-restablecer-contrasenia',
@@ -39,8 +40,8 @@ export class RestablecerContraseniaComponent implements OnInit {
   inicializarForm(): void {
     this.form = this.formBuilder.group({
         usuario: [{value: this.usuario, disabled: true}],
-        contraseniaNueva: ['', Validators.required],
-        contraseniaConfirmacion: ['', Validators.required]
+        contraseniaNueva: ['', [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
+        contraseniaConfirmacion: ['', [Validators.required]]
       },
       {
         validators: [confirmacionContraseniadValidator]
