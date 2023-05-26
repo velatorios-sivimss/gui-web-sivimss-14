@@ -42,19 +42,19 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   obtenerCatalogoProvedores(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._proveedores);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/`, {params});
   }
 
   buscarPorFiltros(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/buscar/${this._paginado}`, {},
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, {},
       {params});
   }
 
   override guardar(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/${this._agregar}`, t);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._agregar}`, t);
   }
 
   override buscarPorPagina(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -62,36 +62,36 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
       .append("pagina", pagina)
       .append("tamanio", tamanio)
       .append("servicio", this._paginado);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/`, {params});
   }
 
   obtenerDetalleVerificacion(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", 'detalle-verificacion-inicio')
       .append("palabra", id);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/buscar`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params});
   }
 
   obtenerDetalleSolicitud(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", 'detalle-solicitud-mtto')
       .append("palabra", id);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/buscar`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params});
   }
 
   obtenerDetalleRegistro(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", 'detalle-registro-mtto')
       .append("palabra", id)
-    return this._http.get<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/buscar`, {params})
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params})
   }
 
   override actualizar(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/${this._actualizar}`, t);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._actualizar}`, t);
   }
 
   obtenerRegistroVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
     const body = {idVehiculo}
-    return this._http.post<HttpRespuesta<any>>(`${this._base}/${this._funcionalidad}/buscar/${this._paginado}`, body)
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, body)
   }
 }
