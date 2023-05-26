@@ -73,7 +73,7 @@
                     Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6 mb-3" *ngIf="!tipoSala && entradaF.inicioDe?.value === '2'">
-          <label class="control-label" for="nivelGas">Nivel de gas <span class="req">*</span>:</label>
+          <label class="control-label" for="nivelGas">Nivel de gas inicial(litros)<span class="req">*</span>:</label>
           <p-inputNumber [useGrouping]="false" mode="decimal" currency="USD" locale="en-US" [minFractionDigits]="2" [maxFractionDigits]="2" suffix="L"
             id="nivelGas" class="form-control" formControlName="nivelGas" [maxlength]="11"></p-inputNumber>
           <span class="campo-obligatorio"
