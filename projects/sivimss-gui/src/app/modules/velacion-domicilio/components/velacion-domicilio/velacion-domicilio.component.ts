@@ -84,9 +84,9 @@ export class VelacionDomicilioComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl({ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }, []),
-      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }, []),
-      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }, []),
+      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, []),
+      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
       folioODS: new FormControl({ value: null, disabled: false }, []),
       fechaInicio: new FormControl({ value: null, disabled: false }, []),
       fechaFinal: new FormControl({ value: null, disabled: false }, []),
@@ -296,13 +296,13 @@ export class VelacionDomicilioComponent implements OnInit {
   limpiar(): void {
     this.alertaService.limpiar();
     this.filtroForm.reset();
-    this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
+    this.f.nivel.setValue(+this.rolLocalStorage.idOficina || null);
 
-    if (+this.rolLocalStorage.idRol >= 2) {
+    if (+this.rolLocalStorage.idOficina >= 2) {
       this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
     }
 
-    if (+this.rolLocalStorage.idRol === 3) {
+    if (+this.rolLocalStorage.idOficina === 3) {
       this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
     }
 

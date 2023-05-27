@@ -75,8 +75,8 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }],
-      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }],
+      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }],
+      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }],
     });
   }
 

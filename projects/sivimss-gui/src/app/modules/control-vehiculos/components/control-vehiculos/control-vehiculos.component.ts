@@ -60,9 +60,9 @@ export class ControlVehiculosComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl({ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }, [Validators.required]),
-      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }, []),
-      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }, []),
+      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, [Validators.required]),
+      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
     });
     await this.obtenerVelatorios();
     await this.obtenerVehiculos();
