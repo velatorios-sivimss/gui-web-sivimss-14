@@ -17,8 +17,11 @@ import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
-type ListadoRecibo = Required<ReciboPago> & { idPagoBit: string }
+type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
 
 @Component({
   selector: 'app-generar-recibo-pago',
@@ -44,12 +47,15 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   catalogoNiveles: TipoDropdown[] = [];
   catatalogoDelegaciones: TipoDropdown[] = [];
+  catalogoVelatorios: TipoDropdown[] = [];
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
 
   paginacionConFiltrado: boolean = false;
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGO_VELATORIOS: number = 2;
+  readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
   constructor(
     private route: ActivatedRoute,
@@ -61,7 +67,8 @@ export class GenerarReciboPagoComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cargadorService: LoaderService,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -74,8 +81,10 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   private cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
+    const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
   }
 
   abrirPanel(event: MouseEvent, reciboPagoSeleccionado: ListadoRecibo): void {
@@ -86,7 +95,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   abrirModalReciboPagoTramites(): void {
     this.router.navigate(['generar-recibo-pago-tramites'], {
       relativeTo: this.activatedRoute,
-      queryParams: {idBitacora: this.reciboPagoSeleccionado.idPagoBit}
+      queryParams: {idPagoBitacora: this.reciboPagoSeleccionado.idPagoBitacora}
     });
   }
 
@@ -154,8 +163,15 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   crearSolicitudFiltros(): FiltrosReciboPago {
     return {
+      idNivel: this.filtroForm.get("nivel")?.value,
+      idDelegacion: this.filtroForm.get("delegacion")?.value,
+      idVelatorio: this.filtroForm.get("velatorio")?.value,
       claveFolio: this.filtroForm.get("folio")?.value,
-      nomContratante: this.filtroForm.get("nombreContratante")?.value
+      nomContratante: this.filtroForm.get("nombreContratante")?.value,
+      fecIniODS: this.filtroForm.get("fechaInicial")?.value,
+      fecFinODS: this.filtroForm.get("fechaFinal")?.value,
+      rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
+      tipoReporte:"pdf"
     }
   }
 
@@ -168,9 +184,10 @@ export class GenerarReciboPagoComponent implements OnInit {
     return this.filtroForm?.controls;
   }
 
-  guardarPDF() {
+  guardarListadoPagosPDF() {
     this.cargadorService.activar();
-    this.descargaArchivosService.descargarArchivo(this.generarReciboService.descargarListado()).pipe(
+    const filtros: FiltrosReciboPago = this.crearSolicitudFiltros();
+    this.descargaArchivosService.descargarArchivo(this.generarReciboService.descargarListadoPDF(filtros)).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
       (respuesta) => {
@@ -180,6 +197,23 @@ export class GenerarReciboPagoComponent implements OnInit {
         console.log(error)
       },
     )
+  }
+
+  guardarListadoPagosExcel() {
+    this.cargadorService.activar();
+    const filtros: FiltrosReciboPago = this.crearSolicitudFiltros();
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    this.descargaArchivosService.descargarArchivo(this.generarReciboService.descargarListadoExcel(),
+    configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta): void => {
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
+        console.log(error)
+      },
+    })
   }
 
 }

@@ -15,6 +15,7 @@ export class GenerarReciboResolver implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const niveles$ = this.generarReciboService.obtenerCatalogoNiveles();
     const delegaciones$ = this.generarReciboService.obtenerCatalogoDelegaciones();
-    return forkJoin([niveles$, delegaciones$])
+    const velatorios$ = this.generarReciboService.obtenerVelatorios();
+    return forkJoin([niveles$, delegaciones$, velatorios$])
   }
 }
