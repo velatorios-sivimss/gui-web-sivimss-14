@@ -12,14 +12,14 @@
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
           placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)='obtenerVelatorios();'
-          [showClear]="+rolLocalStorage.idRol < 2">
+          [showClear]="+rolLocalStorage.idOficina < 2">
         </p-dropdown>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
           placeholder="Selecciona el velatorio" [filter]="true" filterBy="label"
-          [showClear]="+rolLocalStorage.idRol < 3">
+          [showClear]="+rolLocalStorage.idOficina < 3">
         </p-dropdown>
       </div>
     </div>

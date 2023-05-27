@@ -9,7 +9,7 @@ import {MensajesRespuestaCodigo} from "projects/sivimss-gui/src/app/utils/mensaj
 import {Subscription} from "rxjs";
 import {finalize} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MensajesRespuestaAutenticacion} from "../../../../utils/mensajes-respuesta-autenticacion.enum";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 @Component({
   selector: 'app-modal-restablecer-contrasenia',
@@ -26,6 +26,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
   pasoRestablecerContrasena: number = 1;
   subGeneracionCodigo!: Subscription;
   subValidacionCodigo!: Subscription;
+  correo: string = '';
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -52,35 +53,34 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
     });
   }
 
-  generarCodigo() {
+  generarCodigo(): void {
     const {usuario} = this.formRestContraUsuario.value;
     this.loaderService.activar();
     this.subGeneracionCodigo = this.autenticacionService.generarCodigoRestablecerContrasenia(usuario).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+      finalize(() => this.loaderService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.error) {
           this.alertaService.mostrar(TipoAlerta.Error, 'El usuario que ingresaste no existe en el sistema.');
           return
         }
         this.pasoRestablecerContrasena = this.CAPTURA_DE_CODIGO;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Código enviado.');
+        this.correo = respuesta.datos.correo;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error('Ha ocurrido un error en el servicio', error);
         this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
       }
-    )
+    })
   }
 
-  validarCodigo() {
+  validarCodigo(): void {
     const {usuario} = this.formRestContraUsuario.value;
     const {codigo} = this.formRestContraCodigo.value;
     this.loaderService.activar();
     this.subValidacionCodigo = this.autenticacionService.validarCodigoRestablecerContrasenia(usuario, codigo).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: string) => {
+      finalize(() => this.loaderService.desactivar())).subscribe({
+      next: (respuesta: string): void => {
         switch (respuesta) {
           case MensajesRespuestaCodigo.CodigoCorrecto:
             this.alertaService.mostrar(TipoAlerta.Exito, 'Código ingresado correctamente');
@@ -91,16 +91,16 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
             this.formRestContraCodigo.get('codigo')?.reset();
             break;
           case MensajesRespuestaCodigo.CodigoExpirado:
-            this.alertaService.mostrar(TipoAlerta.Error, 'Código expirado');
+            this.alertaService.mostrar(TipoAlerta.Error, 'Tu código ya caduco, debes solicitar el envío de un nuevo código.');
             this.cerrarModal();
             break;
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error('Ha ocurrido un error en el servicio', error);
         this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
       }
-    )
+    })
   }
 
   cerrarModal(): void {

@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Rol} from "../../../models/rol.interface";
-import {ConfirmacionServicio} from "../../../../articulos/models/articulos.interface";
+import {Rol} from "../../models/rol.interface";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
@@ -14,14 +13,14 @@ export class ConfirmacionMovimientoComponent implements OnInit {
   @Input() origen!: number;
   @Output() confirmacionAceptar = new EventEmitter<boolean>();
 
-  datosRol!:Rol;
-
+  datosRol!: Rol;
 
 
   constructor(
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.datosRol = this.config.data;
@@ -30,10 +29,11 @@ export class ConfirmacionMovimientoComponent implements OnInit {
 
   confirmar(): void {
     this.confirmacionAceptar.emit(true);
-    this.ref.close({datosRol: this.datosRol, estatus:true});
+    this.ref.close({datosRol: this.datosRol, estatus: true});
   }
+
   cancelar(): void {
-    this.ref.close({datosRol: null, estatus:false});
+    this.ref.close({datosRol: null, estatus: false});
   }
 
 }

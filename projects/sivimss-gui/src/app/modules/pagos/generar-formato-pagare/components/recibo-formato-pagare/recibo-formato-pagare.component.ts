@@ -39,17 +39,17 @@ export class ReciboFormatoPagareComponent implements OnInit {
     private cargadorService: LoaderService,
     private alertaService: AlertaService
   ) {
-    const idPagare: string = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idPagare;
-    this.obtenerValoresPagare(+idPagare);
+    const idODS: number = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idODS;
+    this.obtenerValoresPagare(idODS);
   }
 
   ngOnInit(): void {
 
   }
 
-  obtenerValoresPagare(idPagare: number): void {
+  obtenerValoresPagare(idODS: number): void {
     this.cargadorService.activar();
-    this.generarFormatoPagareService.buscarDatosPagare(idPagare).pipe(
+    this.generarFormatoPagareService.buscarDatosPagare(idODS).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
       (response) => {
@@ -71,7 +71,8 @@ export class ReciboFormatoPagareComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
       (response) => {
-        this.importeLetra = response!.datos
+        this.importeLetra = response!.datos;
+        this.formatoPagare.cantidad = response!.datos;
       },
       (error: HttpErrorResponse) => {
         console.log(error)
