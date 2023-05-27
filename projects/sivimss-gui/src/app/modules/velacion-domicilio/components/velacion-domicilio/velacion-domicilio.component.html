@@ -14,7 +14,7 @@
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
           [options]="catalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true" filterBy="label"
-          (onChange)='obtenerVelatorios();' [showClear]="+rolLocalStorage.idRol < 2">
+          (onChange)='obtenerVelatorios();' [showClear]="+rolLocalStorage.idOficina < 2">
         </p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="f.delegacion?.errors?.required && (f.delegacion?.dirty || f.delegacion?.touched)">Campo
@@ -26,7 +26,7 @@
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
           [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label"
-          (onChange)="obtenerFoliosGenerados();" [showClear]="+rolLocalStorage.idRol < 3">
+          (onChange)="obtenerFoliosGenerados();" [showClear]="+rolLocalStorage.idOficina < 3">
         </p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo

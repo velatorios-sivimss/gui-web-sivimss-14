@@ -3,13 +3,13 @@
     <div class="col-md-6">
       <label class="control-label" for="velatorio">Delegación:</label>
       <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="delegaciones"
-       placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()" [showClear]="+rolLocalStorage.idRol < 2">
+       placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()" [showClear]="+rolLocalStorage.idOficina < 2">
       </p-dropdown>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="velatorio">Velatorios:</label>
       <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
-      placeholder="Selecciona velatorio" (onChange)="consultaSalasCremacion()" [showClear]="+rolLocalStorage.idRol < 3">
+      placeholder="Selecciona velatorio" (onChange)="consultaSalasCremacion()" [showClear]="+rolLocalStorage.idOficina < 3">
       </p-dropdown>
     </div>
   </form>
