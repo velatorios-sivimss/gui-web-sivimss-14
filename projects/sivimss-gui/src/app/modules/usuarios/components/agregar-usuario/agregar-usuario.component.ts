@@ -123,7 +123,7 @@ export class AgregarUsuarioComponent implements OnInit {
 
   buscarVelatorios(): void {
     const delegacion = this.agregarUsuarioForm.get('delegacion')?.value;
-    this.agregarUsuarioForm.get('velatorio')?.patchValue("");
+    this.agregarUsuarioForm.get('velatorio')?.patchValue(null);
     this.cargadorService.activar();
     this.usuarioService.obtenerVelatorios(delegacion)
       .pipe(finalize(() => this.cargadorService.desactivar()))

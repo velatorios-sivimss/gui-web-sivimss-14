@@ -116,6 +116,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   abrirModalCambioEstatusUsuario(usuario: Usuario): void {
+    this.usuarioSeleccionado = usuario;
     const header: string = usuario.estatus ? 'Desactivar' : 'Activar';
     const CAMBIO_ESTATUS_CONFIG: DynamicDialogConfig = {
       header: `${header} usuario`,
