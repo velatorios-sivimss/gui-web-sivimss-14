@@ -162,7 +162,7 @@
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Usuario</label>
-            <span></span>
+            <span>{{nombreUsuario}}</span>
           </div>
         </div>
       </div>
@@ -218,7 +218,7 @@
       </div>
     </app-table-panel>
     <div class="mb-3 mt-3 row text-center">
-      ¿Estás seguro de agregar este nuevo registro de usuario?
+      ¿Estás seguro de agregar este nuevo registro de usuario? {{nombreUsuario}}
     </div>
     <div class="flex justify-content-end mt-5">
       <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
