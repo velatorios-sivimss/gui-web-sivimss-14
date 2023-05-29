@@ -17,7 +17,7 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   readonly _nivel: string = 'catalogo_nivelOficina';
   readonly _delegacion: string = 'catalogo_delegaciones';
-  readonly _proveedores: string = 'mtto-proveedores';
+  readonly _proveedores: string = 'cat-mtto-proveedores';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "mtto-vehicular-modificar",
@@ -40,10 +40,9 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   }
 
   obtenerCatalogoProvedores(): Observable<HttpRespuesta<any>> {
-    // const params: HttpParams = new HttpParams()
-    //   .append("servicio", this._proveedores);
-    return of({datos: [], error: false, mensaje: '', codigo: 0});
-    // return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/`, {params});
+    const params: HttpParams = new HttpParams()
+      .append("servicio", this._proveedores);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
   }
 
   buscarPorFiltros(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
