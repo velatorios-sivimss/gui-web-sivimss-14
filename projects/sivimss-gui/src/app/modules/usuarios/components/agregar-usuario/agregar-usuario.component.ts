@@ -50,6 +50,7 @@ export class AgregarUsuarioComponent implements OnInit {
   delegacionResumen: string = "";
   velatorioResumen: string = "";
   mostrarModalMatriculaInactiva: boolean = false;
+  mostrarModalUsuarioRepetido: boolean = false;
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
@@ -190,7 +191,7 @@ export class AgregarUsuarioComponent implements OnInit {
         const {valido} = MENSAJES_CURP.get(valor);
         this.curpValida = valido;
         if (!valido) {
-          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
+          this.mostrarModalUsuarioRepetido = !this.mostrarModalUsuarioRepetido;
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -238,7 +239,7 @@ export class AgregarUsuarioComponent implements OnInit {
         const {valido} = MENSAJES_MATRICULA.get(valor);
         this.matriculaValida = valido;
         if (!valido) {
-          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje);
+          this.mostrarModalUsuarioRepetido = !this.mostrarModalUsuarioRepetido;
         }
       },
       error: (error: HttpErrorResponse): void => {
