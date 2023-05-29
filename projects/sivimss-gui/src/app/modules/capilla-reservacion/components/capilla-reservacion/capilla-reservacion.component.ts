@@ -33,6 +33,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   fechaSalida: any
   horaSalida: any
 
+  filtroForm!: FormGroup;
   registrarEntradaForm!: FormGroup;
   registrarSalidaForm!: FormGroup;
   calendarioForm!: FormGroup;
@@ -41,7 +42,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   agregarSalidaRef!: DynamicDialogRef;
 
   posicionPestania: number = 0;
-  delegacion: number = 0;
+  // delegacion: number = 0;
   velatorioPosicion!: number ;
   respuesta:any;
 
@@ -57,9 +58,10 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   value: number = 0;
 
   velatorios:TipoDropdown[] = [];
-  velatorioListado!: number;
+  // velatorioListado!: number;
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -87,10 +89,20 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
     this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
 
+    this.inicializarFiltroForm();
   }
 
   actualizarBreadcrumb(): void{
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
+  }
+
+  inicializarFiltroForm() {
+    this.filtroForm = this.formBuilder.group({
+      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }],
+      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }],
+    });
+
+    this.cambiarDelegacion();
   }
 
   inicializarRegistroEntradaForm(): void {
@@ -117,7 +129,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
   obtenerObjetoParaRegistrarEntrada() {
     return {
-      idVelatorio: this.velatorioListado ? this.velatorioListado : null,
+      idVelatorio: this.f.velatorio.value || null,
       fechaEntrada: this.fe.fechaEntrada.value,
       horaEntrada: this.fe.horaEntrada.value,
       registroEntrada:  this.fe.horaEntrada.value
@@ -137,7 +149,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
     this.agregarSalidaRef = this.dialogService.open(RegistrarSalidaComponent,{
       data: {
         idCapilla:this.registrarSalidaForm.get('capilla')?.value,
-        idVelatorio: this.velatorioListado,
+        idVelatorio: +this.f.velatorio.value,
         fecha: {fecha:this.registrarSalidaForm.get('fechaSalida')?.value,
           hora: this.registrarSalidaForm.get('horaSalida')?.value}
       },
@@ -147,8 +159,8 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
     this.agregarSalidaRef.onClose.subscribe((respuesta:boolean) => {
       if(respuesta){
-        this.velatorioListado = 0;
-        this.delegacion = 0
+        this.f.delegacion.patchValue(0);
+        this.f.velatorio.patchValue(0);
         this.velatorios = [];
         this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
           {label: delegacion.label, value: delegacion.value} )) || [];
@@ -168,8 +180,8 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
     this.creacionRef.onClose.subscribe( (estatus:boolean) => {
       if(estatus){
-        this.velatorioListado = 0;
-        this.delegacion = 0
+        this.f.delegacion.patchValue(0);
+        this.f.velatorio.patchValue(0);
         this.velatorios = mapearArregloTipoDropdown(this.respuesta[0]?.datos,'velatorio','id');
         this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
           {label: delegacion.label, value: delegacion.value} )) || [];
@@ -180,7 +192,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   }
 
   obtenerCapillaPorIdVelatorio(){
-    let idVelatorio = this.velatorioListado
+    let idVelatorio = +this.f.velatorio.value
     this.capillaReservacionService.capillaOcupadaPorIdVelatorio(idVelatorio).subscribe(
       (respuesta) => {
         if (respuesta.datos) {
@@ -199,7 +211,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
    cambiarDelegacion(): void {
     this.loaderService.activar();
-    this.capillaReservacionService.obtenerCatalogoVelatoriosPorDelegacion(this.delegacion).pipe(
+    this.capillaReservacionService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>)=> {
@@ -219,6 +231,10 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
   get fs() {
     return this.registrarSalidaForm.controls;
+  }
+
+  get f() {
+    return this.filtroForm?.controls;
   }
 
   ngOnDestroy(): void {
