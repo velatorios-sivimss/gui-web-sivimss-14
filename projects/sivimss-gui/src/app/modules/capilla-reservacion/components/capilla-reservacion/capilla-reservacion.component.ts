@@ -153,7 +153,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
         fecha: {fecha:this.registrarSalidaForm.get('fechaSalida')?.value,
           hora: this.registrarSalidaForm.get('horaSalida')?.value}
       },
-      header: 'Registrar salida',
+      header: 'Registrar salida de capilla',
       width: "920px",
     });
 
@@ -174,7 +174,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
     let objParaRegistrarEntrada = this.obtenerObjetoParaRegistrarEntrada();
     this.creacionRef = this.dialogService.open(RegistrarEntradaComponent, {
       data: objParaRegistrarEntrada,
-      header: "Registrar entrada",
+      header: "Registrar entrada a capilla",
       width: "920px",
     })
 
