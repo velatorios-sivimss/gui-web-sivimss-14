@@ -1,11 +1,11 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-titulo-principal',
   templateUrl: './titulo-principal.component.html',
   styleUrls: ['./titulo-principal.component.scss']
 })
-export class TituloPrincipalComponent implements OnInit {
+export class TituloPrincipalComponent {
 
   private _style: any = {};
 
@@ -15,11 +15,6 @@ export class TituloPrincipalComponent implements OnInit {
   @Input()
   titulo!: string;
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 
   @Input() get style(): any {
     return this._style;

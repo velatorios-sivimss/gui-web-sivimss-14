@@ -29,7 +29,6 @@ export class NotificacionesService {
   // }
 
   renovarNotificacion(idRegistro:any): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_tokenCap}`, 'Content-Type': 'application/json' });
     return this._http.post<HttpRespuesta<any>>(`${environment.api.mssivimss}9/veri-renovar-hora`,{idRegistro:idRegistro})
   }
 

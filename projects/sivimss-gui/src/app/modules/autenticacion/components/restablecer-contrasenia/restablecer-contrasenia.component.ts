@@ -19,6 +19,7 @@ export class RestablecerContraseniaComponent implements OnInit {
 
   form!: FormGroup;
   usuario: string = ''
+  mostrarModalFormatoContrasenia: boolean = false;
 
   constructor(
     private readonly autenticacionService: AutenticacionService,
@@ -32,7 +33,7 @@ export class RestablecerContraseniaComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
-      this.usuario = params['usuario'];
+      this.usuario = params['usuario']
     });
     this.inicializarForm();
   }
@@ -43,9 +44,7 @@ export class RestablecerContraseniaComponent implements OnInit {
         contraseniaNueva: ['', [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
         contraseniaConfirmacion: ['', [Validators.required]]
       },
-      {
-        validators: [confirmacionContraseniadValidator]
-      }
+      {validators: [confirmacionContraseniadValidator]}
     );
   }
 
@@ -59,9 +58,7 @@ export class RestablecerContraseniaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<unknown>): void => {
         if (respuesta.codigo === 200) {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada correctamente.');
-          this.router.navigate(["../"], {
-            relativeTo: this.activatedRoute
-          });
+          this.router.navigate(["../"], {relativeTo: this.activatedRoute});
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -69,6 +66,17 @@ export class RestablecerContraseniaComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
       }
     });
+  }
+
+  validarContrasenia(): void {
+    if (!this.form.controls.contraseniaNueva?.errors?.pattern) return;
+    this.mostrarModalFormatoContrasenia = !this.mostrarModalFormatoContrasenia;
+  }
+
+  restablecerCampos(): void {
+    this.form.get('contraseniaNueva')?.patchValue(null);
+    this.form.get('contraseniaConfirmacion')?.patchValue(null);
+    this.mostrarModalFormatoContrasenia = !this.mostrarModalFormatoContrasenia;
   }
 
   get f() {
