@@ -87,8 +87,8 @@ export class ModificarUsuarioComponent implements OnInit {
       fechaNacimiento: [{value: new Date(diferenciaUTC(usuario.fecNacimiento)), disabled: false},
         [Validators.required]],
       nivel: [{value: usuario.idOficina, disabled: false}, [Validators.required]],
-      delegacion: [{value: usuario.idDelegacion, disabled: false}, [Validators.required]],
-      velatorio: [{value: usuario.idVelatorio, disabled: false}, [Validators.required]],
+      delegacion: [{value: usuario.idDelegacion, disabled: false}],
+      velatorio: [{value: usuario.idVelatorio, disabled: false}],
       rol: [{value: usuario.idRol, disabled: false}, [Validators.required]],
       estatus: [{value: usuario.estatus, disabled: false}, [Validators.required]]
     });
