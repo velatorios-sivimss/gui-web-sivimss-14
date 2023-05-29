@@ -49,6 +49,7 @@ export class AgregarUsuarioComponent implements OnInit {
   nivelResumen: string = "";
   delegacionResumen: string = "";
   velatorioResumen: string = "";
+  mostrarModalMatriculaInactiva: boolean = false;
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
@@ -248,8 +249,12 @@ export class AgregarUsuarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.error) {
-          const mensaje = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
+          const mensaje: string = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
           this.mensajesSistemaService.mostrarMensajeError(mensaje);
+          this.matriculaValida = !this.matriculaValida;
+        }
+        if (respuesta.datos.status === 'INACTIVO') {
+          this.mostrarModalMatriculaInactiva = !this.mostrarModalMatriculaInactiva;
           this.matriculaValida = !this.matriculaValida;
         }
       },

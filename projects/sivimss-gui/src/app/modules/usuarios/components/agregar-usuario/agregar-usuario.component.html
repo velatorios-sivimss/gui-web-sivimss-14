@@ -228,3 +228,19 @@
     </div>
   </ng-container>
 </ng-container>
+
+<p-dialog [(visible)]="mostrarModalMatriculaInactiva" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="Matricula SIAP inactiva">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">La matrícula que deseas registrar pertenece a un empleado IMSS inactivo en el SIAP.
+        Favor de contactar a tu administrador.</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalMatriculaInactiva = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
