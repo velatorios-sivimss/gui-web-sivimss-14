@@ -70,6 +70,7 @@ export class ModificarUsuarioComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    if (!delegacion) return;
     this.buscarVelatorios(delegacion);
   }
 
