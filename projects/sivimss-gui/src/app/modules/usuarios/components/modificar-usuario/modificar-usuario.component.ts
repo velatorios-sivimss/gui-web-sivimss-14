@@ -121,7 +121,7 @@ export class ModificarUsuarioComponent implements OnInit {
   buscarVelatorios(delegacion?: string): void {
     if (!delegacion) {
       delegacion = this.modificarUsuarioForm.get('delegacion')?.value;
-      this.modificarUsuarioForm.get('velatorio')?.patchValue("");
+      this.modificarUsuarioForm.get('velatorio')?.patchValue(null);
     }
     this.usuarioService.obtenerVelatorios(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
