@@ -84,11 +84,10 @@ export class ModificarUsuarioComponent implements OnInit {
       segundoApellido: [{value: usuario.materno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
       correoElectronico: [{value: usuario.correo, disabled: false},
         [Validators.required, Validators.email, Validators.pattern(PATRON_CORREO)]],
-      fechaNacimiento: [{value: new Date(diferenciaUTC(usuario.fecNacimiento)), disabled: false},
-        [Validators.required]],
+      fechaNacimiento: [{value: new Date(diferenciaUTC(usuario.fecNacimiento)), disabled: true}],
       nivel: [{value: usuario.idOficina, disabled: false}, [Validators.required]],
-      delegacion: [{value: usuario.idDelegacion, disabled: false}, [Validators.required]],
-      velatorio: [{value: usuario.idVelatorio, disabled: false}, [Validators.required]],
+      delegacion: [{value: usuario.idDelegacion, disabled: false}],
+      velatorio: [{value: usuario.idVelatorio, disabled: false}],
       rol: [{value: usuario.idRol, disabled: false}, [Validators.required]],
       estatus: [{value: usuario.estatus, disabled: false}, [Validators.required]]
     });
@@ -121,7 +120,7 @@ export class ModificarUsuarioComponent implements OnInit {
   buscarVelatorios(delegacion?: string): void {
     if (!delegacion) {
       delegacion = this.modificarUsuarioForm.get('delegacion')?.value;
-      this.modificarUsuarioForm.get('velatorio')?.patchValue("");
+      this.modificarUsuarioForm.get('velatorio')?.patchValue(null);
     }
     this.usuarioService.obtenerVelatorios(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {

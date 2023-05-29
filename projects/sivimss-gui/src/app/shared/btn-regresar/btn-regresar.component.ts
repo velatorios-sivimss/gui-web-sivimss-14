@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-btn-regresar',
   templateUrl: './btn-regresar.component.html',
   styleUrls: ['./btn-regresar.component.scss']
 })
-export class BtnRegresarComponent implements OnInit {
+export class BtnRegresarComponent {
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

@@ -49,6 +49,7 @@ export class AgregarUsuarioComponent implements OnInit {
   nivelResumen: string = "";
   delegacionResumen: string = "";
   velatorioResumen: string = "";
+  mostrarModalMatriculaInactiva: boolean = false;
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
@@ -56,6 +57,7 @@ export class AgregarUsuarioComponent implements OnInit {
   readonly ERROR_ALTA_USUARIO: string = "Error al guardar la información del usuario. Intenta nuevamente.";
   readonly MSG_ALTA_USUARIO: string = "Usuario agregado correctamente.";
   pasoAgregarUsuario: number = 1;
+  nombreUsuario: string = "";
 
   constructor(
     private route: ActivatedRoute,
@@ -121,7 +123,7 @@ export class AgregarUsuarioComponent implements OnInit {
 
   buscarVelatorios(): void {
     const delegacion = this.agregarUsuarioForm.get('delegacion')?.value;
-    this.agregarUsuarioForm.get('velatorio')?.patchValue("");
+    this.agregarUsuarioForm.get('velatorio')?.patchValue(null);
     this.cargadorService.activar();
     this.usuarioService.obtenerVelatorios(delegacion)
       .pipe(finalize(() => this.cargadorService.desactivar()))
@@ -152,6 +154,12 @@ export class AgregarUsuarioComponent implements OnInit {
       nombre: this.agregarUsuarioForm.get("nombre")?.value,
       paterno: this.agregarUsuarioForm.get("primerApellido")?.value,
     };
+  }
+
+  crearNombreUsuario(): string {
+    const nombre = this.agregarUsuarioForm.get("nombre")?.value;
+    const paterno = this.agregarUsuarioForm.get("primerApellido")?.value;
+    return `${nombre}${paterno.toString().charAt(0)}XXX`.toUpperCase();
   }
 
   creacionVariablesResumen(): void {
@@ -248,8 +256,12 @@ export class AgregarUsuarioComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.error) {
-          const mensaje = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
+          const mensaje: string = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
           this.mensajesSistemaService.mostrarMensajeError(mensaje);
+          this.matriculaValida = !this.matriculaValida;
+        }
+        if (respuesta.datos.status === 'INACTIVO') {
+          this.mostrarModalMatriculaInactiva = !this.mostrarModalMatriculaInactiva;
           this.matriculaValida = !this.matriculaValida;
         }
       },
@@ -289,6 +301,7 @@ export class AgregarUsuarioComponent implements OnInit {
     if (this.pasoAgregarUsuario === this.CAPTURA_DE_USUARIO) {
       this.pasoAgregarUsuario = this.RESUMEN_DE_USUARIO;
       this.nuevoUsuario = this.crearUsuario();
+      this.nombreUsuario = this.crearNombreUsuario();
       this.creacionVariablesResumen();
       return;
     }
