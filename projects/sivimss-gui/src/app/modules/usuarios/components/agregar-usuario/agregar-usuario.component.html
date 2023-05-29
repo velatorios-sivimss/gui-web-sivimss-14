@@ -231,7 +231,7 @@
 
 <p-dialog [(visible)]="mostrarModalMatriculaInactiva" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="Matricula SIAP inactiva">
+          [draggable]="false" [resizable]="false" [showHeader]="false">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">La matrícula que deseas registrar pertenece a un empleado IMSS inactivo en el SIAP.
