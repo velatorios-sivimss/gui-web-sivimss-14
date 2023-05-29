@@ -40,6 +40,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   overlayPanel!: OverlayPanel;
 
   numPaginaActual: number = 0;
+  ultimaNumPagina: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
 
@@ -114,15 +115,22 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.modificacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
   }
 
-  abrirModalCambioEstatusUsuario(): void {
-    const header: string = this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
+  abrirModalCambioEstatusUsuario(usuario: Usuario): void {
+    const header: string = usuario.estatus ? 'Desactivar' : 'Activar';
     const CAMBIO_ESTATUS_CONFIG: DynamicDialogConfig = {
       header: `${header} usuario`,
       width: MAX_WIDTH,
-      data: this.usuarioSeleccionado.id
+      data: usuario.id
     }
     this.cambioEstatusRef = this.dialogService.open(CambioEstatusUsuarioComponent, CAMBIO_ESTATUS_CONFIG);
-    this.cambioEstatusRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
+    this.cambioEstatusRef.onClose.subscribe((respuesta: RespuestaModalUsuario): void => {
+      if (!respuesta) {
+        this.numPaginaActual = this.ultimaNumPagina;
+        this.seleccionarPaginacion();
+        return;
+      }
+      this.procesarRespuestaModal(respuesta)
+    });
   }
 
   abrirModalDetalleUsuario(usuario: Usuario): void {
@@ -183,6 +191,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.usuarios = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
+        this.ultimaNumPagina = respuesta.datos.number;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -199,6 +208,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.usuarios = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
+        this.ultimaNumPagina = respuesta.datos.number;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -258,13 +268,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     }
   }
 
-
   get f() {
     return this.filtroForm.controls;
-  }
-
-  get tituloCambioEstatus(): string {
-    return this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
   }
 
   ngOnDestroy(): void {

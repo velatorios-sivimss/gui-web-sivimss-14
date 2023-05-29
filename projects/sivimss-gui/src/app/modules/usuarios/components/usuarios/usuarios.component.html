@@ -78,8 +78,8 @@
         <td>
           <div class="contenedor-celda-iconos">
             <div class="contenedor-inputswitch flex mr-4">
-              <p-inputSwitch [(ngModel)]="usuario.estatus" (ngModelChange)="cambiarEstatus(usuario.id);"
-                             [disabled]="true"></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="usuario.estatus"
+                             (ngModelChange)="abrirModalCambioEstatusUsuario(usuario);"></p-inputSwitch>
               <span class="activo mr-3" *ngIf="usuario.estatus">Activo</span>
               <span class="inactivo" *ngIf="!usuario.estatus">Inactivo</span>
             </div>
@@ -113,8 +113,6 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarUsuario()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion [titulo]="tituloCambioEstatus"
-                                (click)="abrirModalCambioEstatusUsuario()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
