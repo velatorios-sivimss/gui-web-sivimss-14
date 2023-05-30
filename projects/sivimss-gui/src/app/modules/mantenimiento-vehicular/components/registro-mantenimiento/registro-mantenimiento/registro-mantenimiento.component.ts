@@ -134,11 +134,13 @@ export class RegistroMantenimientoComponent implements OnInit {
     const tipoMantenimientoValor = this.tiposMantenimiento.find(m => m.value === tipoMantenimiento)?.label;
     const modalidad = this.solicitudMantenimientoForm.get("modalidad")?.value;
     const modalidadValor: string = this.modalidades[modalidad] || "";
+    const proveedor = this.solicitudMantenimientoForm.get("nombreProveedor")?.value;
+    const nombreProveedor = this.catalogoProveedores.find(p => p.value === proveedor)?.label;
     return {
       tipoMantenimiento: tipoMantenimientoValor || "",
       fechaMantenimiento: this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value,
       notas: this.solicitudMantenimientoForm.get("notas")?.value,
-      nombreProveedor: this.solicitudMantenimientoForm.get("nombreProveedor")?.value,
+      nombreProveedor: nombreProveedor || '',
       numeroContrato: this.solicitudMantenimientoForm.get("noContrato")?.value,
       taller: this.solicitudMantenimientoForm.get("taller")?.value,
       costo: this.solicitudMantenimientoForm.get("costoMantenimiento")?.value,
