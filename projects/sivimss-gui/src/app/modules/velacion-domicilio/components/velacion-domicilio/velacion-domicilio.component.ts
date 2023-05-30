@@ -123,7 +123,7 @@ export class VelacionDomicilioComponent implements OnInit {
 
   abrirModalRegistroEntradaEquipo(): void {
     this.registrarEntradaEquipoRef = this.dialogService.open(RegistrarEntradaEquipoComponent, {
-      header: 'Registro de entrada de equipo',
+      header: 'Registro de entrada de equipo de velación',
       width: '920px',
       data: { valeSeleccionado: this.valeSeleccionado },
     });
