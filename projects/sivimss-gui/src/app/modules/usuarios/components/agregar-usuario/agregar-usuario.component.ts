@@ -280,7 +280,7 @@ export class AgregarUsuarioComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          respuestaModal.usuario = respuesta[0];
+          respuestaModal.usuario = respuesta.datos[0];
           this.ref.close(respuestaModal);
         },
         error: (error: HttpErrorResponse): void => {

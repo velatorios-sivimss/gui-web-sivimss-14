@@ -40,7 +40,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   overlayPanel!: OverlayPanel;
 
   numPaginaActual: number = 0;
-  ultimaNumPagina: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
 
@@ -129,8 +128,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.cambioEstatusRef = this.dialogService.open(CambioEstatusUsuarioComponent, CAMBIO_ESTATUS_CONFIG);
     this.cambioEstatusRef.onClose.subscribe((respuesta: RespuestaModalUsuario): void => {
       if (!respuesta) {
-        this.numPaginaActual = this.ultimaNumPagina;
-        this.seleccionarPaginacion();
+        this.limpiar();
         return;
       }
       this.procesarRespuestaModal(respuesta)
@@ -195,7 +193,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.usuarios = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
-        this.ultimaNumPagina = respuesta.datos.number;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -212,7 +209,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.usuarios = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
-        this.ultimaNumPagina = respuesta.datos.number;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -262,9 +258,10 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   procesarRespuestaModal(respuesta: RespuestaModalUsuario = {}): void {
     if (respuesta.usuario) {
+      this.respuestaNuevoUsuario = respuesta;
       this.nuevoUsuario.usuario = respuesta.usuario.usuario;
       this.nuevoUsuario.contrasenia = respuesta.usuario.contrasenia;
-      this.respuestaNuevoUsuario = respuesta;
+      this.mostrarNuevoUsuario = !this.mostrarNuevoUsuario;
       return;
     }
     if (respuesta.actualizar) {
