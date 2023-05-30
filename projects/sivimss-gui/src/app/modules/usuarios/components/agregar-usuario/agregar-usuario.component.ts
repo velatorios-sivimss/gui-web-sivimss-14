@@ -56,7 +56,7 @@ export class AgregarUsuarioComponent implements OnInit {
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
   readonly NOT_FOUND_ERROR_RENAPO: string = "No se encontro información relacionada a tu búsqueda.";
   readonly ERROR_ALTA_USUARIO: string = "Error al guardar la información del usuario. Intenta nuevamente.";
-  readonly MSG_ALTA_USUARIO: string = "Usuario agregado correctamente.";
+  readonly MSG_ALTA_USUARIO: string = "Agregado correctamente.";
   pasoAgregarUsuario: number = 1;
   nombreUsuario: string = "";
 
@@ -274,13 +274,14 @@ export class AgregarUsuarioComponent implements OnInit {
   }
 
   agregarUsuario(): void {
-    const respuesta: RespuestaModalUsuario = {mensaje: this.MSG_ALTA_USUARIO, actualizar: true}
+    const respuestaModal: RespuestaModalUsuario = {mensaje: this.MSG_ALTA_USUARIO, actualizar: true}
     this.cargadorService.activar();
     this.usuarioService.guardar(this.nuevoUsuario)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (): void => {
-          this.ref.close(respuesta);
+        next: (respuesta: HttpRespuesta<any>): void => {
+          respuestaModal.usuario = respuesta[0];
+          this.ref.close(respuestaModal);
         },
         error: (error: HttpErrorResponse): void => {
           console.error("ERROR: ", error);

@@ -50,6 +50,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   catalogoVelatorios: TipoDropdown[] = [];
   usuarios: Usuario[] = [];
   usuarioSeleccionado!: Usuario;
+  mostrarNuevoUsuario: boolean = false;
+  nuevoUsuario: { usuario: string; contrasenia: string } = {usuario: 'Prueba', contrasenia: 'Prueba'};
+  respuestaNuevoUsuario: RespuestaModalUsuario = {};
 
   filtroForm!: FormGroup;
 
@@ -258,6 +261,12 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   procesarRespuestaModal(respuesta: RespuestaModalUsuario = {}): void {
+    if (respuesta.usuario) {
+      this.nuevoUsuario.usuario = respuesta.usuario.usuario;
+      this.nuevoUsuario.contrasenia = respuesta.usuario.contrasenia;
+      this.respuestaNuevoUsuario = respuesta;
+      return;
+    }
     if (respuesta.actualizar) {
       this.limpiar();
     }
@@ -267,6 +276,15 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     if (respuesta.modificar) {
       this.abrirModalModificarUsuario();
     }
+  }
+
+  cerrarModalNuevoUsuario(): void {
+    this.mostrarNuevoUsuario = !this.mostrarNuevoUsuario;
+    const mensaje: string = `${this.respuestaNuevoUsuario.mensaje} ${this.nuevoUsuario.usuario}`;
+    this.alertaService.mostrar(TipoAlerta.Exito, mensaje);
+    this.limpiar();
+    this.respuestaNuevoUsuario = {};
+    this.nuevoUsuario = {usuario: '', contrasenia: ''};
   }
 
   get f() {
