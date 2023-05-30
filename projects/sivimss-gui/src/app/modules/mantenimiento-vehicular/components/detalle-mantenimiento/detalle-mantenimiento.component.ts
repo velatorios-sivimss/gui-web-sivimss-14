@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {tablaRin} from "../../constants/tabla-rines";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {forkJoin, Observable, of} from "rxjs";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
