@@ -41,7 +41,6 @@ export class RolesComponent implements OnInit {
   overlayPanel!: OverlayPanel;
 
   numPaginaActual: number = 0;
-  ultimaNumPagina: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   paginacionConFiltrado: boolean = false;
@@ -96,7 +95,6 @@ export class RolesComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.roles = respuesta.datos.content || [];
         this.totalElementos = respuesta.datos.totalElements || 0;
-        this.ultimaNumPagina = respuesta.datos.number;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -114,7 +112,6 @@ export class RolesComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.roles = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
-        this.ultimaNumPagina = respuesta.datos.number;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -176,8 +173,7 @@ export class RolesComponent implements OnInit {
         });
         return;
       }
-      this.numPaginaActual = this.ultimaNumPagina;
-      this.seleccionarPaginacion();
+      this.limpiar();
     });
   }
 

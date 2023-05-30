@@ -116,3 +116,27 @@
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-dialog [(visible)]="mostrarNuevoUsuario" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" [showHeader]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center mb-3">
+      <span class="text-justify">
+        <span class="font-bold mr-4">Usuario:</span>
+        <span>{{nuevoUsuario.usuario}}</span>
+      </span>
+    </div>
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">
+        <span class="font-bold mr-4">Contraseña: </span>
+        <span>{{nuevoUsuario.contrasenia}}</span>
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="cerrarModalNuevoUsuario()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
