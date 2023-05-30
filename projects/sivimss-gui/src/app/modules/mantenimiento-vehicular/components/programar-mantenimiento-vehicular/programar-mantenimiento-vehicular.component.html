@@ -80,7 +80,6 @@
         <td [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <!--  <a (click)="abrirModalDetalle(vehiculo)"> -->
             <a [routerLink]="['detalle-mantenimiento', vehiculo.ID_VEHICULO]">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
@@ -95,7 +94,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="8" class="p-2 text-center font-bold text-xl">
+        <th colspan="8" class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular">
           No se encontro información relacionada a tu búsqueda
         </th>
       </tr>

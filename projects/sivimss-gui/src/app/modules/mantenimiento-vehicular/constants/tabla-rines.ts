@@ -4,8 +4,7 @@ interface RegistroRin {
 }
 
 export const tablaRin: RegistroRin[] = [
-  {rin: 38, precision: 38},
-  {rin: 38, precision: 38},
-  {rin: 38, precision: 38},
-  {rin: 38, precision: 38}
+  {rin: 13, precision: 30},
+  {rin: 14, precision: 32},
+  {rin: 15, precision: 34},
 ];

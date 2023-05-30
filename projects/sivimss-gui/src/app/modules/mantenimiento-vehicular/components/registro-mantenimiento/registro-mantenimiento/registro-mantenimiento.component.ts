@@ -134,11 +134,13 @@ export class RegistroMantenimientoComponent implements OnInit {
     const tipoMantenimientoValor = this.tiposMantenimiento.find(m => m.value === tipoMantenimiento)?.label;
     const modalidad = this.solicitudMantenimientoForm.get("modalidad")?.value;
     const modalidadValor: string = this.modalidades[modalidad] || "";
+    const proveedor = this.solicitudMantenimientoForm.get("nombreProveedor")?.value;
+    const nombreProveedor = this.catalogoProveedores.find(p => p.value === proveedor)?.label;
     return {
       tipoMantenimiento: tipoMantenimientoValor || "",
       fechaMantenimiento: this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value,
       notas: this.solicitudMantenimientoForm.get("notas")?.value,
-      nombreProveedor: this.solicitudMantenimientoForm.get("nombreProveedor")?.value,
+      nombreProveedor: nombreProveedor || '',
       numeroContrato: this.solicitudMantenimientoForm.get("noContrato")?.value,
       taller: this.solicitudMantenimientoForm.get("taller")?.value,
       costo: this.solicitudMantenimientoForm.get("costoMantenimiento")?.value,
@@ -274,19 +276,16 @@ export class RegistroMantenimientoComponent implements OnInit {
   }
 
   llenarFormulario(respuesta: RespuestaRegistroMantenimiento): void {
-    this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS)
-    this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA)
-    this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO)
-    this.solicitudMantenimientoForm.get('kilometraje')?.patchValue(respuesta.KILOMETRAJE)
-    // this.solicitudMantenimientoForm.get('tipoMantenimiento')?.patchValue(respuesta.)
-    this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD)
-    // this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta)
-    // this.solicitudMantenimientoForm.get('fechaMantenimiento')?.patchValue(respuesta)
-    this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS)
-    this.solicitudMantenimientoForm.get('nombreProveedor')?.patchValue(respuesta.NOM_PROVEEDOR)
-    this.solicitudMantenimientoForm.get('noContrato')?.patchValue(respuesta.DES_NUMCONTRATO)
-    this.solicitudMantenimientoForm.get('taller')?.patchValue(respuesta.DES_NOMBRE_TALLER)
-    this.solicitudMantenimientoForm.get('costoMantenimiento')?.patchValue(respuesta.COSTO_MTTO)
+    this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS);
+    this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA);
+    this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO);
+    this.solicitudMantenimientoForm.get('kilometraje')?.patchValue(respuesta.KILOMETRAJE);
+    this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD);
+    this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
+    this.solicitudMantenimientoForm.get('nombreProveedor')?.patchValue(respuesta.NOM_PROVEEDOR);
+    this.solicitudMantenimientoForm.get('noContrato')?.patchValue(respuesta.DES_NUMCONTRATO);
+    this.solicitudMantenimientoForm.get('taller')?.patchValue(respuesta.DES_NOMBRE_TALLER);
+    this.solicitudMantenimientoForm.get('costoMantenimiento')?.patchValue(respuesta.COSTO_MTTO);
   }
 
   get smf() {

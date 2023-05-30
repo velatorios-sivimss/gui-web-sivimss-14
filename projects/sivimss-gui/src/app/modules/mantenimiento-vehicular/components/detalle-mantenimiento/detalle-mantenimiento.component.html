@@ -81,7 +81,7 @@
                       <span class="ml-4">{{verificacion.DES_NIVEL_ACEITE | uppercase}}</span>
                     </div>
                     <div class="table-panel-column col-md-4">
-                      <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                      <img class="icono" src="../../../../../../assets/images/nivelCombus.svg" alt="Nivel combustible">
                     </div>
                   </div>
                 </div>
@@ -91,7 +91,7 @@
                     <span>{{verificacion.DES_NIVEL_AGUA | uppercase}}</span>
                   </div>
                   <div class="table-panel-column col-md-4">
-                    <img class="icono" src="../../../../../../assets/images/nivelAgua.svg">
+                    <img class="icono" src="../../../../../../assets/images/nivelAgua.svg" alt="Nivel agua">
                   </div>
                 </div>
                 <div class="col-md-4"></div>
@@ -105,7 +105,7 @@
                         <span>{{verificacion.DES_NIVEL_NEUMATRASE | uppercase}}</span>
                       </div>
                       <div class="table-panel-column col-md-4">
-                        <img class="icono" src="../../../../../../assets/images/velocimetroBajo.svg">
+                        <img class="icono" src="../../../../../../assets/images/velocimetroBajo.svg" alt="Nivel neumatico trasera">
                       </div>
                     </div>
                     <div class="col-12 mt-3">
@@ -114,7 +114,7 @@
                         <span>{{verificacion.DES_NIVEL_NEUMADELA | uppercase}}</span>
                       </div>
                       <div class="table-panel-column col-md-4">
-                        <img class="icono" src="../../../../../../assets/images/belocimetroAlto.svg">
+                        <img class="icono" src="../../../../../../assets/images/belocimetroAlto.svg" alt="Nivel neumatico delantero">
                       </div>
                     </div>
                   </div>
@@ -126,8 +126,8 @@
                       <p-table [value]="data" [styleClass]="'p-datatable-sm'">
                         <ng-template pTemplate="header">
                           <tr>
-                            <th>Rin</th>
-                            <th>Precisión</th>
+                            <th id="detalle-mtto-rin">Rin</th>
+                            <th id="detalle-mtto-precision">Precisión</th>
                           </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-item>
@@ -152,7 +152,7 @@
                       <span class="ml-4">{{verificacion.DES_NIVEL_COMBUSTIBLE | uppercase}}</span>
                     </div>
                     <div class="table-panel-column col-md-4">
-                      <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                      <img class="icono" src="../../../../../../assets/images/nivelCombus.svg" alt="Nivel combustible">
                     </div>
                   </div>
                 </div>
@@ -163,7 +163,7 @@
                       <span class="ml-4">{{verificacion.DES_NIVEL_BATERIA | uppercase}}</span>
                     </div>
                     <div class="table-panel-column col-md-4">
-                      <img class="icono-bateria" src="../../../../../../assets/images/loading.svg">
+                      <img class="icono-bateria" src="../../../../../../assets/images/loading.svg" alt="Nivel bateria">
                     </div>
                   </div>
                 </div>
@@ -298,6 +298,12 @@
     </ng-template>
   </p-accordionTab>
 </p-accordion>
+<ng-container>
+  <div class="flex mt-4 mb-4 justify-content-end margin">
+    <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../../">Cerrar</button>
+  </div>
+</ng-container>
+
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
