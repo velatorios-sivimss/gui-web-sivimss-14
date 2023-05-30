@@ -284,7 +284,8 @@ export class AgregarUsuarioComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_ALTA_USUARIO);
+          const ERROR_MENSAJE: string = `${this.ERROR_ALTA_USUARIO} ${this.nombreUsuario}`;
+          this.mensajesSistemaService.mostrarMensajeError(error.message, ERROR_MENSAJE);
         }
       });
   }
