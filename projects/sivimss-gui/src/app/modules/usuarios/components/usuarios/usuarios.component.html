@@ -78,8 +78,8 @@
         <td>
           <div class="contenedor-celda-iconos">
             <div class="contenedor-inputswitch flex mr-4">
-              <p-inputSwitch [(ngModel)]="usuario.estatus" (ngModelChange)="cambiarEstatus(usuario.id);"
-                             [disabled]="true"></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="usuario.estatus"
+                             (ngModelChange)="abrirModalCambioEstatusUsuario(usuario);"></p-inputSwitch>
               <span class="activo mr-3" *ngIf="usuario.estatus">Activo</span>
               <span class="inactivo" *ngIf="!usuario.estatus">Inactivo</span>
             </div>
@@ -113,8 +113,30 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarUsuario()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion [titulo]="tituloCambioEstatus"
-                                (click)="abrirModalCambioEstatusUsuario()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-dialog [(visible)]="mostrarNuevoUsuario" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" [showHeader]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center mb-3">
+      <span class="text-justify">
+        <span class="font-bold mr-4">Usuario:</span>
+        <span>{{nuevoUsuario.usuario}}</span>
+      </span>
+    </div>
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">
+        <span class="font-bold mr-4">Contraseña: </span>
+        <span>{{nuevoUsuario.contrasenia}}</span>
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="cerrarModalNuevoUsuario()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

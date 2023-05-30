@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EstiloLinea } from "projects/sivimss-gui/src/app/shared/etapas/models/estilo-linea.interface";
 import { EtapaEstado } from '../../models/etapa-estado.enum';
 
@@ -7,7 +7,7 @@ import { EtapaEstado } from '../../models/etapa-estado.enum';
   templateUrl: './etapa.component.html',
   styleUrls: ['./etapa.component.scss']
 })
-export class EtapaComponent implements OnInit {
+export class EtapaComponent {
 
   readonly EtapaEstado = EtapaEstado;
 
@@ -35,11 +35,6 @@ export class EtapaComponent implements OnInit {
   @Output()
   seleccionEtapa: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 
   seleccionarEtapa() {
     this.seleccionEtapa.emit(this.idEtapa);

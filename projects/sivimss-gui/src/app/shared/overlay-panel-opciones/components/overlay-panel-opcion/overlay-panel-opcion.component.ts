@@ -1,18 +1,14 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-overlay-panel-opcion',
   templateUrl: './overlay-panel-opcion.component.html',
   styleUrls: ['./overlay-panel-opcion.component.scss']
 })
-export class OverlayPanelOpcionComponent implements OnInit {
+export class OverlayPanelOpcionComponent {
 
   @Input()
-  titulo:string = '';
+  titulo: string = '';
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

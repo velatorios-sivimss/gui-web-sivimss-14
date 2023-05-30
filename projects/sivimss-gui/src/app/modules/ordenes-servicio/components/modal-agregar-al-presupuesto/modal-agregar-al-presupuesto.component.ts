@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { ModalAgregarServicioComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-servicio/modal-agregar-servicio.component";
 
 @Component({
   selector: 'app-modal-agregar-al-presupuesto',
@@ -12,7 +13,8 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
 
   constructor(
     private readonly ref: DynamicDialogRef,
-    private readonly config: DynamicDialogConfig
+    private readonly config: DynamicDialogConfig,
+    private readonly dialogService: DialogService
   ) {
   }
 
@@ -24,6 +26,20 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
   cerrarModal() {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
     this.ref.close(true);
+  }
+
+  abrirModalAgregarServicio() {
+    const ref = this.dialogService.open(ModalAgregarServicioComponent, {
+      header: 'Agregar servicio',
+      style: {maxWidth: '876px', width: '100%'},
+      data: {
+        dummy: '' //Pasa info a ModalVerTarjetaIdentificacionComponent
+      }
+    });
+    ref.onClose.subscribe((val: boolean) => {
+      if (val) { //Obtener info cuando se cierre el modal en ModalVerTarjetaIdentificacionComponent
+      }
+    });
   }
 
 }
