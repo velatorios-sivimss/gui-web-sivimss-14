@@ -32,8 +32,8 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
-  obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body: ConsultaVelatorio = {idDelegacion: delegacion}
+  obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body = { idDelegacion: delegacion }
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
