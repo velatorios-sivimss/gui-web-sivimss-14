@@ -49,6 +49,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   catalogoVelatorios: TipoDropdown[] = [];
   usuarios: Usuario[] = [];
   usuarioSeleccionado!: Usuario;
+  mostrarNuevoUsuario: boolean = false;
+  nuevoUsuario: { usuario: string; contrasenia: string } = {usuario: 'Prueba', contrasenia: 'Prueba'};
+  respuestaNuevoUsuario: RespuestaModalUsuario = {};
 
   filtroForm!: FormGroup;
 
@@ -114,15 +117,22 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.modificacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
   }
 
-  abrirModalCambioEstatusUsuario(): void {
-    const header: string = this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
+  abrirModalCambioEstatusUsuario(usuario: Usuario): void {
+    this.usuarioSeleccionado = usuario;
+    const header: string = usuario.estatus ? 'Desactivar' : 'Activar';
     const CAMBIO_ESTATUS_CONFIG: DynamicDialogConfig = {
       header: `${header} usuario`,
       width: MAX_WIDTH,
-      data: this.usuarioSeleccionado.id
+      data: usuario.id
     }
     this.cambioEstatusRef = this.dialogService.open(CambioEstatusUsuarioComponent, CAMBIO_ESTATUS_CONFIG);
-    this.cambioEstatusRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
+    this.cambioEstatusRef.onClose.subscribe((respuesta: RespuestaModalUsuario): void => {
+      if (!respuesta) {
+        this.limpiar();
+        return;
+      }
+      this.procesarRespuestaModal(respuesta)
+    });
   }
 
   abrirModalDetalleUsuario(usuario: Usuario): void {
@@ -181,8 +191,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.usuarioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.usuarios = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.usuarios = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -197,8 +207,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.usuarioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.usuarios = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.usuarios = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -247,6 +257,13 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   procesarRespuestaModal(respuesta: RespuestaModalUsuario = {}): void {
+    if (respuesta.usuario) {
+      this.respuestaNuevoUsuario = respuesta;
+      this.nuevoUsuario.usuario = respuesta.usuario.usuario;
+      this.nuevoUsuario.contrasenia = respuesta.usuario.contrasenia;
+      this.mostrarNuevoUsuario = !this.mostrarNuevoUsuario;
+      return;
+    }
     if (respuesta.actualizar) {
       this.limpiar();
     }
@@ -258,13 +275,17 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     }
   }
 
+  cerrarModalNuevoUsuario(): void {
+    this.mostrarNuevoUsuario = !this.mostrarNuevoUsuario;
+    const mensaje: string = `${this.respuestaNuevoUsuario.mensaje} ${this.nuevoUsuario.usuario}`;
+    this.alertaService.mostrar(TipoAlerta.Exito, mensaje);
+    this.limpiar();
+    this.respuestaNuevoUsuario = {};
+    this.nuevoUsuario = {usuario: '', contrasenia: ''};
+  }
 
   get f() {
     return this.filtroForm.controls;
-  }
-
-  get tituloCambioEstatus(): string {
-    return this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
   }
 
   ngOnDestroy(): void {

@@ -31,10 +31,8 @@ export class AgregarRolComponent implements OnInit {
   agregarRolForm!: FormGroup;
 
   formFuncionalidad!: FormGroup;
-  permisos: any;
 
   confirmacion: boolean = false;
-
   pasoAgregarRol: number = 1;
 
   constructor(
@@ -72,18 +70,17 @@ export class AgregarRolComponent implements OnInit {
   agregarRol(): void {
     const rolBo: NuevoRol = this.crearNuevoRol();
     const solicitudRol: string = JSON.stringify(rolBo);
-    this.rolService.guardar(solicitudRol).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    this.rolService.guardar(solicitudRol).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg + " " + this.f.nombre.value);
         this.router.navigate(["roles"]);
       },
-      (error: HttpErrorResponse) => {
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, msg);
-        console.error("ERROR: ", error)
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    );
+    });
   }
 
   noEspaciosAlPrincipio(): void {

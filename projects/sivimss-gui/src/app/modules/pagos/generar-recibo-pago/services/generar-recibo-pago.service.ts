@@ -8,6 +8,14 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 
+interface ConsultaVelatorio {
+  idDelegacion: string | null
+}
+
+interface PeticionDescarga {
+  tipoReporte: "pdf" | "xls"
+}
+
 @Injectable()
 export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
@@ -22,6 +30,11 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
     const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+  }
+
+  obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body: ConsultaVelatorio = {idDelegacion: delegacion}
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -47,15 +60,21 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
       {headers, responseType: 'blob' as 'json'})
   }
 
-  descargarListado(): Observable<Blob> {
+  descargarListadoPDF(body : any): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body = {
-      rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
-      tipoReporte: "pdf"
-    }
+    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-rec-pagos/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
+  }
+
+  descargarListadoExcel(): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    const body: PeticionDescarga = { tipoReporte: "xls"}
     return this._http.post<any>(this._base + `${this._funcionalidad}/generar-rec-pagos/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }

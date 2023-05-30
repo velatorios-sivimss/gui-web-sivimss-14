@@ -22,7 +22,8 @@
             <label class="control-label" for="delegacion">Delegación:</label>
             <p-dropdown id="delegacion" class="form-control" formControlName="delegacion"
                 [options]="catalogoDelegaciones" placeholder="Seleccionar la delegación" [filter]="true"
-                filterBy="label" (onChange)='obtenerVelatorios(); obtenerVehiculos();'>
+                filterBy="label" (onChange)='obtenerVelatorios(); obtenerVehiculos();'
+                [showClear]="+rolLocalStorage.idOficina < 2">
             </p-dropdown>
         </div>
     </div>
@@ -30,7 +31,8 @@
         <div class="col-md-6">
             <label class="control-label" for="velatorio">Velatorio:</label>
             <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                placeholder="Selecciona el velatorio" [filter]="true" filterBy="label" (onChange)='obtenerVehiculos();'>
+                placeholder="Selecciona el velatorio" [filter]="true" filterBy="label" (onChange)='obtenerVehiculos();'
+                [showClear]="+rolLocalStorage.idOficina < 3">
             </p-dropdown>
         </div>
     </div>

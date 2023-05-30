@@ -1,7 +1,7 @@
 # Stage 1: Compile and Build angular codebase
 
 # Use official node image as the base image
-FROM image-registry.openshift-image-registry.svc:5000/openshift/nodejs:16-ubi9 as builder
+FROM image-registry.openshift-image-registry.svc:5000/openshift/nodejs:16-ubi9 AS builder
 
 # Set the working directory
 WORKDIR /app

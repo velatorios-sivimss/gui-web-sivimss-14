@@ -1,4 +1,13 @@
-<app-titulo-principal titulo="Administrar roles a nivel oficina"></app-titulo-principal>
+<div class="flex">
+  <app-btn-regresar class="mr-2" style="
+    z-index: 300;
+    border: solid 2px;
+    height: 38px;
+    width: 47px;
+    padding-left: 6px;
+    border-radius: 5px;" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal titulo="Administrar roles a nivel oficina"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
@@ -45,11 +54,11 @@
            (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
-        <th pResizableColumn>Identificador del rol</th>
-        <th pResizableColumn>Nombre del rol</th>
-        <th pResizableColumn>Nivel</th>
-        <th pResizableColumn>Fecha de creación</th>
-        <th>Estatus</th>
+        <th pResizableColumn id="columna_roles_id">Identificador del rol</th>
+        <th pResizableColumn id="columna_roles_nombre">Nombre del rol</th>
+        <th pResizableColumn id="columna_roles_nivel">Nivel</th>
+        <th pResizableColumn id="columna_roles_fecha">Fecha de creación</th>
+        <th id="columna_roles_estatus">Estatus</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-roles>
@@ -66,12 +75,19 @@
               <span class="inactivo" *ngIf="!roles.estatusRol">Inactivo</span>
             </div>
             <div class="contenedor-celda-iconos">
-              <a (click)="abrirPanel($event,roles)" *appValidaRol="['USUARIOS','MODIFICAR']" onCloseOnNavigation>
+              <a (click)="abrirPanel($event,roles)" *appValidaRol="['ROLES','MODIFICAR']" onCloseOnNavigation>
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
             </div>
           </div>
         </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="5" class="p-2 text-center font-bold text-xl" id="roles_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="paginatorleft">

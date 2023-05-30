@@ -46,8 +46,8 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       {params});
   }
 
-  buscarDatosPagare(id: number): Observable<HttpRespuesta<any>> {
-    const body = {id}
+  buscarDatosPagare(idODS: number): Observable<HttpRespuesta<any>> {
+    const body = {idODS}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._detalle}`, body);
   }
 

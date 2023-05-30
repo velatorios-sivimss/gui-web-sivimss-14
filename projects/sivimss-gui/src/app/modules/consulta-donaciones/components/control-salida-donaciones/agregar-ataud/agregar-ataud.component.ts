@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AtaudDonado} from "../../../models/consulta-donaciones-interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../../../articulos/constants/dummies";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {ConsultaDonacionesService} from "../../../services/consulta-donaciones.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {GestionarDonacionesService} from "../../../services/gestionar-donaciones.service";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-agregar-ataud',
@@ -29,11 +29,13 @@ export class AgregarAtaudComponent implements OnInit {
 
 
   constructor(
+    private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
     private loaderService: LoaderService,
     private consultaDonacionesService: GestionarDonacionesService,
     public config: DynamicDialogConfig,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
@@ -51,26 +53,33 @@ export class AgregarAtaudComponent implements OnInit {
     this.ataudSeleccionado = this.backlogAutaudes.filter( (ataud:AtaudDonado) => {
       return ataud.folioArticulo == this.folioAtaudSeleccionado;
     })
-    this.ref.close(...this.ataudSeleccionado);
+    /*Valida si al cerrar ventana es el último ataúd donado*/
+    if(this.ataud.length == 1){
+      this.ref.close({ataud:this.ataudSeleccionado, existeStock: false});
+    }else {
+      this.ref.close({ataud:this.ataudSeleccionado, existeStock: true});
+
+    }
   }
 
   consultarAtaudes(): void {
     this.loaderService.activar();
     this.consultaDonacionesService.consultaControlSalidaAtaudes().pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>)=> {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.backlogAutaudes = respuesta.datos;
-        this.ataud = mapearArregloTipoDropdown(respuesta.datos,"desModeloArticulo","folioArticulo");
-        this.config.data.forEach((elemento:AtaudDonado) => {
+        this.ataud = mapearArregloTipoDropdown(respuesta.datos, "desModeloArticulo", "folioArticulo");
+        this.config.data.forEach((elemento: AtaudDonado) => {
           this.ataud = this.ataud.filter(ataud => {
             return ataud.value != elemento.folioArticulo;
           });
+
         });
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
       }
-    )
+    });
   }
 
   tomarFolioAtaudDonado(): void {

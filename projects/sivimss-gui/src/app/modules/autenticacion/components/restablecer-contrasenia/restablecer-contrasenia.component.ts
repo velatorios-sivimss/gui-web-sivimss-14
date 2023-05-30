@@ -8,6 +8,7 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {confirmacionContraseniadValidator} from "../actualizar-contrasenia/actualizar-contrasenia.component";
+import {PATRON_CONTRASENIA} from "../../../../utils/regex";
 
 @Component({
   selector: 'app-restablecer-contrasenia',
@@ -18,6 +19,7 @@ export class RestablecerContraseniaComponent implements OnInit {
 
   form!: FormGroup;
   usuario: string = ''
+  mostrarModalFormatoContrasenia: boolean = false;
 
   constructor(
     private readonly autenticacionService: AutenticacionService,
@@ -31,7 +33,7 @@ export class RestablecerContraseniaComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe(params => {
-      this.usuario = params['usuario'];
+      this.usuario = params['usuario']
     });
     this.inicializarForm();
   }
@@ -39,12 +41,10 @@ export class RestablecerContraseniaComponent implements OnInit {
   inicializarForm(): void {
     this.form = this.formBuilder.group({
         usuario: [{value: this.usuario, disabled: true}],
-        contraseniaNueva: ['', Validators.required],
-        contraseniaConfirmacion: ['', Validators.required]
+        contraseniaNueva: ['', [Validators.required, Validators.pattern(PATRON_CONTRASENIA)]],
+        contraseniaConfirmacion: ['', [Validators.required]]
       },
-      {
-        validators: [confirmacionContraseniadValidator]
-      }
+      {validators: [confirmacionContraseniadValidator]}
     );
   }
 
@@ -54,20 +54,29 @@ export class RestablecerContraseniaComponent implements OnInit {
     this.loaderService.activar();
     this.autenticacionService.actualizarContrasenia(form.usuario, "", form.contraseniaNueva).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<unknown>): void => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<unknown>): void => {
         if (respuesta.codigo === 200) {
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada');
-          this.router.navigate(["../"], {
-            relativeTo: this.activatedRoute
-          });
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada correctamente.');
+          this.router.navigate(["../"], {relativeTo: this.activatedRoute});
         }
       },
-      (error: HttpErrorResponse): void => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
       }
-    );
+    });
+  }
+
+  validarContrasenia(): void {
+    if (!this.form.controls.contraseniaNueva?.errors?.pattern) return;
+    this.mostrarModalFormatoContrasenia = !this.mostrarModalFormatoContrasenia;
+  }
+
+  restablecerCampos(): void {
+    this.form.get('contraseniaNueva')?.patchValue(null);
+    this.form.get('contraseniaConfirmacion')?.patchValue(null);
+    this.mostrarModalFormatoContrasenia = !this.mostrarModalFormatoContrasenia;
   }
 
   get f() {

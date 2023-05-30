@@ -1,16 +1,17 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
+import {Injectable} from "@angular/core";
+import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/router";
 import {forkJoin, Observable} from "rxjs";
-import { HttpRespuesta } from "../../../models/http-respuesta.interface";
-import { RolService } from "./rol.service";
+import {RolService} from "./rol.service";
 
 @Injectable()
-export class RolResolver implements Resolve<any>{
+export class RolResolver implements Resolve<any> {
 
-    constructor(private rolService: RolService) { }
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-        const catalogoRoles$ = this.rolService.obtenerCatRoles();
-        const catalogoNivel$ = this.rolService.obtenerCatNivel();
-        return forkJoin([catalogoRoles$,catalogoNivel$]);
-    }
+  constructor(private rolService: RolService) {
+  }
+
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
+    const catalogoRoles$ = this.rolService.obtenerCatRoles();
+    const catalogoNivel$ = this.rolService.obtenerCatNivel();
+    return forkJoin([catalogoRoles$, catalogoNivel$]);
+  }
 }

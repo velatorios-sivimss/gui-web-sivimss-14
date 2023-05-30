@@ -50,17 +50,17 @@
            appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th pResizableColumn>ID</th>
-        <th pResizableColumn>CURP</th>
-        <th pResizableColumn>Matrícula</th>
-        <th pResizableColumn>Usuario</th>
-        <th pResizableColumn>Nombre</th>
-        <th pResizableColumn>Primer apellido</th>
-        <th pResizableColumn>Segundo apellido</th>
-        <th pResizableColumn>Correo electrónico</th>
-        <th pResizableColumn>Nivel</th>
-        <th pResizableColumn>Rol</th>
-        <th>Estatus</th>
+        <th pResizableColumn id="columna_usuarios_id">ID</th>
+        <th pResizableColumn id="columna_usuarios_curp">CURP</th>
+        <th pResizableColumn id="columna_usuarios_matricula">Matrícula</th>
+        <th pResizableColumn id="columna_usuarios_usuario"> Usuario</th>
+        <th pResizableColumn id="columna_usuarios_nombre">Nombre</th>
+        <th pResizableColumn id="columna_usuarios_primer_apellido">Primer apellido</th>
+        <th pResizableColumn id="columna_usuarios_segundo_apellido">Segundo apellido</th>
+        <th pResizableColumn id="columna_usuarios_correo_electronico">Correo electrónico</th>
+        <th pResizableColumn id="columna_usuarios_nivel">Nivel</th>
+        <th pResizableColumn id="columna_usuarios_rol">Rol</th>
+        <th id="columna_usuarios_estatus">Estatus</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-usuario>
@@ -78,8 +78,8 @@
         <td>
           <div class="contenedor-celda-iconos">
             <div class="contenedor-inputswitch flex mr-4">
-              <p-inputSwitch [(ngModel)]="usuario.estatus" (ngModelChange)="cambiarEstatus(usuario.id);"
-                             [disabled]="true"></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="usuario.estatus"
+                             (ngModelChange)="abrirModalCambioEstatusUsuario(usuario);"></p-inputSwitch>
               <span class="activo mr-3" *ngIf="usuario.estatus">Activo</span>
               <span class="inactivo" *ngIf="!usuario.estatus">Inactivo</span>
             </div>
@@ -95,7 +95,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="11" class="p-2 text-center font-bold text-xl">
+        <th colspan="11" class="p-2 text-center font-bold text-xl" id="usuarios_sin_resultados">
           No se encontro información relacionada a tu búsqueda.
         </th>
       </tr>
@@ -113,8 +113,30 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarUsuario()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion [titulo]="tituloCambioEstatus"
-                                (click)="abrirModalCambioEstatusUsuario()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-dialog [(visible)]="mostrarNuevoUsuario" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" [showHeader]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center mb-3">
+      <span class="text-justify">
+        <span class="font-bold mr-4">Usuario:</span>
+        <span>{{nuevoUsuario.usuario}}</span>
+      </span>
+    </div>
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">
+        <span class="font-bold mr-4">Contraseña: </span>
+        <span>{{nuevoUsuario.contrasenia}}</span>
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="cerrarModalNuevoUsuario()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -12,16 +12,18 @@ import {ActivatedRoute} from '@angular/router';
 import {RolService} from '../../services/rol.service';
 import {Catalogo} from 'projects/sivimss-gui/src/app/models/catalogos.interface';
 import {FiltrosRol} from '../../models/filtrosRol.interface';
-import {VerDetalleRolComponent} from "../ver-detalle-rol/ver-detalle-rol.component";
 import {ModificarRolComponent} from "../modificar-rol/modificar-rol.component";
 import {RespuestaModalRol} from "../../models/respuestaModal.interface";
 import {LazyLoadEvent} from 'primeng/api';
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {
   ConfirmacionMovimientoComponent
-} from "../confirmacion-movimiento/confirmacion-movimiento/confirmacion-movimiento.component";
+} from "../confirmacion-movimiento/confirmacion-movimiento.component";
 import {validarUsuarioLogueado} from "../../../../utils/funciones";
 import {ROLES_BREADCRUMB} from "../../constants/breadcrumb";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {finalize} from "rxjs/operators";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
 
 const MAX_WIDTH: string = "876px";
 
@@ -49,7 +51,6 @@ export class RolesComponent implements OnInit {
   catRol: Rol[] = [];
   roles: Rol[] = [];
   rolSeleccionado!: Rol;
-  mostrarModalDetalleRol: boolean = false;
   detalleRef!: DynamicDialogRef;
   modificacionRef!: DynamicDialogRef;
   cambiarEstatusRef!: DynamicDialogRef;
@@ -61,6 +62,7 @@ export class RolesComponent implements OnInit {
     private alertaService: AlertaService,
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
+    private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
   }
@@ -74,7 +76,6 @@ export class RolesComponent implements OnInit {
     this.inicializarFiltroForm();
   }
 
-
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (validarUsuarioLogueado()) return;
     if (event) {
@@ -83,48 +84,40 @@ export class RolesComponent implements OnInit {
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
     } else {
-      this.paginarConFiltros();
+      this.paginar();
     }
   }
 
   paginar(): void {
-    this.rolService.obtenerCatRolesPaginadoSinFiltro(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        this.roles = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
-        if (this.totalElementos == 0) {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            'No se encontró información relacionada a tu búsqueda.',
-          )
-        }
+    this.cargadorService.activar();
+    this.rolService.obtenerCatRolesPaginadoSinFiltro(this.numPaginaActual, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.roles = respuesta.datos.content || [];
+        this.totalElementos = respuesta.datos.totalElements || 0;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    );
-    this.totalElementos = this.roles.length;
+    });
   }
 
   paginarConFiltros(): void {
-    const filtros = this.crearSolicitudFiltros();
-    const solicitudFiltros = JSON.stringify(filtros);
-    this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        if (respuesta.datos.content.length > 0) {
-          this.roles = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
-          return;
-        }
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+    const solicitudFiltros: FiltrosRol = this.crearSolicitudFiltros();
+    this.cargadorService.activar();
+    this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.roles = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    );
+    });
   }
 
   buscar(): void {
@@ -143,14 +136,15 @@ export class RolesComponent implements OnInit {
 
   limpiar(): void {
     this.paginacionConFiltrado = false;
-    this.filtroForm.reset();
+    if (this.filtroForm) {
+      this.filtroForm.reset();
+    }
     this.numPaginaActual = 0;
-    this.paginarConFiltros();
+    this.paginar();
   }
 
   cambiarEstatus(rol: Rol): void {
-    const titulo = rol.estatusRol ? "Activar" : "Desactivar"
-
+    const titulo: string = rol.estatusRol ? "Activar" : "Desactivar"
     const DETALLE_CONFIG: DynamicDialogConfig = {
       header: titulo + " rol",
       width: MAX_WIDTH,
@@ -158,37 +152,29 @@ export class RolesComponent implements OnInit {
     }
     this.cambiarEstatusRef = this.dialogService.open(ConfirmacionMovimientoComponent, DETALLE_CONFIG);
 
-    this.cambiarEstatusRef.onClose.subscribe((respuesta: any) => {
-      if (respuesta.estatus) {
-        const rolEstatus = {
+    this.cambiarEstatusRef.onClose.subscribe((respuesta: any): void => {
+      if (respuesta && respuesta.estatus) {
+        const solicitudId = {
           "idRol": respuesta.datosRol.idRol,
           "estatusRol": respuesta.datosRol.estatusRol ? 1 : 0
         }
-        const solicitudId = JSON.stringify(rolEstatus);
-        this.rolService.cambiarEstatus(solicitudId).subscribe(
-          () => {
-            if (rolEstatus.estatusRol) {
+        this.rolService.cambiarEstatus(solicitudId).subscribe({
+          next: (): void => {
+            if (solicitudId.estatusRol === 1) {
               this.alertaService.mostrar(TipoAlerta.Exito, 'Activado correctamente. ' + rol.desRol);
             } else {
               this.alertaService.mostrar(TipoAlerta.Exito, 'Desactivado correctamente. ' + rol.desRol);
-
             }
-
           },
-          (error: HttpErrorResponse) => {
+          error: (error: HttpErrorResponse): void => {
             console.error(error);
-            this.alertaService.mostrar(TipoAlerta.Error, error.message);
+            this.mensajesSistemaService.mostrarMensajeError(error.message);
           }
-        );
+        });
         return;
       }
-      this.buscar();
+      this.limpiar();
     });
-
-    // this.cambiarEstatusRef.onClose.subscribe((respuesta: RespuestaModalRol) => this.procesarRespuestaModal(respuesta));
-    return;
-
-
   }
 
   inicializarFiltroForm(): void {
@@ -202,17 +188,6 @@ export class RolesComponent implements OnInit {
   abrirPanel(event: MouseEvent, rolSeleccionado: Rol): void {
     this.rolSeleccionado = rolSeleccionado;
     this.overlayPanel.toggle(event);
-  }
-
-  abrirModalDetalleRol(rol: Rol): void {
-    this.rolSeleccionado = rol;
-    const DETALLE_CONFIG: DynamicDialogConfig = {
-      header: "Ver detalle",
-      width: MAX_WIDTH,
-      data: rol
-    }
-    this.detalleRef = this.dialogService.open(VerDetalleRolComponent, DETALLE_CONFIG);
-    this.detalleRef.onClose.subscribe((respuesta: RespuestaModalRol) => this.procesarRespuestaModal(respuesta));
   }
 
   abrirModalModificarRol(): void {
@@ -238,35 +213,6 @@ export class RolesComponent implements OnInit {
     if (this.modificacionRef) {
       this.modificacionRef.destroy();
     }
-  }
-
-  descargarArchivo(tipoReporte: string) {
-    const filtros = this.crearSolicitudFiltros()
-    const tipoArchivo = JSON.stringify(filtros)
-    const tipoArchivoConTipoDoc = JSON.parse(tipoArchivo)
-    tipoArchivoConTipoDoc['tipoReporte'] = tipoReporte;
-    this.rolService.exportarArchivo(tipoArchivoConTipoDoc).subscribe(
-      (respuesta) => {
-        this.base64 = respuesta!.datos
-        if (this.totalElementos == 0) {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            'No se encontró información relacionada a tu búsqueda.',
-          )
-        }
-        const linkSource =
-          'data:application/' + tipoReporte + ';base64,' + this.base64 + '\n'
-        const downloadLink = document.createElement('a')
-        const fileName = 'Roles.' + tipoReporte
-        downloadLink.href = linkSource
-        downloadLink.download = fileName
-        downloadLink.click()
-      },
-      (error: HttpErrorResponse) => {
-        console.error(error)
-        this.alertaService.mostrar(TipoAlerta.Error, error.message)
-      },
-    )
   }
 
 }

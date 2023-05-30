@@ -8,7 +8,7 @@
                     placeholder="Selecciona el nivel">
         </p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="ff.nivel?.errors?.required && (ff.nivel?.dirty || ff.nivel?.touched)">Campo obligatorio</span>
+              *ngIf="ff.nivel?.errors?.required && (ff.nivel?.dirty || ff.nivel?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegaci&oacute;n<span class="req">*</span></label>
@@ -16,8 +16,7 @@
                     [options]="delegacion" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()" [filter]="true" filterBy="label">
         </p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="ff.delegacion?.errors?.required && (ff.delegacion?.dirty || ff.delegacion?.touched)">Campo
-          obligatorio</span>
+              *ngIf="ff.delegacion?.errors?.required && (ff.delegacion?.dirty || ff.delegacion?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
@@ -27,8 +26,7 @@
                     [options]="velatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
         </p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="ff.velatorio?.errors?.required && (ff.velatorio?.dirty || ff.velatorio?.touched)">Campo
-          obligatorio</span>
+              *ngIf="ff.velatorio?.errors?.required && (ff.velatorio?.dirty || ff.velatorio?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="donadoPor">Donado por</label>

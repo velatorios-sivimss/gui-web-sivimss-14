@@ -28,7 +28,7 @@ export interface AgregarSalidaDonacionInterface{
   responsableAlmacen?: string;
   matricularesponsable?: string;
   ataudesDonados?: AtaudesDonados[],
-  agregarFinados?: Finado[]
+  agregarFinados?: Finado[] | string,
 }
 
 export interface AtaudesDonados {

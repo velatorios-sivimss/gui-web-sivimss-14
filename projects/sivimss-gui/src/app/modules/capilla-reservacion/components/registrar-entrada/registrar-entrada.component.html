@@ -30,30 +30,37 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="nombreContratante">Nombre del contratante <span class="req">*</span>:</label>
+          <label class="control-label" for="nombreContratante">Nombre del contratante:</label>
           <input id="nombreContratante" type="text" class="form-control" formControlName="nombreContratante"
                  placeholder="Ingresa el nombre del contratante">
           <span class="campo-obligatorio"
                 *ngIf="ref.nombreContratante?.errors?.required && (ref.nombreContratante?.dirty || ref.nombreContratante?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="nombreFinado">Nombre del finado <span class="req">*</span>:</label>
+          <label class="control-label" for="nombreFinado">Nombre del finado:</label>
           <input id="nombreFinado" type="text" class="form-control" formControlName="nombreFinado"
                  placeholder="Ingresa el nombre del finado">
           <span class="campo-obligatorio"
                 *ngIf="ref.nombreFinado?.errors?.required && (ref.nombreFinado?.dirty || ref.nombreFinado?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
+
+      <div class="row mb-3">
+        <div class="col-md-12 mt-2">
+          <label class="control-label">Registro de entrada</label>
+        </div>
+      </div>
+
       <div class="row mb-3">
         <div class="col-md-6">
-
-          <label class="control-label" for="fechaEntrada">Registro de entrada <span class="req">*</span>:</label>
+          <label class="control-label" for="fechaEntrada">Fecha <span class="req">*</span>:</label>
           <p-calendar appendTo="body" id="fechaEntrada" styleClass="form-control" formControlName="fechaEntrada" placeholder="Selecciona la fecha"
                       dateFormat="dd/mm/yy"></p-calendar>
           <span class="campo-obligatorio"
                 *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <div class="col-md-6 pt-2 mt-5">
+        <div class="col-md-6">
+          <label class="control-label" for="horaEntrada">Hora <span class="req">*</span>:</label>
           <p-calendar id="horaEntrada" styleClass="form-control" formControlName="horaEntrada" placeholder="00:00"
                       [timeOnly]="true"></p-calendar>
           <span class="campo-obligatorio"

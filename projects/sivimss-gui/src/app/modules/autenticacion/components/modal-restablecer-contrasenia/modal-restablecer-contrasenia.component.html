@@ -11,17 +11,16 @@
   </ng-container>
   <ng-container *ngSwitchCase="CAPTURA_DE_USUARIO">
     <form [formGroup]="formRestContraUsuario" class="form-restablecer-contrasena">
-      <span class="block text-center">Ingresa tu usuario</span>
-      <span class="block text-center mb-4">Recibirás un correo para restablecer tu contraseña</span>
-      <div>
-        <label class="control-label" for="usuarioRestCont">Usuario<span
+      <span class="block text-center">Le enviaremos un link para restablecer su contraseña.</span>
+      <div class="mt-3">
+        <label class="control-label" for="usuarioRestCont">Inserte su usuario<span
           class="req">*</span>:</label>
         <input id="usuarioRestCont" class="form-control" formControlName="usuario"
                placeholder="Ingresar usuario">
         <span class="campo-obligatorio"
               *ngIf="frcu?.usuario?.errors?.required && (frcu?.usuario?.dirty || frcu?.usuario?.touched)">Este campo es obligatorio *.</span>
         <div class="mt-3">
-          <span>*Campo obligatorio</span>
+          <span class="control-label">*Campo obligatorio</span>
         </div>
       </div>
       <div class="flex justify-content-end">
@@ -35,17 +34,17 @@
   </ng-container>
   <ng-container *ngSwitchCase="CAPTURA_DE_CODIGO">
     <form [formGroup]="formRestContraCodigo" class="form-restablecer-contrasena">
-      <span class="block text-center mb-4">Te hemos enviado un código a {{formRestContraUsuario.get('usuario')?.value}}
-        para establecer tu contraseña</span>
+      <span class="block text-center mb-4">Te hemos enviado un código para restablecer tu contraseña a {{correo}}
+        .</span>
       <div>
         <label class="control-label" for="codigoRestCont">Código<span
           class="req">*</span>:</label>
         <input id="codigoRestCont" class="form-control" formControlName="codigo"
                placeholder="Ingresar código">
         <span class="campo-obligatorio"
-              *ngIf="frcc?.codigo?.errors?.required && (frcc?.codigo?.dirty || frcc?.codigo?.touched)">Campo obligatorio</span>
+              *ngIf="frcc?.codigo?.errors?.required && (frcc?.codigo?.dirty || frcc?.codigo?.touched)">Este campo es obligatorio *.</span>
         <div class="mt-3">
-          <span>*Campo obligatorio</span>
+          <span class="control-label">*Campo obligatorio</span>
         </div>
       </div>
       <div class="flex justify-content-end mt-4">
@@ -57,6 +56,7 @@
     </form>
   </ng-container>
   <ng-container *ngSwitchCase="REDIRIGIR_RESTABLECER_CONTRASENIA">
+    <span class="block text-center mt-2">¡Ingresaste el código correcto!</span>
     <div class="flex justify-content-center mt-4">
       <button type="button" class="btn btn-primary btn-md ml-5"
               (click)="restablecerContrasenia()">Restablecer Contraseña

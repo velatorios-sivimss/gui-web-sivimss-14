@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { Modulo } from "projects/sivimss-gui/src/app/services/autenticacion.service";
 import { MenuSidebarService } from "projects/sivimss-gui/src/app/shared/sidebar/services/menu-sidebar.service";
 
@@ -7,7 +7,7 @@ import { MenuSidebarService } from "projects/sivimss-gui/src/app/shared/sidebar/
   templateUrl: './modulo.component.html',
   styleUrls: ['./modulo.component.scss']
 })
-export class ModuloComponent implements OnInit {
+export class ModuloComponent  {
 
   @Input()
   modulo!: Modulo;
@@ -21,8 +21,6 @@ export class ModuloComponent implements OnInit {
   constructor(private readonly menuSidebarService: MenuSidebarService) {
   }
 
-  ngOnInit(): void {
-  }
 
   abrirCerrarModulo() {
     this.abierto = !this.abierto;
