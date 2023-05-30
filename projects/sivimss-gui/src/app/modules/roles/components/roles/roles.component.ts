@@ -104,15 +104,14 @@ export class RolesComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosRol = this.crearSolicitudFiltros();
-    const solicitudFiltros = filtros;
+    const solicitudFiltros: FiltrosRol = this.crearSolicitudFiltros();
     this.cargadorService.activar();
     this.rolService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.roles = respuesta.datos.content || [];
-        this.totalElementos = respuesta.datos.totalElements || 0;
+        this.roles = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -155,14 +154,13 @@ export class RolesComponent implements OnInit {
 
     this.cambiarEstatusRef.onClose.subscribe((respuesta: any): void => {
       if (respuesta && respuesta.estatus) {
-        const rolEstatus = {
+        const solicitudId = {
           "idRol": respuesta.datosRol.idRol,
           "estatusRol": respuesta.datosRol.estatusRol ? 1 : 0
         }
-        const solicitudId = rolEstatus;
         this.rolService.cambiarEstatus(solicitudId).subscribe({
           next: (): void => {
-            if (rolEstatus.estatusRol === 1) {
+            if (solicitudId.estatusRol === 1) {
               this.alertaService.mostrar(TipoAlerta.Exito, 'Activado correctamente. ' + rol.desRol);
             } else {
               this.alertaService.mostrar(TipoAlerta.Exito, 'Desactivado correctamente. ' + rol.desRol);

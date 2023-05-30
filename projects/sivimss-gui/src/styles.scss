@@ -11,6 +11,7 @@ se debe agregar el selector en [custom-grafica-base.scss].
 se debe agregar en [styles.scss].
 */
 
+@import "assets/scss/custom-leaflet";
 @import "assets/scss/custom-prime";
 @import "assets/scss/custom-grafica-base";
 
