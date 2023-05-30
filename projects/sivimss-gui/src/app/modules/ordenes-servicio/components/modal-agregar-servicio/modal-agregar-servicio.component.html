@@ -22,29 +22,65 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-12">
+        <label class="control-label" for="origen">Origen<span class="req">*</span>:</label>
+        <div class="input-busqueda">
+          <input id="origen" type="text" #origen class="form-control" formControlName="origen"
+                 placeholder="Ingresa dirección de origen" (keyup.enter)="buscar($event,origen.value,'origen')">
+          <i class="pi pi-spin pi-spinner buscar-icon" *ngIf="mostrarLoaderOrigen"></i>
+          <i class="pi pi-times limpiar-input" (click)="limpiarInput('origen')"></i>
+        </div>
+        <span class="campo-obligatorio"
+              *ngIf="f.origen?.errors?.required && (f.origen?.dirty || f.origen?.touched)">Campo obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
         <label class="control-label" for="destino">Destino<span class="req">*</span>:</label>
-        <input id="destino" type="text" class="form-control" formControlName="destino"
-               placeholder="Ingresa dirección de destino">
+        <div class="input-busqueda">
+          <input id="destino" type="text" #destino class="form-control" formControlName="destino"
+                 placeholder="Ingresa dirección de destino" (keyup.enter)="buscar($event,destino.value,'destino')">
+          <i class="pi pi-spin pi-spinner buscar-icon" *ngIf="mostrarLoaderDestino"></i>
+          <i class="pi pi-times limpiar-input" (click)="limpiarInput('destino')"></i>
+        </div>
         <span class="campo-obligatorio"
               *ngIf="f.destino?.errors?.required && (f.destino?.dirty || f.destino?.touched)">Campo obligatorio</span>
       </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3 flex align-items-end">
       <div class="col-md-6">
         <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
-        <input id="kilometraje" type="text" class="form-control" formControlName="kilometraje"
-               placeholder="Ingresa kilometraje">
+
+        <input id="kilometraje" type="text" [readOnly]="true" class="form-control" formControlName="kilometraje"
+               placeholder="kilometraje">
+
         <span class="campo-obligatorio"
               *ngIf="f.kilometraje?.errors?.required && (f.kilometraje?.dirty || f.kilometraje?.touched)">Campo obligatorio</span>
       </div>
-    </div>
-    <div class="flex justify-content-end">
-      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="mostrarSeccionCreacion = false;">Aceptar
-      </button>
+      <div class="col-md-6 flex justify-content-end">
+        <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="ml-5 btn btn-primary btn-md" (click)="mostrarSeccionCreacion = false;">Aceptar
+        </button>
+      </div>
     </div>
   </form>
 </ng-template>
+<div id="map"></div>
+
+<p-overlayPanel #opResultadosBusquedas [dismissable]="true" [showCloseIcon]="true">
+  <ng-template pTemplate>
+    <div *ngIf="resultadosBusquedaMapa.length == 0" class="p-3 w-30rem">
+      <span class="text-xl">No se encontraron resultados.</span>
+    </div>
+    <div>
+      <ul class="p-0 grid-resultado">
+        <li (click)="pintarMarcador(resultado)" class="list-none pt-3 pb-2 px-4"
+            *ngFor="let resultado of resultadosBusquedaMapa">
+          <p class="m-0 text-xl">{{resultado.name}}</p>
+        </li>
+      </ul>
+    </div>
+  </ng-template>
+</p-overlayPanel>
 
 <ng-template #templateConfirmacion>
   <div class="row">
