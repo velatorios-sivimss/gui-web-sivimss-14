@@ -17,9 +17,10 @@ import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {obtenerFechaActual} from "../../../../../utils/funciones-fechas";
 
 type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
 
@@ -49,6 +50,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   catatalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
+  fechaActual: Date = new Date();
 
   paginacionConFiltrado: boolean = false;
 
@@ -100,9 +102,9 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
-      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }],
-      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }],
+      nivel: [{value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1}],
+      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2}],
+      velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3}],
       folio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
@@ -171,7 +173,7 @@ export class GenerarReciboPagoComponent implements OnInit {
       fecIniODS: this.filtroForm.get("fechaInicial")?.value,
       fecFinODS: this.filtroForm.get("fechaFinal")?.value,
       rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
-      tipoReporte:"pdf"
+      tipoReporte: "pdf"
     }
   }
 
@@ -181,11 +183,11 @@ export class GenerarReciboPagoComponent implements OnInit {
 
     this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
 
-    if(+this.rolLocalStorage.idRol >= 2) {
+    if (+this.rolLocalStorage.idRol >= 2) {
       this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
     }
 
-    if(+this.rolLocalStorage.idRol === 3) {
+    if (+this.rolLocalStorage.idRol === 3) {
       this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
     }
   }
@@ -225,7 +227,7 @@ export class GenerarReciboPagoComponent implements OnInit {
     const filtros: FiltrosReciboPago = this.crearSolicitudFiltros();
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
     this.descargaArchivosService.descargarArchivo(this.generarReciboService.descargarListadoExcel(),
-    configuracionArchivo).pipe(
+      configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
         console.log(respuesta)
