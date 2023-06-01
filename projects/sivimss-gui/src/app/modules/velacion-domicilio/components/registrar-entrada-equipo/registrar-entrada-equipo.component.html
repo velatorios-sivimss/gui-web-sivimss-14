@@ -73,6 +73,8 @@
       <button class="btn btn-md btn-default" *ngIf="confirmacion" (click)="confirmacion = false">Cancelar</button>
       <button class="ml-6 btn btn-md btn-primary" *ngIf="confirmacion" [disabled]="registrarEntradaForm.invalid"
         (click)="registrarEntrada()">Aceptar</button>
+
+      <button class="ml-4 btn btn-danger btn-md" *ngIf="!confirmacion" (click)="cancelar()">Cancelar</button>
       <button class="ml-6 btn btn-md btn-primary" *ngIf="!confirmacion" [disabled]="registrarEntradaForm.invalid"
         (click)="confirmacion = true">Registrar entrada</button>
     </div>

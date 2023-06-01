@@ -99,11 +99,6 @@ export class DetalleVelacionDomicilioComponent implements OnInit {
     this.confirmacionAceptar.emit(true);
   }
 
-  regresar() {
-    this.confirmacionRegresar.emit(true);
-  }
-
-
   cancelar() {
     this.confirmacionRegresar.emit(true);
   }

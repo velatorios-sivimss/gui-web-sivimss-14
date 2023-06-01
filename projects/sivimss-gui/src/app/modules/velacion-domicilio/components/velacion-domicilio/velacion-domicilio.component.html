@@ -127,20 +127,25 @@
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
               (click)="descargarRegistrosTabla('pdf')">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-              (click)="descargarRegistrosTabla('xls')">
           </div>
         </div>
       </div>
     </ng-template>
 
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th id="emptymessage" colspan="12" class="p-2 text-center font-bold text-xl">
+          No hay elementos que coincidan con los parámetros seleccionados
+        </th>
+      </tr>
+    </ng-template>
   </p-table>
 </section>
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar entrada de equipo" *ngIf="valeSeleccionado.idEstatus !== 2"
+      <app-overlay-panel-opcion titulo="Registrar entrada de equipo"
         (click)="abrirModalRegistroEntradaEquipo()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Descargar control de movimiento de equipo de velación"
         (click)="descargarControlMovimiento()"></app-overlay-panel-opcion>

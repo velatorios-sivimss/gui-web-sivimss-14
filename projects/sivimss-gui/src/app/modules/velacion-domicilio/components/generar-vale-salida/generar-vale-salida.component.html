@@ -11,7 +11,7 @@
           <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
-          <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
+          <label class="control-label" for="delegacion">Delegación:</label>
           <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
             [options]="catalogoDelegaciones" placeholder="Selecciona la delegación" (onChange)='obtenerVelatorios();'>
           </p-dropdown>
@@ -19,7 +19,7 @@
             *ngIf="f.delegacion?.errors?.required && (f.delegacion?.dirty || f.delegacion?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
-          <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+          <label class="control-label" for="velatorio">Velatorio:</label>
           <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
             [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" (onChange)="obtenerFoliosGenerados();">
           </p-dropdown>
@@ -56,7 +56,7 @@
           <label class="control-label" for="nombreResponsableEntrega">Responsable de la entrega<span
               class="req">*</span>:</label>
           <input id="nombreResponsableEntrega" type="text" class="form-control" formControlName="nombreResponsableEntrega"
-            placeholder="Ingresa el responsable de la entrega" maxlength="70">
+            placeholder="Ingresa el responsable de la entrega" maxlength="70" trimmer lettersOnly>
           <span class="campo-obligatorio"
             *ngIf="f.nombreResponsableEntrega?.errors?.required && (f.nombreResponsableEntrega?.dirty || f.nombreResponsableEntrega?.touched)">Este campo es obligatorio *.</span>
         </div>
@@ -80,7 +80,7 @@
         <div class="col-md-4">
           <label class="control-label" for="nombreResponsableInstalacion">Responsable de la instalación<span
               class="req">*</span>:</label>
-          <input id="nombreResponsableInstalacion" type="text" class="form-control" maxlength="70"
+          <input id="nombreResponsableInstalacion" type="text" class="form-control" maxlength="70" trimmer lettersOnly
             formControlName="nombreResponsableInstalacion" placeholder="Ingresa el responsable de la instalación">
           <span class="campo-obligatorio"
             *ngIf="f.nombreResponsableInstalacion?.errors?.required && (f.nombreResponsableInstalacion?.dirty || f.nombreResponsableInstalacion?.touched)">Este campo es obligatorio *.</span>
@@ -89,7 +89,7 @@
           <label class="control-label" for="matriculaResponsableInstalacion">Matrícula del responsable<span
               class="req">*</span>:</label>
           <input id="matriculaResponsableInstalacion" type="text" class="form-control" maxlength="70"
-            formControlName="matriculaResponsableInstalacion" numbersOnly
+            formControlName="matriculaResponsableInstalacion" trimmer alphanumericOnly
             placeholder="Ingresa la matrícula del responsable de la instalación">
           <span class="campo-obligatorio"
             *ngIf="f.matriculaResponsableInstalacion?.errors?.required && (f.matriculaResponsableInstalacion?.dirty || f.matriculaResponsableInstalacion?.touched)">Este campo es obligatorio *.</span>
@@ -176,7 +176,7 @@
               </td>
               <td>
                 <input type="text" class="form-control" placeholder="Ingresa la observación"
-                  formControlName="observaciones" maxlength="100">
+                  formControlName="observaciones" maxlength="100" trimmer alphanumericOnly>
               </td>
               <td>
                 <div class="contenedor-celda-iconos">

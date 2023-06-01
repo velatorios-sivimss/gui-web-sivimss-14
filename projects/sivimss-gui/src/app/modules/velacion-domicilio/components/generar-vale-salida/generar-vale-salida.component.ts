@@ -77,8 +77,8 @@ export class GenerarValeSalidaComponent implements OnInit {
   inicializarForm(): void {
     this.generarValeSalidaForm = this.formBuilder.group({
       nivel: new FormControl({ value: 1, disabled: true }, [Validators.required]),
-      delegacion: new FormControl({ value: null, disabled: false }, Validators.required),
-      velatorio: new FormControl({ value: null, disabled: false }, Validators.required),
+      delegacion: new FormControl({ value: null, disabled: false }),
+      velatorio: new FormControl({ value: null, disabled: false }),
       folio: new FormControl({ value: null, disabled: false }, [Validators.required]),
       nombreContratante: new FormControl({ value: null, disabled: true }, []),
       nombreFinado: new FormControl({ value: null, disabled: true }, []),
@@ -133,15 +133,30 @@ export class GenerarValeSalidaComponent implements OnInit {
         finalize(() => this.loaderService.desactivar())
       ).subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.datos) {
+          this.bloquearRegistrarSalida = false;
+          this.datosFolio.articulos = [];
+          this.articulos.clear();
+
+          if (respuesta.datos.length === 0) {
+            this.datosFolio.nombreContratante = '';
+            this.datosFolio.nombreFinado = '';
+            this.datosFolio.cp = '';
+            this.datosFolio.calle = '';
+            this.datosFolio.numExt = '';
+            this.datosFolio.numInt = '';
+            this.datosFolio.colonia = '';
+            this.datosFolio.municipio = '';
+            this.datosFolio.estado = '';
+          } else {
             this.datosFolio = respuesta.datos;
-            this.generarValeSalidaForm.patchValue({
-              ...this.datosFolio,
-            });
-            this.datosFolio.articulos?.forEach((item: Articulo) => {
-              this.articulos.push(this.addControls(item));
-            })
           }
+
+          this.generarValeSalidaForm.patchValue({
+            ...this.datosFolio,
+          });
+          this.datosFolio.articulos?.forEach((item: Articulo) => {
+            this.articulos.push(this.addControls(item));
+          })
         },
         (error: HttpErrorResponse) => {
           console.error(error);

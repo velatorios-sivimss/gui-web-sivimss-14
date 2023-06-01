@@ -227,7 +227,7 @@ export class VelacionDomicilioComponent implements OnInit {
   }
 
   buscar(): void {
-    if(this.f.fechaInicio.value > this.f.fechaFinal.value) {
+    if(this.f.fechaInicio.value > this.f.fechaFinal.value && this.f.fechaFinal.value) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
       return;
     }
@@ -264,10 +264,6 @@ export class VelacionDomicilioComponent implements OnInit {
             if (respuesta!.datos?.content.length === 0) {
               this.vale = [];
               this.totalElementos = 0;
-              const mensaje = this.alertas.filter((msj: any) => {
-                return msj.idMensaje == 45;
-              })
-              this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
             } else {
               this.vale = respuesta!.datos.content;
               this.totalElementos = respuesta!.datos.totalElements;
