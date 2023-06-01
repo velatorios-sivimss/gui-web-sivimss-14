@@ -161,10 +161,10 @@ export class ModificarUsuarioComponent implements OnInit {
     const idNivelMod = this.modificarUsuarioForm.get("nivel")?.value;
     const idDelegacionMod = this.modificarUsuarioForm.get("delegacion")?.value;
     const idVelatorioMod = this.modificarUsuarioForm.get("velatorio")?.value;
-    this.rolResumen = this.catalogoRoles.find(rol => rol.value === idRolMod)?.label || "";
-    this.nivelResumen = this.catalogoNiveles.find(nivel => nivel.value === idNivelMod)?.label || "";
-    this.delegacionResumen = this.catalogoDelegaciones.find(delegacion => delegacion.value === idDelegacionMod)?.label || "";
-    this.velatorioResumen = this.catalogoVelatorios.find(velatorio => velatorio.value === idVelatorioMod)?.label || "";
+    this.rolResumen = this.catalogoRoles.find(rol => rol.value === idRolMod)?.label ?? "";
+    this.nivelResumen = this.catalogoNiveles.find(nivel => nivel.value === idNivelMod)?.label ?? "";
+    this.delegacionResumen = this.catalogoDelegaciones.find(delegacion => delegacion.value === idDelegacionMod)?.label ?? "";
+    this.velatorioResumen = this.catalogoVelatorios.find(velatorio => velatorio.value === idVelatorioMod)?.label ?? "";
   }
 
   modificarUsuario(): void {

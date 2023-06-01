@@ -158,7 +158,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (validarUsuarioLogueado()) return;
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
