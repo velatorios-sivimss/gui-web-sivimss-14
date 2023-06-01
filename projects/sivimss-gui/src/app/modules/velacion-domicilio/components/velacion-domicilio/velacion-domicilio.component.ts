@@ -46,6 +46,7 @@ export class VelacionDomicilioComponent implements OnInit {
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   foliosGenerados: TipoDropdown[] = [];
+  fechaActual: Date = new Date();
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
@@ -85,8 +86,8 @@ export class VelacionDomicilioComponent implements OnInit {
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
       nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, []),
-      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
-      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
+      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, [Validators.required]),
+      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, [Validators.required]),
       folioODS: new FormControl({ value: null, disabled: false }, []),
       fechaInicio: new FormControl({ value: null, disabled: false }, []),
       fechaFinal: new FormControl({ value: null, disabled: false }, []),
@@ -226,6 +227,10 @@ export class VelacionDomicilioComponent implements OnInit {
   }
 
   buscar(): void {
+    if(this.f.fechaInicio.value > this.f.fechaFinal.value) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+      return;
+    }
     const temp = {
       delegacion: this.f.delegacion.value,
       velatorio: this.f.velatorio.value,
@@ -308,6 +313,10 @@ export class VelacionDomicilioComponent implements OnInit {
 
     this.obtenerFoliosGenerados();
     this.paginar();
+  }
+
+  regresar() {
+    this.router.navigate(['/']).then((e)=>{}).catch((e)=>{});
   }
 
   validarCampoOds() {

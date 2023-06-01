@@ -7,8 +7,7 @@
           placeholder="Selecciona la fecha de entrada" dateFormat="dd/mm/yy">
         </p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Campo
-          obligatorio</span>
+          *ngIf="ref.fechaEntrada?.errors?.required && (ref.fechaEntrada?.dirty || ref.fechaEntrada?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
@@ -16,19 +15,17 @@
         <label class="control-label" for="nombreResponsableEntrega">Responsable de los equipos de velación<span
             class="req">*</span>:</label>
         <input id="nombreResponsableEntrega" type="text" class="form-control" formControlName="nombreResponsableEntrega"
-          placeholder="Ingresa nombre" maxlength="70">
+          placeholder="Ingresa nombre" maxlength="70" trimmer lettersOnly>
         <span class="campo-obligatorio"
-          *ngIf="ref.nombreResponsableEntrega?.errors?.required && (ref.nombreResponsableEntrega?.dirty || ref.nombreResponsableEntrega?.touched)">Campo
-          obligatorio</span>
+          *ngIf="ref.nombreResponsableEntrega?.errors?.required && (ref.nombreResponsableEntrega?.dirty || ref.nombreResponsableEntrega?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="matriculaResponsableEntrega">Matrícula del responsable<span
             class="req">*</span>:</label>
         <input id="matriculaResponsableEntrega" type="text" class="form-control" maxlength="70"
-          formControlName="matriculaResponsableEntrega" placeholder="Ingresa nombre del panteón" numbersOnly>
+          formControlName="matriculaResponsableEntrega" placeholder="Ingresa nombre del panteón" trimmer alphanumericOnly>
         <span class="campo-obligatorio"
-          *ngIf="ref.matriculaResponsableEntrega?.errors?.required && (ref.matriculaResponsableEntrega?.dirty || ref.matriculaResponsableEntrega?.touched)">Campo
-          obligatorio</span>
+          *ngIf="ref.matriculaResponsableEntrega?.errors?.required && (ref.matriculaResponsableEntrega?.dirty || ref.matriculaResponsableEntrega?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
@@ -73,8 +70,7 @@
 <section>
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end align-items-center">
-      <button class="btn btn-md btn-default" *ngIf="confirmacion" (click)="confirmacion = false">Regresar</button>
-      <button class="ml-6 btn btn-md btn-gold" (click)="cancelar()">Cancelar</button>
+      <button class="btn btn-md btn-default" *ngIf="confirmacion" (click)="confirmacion = false">Cancelar</button>
       <button class="ml-6 btn btn-md btn-primary" *ngIf="confirmacion" [disabled]="registrarEntradaForm.invalid"
         (click)="registrarEntrada()">Aceptar</button>
       <button class="ml-6 btn btn-md btn-primary" *ngIf="!confirmacion" [disabled]="registrarEntradaForm.invalid"

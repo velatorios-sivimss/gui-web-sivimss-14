@@ -48,6 +48,7 @@ export class GenerarValeSalidaComponent implements OnInit {
   };
   equipoSeleccionado: EquipoVelacionInterface = {};
   bloquearRegistrarSalida: boolean = false;
+  paso: 'formulario' | 'confirmacion' = 'formulario';
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
@@ -79,8 +80,8 @@ export class GenerarValeSalidaComponent implements OnInit {
       delegacion: new FormControl({ value: null, disabled: false }, Validators.required),
       velatorio: new FormControl({ value: null, disabled: false }, Validators.required),
       folio: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      nombreContratante: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      nombreFinado: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      nombreContratante: new FormControl({ value: null, disabled: true }, []),
+      nombreFinado: new FormControl({ value: null, disabled: true }, []),
       nombreResponsableEntrega: new FormControl({ value: null, disabled: false }, [Validators.maxLength(70), Validators.required]),
       diasNovenario: new FormControl({ value: null, disabled: false }, [Validators.maxLength(2)]),
       fechaSalida: new FormControl({ value: null, disabled: false }, [Validators.required]),
@@ -89,7 +90,7 @@ export class GenerarValeSalidaComponent implements OnInit {
       cp: new FormControl({ value: null, disabled: true }, [Validators.required]),
       calle: new FormControl({ value: null, disabled: true }, [Validators.required]),
       numExt: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      numInt: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      numInt: new FormControl({ value: null, disabled: true }, []),
       colonia: new FormControl({ value: null, disabled: true }, [Validators.required]),
       municipio: new FormControl({ value: null, disabled: true }, [Validators.required]),
       estado: new FormControl({ value: null, disabled: true }, [Validators.required]),
@@ -155,6 +156,14 @@ export class GenerarValeSalidaComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
+  generarValeSalidaConfirmacion(): void {
+    if (this.generarValeSalidaForm.valid && this.articulos.length > 0) {
+      this.paso = 'confirmacion';
+    } else {
+      this.generarValeSalidaForm.markAllAsTouched();
+    }
+  }
+
   generarValeSalida(): void {
     if (this.generarValeSalidaForm.valid && this.articulos.length > 0) {
       this.velacionDomicilioService.crearValeSalida(this.datosGuardar()).pipe(
@@ -184,13 +193,15 @@ export class GenerarValeSalidaComponent implements OnInit {
     this.router.navigate(['reservar-capilla/velacion-en-domicilio']);
   }
 
-  datosGuardar() {
+  datosGuardar(): DatosFolioODS {
     this.articulos.controls.forEach(item => {
       const numCantidad: number = item.get('cantidad')?.value || 0;
       item.get('cantidad')?.patchValue(+numCantidad);
     });
     return {
-      ...this.generarValeSalidaForm.value,
+      ...this.generarValeSalidaForm.getRawValue(),
+      nombreVelatorio: this.catalogoVelatorios.filter((item: TipoDropdown) => item.value === this.f.velatorio.value)[0].label,
+      folioOds: this.f.folio.value?.label,
       diasNovenario: +this.f.diasNovenario.value,
       cantidadArticulos: this.articulos.length,
       fechaSalida: moment(this.f.fechaSalida.value).format('DD-MM-yyyy'),
