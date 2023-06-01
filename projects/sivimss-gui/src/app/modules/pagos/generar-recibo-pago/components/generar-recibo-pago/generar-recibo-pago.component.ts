@@ -20,6 +20,7 @@ import {DescargaArchivosService} from "../../../../../services/descarga-archivos
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 
 type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
 
@@ -55,7 +56,6 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
-  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -81,6 +81,7 @@ export class GenerarReciboPagoComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    this.obtenerVelatorios();
   }
 
   abrirPanel(event: MouseEvent, reciboPagoSeleccionado: ListadoRecibo): void {
@@ -95,17 +96,17 @@ export class GenerarReciboPagoComponent implements OnInit {
     });
   }
 
-  async inicializarFiltroForm() {
+  inicializarFiltroForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormReciboPago = this.formBuilder.group({
-      nivel: [{value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1}],
-      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2}],
-      velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3}],
+      nivel: [{value: +usuario.idRol, disabled: +usuario.idRol >= 1}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idRol >= 2}],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idRol === 3}],
       folio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
     });
-    await this.obtenerVelatorios();
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -172,27 +173,25 @@ export class GenerarReciboPagoComponent implements OnInit {
   }
 
   limpiar(): void {
-    this.alertaService.limpiar();
     this.filtroFormReciboPago.reset();
-    this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
-    if (+this.rolLocalStorage.idRol >= 2) {
-      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
-    }
-    if (+this.rolLocalStorage.idRol === 3) {
-      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
-    }
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroFormReciboPago.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroFormReciboPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    this.filtroFormReciboPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.paginar();
   }
 
-  async obtenerVelatorios() {
-    this.generarReciboService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
-      (respuesta) => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
+  obtenerVelatorios(): void {
+    const idDelegacion = this.filtroFormReciboPago.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.generarReciboService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
       }
-    );
+    });
   }
 
   get f() {
