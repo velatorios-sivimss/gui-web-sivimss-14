@@ -4,24 +4,9 @@ import {GenerarReciboService} from "../../services/generar-recibo-pago.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
-
-interface RecPago {
-  "descTramites": string,
-  "rutaNombreReporte": string,
-  "tramites": string,
-  "velatorio": string,
-  "lugar": string,
-  "derechos": string,
-  "recibimos": string,
-  "fecha": string,
-  "descDerechos": string,
-  "total": string,
-  "delegacion": string,
-  "tipoReporte": string,
-  "folio": string,
-  "cantidad": string,
-  "totalFinal": string
-}
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
+import {validarUsuarioLogueado} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-recibo-pago-tramites',
@@ -30,7 +15,7 @@ interface RecPago {
 })
 export class ReciboPagoTramitesComponent implements OnInit {
 
-  recibo!: RecPago;
+  recibo!: ReciboPagoTramites;
 
   constructor(
     private router: Router,
@@ -42,22 +27,21 @@ export class ReciboPagoTramitesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
   }
 
   obtenerValoresRec(bitacora: number): void {
+    if (validarUsuarioLogueado()) return;
     this.cargadorService.activar();
     this.generarReciboService.buscarDatosReportePagos(bitacora).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (response) => {
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (response: HttpRespuesta<any>): void => {
         if (response.datos.length === 0) return;
         this.recibo = response.datos[0];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error)
       }
-    );
+    });
   }
 
   generarPdf(): void {
@@ -65,16 +49,16 @@ export class ReciboPagoTramitesComponent implements OnInit {
     this.generarReciboService.descargarReporte(this.recibo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta) => {
-        const downloadURL = window.URL.createObjectURL(respuesta);
-        const link = document.createElement('a');
+      next: (respuesta: Blob): void => {
+        const downloadURL: string = window.URL.createObjectURL(respuesta);
+        const link: HTMLAnchorElement = document.createElement('a');
         link.href = downloadURL;
         link.download = `reporte.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       },
-      error: (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error)
       }
     });

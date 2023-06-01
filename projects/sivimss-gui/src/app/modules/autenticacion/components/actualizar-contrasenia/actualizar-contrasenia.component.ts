@@ -37,7 +37,6 @@ export const confirmacionContraseniadValidator: ValidatorFn = (control: Abstract
 export class ActualizarContraseniaComponent implements OnInit {
 
   form!: FormGroup;
-  private readonly contraseniaAnterior: string = '';
 
   constructor(
     private readonly autenticacionService: AutenticacionService,
