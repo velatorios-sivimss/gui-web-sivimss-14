@@ -1,12 +1,12 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpRespuesta } from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
-import { finalize } from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Component, OnInit} from '@angular/core';
+import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpRespuesta} from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
+import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import {LoaderService} from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 /**
  * Valida que la contraseña anterior sea diferente a la nueva
@@ -86,16 +86,14 @@ export class ActualizarContraseniaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<unknown>) => {
         if (respuesta.codigo === 200) {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Contraseña actualizada');
-          this.router.navigate(["../"], {
-            relativeTo: this.activatedRoute
-          });
+          void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
         }
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
       }
-  });
+    });
   }
 
   get f() {
