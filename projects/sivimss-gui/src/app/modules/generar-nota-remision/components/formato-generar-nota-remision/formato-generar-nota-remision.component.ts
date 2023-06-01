@@ -63,7 +63,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   inicializarNotaRemisionForm(detalle: DetalleNotaRemision) {
     this.notaRemisionForm = this.formBuilder.group({
       versionDocumento: [{ value: null, disabled: true }],
-      fechaNota: [{ value: "", disabled: true }],
+      fechaNota: [{ value: new Date(), disabled: true }],
       velatorioOrigen: [{ value: null, disabled: true }],
       folioNota: [{ value: null, disabled: true }],
       dirVelatorio: [{ value: null, disabled: true }],

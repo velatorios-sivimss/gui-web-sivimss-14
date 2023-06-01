@@ -172,9 +172,6 @@ export class GenerarNotaRemisionComponent implements OnInit {
           const mensaje = this.alertas?.filter((msj: any) => {
             return msj.idMensaje == respuesta.mensaje;
           });
-          if (mensaje && mensaje.length > 0) {
-            this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
-          }
         }
       },
       (error: HttpErrorResponse) => {
