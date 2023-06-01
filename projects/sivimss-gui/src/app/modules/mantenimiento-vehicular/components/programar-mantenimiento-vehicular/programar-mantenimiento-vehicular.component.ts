@@ -48,7 +48,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   vehiculos: VehiculoMantenimiento[] = [];
   vehiculoSeleccionado!: VehiculoMantenimiento;
 
-  filtroForm!: FormGroup;
+  filtroFormProgramarMantenimiento!: FormGroup;
 
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
@@ -78,7 +78,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.breadcrumbService.actualizar(MANTENIMIENTO_VEHICULAR_BREADCRUMB);
     this.inicializarFiltroForm()
     this.cargarCatalogos();
-    this.cargarDatosUsuario();
+    this.cargarVelatorios();
   }
 
   cargarCatalogos(): void {
@@ -87,28 +87,10 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
   }
 
-  cargarDatosUsuario(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(parseInt(usuario.idOficina));
-    this.deshabilitarFiltros(parseInt(usuario.idOficina));
-    this.filtroForm.get('delegacion')?.patchValue(parseInt(usuario.idDelegacion));
-    this.cargarVelatorios();
-    this.filtroForm.get('velatorio')?.patchValue(parseInt(usuario.idVelatorio));
-  }
-
-  deshabilitarFiltros(id: number): void {
-    if (id > 1) {
-      this.filtroForm.get('delegacion')?.disable()
-    }
-    if (id > 2) {
-      this.filtroForm.get('velatorio')?.disable()
-    }
-  }
-
   cargarVelatorios(): void {
     this.catalogoVelatorios = [];
-    this.filtroForm.get('velatorio')?.patchValue("");
-    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue("");
+    const idDelegacion = this.filtroFormProgramarMantenimiento.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.mantenimientoVehicularService.obtenerVelatorios(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -122,17 +104,19 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   inicializarFiltroForm(): void {
-    this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: true}],
-      delegacion: [{value: null, disabled: false}, [Validators.required]],
-      velatorio: [{value: null, disabled: false}, [Validators.required]],
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    console.log(usuario.idOficina)
+    this.filtroFormProgramarMantenimiento = this.formBuilder.group({
+      nivel: [{value: +usuario.idOficina, disabled: true}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
       placa: [{value: null, disabled: false}, [Validators.required]],
     })
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
@@ -172,7 +156,12 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   limpiar(): void {
-    this.filtroForm.reset();
+    this.filtroFormProgramarMantenimiento.reset();
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    this.paginar();
   }
 
   abrirModalnuevaVerificacion(): void {
@@ -203,11 +192,6 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.modificarModal = true;
   }
 
-  abrirModalDetalle(vehiculoSeleccionado: VehiculoMantenimiento): void {
-    this.vehiculoSeleccionado = vehiculoSeleccionado;
-    this.detalleModal = true;
-  }
-
   abrirModalExportarPDF(): void {
     console.log()
   }
@@ -218,18 +202,18 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   seleccionarDetalle(opcion: OpcionMtto): void {
     if (opcion === 'mtto') {
-      this.router.navigate(['./detalle-solicitud-mantenimiento'], {
+      void this.router.navigate(['./detalle-solicitud-mantenimiento'], {
         relativeTo: this.route,
         queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD}
       });
       return;
     }
     if (opcion === 'registroMtto') {
-      this.router.navigate(['./detalle-registro-mantenimiento'],
+      void this.router.navigate(['./detalle-registro-mantenimiento'],
         {relativeTo: this.route, queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO}});
       return;
     }
-    this.router.navigate(['./detalle-verificacion'], {
+    void this.router.navigate(['./detalle-verificacion'], {
       relativeTo: this.route,
       queryParams: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO}
     });
@@ -268,7 +252,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   get f() {
-    return this.filtroForm?.controls;
+    return this.filtroFormProgramarMantenimiento?.controls;
   }
 
   ngOnDestroy(): void {

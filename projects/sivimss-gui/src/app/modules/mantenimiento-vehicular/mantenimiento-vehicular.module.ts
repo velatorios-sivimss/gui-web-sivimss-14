@@ -48,6 +48,8 @@ import {CheckboxModule} from "primeng/checkbox";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {DetalleMantenimientoComponent} from "./components/detalle-mantenimiento/detalle-mantenimiento.component";
 import {TabViewModule} from "primeng/tabview";
+import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
+import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
 
 @NgModule({
   declarations: [
@@ -83,6 +85,8 @@ import {TabViewModule} from "primeng/tabview";
     RadioButtonModule,
     UtileriaModule,
     TabViewModule,
+    CeldaStickyModule,
+    ValidaRolModule,
   ],
   providers: [MantenimientoVehicularService]
 })
