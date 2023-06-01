@@ -19,12 +19,14 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                    placeholder="Selecciona el velatorio" [filter]="true">
+                    placeholder="Selecciona el velatorio" [filter]="true" (onChange)="obtenerFolios()">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folio">Folio de la ODS:</label>
-        <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio">
+        <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="catalogoFolios"
+                    placeholder="Selecciona el folio" [filter]="true">
+        </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">

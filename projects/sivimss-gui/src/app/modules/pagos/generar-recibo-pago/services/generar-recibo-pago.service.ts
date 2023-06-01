@@ -8,15 +8,15 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 
-interface PeticionDescarga {
-  tipoReporte: "pdf" | "xls"
-}
-
 @Injectable()
 export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "", "", 23, "consultar-rec-pagos", "", "");
   }
+
+  private readonly _folios: string = 'consultar-folios-rec-pagos';
+  private readonly _derechos: string = 'consultar-derechos-rec-pagos';
+  private readonly _tramites: string = 'consultar-tramites-rec-pagos';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -56,22 +56,16 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
       {headers, responseType: 'blob' as 'json'})
   }
 
-  descargarListadoPDF(body: any): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-rec-pagos/generarDocumento/pdf`
-      , body, {headers, responseType: 'blob' as 'json'});
+  obtenerFoliosODS(idVelatorio: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._folios}`, {idVelatorio});
   }
 
-  descargarListadoExcel(): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    const body: PeticionDescarga = {tipoReporte: "xls"}
-    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-rec-pagos/generarDocumento/pdf`
-      , body, {headers, responseType: 'blob' as 'json'});
+  obtenerTramites(idVelatorio: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._tramites}`, {idVelatorio});
   }
+
+  obtenerDetechos(idVelatorio: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._derechos}`, {idVelatorio});
+  }
+
 }

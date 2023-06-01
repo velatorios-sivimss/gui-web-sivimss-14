@@ -49,7 +49,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   catatalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
+  catalogoFolios: TipoDropdown[] = [];
   fechaActual: Date = new Date();
 
   paginacionConFiltrado: boolean = false;
@@ -107,6 +107,7 @@ export class GenerarReciboPagoComponent implements OnInit {
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
     });
+    this.obtenerFolios();
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -178,6 +179,7 @@ export class GenerarReciboPagoComponent implements OnInit {
     this.filtroFormReciboPago.get('nivel')?.patchValue(+usuario.idRol);
     this.filtroFormReciboPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
     this.filtroFormReciboPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    this.obtenerVelatorios();
     this.paginar();
   }
 
@@ -192,6 +194,22 @@ export class GenerarReciboPagoComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
+  }
+
+  obtenerFolios(): void {
+    const idVelatorio = this.filtroFormReciboPago.get('velatorio')?.value;
+    this.catalogoFolios = [];
+    this.filtroFormReciboPago.get('folio')?.patchValue(null);
+    if (!idVelatorio) return;
+    this.generarReciboService.obtenerFoliosODS(idVelatorio).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoFolios = mapearArregloTipoDropdown(respuesta.datos, "folioOds", "folioOds");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    })
   }
 
   get f() {

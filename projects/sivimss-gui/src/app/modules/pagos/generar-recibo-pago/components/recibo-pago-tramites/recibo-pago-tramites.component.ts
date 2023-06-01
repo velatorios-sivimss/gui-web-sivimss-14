@@ -5,8 +5,8 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
-import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
 
 @Component({
   selector: 'app-recibo-pago-tramites',
