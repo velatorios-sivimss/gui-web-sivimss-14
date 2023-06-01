@@ -114,6 +114,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+
     if (event) {
       this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
     }

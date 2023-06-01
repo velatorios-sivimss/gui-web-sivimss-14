@@ -8,10 +8,6 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 
-interface ConsultaVelatorio {
-  idDelegacion: string | null
-}
-
 interface PeticionDescarga {
   tipoReporte: "pdf" | "xls"
 }
@@ -33,12 +29,12 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body = { idDelegacion: delegacion }
+    const body = {idDelegacion: delegacion}
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/rec-pagos-filtros`, filtros,
@@ -51,7 +47,7 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   descargarReporte<T>(body: T): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
@@ -60,8 +56,8 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
       {headers, responseType: 'blob' as 'json'})
   }
 
-  descargarListadoPDF(body : any): Observable<Blob> {
-    const headers = new HttpHeaders({
+  descargarListadoPDF(body: any): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
@@ -70,11 +66,11 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   descargarListadoExcel(): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body: PeticionDescarga = { tipoReporte: "xls"}
+    const body: PeticionDescarga = {tipoReporte: "xls"}
     return this._http.post<any>(this._base + `${this._funcionalidad}/generar-rec-pagos/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
