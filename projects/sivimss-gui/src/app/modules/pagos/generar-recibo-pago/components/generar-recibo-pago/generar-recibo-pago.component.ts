@@ -99,8 +99,8 @@ export class GenerarReciboPagoComponent implements OnInit {
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormReciboPago = this.formBuilder.group({
-      nivel: [{value: +usuario.idRol, disabled: +usuario.idRol >= 1}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idRol >= 2}],
+      nivel: [{value: +usuario.idRol, disabled: true}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idRol === 2}],
       velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idRol === 3}],
       folio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
