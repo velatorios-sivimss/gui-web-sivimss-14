@@ -9,6 +9,7 @@ export interface NotaRemision {
   conNota?: number;
   folioODS?: string;
   nomContratante?: string;
+  motivo?: string;
 }
 
 export type ClavesEstatus = {
@@ -34,6 +35,7 @@ export interface DetalleNotaRemision {
   dirSolicitante?: string;
   nombreConformidad?: string;
   nombreRepresentante?: string;
+  motivo?: string;
 }
 
 export interface ArticulosServicios {
