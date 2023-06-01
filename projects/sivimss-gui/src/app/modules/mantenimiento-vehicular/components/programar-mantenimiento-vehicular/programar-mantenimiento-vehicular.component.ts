@@ -173,7 +173,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   abrirModalSolicitudMantenimiento(): void {
     this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
-      header: "Solicitud de mantenimiento",
+      header: "Solicitud de Mantenimiento Vehicular",
       width: "920px",
       data: {vehiculo: this.vehiculoSeleccionado},
     })

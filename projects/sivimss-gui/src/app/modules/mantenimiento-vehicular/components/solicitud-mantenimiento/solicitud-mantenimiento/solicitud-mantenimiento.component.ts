@@ -24,6 +24,7 @@ import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.inter
 import {diferenciaUTC} from "../../../../../utils/funciones";
 
 type VehiculoSolicitud = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
+
 @Component({
   selector: 'app-solicitud-mantenimiento',
   templateUrl: './solicitud-mantenimiento.component.html',
@@ -32,6 +33,8 @@ type VehiculoSolicitud = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MT
 })
 export class SolicitudMantenimientoComponent implements OnInit {
   ventanaConfirmacion: boolean = false;
+  readonly CAPTURA_DE_SOLICITUD_MANTENIMIENTO: number = 1;
+  readonly RESUMEN_DE_SOLICITUD_MANTENIMIENTO: number = 2;
 
   vehiculoSeleccionado!: VehiculoSolicitud;
   resumenAsignacion!: ResumenAsignacion;
@@ -43,6 +46,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   idMttoVehicular: number | null = null;
   idSolicitudMtto: number | null = null;
+  pasoSolicitudMantenimiento: number = 1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -73,9 +77,9 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   inicializarSolicitudForm(): void {
     this.solicitudMantenimientoForm = this.formBuilder.group({
-      placas: [{value: "", disabled: true}],
-      marca: [{value: "", disabled: true}],
-      anio: [{value: "", disabled: true}],
+      placas: [{value: this.vehiculoSeleccionado.DES_PLACAS, disabled: true}],
+      marca: [{value: this.vehiculoSeleccionado.DES_MARCA, disabled: true}],
+      anio: [{value: this.vehiculoSeleccionado.DES_MODELO, disabled: true}],
       kilometraje: [{value: null, disabled: false}, [Validators.required]],
       tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
       matPreventivo: [{value: null, disabled: false}],
@@ -83,22 +87,14 @@ export class SolicitudMantenimientoComponent implements OnInit {
       fechaRegistro: [{value: null, disabled: false}, [Validators.required]],
       notas: [{value: null, disabled: false}, [Validators.required]],
     });
-    this.solicitudMantenimientoForm.get("modalidad")?.valueChanges.subscribe(() => {
+    this.solicitudMantenimientoForm.get("modalidad")?.valueChanges.subscribe((): void => {
       this.asignarOpcionesMantenimiento();
     })
   }
 
   agregar(): void {
     this.resumenAsignacion = this.crearResumenAsignacion();
-    this.ventanaConfirmacion = true;
-  }
-
-  regresar(): void {
-    this.ventanaConfirmacion = false;
-  }
-
-  cerrar(): void {
-    this.ref.close()
+    this.pasoSolicitudMantenimiento = this.RESUMEN_DE_SOLICITUD_MANTENIMIENTO;
   }
 
   asignarOpcionesMantenimiento(): void {
@@ -124,7 +120,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
       modalidad: modalidadValor,
       fechaRegistro: this.solicitudMantenimientoForm.get("fechaRegistro")?.value,
-      tipoMantenimiento: tipoMantenimientoValor || "",
+      tipoMantenimiento: tipoMantenimientoValor ?? "",
       mantenimientoPreventivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
       notas: this.solicitudMantenimientoForm.get("notas")?.value
     }
@@ -166,13 +162,13 @@ export class SolicitudMantenimientoComponent implements OnInit {
   guardarNuevaSolicitudMtto(): void {
     const verificacion: RegistroSolicitudMttoInterface = this.crearSolicitudMantenimiento();
     this.mantenimientoVehicularService.guardar(verificacion).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
+      next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud agregada correctamente');
         this.abrirRegistroSolicitud();
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error.message, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
@@ -180,7 +176,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
   actualizarSolicitudMtto(): void {
     const verificacion: RegistroSolicitudMttoInterface = this.crearSolicitudMantenimiento();
     this.mantenimientoVehicularService.actualizar(verificacion).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
+      next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud modificada correctamente');
         this.abrirRegistroSolicitud();
       },
@@ -193,7 +189,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   abrirRegistroSolicitud(): void {
     this.ref.close();
-    this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO], {relativeTo: this.route});
+    void this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
+      {relativeTo: this.route});
   }
 
   realizarSolicitud(id: number): void {
