@@ -105,7 +105,6 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    console.log(usuario.idOficina)
     this.filtroFormProgramarMantenimiento = this.formBuilder.group({
       nivel: [{value: +usuario.idOficina, disabled: true}],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
@@ -167,7 +166,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   abrirModalnuevaVerificacion(): void {
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
       data: {vehiculo: this.vehiculoSeleccionado},
-      header: "Nueva verificación",
+      header: "Verificar al Inicio de la Jornada",
       width: "920px"
     });
   }

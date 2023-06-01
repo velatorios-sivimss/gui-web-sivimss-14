@@ -33,11 +33,12 @@ export class NuevaVerificacionComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
+  readonly CAPTURA_DE_NUEVA_VERIFICACION: number = 1;
+  readonly RESUMEN_DE_NUEVA_VERIFICACION: number = 2;
+
   vehiculoSeleccionado!: VehiculoVerificacion;
 
   menuStep: MenuItem[] = MENU_STEPPER;
-  indice: number = 0;
-
   velatorios: TipoDropdown[] = CATALOGOS_DUMMIES;
 
   nuevaVerificacionForm!: FormGroup;
@@ -50,6 +51,7 @@ export class NuevaVerificacionComponent implements OnInit {
 
   idMttoVehicular: number | null = null;
   idVerificacion: number | null = null;
+  pasoNuevaVerificacion: number = 1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -116,15 +118,16 @@ export class NuevaVerificacionComponent implements OnInit {
   }
 
   cancelar(): void {
-    if (this.indice === 1) {
-      this.indice--;
+    if (this.pasoNuevaVerificacion === this.RESUMEN_DE_NUEVA_VERIFICACION) {
+      this.pasoNuevaVerificacion = this.CAPTURA_DE_NUEVA_VERIFICACION;
       return;
     }
     this.ref.close()
   }
 
   aceptar(): void {
-    this.indice++;
+    this.pasoNuevaVerificacion = this.RESUMEN_DE_NUEVA_VERIFICACION;
+    console.log(this.pasoNuevaVerificacion)
     this.nuevaVerificacion = this.crearResumenNuevaVerificacion();
   }
 
@@ -171,8 +174,8 @@ export class NuevaVerificacionComponent implements OnInit {
         this.abrirRegistroMantenimiento();
       },
       error: (error: HttpErrorResponse): void => {
-        console.log(error)
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
@@ -194,7 +197,8 @@ export class NuevaVerificacionComponent implements OnInit {
 
   abrirRegistroMantenimiento(): void {
     this.ref.close();
-    this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO], { relativeTo: this.route });
+    void this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
+      {relativeTo: this.route});
   }
 
   realizarVerificacion(id: number): void {

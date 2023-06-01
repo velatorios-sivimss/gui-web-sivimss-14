@@ -125,7 +125,7 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Verificar al inicio" (click)="abrirModalnuevaVerificacion()"
+      <app-overlay-panel-opcion titulo="Verificar al Inicio" (click)="abrirModalnuevaVerificacion()"
                                 *ngIf="vehiculoSeleccionado.verificacionDia === 'false'"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
