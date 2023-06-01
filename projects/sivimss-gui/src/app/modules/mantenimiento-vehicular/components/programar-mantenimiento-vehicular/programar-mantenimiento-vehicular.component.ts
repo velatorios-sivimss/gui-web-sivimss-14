@@ -22,9 +22,10 @@ import {OverlayPanel} from "primeng/overlaypanel";
 import {LazyLoadEvent} from "primeng/api";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 
 type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
 
@@ -70,7 +71,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     private activatedRoute: ActivatedRoute,
     private cargadorService: LoaderService,
     private mantenimientoVehicularService: MantenimientoVehicularService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService,
   ) {
   }
 
@@ -114,6 +116,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
@@ -141,7 +144,10 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   paginarConFiltros(): void {
-    console.log()
+    const filtros: FiltrosMantenimientoVehicular = this.crearSolicitudFiltros();
+    if (!Object.values(filtros).some(v => (v))) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+    }
   }
 
   buscar(): void {
