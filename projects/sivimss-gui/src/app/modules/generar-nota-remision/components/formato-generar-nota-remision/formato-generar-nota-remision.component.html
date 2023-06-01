@@ -8,9 +8,9 @@
             <div></div>
             <div class="table-panel-header-column">
                 <div class="flex flex-column ml-5">
-                    <!-- <a (click)="overlayPanel.toggle($event)">
-            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-          </a> -->
+                    <a (click)="overlayPanel.toggle($event)">
+                        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                    </a>
                 </div>
             </div>
         </div>
@@ -221,7 +221,7 @@
         <p-overlayPanel #overlayPanel>
             <ng-template pTemplate="content">
                 <app-overlay-panel-opciones>
-                    <app-overlay-panel-opcion titulo="Vista previa" (click)="generarReporteOrdenServicio('pdf'); overlayPanel.toggle($event);"></app-overlay-panel-opcion>
+                    <app-overlay-panel-opcion titulo="Vista previa" (click)="exportarPDF('pdf'); overlayPanel.toggle($event);"></app-overlay-panel-opcion>
                 </app-overlay-panel-opciones>
             </ng-template>
         </p-overlayPanel>
