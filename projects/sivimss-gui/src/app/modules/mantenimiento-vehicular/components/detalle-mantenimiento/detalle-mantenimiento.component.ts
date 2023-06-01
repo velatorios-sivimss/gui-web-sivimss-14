@@ -9,11 +9,21 @@ import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicu
 import {RespuestaVerificacion} from "../../models/respuestaVerificacion.interface";
 import {RespuestaSolicitudMantenimiento} from "../../models/respuestaSolicitudMantenimiento.interface";
 import {RespuestaRegistroMantenimiento} from "../../models/respuestaRegistroMantenimiento.interface";
+import {obtenerFechaActual} from "../../../../utils/funciones-fechas";
+import {NuevaVerificacionComponent} from "../nueva-verificacion/nueva-verificacion/nueva-verificacion.component";
+import {
+  SolicitudMantenimientoComponent
+} from "../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component";
+import {
+  RegistroMantenimientoComponent
+} from "../registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-detalle-mantenimiento',
   templateUrl: './detalle-mantenimiento.component.html',
-  styleUrls: ['./detalle-mantenimiento.component.scss']
+  styleUrls: ['./detalle-mantenimiento.component.scss'],
+  providers: [DialogService]
 })
 export class DetalleMantenimientoComponent implements OnInit {
   @ViewChild(OverlayPanel)
@@ -24,14 +34,21 @@ export class DetalleMantenimientoComponent implements OnInit {
   verificacion!: RespuestaVerificacion;
   solicitudRegistro!: RespuestaSolicitudMantenimiento;
   registro!: RespuestaRegistroMantenimiento;
+  fechaActual: string = obtenerFechaActual();
+  modificarModal: boolean = false;
+
+  solicitudMttoRef!: DynamicDialogRef;
+  nuevaVerificacionRef!: DynamicDialogRef;
+  registroMttoRef!: DynamicDialogRef;
 
   constructor(private route: ActivatedRoute,
-              private mantenimientoVehicularService: MantenimientoVehicularService) {
+              private mantenimientoVehicularService: MantenimientoVehicularService,
+              public dialogService: DialogService,
+  ) {
   }
 
   ngOnInit(): void {
     this.vehiculo = this.route.snapshot.data["respuesta"].datos.content[0];
-    console.log(this.vehiculo)
     this.obtenerRegistros();
   }
 
@@ -73,5 +90,44 @@ export class DetalleMantenimientoComponent implements OnInit {
       return of({datos: [], mensaje: '', codigo: 0, error: false});
     }
     return this.mantenimientoVehicularService.obtenerDetalleRegistro(this.vehiculo.ID_MTTO_REGISTRO);
+  }
+
+  abrirModalModificarVerificacion(): void {
+    this.modificarModal = !this.modificarModal;
+    this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
+      data: {id: this.vehiculo.ID_MTTOVERIFINICIO},
+      header: "Modificar verificación",
+      width: "920px"
+    });
+  }
+
+  abrirModalModificarSolicitud(): void {
+    this.modificarModal = !this.modificarModal;
+    this.registroMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
+      header: "Modificar solicitud de mantenimiento",
+      width: "920px",
+      data: {id: this.vehiculo.ID_MTTO_SOLICITUD},
+    });
+  }
+
+  abrirModalModificarRegistro(): void {
+    this.modificarModal = !this.modificarModal;
+    this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
+      header: "Modificar registro de mantenimiento vehicular",
+      width: "920px",
+      data: {id: this.vehiculo.ID_MTTO_REGISTRO},
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.solicitudMttoRef) {
+      this.solicitudMttoRef.destroy();
+    }
+    if (this.nuevaVerificacionRef) {
+      this.nuevaVerificacionRef.destroy();
+    }
+    if (this.registroMttoRef) {
+      this.registroMttoRef.destroy();
+    }
   }
 }

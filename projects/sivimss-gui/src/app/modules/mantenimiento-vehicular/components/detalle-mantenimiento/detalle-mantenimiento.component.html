@@ -30,7 +30,7 @@
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Fecha</span>
-          <span class="texto-base"></span>
+          <span class="texto-base">{{fechaActual}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Vehiculo</span>
@@ -105,7 +105,8 @@
                         <span>{{verificacion.DES_NIVEL_NEUMATRASE | uppercase}}</span>
                       </div>
                       <div class="table-panel-column col-md-4">
-                        <img class="icono" src="../../../../../../assets/images/velocimetroBajo.svg" alt="Nivel neumatico trasera">
+                        <img class="icono" src="../../../../../../assets/images/velocimetroBajo.svg"
+                             alt="Nivel neumatico trasera">
                       </div>
                     </div>
                     <div class="col-12 mt-3">
@@ -114,7 +115,8 @@
                         <span>{{verificacion.DES_NIVEL_NEUMADELA | uppercase}}</span>
                       </div>
                       <div class="table-panel-column col-md-4">
-                        <img class="icono" src="../../../../../../assets/images/belocimetroAlto.svg" alt="Nivel neumatico delantero">
+                        <img class="icono" src="../../../../../../assets/images/belocimetroAlto.svg"
+                             alt="Nivel neumatico delantero">
                       </div>
                     </div>
                   </div>
@@ -308,9 +310,40 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = !modificarModal">
+      </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Exportar PDF"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Exportar Excel"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-dialog header="Modificar" [(visible)]="modificarModal" *ngIf="vehiculo">
+  <div class="border-panel mb-4 w-440 bg-g">
+    <div class="row flex justify-content-center">
+      {{vehiculo.ID_VEHICULO}} - {{vehiculo.DES_MARCA | uppercase }}
+      {{vehiculo.DES_SUBMARCA | uppercase}} {{vehiculo.DES_MODELO | uppercase}}
+    </div>
+  </div>
+  <div class=" border-panel w-440">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo.verificacionDia !== 'false'">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarVerificacion()">
+        Modificar verificación al inicio
+      </button>
+    </div>
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo.ID_MTTO_SOLICITUD">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarSolicitud()">
+        Modificar solicitud de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center" *ngIf="vehiculo.ID_MTTO_REGISTRO">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarRegistro()">
+        Modificar registro de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center"
+         *ngIf="vehiculo.verificacionDia === 'false' && !vehiculo.ID_MTTO_SOLICITUD && !vehiculo.ID_MTTO_REGISTRO ">
+      No existen solicitudes registradas previamente.
+    </div>
+  </div>
+</p-dialog>

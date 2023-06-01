@@ -187,10 +187,6 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     });
   }
 
-  abrirModalModificar(): void {
-    this.modificarModal = true;
-  }
-
   abrirModalExportarPDF(): void {
     console.log()
   }
