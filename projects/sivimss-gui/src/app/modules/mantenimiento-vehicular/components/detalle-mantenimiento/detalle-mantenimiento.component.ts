@@ -2,8 +2,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {tablaRin} from "../../constants/tabla-rines";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
-import {ActivatedRoute, Router} from "@angular/router";
-import {forkJoin, Observable} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
+import {forkJoin, Observable, of} from "rxjs";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
 import {RespuestaVerificacion} from "../../models/respuestaVerificacion.interface";
@@ -31,6 +31,7 @@ export class DetalleMantenimientoComponent implements OnInit {
 
   ngOnInit(): void {
     this.vehiculo = this.route.snapshot.data["respuesta"].datos.content[0];
+    console.log(this.vehiculo)
     this.obtenerRegistros();
   }
 
@@ -54,14 +55,23 @@ export class DetalleMantenimientoComponent implements OnInit {
   }
 
   obtenerVerificacionInicial(): Observable<HttpRespuesta<any>> {
+    if (!this.vehiculo.ID_MTTOVERIFINICIO) {
+      return of({datos: [], mensaje: '', codigo: 0, error: false});
+    }
     return this.mantenimientoVehicularService.obtenerDetalleVerificacion(this.vehiculo.ID_MTTOVERIFINICIO);
   }
 
   obtenerSolicitudMantenimiento(): Observable<HttpRespuesta<any>> {
+    if (!this.vehiculo.ID_MTTO_SOLICITUD) {
+      return of({datos: [], mensaje: '', codigo: 0, error: false});
+    }
     return this.mantenimientoVehicularService.obtenerDetalleSolicitud(this.vehiculo.ID_MTTO_SOLICITUD);
   }
 
   obtenerRegistroMantenimiento(): Observable<HttpRespuesta<any>> {
+    if (!this.vehiculo.ID_MTTO_REGISTRO) {
+      return of({datos: [], mensaje: '', codigo: 0, error: false});
+    }
     return this.mantenimientoVehicularService.obtenerDetalleRegistro(this.vehiculo.ID_MTTO_REGISTRO);
   }
 }

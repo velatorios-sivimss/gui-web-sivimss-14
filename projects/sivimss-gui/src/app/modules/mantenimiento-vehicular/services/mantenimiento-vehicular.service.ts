@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, of} from "rxjs";
+import {Observable, of} from "rxjs";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
 import {BaseService} from "../../../utils/base-service";
@@ -17,9 +17,7 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   readonly _nivel: string = 'catalogo_nivelOficina';
   readonly _delegacion: string = 'catalogo_delegaciones';
-
-  private vehiculo$ = new BehaviorSubject<any>({});
-  vehiculoSeleccionado$ = this.vehiculo$.asObservable();
+  readonly _proveedores: string = 'cat-mtto-proveedores';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "mtto-vehicular-modificar",
@@ -42,61 +40,58 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   }
 
   obtenerCatalogoProvedores(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/?servicio=cat-mtto-proveedores`);
+    const params: HttpParams = new HttpParams()
+      .append("servicio", this._proveedores);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
   }
 
   buscarPorFiltros(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar/busqueda-vehiculos-mtto`, {},
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, {},
       {params});
   }
 
   override guardar(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/${this._agregar}`, t);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._agregar}`, t);
   }
 
   override buscarPorPagina(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio)
-      .append("servicio", this._paginado)
-    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2`, {params})
+      .append("servicio", this._paginado);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/`, {params});
   }
 
   obtenerDetalleVerificacion(id: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("servicio", 'detalle-verificacion-inicio')
-      .append("palabra", id)
-    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar`, {params})
+      .append("palabra", id);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params});
   }
 
-
   obtenerDetalleSolicitud(id: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("servicio", 'detalle-solicitud-mtto')
-      .append("palabra", id)
-    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar`, {params})
+      .append("palabra", id);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params});
   }
 
   obtenerDetalleRegistro(id: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("servicio", 'detalle-registro-mtto')
       .append("palabra", id)
-    return this._http.get<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar`, {params})
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params})
   }
 
   override actualizar(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/${this._actualizar}`, t);
-  }
-
-  setVehiculo(vehiculo: any): void {
-    this.vehiculo$.next(vehiculo);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._actualizar}`, t);
   }
 
   obtenerRegistroVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
     const body = {idVehiculo}
-    return this._http.post<HttpRespuesta<any>>(`http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/2/buscar/${this._paginado}`, body)
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, body)
   }
 }

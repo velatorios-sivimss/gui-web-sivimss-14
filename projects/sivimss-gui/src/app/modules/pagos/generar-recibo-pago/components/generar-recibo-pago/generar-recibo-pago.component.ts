@@ -56,6 +56,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
   readonly POSICION_CATALOGO_VELATORIOS: number = 2;
   readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -81,10 +82,8 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   private cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
-    this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
   }
 
   abrirPanel(event: MouseEvent, reciboPagoSeleccionado: ListadoRecibo): void {
@@ -99,16 +98,17 @@ export class GenerarReciboPagoComponent implements OnInit {
     });
   }
 
-  inicializarFiltroForm() {
+  async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}],
-      delegacion: [{value: null, disabled: false}],
-      velatorio: [{value: null, disabled: false}],
+      nivel: [{ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
+      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }],
+      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }],
       folio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
     });
+    await this.obtenerVelatorios();
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -178,10 +178,31 @@ export class GenerarReciboPagoComponent implements OnInit {
   limpiar(): void {
     this.filtroForm.reset();
     this.paginar();
+
+    this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
+
+    if(+this.rolLocalStorage.idRol >= 2) {
+      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
+    }
+
+    if(+this.rolLocalStorage.idRol === 3) {
+      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
+    }
   }
 
   get f() {
     return this.filtroForm?.controls;
+  }
+
+  async obtenerVelatorios() {
+    this.generarReciboService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
+      (respuesta) => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
+      },
+      (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
+    );
   }
 
   guardarListadoPagosPDF() {

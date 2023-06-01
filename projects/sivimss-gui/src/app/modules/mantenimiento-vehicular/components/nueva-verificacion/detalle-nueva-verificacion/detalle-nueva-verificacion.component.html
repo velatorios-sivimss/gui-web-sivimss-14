@@ -99,7 +99,7 @@
                   <span>{{verificacion.idNivelAceite.toString() | uppercase}}</span>
                 </div>
                 <div class="table-panel-column col-md-6">
-                  <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                  <img class="icono" src="../../../../../../assets/images/nivelCombus.svg" alt="nivel-combustible">
                 </div>
               </div>
               <div class="col-md-6">
@@ -108,7 +108,7 @@
                   <span>{{verificacion.idNivelAgua.toString() | uppercase}}</span>
                 </div>
                 <div class="table-panel-column col-md-6">
-                  <img class="icono" src="../../../../../../assets/images/nivelAgua.svg">
+                  <img class="icono" src="../../../../../../assets/images/nivelAgua.svg" alt="nivel-agua">
                 </div>
               </div>
             </div>
@@ -122,7 +122,8 @@
                   <span>{{verificacion.idCalNeuTraseros.toString() | uppercase}}</span>
                 </div>
                 <div class="table-panel-column col-md-6">
-                  <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg">
+                  <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg"
+                       alt="calibracion-neumaticos-traseron">
                 </div>
               </div>
               <div class="col-md-12">
@@ -131,7 +132,8 @@
                   <span>{{verificacion.idCalNeuDelanteros.toString() | uppercase}}</span>
                 </div>
                 <div class="table-panel-column col-md-6">
-                  <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg">
+                  <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg"
+                       alt="calibracion-neumaticos-delanteros">
                 </div>
               </div>
             </div>
@@ -142,8 +144,8 @@
                   <p-table [value]="data">
                     <ng-template pTemplate="header">
                       <tr>
-                        <th>Rin</th>
-                        <th>Precisión</th>
+                        <th id="nueva-verificacion-rin">Rin</th>
+                        <th id="nueva-verificacion-precision">Precisión</th>
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-item>
@@ -167,7 +169,7 @@
                   <span>{{verificacion.idNivelCombustible.toString() | uppercase}}</span>
                 </div>
                 <div class="table-panel-column col-md-6">
-                  <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                  <img class="icono" src="../../../../../../assets/images/nivelCombus.svg" alt="nivel-combustible">
                 </div>
               </div>
               <div class="col-md-4">
@@ -176,7 +178,7 @@
                   <span>{{verificacion.idNivelBateria.toString() | uppercase}}</span>
                 </div>
                 <div class="table-panel-column col-md-6">
-                  <img class="icono-bateria" src="../../../../../../assets/images/loading.svg">
+                  <img class="icono-bateria" src="../../../../../../assets/images/loading.svg" alt="nivel-bateria">
                 </div>
               </div>
               <div class="col-md-4">
