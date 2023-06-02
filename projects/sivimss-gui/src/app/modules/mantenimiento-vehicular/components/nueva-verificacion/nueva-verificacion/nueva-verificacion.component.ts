@@ -198,7 +198,7 @@ export class NuevaVerificacionComponent implements OnInit {
   abrirRegistroMantenimiento(): void {
     this.ref.close();
     void this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      {relativeTo: this.route});
+      {relativeTo: this.route, queryParams: {tabview: 0}});
   }
 
   realizarVerificacion(id: number): void {

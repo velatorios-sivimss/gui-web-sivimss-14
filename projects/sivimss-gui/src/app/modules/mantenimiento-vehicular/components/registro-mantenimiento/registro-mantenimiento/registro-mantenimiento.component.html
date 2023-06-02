@@ -23,7 +23,8 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
-        <input id="kilometraje" class="form-control" formControlName="kilometraje" placeholder="Ingresa el kilometraje">
+        <input id="kilometraje" class="form-control" formControlName="kilometraje" placeholder="Ingresa el kilometraje"
+               maxlength="6" numbersOnly>
         <span class="campo-obligatorio"
               *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Campo obligatorio</span>
       </div>
@@ -90,7 +91,7 @@
         <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="nombreProveedor" class="form-control" formControlName="nombreProveedor"
                     [options]="catalogoProveedores"
-                    placeholder="Ingresa el nombre del proveedor" (onChange)="asignarContrato()" >
+                    placeholder="Ingresa el nombre del proveedor" (onChange)="asignarContrato()">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Campo obligatorio</span>
@@ -119,7 +120,7 @@
     </div>
     <div class="row mb-4">
       <div class="col-md-12">
-        <span>*Campos obligatorios</span>
+        <span class="control-label">*Campos obligatorios</span>
       </div>
     </div>
   </form>
@@ -229,11 +230,10 @@
   </app-table-panel>
   <ng-container>
     <div class="mt-4 mb-4 col-12 text-center">
-      ¿Estás seguro que deseas registrar este mantenimiento vehícular?
+      ¿Estás seguro de agregar este nuevo registro?
     </div>
   </ng-container>
   <div class="flex justify-content-end">
-    <button class="ml-4 btn btn-default btn-md" (click)="regresar()">Regresar</button>
     <button class="ml-4  btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
     <button class="ml-4 btn btn-primary btn-md" (click)="aceptarSolicitud()">Aceptar
     </button>

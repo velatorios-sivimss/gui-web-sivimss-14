@@ -190,7 +190,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
   abrirRegistroSolicitud(): void {
     this.ref.close();
     void this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      {relativeTo: this.route});
+      {relativeTo: this.route, queryParams: {tabview: 1}});
   }
 
   realizarSolicitud(id: number): void {

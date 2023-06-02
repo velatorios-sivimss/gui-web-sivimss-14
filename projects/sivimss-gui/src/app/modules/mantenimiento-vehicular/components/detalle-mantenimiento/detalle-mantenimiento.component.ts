@@ -36,6 +36,7 @@ export class DetalleMantenimientoComponent implements OnInit {
   registro!: RespuestaRegistroMantenimiento;
   fechaActual: string = obtenerFechaActual();
   modificarModal: boolean = false;
+  indice: number = 2;
 
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
@@ -49,6 +50,11 @@ export class DetalleMantenimientoComponent implements OnInit {
 
   ngOnInit(): void {
     this.vehiculo = this.route.snapshot.data["respuesta"].datos.content[0];
+    this.route.queryParams.subscribe(params => {
+      if (params.tabview) {
+        this.indice = params.tabview;
+      }
+    })
     this.obtenerRegistros();
   }
 

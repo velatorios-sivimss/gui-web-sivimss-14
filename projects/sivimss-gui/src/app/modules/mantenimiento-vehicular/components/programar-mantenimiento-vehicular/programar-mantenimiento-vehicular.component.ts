@@ -187,7 +187,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   abrirModalRegistroMantenimiento(): void {
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
-      header: "Registro de mantenimiento vehicular",
+      header: "Registro de Mantenimiento Vehicular",
       width: "920px",
       data: {vehiculo: this.vehiculoSeleccionado},
     });
@@ -234,7 +234,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Modificar solicitud de mantenimiento",
       width: "920px",
-      data: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD},
+      data: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD, vehiculo: this.vehiculoSeleccionado},
     });
   }
 
@@ -243,7 +243,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Modificar registro de mantenimiento vehicular",
       width: "920px",
-      data: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO},
+      data: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO, vehiculo: this.vehiculoSeleccionado},
     });
   }
 
