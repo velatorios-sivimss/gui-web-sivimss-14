@@ -82,7 +82,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.breadcrumbService.actualizar(MANTENIMIENTO_VEHICULAR_BREADCRUMB);
     this.inicializarFiltroForm()
     this.cargarCatalogos();
-    this.cargarVelatorios();
+    this.cargarVelatorios(true);
   }
 
   cargarCatalogos(): void {
@@ -92,9 +92,11 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.catalogoPlacas = respuesta[this.POSICION_CATALOGOS_PLACAS];
   }
 
-  cargarVelatorios(): void {
-    this.catalogoVelatorios = [];
-    this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue("");
+  cargarVelatorios(cargaInicial: boolean = false): void {
+    if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue("");
+    }
     const idDelegacion = this.filtroFormProgramarMantenimiento.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.mantenimientoVehicularService.obtenerVelatorios(idDelegacion).subscribe({
@@ -105,7 +107,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
         console.log(error);
         this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    })
+    });
   }
 
   inicializarFiltroForm(): void {
@@ -171,7 +173,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idRol);
     this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
     this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
-    this.cargarVelatorios();
+    this.cargarVelatorios(true);
     this.paginar();
   }
 

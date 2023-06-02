@@ -72,7 +72,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
   ngOnInit(): void {
     this.cargarCatalogos();
     this.inicializarFiltroForm();
-    this.cargarVelatorios();
+    this.cargarVelatorios(true);
   }
 
   cargarCatalogos(): void {
@@ -100,9 +100,11 @@ export class MantenimientoPredictivoComponent implements OnInit {
     });
   }
 
-  cargarVelatorios(): void {
-    this.catalogoVelatorios = [];
-    this.filtroForm.get('velatorio')?.patchValue("");
+  cargarVelatorios(cargaInicial: boolean = false): void {
+    if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.filtroForm.get('velatorio')?.patchValue("");
+    }
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.mantenimientoVehicularService.obtenerVelatorios(idDelegacion).subscribe({
@@ -113,7 +115,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
         console.log(error);
         this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    })
+    });
   }
 
   limpiar(): void {
@@ -122,7 +124,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
     this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
     this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
-    this.cargarVelatorios();
+    this.cargarVelatorios(true);
   }
 
   consultaServicioEspecifico(): string {
