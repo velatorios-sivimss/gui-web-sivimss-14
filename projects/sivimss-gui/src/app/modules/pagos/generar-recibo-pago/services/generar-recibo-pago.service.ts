@@ -11,7 +11,7 @@ import {AutenticacionService} from "../../../../services/autenticacion.service";
 @Injectable()
 export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "", "", 23, "consultar-rec-pagos", "", "");
+    super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 23, "consultar-rec-pagos", "", "");
   }
 
   private readonly _folios: string = 'consultar-folios-rec-pagos';

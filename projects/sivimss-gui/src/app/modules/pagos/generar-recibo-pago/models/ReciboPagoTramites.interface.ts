@@ -1,4 +1,8 @@
 export interface ReciboPagoTramites {
+  cantidadLetra: string;
+  idDelegacion: number;
+  idPagoDetalle: number;
+  claveFolio: string;
   folioPF: string;
   idVelatorio: number;
   "descTramites": string,

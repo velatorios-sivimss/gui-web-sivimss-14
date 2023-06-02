@@ -42,7 +42,7 @@
             <span class="etiqueta-formato-val">{{recibo.recibimos}}</span>
           </span>
           <span class="col-md-12 etiqueta-base mt-3">la cantidad de
-            <span class="etiqueta-formato-val">{{recibo.cantidad}}</span>
+            <span class="etiqueta-formato-val">{{recibo.cantidad | currency}}  ({{recibo.cantidadLetra}})</span>
           </span>
         </div>
         <div>
@@ -79,7 +79,7 @@
               <div class="grid-item"></div>
 
               <div class="grid-item mt-5">
-                <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{totalServicios}}</span></span>
+                <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{totalServicios | currency}}</span></span>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item"></div>
@@ -93,7 +93,7 @@
 
           <div class="grid-container mb-4">
             <div class="grid-item">
-              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{total}}</span></span>
+              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{total | currency}}</span></span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>
@@ -151,7 +151,9 @@
 
 <div class="row flex justify-content-end mb-4">
   <button class="btn btn-default btn-md" [routerLink]="'../../'">Regresar</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato de pago</button>
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarRecibo()" [disabled]="FormReciboPago.invalid">Generar
+    formato de pago
+  </button>
 </div>
 
 <p-overlayPanel #overlayPanel>
