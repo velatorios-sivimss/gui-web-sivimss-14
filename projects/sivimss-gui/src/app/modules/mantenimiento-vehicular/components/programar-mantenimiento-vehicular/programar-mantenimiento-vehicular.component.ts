@@ -58,9 +58,11 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
+  catalogoPlacas: TipoDropdown[] = [];
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGOS_PLACAS: number = 3;
 
   constructor(
     private route: ActivatedRoute,
@@ -87,6 +89,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
+    this.catalogoPlacas = respuesta[this.POSICION_CATALOGOS_PLACAS];
   }
 
   cargarVelatorios(): void {
@@ -157,7 +160,9 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
-    return {}
+    return {
+      placa: this.filtroFormProgramarMantenimiento.get('placa')?.value
+    }
   }
 
   limpiar(): void {
@@ -166,6 +171,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idRol);
     this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
     this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    this.cargarVelatorios();
     this.paginar();
   }
 

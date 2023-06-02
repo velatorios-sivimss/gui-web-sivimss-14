@@ -24,14 +24,15 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="placa">Placa:</label>
-        <input id="placa" class="form-control" formControlName="placa"
-               placeholder="Ingresa el articulo">
+        <p-dropdown id="placa" class="form-control" formControlName="delegacion" [options]="catalogoPlacas"
+                    placeholder="Seleccionar vehículo" (onChange)="cargarVelatorios()">
+        </p-dropdown>
       </div>
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" >Buscar
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar
         </button>
       </div>
     </div>

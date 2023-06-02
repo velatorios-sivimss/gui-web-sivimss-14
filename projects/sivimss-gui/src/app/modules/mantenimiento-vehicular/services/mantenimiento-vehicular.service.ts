@@ -45,16 +45,16 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
   }
 
+  obtenerCatalogoPlacas(): Observable<HttpRespuesta<any>> {
+    return of({datos: [], error: false, codigo: 0, mensaje: '0'})
+  }
+
   buscarPorFiltros(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, {},
       {params});
-  }
-
-  override guardar(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._agregar}`, t);
   }
 
   override buscarPorPagina(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {

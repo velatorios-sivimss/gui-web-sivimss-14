@@ -16,7 +16,8 @@ export class MantenimientoVehicularResolver implements Resolve<any> {
     const niveles$ = this.mantenimientoVehicularService.obtenerCatalogoNiveles();
     const delegaciones$ = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
     const proveedores$ = this.mantenimientoVehicularService.obtenerCatalogoProvedores();
+    const placas$ = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
 
-    return forkJoin([niveles$, delegaciones$, proveedores$])
+    return forkJoin([niveles$, delegaciones$, proveedores$, placas$])
   }
 }
