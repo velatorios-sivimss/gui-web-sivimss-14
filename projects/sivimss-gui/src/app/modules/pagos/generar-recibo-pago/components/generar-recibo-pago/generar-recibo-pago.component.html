@@ -83,7 +83,7 @@
         <td> {{reciboPago.fOds | date:'dd/MM/YYYY'}} </td>
         <td> {{reciboPago.claveFolio}} </td>
         <td>Generada</td>
-        <td>Generado</td>
+        <td>{{reciboPago.claveEstatusPago}}</td>
         <td>
           <div class="contenedor-celda-iconos">
             <a (click)="abrirPanel($event,reciboPago)">
@@ -113,10 +113,11 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar recibo de pago"
+      <app-overlay-panel-opcion titulo="Generar recibo de pago" *ngIf="!reciboPagoSeleccionado.idReciboPago"
                                 [routerLink]="['./generar-recibo-pago-tramites', reciboPagoSeleccionado.idPagoBitacora]"
                                 routerLinkActive>
-
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver" *ngIf="reciboPagoSeleccionado.idReciboPago">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

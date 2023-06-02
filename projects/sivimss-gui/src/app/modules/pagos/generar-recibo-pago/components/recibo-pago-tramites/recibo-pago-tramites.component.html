@@ -53,11 +53,13 @@
           <form [formGroup]="FormReciboPago">
             <div class="grid-container">
               <div class="grid-item">
-                <label class="control-label" for="tramite">Tramites:</label>
+                <label class="control-label" for="tramite">Tramites<span class="req">*</span>:</label>
                 <p-dropdown id="tramite" class="form-control" [options]="catalogoTramites"
                             placeholder="Selecciona el tramite" [filter]="true" formControlName="tramite"
                             (onChange)="cambiarTramite()">
                 </p-dropdown>
+                <span class="campo-obligatorio"
+                      *ngIf="f?.tramite?.errors?.required && (f?.tramite?.dirty || f?.tramite?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item">
                 <label class="control-label" for="descripcionTramite">Descripción:</label>
@@ -66,11 +68,13 @@
               <div class="grid-item"></div>
 
               <div class="grid-item">
-                <label class="control-label" for="derecho">Derechos:</label>
+                <label class="control-label" for="derecho">Derechos<span class="req">*</span>:</label>
                 <p-dropdown id="derecho" class="form-control" [options]="catalogoDerechos"
                             placeholder="Selecciona el derecho" [filter]="true" formControlName="derecho"
                             (onChange)="cambiarDerechos()">
                 </p-dropdown>
+                <span class="campo-obligatorio"
+                      *ngIf="f?.derecho?.errors?.required && (f?.derecho?.dirty || f?.derecho?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item">
                 <label class="control-label" for="descripcionDerecho">Descripción:</label>

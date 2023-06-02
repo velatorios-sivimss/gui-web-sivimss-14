@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {GenerarReciboService} from "../../services/generar-recibo-pago.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -8,8 +8,11 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {forkJoin} from "rxjs";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
+import * as moment from "moment/moment";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-recibo-pago-tramites',
@@ -33,8 +36,11 @@ export class ReciboPagoTramitesComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private generarReciboService: GenerarReciboService,
+    private mensajesSistemaService: MensajesSistemaService,
     private cargadorService: LoaderService,
     private formBuilder: FormBuilder,
+    private router: Router,
+    private alertaService: AlertaService
   ) {
     this.recibo = this.route.snapshot.data["respuesta"].datos[0];
     this.obtenerCatalogosPorVelatorio();
@@ -52,24 +58,45 @@ export class ReciboPagoTramitesComponent implements OnInit {
     this.anio = fecha.getFullYear().toString();
   }
 
-  generarPdf(): void {
+  generarRecibo(): void {
     this.cargadorService.activar();
-    this.generarReciboService.descargarReporte(this.recibo).pipe(
+    const solicitudGuardar = this.generarSolicitudGuardarReporte();
+    this.generarReciboService.guardar(solicitudGuardar).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: Blob): void => {
-        const downloadURL: string = window.URL.createObjectURL(respuesta);
-        const link: HTMLAnchorElement = document.createElement('a');
-        link.href = downloadURL;
-        link.download = `reporte.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Recibo generado exitosamente.')
+        void this.router.navigate(['../../'], {relativeTo: this.route});
       },
       error: (error: HttpErrorResponse): void => {
-        console.error(error)
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
     });
+  }
+
+  generarSolicitudGuardarReporte() {
+    const tramite = this.FormReciboPago.get('tramite')?.value;
+    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
+    const derecho = this.FormReciboPago.get('derecho')?.value;
+    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    return {
+      numFolio: this.recibo.claveFolio,
+      idDelegacion: this.recibo.idDelegacion,
+      idVelatorio: this.recibo.idVelatorio,
+      idPagoDetalle: this.recibo.idPagoDetalle,
+      fecReciboPago: moment(new Date()).format('YYYY-MM-DD HH:mm'),
+      nomContratante: this.recibo.recibimos,
+      canReciboPago: `${this.convertirMoneda(+this.recibo.cantidad)} (${this.recibo.cantidadLetra})`,
+      canTramites: this.convertirMoneda(this.totalTramite),
+      descTramites: descripcionTramite ?? '',
+      canDerechos: this.convertirMoneda(this.totalDerecho),
+      descDerechos: descripcionDerecho ?? '',
+      canSuma: this.convertirMoneda(this.totalServicios),
+      canTotal: this.convertirMoneda(this.total),
+      agenteFuneMat: "",
+      recibeMat: ""
+    }
   }
 
   obtenerCatalogosPorVelatorio(): void {
@@ -89,12 +116,11 @@ export class ReciboPagoTramitesComponent implements OnInit {
     });
   }
 
-
   private inicializarForm(): void {
     this.FormReciboPago = this.formBuilder.group({
-      tramite: [{value: null, disable: false}],
+      tramite: [{value: null, disable: false}, [Validators.required]],
       descripcionTramite: [{value: null, disabled: true}],
-      derecho: [{value: null, disable: false}],
+      derecho: [{value: null, disable: false}, [Validators.required]],
       descripcionDerecho: [{value: null, disabled: true}]
     })
   }
@@ -133,22 +159,31 @@ export class ReciboPagoTramitesComponent implements OnInit {
     const derecho = this.FormReciboPago.get('derecho')?.value;
     const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
     return {
-      "folio": "XXXXXX",
-      "delegacion": this.recibo.delegacion,
-      "velatorio": this.recibo.velatorio,
-      "lugar": "Mexico CDMX",
-      "fecha": `${this.dia} de ${this.mes} del ${this.anio}`,
-      "recibimos": this.recibo.recibimos,
-      "cantidad": "$50,000.00 (Cincuenta mil pesos)",
-      "tramites": `$${this.totalTramite}`,
-      "descTramites": descripcionTramite ?? '',
-      "derechos": `$${this.totalDerecho}`,
-      "descDerechos": descripcionDerecho ?? '',
-      "total": `$${this.totalServicios}`,
-      "totalFinal": `$${this.total}`,
-      "rutaNombreReporte": "reportes/plantilla/DetalleRecPagos.jrxml",
-      "tipoReporte": "pdf"
+      folio: "XXXXXX",
+      delegacion: this.recibo.delegacion,
+      velatorio: this.recibo.velatorio,
+      lugar: "Mexico CDMX",
+      fecha: `${this.dia} de ${this.colocarTitleCase(this.mes)} del ${this.anio}`,
+      recibimos: this.recibo.recibimos,
+      cantidad: `${this.convertirMoneda(+this.recibo.cantidad)} (${this.recibo.cantidadLetra})`,
+      tramites: this.convertirMoneda(this.totalTramite),
+      descTramites: descripcionTramite ?? '',
+      derechos: this.convertirMoneda(this.totalDerecho),
+      descDerechos: descripcionDerecho ?? '',
+      total: this.convertirMoneda(this.totalServicios),
+      totalFinal: this.convertirMoneda(this.total),
+      rutaNombreReporte: "reportes/plantilla/DetalleRecPagos.jrxml",
+      tipoReporte: "pdf"
     }
+  }
+
+  colocarTitleCase(cadena: string): string {
+    return cadena.split(" ").map((l: string) => l[0].toUpperCase() + l.substr(1)).join(" ");
+  }
+
+  convertirMoneda(valor: number): string {
+    const formatter = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
+    return formatter.format(valor);
   }
 
   get totalServicios() {
@@ -159,4 +194,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
     return this.totalTramite + this.totalDerecho - +this.recibo.cantidad;
   }
 
+  get f() {
+    return this.FormReciboPago?.controls;
+  }
 }
