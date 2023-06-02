@@ -1,5 +1,6 @@
- export interface ReciboPagoTramites {
-   idVelatorio: number;
+export interface ReciboPagoTramites {
+  folioPF: string;
+  idVelatorio: number;
   "descTramites": string,
   "rutaNombreReporte": string,
   "tramites": string,

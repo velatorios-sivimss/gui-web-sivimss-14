@@ -83,8 +83,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
         const POSICION_DERECHOS: number = 1;
         const tramites = respuesta[POSICION_TRAMITES].datos;
         const derechos = respuesta[POSICION_DERECHOS].datos;
-        this.catalogoTramites = mapearArregloTipoDropdown(tramites, "desTramite", "importe");
-        this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "desDerecho", "importe");
+        this.catalogoTramites = mapearArregloTipoDropdown(tramites, "importe", "desTramite");
+        this.catalogoDerechos = mapearArregloTipoDropdown(derechos, "importe", "desDerecho");
       }
     });
   }
@@ -101,15 +101,15 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   cambiarTramite(): void {
     const tramite = this.FormReciboPago.get('tramite')?.value;
-    const descripcion = this.catalogoTramites.find(t => (t.value === tramite))?.label;
-    this.totalTramite = tramite ?? 0;
+    const descripcion = this.catalogoTramites.find(t => (t.value === tramite))?.value;
+    this.totalTramite = +this.catalogoTramites.find(t => (t.value === tramite))!.label;
     this.FormReciboPago.get('descripcionTramite')?.patchValue(descripcion);
   }
 
   cambiarDerechos(): void {
     const derecho = this.FormReciboPago.get('derecho')?.value;
-    const descripcion = this.catalogoDerechos.find(t => (t.value === derecho))?.label;
-    this.totalDerecho = derecho ?? 0;
+    const descripcion = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    this.totalDerecho = +this.catalogoDerechos.find(t => (t.value === derecho))!.label;
     this.FormReciboPago.get('descripcionDerecho')?.patchValue(descripcion);
   }
 
