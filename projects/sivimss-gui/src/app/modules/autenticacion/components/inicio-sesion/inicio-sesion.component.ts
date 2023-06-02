@@ -74,7 +74,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
       next: (respuesta: string): void => {
         switch (respuesta) {
           case MensajesRespuestaAutenticacion.InicioSesionCorrecto:
-            this.router.navigate(["/inicio"]);
+            void this.router.navigate(["/inicio"]);
             break;
           case MensajesRespuestaAutenticacion.ContraseniaProximaVencer:
             this.mostrarModalContraseniaProxVencer = true;
@@ -118,9 +118,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
 
   actualizarContrasenia(): void {
     this.mostrarModalPreActivo = false;
-    this.router.navigate(["actualizar-contrasenia"], {
-      relativeTo: this.activatedRoute
-    });
+    void this.router.navigate(["actualizar-contrasenia"], {relativeTo: this.activatedRoute});
   }
 
   empezarTemporizadorPorExcederIntentos(): void {

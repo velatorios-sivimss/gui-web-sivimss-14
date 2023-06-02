@@ -1,0 +1,21 @@
+export interface DetalleReciboPago {
+  descTramites: string,
+  canSuma: string,
+  rutaNombreReporte: string,
+  agenteFuneMat: string,
+  velatorio: string,
+  recibimos: string,
+  canTotal: string,
+  fecha: string,
+  idVelatorio: number,
+  descDerechos: string,
+  delegacion: string,
+  canDerechos: string,
+  tipoReporte: string,
+  folioPF: string,
+  folio: string,
+  cantidad: string,
+  claveFolio: string,
+  recibeMat: string,
+  canTramites: string
+}

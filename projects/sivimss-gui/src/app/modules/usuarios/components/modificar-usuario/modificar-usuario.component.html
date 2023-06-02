@@ -9,13 +9,13 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="curpModificar">CURP<span class="req">*</span>:</label>
+          <label class="control-label" for="curpModificar">CURP:</label>
           <input id="curpModificar" class="form-control" formControlName="curp" placeholder="Inserta el CURP">
           <span class="campo-obligatorio"
                 *ngIf="fmu?.curp?.errors?.required && (fmu?.curp?.dirty || fmu?.curp?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="matriculaModificar">Matrícula<span class="req">*</span>:</label>
+          <label class="control-label" for="matriculaModificar">Matrícula:</label>
           <input id="matriculaModificar" class="form-control" formControlName="matricula"
                  placeholder="Inserta la matrícula">
           <span class="campo-obligatorio"
@@ -24,7 +24,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="nombreModificar">Nombre(s)<span class="req">*</span>:</label>
+          <label class="control-label" for="nombreModificar">Nombre(s):</label>
           <input id="nombreModificar" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
           <span class="campo-obligatorio"
                 *ngIf="fmu?.nombre?.errors?.required && (fmu?.nombre?.dirty || fmu?.nombre?.touched)">Este campo es obligatorio *.</span>
@@ -32,7 +32,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="primerApellidoModificar">Primer apellido<span class="req">*</span>:</label>
+          <label class="control-label" for="primerApellidoModificar">Primer apellido:</label>
           <input id="primerApellidoModificar" class="form-control" formControlName="primerApellido"
                  placeholder="Inserta el primer apellido">
           <span class="campo-obligatorio"
@@ -59,8 +59,7 @@
                 *ngIf="fmu?.correoElectronico?.errors?.pattern && (fmu?.correoElectronico?.dirty || fmu?.correoElectronico?.touched)">Tu correo electrónico no es válido.</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="fechaNacimientoModificar">Fecha nacimiento<span
-            class="req">*</span>:</label>
+          <label class="control-label" for="fechaNacimientoModificar">Fecha nacimiento:</label>
           <p-calendar id="fechaNacimientoModificar" formControlName="fechaNacimiento" styleClass="form-control"
                       [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
                       [maxDate]="fechaActual">
@@ -103,7 +102,7 @@
       </div>
       <div class="row mb-4">
         <div class="col-md-12">
-          <label class="control-label">Estatus<span class="req">*</span>:</label>
+          <label class="control-label">Estatus:</label>
           <div class="contenedor-inputswitch">
             <p-inputSwitch formControlName="estatus"></p-inputSwitch>
             <span class="activo" *ngIf="fmu.estatus?.value">Activo</span>
