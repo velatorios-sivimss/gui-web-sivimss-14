@@ -1,10 +1,16 @@
 <div class="row">
   <h3>Generar recibo de pago</h3>
 </div>
+
 <div class="row mb-4">
   <div class="col-md-12 border seccion-folio flex justify-content-between">
     <div>
       <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo">XXXXXX</span></span>
+    </div>
+    <div class="flex flex-column ml-5 mt-2">
+      <a (click)="overlayPanel.toggle($event)">
+        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+      </a>
     </div>
   </div>
   <div class="col-md-12 border">
@@ -147,3 +153,12 @@
   <button class="btn btn-default btn-md" [routerLink]="'../../'">Regresar</button>
   <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato de pago</button>
 </div>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Vista previa" (click)="generarVistaPrevia()">
+      </app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

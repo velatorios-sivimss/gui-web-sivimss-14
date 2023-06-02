@@ -4,12 +4,12 @@ import {GenerarReciboService} from "../../services/generar-recibo-pago.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
-import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {forkJoin} from "rxjs";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
 
 @Component({
   selector: 'app-recibo-pago-tramites',
@@ -111,6 +111,44 @@ export class ReciboPagoTramitesComponent implements OnInit {
     const descripcion = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
     this.totalDerecho = +this.catalogoDerechos.find(t => (t.value === derecho))!.label;
     this.FormReciboPago.get('descripcionDerecho')?.patchValue(descripcion);
+  }
+
+  generarVistaPrevia(): void {
+    const solicitud = this.generarSolicitudVistaPrevia();
+    this.generarReciboService.descargarReporte(solicitud).subscribe(
+      (response: any): void => {
+        const file = new Blob([response], {type: 'application/pdf'});
+        const url = window.URL.createObjectURL(file);
+        window.open(url);
+      },
+      (error: HttpErrorResponse): void => {
+        console.error('Error al descargar reporte: ', error.message);
+      }
+    );
+  }
+
+  generarSolicitudVistaPrevia() {
+    const tramite = this.FormReciboPago.get('tramite')?.value;
+    const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
+    const derecho = this.FormReciboPago.get('derecho')?.value;
+    const descripcionDerecho = this.catalogoDerechos.find(t => (t.value === derecho))?.value;
+    return {
+      "folio": "XXXXXX",
+      "delegacion": this.recibo.delegacion,
+      "velatorio": this.recibo.velatorio,
+      "lugar": "Mexico CDMX",
+      "fecha": `${this.dia} de ${this.mes} del ${this.anio}`,
+      "recibimos": this.recibo.recibimos,
+      "cantidad": "$50,000.00 (Cincuenta mil pesos)",
+      "tramites": `$${this.totalTramite}`,
+      "descTramites": descripcionTramite ?? '',
+      "derechos": `$${this.totalDerecho}`,
+      "descDerechos": descripcionDerecho ?? '',
+      "total": `$${this.totalServicios}`,
+      "totalFinal": `$${this.total}`,
+      "rutaNombreReporte": "reportes/plantilla/DetalleRecPagos.jrxml",
+      "tipoReporte": "pdf"
+    }
   }
 
   get totalServicios() {
