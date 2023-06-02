@@ -10,11 +10,9 @@ export class ReporteEncargadoResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const niveles$ = this.mantenimientoVehicularService.obtenerCatalogoNiveles();
-    const delegaciones$ = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
     const placas$ = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
     const catalogoBase$ = this.mantenimientoVehicularService.obtenerCatalogoReporteEncargado();
 
-    return forkJoin([niveles$, delegaciones$, placas$, catalogoBase$]);
+    return forkJoin([placas$, catalogoBase$]);
   }
 }

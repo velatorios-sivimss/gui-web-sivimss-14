@@ -8,17 +8,12 @@
           <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
                       placeholder="Selecciona el tipo">
           </p-dropdown>
-          <span class="campo-obligatorio"
-          >
-            Campo obligatorio</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="placa">Placa*:</label>
-          <input id="placa" class="form-control" formControlName="placa" placeholder="Ingresa placa"
-                 (keyup)="consultaServicioEspecifico()">
-          <span class="campo-obligatorio"
-          >
-            Campo obligatorio</span>
+          <p-dropdown id="placa" class="form-control" formControlName="delegacion" [options]="catalogoPlacas"
+                      placeholder="Seleccionar vehículo">
+          </p-dropdown>
         </div>
       </div>
       <div class="row mb-3">
@@ -33,15 +28,11 @@
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
                           [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy">
               </p-calendar>
-              <span class="campo-obligatorio">
-                Campo obligatorio</span>
             </div>
             <div class="col-md-6">
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
                           [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body">
               </p-calendar>
-              <span class="campo-obligatorio">
-                Campo obligatorio</span>
             </div>
           </div>
         </div>
@@ -246,7 +237,8 @@
                     <span> Bajo </span>
                   </div>
                   <div class="table-panel-column col-md-6">
-                    <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg" Alt="Calibracion neumaticos traseros">
+                    <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg"
+                         Alt="Calibracion neumaticos traseros">
                   </div>
                 </div>
                 <div class="col-md-12">
@@ -255,7 +247,8 @@
                     <span> Correcto</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-                    <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg" alt="Calibración neumaticos delanteros">
+                    <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg"
+                         alt="Calibración neumaticos delanteros">
                   </div>
                 </div>
               </div>

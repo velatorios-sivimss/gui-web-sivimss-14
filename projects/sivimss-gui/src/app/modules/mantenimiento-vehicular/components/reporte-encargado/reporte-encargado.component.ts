@@ -37,11 +37,14 @@ export class ReporteEncargadoComponent implements OnInit {
   detalleRef!: DynamicDialogRef
   modificacionRef!: DynamicDialogRef
 
-  tipoReportes: TipoDropdown[] = CATALOGOS_DUMMIES
+  tipoReportes: TipoDropdown[] = [];
+  catalogoPlacas: TipoDropdown[] = [];
 
   mostrarDetalle: boolean = false;
   mostrarTabla: boolean = false;
 
+  readonly POSICION_CATALOGOS_PLACAS: number = 0;
+  readonly POSICION_CATALOGOS_TIPO_MTTO: number = 1;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -49,13 +52,21 @@ export class ReporteEncargadoComponent implements OnInit {
     private alertaService: AlertaService,
     public dialogService: DialogService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
+    private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
-    this.inicializarFiltroForm()
+    this.cargarCatalogos();
+    this.inicializarFiltroForm();
   }
+
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoPlacas = respuesta[this.POSICION_CATALOGOS_PLACAS].datos;
+    this.tipoReportes = respuesta[this.POSICION_CATALOGOS_TIPO_MTTO];
+  }
+
 
   limpiar(): void {
     this.filtroForm.reset();
