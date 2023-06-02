@@ -4,6 +4,8 @@ import {GenerarReciboPagoComponent} from './components/generar-recibo-pago/gener
 import {ReciboPagoTramitesComponent} from './components/recibo-pago-tramites/recibo-pago-tramites.component';
 import {GenerarReciboResolver} from './services/generar-recibo-pago.resolver';
 import {ReciboPagoTramitesResolver} from "./services/recibo-pago-tramites.resolver";
+import {DetallePagoTramitesComponent} from "./components/detalle-pago-tramites/detalle-pago-tramites.component";
+import {DetalleReciboTramitesResolver} from "./services/detalle-recibo-pago.resolver";
 
 const routes: Route[] = [
   {
@@ -20,12 +22,20 @@ const routes: Route[] = [
       respuesta: ReciboPagoTramitesResolver
     }
   },
+  {
+    path: 'detalle-recibo-pago-tramites/:idRecibo',
+    component: DetallePagoTramitesComponent,
+    resolve: {
+      respuesta: DetalleReciboTramitesResolver
+    }
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [GenerarReciboResolver, ReciboPagoTramitesResolver]
+  providers: [GenerarReciboResolver, ReciboPagoTramitesResolver,
+    DetalleReciboTramitesResolver]
 })
 export class GenerarReciboRoutingModule {
 }

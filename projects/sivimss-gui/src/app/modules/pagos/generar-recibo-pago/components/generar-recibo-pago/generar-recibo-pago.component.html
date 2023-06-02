@@ -117,7 +117,9 @@
                                 [routerLink]="['./generar-recibo-pago-tramites', reciboPagoSeleccionado.idPagoBitacora]"
                                 routerLinkActive>
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Ver" *ngIf="reciboPagoSeleccionado.idReciboPago">
+      <app-overlay-panel-opcion titulo="Ver" *ngIf="reciboPagoSeleccionado.idReciboPago"
+                                [routerLink]="['./detalle-recibo-pago-tramites', reciboPagoSeleccionado.idReciboPago]"
+                                routerLinkActive>
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

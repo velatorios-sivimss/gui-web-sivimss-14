@@ -17,6 +17,7 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _folios: string = 'consultar-folios-rec-pagos';
   private readonly _derechos: string = 'consultar-derechos-rec-pagos';
   private readonly _tramites: string = 'consultar-tramites-rec-pagos';
+  private readonly _recibo_detalle: string = 'consultar-porId-rec-pagos';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -66,6 +67,10 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
 
   obtenerCatalogoDerechos(idVelatorio: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._derechos}`, {idVelatorio});
+  }
+
+  obtenerDetalleReciboPago(idReciboPago: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._recibo_detalle}`, {idReciboPago});
   }
 
 }
