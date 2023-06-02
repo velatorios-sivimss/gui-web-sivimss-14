@@ -39,7 +39,7 @@
         <label class="control-label" for="fechaInicial">Fecha inicial:</label>
         <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true"
                     placeholder="Fecha inicial" dateFormat="dd/mm/yy"
-                    [maxDate]="filtroFormReciboPago.get('fechaFinal')?.value">
+                    [maxDate]="filtroFormReciboPago.get('fechaFinal')?.value || fechaActual">
         </p-calendar>
       </div>
       <div class="col-md-3">

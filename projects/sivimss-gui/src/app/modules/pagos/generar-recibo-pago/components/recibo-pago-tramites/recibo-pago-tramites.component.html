@@ -1,14 +1,12 @@
 <div class="row">
   <h3>Generar recibo de pago</h3>
 </div>
-
 <div class="row mb-4">
   <div class="col-md-12 border seccion-folio flex justify-content-between">
     <div>
-      <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo">{{recibo.folio}}</span></span>
+      <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo">XXXXXX</span></span>
     </div>
   </div>
-
   <div class="col-md-12 border">
     <div class="body">
       <section class="titulo-body">
@@ -17,19 +15,16 @@
           CONGRESO Y TIENDAS RECIBO DE PAGO DE TRÁMITES POR CUENTA DEL CONTRATANTE
         </p>
       </section>
-
       <hr class="solid">
-
       <section class="flex justify-content-between info-gral-body mt-7">
                 <span class="etiqueta-formato">Delegación <span
                   class="etiqueta-formato-val">{{recibo.delegacion}}</span> </span>
-        <span class="etiqueta-formato">Velatorio <span class="etiqueta-formato-val">{{recibo.velatorio}}</span>
+        <span class="etiqueta-formato">Velatorio <span class="etiqueta-formato-val"># {{recibo.idVelatorio}}</span>
                 </span>
       </section>
-
       <section class="border contenido-body">
         <div class="mt-5">
-          <span class="col-md-12 etiqueta-formato-val">{{recibo.lugar}}
+          <span class="col-md-12 etiqueta-formato-val">Mexico CDMX
             <span class="etiqueta-base"> a </span>
             <span class="etiqueta-formato-val"> {{dia}} </span>
             <span class="etiqueta-base"> de </span>
@@ -44,43 +39,46 @@
             <span class="etiqueta-formato-val">{{recibo.cantidad}}</span>
           </span>
         </div>
-
         <div>
                     <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
             otorgar el contrato
             de prestación de servicios <span class="etiqueta-formato-val"> No. 312 </span> en dependencias de acuerdo al siguiente desgloce
                     </span>
+          <form [formGroup]="FormReciboPago">
+            <div class="grid-container">
+              <div class="grid-item">
+                <label class="control-label" for="tramite">Tramites:</label>
+                <p-dropdown id="tramite" class="form-control" [options]="catalogoTramites"
+                            placeholder="Selecciona el tramite" [filter]="true" formControlName="tramite"
+                            (onChange)="cambiarTramite()">
+                </p-dropdown>
+              </div>
+              <div class="grid-item">
+                <label class="control-label" for="descripcionTramite">Descripción:</label>
+                <input id="descripcionTramite" class="form-control" formControlName="descripcionTramite">
+              </div>
+              <div class="grid-item"></div>
 
-          <div class="grid-container">
-            <div class="grid-item">
-                            <span class="etiqueta-formato">Trámites <span
-                              class="etiqueta-formato-val">{{recibo.tramites}}</span></span>
-            </div>
-            <div class="grid-item">
-                            <span class="etiqueta-formato">Descripción <span
-                              class="etiqueta-formato-val">{{recibo.descTramites}}</span>
-                            </span>
-            </div>
-            <div class="grid-item"></div>
+              <div class="grid-item">
+                <label class="control-label" for="derecho">Derechos:</label>
+                <p-dropdown id="derecho" class="form-control" [options]="catalogoDerechos"
+                            placeholder="Selecciona el derecho" [filter]="true" formControlName="derecho"
+                            (onChange)="cambiarDerechos()">
+                </p-dropdown>
+              </div>
+              <div class="grid-item">
+                <label class="control-label" for="descripcionDerecho">Descripción:</label>
+                <input id="descripcionDerecho" class="form-control" formControlName="descripcionDerecho">
+              </div>
+              <div class="grid-item"></div>
 
-            <div class="grid-item">
-                            <span class="etiqueta-formato">Derechos <span
-                              class="etiqueta-formato-val">{{recibo.derechos}}</span></span>
+              <div class="grid-item mt-5">
+                <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{totalServicios}}</span></span>
+              </div>
+              <div class="grid-item"></div>
+              <div class="grid-item"></div>
             </div>
-            <div class="grid-item">
-                            <span class="etiqueta-formato">Descripción <span
-                              class="etiqueta-formato-val">{{recibo.descDerechos}}</span>
-                            </span>
-            </div>
-            <div class="grid-item"></div>
-
-            <div class="grid-item mt-5">
-              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{recibo.total}}</span></span>
-            </div>
-            <div class="grid-item"></div>
-            <div class="grid-item"></div>
-          </div>
-
+          </form>
           <span class="col-md-12 etiqueta-base mt-7 mb-2">LAS PARTES ACUERDAN QUE SI EXISTIERA UNA DIFERENCIA EN DINERO
             A FAVOR DEL CONTRATANTE ESTA SERÁ
             DEVUELTA, JUNTO CON LOS COMPROBANTES ORIGINALES DE LOS TRÁMITES O DERECHOS PAGADOS A SU ENTERA
@@ -89,7 +87,7 @@
 
           <div class="grid-container mb-4">
             <div class="grid-item">
-              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{recibo.totalFinal}}</span></span>
+              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{total}}</span></span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>

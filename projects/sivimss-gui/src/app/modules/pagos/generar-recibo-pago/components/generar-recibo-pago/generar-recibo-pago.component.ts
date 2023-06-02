@@ -5,7 +5,6 @@ import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import {CATALOGOS_DUMMIES} from '../../constants/dummies';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {LazyLoadEvent} from 'primeng/api';
@@ -21,6 +20,7 @@ import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivims
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import * as moment from "moment/moment";
 
 type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
 
@@ -158,8 +158,8 @@ export class GenerarReciboPagoComponent implements OnInit {
       idVelatorio: this.filtroFormReciboPago.get("velatorio")?.value,
       claveFolio: this.filtroFormReciboPago.get("folio")?.value,
       nomContratante: this.filtroFormReciboPago.get("nombreContratante")?.value,
-      fecIniODS: this.filtroFormReciboPago.get("fechaInicial")?.value,
-      fecFinODS: this.filtroFormReciboPago.get("fechaFinal")?.value,
+      fecIniODS: moment(this.filtroFormReciboPago.get("fechaInicial")?.value).format('YYYY-MM-DD'),
+      fecFinODS: moment(this.filtroFormReciboPago.get("fechaFinal")?.value).format('YYYY-MM-DD'),
       rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
       tipoReporte: "pdf"
     }

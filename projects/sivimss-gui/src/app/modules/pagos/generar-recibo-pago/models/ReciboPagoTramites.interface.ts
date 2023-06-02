@@ -1,4 +1,5 @@
  export interface ReciboPagoTramites {
+   idVelatorio: number;
   "descTramites": string,
   "rutaNombreReporte": string,
   "tramites": string,
