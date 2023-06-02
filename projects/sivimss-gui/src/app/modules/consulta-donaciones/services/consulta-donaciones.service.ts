@@ -22,16 +22,19 @@ export class ConsultaDonacionesService extends BaseService<HttpRespuesta<any>, a
   }
 
   buscarAtaudesPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
     const params = new HttpParams().append("pagina", pagina).append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consu-filtrodonados`, filtros, {  params });
-    // return this._http.post<HttpRespuesta<any>>(this._base + `1/buscar/buscar-usuarios`, filtros, {headers, params});
   }
 
   exportarArchivo(tipoArchivo: any,):  Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
     const params = new HttpParams().append("servicio", "generarDocumento")
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/generarDocumento`, tipoArchivo, {  params });
+  }
+
+  generarReporte(filtro:any) : Observable<HttpRespuesta<any>> {
+    const tipo = filtro.tipoReporte;
+    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/generarDocumento`, filtro)
   }
 
   obtenerCatalogoataudes(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -55,10 +58,9 @@ export class ConsultaDonacionesService extends BaseService<HttpRespuesta<any>, a
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, {  params });
   }
 
-  obtenerCatalogoNiveles():  Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json' });
-    const params = new HttpParams().append("servicio", "consultar-nivel")
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, {  params });
+  obtenerCatalogoNiveles():  Observable<TipoDropdown[]> {
+    const catalogo_nivelOficina = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+    return of(mapearArregloTipoDropdown(catalogo_nivelOficina, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {

@@ -71,7 +71,7 @@
           <ng-container *ngIf="otroTipoSexo">
             <div class="col-md-6">
               <label class="control-label" for="otro">Otro <span class="req">*</span></label>
-              <input id="otro" class="form-control" formControlName="otro" placeholder="Ingresa sexo">
+              <input id="otro" class="form-control" formControlName="otro" placeholder="Ingresa sexo" maxlength="45">
               <span class="campo-obligatorio"
                     *ngIf="fds.otro?.errors?.required && (fds.otro?.dirty || fds.otro?.touched)">Este campo es obligatorio *.</span>
             </div>
@@ -269,9 +269,9 @@
                  [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
           <ng-template pTemplate="header">
             <tr>
-              <th scope="col">Material</th>
-              <th scope="col">Modelo</th>
-              <th scope="col">Número de inventario</th>
+              <th scope="col">Material (Tipo de ataúd)</th>
+              <th scope="col">Modelo (Modelo del ataúd)</th>
+              <th scope="col">Número de inventario (el número de inventario del ataúd según etiqueta)</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-ataudes>
@@ -451,9 +451,9 @@
                    [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
             <ng-template pTemplate="header">
               <tr>
-                <th scope="col">Material</th>
-                <th scope="col">Modelo</th>
-                <th scope="col">Número de inventario</th>
+                <th scope="col">Material (Tipo de ataúd)</th>
+                <th scope="col">Modelo (Modelo del ataúd)</th>
+                <th scope="col">Número de inventario (el número de inventario del ataúd según etiqueta)</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-ataudes>
@@ -535,3 +535,5 @@
     <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
   </div>
 </div>
+
+
