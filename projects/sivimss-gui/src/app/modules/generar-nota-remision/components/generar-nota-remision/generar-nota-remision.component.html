@@ -9,12 +9,12 @@
             </div>
             <div class="col-md-4">
                 <label class="control-label" for="delegacion">Delegación:</label>
-                <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones" placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)='obtenerVelatorios();' [showClear]="+rolLocalStorage.idOficina < 2">
+                <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones" placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)='obtenerVelatorios();'>
                 </p-dropdown>
             </div>
             <div class="col-md-4">
                 <label class="control-label" for="velatorio">Velatorio:</label>
-                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label" [showClear]="+rolLocalStorage.idOficina < 3">
+                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
                 </p-dropdown>
             </div>
         </div>
@@ -97,17 +97,6 @@
             </div>
         </ng-template>
 
-        <ng-template pTemplate="paginatorright">
-            <div class="paginator-template">
-                <div class="export-table">
-                    <span class="export-table-text">Exportar tabla</span>
-                    <div class="export-table-icons">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf" (click)="generarReporteTabla('pdf')">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel" (click)="generarReporteTabla('xls')">
-                    </div>
-                </div>
-            </div>
-        </ng-template>
     </p-table>
 </section>
 
@@ -118,7 +107,7 @@
             <app-overlay-panel-opcion titulo="Ver" *ngIf="notaRemisionSeleccionada?.estatus !== 1" (click)="verDetalleNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
             <app-overlay-panel-opcion titulo="Descargar PDF" *ngIf="notaRemisionSeleccionada?.estatus === 2" (click)="generarReporteNotaRemision('pdf'); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
             <app-overlay-panel-opcion titulo="Descargar Excel" *ngIf="notaRemisionSeleccionada?.estatus === 2" (click)="generarReporteNotaRemision('xls'); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
-            <app-overlay-panel-opcion titulo="Cancelar" *ngIf="notaRemisionSeleccionada?.estatus === 2" (click)="cancelarNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
+            <app-overlay-panel-opcion titulo="Cancelar" *ngIf="notaRemisionSeleccionada?.estatus === 2 && notaRemisionSeleccionada?.total !== 2" (click)="cancelarNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
         </app-overlay-panel-opciones>
     </ng-template>
 </p-overlayPanel>

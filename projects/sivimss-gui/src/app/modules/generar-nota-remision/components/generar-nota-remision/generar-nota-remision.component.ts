@@ -268,28 +268,6 @@ export class GenerarNotaRemisionComponent implements OnInit {
     )
   }
 
-  generarReporteTabla(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {};
-    if (tipoReporte == "xls") {
-      configuracionArchivo.ext = "xlsx"
-    }
-
-    this.loaderService.activar();
-    let busqueda = this.obtenerObjetoParaFiltrado();
-    busqueda = { ...busqueda, tipoReporte }
-
-    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteTabla(busqueda), configuracionArchivo).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
-        console.log(respuesta);
-      },
-      (error) => {
-        console.log(error);
-      },
-    )
-  }
-
   filtrosArchivos(tipoReporte: string): GenerarReporte {
     return {
       idNota: this.notaRemisionSeleccionada.idNota,

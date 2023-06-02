@@ -5,11 +5,12 @@ export interface NotaRemision {
   nomFinado?: string;
   idContratante?: number;
   idFinado?: number;
-  estatus?: number,
+  estatus?: number;
   conNota?: number;
   folioODS?: string;
   nomContratante?: string;
   motivo?: string;
+  total?: number;
 }
 
 export type ClavesEstatus = {
