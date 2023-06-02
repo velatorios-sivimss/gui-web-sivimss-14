@@ -1,45 +1,40 @@
-import { ConsultaDonacionesService } from '../../services/consulta-donaciones.service'
-import { Component, OnInit, ViewChild } from '@angular/core'
-import { BreadcrumbService } from '../../../../shared/breadcrumb/services/breadcrumb.service'
-import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb'
-import { OverlayPanel } from 'primeng/overlaypanel'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { TipoDropdown } from '../../../../models/tipo-dropdown'
+import {ConsultaDonacionesService} from '../../services/consulta-donaciones.service'
+import {Component, OnInit, ViewChild} from '@angular/core'
+import {BreadcrumbService} from '../../../../shared/breadcrumb/services/breadcrumb.service'
+import {OverlayPanel} from 'primeng/overlaypanel'
+import {FormBuilder, FormGroup, Validators} from '@angular/forms'
+import {TipoDropdown} from '../../../../models/tipo-dropdown'
 import {CATALOGOS_DONADO_POR} from '../../../servicios-funerarios/constants/dummies'
-import { LazyLoadEvent } from 'primeng/api'
-import {
-  ConsultaDonacionesInterface,
-  FiltroDonacionesInterface,
-} from '../../models/consulta-donaciones-interface'
-import { DIEZ_ELEMENTOS_POR_PAGINA } from '../../../../utils/constantes'
-import { ServiciosFunerariosInterface } from '../../../servicios-funerarios/models/servicios-funerarios.interface'
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
-import { RegistrarDonacionComponent } from '../registrar-donacion/registrar-donacion.component'
-import { HttpErrorResponse } from '@angular/common/http'
-import { TipoAlerta } from '../../../convenios-nuevos/seguimiento-nuevo-convenio/components/modificar-persona/modificar-persona.component'
-import { AlertaService } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service'
-import { CatNiveles, CatVelatorios } from '../../models/catalogos.interface'
-import { CATALOGO_NIVEL } from '../../../articulos/constants/dummies'
-import { ActivatedRoute } from '@angular/router'
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones'
+import {LazyLoadEvent} from 'primeng/api'
+import {ConsultaDonacionesInterface, FiltroDonacionesInterface,} from '../../models/consulta-donaciones-interface'
+import {DIEZ_ELEMENTOS_POR_PAGINA} from '../../../../utils/constantes'
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog'
+import {RegistrarDonacionComponent} from '../registrar-donacion/registrar-donacion.component'
+import {HttpErrorResponse} from '@angular/common/http'
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service'
+import {ActivatedRoute} from '@angular/router'
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones'
 import * as moment from 'moment'
 import {finalize} from "rxjs/operators";
+import {of} from "rxjs"
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-consulta-donaciones',
   templateUrl: './consulta-donaciones.component.html',
   styleUrls: ['./consulta-donaciones.component.scss'],
-  providers: [DialogService],
+  providers: [DialogService,DescargaArchivosService],
 })
 
 export class ConsultaDonacionesComponent implements OnInit {
 
-  readonly POSICION_VELATORIOS: number = 0;
-  readonly POSICION_NIVELES: number = 1;
-  readonly POSICION_DELEGACIONES: number = 2;
+  readonly POSICION_NIVELES: number = 0;
+  readonly POSICION_DELEGACIONES: number = 1;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel
@@ -71,9 +66,14 @@ export class ConsultaDonacionesComponent implements OnInit {
   fechaInicial: any
 
   niveles: TipoDropdown[] = []
-
   velatorios: TipoDropdown[] = []
 
+  mostrarModalConfirmacion: boolean = false;
+  mostrarModalFechaMayor: boolean = false;
+  mensajeArchivoConfirmacion: string = "";
+
+  fechaActual = new Date();
+  fechaRango = moment().subtract(10,'years').toDate();
   constructor(
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
@@ -82,20 +82,22 @@ export class ConsultaDonacionesComponent implements OnInit {
     private alertaService: AlertaService,
     private route: ActivatedRoute,
     private readonly loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {}
 
   ngOnInit(): void {
     this.inicializarFiltroForm()
     let respuesta = this.route.snapshot.data['respuesta']
-    this.niveles = mapearArregloTipoDropdown(respuesta[this.POSICION_NIVELES]?.datos,'DES_NIVELOFICINA','ID_OFICINA');
+    this.niveles = respuesta[this.POSICION_NIVELES].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.delegacion = mapearArregloTipoDropdown(respuesta[this.POSICION_DELEGACIONES],'label','value');
     this.validarFiltros();
   }
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-           nivel: [{ value: null, disabled: +this.rolLocaleStorage.idRol != 1 }, [Validators.required]],
-      delegacion: [{ value: null, disabled: +this.rolLocaleStorage.idRol != 1 }, [Validators.required]],
-       velatorio: [{ value: null, disabled: +this.rolLocaleStorage.idRol == 3 }, [Validators.required]],
+           nivel: [{ value: null, disabled: true }, [Validators.required]],
+      delegacion: [{ value: null, disabled: +this.rolLocaleStorage.idOficina != 1 }, [Validators.required]],
+       velatorio: [{ value: null, disabled: +this.rolLocaleStorage.idOficina == 3 }, [Validators.required]],
        donadoPor: [{ value: null, disabled: false }],
       fechaDesde: [{ value: null, disabled: false }],
       fechaHasta: [{ value: null, disabled: false }],
@@ -103,11 +105,11 @@ export class ConsultaDonacionesComponent implements OnInit {
   }
 
   validarFiltros(): void {
-    if(+this.rolLocaleStorage.idRol == 1){return}
-    this.ff.nivel.setValue(this.rolLocaleStorage.idRol);
-    this.ff.delegacion.setValue(this.rolLocaleStorage.idDelegacion);
-    if(+this.rolLocaleStorage.idRol == 3){
-      this.ff.velatorio.setValue(this.rolLocaleStorage.idVelatorio);
+    this.ff.nivel.setValue(+this.rolLocaleStorage.idOficina);
+    if(+this.rolLocaleStorage.idOficina == 1){return}
+    this.ff.delegacion.setValue(+this.rolLocaleStorage.idDelegacion);
+    if(+this.rolLocaleStorage.idOficina == 3){
+      this.ff.velatorio.setValue(+this.rolLocaleStorage.idVelatorio);
     }
     this.cambiarDelegacion();
 }
@@ -117,22 +119,20 @@ export class ConsultaDonacionesComponent implements OnInit {
     if (fechaHasta == null) {
       this.fechaFinal = fechaHasta
     } else {
-      let fechaHastaSinHora = fechaHasta.toISOString().substring(0, 10)
-      this.fechaFinal = fechaHastaSinHora
+      this.fechaFinal = fechaHasta.toISOString().substring(0, 10)
     }
     let fechaDesde = this.filtroForm.get('fechaDesde')?.value
 
     if (fechaDesde == null) {
       this.fechaInicial = fechaDesde
     } else {
-      let fechaDesdeSinHora = fechaDesde.toISOString().substring(0, 10)
-      this.fechaInicial = fechaDesdeSinHora
+      this.fechaInicial = fechaDesde.toISOString().substring(0, 10)
     }
 
     return {
-      idVelatorio: parseInt(this.filtroForm.get('velatorio')?.value),
-      idNivel: parseInt(this.filtroForm.get('nivel')?.value),
-      idDelegacion: parseInt(this.filtroForm.get('delegacion')?.value),
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      idNivel: this.filtroForm.get('nivel')?.value,
+      idDelegacion: this.filtroForm.get('delegacion')?.value,
       donadoPor: this.filtroForm.get('donadoPor')?.value,
       fechaFin: this.fechaFinal,
       fechaInicio: this.fechaInicial,
@@ -153,8 +153,7 @@ export class ConsultaDonacionesComponent implements OnInit {
 
   paginarPorFiltros(): void {
     this.limpiarAtaudesDonados()
-    const filtros = this.obtenerObjetoParaFiltrado()
-    const solicitudFiltros = JSON.stringify(filtros)
+    const solicitudFiltros = this.obtenerObjetoParaFiltrado()
     this.consultaDonacionesService
       .buscarAtaudesPorFiltros(
         solicitudFiltros,
@@ -163,18 +162,12 @@ export class ConsultaDonacionesComponent implements OnInit {
       )
       .subscribe(
         (respuesta) => {
-          this.ataudesDonados = respuesta!.datos.content
-          this.totalElementos = respuesta!.datos.totalElements
-          if (this.totalElementos == 0) {
-            this.alertaService.mostrar(
-              TipoAlerta.Error,
-              'No se encontró información relacionada a tu búsqueda.',
-            )
-          }
+          this.ataudesDonados = respuesta.datos.content || []
+          this.totalElementos = respuesta.datos.totalElements || 0
         },
         (error: HttpErrorResponse) => {
           console.error(error)
-          this.alertaService.mostrar(TipoAlerta.Error, error.message)
+          this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
         },
       )
   }
@@ -183,18 +176,17 @@ export class ConsultaDonacionesComponent implements OnInit {
     if (event) {
       this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1))
     }
-    if (this.paginacionConFiltrado) {
-      this.paginarPorFiltros()
-    } else {
-      this.paginarPorFiltros()
-    }
+    this.paginarPorFiltros()
   }
+
+
 
   limpiar(): void {
     this.limpiarAtaudesDonados()
     this.paginacionConFiltrado = false
     if (this.filtroForm) {
       this.filtroForm.reset()
+      this.validarFiltros();
     }
     this.numPaginaActual = 0
     this.paginarPorFiltros()
@@ -205,14 +197,8 @@ export class ConsultaDonacionesComponent implements OnInit {
       .buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .subscribe(
         (respuesta) => {
-          this.ataudesDonados = respuesta!.datos.content
-          this.totalElementos = respuesta!.datos.totalElements
-          if (this.totalElementos == 0) {
-            this.alertaService.mostrar(
-              TipoAlerta.Error,
-              'No se encontró información relacionada a tu búsqueda.',
-            )
-          }
+          this.ataudesDonados = respuesta.datos.content || []
+          this.totalElementos = respuesta.datos.totalElements || 0
         },
         (error: HttpErrorResponse) => {
           console.error(error)
@@ -254,9 +240,6 @@ export class ConsultaDonacionesComponent implements OnInit {
     )
   }
 
-  get ff() {
-    return this.filtroForm.controls
-  }
 
   descargarArchivo(tipoReporte: string) {
     const filtros = this.obtenerObjetoParaFiltrado()
@@ -285,5 +268,61 @@ export class ConsultaDonacionesComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, error.message)
       },
     )
+  }
+
+  generarArchivo(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    if(tipoReporte == "xls"){
+      configuracionArchivo.ext = "xlsx"
+    }
+    this.loaderService.activar();
+    const busqueda = this.objetoArchivo(tipoReporte);
+    this.consultaDonacionesService.generarReporte(busqueda).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        const file = new Blob([this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
+        );
+        this.descargaArchivosService.descargarArchivo(of(file),configuracionArchivo).pipe(
+          finalize(() => this.loaderService.desactivar())
+        ).subscribe(
+          (repuesta) => {
+            this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+            this.mostrarModalConfirmacion = true;
+          },
+          (error) => {
+            this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+          }
+        )
+      },
+      (error: HttpErrorResponse) => {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, msg);
+      }
+    )
+  }
+
+  validarFechaFinal(): void {
+    if(!this.ff.fechaDesde?.value || !this.ff.fechaHasta?.value){return}
+    if(this.ff.fechaDesde.value > this.ff.fechaHasta.value){
+      this.mostrarModalFechaMayor = true;
+    }
+  }
+
+  objetoArchivo(tipoReporte: string) {
+    return {
+       idVelatorio: this.ff.velatorio?.value,
+      idDelegacion: this.ff.delegacion?.value,
+         donadoPor: this.ff.donadoPor?.value,
+       fechaInicio: this.ff.fechaDesde.value? moment(this.ff.fechaDesde?.value).format('YYYY-MM-DD') : null,
+          fechaFin: this.ff.fechaHasta.value ? moment(this.ff.fechaHasta?.value).format('YYYY-MM-DD') : null,
+       tipoReporte: tipoReporte
+    }
+  }
+
+  get ff() {
+    return this.filtroForm.controls
   }
 }
