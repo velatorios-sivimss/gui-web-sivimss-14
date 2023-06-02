@@ -4,7 +4,7 @@
 <div class="row mb-4">
   <div class="col-md-12 border seccion-folio flex justify-content-between">
     <div>
-      <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo"></span></span>
+      <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo">{{recibo.folio}}</span></span>
     </div>
   </div>
 
@@ -21,60 +21,60 @@
 
       <section class="flex justify-content-between info-gral-body mt-7">
                 <span class="etiqueta-formato">Delegación <span
-                  class="etiqueta-formato-val"></span> </span>
-        <span class="etiqueta-formato">Velatorio <span class="etiqueta-formato-val"></span>
+                  class="etiqueta-formato-val">{{recibo.delegacion}}</span> </span>
+        <span class="etiqueta-formato">Velatorio <span class="etiqueta-formato-val">{{recibo.velatorio}}</span>
                 </span>
       </section>
 
       <section class="border contenido-body">
         <div class="mt-5">
-          <span class="col-md-12 etiqueta-formato-val">
+          <span class="col-md-12 etiqueta-formato-val">Mexico CDMX
             <span class="etiqueta-base"> a </span>
-            <span class="etiqueta-formato-val"> </span>
+            <span class="etiqueta-formato-val"> {{dia}} </span>
             <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> Abril </span>
+            <span class="etiqueta-formato-val"> {{mes | titlecase}} </span>
             <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> 2021 </span>
+            <span class="etiqueta-formato-val"> {{anio}} </span>
           </span>
           <span class="col-md-12 mt-5 etiqueta-base">Recibimos del SR(A)
             <span class="etiqueta-formato-val"></span>
                     </span>
           <span class="col-md-12 etiqueta-base mt-3">la cantidad de
-            <span class="etiqueta-formato-val"></span>
-                    </span>
+            <span class="etiqueta-formato-val">{{recibo.cantidad}}</span>
+          </span>
         </div>
 
         <div>
-                    <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación paqgue los trámites para
+                    <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
             otorgar el contrato
-            de prestación de servicios <span class="etiqueta-formato-val"> No. 312 </span> en dependencias de acuerdo al siguiente desgloce
+            de prestación de servicios <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span> en dependencias de acuerdo al siguiente desgloce
                     </span>
 
           <div class="grid-container">
             <div class="grid-item">
                             <span class="etiqueta-formato">Trámites <span
-                              class="etiqueta-formato-val"></span></span>
+                              class="etiqueta-formato-val">{{ recibo.canTramites}}</span></span>
             </div>
             <div class="grid-item">
                             <span class="etiqueta-formato">Descripción <span
-                              class="etiqueta-formato-val"></span>
+                              class="etiqueta-formato-val">{{recibo.descTramites}}</span>
                             </span>
             </div>
             <div class="grid-item"></div>
 
             <div class="grid-item">
                             <span class="etiqueta-formato">Derechos <span
-                              class="etiqueta-formato-val"></span></span>
+                              class="etiqueta-formato-val">{{recibo.canDerechos}}</span></span>
             </div>
             <div class="grid-item">
                             <span class="etiqueta-formato">Descripción <span
-                              class="etiqueta-formato-val"></span>
+                              class="etiqueta-formato-val">{{recibo.descDerechos}}</span>
                             </span>
             </div>
             <div class="grid-item"></div>
 
             <div class="grid-item mt-5">
-              <span class="etiqueta-formato">Total <span class="etiqueta-totales"></span></span>
+              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{recibo.canSuma}}</span></span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>
@@ -88,7 +88,7 @@
 
           <div class="grid-container mb-4">
             <div class="grid-item">
-              <span class="etiqueta-formato">Total <span class="etiqueta-totales"></span></span>
+              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{recibo.canTotal}}</span></span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>

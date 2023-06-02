@@ -53,7 +53,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   obtenerValoresFecha(): void {
     const fecha: Date = new Date();
-    this.dia = fecha.getDay().toString();
+    this.dia = fecha.getDate().toString();
     this.mes = fecha.toLocaleString('default', {month: 'long'});
     this.anio = fecha.getFullYear().toString();
   }
