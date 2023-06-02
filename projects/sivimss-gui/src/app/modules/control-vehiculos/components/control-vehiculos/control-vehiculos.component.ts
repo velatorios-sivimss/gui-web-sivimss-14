@@ -100,13 +100,6 @@ export class ControlVehiculosComponent implements OnInit {
         (respuesta) => {
           if (respuesta.datos?.content.length > 0) {
             this.controlVehiculos = respuesta.datos?.content;
-          } else {
-            const mensaje = this.alertas?.filter((msj: any) => {
-              return msj.idMensaje == respuesta.mensaje;
-            });
-            if (mensaje && mensaje.length > 0) {
-              this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
-            }
           }
         },
         (error: HttpErrorResponse) => {

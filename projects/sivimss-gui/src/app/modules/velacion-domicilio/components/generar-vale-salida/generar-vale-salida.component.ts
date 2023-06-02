@@ -48,6 +48,7 @@ export class GenerarValeSalidaComponent implements OnInit {
   };
   equipoSeleccionado: EquipoVelacionInterface = {};
   bloquearRegistrarSalida: boolean = false;
+  paso: 'formulario' | 'confirmacion' = 'formulario';
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
@@ -76,11 +77,11 @@ export class GenerarValeSalidaComponent implements OnInit {
   inicializarForm(): void {
     this.generarValeSalidaForm = this.formBuilder.group({
       nivel: new FormControl({ value: 1, disabled: true }, [Validators.required]),
-      delegacion: new FormControl({ value: null, disabled: false }, Validators.required),
-      velatorio: new FormControl({ value: null, disabled: false }, Validators.required),
+      delegacion: new FormControl({ value: null, disabled: false }),
+      velatorio: new FormControl({ value: null, disabled: false }),
       folio: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      nombreContratante: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      nombreFinado: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      nombreContratante: new FormControl({ value: null, disabled: true }, []),
+      nombreFinado: new FormControl({ value: null, disabled: true }, []),
       nombreResponsableEntrega: new FormControl({ value: null, disabled: false }, [Validators.maxLength(70), Validators.required]),
       diasNovenario: new FormControl({ value: null, disabled: false }, [Validators.maxLength(2)]),
       fechaSalida: new FormControl({ value: null, disabled: false }, [Validators.required]),
@@ -89,7 +90,7 @@ export class GenerarValeSalidaComponent implements OnInit {
       cp: new FormControl({ value: null, disabled: true }, [Validators.required]),
       calle: new FormControl({ value: null, disabled: true }, [Validators.required]),
       numExt: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      numInt: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      numInt: new FormControl({ value: null, disabled: true }, []),
       colonia: new FormControl({ value: null, disabled: true }, [Validators.required]),
       municipio: new FormControl({ value: null, disabled: true }, [Validators.required]),
       estado: new FormControl({ value: null, disabled: true }, [Validators.required]),
@@ -132,15 +133,30 @@ export class GenerarValeSalidaComponent implements OnInit {
         finalize(() => this.loaderService.desactivar())
       ).subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.datos) {
+          this.bloquearRegistrarSalida = false;
+          this.datosFolio.articulos = [];
+          this.articulos.clear();
+
+          if (respuesta.datos.length === 0) {
+            this.datosFolio.nombreContratante = '';
+            this.datosFolio.nombreFinado = '';
+            this.datosFolio.cp = '';
+            this.datosFolio.calle = '';
+            this.datosFolio.numExt = '';
+            this.datosFolio.numInt = '';
+            this.datosFolio.colonia = '';
+            this.datosFolio.municipio = '';
+            this.datosFolio.estado = '';
+          } else {
             this.datosFolio = respuesta.datos;
-            this.generarValeSalidaForm.patchValue({
-              ...this.datosFolio,
-            });
-            this.datosFolio.articulos?.forEach((item: Articulo) => {
-              this.articulos.push(this.addControls(item));
-            })
           }
+
+          this.generarValeSalidaForm.patchValue({
+            ...this.datosFolio,
+          });
+          this.datosFolio.articulos?.forEach((item: Articulo) => {
+            this.articulos.push(this.addControls(item));
+          })
         },
         (error: HttpErrorResponse) => {
           console.error(error);
@@ -153,6 +169,14 @@ export class GenerarValeSalidaComponent implements OnInit {
   abrirPanel(event: MouseEvent, equipo: EquipoVelacionInterface): void {
     this.equipoSeleccionado = equipo;
     this.overlayPanel.toggle(event);
+  }
+
+  generarValeSalidaConfirmacion(): void {
+    if (this.generarValeSalidaForm.valid && this.articulos.length > 0) {
+      this.paso = 'confirmacion';
+    } else {
+      this.generarValeSalidaForm.markAllAsTouched();
+    }
   }
 
   generarValeSalida(): void {
@@ -184,13 +208,15 @@ export class GenerarValeSalidaComponent implements OnInit {
     this.router.navigate(['reservar-capilla/velacion-en-domicilio']);
   }
 
-  datosGuardar() {
+  datosGuardar(): DatosFolioODS {
     this.articulos.controls.forEach(item => {
       const numCantidad: number = item.get('cantidad')?.value || 0;
       item.get('cantidad')?.patchValue(+numCantidad);
     });
     return {
-      ...this.generarValeSalidaForm.value,
+      ...this.generarValeSalidaForm.getRawValue(),
+      nombreVelatorio: this.catalogoVelatorios.filter((item: TipoDropdown) => item.value === this.f.velatorio.value)[0].label,
+      folioOds: this.f.folio.value?.label,
       diasNovenario: +this.f.diasNovenario.value,
       cantidadArticulos: this.articulos.length,
       fechaSalida: moment(this.f.fechaSalida.value).format('DD-MM-yyyy'),

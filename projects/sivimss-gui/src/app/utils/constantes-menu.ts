@@ -80,7 +80,7 @@ export const idsModulos: DatoModulo = {
     icono: ''
   },
   '24': {
-    ruta: '',
+    ruta: '/reservar-capilla/velacion-en-domicilio',
     icono: ''
   },
   '25': {

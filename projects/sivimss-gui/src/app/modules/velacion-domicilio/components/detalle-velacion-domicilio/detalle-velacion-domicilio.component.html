@@ -62,7 +62,7 @@
             </div>
           </div>
         </div>
-        <div class="row table-panel-row">
+        <div class="row table-panel-row" *ngIf="!detalleForm && detalleValeSalida.fechaEntrada && detalleValeSalida.fechaEntrada !== 'null'">
           <div class="col-md-4">
             <div class="table-panel-column">
               <label>Responsable de los equipos de velación</label>
@@ -178,9 +178,21 @@
     </ng-template>
   </p-accordionTab>
 </p-accordion>
-<div class="flex justify-content-end mb-3">
-  <button class="ml-4 mt-3 btn btn btn-default btn-md" (click)="registrarEquipoEntrada()"
-    *ngIf="!detalleValeSalida.fechaEntrada">
+<div class="flex justify-content-end mb-3" *ngIf="!detalleForm">
+  <button class="ml-4 mt-3 btn btn-primary btn-md" routerLink="../../">Cerrar</button>
+  <button class="ml-4 mt-3 btn btn btn-default btn-md" (click)="registrarEquipoEntrada()">
     Registrar entrada de equipo</button>
-  <button class="ml-4 mt-3 btn btn-primary btn-md" routerLink="../../">Aceptar</button>
 </div>
+
+<ng-container *ngIf="detalleForm">
+  <div class="row mb-5 mt-5">
+    <div class="col-md-12 text-center">
+      ¿Estás seguro de registrar la salida del equipo de velación?
+    </div>
+  </div>
+
+  <div class="flex justify-content-end mb-3">
+    <button class="ml-4 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
+    <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida()">Aceptar</button>
+  </div>
+</ng-container>

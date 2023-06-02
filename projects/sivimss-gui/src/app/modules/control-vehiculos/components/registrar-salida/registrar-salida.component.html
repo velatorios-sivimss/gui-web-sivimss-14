@@ -147,7 +147,7 @@
           numbersOnly (blur)="obtenerDatosFolioOds();">
         <span class="campo-obligatorio"
           *ngIf="f.folioOds?.errors?.required && (f.folioOds?.dirty || f.folioOds?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nombreContratante">Nombre del contratante<span class="req">*</span>:</label>
@@ -155,7 +155,7 @@
           placeholder="Ingresa nombre del contratante">
         <span class="campo-obligatorio"
           *ngIf="f.nombreContratante?.errors?.required && (f.nombreContratante?.dirty || f.nombreContratante?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
     </div>
 
@@ -166,7 +166,7 @@
           placeholder="Ingresa nombre del finado">
         <span class="campo-obligatorio"
           *ngIf="f.nombreFinado?.errors?.required && (f.nombreFinado?.dirty || f.nombreFinado?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
       <!-- <div class="col-md-6">
         <label class="control-label" for="nombreDestino">Nombre del destino<span class="req">*</span>:</label>
@@ -174,7 +174,7 @@
           placeholder="Ingresa nombre del destino">
         <span class="campo-obligatorio"
           *ngIf="f.nombreDestino?.errors?.required && (f.nombreDestino?.dirty || f.nombreDestino?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div> -->
     </div>
   </form>
@@ -194,7 +194,7 @@
           placeholder="Ingresa municipio origen">
         <span class="campo-obligatorio"
           *ngIf="f.municipioOrigen?.errors?.required && (f.municipioOrigen?.dirty || f.municipioOrigen?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="municipioDestino">Municipio destino<span class="req">*</span>:</label>
@@ -202,7 +202,7 @@
           placeholder="Ingresa municipio destino">
         <span class="campo-obligatorio"
           *ngIf="f.municipioDestino?.errors?.required && (f.municipioDestino?.dirty || f.municipioDestino?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
     </div>
   </form>
@@ -222,14 +222,14 @@
           dateFormat="dd/mm/yy">
         </p-calendar>
         <span class="campo-obligatorio" *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="hora">Hora<span class="req">*</span>:</label>
         <p-calendar id="hora" styleClass="form-control" formControlName="hora" placeholder="00:00"
           [timeOnly]="true"></p-calendar>
         <span class="campo-obligatorio" *ngIf="f.hora?.errors?.required && (f.hora?.dirty || f.hora?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row">
@@ -240,7 +240,7 @@
           placeholder="Ingresa el nivel de gasolina">
         <span class="campo-obligatorio"
           *ngIf="f.nivelGasolinaInicial?.errors?.required && (f.nivelGasolinaInicial?.dirty || f.nivelGasolinaInicial?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="kilometrajeInicial">Kilometraje inicial (km)<span
@@ -250,7 +250,7 @@
           [maxlength]="16" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
           *ngIf="f.kilometrajeInicial?.errors?.required && (f.kilometrajeInicial?.dirty || f.kilometrajeInicial?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row">
@@ -262,7 +262,7 @@
         </p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="f.nombreResponsable?.errors?.required && (f.nombreResponsable?.dirty || f.nombreResponsable?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">

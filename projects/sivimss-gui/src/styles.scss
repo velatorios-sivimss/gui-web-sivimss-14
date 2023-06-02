@@ -178,6 +178,7 @@ body {
 
 .table-panel-row {
   border-bottom: 1px solid #DEE2E6;
+  width: 100%;
 }
 
 .table-panel-column {
@@ -378,3 +379,10 @@ h1.subtitulo-base-lg {
   border-radius: 50%;
 }
 
+.table-panel {
+  .table-panel-header {
+    .table-panel-header-content {
+      width: 100%;
+    }
+  }
+}
