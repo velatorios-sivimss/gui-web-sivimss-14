@@ -204,11 +204,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
 
     if(+this.rolLocalStorage.idRol >= 2) {
-      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
+      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion);
     }
 
     if(+this.rolLocalStorage.idRol === 3) {
-      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
+      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio);
     }
 
     this.paginar();
@@ -257,28 +257,6 @@ export class GenerarNotaRemisionComponent implements OnInit {
     const busqueda = this.filtrosArchivos(tipoReporte);
 
     this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
-        console.log(respuesta);
-      },
-      (error) => {
-        console.log(error);
-      },
-    )
-  }
-
-  generarReporteTabla(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {};
-    if (tipoReporte == "xls") {
-      configuracionArchivo.ext = "xlsx"
-    }
-
-    this.loaderService.activar();
-    let busqueda = this.obtenerObjetoParaFiltrado();
-    busqueda = { ...busqueda, tipoReporte }
-
-    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteTabla(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta) => {

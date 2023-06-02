@@ -128,7 +128,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     );
   }
 
-  exportarPDF(tipoReporte: string) {
+  generarReporteOrdenServicio(tipoReporte: string) {
     const busqueda = this.filtrosArchivos(tipoReporte);
     this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe(
       (response) => {
@@ -142,26 +142,6 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     );
   }
 
-  generarReporteOrdenServicio(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {};
-    if (tipoReporte == "xls") {
-      configuracionArchivo.ext = "xlsx"
-    }
-
-    this.loaderService.activar();
-    const busqueda = this.filtrosArchivos(tipoReporte);
-
-    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta : any) => {
-        console.log(respuesta);
-      },
-      (error) => {
-        console.log(error);
-      },
-    )
-  }
 
   filtrosArchivos(tipoReporte: string): GenerarReporte {
     return {
