@@ -1,8 +1,5 @@
 import {Injectable} from '@angular/core';
-import {
-  ActivatedRouteSnapshot, Resolve,
-  RouterStateSnapshot
-} from '@angular/router';
+import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 import {Observable} from 'rxjs';
 import {MantenimientoVehicularService} from './mantenimiento-vehicular.service';
 
@@ -13,7 +10,7 @@ export class MantenimientoVehicularDetalleResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const vehiculoId = route.paramMap.get('idVehiculo') as unknown as number;
-    return this.mantenimientoVehicularService.obtenerRegistroVehiculo(vehiculoId);
+    const idVehiculo: number = route.paramMap.get('idVehiculo') as unknown as number;
+    return this.mantenimientoVehicularService.obtenerRegistroVehiculo(idVehiculo);
   }
 }

@@ -79,7 +79,7 @@ export class RolesComponent implements OnInit {
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (validarUsuarioLogueado()) return;
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
@@ -153,7 +153,7 @@ export class RolesComponent implements OnInit {
     this.cambiarEstatusRef = this.dialogService.open(ConfirmacionMovimientoComponent, DETALLE_CONFIG);
 
     this.cambiarEstatusRef.onClose.subscribe((respuesta: any): void => {
-      if (respuesta && respuesta.estatus) {
+      if (respuesta?.estatus) {
         const solicitudId = {
           "idRol": respuesta.datosRol.idRol,
           "estatusRol": respuesta.datosRol.estatusRol ? 1 : 0

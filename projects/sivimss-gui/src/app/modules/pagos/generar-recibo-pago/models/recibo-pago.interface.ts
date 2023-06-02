@@ -4,6 +4,7 @@ export interface ReciboPago {
   claveFolio: string;
   estatusOds?: string;
   estatusPago?: string;
+  idReciboPago: number;
 }
 
 
