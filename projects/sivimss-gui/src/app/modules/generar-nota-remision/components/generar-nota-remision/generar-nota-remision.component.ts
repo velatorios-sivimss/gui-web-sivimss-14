@@ -204,11 +204,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
 
     if(+this.rolLocalStorage.idRol >= 2) {
-      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion);
+      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
     }
 
     if(+this.rolLocalStorage.idRol === 3) {
-      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio);
+      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
     }
 
     this.paginar();
