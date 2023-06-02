@@ -89,7 +89,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
-    this.catalogoPlacas = respuesta[this.POSICION_CATALOGOS_PLACAS];
+    this.catalogoPlacas = respuesta[this.POSICION_CATALOGOS_PLACAS].datos;
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
