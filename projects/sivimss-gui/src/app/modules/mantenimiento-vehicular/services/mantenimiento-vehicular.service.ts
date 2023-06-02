@@ -7,6 +7,7 @@ import {HttpRespuesta} from "../../../models/http-respuesta.interface";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../services/autenticacion.service";
 import {environment} from "../../../../environments/environment";
+import {CATALOGO_TIPO_REPORTE_ENCARGADO, CATALOGO_TIPO_REPORTE_PREDICTIVO} from "../constants/catalogos-filtros";
 
 interface ConsultaVelatorio {
   idDelegacion: string | null
@@ -47,6 +48,14 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   obtenerCatalogoPlacas(): Observable<HttpRespuesta<any>> {
     return of({datos: [], error: false, codigo: 0, mensaje: '0'})
+  }
+
+  obtenerCatalogoReporteEncargado(): Observable<TipoDropdown[]> {
+    return of(CATALOGO_TIPO_REPORTE_ENCARGADO);
+  }
+
+  obtenerCatalogoMttoPredictivo(): Observable<TipoDropdown[]> {
+    return of(CATALOGO_TIPO_REPORTE_PREDICTIVO);
   }
 
   buscarPorFiltros(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
