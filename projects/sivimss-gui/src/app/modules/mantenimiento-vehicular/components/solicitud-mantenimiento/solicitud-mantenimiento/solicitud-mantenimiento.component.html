@@ -6,13 +6,13 @@
           <label class="control-label" for="placas">Placas<span class="req">*</span>:</label>
           <input id="placas" class="form-control" formControlName="placas" placeholder="Ingresa el placas">
           <span class="campo-obligatorio"
-                *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Campo obligatorio</span>
+                *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="marca">Marca<span class="req">*</span>:</label>
           <input id="marca" class="form-control" formControlName="marca" placeholder="Ingresa el marca">
           <span class="campo-obligatorio"
-                *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Campo obligatorio</span>
+                *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -20,7 +20,7 @@
           <label class="control-label" for="anio">Año<span class="req">*</span>:</label>
           <input id="anio" class="form-control" formControlName="anio" placeholder="Ingresa el anio">
           <span class="campo-obligatorio"
-                *ngIf="smf.anio?.errors?.required && (smf.anio?.dirty || smf.anio?.touched)">Campo obligatorio</span>
+                *ngIf="smf.anio?.errors?.required && (smf.anio?.dirty || smf.anio?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
@@ -28,7 +28,7 @@
                  placeholder="Ingresa el kilometraje"
                  [maxlength]="6" numbersOnly>
           <span class="campo-obligatorio"
-                *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Campo obligatorio</span>
+                *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -70,7 +70,7 @@
                       placeholder="Selecciona el tipo de mantenimiento">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Campo obligatorio</span>
+                *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6" *ngIf="solicitudMantenimientoForm.get('tipoMantenimiento')?.value == 1">
           <label class="control-label" for="matPreventivo">Mantenimiento preventivo<span class="req">*:</span></label>
@@ -79,7 +79,7 @@
                       placeholder="Selecciona el tamaño">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">Campo obligatorio</span>
+                *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -87,7 +87,7 @@
           <label class="control-label" for="notas">Notas<span class="req">*:</span></label>
           <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa el notas">
           <span class="campo-obligatorio"
-                *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Campo obligatorio</span>
+                *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-4">

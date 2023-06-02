@@ -36,7 +36,7 @@ export class DetalleMantenimientoComponent implements OnInit {
   registro!: RespuestaRegistroMantenimiento;
   fechaActual: string = obtenerFechaActual();
   modificarModal: boolean = false;
-  indice: number = 2;
+  indice: number = 0;
 
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
