@@ -145,7 +145,7 @@
 </div>
 
 <div class="row flex justify-content-end mb-4">
-  <button class="btn btn-default btn-md" [routerLink]="'../'">Regresar</button>
-  <button class="ml-4 btn btn-primary btn-md">Generar Excel</button>
-  <button class="ml-4 btn btn-primary btn-md">Generar PDF</button>
+  <button class="btn btn-default btn-md" [routerLink]="'../../'">Regresar</button>
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarExcel()">Generar Excel</button>
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarPDF()">Generar PDF</button>
 </div>
