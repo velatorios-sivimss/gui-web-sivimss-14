@@ -65,7 +65,6 @@ export class GenerarReciboPagoComponent implements OnInit {
     public dialogService: DialogService,
     private generarReciboService: GenerarReciboService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
@@ -87,13 +86,6 @@ export class GenerarReciboPagoComponent implements OnInit {
   abrirPanel(event: MouseEvent, reciboPagoSeleccionado: ListadoRecibo): void {
     this.reciboPagoSeleccionado = reciboPagoSeleccionado;
     this.overlayPanel.toggle(event);
-  }
-
-  abrirModalReciboPagoTramites(): void {
-    void this.router.navigate(['generar-recibo-pago-tramites'], {
-      relativeTo: this.activatedRoute,
-      queryParams: {idPagoBitacora: this.reciboPagoSeleccionado.idPagoBitacora}
-    });
   }
 
   inicializarFiltroForm(): void {

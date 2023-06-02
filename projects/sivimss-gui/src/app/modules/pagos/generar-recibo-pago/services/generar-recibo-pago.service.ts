@@ -60,11 +60,11 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._folios}`, {idVelatorio});
   }
 
-  obtenerTramites(idVelatorio: string): Observable<HttpRespuesta<any>> {
+  obtenerCatalogoTramites(idVelatorio: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._tramites}`, {idVelatorio});
   }
 
-  obtenerDetechos(idVelatorio: string): Observable<HttpRespuesta<any>> {
+  obtenerCatalogoDerechos(idVelatorio: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._derechos}`, {idVelatorio});
   }
 

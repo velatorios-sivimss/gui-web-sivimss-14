@@ -80,7 +80,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-reciboPago>
       <tr>
-        <td> {{reciboPago.fOds}} </td>
+        <td> {{reciboPago.fOds | date:'dd/MM/YYYY'}} </td>
         <td> {{reciboPago.claveFolio}} </td>
         <td>Generada</td>
         <td>Generado</td>
@@ -114,7 +114,10 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Generar recibo de pago"
-                                (click)="abrirModalReciboPagoTramites()"></app-overlay-panel-opcion>
+                                [routerLink]="['./generar-recibo-pago-tramites', reciboPagoSeleccionado.idPagoBitacora]"
+                                routerLinkActive>
+
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

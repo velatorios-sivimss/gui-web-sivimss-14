@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {GenerarReciboService} from "../../services/generar-recibo-pago.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
-import {validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {forkJoin, Observable} from "rxjs";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 
 @Component({
   selector: 'app-recibo-pago-tramites',
@@ -16,32 +17,31 @@ import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
 export class ReciboPagoTramitesComponent implements OnInit {
 
   recibo!: ReciboPagoTramites;
+  mes: string = '';
+  dia: string = '';
+  anio: string = '';
+  catalogoTramites: TipoDropdown[] = [];
+  tramites: any[] = [];
+  catalogoDerechos: TipoDropdown[] = [];
+  derechos: any[] = [];
 
   constructor(
-    private router: Router,
+    private route: ActivatedRoute,
     private generarReciboService: GenerarReciboService,
     private cargadorService: LoaderService,
   ) {
-    const idPagoBitacora: string = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idPagoBitacora;
-    this.obtenerValoresRec(+idPagoBitacora);
+    this.recibo = this.route.snapshot.data["respuesta"].datos[0];
   }
 
   ngOnInit(): void {
+    this.obtenerValoresFecha();
   }
 
-  obtenerValoresRec(bitacora: number): void {
-    if (validarUsuarioLogueado()) return;
-    this.cargadorService.activar();
-    this.generarReciboService.buscarDatosReportePagos(bitacora).pipe(
-      finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (response: HttpRespuesta<any>): void => {
-        if (response.datos.length === 0) return;
-        this.recibo = response.datos[0];
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.log(error)
-      }
-    });
+  obtenerValoresFecha(): void {
+    const fecha: Date = new Date();
+    this.dia = fecha.getDay().toString();
+    this.mes = fecha.toLocaleString('default', {month: 'long'});
+    this.anio = fecha.getFullYear().toString();
   }
 
   generarPdf(): void {
@@ -60,6 +60,17 @@ export class ReciboPagoTramitesComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error)
+      }
+    });
+  }
+
+  obtenerCatalogosPorVelatorio(): void {
+    const idVelatorio = '1';
+    const $tramites = this.generarReciboService.obtenerCatalogoTramites(idVelatorio);
+    const $derechos = this.generarReciboService.obtenerCatalogoDerechos(idVelatorio);
+    forkJoin([$tramites, $derechos]).subscribe({
+      next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void => {
+        console.log(respuesta);
       }
     });
   }

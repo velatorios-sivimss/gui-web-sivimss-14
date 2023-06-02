@@ -31,17 +31,17 @@
         <div class="mt-5">
           <span class="col-md-12 etiqueta-formato-val">{{recibo.lugar}}
             <span class="etiqueta-base"> a </span>
-            <span class="etiqueta-formato-val"> {{recibo.fecha}} </span>
+            <span class="etiqueta-formato-val"> {{dia}} </span>
             <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> Abril </span>
+            <span class="etiqueta-formato-val"> {{mes | titlecase}} </span>
             <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> 2021 </span>
+            <span class="etiqueta-formato-val"> {{anio}} </span>
           </span>
           <span class="col-md-12 mt-5 etiqueta-base">Recibimos del SR(A)
             <span class="etiqueta-formato-val">{{recibo.recibimos}}</span>
           </span>
           <span class="col-md-12 etiqueta-base mt-3">la cantidad de
-            <span class="etiqueta-formato-val">{{recibo.total}}</span>
+            <span class="etiqueta-formato-val">{{recibo.cantidad}}</span>
           </span>
         </div>
 
