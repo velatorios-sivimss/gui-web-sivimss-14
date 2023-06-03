@@ -8,11 +8,10 @@ import { ModalNotaRemisionComponent } from '../modal/modal-nota-remision/modal-n
 import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ArticulosServicios, DetalleNotaRemision, GenerarReporte } from '../../models/nota-remision.interface';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { finalize } from 'rxjs';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 @Component({
   selector: 'app-formato-generar-nota-remision',
@@ -99,13 +98,13 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
   }
 
   generarNotaRemision() {
     this.abrirModalGenerandoNotaRemision();
-    this.generarNotaRemisionService.guardar({ idOrden: this.idOds }).subscribe(
-      (respuesta) => {
+    this.generarNotaRemisionService.guardar({ idOrden: 1 }).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.creacionRef.close();
         const mensaje = this.alertas?.filter((msj: any) => {
           return msj.idMensaje == respuesta.mensaje;
@@ -113,9 +112,9 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
         if (mensaje && mensaje.length > 0) {
           this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
         }
-        this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+        this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
@@ -125,21 +124,21 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
         }
         this.creacionRef.close();
       }
-    );
+    });
   }
 
   generarReporteOrdenServicio(tipoReporte: string) {
     const busqueda = this.filtrosArchivos(tipoReporte);
-    this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe(
-      (response) => {
-        var file = new Blob([response], { type: 'application/pdf' });
+    this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe({
+      next: (response: any) => {
+        const file = new Blob([response], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(file);
         window.open(url);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error('Error al descargar reporte: ', error.message);
       }
-    );
+    });
   }
 
 

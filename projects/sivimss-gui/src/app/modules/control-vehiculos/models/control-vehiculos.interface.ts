@@ -23,5 +23,7 @@ export interface ControlVehiculoConsulta {
   tarjetaCirculacion: string,
   modelo: string,
   placas: string,
-  disponibilidad: number,
+  disponible: number,
+  ods?: number,
+  idDisponibilidad: number,
 }

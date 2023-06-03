@@ -111,15 +111,15 @@ export class GenerarValeSalidaComponent implements OnInit {
 
   obtenerVelatorios() {
     this.foliosGenerados = [];
-    this.velacionDomicilioService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
-      (respuesta) => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
+    this.velacionDomicilioService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   obtenerDatosFolioOds() {
@@ -131,8 +131,8 @@ export class GenerarValeSalidaComponent implements OnInit {
       }
       this.velacionDomicilioService.obtenerDatosFolioOds(datos).pipe(
         finalize(() => this.loaderService.desactivar())
-      ).subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           this.bloquearRegistrarSalida = false;
           this.datosFolio.articulos = [];
           this.articulos.clear();
@@ -158,11 +158,11 @@ export class GenerarValeSalidaComponent implements OnInit {
             this.articulos.push(this.addControls(item));
           })
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
     }
   }
 
@@ -183,29 +183,29 @@ export class GenerarValeSalidaComponent implements OnInit {
     if (this.generarValeSalidaForm.valid && this.articulos.length > 0) {
       this.velacionDomicilioService.crearValeSalida(this.datosGuardar()).pipe(
         finalize(() => this.loaderService.desactivar())
-      ).subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == respuesta.mensaje;
           })
           this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
           this.abrirDetalleValeSalida();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == error?.error?.mensaje;
           })
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
         }
-      );
+      });
     } else {
       this.generarValeSalidaForm.markAllAsTouched();
     }
   }
 
   abrirDetalleValeSalida(): void {
-    this.router.navigate(['reservar-capilla/velacion-en-domicilio']);
+    this.router.navigate(['reservar-capilla/velacion-en-domicilio']).then(() => { }).catch(() => { });
   }
 
   datosGuardar(): DatosFolioODS {
@@ -256,11 +256,11 @@ export class GenerarValeSalidaComponent implements OnInit {
       idDelegacion: this.f.delegacion.value,
       idVelatorio: this.f.velatorio.value,
     }
-    this.velacionDomicilioService.obtenerOds(buscarFoliosOds).subscribe(
-      (respuesta) => {
+    this.velacionDomicilioService.obtenerOds(buscarFoliosOds).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let filtrado: TipoDropdown[] = [];
-        if (respuesta!.datos.length > 0) {
-          respuesta!.datos.forEach((e: any) => {
+        if (respuesta.datos?.length > 0) {
+          respuesta.datos.forEach((e: any) => {
             filtrado.push({
               label: e.folioOds,
               value: e.idOds,
@@ -271,10 +271,10 @@ export class GenerarValeSalidaComponent implements OnInit {
           this.foliosGenerados = [];
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
       }
-    );
+    });
   }
 
   get f() {

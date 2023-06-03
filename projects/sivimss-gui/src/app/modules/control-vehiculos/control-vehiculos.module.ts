@@ -23,6 +23,8 @@ import { ControlVehiculosService } from "./services/control-vehiculos.service";
 import { UtileriaModule } from "../../shared/utileria/utileria.module";
 import { InputNumberModule } from "primeng/inputnumber";
 import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
+import {PdfViewerModule} from "ng2-pdf-viewer";
+import { PrevisualizacionArchivoComponent } from './components/calendario-vehiculos/previsualizacion-archivo/previsualizacion-archivo.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
     VerActividadVehiculosComponent,
     RegistrarEntradaComponent,
     RegistrarSalidaComponent,
+    PrevisualizacionArchivoComponent,
   ],
   imports: [
     CommonModule,
@@ -49,7 +52,8 @@ import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
     AccordionModule,
     UtileriaModule,
     InputNumberModule,
-    ValidaRolModule
+    ValidaRolModule,
+    PdfViewerModule
   ],
   providers: [
     ControlVehiculosService

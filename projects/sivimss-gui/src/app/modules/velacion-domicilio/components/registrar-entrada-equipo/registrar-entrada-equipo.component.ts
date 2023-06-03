@@ -50,22 +50,22 @@ export class RegistrarEntradaEquipoComponent implements OnInit {
   registrarEntrada(): void {
     this.velacionDomicilioService.registrarSalida(this.datosGuardar()).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == respuesta.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
         this.referencia.close(true);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
       }
-    );
+    });
   }
 
   datosGuardar() {

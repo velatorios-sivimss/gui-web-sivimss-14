@@ -35,14 +35,14 @@ export class VerActividadVehiculosComponent implements OnInit {
     this.loaderService.activar();
     this.controlVehiculosService.consultarDetalleDia(this.idVehiculo, this.fechaSeleccionada).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.vehiculos = respuesta.datos;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
       }
-    );
+    });
   }
 
   aceptar(): void {

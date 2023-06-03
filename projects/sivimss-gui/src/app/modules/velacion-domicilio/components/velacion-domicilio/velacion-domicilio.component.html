@@ -145,7 +145,7 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar entrada de equipo"
+      <app-overlay-panel-opcion titulo="Registrar entrada de equipo" *ngIf="valeSeleccionado.validacionDias === 1"
         (click)="abrirModalRegistroEntradaEquipo()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Descargar control de movimiento de equipo de velación"
         (click)="descargarControlMovimiento()"></app-overlay-panel-opcion>

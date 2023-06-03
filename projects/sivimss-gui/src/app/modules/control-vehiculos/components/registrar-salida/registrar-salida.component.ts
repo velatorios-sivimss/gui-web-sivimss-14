@@ -29,6 +29,8 @@ export class RegistrarSalidaComponent implements OnInit {
   formRegistrarEntrada!: FormGroup;
   responsableSeleccionado: TipoDropdown[] = [];
   catalogoResponsables: TipoDropdown[] = [];
+  fechaActual: Date = new Date();
+  idOds: number = 0;
   datosVehiculo: ControlVehiculoConsulta = {
     marca: '',
     nombreDestino: '',
@@ -39,8 +41,9 @@ export class RegistrarSalidaComponent implements OnInit {
     tarjetaCirculacion: '',
     modelo: '',
     placas: '',
-    disponibilidad: 0,
+    disponible: 0,
     idODS: 0,
+    idDisponibilidad: 0,
   };
   vehiculoSeleccionado: ControlVehiculoListado = {
     idVehiculo: 0,
@@ -67,11 +70,11 @@ export class RegistrarSalidaComponent implements OnInit {
 
   inicializarFormRegistrarSalida(): void {
     this.formRegistrarSalida = this.formBuilder.group({
-      folioOds: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      nombreContratante: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      nombreFinado: new FormControl({ value: null, disabled: true }, [Validators.required]),
-      municipioOrigen: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      municipioDestino: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      folioOds: new FormControl({ value: null, disabled: false }, []),
+      nombreContratante: new FormControl({ value: null, disabled: true }, []),
+      nombreFinado: new FormControl({ value: null, disabled: true }, []),
+      municipioOrigen: new FormControl({ value: null, disabled: true }, []),
+      municipioDestino: new FormControl({ value: null, disabled: true }, []),
       fecha: new FormControl({ value: (new Date()), disabled: false }, [Validators.required]),
       hora: new FormControl({ value: moment().format('HH:mm'), disabled: false }, [Validators.required]),
       nivelGasolinaInicial: new FormControl({ value: null, disabled: false }, [Validators.required]),
@@ -84,30 +87,25 @@ export class RegistrarSalidaComponent implements OnInit {
     if (this.vehiculoSeleccionado.idVehiculo) {
       this.controlVehiculosService.obtenerDatosVehiculo(this.vehiculoSeleccionado.idVehiculo).pipe(
         finalize(() => this.loaderService.desactivar())
-      ).subscribe(
-        (respuesta: HttpRespuesta<any>) => {
-          // TO DO mostrar mensaje 45 -  no hay datos
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos.length > 0) {
             this.datosVehiculo = respuesta.datos[0];
+
+            if (this.datosVehiculo.ods === 1) {
+              this.f.folioOds.setValidators(Validators.required);
+            } else {
+              this.f.folioOds.clearValidators();
+              this.f.folioOds.disable();
+            }
+            this.f.folioOds.updateValueAndValidity();
           }
-          // if (respuesta.datos) {
-          //   this.folioValido = true;
-          //   this.idOds = respuesta.datos[0]?.idODS;
-          //   this.f.nombreContratante.setValue(respuesta.datos[0]?.nombreContratante);
-          //   this.f.nombreFinado.setValue(respuesta.datos[0]?.nombreFinado);
-          // } else {
-          //   this.folioValido = false;
-          //   this.f.nombreContratante.patchValue(null);
-          //   this.f.nombreFinado.patchValue(null);
-          //   this.alertaService.mostrar(TipoAlerta.Precaucion, "El número de folio no existe.\n" +
-          //     "Verifica tu información.\n")
-          // }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
     }
   }
 
@@ -132,29 +130,29 @@ export class RegistrarSalidaComponent implements OnInit {
     this.loaderService.activar();
     this.controlVehiculosService.guardarSalida(this.datosGuardar()).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         const mensaje = this.alertas?.filter((msj: any) => {
           return msj.idMensaje == respuesta.mensaje;
         })
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0]?.desMensaje);
+        const nuevoMensaje = `${mensaje[0]?.desMensaje} ${this.datosVehiculo.placas} - ${this.datosVehiculo.marca} ${this.datosVehiculo.modelo}`;
+        this.alertaService.mostrar(TipoAlerta.Exito, nuevoMensaje);
         this.ref.close(true);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
         console.error("ERROR: ", error);
       }
-    );
-
+    });
   }
 
   datosGuardar(): SalidaVehiculo {
     return {
       idVehiculo: +this.vehiculoSeleccionado.idVehiculo,
-      idODS: +this.datosVehiculo.idODS,
+      idODS: this.idOds,
       fecSalida: moment(this.f.fecha.value).format('yyyy-MM-DD'),
       horaSalida: this.f.hora.value,
       gasolinaInicial: this.f.nivelGasolinaInicial.value,
@@ -167,29 +165,39 @@ export class RegistrarSalidaComponent implements OnInit {
     if (this.f.folioOds.valid) {
       this.controlVehiculosService.obtenerDatosFolioOds(this.f.folioOds.value).pipe(
         finalize(() => this.loaderService.desactivar())
-      ).subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos?.content.length > 0) {
-            const { nombreContratante, nombreDestino, nombreFinado, nombreOrigen } = respuesta.datos?.content[0];
+            const { idOds, nombreContratante, nombreDestino, nombreFinado, nombreOrigen } = respuesta.datos?.content[0] || [];
             this.f.nombreContratante.patchValue(nombreContratante);
             this.f.nombreFinado.patchValue(nombreFinado);
             this.f.municipioOrigen.patchValue(nombreOrigen);
             this.f.municipioDestino.patchValue(nombreDestino);
+            this.idOds = +idOds;
+          } else {
+            const mensaje = this.alertas?.filter((msj: any) => {
+              return msj.idMensaje == respuesta.mensaje;
+            })
+            this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
+            this.f.nombreContratante.patchValue(null);
+            this.f.nombreFinado.patchValue(null);
+            this.f.municipioOrigen.patchValue(null);
+            this.f.municipioDestino.patchValue(null);
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
     }
   }
 
   obtenerOperadores() {
     this.controlVehiculosService.obtenerOperadores(this.vehiculoSeleccionado.idVehiculo).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let newArray: TipoDropdown[] = [];
         if (respuesta.datos?.content.length > 0) {
           respuesta.datos?.content.forEach((item: any) => {
@@ -200,28 +208,12 @@ export class RegistrarSalidaComponent implements OnInit {
           })
         }
         this.catalogoResponsables = newArray;
-        // TO DO mostrar mensaje 45 -  no hay datos
-        // if (respuesta.datos.length > 0) {
-        //   this.datosVehiculo = respuesta.datos[0];
-        // }
-        // if (respuesta.datos) {
-        //   this.folioValido = true;
-        //   this.idOds = respuesta.datos[0]?.idODS;
-        //   this.f.nombreContratante.setValue(respuesta.datos[0]?.nombreContratante);
-        //   this.f.nombreFinado.setValue(respuesta.datos[0]?.nombreFinado);
-        // } else {
-        //   this.folioValido = false;
-        //   this.f.nombreContratante.patchValue(null);
-        //   this.f.nombreFinado.patchValue(null);
-        //   this.alertaService.mostrar(TipoAlerta.Precaucion, "El número de folio no existe.\n" +
-        //     "Verifica tu información.\n")
-        // }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   handleChangeRespondable() {
