@@ -194,8 +194,8 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   abrirRegistroSolicitud(): void {
     this.ref.close();
-    void this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      {relativeTo: this.route, queryParams: {tabview: 2}});
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
+      {queryParams: {tabview: 2}});
   }
 
   gestionarCampos(): void {

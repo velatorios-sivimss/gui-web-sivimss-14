@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MENU_STEPPER} from '../../../../inventario-vehicular/constants/menu-stepper';
-import {CATALOGOS_DUMMIES} from '../../../../inventario-vehicular/constants/dummies';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
@@ -39,7 +38,6 @@ export class NuevaVerificacionComponent implements OnInit {
   vehiculoSeleccionado!: VehiculoVerificacion;
 
   menuStep: MenuItem[] = MENU_STEPPER;
-  velatorios: TipoDropdown[] = CATALOGOS_DUMMIES;
 
   nuevaVerificacionForm!: FormGroup;
 
@@ -197,8 +195,8 @@ export class NuevaVerificacionComponent implements OnInit {
 
   abrirRegistroMantenimiento(): void {
     this.ref.close();
-    void this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      {relativeTo: this.route, queryParams: {tabview: 0}});
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
+      {queryParams: {tabview: 0}});
   }
 
   realizarVerificacion(id: number): void {
