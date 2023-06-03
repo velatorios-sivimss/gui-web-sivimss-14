@@ -91,6 +91,14 @@ export const idsModulos: DatoModulo = {
     ruta: '/consulta-donaciones',
     icono: ''
   },
+  '65': {
+    ruta: '/pagos/generar-recibo-pago',
+    icono: ''
+  },
+  '66': {
+    ruta: '/generar-nota-remision',
+    icono: ''
+  },
   '70': {
     ruta: '/gestionar-tramites',
     icono: ''
