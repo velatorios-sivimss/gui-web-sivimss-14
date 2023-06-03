@@ -4,7 +4,7 @@
     <form [formGroup]="donacionForm">
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="folio">Folio ODS<span class="req">*</span></label>
+          <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span></label>
           <input numbersOnly id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS" (blur)="consultaContratantePorFolioODS()">
           <span class="campo-obligatorio"
                 *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Este campo es obligatorio *.</span>
@@ -61,9 +61,9 @@
                  [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
           <ng-template pTemplate="header">
             <tr>
-              <th scope="col">Material</th>
-              <th scope="col">Modelo</th>
-              <th scope="col">Número de inventario</th>
+              <th scope="col">Material (Tipo de ataúd)</th>
+              <th scope="col">Modelo (Modelo del ataúd)</th>
+              <th scope="col">Número de inventario (el número de inventario del ataúd según etiqueta)</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-ataudDonado>
@@ -108,7 +108,7 @@
           </div>
           <div class="col-md-3 flex flex-column">
             <span class="etiqueta-base">Responsable de almacén</span>
-            <span class="texto-base">{{f.responsableAlmacen.value}}</span>
+            <span  class="texto-base">{{f.responsableAlmacen.value}}</span>
           </div>
           <div class="col-md-3 flex flex-column">
             <span class="etiqueta-base">Matrícula del responsable</span>
@@ -123,9 +123,9 @@
                    [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
             <ng-template pTemplate="header">
               <tr>
-                <th scope="col">Material</th>
-                <th scope="col">Modelo</th>
-                <th scope="col">Número de inventario</th>
+                <th scope="col">Material (Tipo de ataúd)</th>
+                <th scope="col">Modelo (Modelo del ataúd)</th>
+                <th scope="col">Número de inventario (el número de inventario del ataúd según etiqueta)</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-ataudDonado>

@@ -1,6 +1,6 @@
 export interface ConsultaDonacionesInterface {
   velatorio?: string;
-  tipo?: string;
+  tipoMaterial?: string;
   modeloAtaud?: string;
   numInventario?: number;
   fecDonacion?: string;

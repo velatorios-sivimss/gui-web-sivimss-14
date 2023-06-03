@@ -18,11 +18,11 @@ export const CATALOGOS_DUMMIES: TipoDropdown[] = [
 
 export const CATALOGOS_DONADO_POR: TipoDropdown[] = [
   {
-    value: 1,
-    label: 'INSTITUTO'
+    value: 2,
+    label: 'Instituto'
   },
   {
-    value: 2,
-    label: 'ORDEN DE SERVICIO'
+    value: 1,
+    label: 'ODS'
   },
 ]

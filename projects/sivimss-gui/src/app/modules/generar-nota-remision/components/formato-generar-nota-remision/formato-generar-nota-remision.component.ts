@@ -8,10 +8,8 @@ import { ModalNotaRemisionComponent } from '../modal/modal-nota-remision/modal-n
 import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ArticulosServicios, DetalleNotaRemision, GenerarReporte } from '../../models/nota-remision.interface';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { finalize } from 'rxjs';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
@@ -129,26 +127,20 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     });
   }
 
-  generarReporteOrdenServicio(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {};
-    if (tipoReporte == "xls") {
-      configuracionArchivo.ext = "xlsx"
-    }
-
-    this.loaderService.activar();
+  generarReporteOrdenServicio(tipoReporte: string) {
     const busqueda = this.filtrosArchivos(tipoReporte);
-
-    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe({
-      next: (respuesta: any) => {
-        console.log(respuesta);
+    this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe({
+      next: (response: any) => {
+        const file = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(file);
+        window.open(url);
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
-      },
+        console.error('Error al descargar reporte: ', error.message);
+      }
     });
   }
+
 
   filtrosArchivos(tipoReporte: string): GenerarReporte {
     return {
