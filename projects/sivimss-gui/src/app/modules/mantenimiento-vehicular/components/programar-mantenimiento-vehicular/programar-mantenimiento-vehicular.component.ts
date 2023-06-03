@@ -89,7 +89,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
-    this.catalogoPlacas = respuesta[this.POSICION_CATALOGOS_PLACAS].datos;
+    this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
@@ -153,6 +153,18 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     if (!Object.values(filtros).some(v => (v))) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
     }
+    this.cargadorService.activar();
+    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.vehiculos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
   buscar(): void {
@@ -163,6 +175,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
     return {
+      nivelOficina: this.filtroFormProgramarMantenimiento.get('nivel')?.value,
+      velatorio: this.filtroFormProgramarMantenimiento.get('velatorio')?.value,
       placa: this.filtroFormProgramarMantenimiento.get('placa')?.value
     }
   }

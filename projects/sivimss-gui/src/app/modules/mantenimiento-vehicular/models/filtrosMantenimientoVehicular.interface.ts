@@ -1,3 +1,5 @@
 export interface FiltrosMantenimientoVehicular {
-  "placa":string
+  placa:string,
+  velatorio: number,
+  nivelOficina: number
 }

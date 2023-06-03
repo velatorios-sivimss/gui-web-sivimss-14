@@ -79,7 +79,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
-    this.catalogoPlacas = respuesta[this.POSICION_CATALOGOS_PLACAS].datos;
+    this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
     this.tipoMantenimientos = respuesta[this.POSICION_CATALOGOS_TIPO_MTTO];
   }
 

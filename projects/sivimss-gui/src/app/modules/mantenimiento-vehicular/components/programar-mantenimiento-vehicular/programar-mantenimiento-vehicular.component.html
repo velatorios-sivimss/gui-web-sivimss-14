@@ -76,10 +76,10 @@
         <td pResizableColumn> {{vehiculo.ID_VEHICULO}} </td>
         <td pResizableColumn> {{vehiculo.DES_MARCA}}  {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</td>
         <td pResizableColumn> {{vehiculo.DES_PLACAS}} </td>
-        <td pResizableColumn> {{vehiculo.kilometraje}} </td>
+        <td pResizableColumn> {{vehiculo.NUM_KILOMETRAJE_REG}} </td>
         <td pResizableColumn> {{vehiculo.DES_MTTO_TIPO}} </td>
         <td pResizableColumn> {{vehiculo.DES_MODALIDAD}} </td>
-        <td pResizableColumn></td>
+        <td pResizableColumn>{{vehiculo.FEC_REGISTRO_REG}}</td>
         <td pResizableColumn></td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
@@ -99,7 +99,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="8" class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular">
+        <th colspan=9 class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular">
           No se encontro información relacionada a tu búsqueda
         </th>
       </tr>

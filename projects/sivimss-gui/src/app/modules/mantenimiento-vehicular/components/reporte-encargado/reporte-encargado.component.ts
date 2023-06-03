@@ -9,6 +9,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-reporte-encargado',
@@ -63,7 +64,7 @@ export class ReporteEncargadoComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    this.catalogoPlacas = respuesta[this.POSICION_CATALOGOS_PLACAS].datos;
+    this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
     this.tipoReportes = respuesta[this.POSICION_CATALOGOS_TIPO_MTTO];
   }
 

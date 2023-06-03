@@ -19,6 +19,7 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   readonly _nivel: string = 'catalogo_nivelOficina';
   readonly _delegacion: string = 'catalogo_delegaciones';
   readonly _proveedores: string = 'cat-mtto-proveedores';
+  readonly _vehiculos: string = 'busqueda-vehiculos-mtto';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "mtto-vehicular-modificar",
@@ -47,7 +48,9 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   }
 
   obtenerCatalogoPlacas(): Observable<HttpRespuesta<any>> {
-    return of({datos: [], error: false, codigo: 0, mensaje: '0'})
+    const params: HttpParams = new HttpParams()
+      .append("servicio", this._vehiculos);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
   }
 
   obtenerCatalogoReporteEncargado(): Observable<TipoDropdown[]> {
@@ -58,11 +61,11 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return of(CATALOGO_TIPO_REPORTE_PREDICTIVO);
   }
 
-  buscarPorFiltros(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  buscarPorFiltros(pagina: number, tamanio: number, t: any): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, {},
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, t,
       {params});
   }
 
