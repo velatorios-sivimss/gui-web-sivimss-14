@@ -15,6 +15,8 @@ import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {FiltrosMantenimientoPredictivo} from "../../models/filtrosMantenimientoPredictivo.interface";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-mantenimiento-predictivo',
@@ -80,7 +82,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
     this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
-    this.tipoMantenimientos = respuesta[this.POSICION_CATALOGOS_TIPO_MTTO];
+    this.tipoMantenimientos = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_TIPO_MTTO].datos, "DES_MTTO_REPORTE_TIPO", "ID_MTTO_REPORTE_TIPO");
   }
 
   get fmp() {
@@ -127,12 +129,28 @@ export class MantenimientoPredictivoComponent implements OnInit {
     this.cargarVelatorios(true);
   }
 
-  consultaServicioEspecifico(): string {
-    return "";
+  buscar(): void {
+    const filtros: FiltrosMantenimientoPredictivo = this.generarSolicitudFiltros();
+    this.mantenimientoVehicularService.buscarReporteMttoPreventivo(filtros).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        console.log(respuesta)
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+      }
+    })
   }
 
-  buscar(): void {
-    this.verDetallePredictivo = true
+  generarSolicitudFiltros(): FiltrosMantenimientoPredictivo {
+    return {
+      delegacion: this.filtroForm.get('delegacion')?.value,
+      fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+      fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+      nivelOficina: this.filtroForm.get('nivel')?.value,
+      placa: this.filtroForm.get('placa')?.value,
+      tipoMtto: this.filtroForm.get('tipoMantenimiento')?.value,
+      velatorio: this.filtroForm.get('velatorio')?.value
+    }
   }
 
 

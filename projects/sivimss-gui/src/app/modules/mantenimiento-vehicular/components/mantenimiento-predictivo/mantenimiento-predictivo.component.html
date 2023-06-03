@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-6">
           <label class="control-label" for="placa">Placa*:</label>
-          <p-dropdown id="placa" class="form-control" formControlName="delegacion" [options]="catalogoPlacas"
+          <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
                       placeholder="Seleccionar vehículo">
           </p-dropdown>
         </div>
@@ -47,13 +47,14 @@
             </div>
             <div class="col-md-6">
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde"
-                          styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy">
+                          styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
+                          [maxDate]="fmp?.fechaVigenciaHasta?.value">
               </p-calendar>
             </div>
             <div class="col-md-6">
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta"
                           styleClass="form-control" [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy"
-                          appendTo="body">
+                          appendTo="body" [minDate]="fmp?.fechaVigenciaDesde?.value">
               </p-calendar>
 
             </div>

@@ -57,8 +57,10 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return of(CATALOGO_TIPO_REPORTE_ENCARGADO);
   }
 
-  obtenerCatalogoMttoPredictivo(): Observable<TipoDropdown[]> {
-    return of(CATALOGO_TIPO_REPORTE_PREDICTIVO);
+  obtenerCatalogoMttoPredictivo(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", 'cat-mtto-reporte-tipo-mtto')
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params})
   }
 
   buscarPorFiltros(pagina: number, tamanio: number, t: any): Observable<HttpRespuesta<any>> {
@@ -105,5 +107,9 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   obtenerRegistroVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
     const body = {idVehiculo}
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, body)
+  }
+
+  buscarReporteMttoPreventivo(t: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/reporte-predictivo-vehiculos-mtto`, t);
   }
 }
