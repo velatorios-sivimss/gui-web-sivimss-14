@@ -202,9 +202,9 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       (respuesta: HttpRespuesta<any>) => {
         if(respuesta.datos){
           if(respuesta.mensaje.includes("interno")){
-            let [anio,mes,dia]= respuesta.datos[0].fecNac.split('-');
+            let [anio,mes,dia]= respuesta.datos[0].fechaNacimiento.split('-');
             dia = dia.substr(0,2);
-            const fecha = new Date(anio+"/"+mes+"/"+dia)
+            const fecha = new Date(anio+"-"+mes+"-"+dia)
             this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
             this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
             this.fds.segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno);
@@ -218,11 +218,16 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.primerApellido.setValue(respuesta.datos.apellido1);
             this.fds.segundoApellido.setValue(respuesta.datos.apellido2);
             this.fds.fechaNacimiento.setValue(fecha);
-            // if(respuesta.datos.nacionalidad.includes("MEX")){
-            //   this.fds.nacionalidad.setValue(1);
-            //   return
-            // }
-            // this.fds.nacionalidad.setValue(2);
+            if(respuesta.datos.sexo.includes("sexo")){
+              this.fds.sexo.setValue(1);
+            }else{
+              this.fds.sexo.setValue(2);
+            }
+            if(respuesta.datos.nacionalidad.includes("MEX")){
+              this.fds.nacionalidad.setValue(1);
+              return
+            }
+            this.fds.nacionalidad.setValue(2);
           }
         }
       },
@@ -238,27 +243,36 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        this.limpiarFormularioDatosSolicitante();
-        if(respuesta.datos){
-          if(respuesta.mensaje.includes("interno")){
-            let [anio,mes,dia]= respuesta.datos[0].fecNac.split('-');
-            dia = dia.substr(0,2);
-            const fecha = new Date(anio+"/"+mes+"/"+dia)
-            this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
-            this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
-            this.fds.segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno);
-            this.fds.fechaNacimiento.setValue(fecha);
-          }
-
-          if(respuesta.mensaje.includes("externo")){
-            const [anio,mes,dia]= respuesta.datos.identificacion[0].fNacimiento.split('-');
-            const fecha = new Date(anio+"/"+mes+"/"+dia)
-            this.fds.nombre.setValue(respuesta.datos.identificacion[0].nombre);
-            this.fds.primerApellido.setValue(respuesta.datos.identificacion[0].apPaterno);
-            this.fds.segundoApellido.setValue(respuesta.datos.identificacion[0].apMaterno);
-            this.fds.fechaNacimiento.setValue(fecha);
-          }
+        // this.limpiarFormularioDatosSolicitante();
+        if(respuesta.mensaje.includes("33")) {
+          this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
+          return
         }
+        // if(respuesta.datos){
+        //   if(respuesta.mensaje.includes("interno")){
+        //     let [anio,mes,dia]= respuesta.datos[0].fecNac.split('-');
+        //     dia = dia.substr(0,2);
+        //     const fecha = new Date(anio+"/"+mes+"/"+dia)
+        //     this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
+        //     this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
+        //     this.fds.segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno);
+        //     this.fds.fechaNacimiento.setValue(fecha);
+        //   }
+        //
+        //   if(respuesta.mensaje.includes("externo")){
+        //     const [anio,mes,dia]= respuesta.datos.identificacion[0].fNacimiento.split('-');
+        //     const fecha = new Date(anio+"/"+mes+"/"+dia)
+        //     this.fds.nombre.setValue(respuesta.datos.identificacion[0].nombre);
+        //     this.fds.primerApellido.setValue(respuesta.datos.identificacion[0].apPaterno);
+        //     this.fds.segundoApellido.setValue(respuesta.datos.identificacion[0].apMaterno);
+        //     this.fds.fechaNacimiento.setValue(fecha);
+        //     if(respuesta.datos.identificacion[0].paisOrigen.includes("ESTADOS UNIDOS MEXICANOS")){
+        //       this.fds.nacionalidad.setValue(1);
+        //       return
+        //     }
+        //     this.fds.nacionalidad.setValue(2);
+        //   }
+        // }
       },
       (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
@@ -314,7 +328,8 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         console.log(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error?.error?.mensaje);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, msg);
       }
     )
   }

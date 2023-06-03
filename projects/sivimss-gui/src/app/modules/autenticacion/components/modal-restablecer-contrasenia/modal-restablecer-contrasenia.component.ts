@@ -109,7 +109,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
 
   restablecerContrasenia(): void {
     const {usuario} = this.formRestContraUsuario.value;
-    this.router.navigate(["inicio-sesion/restablecer-contrasenia"], {
+     void this.router.navigate(["inicio-sesion/restablecer-contrasenia"], {
       relativeTo: this.activatedRoute,
       queryParams: {usuario}
     });

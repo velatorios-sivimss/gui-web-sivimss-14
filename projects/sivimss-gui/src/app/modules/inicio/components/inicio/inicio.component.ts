@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-inicio',
@@ -7,21 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InicioComponent implements OnInit {
 
-  anuncio: any[] = [];
-  
-  constructor() {
+  anuncio: {image: string }[] = [];
+
+  ngOnInit(): void {
+    this.anuncio = [
+      {image: "slide1.jpg"},
+      {image: "slide2.jpg"}
+    ];
   }
 
-  ngOnInit() {
-      this.anuncio =  [
-        {
-          image: "slide1.jpg"
-        },
-        {
-          image: "slide2.jpg",
-        }
-      ];
-  }
-  
 
 }

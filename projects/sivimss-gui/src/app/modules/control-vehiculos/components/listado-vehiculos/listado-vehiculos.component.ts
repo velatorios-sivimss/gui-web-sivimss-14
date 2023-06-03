@@ -45,7 +45,7 @@ export class ListadoVehiculosComponent implements OnInit, OnDestroy {
 
   registrarEntrada(vehiculo: ControlVehiculoListado): void {
     this.registrarEntradaRef = this.dialogService.open(RegistrarEntradaComponent, {
-      header: 'Registrar Entrada',
+      header: 'Entrada de vehículo',
       width: '920px',
       data: { vehiculo },
     });

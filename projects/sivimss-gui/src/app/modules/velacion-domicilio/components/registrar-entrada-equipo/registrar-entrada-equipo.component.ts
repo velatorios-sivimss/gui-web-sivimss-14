@@ -56,7 +56,7 @@ export class RegistrarEntradaEquipoComponent implements OnInit {
           return msj.idMensaje == respuesta.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
-        this.referencia.close();
+        this.referencia.close(true);
       },
       (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
@@ -77,7 +77,7 @@ export class RegistrarEntradaEquipoComponent implements OnInit {
   }
 
   cancelar(): void {
-    this.referencia.close();
+    this.referencia.close(false);
   }
 
   get ref() {

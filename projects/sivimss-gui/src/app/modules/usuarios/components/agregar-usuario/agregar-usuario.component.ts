@@ -168,10 +168,10 @@ export class AgregarUsuarioComponent implements OnInit {
     const idNivel = this.agregarUsuarioForm.get("nivel")?.value;
     const idDelegacion = this.agregarUsuarioForm.get("delegacion")?.value;
     const idVelatorio = this.agregarUsuarioForm.get("velatorio")?.value;
-    this.rolResumen = this.catalogoRoles.find(rol => rol.value === idRol)?.label || "";
-    this.nivelResumen = this.catalogoNiveles.find(nivel => nivel.value === idNivel)?.label || "";
-    this.delegacionResumen = this.catalogoDelegaciones.find(delegacion => delegacion.value === idDelegacion)?.label || "";
-    this.velatorioResumen = this.catalogoVelatorios.find(velatorio => velatorio.value === idVelatorio)?.label || "";
+    this.rolResumen = this.catalogoRoles.find(rol => rol.value === idRol)?.label ?? "";
+    this.nivelResumen = this.catalogoNiveles.find(nivel => nivel.value === idNivel)?.label ?? "";
+    this.delegacionResumen = this.catalogoDelegaciones.find(delegacion => delegacion.value === idDelegacion)?.label ?? "";
+    this.velatorioResumen = this.catalogoVelatorios.find(velatorio => velatorio.value === idVelatorio)?.label ?? "";
   }
 
   validarCurp(): void {

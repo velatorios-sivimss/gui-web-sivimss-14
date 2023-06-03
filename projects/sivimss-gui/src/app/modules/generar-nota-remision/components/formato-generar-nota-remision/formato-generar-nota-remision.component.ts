@@ -104,7 +104,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
 
   generarNotaRemision() {
     this.abrirModalGenerandoNotaRemision();
-    this.generarNotaRemisionService.guardar({ idOrden: 1 }).subscribe(
+    this.generarNotaRemisionService.guardar({ idOrden: this.idOds }).subscribe(
       (respuesta) => {
         this.creacionRef.close();
         const mensaje = this.alertas?.filter((msj: any) => {
@@ -128,26 +128,20 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     );
   }
 
-  generarReporteOrdenServicio(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {};
-    if (tipoReporte == "xls") {
-      configuracionArchivo.ext = "xlsx"
-    }
-
-    this.loaderService.activar();
+  generarReporteOrdenServicio(tipoReporte: string) {
     const busqueda = this.filtrosArchivos(tipoReporte);
-
-    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
-        console.log(respuesta);
+    this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe(
+      (response) => {
+        var file = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(file);
+        window.open(url);
       },
-      (error) => {
-        console.log(error);
-      },
-    )
+      (error: HttpErrorResponse) => {
+        console.error('Error al descargar reporte: ', error.message);
+      }
+    );
   }
+
 
   filtrosArchivos(tipoReporte: string): GenerarReporte {
     return {

@@ -32,6 +32,7 @@ import {AgregarAtaudComponent } from './components/control-salida-donaciones/agr
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
 import {GestionarDonacionesService} from "./services/gestionar-donaciones.service";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -66,6 +67,7 @@ import {GestionarDonacionesService} from "./services/gestionar-donaciones.servic
     CheckboxModule,
     UtileriaModule,
     ValidaRolModule,
+    BtnRegresarModule,
   ],
   providers: [
     ConsultaDonacionesService,

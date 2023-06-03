@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { HttpErrorResponse } from "@angular/common/http";
 
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -65,8 +65,10 @@ export class RegistrarEntradaComponent implements OnInit {
 
   iniciarFormRegistrarEntrada(): void {
     this.formRegistrarEntrada = this.formBuilder.group({
-      nivelGasolina: [{ value: null, disabled: false }, [Validators.required]],
-      kilometrajeFinal: [{ value: null, disabled: false }, [Validators.required]],
+      fecha: new FormControl({ value: (new Date()), disabled: true }, []),
+      hora: new FormControl({ value: moment().format('HH:mm'), disabled: true }, []),
+      nivelGasolina: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      kilometrajeFinal: new FormControl({ value: null, disabled: false }, [Validators.required]),
     });
   }
 
@@ -95,7 +97,7 @@ export class RegistrarEntradaComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
-          
+
 
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
@@ -209,8 +211,8 @@ export class RegistrarEntradaComponent implements OnInit {
     return {
       idVehiculo: this.vehiculoSeleccionado.idVehiculo,
       idODS: +this.datosVehiculo.idODS,
-      fecEntrada: moment().format('yyyy/MM/DD'),
-      horaEntrada: moment().format('HH:mm'),
+      fecEntrada: moment(this.f.fecha.value).format('yyyy-MM-DD'),
+      horaEntrada: this.f.hora.value,
       gasolinaFinal: this.f.nivelGasolina.value,
       kmFinal: +this.f.kilometrajeFinal.value,
     }

@@ -99,11 +99,28 @@
     </div>
     <div class="row">
       <div class="col-md-6">
+        <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
+        <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true" placeholder="Fecha"
+          dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio" *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">
+          Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="hora">Hora<span class="req">*</span>:</label>
+        <p-calendar id="hora" styleClass="form-control" formControlName="hora" placeholder="00:00"
+          [timeOnly]="true"></p-calendar>
+        <span class="campo-obligatorio" *ngIf="f.hora?.errors?.required && (f.hora?.dirty || f.hora?.touched)">
+          Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
         <label class="control-label" for="nivelGasolina">Nivel de gasolina final<span class="req">*</span>:</label>
         <input id="nivelGasolina" class="form-control" formControlName="nivelGasolina">
         <span class="campo-obligatorio"
           *ngIf="f.nivelGasolina?.errors?.required && (f.nivelGasolina?.dirty || f.nivelGasolina?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="kilometrajeFinal">Kilometraje final (km)<span class="req">*</span>:</label>
@@ -112,7 +129,7 @@
           [maxlength]="16" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
           *ngIf="f.kilometrajeFinal?.errors?.required && (f.kilometrajeFinal?.dirty || f.kilometrajeFinal?.touched)">
-          Campo obligatorio</span>
+          Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
