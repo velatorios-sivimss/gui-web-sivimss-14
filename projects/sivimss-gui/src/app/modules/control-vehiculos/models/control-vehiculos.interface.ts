@@ -25,4 +25,5 @@ export interface ControlVehiculoConsulta {
   placas: string,
   disponible: number,
   ods?: number,
+  idDisponibilidad: number,
 }

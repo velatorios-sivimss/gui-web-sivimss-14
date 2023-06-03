@@ -5,6 +5,7 @@ export interface EntradaVehiculo {
   horaEntrada: string;
   gasolinaFinal: string;
   kmFinal: number;
+  idDispVehiculo: number;
 }
 
 export interface SalidaVehiculo {

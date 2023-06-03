@@ -34,6 +34,7 @@ export class RegistrarEntradaComponent implements OnInit {
     placas: '',
     disponible: 0,
     idODS: 0,
+    idDisponibilidad: 0,
   };
   vehiculoSeleccionado: ControlVehiculoListado = {
     idVehiculo: 0,
@@ -158,6 +159,7 @@ export class RegistrarEntradaComponent implements OnInit {
       horaEntrada: this.f.hora.value,
       gasolinaFinal: this.f.nivelGasolina.value,
       kmFinal: +this.f.kilometrajeFinal.value,
+      idDispVehiculo: +this.datosVehiculo.idDisponibilidad,
     }
   }
 

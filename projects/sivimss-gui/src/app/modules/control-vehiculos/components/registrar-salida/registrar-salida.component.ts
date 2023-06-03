@@ -30,6 +30,7 @@ export class RegistrarSalidaComponent implements OnInit {
   responsableSeleccionado: TipoDropdown[] = [];
   catalogoResponsables: TipoDropdown[] = [];
   fechaActual: Date = new Date();
+  idOds: number = 0;
   datosVehiculo: ControlVehiculoConsulta = {
     marca: '',
     nombreDestino: '',
@@ -42,6 +43,7 @@ export class RegistrarSalidaComponent implements OnInit {
     placas: '',
     disponible: 0,
     idODS: 0,
+    idDisponibilidad: 0,
   };
   vehiculoSeleccionado: ControlVehiculoListado = {
     idVehiculo: 0,
@@ -150,7 +152,7 @@ export class RegistrarSalidaComponent implements OnInit {
   datosGuardar(): SalidaVehiculo {
     return {
       idVehiculo: +this.vehiculoSeleccionado.idVehiculo,
-      idODS: +this.datosVehiculo.idODS,
+      idODS: this.idOds,
       fecSalida: moment(this.f.fecha.value).format('yyyy-MM-DD'),
       horaSalida: this.f.hora.value,
       gasolinaInicial: this.f.nivelGasolinaInicial.value,
@@ -166,11 +168,12 @@ export class RegistrarSalidaComponent implements OnInit {
       ).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos?.content.length > 0) {
-            const { nombreContratante, nombreDestino, nombreFinado, nombreOrigen } = respuesta.datos?.content[0] || [];
+            const { idOds, nombreContratante, nombreDestino, nombreFinado, nombreOrigen } = respuesta.datos?.content[0] || [];
             this.f.nombreContratante.patchValue(nombreContratante);
             this.f.nombreFinado.patchValue(nombreFinado);
             this.f.municipioOrigen.patchValue(nombreOrigen);
             this.f.municipioDestino.patchValue(nombreDestino);
+            this.idOds = +idOds;
           } else {
             const mensaje = this.alertas?.filter((msj: any) => {
               return msj.idMensaje == respuesta.mensaje;
