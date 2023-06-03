@@ -10,6 +10,13 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {FiltrosReporteEncargado} from "../../models/filtrosReporteEncargado.interface";
+import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import * as moment from "moment/moment";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {RegistroReporteEncargado} from "../../models/registroReporteEncargado.interface";
 
 @Component({
   selector: 'app-reporte-encargado',
@@ -21,7 +28,6 @@ export class ReporteEncargadoComponent implements OnInit {
   data = [{dia: "Lunes", valor: 38},];
   dataDetalle = [{rin: "No. 11", presicion: 38}, {rin: "No. 11", presicion: 38}, {rin: "No. 11", presicion: 38},];
 
-
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel
 
@@ -29,14 +35,13 @@ export class ReporteEncargadoComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
   totalElementos: number = 0
 
-  vehiculos: VehiculoMantenimiento[] = []
-  vehiculoSeleccionado!: VehiculoMantenimiento;
+  velatorio: string = '';
+  totalVehiculos: number = 0;
+  rangoFecha: string = '';
+  registrosReporte: RegistroReporteEncargado[] = [];
+  registroSeleccionado!: RegistroReporteEncargado;
 
   filtroForm!: FormGroup
-
-  creacionRef!: DynamicDialogRef
-  detalleRef!: DynamicDialogRef
-  modificacionRef!: DynamicDialogRef
 
   tipoReportes: TipoDropdown[] = [];
   catalogoPlacas: TipoDropdown[] = [];
@@ -54,12 +59,15 @@ export class ReporteEncargadoComponent implements OnInit {
     public dialogService: DialogService,
     private router: Router,
     private route: ActivatedRoute,
+    private mantenimientoVehicularService: MantenimientoVehicularService,
   ) {
   }
 
   ngOnInit(): void {
     this.cargarCatalogos();
     this.inicializarFiltroForm();
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.velatorio = `#${usuario.idVelatorio}`;
   }
 
   cargarCatalogos(): void {
@@ -67,7 +75,6 @@ export class ReporteEncargadoComponent implements OnInit {
     this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
     this.tipoReportes = respuesta[this.POSICION_CATALOGOS_TIPO_MTTO];
   }
-
 
   limpiar(): void {
     this.filtroForm.reset();
@@ -83,18 +90,36 @@ export class ReporteEncargadoComponent implements OnInit {
       placa: [{value: null, disabled: false}, [Validators.required]],
       fechaVigenciaDesde: [{value: null, disabled: false}, [Validators.required]],
       fecahVigenciaHasta: [{value: null, disabled: false}, [Validators.required]],
-    })
-  }
-
-  consultaServicioEspecifico(): string {
-    return "";
+    });
   }
 
   buscar(): void {
-    this.mostrarTabla = true
+    const filtros: FiltrosReporteEncargado = this.crearSolicitudFiltros();
+    this.mostrarTabla = true;
+    this.mantenimientoVehicularService.buscarReporteEncargado(filtros).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.totalVehiculos = respuesta.datos.totalElements;
+        this.registrosReporte = respuesta.datos.content;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+      }
+    });
   }
 
-  abrirDetallereporteEncargado(articulo: VehiculoMantenimiento): void {
+  crearSolicitudFiltros(): FiltrosReporteEncargado {
+    this.rangoFecha = `${moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY')} a
+    ${moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY')}`
+    return {
+      fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+      fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+      placa: this.filtroForm.get('placa')?.value,
+      tipoReporte: this.filtroForm.get('tipoReporte')?.value
+    }
+  }
+
+  abrirDetallereporteEncargado(registro: RegistroReporteEncargado): void {
+    this.registroSeleccionado = registro;
     this.mostrarDetalle = true;
   }
 

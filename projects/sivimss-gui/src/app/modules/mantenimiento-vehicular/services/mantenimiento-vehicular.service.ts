@@ -7,7 +7,7 @@ import {HttpRespuesta} from "../../../models/http-respuesta.interface";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../services/autenticacion.service";
 import {environment} from "../../../../environments/environment";
-import {CATALOGO_TIPO_REPORTE_ENCARGADO, CATALOGO_TIPO_REPORTE_PREDICTIVO} from "../constants/catalogos-filtros";
+import {CATALOGO_TIPO_REPORTE_ENCARGADO} from "../constants/catalogos-filtros";
 
 interface ConsultaVelatorio {
   idDelegacion: string | null
@@ -111,5 +111,9 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   buscarReporteMttoPreventivo(t: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/reporte-predictivo-vehiculos-mtto`, t);
+  }
+
+  buscarReporteEncargado(t: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/reporte-encargado-vehiculos-mtto`, t);
   }
 }

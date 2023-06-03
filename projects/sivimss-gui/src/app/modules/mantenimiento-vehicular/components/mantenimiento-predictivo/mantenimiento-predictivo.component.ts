@@ -138,7 +138,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
       error: (error: HttpErrorResponse): void => {
         console.error(error);
       }
-    })
+    });
   }
 
   generarSolicitudFiltros(): FiltrosMantenimientoPredictivo {
