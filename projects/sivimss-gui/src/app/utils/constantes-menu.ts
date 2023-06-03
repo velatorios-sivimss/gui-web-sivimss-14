@@ -76,7 +76,7 @@ export const idsModulos: DatoModulo = {
     icono: ''
   },
   '23': {
-    ruta: '',
+    ruta: '/programar-mantenimiento-vehicular',
     icono: ''
   },
   '24': {
