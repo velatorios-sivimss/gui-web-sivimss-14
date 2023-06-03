@@ -62,19 +62,17 @@ export class VelacionDomicilioComponent implements OnInit {
     private descargaArchivosService: DescargaArchivosService,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.actualizarBreadcrumb();
-    this.inicializarFiltroForm();
+    await this.inicializarFiltroForm();
     this.cargarCatalogos();
     this.paginar();
   }
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    // const velatorios = respuesta[this.POSICION_VELATORIOS].datos;
     this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
-    // this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
     const ods = respuesta[this.POSICION_ODS_GENERADAS]?.datos;
     this.foliosGenerados = mapearArregloTipoDropdown(ods, "folioOds", "idOds");
   }
@@ -97,29 +95,29 @@ export class VelacionDomicilioComponent implements OnInit {
 
   paginar(event?: LazyLoadEvent): void {
     if (this.filtroForm.valid) {
-      if (event && event.first !== undefined && event.rows !== undefined) {
+      if (event?.first !== undefined && event.rows !== undefined) {
         this.numPaginaActual = Math.floor(event.first / event.rows);
       } else {
         this.numPaginaActual = 0;
       }
-      this.velacionDomicilioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-        (respuesta) => {
-          this.vale = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
+      this.velacionDomicilioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          this.vale = respuesta.datos?.content;
+          this.totalElementos = respuesta.datos?.totalElements;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == error?.error?.mensaje;
           })
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
         }
-      );
+      });
     }
   }
 
   abrirDetalleValeSalida(vale: VelacionDomicilioInterface): void {
-    this.router.navigate([`reservar-capilla/velacion-en-domicilio/ver-detalle/${vale.idValeSalida}`]);
+    this.router.navigate([`reservar-capilla/velacion-en-domicilio/ver-detalle/${vale.idValeSalida}`]).then(() => { }).catch(() => { });
   }
 
   abrirModalRegistroEntradaEquipo(): void {
@@ -143,23 +141,23 @@ export class VelacionDomicilioComponent implements OnInit {
     if (this.valeSeleccionado.idValeSalida) {
       this.velacionDomicilioService.eliminarVale(this.valeSeleccionado.idValeSalida).pipe(
         finalize(() => this.loaderService.desactivar())
-      ).subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == respuesta.mensaje;
           })
-          // this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+          this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
           this.alertaService.mostrar(TipoAlerta.Exito, 'Se ha eliminado correctamente');
           this.paginar();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == error?.error?.mensaje;
           })
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
         }
-      );
+      });
     }
   }
 
@@ -170,24 +168,24 @@ export class VelacionDomicilioComponent implements OnInit {
         this.velacionDomicilioService.descargarValeSalida(this.controlMovimiento())
       ).pipe(
         finalize(() => this.loaderService.desactivar())
-      ).subscribe(
-        (respuesta) => {
+      ).subscribe({
+        next: (respuesta: any) => {
           console.log(respuesta);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == error?.error?.mensaje;
           })
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
         },
-      )
+      });
     }
   }
 
   controlMovimiento(): ControlMovimiento {
     return {
-      idValeSalida: this.valeSeleccionado.idValeSalida || null,
+      idValeSalida: this.valeSeleccionado.idValeSalida ?? null,
       ruta: "reportes/generales/ReporteValeSalida.jrxml",
       tipoReporte: "pdf"
     }
@@ -199,23 +197,21 @@ export class VelacionDomicilioComponent implements OnInit {
       this.velacionDomicilioService.descargarRegistrosTabla(this.reporteTabla(tipoReporte))
     ).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: any) => {
         console.log(respuesta);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
       },
-    )
+    });
   }
 
   reporteTabla(tipoReporte: string): ReporteTabla {
-    // const nombreVelatorio: string =
-    //   this.catalogoVelatorios.filter((item: TipoDropdown) => item.value === this.f.velatorio.value)[0]?.label;
     return {
       idValeSalida: null,
       folioOds: this.f.folioODS.value,
@@ -227,7 +223,7 @@ export class VelacionDomicilioComponent implements OnInit {
   }
 
   buscar(): void {
-    if(this.f.fechaInicio.value > this.f.fechaFinal.value && this.f.fechaFinal.value) {
+    if (this.f.fechaInicio.value > this.f.fechaFinal.value && this.f.fechaFinal.value) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
       return;
     }
@@ -256,28 +252,28 @@ export class VelacionDomicilioComponent implements OnInit {
         this.obtenerObjetoParaFiltrado(),
         this.numPaginaActual,
         this.cantElementosPorPagina
-      ).subscribe(
-        (respuesta) => {
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (!respuesta.datos && respuesta.error) {
             this.alertaService.mostrar(TipoAlerta.Precaucion, respuesta.mensaje);
           } else {
-            if (respuesta!.datos?.content.length === 0) {
+            if (respuesta.datos?.content.length === 0) {
               this.vale = [];
               this.totalElementos = 0;
             } else {
-              this.vale = respuesta!.datos.content;
-              this.totalElementos = respuesta!.datos.totalElements;
+              this.vale = respuesta.datos.content;
+              this.totalElementos = respuesta.datos.totalElements;
             }
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == error?.error?.mensaje;
           })
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
         }
-      );
+      });
     } else {
       this.filtroForm.markAllAsTouched();
     }
@@ -299,7 +295,7 @@ export class VelacionDomicilioComponent implements OnInit {
     this.filtroForm.reset();
     this.f.nivel.setValue(+this.rolLocalStorage.idOficina || null);
 
-    if (+this.rolLocalStorage.idOficina >= 2) {
+    if (+ this.rolLocalStorage.idOficina >= 2) {
       this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
     }
 
@@ -312,7 +308,7 @@ export class VelacionDomicilioComponent implements OnInit {
   }
 
   regresar() {
-    this.router.navigate(['/']).then((e)=>{}).catch((e)=>{});
+    this.router.navigate(['/']).then((e) => { }).catch((e) => { });
   }
 
   validarCampoOds() {
@@ -329,19 +325,19 @@ export class VelacionDomicilioComponent implements OnInit {
 
   async obtenerVelatorios() {
     this.foliosGenerados = [];
-    this.velacionDomicilioService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
-      (respuesta) => {
+    this.velacionDomicilioService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.catalogoVelatorios = respuesta.datos ? mapearArregloTipoDropdown(respuesta.datos, "desc", "id") : [];
         this.obtenerFoliosGenerados();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
       }
-    );
+    });
   }
 
   obtenerFoliosGenerados() {
@@ -349,11 +345,11 @@ export class VelacionDomicilioComponent implements OnInit {
       idDelegacion: this.f.delegacion.value,
       idVelatorio: this.f.velatorio.value,
     }
-    this.velacionDomicilioService.obtenerOds(buscarFoliosOds).subscribe(
-      (respuesta) => {
+    this.velacionDomicilioService.obtenerOds(buscarFoliosOds).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let filtrado: TipoDropdown[] = [];
-        if (respuesta!.datos.length > 0) {
-          respuesta!.datos.forEach((e: any) => {
+        if (respuesta.datos.length > 0) {
+          respuesta.datos.forEach((e: any) => {
             filtrado.push({
               label: e.folioOds,
               value: e.idOds,
@@ -364,10 +360,10 @@ export class VelacionDomicilioComponent implements OnInit {
           this.foliosGenerados = [];
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
       }
-    );
+    });
   }
 
   get f() {

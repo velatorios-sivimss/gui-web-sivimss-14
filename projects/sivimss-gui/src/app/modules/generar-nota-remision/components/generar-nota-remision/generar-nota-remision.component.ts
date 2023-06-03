@@ -5,7 +5,7 @@ import { OverlayPanel } from 'primeng/overlaypanel';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -20,6 +20,7 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { finalize } from 'rxjs';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 @Component({
   selector: 'app-generar-nota-remision',
@@ -77,9 +78,9 @@ export class GenerarNotaRemisionComponent implements OnInit {
   ) { }
 
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.actualizarBreadcrumb();
-    this.inicializarFiltroForm();
+    await this.inicializarFiltroForm();
     this.obtenerFoliosGenerados();
     this.cargarCatalogos();
   }
@@ -107,15 +108,15 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   generarNotaRemision(): void {
-    this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
   }
 
   verDetalleNotaRemision(): void {
-    this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
   }
 
   cancelarNotaRemision(): void {
-    this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
   }
 
   abrirPanel(event: MouseEvent, notaRemisionSeleccionada: NotaRemision): void {
@@ -124,16 +125,16 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   paginar(event?: LazyLoadEvent): void {
-    if (event && event.first !== undefined && event.rows !== undefined) {
+    if (event?.first !== undefined && event.rows !== undefined) {
       this.numPaginaActual = Math.floor(event.first / event.rows);
     } else {
       this.numPaginaActual = 0;
     }
-    this.generarNotaRemisionService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        if (respuesta!.datos?.content.length > 0) {
-          this.notasRemision = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
+    this.generarNotaRemisionService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos?.content.length > 0) {
+          this.notasRemision = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
         } else {
           const mensaje = this.alertas?.filter((msj: any) => {
             return msj.idMensaje == respuesta.mensaje;
@@ -143,7 +144,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
           }
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
@@ -152,7 +153,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
         }
       }
-    );
+    });
   }
 
   buscarFoliosNotaRemision() {
@@ -161,20 +162,23 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   buscarPorFiltros(): void {
-    this.generarNotaRemisionService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        if (respuesta!.datos?.content.length > 0) {
-          this.notasRemision = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
+    this.generarNotaRemisionService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos?.content.length > 0) {
+          this.notasRemision = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
         } else {
           this.notasRemision = [];
           this.totalElementos = 0;
           const mensaje = this.alertas?.filter((msj: any) => {
             return msj.idMensaje == respuesta.mensaje;
           });
+          if (mensaje && mensaje.length > 0) {
+            this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
+          }
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
@@ -183,7 +187,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
           this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
         }
       }
-    );
+    });
   }
 
   obtenerObjetoParaFiltrado(): BusquedaFiltro {
@@ -203,11 +207,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.filtroForm.reset();
     this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
 
-    if(+this.rolLocalStorage.idRol >= 2) {
+    if (+this.rolLocalStorage.idRol >= 2) {
       this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
     }
 
-    if(+this.rolLocalStorage.idRol === 3) {
+    if (+this.rolLocalStorage.idRol === 3) {
       this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
     }
 
@@ -215,11 +219,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   obtenerFoliosGenerados() {
-    this.generarNotaRemisionService.buscarTodasOdsGeneradas().subscribe(
-      (respuesta) => {
+    this.generarNotaRemisionService.buscarTodasOdsGeneradas().subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let filtrado: TipoDropdown[] = [];
-        if (respuesta!.datos.length > 0) {
-          respuesta!.datos.forEach((e: any) => {
+        if (respuesta?.datos.length > 0) {
+          respuesta?.datos.forEach((e: any) => {
             filtrado.push({
               label: e.nombre,
               value: e.id,
@@ -230,21 +234,21 @@ export class GenerarNotaRemisionComponent implements OnInit {
           this.foliosGenerados = [];
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
       }
-    );
+    });
   }
 
   async obtenerVelatorios() {
-    this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
-      (respuesta) => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
+    this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
       }
-    );
+    });
   }
 
   generarReporteNotaRemision(tipoReporte: string): void {
@@ -258,14 +262,14 @@ export class GenerarNotaRemisionComponent implements OnInit {
 
     this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: any) => {
         console.log(respuesta);
       },
-      (error) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       },
-    )
+    });
   }
 
   generarReporteTabla(tipoReporte: string): void {
@@ -280,14 +284,14 @@ export class GenerarNotaRemisionComponent implements OnInit {
 
     this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteTabla(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: any) => {
         console.log(respuesta);
       },
-      (error) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       },
-    )
+    });
   }
 
   filtrosArchivos(tipoReporte: string): GenerarReporte {

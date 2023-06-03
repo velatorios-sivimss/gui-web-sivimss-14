@@ -20,6 +20,9 @@ import { finalize } from "rxjs/operators";
 import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
 import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
 import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
+import { PrevisualizacionArchivoComponent } from "./previsualizacion-archivo/previsualizacion-archivo.component";
+import { of } from 'rxjs';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-calendario-vehiculos',
@@ -37,6 +40,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
   private _filtroFormData!: FiltroFormData;
 
   @Input() controlVehiculos: ControlVehiculoListado[] = [];
+  mensajeArchivoConfirmacion: string | undefined;
 
   @Input()
   set filtroFormData(filtroFormData: FiltroFormData) {
@@ -58,6 +62,14 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
   base64: any;
   actividadRef!: DynamicDialogRef;
   currentEvents: EventApi[] = [];
+  defaultColor: string[] = [
+    '#376ED9',
+    '#45855d',
+    '#8d0789',
+    '#d0bb25',
+    '#dd0505',
+  ];
+  archivoRef!: DynamicDialogRef;
 
   constructor(
     private alertaService: AlertaService,
@@ -65,7 +77,8 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     private readonly loaderService: LoaderService,
     private route: ActivatedRoute,
     private controlVehiculosService: ControlVehiculosService,
-    private descargaArchivosService: DescargaArchivosService
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
@@ -84,7 +97,6 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
       selectable: true,
       dayHeaders: false,
       eventClick: this.mostrarEvento.bind(this),
-      // dateClick: ((evt: any) => this.mostrarEvento(evt)),
       eventsSet: this.handleEvents.bind(this),
       dayMaxEventRows: 3,
       titleFormat: { year: 'numeric', month: 'long' },
@@ -117,7 +129,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
   }
 
   generarReporteCalendar(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {};
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Disponibilidad de vehículos' };
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
@@ -127,8 +139,8 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
 
     this.controlVehiculosService.generarReporteCalendar(busqueda).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200) {
           const file = new Blob(
             [this.descargaArchivosService.base64_2Blob(
@@ -136,15 +148,33 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
               this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
             { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
           const url = window.URL.createObjectURL(file);
-          window.open(url);
+          if (tipoReporte !== "xls") {
+            this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
+              data: url,
+              header: "",
+              width: "920px",
+            });
+          } else {
+            this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+              finalize(() => this.loaderService.desactivar())
+            ).subscribe({
+              next: (respuesta: any) => {
+                this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                this.alertaService.mostrar(TipoAlerta.Exito, this.mensajeArchivoConfirmacion);
+              },
+              error: (error: HttpErrorResponse) => {
+                this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+              }
+            });
+          }
         } else {
           console.error(respuesta.mensaje);
         }
       },
-      (error) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
       },
-    )
+    });
   }
 
   filtrosArchivos(tipoReporte: string): GenerarReporteCalendar {
@@ -163,20 +193,24 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
       fecIniRepo: moment(this.fechaCalendario).startOf('month').format('YYYY-MM-DD'),
       fecFinRepo: moment(this.fechaCalendario).endOf('month').format('YYYY-MM-DD'),
     };
-    this.controlVehiculosService.obtenerVehiculosCalendario(buscar).pipe().subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        respuesta.datos.forEach((vehiculo: any) => {
-          const title: string = `${vehiculo.placas} - ${vehiculo.marca} ${vehiculo.modelo}`
+    this.controlVehiculosService.obtenerVehiculosCalendario(buscar).pipe().subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        respuesta.datos.forEach((vehiculo: any, index: number) => {
+          const title: string = `${vehiculo.placas} - ${vehiculo.marca} ${vehiculo.modelo}`;
           this.calendarioVehiculos.getApi().addEvent(
-            { id: vehiculo.idVehiculo, title, start: vehiculo.fecha, textColor: '#376ED9', borderColor: '#484848', backgroundColor: 'white' },
+            { id: vehiculo.idVehiculo, title, start: vehiculo.fecha, textColor: '#FFFFFF', borderColor: '#484848', backgroundColor: this.defaultColor[this.getRandomInt(4)] },
           );
         })
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
+  }
+
+  getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
   }
 
   ngOnDestroy(): void {

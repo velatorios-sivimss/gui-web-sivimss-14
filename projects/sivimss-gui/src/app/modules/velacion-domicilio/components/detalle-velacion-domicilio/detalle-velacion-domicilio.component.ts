@@ -76,18 +76,18 @@ export class DetalleVelacionDomicilioComponent implements OnInit {
     if (this.detalleValeSalida.idValeSalida) {
       this.velacionDomicilioService.obtenerDetalleValeSalida(this.detalleValeSalida.idValeSalida).pipe(
         finalize(() => this.loaderService.desactivar())
-      ).subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             this.detalleValeSalida = respuesta.datos;
             console.log(respuesta.datos);
-            
+
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
     }
   }
 

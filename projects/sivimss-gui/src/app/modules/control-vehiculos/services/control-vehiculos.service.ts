@@ -1,7 +1,7 @@
 import { BaseService } from "../../../utils/base-service";
 import { HttpRespuesta } from "../../../models/http-respuesta.interface";
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
 import { Observable, of } from "rxjs";
 import { TipoDropdown } from "../../../models/tipo-dropdown";
@@ -74,10 +74,6 @@ export class ControlVehiculosService extends BaseService<HttpRespuesta<any>, any
   }
 
   generarReporteCalendar(generarReporteCalendar: GenerarReporteCalendar): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
     return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/gen-doc-vehiculos`, generarReporteCalendar);
   }
 }

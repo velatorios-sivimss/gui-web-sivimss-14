@@ -84,7 +84,7 @@ export const idsModulos: DatoModulo = {
     icono: ''
   },
   '25': {
-    ruta: '/registrar-capilla',
+    ruta: '/control-de-vehiculos',
     icono: ''
   },
   '70': {

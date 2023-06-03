@@ -11,8 +11,8 @@
       <div class="flex flex-column">
         <span>Disponibilidad</span>
         <div>
-          <span class="disponible-entrada" *ngIf="datosVehiculo.disponibilidad === 1">Disponible</span>
-          <span class="ocupada-entrada" *ngIf="datosVehiculo.disponibilidad !== 1">Ocupada</span>
+          <span class="disponible-entrada activo" *ngIf="datosVehiculo.disponible === 1">Disponible</span>
+          <span class="ocupada-entrada inactivo" *ngIf="datosVehiculo.disponible !== 1">Ocupada</span>
         </div>
       </div>
     </div>
@@ -65,7 +65,7 @@
   </div>
   <div class="row table-panel-row" *ngIf="indice === 1">
     <div class="">
-      <div class="col-md-12">
+      <div class="col-md-12 font-bold mt-4 ml-4">
         Nombre del destino
       </div>
     </div>
@@ -84,7 +84,7 @@
   </div>
   <div class="row table-panel-row" *ngIf="indice === 1">
     <div class="">
-      <div class="col-md-12">
+      <div class="col-md-12 font-bold mt-4 ml-4">
         Registro de salida
       </div>
     </div>
@@ -126,7 +126,7 @@
 <ng-container *ngIf="indice === 1">
   <div class="row mb-5 mt-5">
     <div class="col-md-12 text-center">
-      ¿Estás seguro que deseas registrar la salida de este vehículo?
+      ¿Estás seguro de registrar la salida del vehículo?
     </div>
   </div>
   <div class="row mb-3">
@@ -140,7 +140,7 @@
 
 <ng-container *ngIf="indice === 0">
   <form [formGroup]="formRegistrarSalida">
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-md-6">
         <label class="control-label" for="folioOds">Folio ODS<span class="req">*</span>:</label>
         <input id="folioOds" class="form-control" formControlName="folioOds" placeholder="Ingresa el folio ODS"
@@ -150,7 +150,7 @@
           Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="nombreContratante">Nombre del contratante<span class="req">*</span>:</label>
+        <label class="control-label" for="nombreContratante">Nombre del contratante:</label>
         <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
           placeholder="Ingresa nombre del contratante">
         <span class="campo-obligatorio"
@@ -159,23 +159,15 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-md-6">
-        <label class="control-label" for="nombreFinado">Nombre del finado<span class="req">*</span>:</label>
+        <label class="control-label" for="nombreFinado">Nombre del finado:</label>
         <input id="nombreFinado" class="form-control" formControlName="nombreFinado"
           placeholder="Ingresa nombre del finado">
         <span class="campo-obligatorio"
           *ngIf="f.nombreFinado?.errors?.required && (f.nombreFinado?.dirty || f.nombreFinado?.touched)">
           Este campo es obligatorio *.</span>
       </div>
-      <!-- <div class="col-md-6">
-        <label class="control-label" for="nombreDestino">Nombre del destino<span class="req">*</span>:</label>
-        <input id="nombreDestino" class="form-control" formControlName="nombreDestino"
-          placeholder="Ingresa nombre del destino">
-        <span class="campo-obligatorio"
-          *ngIf="f.nombreDestino?.errors?.required && (f.nombreDestino?.dirty || f.nombreDestino?.touched)">
-          Este campo es obligatorio *.</span>
-      </div> -->
     </div>
   </form>
 </ng-container>
@@ -183,13 +175,13 @@
 <ng-container *ngIf="indice === 0">
   <form [formGroup]="formRegistrarSalida">
     <div class="row mb-3">
-      <div class="col-md-12">
+      <span class="col-md-12 font-bold mt-3">
         Nombre del destino
-      </div>
+      </span>
     </div>
     <div class="row">
       <div class="col-md-6">
-        <label class="control-label" for="municipioOrigen">Municipio origen<span class="req">*</span>:</label>
+        <label class="control-label" for="municipioOrigen">Municipio origen:</label>
         <input id="municipioOrigen" class="form-control" formControlName="municipioOrigen"
           placeholder="Ingresa municipio origen">
         <span class="campo-obligatorio"
@@ -197,7 +189,7 @@
           Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="municipioDestino">Municipio destino<span class="req">*</span>:</label>
+        <label class="control-label" for="municipioDestino">Municipio destino:</label>
         <input id="municipioDestino" class="form-control" formControlName="municipioDestino"
           placeholder="Ingresa municipio destino">
         <span class="campo-obligatorio"
@@ -211,15 +203,15 @@
 <ng-container *ngIf="indice === 0">
   <form [formGroup]="formRegistrarSalida">
     <div class="row mb-3">
-      <div class="col-md-12">
+      <span class="col-md-12 font-bold mt-3">
         Registro de salida
-      </div>
+      </span>
     </div>
     <div class="row">
       <div class="col-md-6">
         <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
         <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true" placeholder="Fecha"
-          dateFormat="dd/mm/yy">
+          dateFormat="dd/mm/yy" [minDate]="fechaActual" [maxDate]="fechaActual">
         </p-calendar>
         <span class="campo-obligatorio" *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">
           Este campo es obligatorio *.</span>
@@ -232,12 +224,12 @@
           Este campo es obligatorio *.</span>
       </div>
     </div>
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-md-6">
         <label class="control-label" for="nivelGasolinaInicial">Nivel de gasolina inicial<span
             class="req">*</span>:</label>
         <input id="nivelGasolinaInicial" class="form-control" formControlName="nivelGasolinaInicial"
-          placeholder="Ingresa el nivel de gasolina">
+          placeholder="Ingresa el nivel de gasolina" trimmer lettersOnly>
         <span class="campo-obligatorio"
           *ngIf="f.nivelGasolinaInicial?.errors?.required && (f.nivelGasolinaInicial?.dirty || f.nivelGasolinaInicial?.touched)">
           Este campo es obligatorio *.</span>
@@ -247,18 +239,18 @@
             class="req">*</span>:</label>
         <p-inputNumber id="kilometrajeInicial" class="form-control" formControlName="kilometrajeInicial" mode="decimal"
           [minFractionDigits]="2" [maxFractionDigits]="2" suffix=" km" placeholder="Ingresa el kilometraje"
-          [maxlength]="16" currency="USD" locale="en-US"></p-inputNumber>
+          [maxlength]="13" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
           *ngIf="f.kilometrajeInicial?.errors?.required && (f.kilometrajeInicial?.dirty || f.kilometrajeInicial?.touched)">
           Este campo es obligatorio *.</span>
       </div>
     </div>
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-md-6">
         <label class="control-label" for="nombreResponsable">Nombre del responsable<span class="req">*</span>:</label>
         <p-dropdown id="nombreResponsable" class="form-control" formControlName="nombreResponsable"
           [options]="catalogoResponsables" placeholder="Selecciona el nombre del responsable" [filter]="true"
-          filterBy="label" [showClear]="true">
+          filterBy="label">
         </p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="f.nombreResponsable?.errors?.required && (f.nombreResponsable?.dirty || f.nombreResponsable?.touched)">
@@ -267,14 +259,14 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-12">
-        <span>*Campos obligatorios</span>
+        <span class="etiqueta-obligatorios">*Campos obligatorios</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
         <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="formRegistrarSalida.invalid"
-          (click)="guardar()">Aceptar
+          (click)="guardar()">Registrar salida
         </button>
       </div>
     </div>

@@ -33,7 +33,7 @@ export class ListadoVehiculosComponent implements OnInit, OnDestroy {
     private readonly loaderService: LoaderService,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { /* TODO document why this method 'ngOnInit' is empty */ }
 
   registrarActividad(vehiculo: ControlVehiculoListado): void {
     if (vehiculo.disponible == 1) {
@@ -72,7 +72,6 @@ export class ListadoVehiculosComponent implements OnInit, OnDestroy {
   retornarColor(estatus: number): string {
     if (estatus === 1) { return "#08A451" }
     if (estatus === 0) { return "#E10000" }
-    // if (estatus === "MANTENIMIENTO") { return "#ffff00" }
     return "";
   }
 

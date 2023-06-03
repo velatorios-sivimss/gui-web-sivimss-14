@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ArticulosServicios, DetalleNotaRemision } from '../../models/nota-remision.interface';
 
 @Component({
@@ -28,7 +28,6 @@ export class DetalleFormatoGenerarNotaRemisionComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
   ) { }
@@ -59,6 +58,6 @@ export class DetalleFormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   btnAceptarDetalle() {
-    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
   }
 }

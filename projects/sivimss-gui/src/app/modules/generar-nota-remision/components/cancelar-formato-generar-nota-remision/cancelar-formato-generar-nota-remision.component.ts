@@ -8,6 +8,7 @@ import { GenerarNotaRemisionService } from '../../services/generar-nota-remision
 import { HttpErrorResponse } from '@angular/common/http';
 import { ArticulosServicios, DetalleNotaRemision } from '../../models/nota-remision.interface';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 @Component({
   selector: 'app-cancelar-formato-generar-nota-remision',
@@ -66,7 +67,7 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   regresar() {
-    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
   }
 
   abrirModalCancelandoNotaRemision(): void {
@@ -86,9 +87,9 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
         idNota: this.idNota,
         idOrden: this.idOds,
         motivo: this.f.motivoCancelacion.value
-      }
-      this.generarNotaRemisionService.cancelarNotaRemision(obj).subscribe(
-        (respuesta) => {
+      };
+      this.generarNotaRemisionService.cancelarNotaRemision(obj).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           this.creacionRef.close();
           const mensaje = this.alertas?.filter((msj: any) => {
             return msj.idMensaje == respuesta.mensaje;
@@ -96,9 +97,9 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
           if (mensaje && mensaje.length > 0) {
             this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
           }
-          this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+          this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == error?.error?.mensaje;
@@ -108,12 +109,12 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
           }
           this.creacionRef.close();
         }
-      );
+      });
     }
   }
 
   btnAceptarDetalle() {
-    this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['../'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
   }
 
   get f() {

@@ -11,6 +11,7 @@ export interface VelacionDomicilioInterface {
   idVelatorio?: number;
   idValeSalida?: number;
   nombreResponsableInstalacion?: string;
+  validacionDias?: number;
 }
 
 export interface EquipoVelacionInterface {
@@ -65,6 +66,7 @@ export interface DatosFolioODS {
   estado?: string;
   cp?: string;
   articulos: Articulo[];
+  validacionDias?: number;
 }
 
 export interface ControlMovimiento {

@@ -11,8 +11,8 @@
       <div class="flex flex-column">
         <span>Disponibilidad</span>
         <div>
-          <span class="disponible-entrada" *ngIf="datosVehiculo.disponibilidad === 1">Disponible</span>
-          <span class="ocupada-entrada" *ngIf="datosVehiculo.disponibilidad !== 1">Ocupada</span>
+          <span class="disponible-entrada activo" *ngIf="datosVehiculo.disponible === 1">Disponible</span>
+          <span class="ocupada-entrada inactivo" *ngIf="datosVehiculo.disponible !== 1">Ocupada</span>
         </div>
       </div>
     </div>
@@ -93,7 +93,7 @@
 <ng-container *ngIf="indice === 0">
   <form [formGroup]="formRegistrarEntrada">
     <div class="row mb-3">
-      <div class="col-md-12">
+      <div class="col-md-12 font-bold mt-3">
         Registro de entrada
       </div>
     </div>
@@ -114,10 +114,10 @@
           Este campo es obligatorio *.</span>
       </div>
     </div>
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-md-6">
         <label class="control-label" for="nivelGasolina">Nivel de gasolina final<span class="req">*</span>:</label>
-        <input id="nivelGasolina" class="form-control" formControlName="nivelGasolina">
+        <input id="nivelGasolina" class="form-control" formControlName="nivelGasolina" trimmer lettersOnly>
         <span class="campo-obligatorio"
           *ngIf="f.nivelGasolina?.errors?.required && (f.nivelGasolina?.dirty || f.nivelGasolina?.touched)">
           Este campo es obligatorio *.</span>
@@ -126,7 +126,7 @@
         <label class="control-label" for="kilometrajeFinal">Kilometraje final (km)<span class="req">*</span>:</label>
         <p-inputNumber id="kilometrajeFinal" class="form-control" formControlName="kilometrajeFinal" mode="decimal"
           [minFractionDigits]="2" [maxFractionDigits]="2" suffix=" km" placeholder="Ingresa el kilometraje"
-          [maxlength]="16" currency="USD" locale="en-US"></p-inputNumber>
+          [maxlength]="13" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
           *ngIf="f.kilometrajeFinal?.errors?.required && (f.kilometrajeFinal?.dirty || f.kilometrajeFinal?.touched)">
           Este campo es obligatorio *.</span>
@@ -141,7 +141,7 @@
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
         <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="formRegistrarEntrada.invalid"
-          (click)="guardar()">Aceptar
+          (click)="guardar()">Registrar entrada
         </button>
       </div>
     </div>
@@ -152,7 +152,7 @@
 <ng-container *ngIf="indice === 1">
   <div class="row mb-5 mt-5">
     <div class="col-md-12 text-center">
-      ¿Estás seguro que deseas registrar la entrada de este vehículo?
+      ¿Estás seguro de registrar la entrada del vehículo?
     </div>
   </div>
   <div class="row mb-3">

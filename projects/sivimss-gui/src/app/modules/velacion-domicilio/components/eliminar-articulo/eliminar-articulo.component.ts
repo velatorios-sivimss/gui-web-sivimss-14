@@ -10,7 +10,7 @@ export class EliminarArticuloComponent implements OnInit {
 
   constructor(private readonly referencia: DynamicDialogRef) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { /* TODO document why this method 'ngOnInit' is empty */ }
 
   cancelar(): void {
     this.referencia.close(false);

@@ -62,7 +62,8 @@
             </div>
           </div>
         </div>
-        <div class="row table-panel-row" *ngIf="!detalleForm && detalleValeSalida.fechaEntrada && detalleValeSalida.fechaEntrada !== 'null'">
+        <div class="row table-panel-row"
+          *ngIf="!detalleForm && detalleValeSalida.fechaEntrada && detalleValeSalida.fechaEntrada !== 'null'">
           <div class="col-md-4">
             <div class="table-panel-column">
               <label>Responsable de los equipos de velación</label>
@@ -180,7 +181,8 @@
 </p-accordion>
 <div class="flex justify-content-end mb-3" *ngIf="!detalleForm">
   <button class="ml-4 mt-3 btn btn-primary btn-md" routerLink="../../">Cerrar</button>
-  <button class="ml-4 mt-3 btn btn btn-default btn-md" (click)="registrarEquipoEntrada()">
+  <button class="ml-4 mt-3 btn btn btn-default btn-md" *ngIf="detalleValeSalida.validacionDias === 1"
+    (click)="registrarEquipoEntrada()">
     Registrar entrada de equipo</button>
 </div>
 

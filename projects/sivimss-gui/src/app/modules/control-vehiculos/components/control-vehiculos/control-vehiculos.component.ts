@@ -3,7 +3,7 @@ import { OverlayPanel } from 'primeng/overlaypanel';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { RESERVAR_SALAS_BREADCRUMB } from '../../constants/breadcrumb';
 import { OpcionesControlVehiculos, SelectButtonOptions } from '../../constants/opciones-reservar-salas';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ControlVehiculosService } from '../../services/control-vehiculos.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
@@ -12,6 +12,7 @@ import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/al
 import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models/control-vehiculos.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 @Component({
   selector: 'app-control-vehiculos',
@@ -45,13 +46,13 @@ export class ControlVehiculosComponent implements OnInit {
     private formBuilder: FormBuilder,
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION];
 
     this.actualizarBreadcrumb();
-    this.inicializarFiltroForm();
+    await this.inicializarFiltroForm();
   }
 
   actualizarBreadcrumb(): void {
@@ -77,15 +78,15 @@ export class ControlVehiculosComponent implements OnInit {
   }
 
   async obtenerVelatorios() {
-    this.controlVehiculosService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
-      (respuesta) => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
+    this.controlVehiculosService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
         this.controlVehiculos = [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
       }
-    );
+    });
   }
 
   async obtenerVehiculos() {
@@ -96,13 +97,14 @@ export class ControlVehiculosComponent implements OnInit {
         fecIniRepo: null,
         fecFinRepo: null
       };
-      this.controlVehiculosService.obtenerVehiculosDisponibles(buscar).subscribe(
-        (respuesta) => {
+      this.controlVehiculosService.obtenerVehiculosDisponibles(buscar).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          this.controlVehiculos = [];
           if (respuesta.datos?.content.length > 0) {
             this.controlVehiculos = respuesta.datos?.content;
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
           const mensaje = this.alertas.filter((msj: any) => {
             return msj.idMensaje == error?.error?.mensaje;
@@ -111,7 +113,7 @@ export class ControlVehiculosComponent implements OnInit {
             this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
           }
         }
-      );
+      });
     }
   }
 
