@@ -1,4 +1,5 @@
 export interface RespuestaSolicitudMantenimiento {
+  NUM_KILOMETRAJE: number;
   "DES_USO": string,
   "DES_NUMMOTOR": string,
   "NOM_VELATORIO": string,

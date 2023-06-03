@@ -70,6 +70,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       const id = this.config.data.id;
       this.realizarRegistro(id);
     }
+    console.log(this.vehiculoSeleccionado);
     this.inicializarRegistroMantenimientoForm();
     this.cargarCatalogos();
   }
@@ -137,10 +138,10 @@ export class RegistroMantenimientoComponent implements OnInit {
     const proveedor = this.solicitudMantenimientoForm.get("nombreProveedor")?.value;
     const nombreProveedor = this.catalogoProveedores.find(p => p.value === proveedor)?.label;
     return {
-      tipoMantenimiento: tipoMantenimientoValor || "",
+      tipoMantenimiento: tipoMantenimientoValor ?? "",
       fechaMantenimiento: this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value,
       notas: this.solicitudMantenimientoForm.get("notas")?.value,
-      nombreProveedor: nombreProveedor || '',
+      nombreProveedor: nombreProveedor ?? '',
       numeroContrato: this.solicitudMantenimientoForm.get("noContrato")?.value,
       taller: this.solicitudMantenimientoForm.get("taller")?.value,
       costo: this.solicitudMantenimientoForm.get("costoMantenimiento")?.value,
@@ -193,7 +194,8 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   abrirRegistroSolicitud(): void {
     this.ref.close();
-    this.router.navigate(['detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO], {relativeTo: this.route});
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
+      {queryParams: {tabview: 2}});
   }
 
   gestionarCampos(): void {

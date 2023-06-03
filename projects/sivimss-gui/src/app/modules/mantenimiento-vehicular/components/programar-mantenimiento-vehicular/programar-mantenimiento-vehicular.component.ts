@@ -22,9 +22,10 @@ import {OverlayPanel} from "primeng/overlaypanel";
 import {LazyLoadEvent} from "primeng/api";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 
 type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
 
@@ -48,7 +49,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   vehiculos: VehiculoMantenimiento[] = [];
   vehiculoSeleccionado!: VehiculoMantenimiento;
 
-  filtroForm!: FormGroup;
+  filtroFormProgramarMantenimiento!: FormGroup;
 
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
@@ -57,9 +58,11 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
+  catalogoPlacas: TipoDropdown[] = [];
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGOS_PLACAS: number = 3;
 
   constructor(
     private route: ActivatedRoute,
@@ -70,7 +73,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     private activatedRoute: ActivatedRoute,
     private cargadorService: LoaderService,
     private mantenimientoVehicularService: MantenimientoVehicularService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService,
   ) {
   }
 
@@ -78,37 +82,22 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.breadcrumbService.actualizar(MANTENIMIENTO_VEHICULAR_BREADCRUMB);
     this.inicializarFiltroForm()
     this.cargarCatalogos();
-    this.cargarDatosUsuario();
+    this.cargarVelatorios(true);
   }
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
+    this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
   }
 
-  cargarDatosUsuario(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(parseInt(usuario.idOficina));
-    this.deshabilitarFiltros(parseInt(usuario.idOficina));
-    this.filtroForm.get('delegacion')?.patchValue(parseInt(usuario.idDelegacion));
-    this.cargarVelatorios();
-    this.filtroForm.get('velatorio')?.patchValue(parseInt(usuario.idVelatorio));
-  }
-
-  deshabilitarFiltros(id: number): void {
-    if (id > 1) {
-      this.filtroForm.get('delegacion')?.disable()
+  cargarVelatorios(cargaInicial: boolean = false): void {
+    if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue("");
     }
-    if (id > 2) {
-      this.filtroForm.get('velatorio')?.disable()
-    }
-  }
-
-  cargarVelatorios(): void {
-    this.catalogoVelatorios = [];
-    this.filtroForm.get('velatorio')?.patchValue("");
-    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    const idDelegacion = this.filtroFormProgramarMantenimiento.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.mantenimientoVehicularService.obtenerVelatorios(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -118,21 +107,23 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
         console.log(error);
         this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    })
+    });
   }
 
   inicializarFiltroForm(): void {
-    this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: true}],
-      delegacion: [{value: null, disabled: false}, [Validators.required]],
-      velatorio: [{value: null, disabled: false}, [Validators.required]],
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroFormProgramarMantenimiento = this.formBuilder.group({
+      nivel: [{value: +usuario.idOficina, disabled: true}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
       placa: [{value: null, disabled: false}, [Validators.required]],
     })
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
@@ -158,7 +149,22 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   paginarConFiltros(): void {
-    console.log()
+    const filtros: FiltrosMantenimientoVehicular = this.crearSolicitudFiltros();
+    if (!Object.values(filtros).some(v => (v))) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+    }
+    this.cargadorService.activar();
+    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.vehiculos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
   buscar(): void {
@@ -168,24 +174,34 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
-    return {}
+    return {
+      nivelOficina: this.filtroFormProgramarMantenimiento.get('nivel')?.value,
+      velatorio: this.filtroFormProgramarMantenimiento.get('velatorio')?.value,
+      placa: this.filtroFormProgramarMantenimiento.get('placa')?.value
+    }
   }
 
   limpiar(): void {
-    this.filtroForm.reset();
+    this.filtroFormProgramarMantenimiento.reset();
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    this.cargarVelatorios(true);
+    this.paginar();
   }
 
   abrirModalnuevaVerificacion(): void {
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
       data: {vehiculo: this.vehiculoSeleccionado},
-      header: "Nueva verificación",
+      header: "Verificar al Inicio de la Jornada",
       width: "920px"
     });
   }
 
   abrirModalSolicitudMantenimiento(): void {
     this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
-      header: "Solicitud de mantenimiento",
+      header: "Solicitud de Mantenimiento Vehicular",
       width: "920px",
       data: {vehiculo: this.vehiculoSeleccionado},
     })
@@ -193,19 +209,10 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   abrirModalRegistroMantenimiento(): void {
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
-      header: "Registro de mantenimiento vehicular",
+      header: "Registro de Mantenimiento Vehicular",
       width: "920px",
       data: {vehiculo: this.vehiculoSeleccionado},
     });
-  }
-
-  abrirModalModificar(): void {
-    this.modificarModal = true;
-  }
-
-  abrirModalDetalle(vehiculoSeleccionado: VehiculoMantenimiento): void {
-    this.vehiculoSeleccionado = vehiculoSeleccionado;
-    this.detalleModal = true;
   }
 
   abrirModalExportarPDF(): void {
@@ -218,18 +225,18 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   seleccionarDetalle(opcion: OpcionMtto): void {
     if (opcion === 'mtto') {
-      this.router.navigate(['./detalle-solicitud-mantenimiento'], {
+      void this.router.navigate(['./detalle-solicitud-mantenimiento'], {
         relativeTo: this.route,
         queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD}
       });
       return;
     }
     if (opcion === 'registroMtto') {
-      this.router.navigate(['./detalle-registro-mantenimiento'],
+      void this.router.navigate(['./detalle-registro-mantenimiento'],
         {relativeTo: this.route, queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO}});
       return;
     }
-    this.router.navigate(['./detalle-verificacion'], {
+    void this.router.navigate(['./detalle-verificacion'], {
       relativeTo: this.route,
       queryParams: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO}
     });
@@ -249,7 +256,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Modificar solicitud de mantenimiento",
       width: "920px",
-      data: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD},
+      data: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD, vehiculo: this.vehiculoSeleccionado},
     });
   }
 
@@ -258,7 +265,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Modificar registro de mantenimiento vehicular",
       width: "920px",
-      data: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO},
+      data: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO, vehiculo: this.vehiculoSeleccionado},
     });
   }
 
@@ -268,7 +275,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   get f() {
-    return this.filtroForm?.controls;
+    return this.filtroFormProgramarMantenimiento?.controls;
   }
 
   ngOnDestroy(): void {

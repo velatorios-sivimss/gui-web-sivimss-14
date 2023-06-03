@@ -1,6 +1,6 @@
 <app-titulo-principal titulo="Programar Mantenimiento Vehicular"></app-titulo-principal>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (submit)="buscar()">
+  <form [formGroup]="filtroFormProgramarMantenimiento" (submit)="buscar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
@@ -24,13 +24,14 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="placa">Placa:</label>
-        <input id="placa" class="form-control" formControlName="placa"
-               placeholder="Ingresa el articulo">
+        <p-dropdown id="placa" class="form-control" formControlName="delegacion" [options]="catalogoPlacas"
+                    placeholder="Seleccionar vehículo">
+        </p-dropdown>
       </div>
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
         <button type="submit" class="btn btn-primary btn-md ml-5">Buscar
         </button>
       </div>
@@ -55,46 +56,50 @@
   <p-table styleClass="mt-5 mb-8" [value]="vehiculos" [paginator]="vehiculos.length > 0"
            [rows]="cantElementosPorPagina"
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="seleccionarPaginacion($event)">
-
+           (onLazyLoad)="seleccionarPaginacion($event)" [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Vehículo</th>
-        <th scope="col">Placas</th>
-        <th scope="col">Kilometraje</th>
-        <th scope="col">Tipo de Mantenimiento</th>
-        <th scope="col">Modalidad</th>
-        <th scope="col">Estatus</th>
-        <th scope="col"></th>
+        <th pResizableColumn id="columna_programar_mtto_id">ID</th>
+        <th pResizableColumn id="columna_programar_mtto_vehiculo">Vehículo</th>
+        <th pResizableColumn id="columna_programar_mtto_placas">Placas</th>
+        <th pResizableColumn id="columna_programar_mtto_kilometraje">Kilometraje</th>
+        <th pResizableColumn id="columna_programar_mtto_tipo">Tipo de Mantenimiento</th>
+        <th pResizableColumn id="columna_programar_mtto_modalidad">Modalidad</th>
+        <th pResizableColumn id="columna_programar_mtto_fecha">Fecha de Mantenimiento</th>
+        <th pResizableColumn id="columna_programar_mtto_costo">Costo de Mantenimiento</th>
+        <th id="columna_programar_mtto_estado">Estado de Mantenimiento</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-vehiculo>
       <tr>
-        <td> {{vehiculo.ID_VEHICULO}} </td>
-        <td> {{vehiculo.DES_MARCA}}  {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</td>
-        <td> {{vehiculo.DES_PLACAS}} </td>
-        <td> {{vehiculo.kilometraje}} </td>
-        <td> {{vehiculo.DES_MTTO_TIPO}} </td>
-        <td> {{vehiculo.DES_MODALIDAD}} </td>
-        <td [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</td>
+        <td pResizableColumn> {{vehiculo.ID_VEHICULO}} </td>
+        <td pResizableColumn> {{vehiculo.DES_MARCA}}  {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</td>
+        <td pResizableColumn> {{vehiculo.DES_PLACAS}} </td>
+        <td pResizableColumn> {{vehiculo.NUM_KILOMETRAJE_REG}} </td>
+        <td pResizableColumn> {{vehiculo.DES_MTTO_TIPO}} </td>
+        <td pResizableColumn> {{vehiculo.DES_MODALIDAD}} </td>
+        <td pResizableColumn>{{vehiculo.FEC_REGISTRO_REG}}</td>
+        <td pResizableColumn></td>
         <td>
-          <div class="contenedor-celda-iconos">
-            <a [routerLink]="['detalle-mantenimiento', vehiculo.ID_VEHICULO]">
-              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-            </a>
-            <a (click)="abrirPanel($event,vehiculo)">
-              <img
-                src="assets/images/imagen-icono-barras-horizontales.svg"
-                alt="icono barras horizontales">
-            </a>
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
+            <span [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</span>
+            <div class="contenedor-celda-iconos">
+              <a [routerLink]="['detalle-mantenimiento', vehiculo.ID_VEHICULO]">
+                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+              </a>
+              <a (click)="abrirPanel($event,vehiculo)">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg"
+                     alt="icono barras horizontales">
+              </a>
+            </div>
           </div>
         </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="8" class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular">
+        <th colspan=9 class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular">
           No se encontro información relacionada a tu búsqueda
         </th>
       </tr>
@@ -121,14 +126,14 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Verificar al inicio" (click)="abrirModalnuevaVerificacion()"
+      <app-overlay-panel-opcion titulo="Verificar al Inicio" (click)="abrirModalnuevaVerificacion()"
                                 *ngIf="vehiculoSeleccionado.verificacionDia === 'false'"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificar()"
+      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = !modificarModal"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Exportar PDF" (click)="abrirModalExportarPDF()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Exportar Excel" (click)="abrirModalExportarExcel()"></app-overlay-panel-opcion>

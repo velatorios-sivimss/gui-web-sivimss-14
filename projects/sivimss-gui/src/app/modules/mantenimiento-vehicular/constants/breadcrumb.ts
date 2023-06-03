@@ -7,6 +7,6 @@ export const MANTENIMIENTO_VEHICULAR_BREADCRUMB: ElementoBreadcrumb[] = [
   },
   {
     icono: '',
-    titulo: 'Programar de Mantenimiento Vehicular'
+    titulo: 'Programar Mantenimiento Vehicular'
   }
 ]

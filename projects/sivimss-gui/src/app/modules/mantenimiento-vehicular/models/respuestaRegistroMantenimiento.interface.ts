@@ -1,4 +1,5 @@
 export interface RespuestaRegistroMantenimiento {
+  NUM_KILOMETRAJE: number;
   DES_DELEGACION: string,
   DES_MARCA: string,
   DES_MODALIDAD: string,

@@ -9,6 +9,14 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {OverlayPanel} from "primeng/overlaypanel";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {FiltrosMantenimientoPredictivo} from "../../models/filtrosMantenimientoPredictivo.interface";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-mantenimiento-predictivo',
@@ -38,31 +46,43 @@ export class MantenimientoPredictivoComponent implements OnInit {
   detalleRef!: DynamicDialogRef
   modificacionRef!: DynamicDialogRef
 
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES
-  tipoMantenimientos: TipoDropdown[] = CATALOGOS_DUMMIES
-  delegaciones: TipoDropdown[] = CATALOGOS_DUMMIES
-  cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES
-  niveles: TipoDropdown[] = CATALOGOS_DUMMIES
-  velatorios: TipoDropdown[] = CATALOGOS_DUMMIES
-
   verDetallePredictivo: boolean = false;
+
+  catalogoNiveles: TipoDropdown[] = [];
+  catalogoDelegaciones: TipoDropdown[] = [];
+  catalogoVelatorios: TipoDropdown[] = [];
+  catalogoPlacas: TipoDropdown[] = [];
+  tipoMantenimientos: TipoDropdown[] = [];
+
+  readonly POSICION_CATALOGOS_NIVELES: number = 0;
+  readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGOS_PLACAS: number = 2;
+  readonly POSICION_CATALOGOS_TIPO_MTTO: number = 3;
 
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
-    private alertaService: AlertaService,
     public dialogService: DialogService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
+    private route: ActivatedRoute,
+    private mantenimientoVehicularService: MantenimientoVehicularService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService,
   ) {
   }
 
   ngOnInit(): void {
-    this.inicializarFiltroForm()
+    this.cargarCatalogos();
+    this.inicializarFiltroForm();
+    this.cargarVelatorios(true);
   }
 
-  limpiar(): void {
-    this.filtroForm.reset();
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
+    this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
+    this.tipoMantenimientos = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_TIPO_MTTO].datos, "DES_MTTO_REPORTE_TIPO", "ID_MTTO_REPORTE_TIPO");
   }
 
   get fmp() {
@@ -70,23 +90,67 @@ export class MantenimientoPredictivoComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}, [Validators.required]],
-      velatorio: [{value: null, disabled: false}, [Validators.required]],
-      delegacion: [{value: null, disabled: false}, [Validators.required]],
+      nivel: [{value: +usuario.idOficina, disabled: true}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
       placa: [{value: null, disabled: false}, [Validators.required]],
       tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
       fechaVigenciaDesde: [{value: null, disabled: false}, [Validators.required]],
       fecahVigenciaHasta: [{value: null, disabled: false}, [Validators.required]],
-    })
+    });
   }
 
-  consultaServicioEspecifico(): string {
-    return "";
+  cargarVelatorios(cargaInicial: boolean = false): void {
+    if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.filtroForm.get('velatorio')?.patchValue("");
+    }
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.mantenimientoVehicularService.obtenerVelatorios(idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
+  }
+
+  limpiar(): void {
+    this.filtroForm.reset();
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    this.cargarVelatorios(true);
   }
 
   buscar(): void {
-    this.verDetallePredictivo = true
+    const filtros: FiltrosMantenimientoPredictivo = this.generarSolicitudFiltros();
+    this.mantenimientoVehicularService.buscarReporteMttoPreventivo(filtros).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        console.log(respuesta)
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+      }
+    });
+  }
+
+  generarSolicitudFiltros(): FiltrosMantenimientoPredictivo {
+    return {
+      delegacion: this.filtroForm.get('delegacion')?.value,
+      fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+      fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+      nivelOficina: this.filtroForm.get('nivel')?.value,
+      placa: this.filtroForm.get('placa')?.value,
+      tipoMtto: this.filtroForm.get('tipoMantenimiento')?.value,
+      velatorio: this.filtroForm.get('velatorio')?.value
+    }
   }
 
 

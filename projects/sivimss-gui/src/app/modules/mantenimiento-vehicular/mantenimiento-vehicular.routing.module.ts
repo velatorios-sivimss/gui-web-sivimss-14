@@ -28,6 +28,8 @@ import {
 import {ReporteEncargadoComponent} from './components/reporte-encargado/reporte-encargado.component'
 import {DetalleMantenimientoComponent} from "./components/detalle-mantenimiento/detalle-mantenimiento.component";
 import {MantenimientoVehicularDetalleResolver} from "./services/mantenimiento-vehicular-detalle.resolver";
+import {ReporteEncargadoResolver} from "./services/reporte-encargado.resolver";
+import {MantenimientoPredictivoResolver} from "./services/mantenimiento-predictivo.resolver";
 
 const routes: Route[] = [
   {
@@ -64,10 +66,16 @@ const routes: Route[] = [
   {
     path: 'mantenimiento-predictivo',
     component: MantenimientoPredictivoComponent,
+    resolve: {
+      respuesta: MantenimientoPredictivoResolver
+    }
   },
   {
     path: 'reporte-encargado',
     component: ReporteEncargadoComponent,
+    resolve: {
+      respuesta: ReporteEncargadoResolver
+    }
   },
   {
     path: 'detalle-mantenimiento/:idVehiculo',
@@ -81,7 +89,8 @@ const routes: Route[] = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [MantenimientoVehicularResolver, MantenimientoVehicularDetalleResolver],
+  providers: [MantenimientoVehicularResolver, MantenimientoVehicularDetalleResolver,
+    ReporteEncargadoResolver, MantenimientoPredictivoResolver],
 })
 export class MantenimientoVehicularRoutingModule {
 }

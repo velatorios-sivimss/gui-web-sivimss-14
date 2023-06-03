@@ -7,6 +7,7 @@ import {HttpRespuesta} from "../../../models/http-respuesta.interface";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../services/autenticacion.service";
 import {environment} from "../../../../environments/environment";
+import {CATALOGO_TIPO_REPORTE_ENCARGADO} from "../constants/catalogos-filtros";
 
 interface ConsultaVelatorio {
   idDelegacion: string | null
@@ -18,6 +19,7 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   readonly _nivel: string = 'catalogo_nivelOficina';
   readonly _delegacion: string = 'catalogo_delegaciones';
   readonly _proveedores: string = 'cat-mtto-proveedores';
+  readonly _vehiculos: string = 'busqueda-vehiculos-mtto';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "mtto-vehicular-modificar",
@@ -45,16 +47,28 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
   }
 
-  buscarPorFiltros(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  obtenerCatalogoPlacas(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", this._vehiculos);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
+  obtenerCatalogoReporteEncargado(): Observable<TipoDropdown[]> {
+    return of(CATALOGO_TIPO_REPORTE_ENCARGADO);
+  }
+
+  obtenerCatalogoMttoPredictivo(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", 'cat-mtto-reporte-tipo-mtto')
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params})
+  }
+
+  buscarPorFiltros(pagina: number, tamanio: number, t: any): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, {},
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, t,
       {params});
-  }
-
-  override guardar(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._agregar}`, t);
   }
 
   override buscarPorPagina(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -93,5 +107,13 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   obtenerRegistroVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
     const body = {idVehiculo}
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, body)
+  }
+
+  buscarReporteMttoPreventivo(t: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/reporte-predictivo-vehiculos-mtto`, t);
+  }
+
+  buscarReporteEncargado(t: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/reporte-encargado-vehiculos-mtto`, t);
   }
 }
