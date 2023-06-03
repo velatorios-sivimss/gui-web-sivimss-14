@@ -2,13 +2,11 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import {CATALOGOS_DUMMIES} from '../../../inventario-vehicular/constants/dummies';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {DialogService} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
-import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {FiltrosReporteEncargado} from "../../models/filtrosReporteEncargado.interface";
 import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
@@ -17,6 +15,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import * as moment from "moment/moment";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {RegistroReporteEncargado} from "../../models/registroReporteEncargado.interface";
+import {tablaRin} from "../../constants/tabla-rines";
 
 @Component({
   selector: 'app-reporte-encargado',
@@ -25,8 +24,7 @@ import {RegistroReporteEncargado} from "../../models/registroReporteEncargado.in
   providers: [DialogService]
 })
 export class ReporteEncargadoComponent implements OnInit {
-  data = [{dia: "Lunes", valor: 38},];
-  dataDetalle = [{rin: "No. 11", presicion: 38}, {rin: "No. 11", presicion: 38}, {rin: "No. 11", presicion: 38},];
+  dataDetalle = tablaRin;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel
@@ -52,6 +50,8 @@ export class ReporteEncargadoComponent implements OnInit {
   readonly POSICION_CATALOGOS_PLACAS: number = 0;
   readonly POSICION_CATALOGOS_TIPO_MTTO: number = 1;
 
+  fechaActual: Date = new Date();
+
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
@@ -66,8 +66,7 @@ export class ReporteEncargadoComponent implements OnInit {
   ngOnInit(): void {
     this.cargarCatalogos();
     this.inicializarFiltroForm();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.velatorio = `#${usuario.idVelatorio}`;
+    this.obtenerVelatorios();
   }
 
   cargarCatalogos(): void {
@@ -121,6 +120,21 @@ export class ReporteEncargadoComponent implements OnInit {
   abrirDetallereporteEncargado(registro: RegistroReporteEncargado): void {
     this.registroSeleccionado = registro;
     this.mostrarDetalle = true;
+  }
+
+  obtenerVelatorios(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.velatorio = `#${usuario.idVelatorio}`;
+
+    this.mantenimientoVehicularService.obtenerVelatorios(usuario.idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const velatorio = respuesta.datos.find((v: { id: string | number; }) => (+v.id === +usuario.idVelatorio)).desc;
+        this.velatorio = `#${usuario.idVelatorio} ${velatorio}`;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+      }
+    });
   }
 
 

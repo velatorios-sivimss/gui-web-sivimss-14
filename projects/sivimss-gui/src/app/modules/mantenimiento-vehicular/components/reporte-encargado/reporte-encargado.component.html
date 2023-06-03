@@ -4,16 +4,20 @@
     <form [formGroup]="filtroForm">
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="tipoReporte">Tipo de reporte*:</label>
+          <label class="control-label" for="tipoReporte">Tipo de reporte<span class="req">*</span>:</label>
           <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
                       placeholder="Selecciona el tipo">
           </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="placa">Placa*:</label>
+          <label class="control-label" for="placa">Placa<span class="req">*</span>:</label>
           <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
                       placeholder="Seleccionar vehículo">
           </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fmp?.placa?.errors?.required && (fmp?.placa?.dirty || fmp?.placa?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -26,20 +30,26 @@
             </div>
             <div class="col-md-6">
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
-                          [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy">
+                          [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
+                          [maxDate]="fmp?.fecahVigenciaHasta?.value || fechaActual">
               </p-calendar>
+              <span class="campo-obligatorio"
+                    *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este campo es obligatorio *.</span>
             </div>
             <div class="col-md-6">
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
-                          [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body">
+                          [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body"
+                          [maxDate]="fechaActual" [minDate]="fmp?.fechaVigenciaDesde?.value">
               </p-calendar>
+              <span class="campo-obligatorio"
+                    *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
         </div>
       </div>
       <div class="row mb-4">
         <div class="col-md-12">
-          <span>*Campos obligatorios</span>
+          <span class="control-label">*Campos obligatorios</span>
         </div>
       </div>
       <div class="row mt-6">
@@ -114,9 +124,15 @@
                         <a (click)="abrirDetallereporteEncargado(item)">
                           <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
                         </a>
-
                       </div>
                     </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+                      No se encontro información relacionada a tu búsqueda.
+                    </th>
                   </tr>
                 </ng-template>
               </p-table>
@@ -235,7 +251,7 @@
                       <ng-template pTemplate="body" let-item>
                         <tr>
                           <td>{{ item.rin }}</td>
-                          <td>{{ item.presicion }}</td>
+                          <td>{{ item.precision }}</td>
                         </tr>
                       </ng-template>
                     </p-table>
