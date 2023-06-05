@@ -18,6 +18,7 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _derechos: string = 'consultar-derechos-rec-pagos';
   private readonly _tramites: string = 'consultar-tramites-rec-pagos';
   private readonly _recibo_detalle: string = 'consultar-porId-rec-pagos';
+  private readonly _filtros: string = 'rec-pagos-filtros';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -30,7 +31,7 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body = {idDelegacion: delegacion}
+    const body: { idDelegacion: string | null } = {idDelegacion: delegacion}
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
@@ -38,12 +39,12 @@ export class GenerarReciboService extends BaseService<HttpRespuesta<any>, any> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/rec-pagos-filtros`, filtros,
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._filtros}`, filtros,
       {params});
   }
 
   buscarDatosReportePagos(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
-    const body = {idPagoBitacora}
+    const body: { idPagoBitacora: number } = {idPagoBitacora}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/datos-rec-pagos`, body);
   }
 
