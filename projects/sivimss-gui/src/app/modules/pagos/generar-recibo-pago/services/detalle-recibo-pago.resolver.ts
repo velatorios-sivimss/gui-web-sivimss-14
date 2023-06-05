@@ -10,7 +10,7 @@ export class DetalleReciboTramitesResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const idRecibo = route.paramMap.get('idRecibo') as unknown as number;
+    const idRecibo: number = route.paramMap.get('idRecibo') as unknown as number;
     return this.generarReciboService.obtenerDetalleReciboPago(idRecibo);
   }
 }

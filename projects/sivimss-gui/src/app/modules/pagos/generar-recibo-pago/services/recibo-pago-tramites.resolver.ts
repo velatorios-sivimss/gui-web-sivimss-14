@@ -10,7 +10,7 @@ export class ReciboPagoTramitesResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const idBitacora = route.paramMap.get('idPagoBitacora') as unknown as number;
+    const idBitacora: number = route.paramMap.get('idPagoBitacora') as unknown as number;
     return this.generarReciboService.buscarDatosReportePagos(idBitacora);
   }
 }

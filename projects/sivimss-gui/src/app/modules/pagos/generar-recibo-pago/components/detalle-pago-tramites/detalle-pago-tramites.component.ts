@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {DetalleReciboPago} from "../../models/detalleReciboPago.interface";
 import {ActivatedRoute} from "@angular/router";
 import {GenerarReciboService} from "../../services/generar-recibo-pago.service";
@@ -6,13 +6,16 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
+import {SolicitudReportePagoTramite} from "../../models/solicitudReporte.interface";
+import {Observable} from "rxjs";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 
 @Component({
   selector: 'app-detalle-pago-tramites',
   templateUrl: './detalle-pago-tramites.component.html',
   styleUrls: ['./detalle-pago-tramites.component.scss']
 })
-export class DetallePagoTramitesComponent implements OnInit {
+export class DetallePagoTramitesComponent {
 
   recibo!: DetalleReciboPago
   mes: string = '';
@@ -24,13 +27,12 @@ export class DetallePagoTramitesComponent implements OnInit {
     private generarReciboService: GenerarReciboService,
     private mensajesSistemaService: MensajesSistemaService,
     private cargadorService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService
   ) {
     this.recibo = this.route.snapshot.data["respuesta"].datos[0];
     this.obtenerValoresFecha();
   }
 
-  ngOnInit(): void {
-  }
 
   obtenerValoresFecha(): void {
     const fecha: Date = new Date(this.diferenciaUTCGuion(this.recibo.fecha));
@@ -67,27 +69,18 @@ export class DetallePagoTramitesComponent implements OnInit {
   }
 
   generarPDF(): void {
-    const solicitud = this.generarSolicitudReporte();
+    const solicitud: SolicitudReportePagoTramite = this.generarSolicitudReporte();
     this.cargadorService.activar();
-    this.generarReciboService.descargarReporte(solicitud).pipe(
+    const reporte$: Observable<Blob> = this.generarReciboService.descargarReporte(solicitud);
+    this.descargaArchivosService.descargarArchivo(reporte$).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: Blob): void => {
-        const downloadURL: string = window.URL.createObjectURL(respuesta);
-        const link: HTMLAnchorElement = document.createElement('a');
-        link.href = downloadURL;
-        link.download = `reporte.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      next: (respuesta: boolean): void => {
       },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error)
-      }
     });
   }
 
-  generarSolicitudReporte(tipoReporte: string = "pdf") {
+  generarSolicitudReporte(tipoReporte: string = "pdf"): SolicitudReportePagoTramite {
     return {
       folio: this.recibo.folio,
       delegacion: this.recibo.delegacion,
@@ -108,7 +101,7 @@ export class DetallePagoTramitesComponent implements OnInit {
   }
 
   colocarTitleCase(cadena: string): string {
-    return cadena.split(" ").map((l: string) => l[0].toUpperCase() + l.substr(1)).join(" ");
+    return cadena.split(" ").map((l: string) => l[0].toUpperCase() + l.substring(1)).join(" ");
   }
 
 }

@@ -5,7 +5,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {forkJoin} from "rxjs";
+import {forkJoin, Observable} from "rxjs";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -13,6 +13,8 @@ import {ReciboPagoTramites} from "../../models/ReciboPagoTramites.interface";
 import * as moment from "moment/moment";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {VistaPreviaReciboPago} from "../../models/vistaPreviaReciboPago.interface";
+import {SolicitudReciboPago} from "../../models/solicitudReciboPago.interface";
 
 @Component({
   selector: 'app-recibo-pago-tramites',
@@ -60,11 +62,11 @@ export class ReciboPagoTramitesComponent implements OnInit {
 
   generarRecibo(): void {
     this.cargadorService.activar();
-    const solicitudGuardar = this.generarSolicitudGuardarReporte();
+    const solicitudGuardar: SolicitudReciboPago = this.generarSolicitudGuardarReporte();
     this.generarReciboService.guardar(solicitudGuardar).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
+      next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Recibo generado exitosamente.')
         void this.router.navigate(['../../'], {relativeTo: this.route});
       },
@@ -75,7 +77,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
     });
   }
 
-  generarSolicitudGuardarReporte() {
+  generarSolicitudGuardarReporte(): SolicitudReciboPago {
     const tramite = this.FormReciboPago.get('tramite')?.value;
     const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
     const derecho = this.FormReciboPago.get('derecho')?.value;
@@ -102,8 +104,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
   obtenerCatalogosPorVelatorio(): void {
     if (validarUsuarioLogueado()) return;
     const idVelatorio: string = this.recibo.idVelatorio.toString();
-    const $tramites = this.generarReciboService.obtenerCatalogoTramites(idVelatorio);
-    const $derechos = this.generarReciboService.obtenerCatalogoDerechos(idVelatorio);
+    const $tramites: Observable<HttpRespuesta<any>> = this.generarReciboService.obtenerCatalogoTramites(idVelatorio);
+    const $derechos: Observable<HttpRespuesta<any>> = this.generarReciboService.obtenerCatalogoDerechos(idVelatorio);
     forkJoin([$tramites, $derechos]).subscribe({
       next: (respuesta: [HttpRespuesta<any>, HttpRespuesta<any>]): void => {
         const POSICION_TRAMITES: number = 0;
@@ -140,20 +142,22 @@ export class ReciboPagoTramitesComponent implements OnInit {
   }
 
   generarVistaPrevia(): void {
-    const solicitud = this.generarSolicitudVistaPrevia();
-    this.generarReciboService.descargarReporte(solicitud).subscribe(
-      (response: any): void => {
-        const file = new Blob([response], {type: 'application/pdf'});
-        const url = window.URL.createObjectURL(file);
+    const solicitud: VistaPreviaReciboPago = this.generarSolicitudVistaPrevia();
+    this.cargadorService.activar();
+    this.generarReciboService.descargarReporte(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (response: any): void => {
+        const file: Blob = new Blob([response], {type: 'application/pdf'});
+        const url: string = window.URL.createObjectURL(file);
         window.open(url);
       },
-      (error: HttpErrorResponse): void => {
+      error: (error: HttpErrorResponse): void => {
         console.error('Error al descargar reporte: ', error.message);
       }
-    );
+    });
   }
 
-  generarSolicitudVistaPrevia() {
+  generarSolicitudVistaPrevia(): VistaPreviaReciboPago {
     const tramite = this.FormReciboPago.get('tramite')?.value;
     const descripcionTramite = this.catalogoTramites.find(t => (t.value === tramite))?.value;
     const derecho = this.FormReciboPago.get('derecho')?.value;
@@ -178,11 +182,11 @@ export class ReciboPagoTramitesComponent implements OnInit {
   }
 
   colocarTitleCase(cadena: string): string {
-    return cadena.split(" ").map((l: string) => l[0].toUpperCase() + l.substr(1)).join(" ");
+    return cadena.split(" ").map((l: string) => l[0].toUpperCase() + l.substring(1)).join(" ");
   }
 
   convertirMoneda(valor: number): string {
-    const formatter = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
+    const formatter: Intl.NumberFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
     return formatter.format(valor);
   }
 
