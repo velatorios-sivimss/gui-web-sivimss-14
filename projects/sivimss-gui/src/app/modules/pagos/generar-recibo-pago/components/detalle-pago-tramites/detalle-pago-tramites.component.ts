@@ -7,7 +7,6 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SolicitudReportePagoTramite} from "../../models/solicitudReporte.interface";
-import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 
 @Component({
   selector: 'app-detalle-pago-tramites',
