@@ -1,11 +1,12 @@
 <div class="row">
   <h3>Generar recibo de pago</h3>
 </div>
-
 <div class="row mb-4">
   <div class="col-md-12 border seccion-folio flex justify-content-between">
     <div>
-      <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo">XXXXXX</span></span>
+      <span class="subtitulo texto-centrado">Folio
+        <span class="valor-subtitulo">XXXXXX</span>
+      </span>
     </div>
     <div class="flex flex-column ml-5 mt-2">
       <a (click)="overlayPanel.toggle($event)">
@@ -23,10 +24,12 @@
       </section>
       <hr class="solid">
       <section class="flex justify-content-between info-gral-body mt-7">
-                <span class="etiqueta-formato">Delegación <span
-                  class="etiqueta-formato-val">{{recibo.delegacion}}</span> </span>
-        <span class="etiqueta-formato">Velatorio <span class="etiqueta-formato-val"># {{recibo.idVelatorio}}</span>
-                </span>
+        <span class="etiqueta-formato">Delegación
+          <span class="etiqueta-formato-val">{{recibo.delegacion}}</span>
+        </span>
+        <span class="etiqueta-formato">Velatorio
+          <span class="etiqueta-formato-val"># {{recibo.idVelatorio}}</span>
+        </span>
       </section>
       <section class="border contenido-body">
         <div class="mt-5">
@@ -46,10 +49,11 @@
           </span>
         </div>
         <div>
-                    <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
-            otorgar el contrato
-            de prestación de servicios <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span> en dependencias de acuerdo al siguiente desgloce
-                    </span>
+          <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
+            otorgar el contrato de prestación de servicios
+            <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span>
+            en dependencias de acuerdo al siguiente desgloce
+          </span>
           <form [formGroup]="FormReciboPago">
             <div class="grid-container">
               <div class="grid-item">
@@ -66,7 +70,6 @@
                 <input id="descripcionTramite" class="form-control" formControlName="descripcionTramite">
               </div>
               <div class="grid-item"></div>
-
               <div class="grid-item">
                 <label class="control-label" for="derecho">Derechos<span class="req">*</span>:</label>
                 <p-dropdown id="derecho" class="form-control" [options]="catalogoDerechos"
@@ -81,9 +84,10 @@
                 <input id="descripcionDerecho" class="form-control" formControlName="descripcionDerecho">
               </div>
               <div class="grid-item"></div>
-
               <div class="grid-item mt-5">
-                <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{totalServicios | currency}}</span></span>
+                <span class="etiqueta-formato">Total
+                  <span class="etiqueta-totales">{{totalServicios | currency}}</span>
+                </span>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item"></div>
@@ -94,17 +98,16 @@
             DEVUELTA, JUNTO CON LOS COMPROBANTES ORIGINALES DE LOS TRÁMITES O DERECHOS PAGADOS A SU ENTERA
             SATISFACCIÓN, ANTES DEL TÉRMINO DEL SERVICIO FUNERARIO.
           </span>
-
           <div class="grid-container mb-4">
             <div class="grid-item">
-              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{total | currency}}</span></span>
+              <span class="etiqueta-formato">Total
+                <span class="etiqueta-totales">{{total | currency}}</span>
+              </span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>
           </div>
-
         </div>
-
         <div class="row flex justify-content-between mt-7">
           <div class="card border">
             <p class="etiqueta-formato-val">Agente de funerales</p>
@@ -121,7 +124,6 @@
               </div>
             </div>
           </div>
-
           <div class="card border">
             <p class="etiqueta-formato-val">Contratante</p>
             <div class="container-card">
@@ -131,7 +133,6 @@
               <hr class="solid mt-7">
             </div>
           </div>
-
           <div class="card border">
             <p class="etiqueta-formato-val">Recibe</p>
             <div class="container-card">
@@ -155,8 +156,8 @@
 
 <div class="row flex justify-content-end mb-4">
   <button class="btn btn-default btn-md" [routerLink]="'../../'">Regresar</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="generarRecibo()" [disabled]="FormReciboPago.invalid">Generar
-    formato de pago
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarRecibo()" [disabled]="FormReciboPago.invalid">
+    Generar formato de pago
   </button>
 </div>
 

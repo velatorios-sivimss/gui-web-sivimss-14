@@ -40,7 +40,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   totalElementos: number = 0;
 
   recibosPago: ReciboPago[] = [];
-  reciboPagoSeleccionado!: ListadoRecibo;
+  reciboPagoSeleccionado!: ReciboPago;
   filtroFormReciboPago!: FormGroup;
   creacionRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
