@@ -13,7 +13,8 @@ import {DescargaArchivosService} from "../../../../../services/descarga-archivos
 @Component({
   selector: 'app-detalle-pago-tramites',
   templateUrl: './detalle-pago-tramites.component.html',
-  styleUrls: ['./detalle-pago-tramites.component.scss']
+  styleUrls: ['./detalle-pago-tramites.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class DetallePagoTramitesComponent {
 
