@@ -15,6 +15,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {Pago} from "../../modelos/pago.interface";
+import {FiltrosPago} from "../../modelos/filtrosPago.interface";
 
 @Component({
   selector: 'app-realizar-pago',
@@ -105,8 +106,20 @@ export class RealizarPagoComponent implements OnInit {
 
   }
 
-  private paginarConFiltros() {
-
+  private paginarConFiltros(): void {
+    const filtros: FiltrosPago = this.crearSolicitudFiltros();
+    this.cargadorService.activar();
+    this.realizarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.pagos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
   private paginar(): void {
@@ -122,5 +135,15 @@ export class RealizarPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error.message);
       },
     });
+  }
+
+  private crearSolicitudFiltros(): FiltrosPago {
+    return {
+      claveFolio: "",
+      fechaFin: "",
+      fechaInicio: "",
+      idVelatorio: 0,
+      nomContratante: ""
+    }
   }
 }

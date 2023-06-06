@@ -20,4 +20,12 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, {}, {params})
   }
+
+  buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`,
+      filtros, {params});
+  }
 }
