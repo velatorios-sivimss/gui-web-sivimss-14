@@ -10,7 +10,7 @@ import {
 } from '../registro-mantenimiento/registro-mantenimiento.component'
 import {
   SolicitudMantenimientoComponent
-} from '../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component'
+} from '../solicitud-mantenimiento/solicitud-mantenimiento.component'
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -225,7 +225,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   seleccionarDetalle(opcion: OpcionMtto): void {
     if (opcion === 'mtto') {
-      void this.router.navigate(['./detalle-solicitud-mantenimiento'], {
+      void this.router.navigate(['./detalle-solicitud'], {
         relativeTo: this.route,
         queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD}
       });

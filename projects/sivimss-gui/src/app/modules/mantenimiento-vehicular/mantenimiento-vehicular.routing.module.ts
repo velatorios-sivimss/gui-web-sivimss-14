@@ -9,10 +9,7 @@ import {
 } from './components/nueva-verificacion/nueva-verificacion.component'
 import {
   SolicitudMantenimientoComponent
-} from './components/solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component'
-import {
-  DetalleSolicitudMantenimientoComponent
-} from './components/solicitud-mantenimiento/detalle-solicitud-mantenimiento/detalle-solicitud-mantenimiento.component'
+} from './components/solicitud-mantenimiento/solicitud-mantenimiento.component'
 import {
   RegistroMantenimientoComponent
 } from './components/registro-mantenimiento/registro-mantenimiento.component'
@@ -38,12 +35,8 @@ const routes: Route[] = [
     component: NuevaVerificacionComponent,
   },
   {
-    path: 'solicitud-mantenimiento',
+    path: 'solicitud',
     component: SolicitudMantenimientoComponent,
-  },
-  {
-    path: 'detalle-solicitud-mantenimiento',
-    component: DetalleSolicitudMantenimientoComponent,
   },
   {
     path: 'registro',

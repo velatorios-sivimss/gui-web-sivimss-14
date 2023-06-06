@@ -13,7 +13,7 @@ import {obtenerFechaActual} from "../../../../utils/funciones-fechas";
 import {NuevaVerificacionComponent} from "../nueva-verificacion/nueva-verificacion.component";
 import {
   SolicitudMantenimientoComponent
-} from "../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component";
+} from "../solicitud-mantenimiento/solicitud-mantenimiento.component";
 import {
   RegistroMantenimientoComponent
 } from "../registro-mantenimiento/registro-mantenimiento.component";
