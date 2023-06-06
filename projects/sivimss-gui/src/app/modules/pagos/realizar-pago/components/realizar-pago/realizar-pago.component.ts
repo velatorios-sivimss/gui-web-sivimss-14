@@ -5,7 +5,6 @@ import {REALIZAR_PAGO_BREADCRUMB} from "../../constants/breadcrumb";
 import {BreadcrumbService} from "../../../../../shared/breadcrumb/services/breadcrumb.service";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
-import {REGISTROS_PAGOS} from "../../constants/dummies";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {finalize} from "rxjs/operators";
@@ -13,9 +12,12 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {Pago} from "../../modelos/pago.interface";
 import {FiltrosPago} from "../../modelos/filtrosPago.interface";
+import * as moment from "moment";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-realizar-pago',
@@ -34,8 +36,8 @@ export class RealizarPagoComponent implements OnInit {
 
   filtroForm!: FormGroup;
   catalogoNiveles: TipoDropdown[] = [];
-  velatorios: TipoDropdown[] = [];
   pagos: Pago[] = [];
+  catalogoVelatorios: TipoDropdown[] = [];
 
   realizarPagoModal: boolean = false;
 
@@ -43,19 +45,27 @@ export class RealizarPagoComponent implements OnInit {
               private formBuilder: FormBuilder,
               private realizarPagoService: RealizarPagoService,
               private cargadorService: LoaderService,
-              private mensajesSistemaService: MensajesSistemaService
+              private mensajesSistemaService: MensajesSistemaService,
+              private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(REALIZAR_PAGO_BREADCRUMB);
+    this.cargarCatalogos();
     this.inicializarForm();
   }
 
+  cargarCatalogos(): void {
+    this.catalogoNiveles = this.route.snapshot.data["respuesta"];
+    this.obtenerVelatorios();
+  }
+
   inicializarForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}, []],
-      velatorio: [{value: null, disabled: false}, []],
+      nivel: [{value: +usuario.idOficina, disabled: true}],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idRol === 3}],
       folioOrden: [{value: null, disabled: false}, []],
       folioConvenio: [{value: null, disabled: false}, []],
       folioRenovacion: [{value: null, disabled: false}, []],
@@ -147,10 +157,22 @@ export class RealizarPagoComponent implements OnInit {
   private crearSolicitudFiltros(): FiltrosPago {
     return {
       claveFolio: "",
-      fechaFin: this.filtroForm.get('periodoFin')?.value,
-      fechaInicio: this.filtroForm.get('periodoInicio')?.value,
-      idVelatorio: 1,
+      fechaFin: moment(this.filtroForm.get('periodoFin')?.value).format('YYYY-MM-DD'),
+      fechaInicio: moment(this.filtroForm.get('periodoInicio')?.value).format('YYYY-MM-DD'),
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
       nomContratante: this.filtroForm.get('nombreContratante')?.value
     }
+  }
+
+  private obtenerVelatorios(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.realizarPagoService.obtenerVelatoriosPorDelegacion(usuario.idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+      }
+    });
   }
 }

@@ -10,11 +10,15 @@ import {
   SeleccionBeneficiariosAgfComponent
 } from "./components/seleccion-beneficiarios-agf/seleccion-beneficiarios-agf.component";
 import {DetalleMetodoPagoComponent} from "./components/detalle-metodo-pago/detalle-metodo-pago.component";
+import {RealizarPagoResolver} from "./services/realizar-pago.resolver";
 
 const routes: Routes = [
   {
     path: '',
-    component: RealizarPagoComponent
+    component: RealizarPagoComponent,
+    resolve: {
+      respuesta: RealizarPagoResolver
+    }
   },
   {
     path: 'pago-orden-servicio',
@@ -40,7 +44,8 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [RealizarPagoResolver]
 })
 export class RealizarPagoRoutingModule {
 }
