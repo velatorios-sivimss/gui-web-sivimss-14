@@ -86,16 +86,19 @@
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="seleccionarPaginacion($event)">
+           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th>Fecha</th>
-        <th>Folio</th>
-        <th>Nombre del Contratante</th>
-        <th>Tipo de Pago</th>
-        <th>Total</th>
-        <th>Estatus</th>
-        <th></th>
+        <th pResizableColumn id="columna_realizar_pago_fecha">Fecha</th>
+        <th pResizableColumn id="columna_realizar_pago_folio">Folio</th>
+        <th pResizableColumn id="columna_realizar_pago_contratante">Nombre contratante</th>
+        <th pResizableColumn id="columna_realizar_pago_tipo_pago">Tipo de Pago</th>
+        <th pResizableColumn id="columna_realizar_pago_total">Total</th>
+        <th pResizableColumn id="columna_realizar_pago_estatus">Estatus</th>
+        <th pResizableColumn id="columna_realizar_pago_estatus_pago">Estatus de Pago</th>
+        <th pResizableColumn id="columna_realizar_pago_datos_pago">Datos de Pago</th>
+        <th id="columna_realizar_pago_datos_botones"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-pago>
@@ -106,6 +109,8 @@
         <td>{{pago.tipoPago}}</td>
         <td>{{pago.total}}</td>
         <td>{{pago.estatus}}</td>
+        <td></td>
+        <td></td>
         <td>
           <div class="contenedor-celda-iconos">
             <a (click)="abrirModalDetallePago(pago)" [routerLink]="'./detalle-de-pago'">
@@ -120,7 +125,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="8" class="p-2 text-center font-bold text-xl">
+        <th colspan="9" class="p-2 text-center font-bold text-xl" id="realizar_pago_sin_resultados">
           No se encontro información relacionada a tu búsqueda
         </th>
       </tr>

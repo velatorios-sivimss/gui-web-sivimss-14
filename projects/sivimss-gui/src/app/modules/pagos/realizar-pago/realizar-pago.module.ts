@@ -24,6 +24,7 @@ import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 import {CheckboxModule} from "primeng/checkbox";
 import { SeleccionBeneficiariosAgfComponent } from './components/seleccion-beneficiarios-agf/seleccion-beneficiarios-agf.component';
 import { DetalleMetodoPagoComponent } from './components/detalle-metodo-pago/detalle-metodo-pago.component';
+import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 
 
 @NgModule({
@@ -38,22 +39,23 @@ import { DetalleMetodoPagoComponent } from './components/detalle-metodo-pago/det
     SeleccionBeneficiariosAgfComponent,
     DetalleMetodoPagoComponent
   ],
-  imports: [
-    CommonModule,
-    RealizarPagoRoutingModule,
-    TituloPrincipalModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    CalendarModule,
-    UtileriaModule,
-    ValidaRolModule,
-    TableModule,
-    InputSwitchModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    DialogModule,
-    TablePanelModule,
-    CheckboxModule
-  ]
+    imports: [
+        CommonModule,
+        RealizarPagoRoutingModule,
+        TituloPrincipalModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        CalendarModule,
+        UtileriaModule,
+        ValidaRolModule,
+        TableModule,
+        InputSwitchModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        DialogModule,
+        TablePanelModule,
+        CheckboxModule,
+        CeldaStickyModule
+    ]
 })
 export class RealizarPagoModule { }
