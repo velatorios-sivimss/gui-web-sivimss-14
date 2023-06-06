@@ -97,20 +97,20 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   abrirModalDetallePago(pago: any): void {
-
+    console.log(pago);
   }
 
   abrirPanel(event: MouseEvent, pago: any): void {
     this.overlayPanel.toggle(event);
-
+    console.log(pago)
   }
 
   guardarPDF(): void {
-
+    console.log();
   }
 
   guardarExcel(): void {
-
+    console.log();
   }
 
   private paginarConFiltros(): void {
@@ -147,10 +147,10 @@ export class RealizarPagoComponent implements OnInit {
   private crearSolicitudFiltros(): FiltrosPago {
     return {
       claveFolio: "",
-      fechaFin: "",
-      fechaInicio: "",
-      idVelatorio: 0,
-      nomContratante: ""
+      fechaFin: this.filtroForm.get('periodoFin')?.value,
+      fechaInicio: this.filtroForm.get('periodoInicio')?.value,
+      idVelatorio: 1,
+      nomContratante: this.filtroForm.get('nombreContratante')?.value
     }
   }
 }
