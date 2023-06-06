@@ -13,10 +13,7 @@ import {MantenimientoVehicularRoutingModule} from './mantenimiento-vehicular.rou
 import {MantenimientoVehicularService} from './services/mantenimiento-vehicular.service';
 import {
   NuevaVerificacionComponent
-} from './components/nueva-verificacion/nueva-verificacion/nueva-verificacion.component';
-import {
-  DetalleNuevaVerificacionComponent
-} from './components/nueva-verificacion/detalle-nueva-verificacion/detalle-nueva-verificacion.component';
+} from './components/nueva-verificacion/nueva-verificacion.component';
 import {
   SolicitudMantenimientoComponent
 } from './components/solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component';
@@ -55,7 +52,6 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
   declarations: [
     ProgramarMantenimientoVehicularComponent,
     NuevaVerificacionComponent,
-    DetalleNuevaVerificacionComponent,
     SolicitudMantenimientoComponent,
     DetalleSolicitudMantenimientoComponent,
     RegistroMantenimientoComponent,

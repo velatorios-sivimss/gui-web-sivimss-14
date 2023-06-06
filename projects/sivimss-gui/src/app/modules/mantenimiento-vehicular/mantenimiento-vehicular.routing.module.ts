@@ -6,10 +6,7 @@ import {
 import {MantenimientoVehicularResolver} from './services/mantenimiento-vehicular.resolver'
 import {
   NuevaVerificacionComponent
-} from './components/nueva-verificacion/nueva-verificacion/nueva-verificacion.component'
-import {
-  DetalleNuevaVerificacionComponent
-} from './components/nueva-verificacion/detalle-nueva-verificacion/detalle-nueva-verificacion.component'
+} from './components/nueva-verificacion/nueva-verificacion.component'
 import {
   SolicitudMantenimientoComponent
 } from './components/solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component'
@@ -40,12 +37,8 @@ const routes: Route[] = [
     }
   },
   {
-    path: 'nueva-verificacion',
+    path: 'nueva',
     component: NuevaVerificacionComponent,
-  },
-  {
-    path: 'detalle-verificacion',
-    component: DetalleNuevaVerificacionComponent,
   },
   {
     path: 'solicitud-mantenimiento',

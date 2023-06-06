@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
 import {ActivatedRoute, Router} from '@angular/router'
-import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion/nueva-verificacion.component'
+import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion.component'
 import {
   RegistroMantenimientoComponent
 } from '../registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component'

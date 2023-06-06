@@ -10,7 +10,7 @@ import {RespuestaVerificacion} from "../../models/respuestaVerificacion.interfac
 import {RespuestaSolicitudMantenimiento} from "../../models/respuestaSolicitudMantenimiento.interface";
 import {RespuestaRegistroMantenimiento} from "../../models/respuestaRegistroMantenimiento.interface";
 import {obtenerFechaActual} from "../../../../utils/funciones-fechas";
-import {NuevaVerificacionComponent} from "../nueva-verificacion/nueva-verificacion/nueva-verificacion.component";
+import {NuevaVerificacionComponent} from "../nueva-verificacion/nueva-verificacion.component";
 import {
   SolicitudMantenimientoComponent
 } from "../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component";
