@@ -66,11 +66,18 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   buscar(): void {
-
+    this.numPaginaActual = 0;
+    this.paginacionConFiltrado = true;
+    this.paginarConFiltros();
   }
 
   limpiar(): void {
-
+    this.paginacionConFiltrado = false;
+    if (this.filtroForm) {
+      this.filtroForm.reset();
+    }
+    this.numPaginaActual = 0;
+    this.paginar();
   }
 
   abrirModalPago(): void {
