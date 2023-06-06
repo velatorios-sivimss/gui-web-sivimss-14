@@ -5,15 +5,6 @@ import {
 } from './components/programar-mantenimiento-vehicular/programar-mantenimiento-vehicular.component'
 import {MantenimientoVehicularResolver} from './services/mantenimiento-vehicular.resolver'
 import {
-  NuevaVerificacionComponent
-} from './components/nueva-verificacion/nueva-verificacion.component'
-import {
-  SolicitudMantenimientoComponent
-} from './components/solicitud-mantenimiento/solicitud-mantenimiento.component'
-import {
-  RegistroMantenimientoComponent
-} from './components/registro-mantenimiento/registro-mantenimiento.component'
-import {
   MantenimientoPredictivoComponent
 } from './components/mantenimiento-predictivo/mantenimiento-predictivo.component'
 import {ReporteEncargadoComponent} from './components/reporte-encargado/reporte-encargado.component'
@@ -29,18 +20,6 @@ const routes: Route[] = [
     resolve: {
       respuesta: MantenimientoVehicularResolver
     }
-  },
-  {
-    path: 'nueva',
-    component: NuevaVerificacionComponent,
-  },
-  {
-    path: 'solicitud',
-    component: SolicitudMantenimientoComponent,
-  },
-  {
-    path: 'registro',
-    component: RegistroMantenimientoComponent,
   },
   {
     path: 'mantenimiento-predictivo',
