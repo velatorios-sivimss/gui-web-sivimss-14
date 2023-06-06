@@ -145,7 +145,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   filtrosArchivos(tipoReporte: string): GenerarReporte {
     return {
       idNota: 0,
-      idOrden: +this.f.folioODS.value,
+      idOrden: this.idOds,
       tipoReporte,
     }
   }
