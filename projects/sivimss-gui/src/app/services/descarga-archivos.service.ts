@@ -1,18 +1,15 @@
-import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
-import { catchError, switchMap } from "rxjs/operators";
-import { OpcionesArchivos } from "../models/opciones-archivos.interface";
+import {Injectable} from "@angular/core";
+import {Observable, of} from "rxjs";
+import {catchError, switchMap} from "rxjs/operators";
+import {OpcionesArchivos} from "../models/opciones-archivos.interface";
 
 @Injectable()
 export class DescargaArchivosService {
 
-  readonly pdf_ext = { 'application/pdf': ['.pdf'] };
+  readonly pdf_ext = {'application/pdf': ['.pdf']};
   readonly pdf_nom = "PDF";
-  readonly excel_ext = { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] };
+  readonly excel_ext = {'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']};
   readonly excel_nom = "Excel workbook";
-
-  constructor() {
-  }
 
   base64_2Blob(base64: string, contentType: string): Blob {
     const byteCharacters = atob(base64);
@@ -21,18 +18,18 @@ export class DescargaArchivosService {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: contentType });
+    const blob = new Blob([byteArray], {type: contentType});
     return blob;
   }
 
   obtenerContentType(options: OpcionesArchivos = {}): string {
-    const ext: "pdf" | "xlsx" = options.ext || "pdf";
+    const ext: "pdf" | "xlsx" = options.ext ?? "pdf";
     return ext === "pdf" ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   }
 
-  descargarArchivo(archivo$: Observable<Blob>, options: OpcionesArchivos = {}) {
-    const nombreArchivo: string = options.nombreArchivo || "documento";
-    const ext: "pdf" | "xlsx" = options.ext || "pdf";
+  descargarArchivo(archivo$: Observable<Blob>, options: OpcionesArchivos = {}): Observable<boolean> {
+    const nombreArchivo: string = options.nombreArchivo ?? "documento";
+    const ext: "pdf" | "xlsx" = options.ext ?? "pdf";
     const configuracion: SaveFilePickerOptions = {
       suggestedName: `${nombreArchivo}.${ext}`,
       types: [
@@ -42,19 +39,41 @@ export class DescargaArchivosService {
         },
       ],
     };
+
     return archivo$.pipe(
       switchMap((archivoBlob: Blob) => {
+        // Safari
+        if (typeof (window.navigator as any).msSaveOrOpenBlob !== 'undefined') {
+          (window.navigator as any).msSaveOrOpenBlob(archivoBlob, configuracion.suggestedName);
+          console.log('Archivo guardado correctamente.');
+          return of(true);
+        }
+
+        // Firefox
+        if (typeof window.showSaveFilePicker === 'undefined' && typeof window.showDirectoryPicker !== 'undefined') {
+          return window.showDirectoryPicker().then((directoryHandle: FileSystemDirectoryHandle) => {
+            return directoryHandle.getFileHandle(nombreArchivo, {create: true}).then((fileHandle: FileSystemFileHandle) => {
+              return fileHandle.createWritable().then((writable: FileSystemWritableFileStream): boolean => {
+                void writable.write(archivoBlob);
+                void writable.close();
+                return true;
+              });
+            });
+          });
+        }
+
+        // (Chrome, Edge)
         return window.showSaveFilePicker(configuracion).then((fileHandle: FileSystemFileHandle) => {
-          return fileHandle.createWritable().then((writable: FileSystemWritableFileStream) => {
-            writable.write(archivoBlob);
-            writable.close();
-            console.log('Archivo guardado correctamente.');
+          return fileHandle.createWritable().then((writable: FileSystemWritableFileStream): boolean => {
+            void writable.write(archivoBlob);
+            void writable.close();
             return true;
           });
         });
       }),
       catchError((error) => {
-        throw 'Error al guardar el archivo:';
+        console.log(error);
+        throw 'Error al guardar el archivo.';
       })
     );
   }

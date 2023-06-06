@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {DetalleReciboPago} from "../../models/detalleReciboPago.interface";
 import {ActivatedRoute} from "@angular/router";
 import {GenerarReciboService} from "../../services/generar-recibo-pago.service";
@@ -6,13 +6,16 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
+import {SolicitudReportePagoTramite} from "../../models/solicitudReporte.interface";
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 
 @Component({
   selector: 'app-detalle-pago-tramites',
   templateUrl: './detalle-pago-tramites.component.html',
-  styleUrls: ['./detalle-pago-tramites.component.scss']
+  styleUrls: ['./detalle-pago-tramites.component.scss'],
+  providers: [DescargaArchivosService]
 })
-export class DetallePagoTramitesComponent implements OnInit {
+export class DetallePagoTramitesComponent {
 
   recibo!: DetalleReciboPago
   mes: string = '';
@@ -29,8 +32,6 @@ export class DetallePagoTramitesComponent implements OnInit {
     this.obtenerValoresFecha();
   }
 
-  ngOnInit(): void {
-  }
 
   obtenerValoresFecha(): void {
     const fecha: Date = new Date(this.diferenciaUTCGuion(this.recibo.fecha));
@@ -87,7 +88,7 @@ export class DetallePagoTramitesComponent implements OnInit {
     });
   }
 
-  generarSolicitudReporte(tipoReporte: string = "pdf") {
+  generarSolicitudReporte(tipoReporte: string = "pdf"): SolicitudReportePagoTramite {
     return {
       folio: this.recibo.folio,
       delegacion: this.recibo.delegacion,
@@ -108,7 +109,7 @@ export class DetallePagoTramitesComponent implements OnInit {
   }
 
   colocarTitleCase(cadena: string): string {
-    return cadena.split(" ").map((l: string) => l[0].toUpperCase() + l.substr(1)).join(" ");
+    return cadena.split(" ").map((l: string) => l[0].toUpperCase() + l.substring(1)).join(" ");
   }
 
 }

@@ -7,7 +7,6 @@
       <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo">{{recibo.folio}}</span></span>
     </div>
   </div>
-
   <div class="col-md-12 border">
     <div class="body">
       <section class="titulo-body">
@@ -16,16 +15,15 @@
           CONGRESO Y TIENDAS RECIBO DE PAGO DE TRÁMITES POR CUENTA DEL CONTRATANTE
         </p>
       </section>
-
       <hr class="solid">
-
       <section class="flex justify-content-between info-gral-body mt-7">
-                <span class="etiqueta-formato">Delegación <span
-                  class="etiqueta-formato-val">{{recibo.delegacion}}</span> </span>
-        <span class="etiqueta-formato">Velatorio <span class="etiqueta-formato-val">{{recibo.velatorio}}</span>
-                </span>
+        <span class="etiqueta-formato">Delegación
+          <span class="etiqueta-formato-val">{{recibo.delegacion}}</span>
+        </span>
+        <span class="etiqueta-formato">Velatorio
+          <span class="etiqueta-formato-val">{{recibo.velatorio}}</span>
+        </span>
       </section>
-
       <section class="border contenido-body">
         <div class="mt-5">
           <span class="col-md-12 etiqueta-formato-val">Mexico CDMX
@@ -37,65 +35,64 @@
             <span class="etiqueta-formato-val"> {{anio}} </span>
           </span>
           <span class="col-md-12 mt-5 etiqueta-base">Recibimos del SR(A)
-            <span class="etiqueta-formato-val"></span>
-                    </span>
+            <span class="etiqueta-formato-val">{{recibo.recibimos}}</span>
+          </span>
           <span class="col-md-12 etiqueta-base mt-3">la cantidad de
             <span class="etiqueta-formato-val">{{recibo.cantidad}}</span>
           </span>
         </div>
-
         <div>
-                    <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
-            otorgar el contrato
-            de prestación de servicios <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span> en dependencias de acuerdo al siguiente desgloce
-                    </span>
-
+          <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
+            otorgar el contrato de prestación de servicios
+            <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span>
+            en dependencias de acuerdo al siguiente desgloce
+          </span>
           <div class="grid-container">
             <div class="grid-item">
-                            <span class="etiqueta-formato">Trámites <span
-                              class="etiqueta-formato-val">{{ recibo.canTramites}}</span></span>
+              <span class="etiqueta-formato">Trámites
+                <span class="etiqueta-formato-val">{{ recibo.canTramites}}</span>
+              </span>
             </div>
             <div class="grid-item">
-                            <span class="etiqueta-formato">Descripción <span
-                              class="etiqueta-formato-val">{{recibo.descTramites}}</span>
-                            </span>
+              <span class="etiqueta-formato">Descripción
+                <span class="etiqueta-formato-val">{{recibo.descTramites}}</span>
+              </span>
             </div>
             <div class="grid-item"></div>
-
             <div class="grid-item">
-                            <span class="etiqueta-formato">Derechos <span
-                              class="etiqueta-formato-val">{{recibo.canDerechos}}</span></span>
+              <span class="etiqueta-formato">Derechos
+                <span class="etiqueta-formato-val">{{recibo.canDerechos}}</span>
+              </span>
             </div>
             <div class="grid-item">
-                            <span class="etiqueta-formato">Descripción <span
-                              class="etiqueta-formato-val">{{recibo.descDerechos}}</span>
-                            </span>
+              <span class="etiqueta-formato">Descripción
+                <span class="etiqueta-formato-val">{{recibo.descDerechos}}</span>
+              </span>
             </div>
             <div class="grid-item"></div>
-
             <div class="grid-item mt-5">
-              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{recibo.canSuma}}</span></span>
+              <span class="etiqueta-formato">Total
+                <span class="etiqueta-totales">{{recibo.canSuma}}</span>
+              </span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>
           </div>
-
           <span class="col-md-12 etiqueta-base mt-7 mb-2">LAS PARTES ACUERDAN QUE SI EXISTIERA UNA DIFERENCIA EN DINERO
             A FAVOR DEL CONTRATANTE ESTA SERÁ
             DEVUELTA, JUNTO CON LOS COMPROBANTES ORIGINALES DE LOS TRÁMITES O DERECHOS PAGADOS A SU ENTERA
             SATISFACCIÓN, ANTES DEL TÉRMINO DEL SERVICIO FUNERARIO.
           </span>
-
           <div class="grid-container mb-4">
             <div class="grid-item">
-              <span class="etiqueta-formato">Total <span class="etiqueta-totales">{{recibo.canTotal}}</span></span>
+              <span class="etiqueta-formato">Total
+                <span class="etiqueta-totales">{{recibo.canTotal}}</span>
+              </span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>
           </div>
-
         </div>
-
         <div class="row flex justify-content-between mt-7">
           <div class="card border">
             <p class="etiqueta-formato-val">Agente de funerales</p>
@@ -112,7 +109,6 @@
               </div>
             </div>
           </div>
-
           <div class="card border">
             <p class="etiqueta-formato-val">Contratante</p>
             <div class="container-card">
@@ -122,7 +118,6 @@
               <hr class="solid mt-7">
             </div>
           </div>
-
           <div class="card border">
             <p class="etiqueta-formato-val">Recibe</p>
             <div class="container-card">
