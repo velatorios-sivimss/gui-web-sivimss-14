@@ -38,6 +38,7 @@ export class RealizarPagoComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   pagos: Pago[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
+  fecha: Date = new Date();
 
   realizarPagoModal: boolean = false;
 
@@ -156,7 +157,7 @@ export class RealizarPagoComponent implements OnInit {
 
   private crearSolicitudFiltros(): FiltrosPago {
     return {
-      claveFolio: "",
+      claveFolio: this.filtroForm.get('folioOrden')?.value,
       fechaFin: moment(this.filtroForm.get('periodoFin')?.value).format('YYYY-MM-DD'),
       fechaInicio: moment(this.filtroForm.get('periodoInicio')?.value).format('YYYY-MM-DD'),
       idVelatorio: this.filtroForm.get('velatorio')?.value,
@@ -175,4 +176,9 @@ export class RealizarPagoComponent implements OnInit {
       }
     });
   }
+
+  get fP() {
+    return this.filtroForm?.controls;
+  }
+
 }
