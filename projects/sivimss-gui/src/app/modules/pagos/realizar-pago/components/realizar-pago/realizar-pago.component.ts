@@ -7,6 +7,14 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
 import {REGISTROS_PAGOS} from "../../constants/dummies";
 import {OverlayPanel} from "primeng/overlaypanel";
+import {RealizarPagoService} from "../../services/realizar-pago.service";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {Pago} from "../../modelos/pago.interface";
 
 @Component({
   selector: 'app-realizar-pago',
@@ -21,17 +29,21 @@ export class RealizarPagoComponent implements OnInit {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  paginacionConFiltrado: boolean = false;
 
   filtroForm!: FormGroup;
   catalogoNiveles: TipoDropdown[] = [];
   velatorios: TipoDropdown[] = [];
-  pagos: any[] = REGISTROS_PAGOS;
+  pagos: Pago[] = [];
 
   realizarPagoModal: boolean = false;
 
   constructor(private breadcrumbService: BreadcrumbService,
               private formBuilder: FormBuilder,
-              ) {
+              private realizarPagoService: RealizarPagoService,
+              private cargadorService: LoaderService,
+              private mensajesSistemaService: MensajesSistemaService
+  ) {
   }
 
   ngOnInit(): void {
@@ -46,8 +58,10 @@ export class RealizarPagoComponent implements OnInit {
       folioOrden: [{value: null, disabled: false}, []],
       folioConvenio: [{value: null, disabled: false}, []],
       folioRenovacion: [{value: null, disabled: false}, []],
-
-    })
+      periodoInicio: [{value: null, disabled: false}, []],
+      periodoFin: [{value: null, disabled: false}, []],
+      nombreContratante: [{value: null, disabled: false}, []],
+    });
   }
 
   buscar(): void {
@@ -63,8 +77,14 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+    }
+    if (this.paginacionConFiltrado) {
+      this.paginarConFiltros();
+    } else {
+      this.paginar();
     }
   }
 
@@ -83,5 +103,24 @@ export class RealizarPagoComponent implements OnInit {
 
   guardarExcel(): void {
 
+  }
+
+  private paginarConFiltros() {
+
+  }
+
+  private paginar(): void {
+    this.cargadorService.activar();
+    this.realizarPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.pagos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      },
+    });
   }
 }
