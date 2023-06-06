@@ -125,7 +125,6 @@ export class NuevaVerificacionComponent implements OnInit {
 
   aceptar(): void {
     this.pasoNuevaVerificacion = this.RESUMEN_DE_NUEVA_VERIFICACION;
-    console.log(this.pasoNuevaVerificacion)
     this.nuevaVerificacion = this.crearResumenNuevaVerificacion();
   }
 

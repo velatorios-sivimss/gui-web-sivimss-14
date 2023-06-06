@@ -3,10 +3,9 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OverlayPanel} from "primeng/overlaypanel";
-import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {DialogService} from "primeng/dynamicdialog";
 import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
@@ -20,14 +19,10 @@ import * as moment from "moment";
 @Component({
   selector: 'app-mantenimiento-predictivo',
   templateUrl: './mantenimiento-predictivo.component.html',
-  styleUrls: ['./mantenimiento-predictivo.component.scss'], providers: [DialogService]
+  styleUrls: ['./mantenimiento-predictivo.component.scss'],
+  providers: [DialogService]
 })
 export class MantenimientoPredictivoComponent implements OnInit {
-  data = [{dia: "Lunes", valor: 38}, {dia: "Martes", valor: 38}, {dia: "Miercoles", valor: 38}, {
-    dia: "Jueves",
-    valor: 38
-  }, {dia: "Viernes", valor: 38},];
-
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel
@@ -40,11 +35,6 @@ export class MantenimientoPredictivoComponent implements OnInit {
   vehiculoSeleccionado!: VehiculoMantenimiento;
 
   filtroForm!: FormGroup
-
-  creacionRef!: DynamicDialogRef
-  detalleRef!: DynamicDialogRef
-  modificacionRef!: DynamicDialogRef
-
   verDetallePredictivo: boolean = false;
 
   catalogoNiveles: TipoDropdown[] = [];
@@ -66,7 +56,6 @@ export class MantenimientoPredictivoComponent implements OnInit {
     private route: ActivatedRoute,
     private mantenimientoVehicularService: MantenimientoVehicularService,
     private mensajesSistemaService: MensajesSistemaService,
-    private alertaService: AlertaService,
   ) {
   }
 
@@ -151,6 +140,5 @@ export class MantenimientoPredictivoComponent implements OnInit {
       velatorio: this.filtroForm.get('velatorio')?.value
     }
   }
-
 
 }

@@ -74,7 +74,7 @@ export class DetalleMantenimientoComponent implements OnInit {
           this.registro = respuesta[POSICION_REGISTRO_MTTO].datos[0] || null;
           this.solicitudRegistro = respuesta[POSICION_SOLICITUD_MTTO].datos[0] || null;
         }
-      })
+      });
   }
 
   obtenerVerificacionInicial(): Observable<HttpRespuesta<any>> {
