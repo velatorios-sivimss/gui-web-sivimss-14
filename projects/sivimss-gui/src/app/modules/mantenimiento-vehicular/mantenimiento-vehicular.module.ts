@@ -22,10 +22,7 @@ import {
 } from './components/solicitud-mantenimiento/detalle-solicitud-mantenimiento/detalle-solicitud-mantenimiento.component';
 import {
   RegistroMantenimientoComponent
-} from './components/registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component';
-import {
-  DetalleRegistroMantenimientoComponent
-} from './components/registro-mantenimiento/detalle-registro-mantenimiento/detalle-registro-mantenimiento.component';
+} from './components/registro-mantenimiento/registro-mantenimiento.component';
 import {
   MantenimientoPredictivoComponent
 } from './components/mantenimiento-predictivo/mantenimiento-predictivo.component';
@@ -55,7 +52,6 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
     SolicitudMantenimientoComponent,
     DetalleSolicitudMantenimientoComponent,
     RegistroMantenimientoComponent,
-    DetalleRegistroMantenimientoComponent,
     MantenimientoPredictivoComponent,
     ReporteEncargadoComponent,
     DetalleMantenimientoComponent

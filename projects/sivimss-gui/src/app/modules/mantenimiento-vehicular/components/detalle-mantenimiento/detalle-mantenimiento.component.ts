@@ -16,7 +16,7 @@ import {
 } from "../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component";
 import {
   RegistroMantenimientoComponent
-} from "../registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component";
+} from "../registro-mantenimiento/registro-mantenimiento.component";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({

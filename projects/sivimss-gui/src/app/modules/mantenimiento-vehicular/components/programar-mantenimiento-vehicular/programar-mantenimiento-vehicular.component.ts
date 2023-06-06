@@ -7,7 +7,7 @@ import {ActivatedRoute, Router} from '@angular/router'
 import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion.component'
 import {
   RegistroMantenimientoComponent
-} from '../registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component'
+} from '../registro-mantenimiento/registro-mantenimiento.component'
 import {
   SolicitudMantenimientoComponent
 } from '../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component'
@@ -232,7 +232,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       return;
     }
     if (opcion === 'registroMtto') {
-      void this.router.navigate(['./detalle-registro-mantenimiento'],
+      void this.router.navigate(['./detalle-registro'],
         {relativeTo: this.route, queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO}});
       return;
     }

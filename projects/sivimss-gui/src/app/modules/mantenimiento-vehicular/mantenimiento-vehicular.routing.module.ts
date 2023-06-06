@@ -15,10 +15,7 @@ import {
 } from './components/solicitud-mantenimiento/detalle-solicitud-mantenimiento/detalle-solicitud-mantenimiento.component'
 import {
   RegistroMantenimientoComponent
-} from './components/registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component'
-import {
-  DetalleRegistroMantenimientoComponent
-} from './components/registro-mantenimiento/detalle-registro-mantenimiento/detalle-registro-mantenimiento.component'
+} from './components/registro-mantenimiento/registro-mantenimiento.component'
 import {
   MantenimientoPredictivoComponent
 } from './components/mantenimiento-predictivo/mantenimiento-predictivo.component'
@@ -49,12 +46,8 @@ const routes: Route[] = [
     component: DetalleSolicitudMantenimientoComponent,
   },
   {
-    path: 'registro-mantenimiento',
+    path: 'registro',
     component: RegistroMantenimientoComponent,
-  },
-  {
-    path: 'detalle-registro-mantenimiento',
-    component: DetalleRegistroMantenimientoComponent,
   },
   {
     path: 'mantenimiento-predictivo',
