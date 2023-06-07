@@ -11,6 +11,10 @@ import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 @Injectable()
 export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
+  private readonly _odsPagos: string = 'consultar-ods-pagos';
+  private readonly _prevFunPagos: string = 'consultar-prevFun-pagos';
+  private readonly _renPrevFunPagos: string = 'consultar-renPrevFun-pagos';
+
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `http://localhost:8080/mssivimss-ctrol-permisos/v1/sivimss/service/`, "", "",
       36, "consultar-tabla-pagos", "", "");
@@ -33,7 +37,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`,
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`,
       filtros, {params});
   }
 
@@ -41,4 +45,29 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     const body: { idDelegacion: string | null } = {idDelegacion: delegacion}
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
+
+  consultarODSPagos(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio)
+      .append("servicio", this._odsPagos);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
+  consultarPrevFunPagos(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio)
+      .append("servicio", this._prevFunPagos);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
+  consultarPrevFunRenPagos(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio)
+      .append("servicio", this._renPrevFunPagos);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
 }
