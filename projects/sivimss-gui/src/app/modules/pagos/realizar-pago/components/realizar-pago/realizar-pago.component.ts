@@ -86,6 +86,9 @@ export class RealizarPagoComponent implements OnInit {
     this.paginacionConFiltrado = false;
     if (this.filtroForm) {
       this.filtroForm.reset();
+      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+      this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
+      this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
     }
     this.numPaginaActual = 0;
     this.paginar();
