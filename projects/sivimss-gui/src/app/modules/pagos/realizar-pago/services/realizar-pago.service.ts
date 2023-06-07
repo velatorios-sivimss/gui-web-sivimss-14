@@ -62,7 +62,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
   }
 
-  consultarPrevFunRenPagos(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosRenovacionConvenio(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio)
