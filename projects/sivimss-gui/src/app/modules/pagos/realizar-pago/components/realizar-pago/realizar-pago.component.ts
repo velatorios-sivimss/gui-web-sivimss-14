@@ -39,6 +39,11 @@ export class RealizarPagoComponent implements OnInit {
   pagos: Pago[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   fecha: Date = new Date();
+  pagoSeleccionado!: Pago;
+
+  habilitaIrPago: string[] = ['Generada', 'Vigente', 'Generado'];
+  habilitaModificar: string[] = ['Pagada'];
+  habilitaModificarPago: string[] = ['Pagado'];
 
   realizarPagoModal: boolean = false;
 
@@ -114,9 +119,9 @@ export class RealizarPagoComponent implements OnInit {
     console.log(pago);
   }
 
-  abrirPanel(event: MouseEvent, pago: any): void {
+  abrirPanel(event: MouseEvent, pago: Pago): void {
     this.overlayPanel.toggle(event);
-    console.log(pago)
+    this.pagoSeleccionado = pago;
   }
 
   guardarPDF(): void {

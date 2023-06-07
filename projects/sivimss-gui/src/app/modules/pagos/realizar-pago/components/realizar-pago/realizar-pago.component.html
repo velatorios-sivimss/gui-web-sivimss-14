@@ -156,9 +156,12 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Ir a Pago"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Generar recibo de pago"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar Pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ir a Pago" *ngIf="habilitaIrPago.includes(pagoSeleccionado.estatus)">
+      </app-overlay-panel-opcion>
+      <!--      <app-overlay-panel-opcion titulo="Generar recibo de pago"></app-overlay-panel-opcion>-->
+      <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
+       habilitaModificarPago.includes(pagoSeleccionado.estatusPago)">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
