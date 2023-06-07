@@ -46,7 +46,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
-  consultarODSPagos(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosODS(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio)
@@ -54,7 +54,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
   }
 
-  consultarPrevFunPagos(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  consultarPagosConvenio(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio)

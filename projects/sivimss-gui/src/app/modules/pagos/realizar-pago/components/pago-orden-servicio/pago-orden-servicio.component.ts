@@ -64,7 +64,7 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   private paginar(): void {
     this.cargadorService.activar();
-    this.realizarPagoService.consultarODSPagos(this.numPaginaActual, this.cantElementosPorPagina)
+    this.realizarPagoService.consultarPagosODS(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.pagos = respuesta.datos.content;
