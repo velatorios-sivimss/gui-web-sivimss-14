@@ -124,7 +124,8 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="correoElectronico">Correo electrónico <span class="req">*</span></label>
-            <input maxlength="45" id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa el correo electrónico">
+            <input maxlength="45" id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa el correo electrónico"
+            (blur)="validarCorreElectronico()">
             <span class="campo-obligatorio"
                   *ngIf="fds.correoElectronico?.errors?.required && (fds.correoElectronico?.dirty || fds.correoElectronico?.touched)">Este campo es obligatorio *.</span>
             <span class="campo-obligatorio"
