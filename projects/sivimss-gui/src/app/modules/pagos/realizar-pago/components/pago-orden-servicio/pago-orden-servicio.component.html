@@ -4,21 +4,21 @@
          (onLazyLoad)="seleccionarPaginacion($event)">
   <ng-template pTemplate="header">
     <tr>
-      <th>Fecha de pago</th>
-      <th>Folio ODS</th>
-      <th>Tipo de pago</th>
-      <th>Total a pagar</th>
-      <th>Total pagado</th>
-      <th>Diferencias Totales</th>
-      <th></th>
+      <th id="columna_pagos_ods_fecha_pago">Fecha de pago</th>
+      <th id="columna_pagos_ods_folio">Folio ODS</th>
+      <th id="columna_pagos_ods_tipo_pago">Tipo de pago</th>
+      <th id="columna_pagos_ods_total_pagar">Total a pagar</th>
+      <th id="columna_pagos_ods_total_pagado">Total pagado</th>
+      <th id="columna_pagos_ods_diferencias_totales">Diferencias Totales</th>
+      <th id="columna_pagos_ods_botones"></th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-pago>
     <tr>
       <td>{{pago.fechaPago}}</td>
-      <td>{{pago.folioODS}}</td>
+      <td>{{pago.folio}}</td>
       <td>{{pago.tipoPago}}</td>
-      <td>{{pago.totalPagar}}</td>
+      <td>{{pago.total}}</td>
       <td>{{pago.totalPagado}}</td>
       <td>{{pago.diferenciasTotales}}</td>
       <td>
@@ -32,7 +32,7 @@
   </ng-template>
   <ng-template pTemplate="emptymessage">
     <tr>
-      <th colspan="8" class="p-2 text-center font-bold text-xl">
+      <th colspan="7" class="p-2 text-center font-bold text-xl" id="pagos_ods_sin_resultados">
         No se encontro información relacionada a tu búsqueda
       </th>
     </tr>
@@ -45,7 +45,7 @@
   <ng-template pTemplate="paginatorright">
   </ng-template>
 </p-table>
-<div class="flex mt-4 justify-content-end">
+<div class="flex  mb-4 justify-content-end">
   <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./..'">
     Regresar
   </button>
