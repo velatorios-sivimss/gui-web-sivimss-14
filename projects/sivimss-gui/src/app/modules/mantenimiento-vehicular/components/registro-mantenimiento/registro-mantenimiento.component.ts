@@ -1,32 +1,32 @@
 import {Component, OnInit} from '@angular/core';
-import {CATALOGOS_TIPO_MANTENIMIENTO} from '../../../../inventario-vehicular/constants/dummies';
+import {CATALOGOS_TIPO_MANTENIMIENTO} from '../../../inventario-vehicular/constants/dummies';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {HttpErrorResponse} from "@angular/common/http";
-import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
-import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {
   CATALOGOS_PREV_ANUALES,
   CATALOGOS_PREV_EVENTUALES,
   CATALOGOS_PREV_SEMESTRALES
-} from "../../../constants/catalogos-preventivo";
-import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
-import {ResumenRegistro} from "../../../models/resumenRegistro.interface";
-import {RegistroMantenimiento} from "../../../models/registroMantenimiento.interface";
+} from "../../constants/catalogos-preventivo";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {ResumenRegistro} from "../../models/resumenRegistro.interface";
+import {RegistroMantenimiento} from "../../models/registroMantenimiento.interface";
 import {finalize} from "rxjs/operators";
-import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {RespuestaRegistroMantenimiento} from "../../../models/respuestaRegistroMantenimiento.interface";
-import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {RespuestaRegistroMantenimiento} from "../../models/respuestaRegistroMantenimiento.interface";
+import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
 
 type VehiculoRegistro = Omit<VehiculoMantenimiento, "ID_MTTOVERIFINICIO" | "ID_MTTO_SOLICITUD" | "ID_MTTO_REGISTRO">
 
 @Component({
-  selector: 'app-registro-mantenimiento',
+  selector: 'app-registro',
   templateUrl: './registro-mantenimiento.component.html',
   styleUrls: ['./registro-mantenimiento.component.scss'],
   providers: [DialogService]

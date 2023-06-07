@@ -16,10 +16,16 @@ interface ConsultaVelatorio {
 @Injectable()
 export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any>, any> {
 
-  readonly _nivel: string = 'catalogo_nivelOficina';
-  readonly _delegacion: string = 'catalogo_delegaciones';
-  readonly _proveedores: string = 'cat-mtto-proveedores';
-  readonly _vehiculos: string = 'busqueda-vehiculos-mtto';
+  private readonly _nivel: string = 'catalogo_nivelOficina';
+  private readonly _delegacion: string = 'catalogo_delegaciones';
+  private readonly _proveedores: string = 'cat-mtto-proveedores';
+  private readonly _vehiculos: string = 'busqueda-vehiculos-mtto';
+  private readonly _reporte_mtto: string = 'cat-mtto-reporte-tipo-mtto';
+  private readonly _detalle_verificacion: string = 'detalle-verificacion-inicio';
+  private readonly _detalle_solicitud: string = 'detalle-solicitud-mtto';
+  private readonly _detalle_registro: string = 'detalle-registro-mtto';
+  private readonly _reporte_predictivo: string = 'reporte-predictivo-vehiculos-mtto';
+  private readonly _reporte_encargado: string = 'reporte-encargado-vehiculos-mtto';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "mtto-vehicular-agregar", "mtto-vehicular-modificar",
@@ -59,7 +65,7 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   obtenerCatalogoMttoPredictivo(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
-      .append("servicio", 'cat-mtto-reporte-tipo-mtto')
+      .append("servicio", this._reporte_mtto)
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params})
   }
 
@@ -81,21 +87,21 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   obtenerDetalleVerificacion(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
-      .append("servicio", 'detalle-verificacion-inicio')
+      .append("servicio", this._detalle_verificacion)
       .append("palabra", id);
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params});
   }
 
   obtenerDetalleSolicitud(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
-      .append("servicio", 'detalle-solicitud-mtto')
+      .append("servicio", this._detalle_solicitud)
       .append("palabra", id);
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params});
   }
 
   obtenerDetalleRegistro(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
-      .append("servicio", 'detalle-registro-mtto')
+      .append("servicio", this._detalle_registro)
       .append("palabra", id)
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params})
   }
@@ -110,10 +116,10 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   }
 
   buscarReporteMttoPreventivo(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/reporte-predictivo-vehiculos-mtto`, t);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_predictivo}`, t);
   }
 
   buscarReporteEncargado(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/reporte-encargado-vehiculos-mtto`, t);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_encargado}`, t);
   }
 }

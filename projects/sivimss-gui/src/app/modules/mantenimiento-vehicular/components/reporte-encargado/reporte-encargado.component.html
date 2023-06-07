@@ -6,7 +6,7 @@
         <div class="col-md-6">
           <label class="control-label" for="tipoReporte">Tipo de reporte<span class="req">*</span>:</label>
           <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
-                      placeholder="Selecciona el tipo">
+                      placeholder="Selecciona el tipo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este campo es obligatorio *.</span>
@@ -14,7 +14,7 @@
         <div class="col-md-6">
           <label class="control-label" for="placa">Placa<span class="req">*</span>:</label>
           <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
-                      placeholder="Seleccionar vehículo">
+                      placeholder="Seleccionar vehículo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="fmp?.placa?.errors?.required && (fmp?.placa?.dirty || fmp?.placa?.touched)">Este campo es obligatorio *.</span>

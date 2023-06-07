@@ -163,7 +163,7 @@ export class AceptacionDonacionComponent implements OnInit {
     this.ataudDonado.forEach( ataud => {
       ataudes.push(
         {
-          idArticulo: ataud.idArticulo,
+          idInventarioArticulo: ataud.idInventarioArticulo,
           folioArticulo: ataud.folioArticulo
         }
       )

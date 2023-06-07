@@ -10,13 +10,13 @@ import {RespuestaVerificacion} from "../../models/respuestaVerificacion.interfac
 import {RespuestaSolicitudMantenimiento} from "../../models/respuestaSolicitudMantenimiento.interface";
 import {RespuestaRegistroMantenimiento} from "../../models/respuestaRegistroMantenimiento.interface";
 import {obtenerFechaActual} from "../../../../utils/funciones-fechas";
-import {NuevaVerificacionComponent} from "../nueva-verificacion/nueva-verificacion/nueva-verificacion.component";
+import {NuevaVerificacionComponent} from "../nueva-verificacion/nueva-verificacion.component";
 import {
   SolicitudMantenimientoComponent
-} from "../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component";
+} from "../solicitud-mantenimiento/solicitud-mantenimiento.component";
 import {
   RegistroMantenimientoComponent
-} from "../registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component";
+} from "../registro-mantenimiento/registro-mantenimiento.component";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
@@ -74,7 +74,7 @@ export class DetalleMantenimientoComponent implements OnInit {
           this.registro = respuesta[POSICION_REGISTRO_MTTO].datos[0] || null;
           this.solicitudRegistro = respuesta[POSICION_SOLICITUD_MTTO].datos[0] || null;
         }
-      })
+      });
   }
 
   obtenerVerificacionInicial(): Observable<HttpRespuesta<any>> {

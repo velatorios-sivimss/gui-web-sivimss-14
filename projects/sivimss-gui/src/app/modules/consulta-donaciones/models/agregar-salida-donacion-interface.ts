@@ -32,7 +32,7 @@ export interface AgregarSalidaDonacionInterface{
 }
 
 export interface AtaudesDonados {
-  idArticulo?: number;
+  idInventarioArticulo?: number;
   folioArticulo?: string;
 }
 
