@@ -19,7 +19,8 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-                    placeholder="Seleccionar la delegación" [filter]="true" filterBy="label">
+                    placeholder="Seleccionar la delegación" [filter]="true" filterBy="label"
+                    (onChange)="obtenerVelatorios()">
         </p-dropdown>
       </div>
       <div class="col-md-6">

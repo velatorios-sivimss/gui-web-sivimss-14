@@ -3,6 +3,7 @@ import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/rou
 import {forkJoin, Observable} from "rxjs";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
 import {UsuarioService} from "./usuario.service";
+import {TipoDropdown} from "../../../models/tipo-dropdown";
 
 @Injectable()
 export class UsuarioResolver implements Resolve<HttpRespuesta<any>> {
@@ -11,9 +12,8 @@ export class UsuarioResolver implements Resolve<HttpRespuesta<any>> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const niveles$ = this.usuarioService.obtenerCatalogoNiveles();
-    const delegaciones$ = this.usuarioService.obtenerCatalogoDelegaciones();
-    const velatorios$ = this.usuarioService.obtenerVelatorios();
-    return forkJoin([niveles$, delegaciones$, velatorios$])
+    const niveles$: Observable<TipoDropdown[]> = this.usuarioService.obtenerCatalogoNiveles();
+    const delegaciones$: Observable<TipoDropdown[]> = this.usuarioService.obtenerCatalogoDelegaciones();
+    return forkJoin([niveles$, delegaciones$])
   }
 }

@@ -4,13 +4,13 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms'
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
 import {ActivatedRoute, Router} from '@angular/router'
-import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion/nueva-verificacion.component'
+import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion.component'
 import {
   RegistroMantenimientoComponent
-} from '../registro-mantenimiento/registro-mantenimiento/registro-mantenimiento.component'
+} from '../registro-mantenimiento/registro-mantenimiento.component'
 import {
   SolicitudMantenimientoComponent
-} from '../solicitud-mantenimiento/solicitud-mantenimiento/solicitud-mantenimiento.component'
+} from '../solicitud-mantenimiento/solicitud-mantenimiento.component'
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -225,14 +225,14 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   seleccionarDetalle(opcion: OpcionMtto): void {
     if (opcion === 'mtto') {
-      void this.router.navigate(['./detalle-solicitud-mantenimiento'], {
+      void this.router.navigate(['./detalle-solicitud'], {
         relativeTo: this.route,
         queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD}
       });
       return;
     }
     if (opcion === 'registroMtto') {
-      void this.router.navigate(['./detalle-registro-mantenimiento'],
+      void this.router.navigate(['./detalle-registro'],
         {relativeTo: this.route, queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO}});
       return;
     }

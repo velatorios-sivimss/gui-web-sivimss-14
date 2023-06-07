@@ -5,13 +5,13 @@
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
         <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-                    placeholder="Seleccionar el nivel">
+                    placeholder="Seleccionar el nivel" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-                    placeholder="Seleccionar delegación" (onChange)="cargarVelatorios()">
+                    placeholder="Seleccionar delegación" (onChange)="cargarVelatorios()" [filter]="true">
         </p-dropdown>
       </div>
     </div>
@@ -19,13 +19,13 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                    placeholder="Seleccionar el velatorio">
+                    placeholder="Seleccionar el velatorio" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="placa">Placa:</label>
         <p-dropdown id="placa" class="form-control" formControlName="delegacion" [options]="catalogoPlacas"
-                    placeholder="Seleccionar vehículo">
+                    placeholder="Seleccionar vehículo" [filter]="true">
         </p-dropdown>
       </div>
     </div>

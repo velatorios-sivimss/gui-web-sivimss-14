@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
-import {
-  ActivatedRouteSnapshot, Resolve,
-  RouterStateSnapshot
-} from '@angular/router';
+import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 import {forkJoin, Observable} from 'rxjs';
 import {MantenimientoVehicularService} from './mantenimiento-vehicular.service';
+import {TipoDropdown} from "../../../models/tipo-dropdown";
+import {HttpRespuesta} from "../../../models/http-respuesta.interface";
 
 @Injectable()
 export class MantenimientoVehicularResolver implements Resolve<any> {
@@ -13,10 +12,10 @@ export class MantenimientoVehicularResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const niveles$ = this.mantenimientoVehicularService.obtenerCatalogoNiveles();
-    const delegaciones$ = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
-    const proveedores$ = this.mantenimientoVehicularService.obtenerCatalogoProvedores();
-    const placas$ = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
+    const niveles$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoNiveles();
+    const delegaciones$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
+    const proveedores$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoProvedores();
+    const placas$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
 
     return forkJoin([niveles$, delegaciones$, proveedores$, placas$])
   }

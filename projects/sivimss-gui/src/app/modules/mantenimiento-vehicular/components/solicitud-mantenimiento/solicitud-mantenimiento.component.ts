@@ -7,26 +7,26 @@ import {
   CATALOGOS_PREV_ANUALES,
   CATALOGOS_PREV_EVENTUALES,
   CATALOGOS_PREV_SEMESTRALES
-} from "../../../constants/catalogos-preventivo";
-import {CATALOGOS_TIPO_MANTENIMIENTO} from "../../../../inventario-vehicular/constants/dummies";
+} from "../../constants/catalogos-preventivo";
+import {CATALOGOS_TIPO_MANTENIMIENTO} from "../../../inventario-vehicular/constants/dummies";
 import {HttpErrorResponse} from "@angular/common/http";
-import {MantenimientoVehicularService} from "../../../services/mantenimiento-vehicular.service";
+import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
 import {DatePipe} from "@angular/common";
-import {ResumenAsignacion} from "../../../models/resumenAsignacion.interface";
+import {ResumenAsignacion} from "../../models/resumenAsignacion.interface";
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
-import {RegistroSolicitudMttoInterface} from "../../../models/registroSolicitudMtto.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {RegistroSolicitudMttoInterface} from "../../models/registroSolicitudMtto.interface";
 import {finalize} from "rxjs/operators";
-import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {RespuestaSolicitudMantenimiento} from "../../../models/respuestaSolicitudMantenimiento.interface";
-import {VehiculoMantenimiento} from "../../../models/vehiculoMantenimiento.interface";
-import {diferenciaUTC} from "../../../../../utils/funciones";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {RespuestaSolicitudMantenimiento} from "../../models/respuestaSolicitudMantenimiento.interface";
+import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
+import {diferenciaUTC} from "../../../../utils/funciones";
 
 type VehiculoSolicitud = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
 
 @Component({
-  selector: 'app-solicitud-mantenimiento',
+  selector: 'app-solicitud',
   templateUrl: './solicitud-mantenimiento.component.html',
   styleUrls: ['./solicitud-mantenimiento.component.scss'],
   providers: [DialogService, DatePipe]

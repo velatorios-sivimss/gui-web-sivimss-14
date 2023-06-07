@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/router";
 import {MantenimientoVehicularService} from "./mantenimiento-vehicular.service";
 import {forkJoin, Observable} from "rxjs";
+import {TipoDropdown} from "../../../models/tipo-dropdown";
+import {HttpRespuesta} from "../../../models/http-respuesta.interface";
 
 @Injectable()
 export class MantenimientoPredictivoResolver implements Resolve<any> {
@@ -10,10 +12,10 @@ export class MantenimientoPredictivoResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const niveles$ = this.mantenimientoVehicularService.obtenerCatalogoNiveles();
-    const delegaciones$ = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
-    const placas$ = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
-    const catalogoBase$ = this.mantenimientoVehicularService.obtenerCatalogoMttoPredictivo();
+    const niveles$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoNiveles();
+    const delegaciones$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
+    const placas$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
+    const catalogoBase$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoMttoPredictivo();
     return forkJoin([niveles$, delegaciones$, placas$, catalogoBase$]);
   }
 
