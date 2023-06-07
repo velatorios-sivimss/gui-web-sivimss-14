@@ -64,7 +64,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
-  readonly POSICION_CATALOGO_VELATORIOS: number = 2;
   readonly MSG_CAMBIO_ESTATUS: string = "Cambio de estatus realizado";
 
   constructor(
@@ -87,10 +86,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
-    this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
   }
 
   abrirPanel(event: MouseEvent, usuario: Usuario): void {
@@ -166,6 +163,20 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       this.paginar();
     }
   }
+
+  obtenerVelatorios(): void {
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.usuarioService.obtenerVelatorios(idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+
 
   cargarRoles(): void {
     const idNivel = this.filtroForm.get('nivel')?.value;
