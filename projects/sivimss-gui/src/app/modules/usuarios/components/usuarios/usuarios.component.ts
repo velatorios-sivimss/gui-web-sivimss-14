@@ -56,6 +56,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   filtroForm!: FormGroup;
 
   paginacionConFiltrado: boolean = false;
+  folioCreacion: number = 0;
 
   creacionRef!: DynamicDialogRef
   detalleRef!: DynamicDialogRef;
@@ -99,6 +100,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     const CREACION_CONFIG: DynamicDialogConfig = {
       header: "Registro de usuario nuevo",
       width: MAX_WIDTH,
+      data: this.folioCreacion
     }
     this.creacionRef = this.dialogService.open(AgregarUsuarioComponent, CREACION_CONFIG);
     this.creacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
@@ -203,6 +205,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.usuarios = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
+        this.folioCreacion = respuesta.datos.totalElements + 1;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
