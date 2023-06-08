@@ -116,7 +116,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   abrirModalCambioEstatusUsuario(usuario: Usuario): void {
     this.usuarioSeleccionado = usuario;
-    const header: string = usuario.estatus ? 'Desactivar' : 'Activar';
+    const header: string = usuario.estatus ? 'Activar' : 'Desactivar';
     const CAMBIO_ESTATUS_CONFIG: DynamicDialogConfig = {
       header: `${header} usuario`,
       width: MAX_WIDTH,
@@ -176,7 +176,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
   cargarRoles(): void {
     const idNivel = this.filtroForm.get('nivel')?.value;
