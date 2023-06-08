@@ -14,9 +14,12 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _odsPagos: string = 'consultar-ods-pagos';
   private readonly _prevFunPagos: string = 'consultar-prevFun-pagos';
   private readonly _renPrevFunPagos: string = 'consultar-renPrevFun-pagos';
+  private readonly _odsFolios: string = 'consultar-folios-ods-pagos';
+  private readonly _prevFunFolios: string = 'consultar-folios-prevFun-pagos';
+  private readonly _renPrevFunFolios: string = 'consultar-folios-renPrevFun-pagos';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `http://localhost:8080/mssivimss-ctrol-permisos/v1/sivimss/service/`, "", "",
+    super(_http, `${environment.api.mssivimss}`, "", "",
       36, "consultar-tabla-pagos", "", "");
   }
 
@@ -67,6 +70,24 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
       .append("pagina", pagina)
       .append("tamanio", tamanio)
       .append("servicio", this._renPrevFunPagos);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
+  consultarFoliosODS(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", this._odsFolios);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
+  consultarFoliosPrevFun(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", this._prevFunFolios);
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
+  consultarFoliosRenPrevFun(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", this._renPrevFunFolios);
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
   }
 
