@@ -29,6 +29,11 @@ export class RealizarPagoComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
+  readonly POSICION_CATALOGO_NIVELES: number = 0;
+  readonly POSICION_FOLIO_ODS: number = 1;
+  readonly POSICION_FOLIO_PREV_FUN: number = 2;
+  readonly POSICION_FOLIO_REN_PREV_FUN: number = 3;
+
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
@@ -45,6 +50,10 @@ export class RealizarPagoComponent implements OnInit {
   habilitaIrPagoEstatus: string[] = ['Pendiente']
   habilitaModificar: string[] = ['Pagada'];
   habilitaModificarPago: string[] = ['Pagado'];
+
+  foliosODS: TipoDropdown[] = [];
+  foliosPrevFun: TipoDropdown[] = [];
+  foliosRevPrevFun: TipoDropdown[] = [];
 
   realizarPagoModal: boolean = false;
 
@@ -64,7 +73,14 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   cargarCatalogos(): void {
-    this.catalogoNiveles = this.route.snapshot.data["respuesta"];
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
+    const foliosODS = respuesta[this.POSICION_FOLIO_ODS].datos;
+    this.foliosODS = mapearArregloTipoDropdown(foliosODS, "folio", "folio");
+    const foliosPrevFun = respuesta[this.POSICION_FOLIO_PREV_FUN].datos;
+    this.foliosPrevFun = mapearArregloTipoDropdown(foliosPrevFun, "folio", "folio");
+    const foliosRevPrevFun = respuesta[this.POSICION_FOLIO_REN_PREV_FUN].datos;
+    this.foliosRevPrevFun = mapearArregloTipoDropdown(foliosRevPrevFun, "folio", "folio");
     this.obtenerVelatorios();
   }
 

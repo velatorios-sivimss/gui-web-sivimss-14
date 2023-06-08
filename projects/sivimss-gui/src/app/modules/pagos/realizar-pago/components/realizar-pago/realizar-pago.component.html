@@ -19,22 +19,25 @@
       <div class="col-md-6">
         <label class="control-label" for="folioOrden">Folio de la orden de servicio inmediato (ODS)<span
           class="req">*</span></label>
-        <input id="folioOrden" class="form-control" formControlName="folioOrden"
-               placeholder="Ingresar folio">
+        <p-dropdown appendTo="body" id="folioOrden" class="form-control" formControlName="folioOrden"
+                    [options]="foliosODS" placeholder="Seleccione el folio">
+        </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folioConvenio">Folio del nuevo convenio de previsión funeraria (PNCPF)<span
           class="req">*</span></label>
-        <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
-               placeholder="Ingresar folio">
+        <p-dropdown appendTo="body" id="folioConvenio" class="form-control" formControlName="folioConvenio"
+                    [options]="foliosPrevFun" placeholder="Seleccione el folio">
+        </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="folioRenovacion">Folio de la renovación de convenios de previsión funeraria
           (PRCPF)<span class="req">*</span></label>
-        <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion"
-               placeholder="Ingresar folio">
+        <p-dropdown appendTo="body" id="folioRenovacion" class="form-control" formControlName="folioRenovacion"
+                    [options]="foliosRevPrevFun" placeholder="Seleccione el folio">
+        </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nombreContratante">Nombre del contratante<span
@@ -159,7 +162,6 @@
       <app-overlay-panel-opcion titulo="Ir a Pago" *ngIf="habilitaIrPago.includes(pagoSeleccionado.estatus) ||
         habilitaIrPagoEstatus.includes(pagoSeleccionado.estatusPago)">
       </app-overlay-panel-opcion>
-      <!--      <app-overlay-panel-opcion titulo="Generar recibo de pago"></app-overlay-panel-opcion>-->
       <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
         habilitaModificarPago.includes(pagoSeleccionado.estatusPago)">
       </app-overlay-panel-opcion>
