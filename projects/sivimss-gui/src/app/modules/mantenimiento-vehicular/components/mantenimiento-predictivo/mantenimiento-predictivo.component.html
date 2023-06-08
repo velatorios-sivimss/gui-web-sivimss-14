@@ -56,7 +56,7 @@
             <div class="col-md-6">
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde"
                           styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
-                          [maxDate]="fmp?.fechaVigenciaHasta?.value">
+                          [maxDate]="filtroForm.get('fecahVigenciaHasta')?.value">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este campo es obligatorio *.</span>
@@ -64,7 +64,7 @@
             <div class="col-md-6">
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta"
                           styleClass="form-control" [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy"
-                          appendTo="body" [minDate]="fmp?.fechaVigenciaDesde?.value">
+                          appendTo="body" [minDate]="filtroForm.get('fechaVigenciaDesde')?.value">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este campo es obligatorio *.</span>

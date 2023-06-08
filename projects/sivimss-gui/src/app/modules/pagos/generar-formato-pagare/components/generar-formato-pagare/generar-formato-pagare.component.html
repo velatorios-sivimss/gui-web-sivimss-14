@@ -9,7 +9,7 @@
             </div>
             <div class="col-md-6">
                 <label class="control-label" for="delegacion">Delegación:</label>
-                <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones" placeholder="Selecciona la delegación">
+                <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
                 </p-dropdown>
             </div>
         </div>
