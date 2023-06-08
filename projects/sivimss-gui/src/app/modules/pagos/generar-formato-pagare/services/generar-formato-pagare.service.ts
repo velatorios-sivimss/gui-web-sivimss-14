@@ -32,6 +32,10 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
+  obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body: { idDelegacion: string | null } = {idDelegacion: delegacion}
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
+  }
 
   obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body: ConsultaVelatorio = {idDelegacion: delegacion}
