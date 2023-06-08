@@ -166,8 +166,10 @@ export class ConsultaDonacionesComponent implements OnInit {
           this.totalElementos = respuesta.datos.totalElements || 0
         },
         (error: HttpErrorResponse) => {
-          console.error(error)
-          this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+          console.error(error);
+          const numMnesaje = +error.error.mensaje
+          const mensaje = this.mensajesSistemaService.obtenerMensajeSistemaPorId(numMnesaje)
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje);
         },
       )
   }

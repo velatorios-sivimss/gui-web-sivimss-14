@@ -62,8 +62,8 @@ export class ModificarUsuarioComponent implements OnInit {
 
   ngOnInit(): void {
     const usuario = this.config.data;
-    this.cargarCatalogos(usuario.idDelegacion);
     this.inicializarModificarUsuarioForm(usuario);
+    this.cargarCatalogos(usuario.idDelegacion);
   }
 
   cargarCatalogos(delegacion: string): void {
@@ -71,7 +71,7 @@ export class ModificarUsuarioComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     if (!delegacion) return;
-    this.buscarVelatorios(delegacion);
+    this.buscarVelatorios();
   }
 
   inicializarModificarUsuarioForm(usuario: Usuario): void {
@@ -118,12 +118,10 @@ export class ModificarUsuarioComponent implements OnInit {
     });
   }
 
-  buscarVelatorios(delegacion?: string): void {
-    if (!delegacion) {
-      delegacion = this.modificarUsuarioForm.get('delegacion')?.value;
-      this.modificarUsuarioForm.get('velatorio')?.patchValue(null);
-    }
-    this.usuarioService.obtenerVelatorios(delegacion).subscribe({
+  buscarVelatorios(): void {
+    const idDelegacion = this.modificarUsuarioForm.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.usuarioService.obtenerVelatorios(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         const velatorios = respuesta.datos || [];
         this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
