@@ -20,6 +20,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 
 type ListadoFormato = Required<FormatoPagare> & { idODS: string }
 
@@ -85,7 +87,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
-    this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
+    this.obtenerVelatorios();
   }
 
   abrirPanel(event: MouseEvent, formatoPagareSeleccionado: ListadoFormato): void {
@@ -101,10 +103,11 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   inicializarFiltroForm() {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}],
-      delegacion: [{value: null, disabled: false}],
-      velatorio: [{value: null, disabled: false}],
+      nivel: [{value: +usuario.idRol, disabled: true}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idRol === 2}],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idRol === 3}],
       folioODS: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
@@ -178,13 +181,30 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    this.obtenerVelatorios();
     this.paginar();
+  }
+
+  obtenerVelatorios(): void {
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.generarFormatoService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+      }
+    });
   }
 
   get f() {
     return this.filtroForm?.controls;
   }
-
 
   guardarListadoPagaresPDF() {
     this.cargadorService.activar();
