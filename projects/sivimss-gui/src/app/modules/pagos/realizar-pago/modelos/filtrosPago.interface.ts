@@ -3,5 +3,6 @@ export interface FiltrosPago {
   claveFolio: string,
   nomContratante: string,
   fechaInicio: string,
-  fechaFin: string
+  fechaFin: string,
+  idFlujoPago: number | null;
 }

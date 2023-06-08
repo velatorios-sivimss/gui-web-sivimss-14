@@ -15,7 +15,6 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {Pago} from "../../modelos/pago.interface";
 import {FiltrosPago} from "../../modelos/filtrosPago.interface";
-import * as moment from "moment";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {ActivatedRoute} from "@angular/router";
 
@@ -54,6 +53,8 @@ export class RealizarPagoComponent implements OnInit {
   foliosODS: TipoDropdown[] = [];
   foliosPrevFun: TipoDropdown[] = [];
   foliosRevPrevFun: TipoDropdown[] = [];
+
+  tipoFolio: null | 1 | 2 | 3 = null;
 
   realizarPagoModal: boolean = false;
 
@@ -108,6 +109,7 @@ export class RealizarPagoComponent implements OnInit {
     this.paginacionConFiltrado = false;
     if (this.filtroForm) {
       this.filtroForm.reset();
+      this.tipoFolio = null;
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
       this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
       this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
@@ -181,12 +183,23 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   private crearSolicitudFiltros(): FiltrosPago {
+    let folio = null
+    if (this.tipoFolio === 1) {
+      folio = this.filtroForm.get('folioOrden')?.value;
+    }
+    if (this.tipoFolio === 2) {
+      folio = this.filtroForm.get('folioConvenio')?.value;
+    }
+    if (this.tipoFolio === 3) {
+      folio = this.filtroForm.get('folioRenovacion')?.value;
+    }
     return {
-      claveFolio: this.filtroForm.get('folioOrden')?.value,
-      fechaFin: moment(this.filtroForm.get('periodoFin')?.value).format('YYYY-MM-DD'),
-      fechaInicio: moment(this.filtroForm.get('periodoInicio')?.value).format('YYYY-MM-DD'),
+      claveFolio: folio,
+      fechaFin: this.filtroForm.get('periodoFin')?.value,
+      fechaInicio: this.filtroForm.get('periodoInicio')?.value,
       idVelatorio: this.filtroForm.get('velatorio')?.value,
-      nomContratante: this.filtroForm.get('nombreContratante')?.value
+      nomContratante: this.filtroForm.get('nombreContratante')?.value,
+      idFlujoPago: this.tipoFolio
     }
   }
 
@@ -200,6 +213,22 @@ export class RealizarPagoComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
+  }
+
+  limpiarFolios(folio: 1 | 2 | 3): void {
+    this.tipoFolio = folio;
+    if (folio === 1) {
+      this.filtroForm.get('folioConvenio')?.patchValue(null);
+      this.filtroForm.get('folioRenovacion')?.patchValue(null);
+      return;
+    }
+    if (folio === 2) {
+      this.filtroForm.get('folioOrden')?.patchValue(null);
+      this.filtroForm.get('folioRenovacion')?.patchValue(null);
+      return;
+    }
+    this.filtroForm.get('folioOrden')?.patchValue(null);
+    this.filtroForm.get('folioConvenio')?.patchValue(null);
   }
 
   get fP() {

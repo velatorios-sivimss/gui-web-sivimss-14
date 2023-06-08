@@ -20,14 +20,14 @@
         <label class="control-label" for="folioOrden">Folio de la orden de servicio inmediato (ODS)<span
           class="req">*</span></label>
         <p-dropdown appendTo="body" id="folioOrden" class="form-control" formControlName="folioOrden"
-                    [options]="foliosODS" placeholder="Seleccione el folio">
+                    [options]="foliosODS" placeholder="Seleccione el folio" (onChange)="limpiarFolios(1)">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folioConvenio">Folio del nuevo convenio de previsión funeraria (PNCPF)<span
           class="req">*</span></label>
         <p-dropdown appendTo="body" id="folioConvenio" class="form-control" formControlName="folioConvenio"
-                    [options]="foliosPrevFun" placeholder="Seleccione el folio">
+                    [options]="foliosPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(2)">
         </p-dropdown>
       </div>
     </div>
@@ -36,7 +36,7 @@
         <label class="control-label" for="folioRenovacion">Folio de la renovación de convenios de previsión funeraria
           (PRCPF)<span class="req">*</span></label>
         <p-dropdown appendTo="body" id="folioRenovacion" class="form-control" formControlName="folioRenovacion"
-                    [options]="foliosRevPrevFun" placeholder="Seleccione el folio">
+                    [options]="foliosRevPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(3)">
         </p-dropdown>
       </div>
       <div class="col-md-6">
