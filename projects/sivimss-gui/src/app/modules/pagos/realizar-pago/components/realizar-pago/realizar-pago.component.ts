@@ -42,6 +42,7 @@ export class RealizarPagoComponent implements OnInit {
   pagoSeleccionado!: Pago;
 
   habilitaIrPago: string[] = ['Generada', 'Vigente', 'Generado'];
+  habilitaIrPagoEstatus: string[] = ['Pendiente']
   habilitaModificar: string[] = ['Pagada'];
   habilitaModificarPago: string[] = ['Pagado'];
 
