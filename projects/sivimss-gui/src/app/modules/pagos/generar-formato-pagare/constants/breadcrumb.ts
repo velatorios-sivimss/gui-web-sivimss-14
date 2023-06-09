@@ -11,6 +11,6 @@ export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   },
   {
     icono: '',
-    titulo: 'Generar recibo de pago'
+    titulo: 'Generar formato pagaré'
   }
 ]

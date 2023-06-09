@@ -105,7 +105,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   inicializarFiltroForm() {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +usuario.idRol, disabled: true}],
+      nivel: [{value: +usuario.idOficina, disabled: true}],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idRol === 2}],
       velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idRol === 3}],
       folioODS: [{value: null, disabled: false}],

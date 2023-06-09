@@ -5,23 +5,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-
-interface FormatoPagare {
-  "folioODS": string,
-  "fechaODS": string,
-  "hora": string,
-  "nomAgente": string,
-  "domContratante":string,
-  "fechaPago": string,
-  "fechaPagare": string,
-  "importe": number,
-  "redito": string,
-  "nomContratante": string,
-  "folioPagare": string,
-  "cantidad": string,
-  "nomUsuario": string,
-  "tipoReporte": string
-}
+import {FormatoPagare} from '../../models/formato-pagare.interface';
 
 @Component({
   selector: 'app-recibo-formato-pagare',
@@ -122,5 +106,41 @@ export class ReciboFormatoPagareComponent implements OnInit {
     });
   }
 
+  generarVistaPrevia(): void {
+    const solicitud: FormatoPagare = this.generarSolicitudVistaPrevia();
+    this.cargadorService.activar();
+    this.generarFormatoPagareService.descargarFormato(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (response: any): void => {
+        const file: Blob = new Blob([response], {type: 'application/pdf'});
+        const url: string = window.URL.createObjectURL(file);
+        window.open(url);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error('Error al descargar reporte: ', error.message);
+      }
+    });
+  }
+
+  generarSolicitudVistaPrevia(): FormatoPagare {
+    return {
+      id: this.formatoPagare.id,
+      idODS: this.formatoPagare.idODS,
+      fechaODS:  this.formatoPagare.fechaODS,
+      folioODS:  this.formatoPagare.folioODS,
+      nomContratante:  this.formatoPagare.nomContratante,
+      hora:  this.formatoPagare.hora,
+      nomAgente:  this.formatoPagare.nomAgente,
+      domContratante: this.formatoPagare.domContratante,
+      fechaPago:  this.formatoPagare.fechaPago,
+      fechaPagare:  this.formatoPagare.fechaPagare,
+      importe: this.formatoPagare.importe,
+      redito:  this.formatoPagare.redito,
+      folioPagare:  this.formatoPagare.folioPagare,
+      cantidad:  this.importeLetra,
+      nomUsuario:  this.formatoPagare.nomUsuario,
+      tipoReporte: "pdf"
+    }
+  }
 
 }
