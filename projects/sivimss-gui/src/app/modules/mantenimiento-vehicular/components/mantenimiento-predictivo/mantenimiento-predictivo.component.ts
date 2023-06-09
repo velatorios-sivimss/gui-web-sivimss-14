@@ -80,9 +80,9 @@ export class MantenimientoPredictivoComponent implements OnInit {
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
+      nivel: [{value: +usuario.idOficina, disabled: false}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: false}, [Validators.required]],
+      velatorio: [{value: +usuario.idVelatorio, disabled: false}, [Validators.required]],
       placa: [{value: null, disabled: false}, [Validators.required]],
       tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
       fechaVigenciaDesde: [{value: null, disabled: false}, [Validators.required]],
@@ -110,17 +110,6 @@ export class MantenimientoPredictivoComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
-
-    if (+usuario.idRol >= 2) {
-      this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion || null);
-    }
-
-    if (+usuario.idRol === 3) {
-      this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio || null);
-    }
-
     this.cargarVelatorios(true);
   }
 
