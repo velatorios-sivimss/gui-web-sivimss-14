@@ -76,7 +76,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
       delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }],
-      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }],
+      velatorio: [{ value: null, disabled: +this.rolLocalStorage.idOficina === 3 }],
     });
 
     this.cambiarDelegacion();
@@ -150,9 +150,17 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
           { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
+
+        const item = this.velatorios.find((item: TipoDropdown) => item.value === +this.rolLocalStorage.idVelatorio);
+        if (item) {
+          this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio);
+          this.cambiarPestania({ index: 0 });
+        } else {
+          this.filtroForm.get('velatorio')?.patchValue(null);
+          this.consultaSalasCremacion();
+        }
       },
       (error: HttpErrorResponse) => {
         console.log(error);
