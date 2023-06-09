@@ -82,7 +82,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: +usuario.idOficina, disabled: false}],
       delegacion: [{value: +usuario.idDelegacion, disabled: false}, [Validators.required]],
-      velatorio: [{value: +usuario.idVelatorio, disabled: false}, [Validators.required]],
+      velatorio: [{value: +usuario.idVelatorio, disabled: false}, []],
       placa: [{value: null, disabled: false}, [Validators.required]],
       tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
       fechaVigenciaDesde: [{value: null, disabled: false}, [Validators.required]],
