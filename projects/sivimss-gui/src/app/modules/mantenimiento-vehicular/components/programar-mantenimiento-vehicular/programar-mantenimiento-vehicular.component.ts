@@ -185,8 +185,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.filtroFormProgramarMantenimiento.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idRol);
-    this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    // this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    // this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.cargarVelatorios(true);
     this.paginar();
   }
