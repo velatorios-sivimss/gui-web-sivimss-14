@@ -55,7 +55,7 @@
         <div class="col-md-12 flex justify-content-end">
             <button *appValidaRol="['CAPILLA_RESERVACION','ALTA']" type="button" class="btn btn-primary btn-md ml-5"
                     [disabled]="registrarEntradaForm.invalid || !f.delegacion.value || !f.velatorio.value"
-                    onCloseOnNavigation  (click)="abrirModalAgregarEntrada()">
+                    onCloseOnNavigation  (click)="verificarCapillasDisponibles()">
               Buscar
             </button>
         </div>
