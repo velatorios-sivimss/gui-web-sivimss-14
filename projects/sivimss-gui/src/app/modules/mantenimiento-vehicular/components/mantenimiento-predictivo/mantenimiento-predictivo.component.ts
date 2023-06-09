@@ -112,8 +112,15 @@ export class MantenimientoPredictivoComponent implements OnInit {
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
-    this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+
+    if (+usuario.idRol >= 2) {
+      this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion || null);
+    }
+
+    if (+usuario.idRol === 3) {
+      this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio || null);
+    }
+
     this.cargarVelatorios(true);
   }
 
