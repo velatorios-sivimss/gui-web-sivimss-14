@@ -51,6 +51,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   catalogoFolios: TipoDropdown[] = [];
   fechaActual: Date = new Date();
+  fechaAnterior: Date = new Date();
 
   paginacionConFiltrado: boolean = false;
 
@@ -68,6 +69,7 @@ export class GenerarReciboPagoComponent implements OnInit {
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
+    this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
   ngOnInit(): void {
