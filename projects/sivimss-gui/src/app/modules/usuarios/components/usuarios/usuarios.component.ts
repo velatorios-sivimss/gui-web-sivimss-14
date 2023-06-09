@@ -56,6 +56,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   filtroForm!: FormGroup;
 
   paginacionConFiltrado: boolean = false;
+  folioCreacion: number = 0;
 
   creacionRef!: DynamicDialogRef
   detalleRef!: DynamicDialogRef;
@@ -64,7 +65,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
-  readonly POSICION_CATALOGO_VELATORIOS: number = 2;
   readonly MSG_CAMBIO_ESTATUS: string = "Cambio de estatus realizado";
 
   constructor(
@@ -87,10 +87,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
-    this.catalogoVelatorios = mapearArregloTipoDropdown(velatorios, "desc", "id");
   }
 
   abrirPanel(event: MouseEvent, usuario: Usuario): void {
@@ -102,6 +100,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     const CREACION_CONFIG: DynamicDialogConfig = {
       header: "Registro de usuario nuevo",
       width: MAX_WIDTH,
+      data: this.folioCreacion
     }
     this.creacionRef = this.dialogService.open(AgregarUsuarioComponent, CREACION_CONFIG);
     this.creacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
@@ -119,7 +118,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   abrirModalCambioEstatusUsuario(usuario: Usuario): void {
     this.usuarioSeleccionado = usuario;
-    const header: string = usuario.estatus ? 'Desactivar' : 'Activar';
+    const header: string = usuario.estatus ? 'Activar' : 'Desactivar';
     const CAMBIO_ESTATUS_CONFIG: DynamicDialogConfig = {
       header: `${header} usuario`,
       width: MAX_WIDTH,
@@ -167,6 +166,19 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     }
   }
 
+  obtenerVelatorios(): void {
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.usuarioService.obtenerVelatorios(idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+
   cargarRoles(): void {
     const idNivel = this.filtroForm.get('nivel')?.value;
     this.catalogoRoles = [];
@@ -193,6 +205,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.usuarios = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
+        this.folioCreacion = respuesta.datos.totalElements + 1;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);

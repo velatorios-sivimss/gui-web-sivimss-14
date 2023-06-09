@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/router";
 import {MantenimientoVehicularService} from "./mantenimiento-vehicular.service";
 import {forkJoin, Observable} from "rxjs";
+import {HttpRespuesta} from "../../../models/http-respuesta.interface";
+import {TipoDropdown} from "../../../models/tipo-dropdown";
 
 @Injectable()
 export class ReporteEncargadoResolver implements Resolve<any> {
@@ -10,8 +12,8 @@ export class ReporteEncargadoResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const placas$ = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
-    const catalogoBase$ = this.mantenimientoVehicularService.obtenerCatalogoReporteEncargado();
+    const placas$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
+    const catalogoBase$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoReporteEncargado();
 
     return forkJoin([placas$, catalogoBase$]);
   }

@@ -16,7 +16,7 @@ export class MenuSidebarComponent implements OnInit, OnDestroy {
   readonly NOMBRE_ICONO_POR_DEFECTO: string = 'default-icon.svg';
   abierto$!: Observable<boolean>;
   modulos$!: Observable<Modulo[]>;
-  subs!:Subscription;
+  subs!: Subscription;
 
   constructor(
     private readonly router: Router,
@@ -53,12 +53,16 @@ export class MenuSidebarComponent implements OnInit, OnDestroy {
     this.subs = this.menuSidebarService.opcionMenuSeleccionada$.pipe(
       filter((ruta: string | null) => !!ruta)
     ).subscribe((ruta: string | null) => {
-      this.router.navigate([ruta]);
+      if (ruta === 'reservar-salas') {
+        this.router.navigate(["/reservar-salas", { outlets: { salas: 'salas' } }]).then(() => { }).catch(() => { });
+      } else {
+        this.router.navigate([ruta]);
+      }
     });
   }
 
   ngOnDestroy(): void {
-    if(this.subs){
+    if (this.subs) {
       this.subs.unsubscribe();
     }
   }

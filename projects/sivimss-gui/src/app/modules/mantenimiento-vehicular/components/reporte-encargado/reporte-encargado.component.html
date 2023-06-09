@@ -6,7 +6,7 @@
         <div class="col-md-6">
           <label class="control-label" for="tipoReporte">Tipo de reporte<span class="req">*</span>:</label>
           <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
-                      placeholder="Selecciona el tipo">
+                      placeholder="Selecciona el tipo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este campo es obligatorio *.</span>
@@ -14,7 +14,7 @@
         <div class="col-md-6">
           <label class="control-label" for="placa">Placa<span class="req">*</span>:</label>
           <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
-                      placeholder="Seleccionar vehículo">
+                      placeholder="Seleccionar vehículo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="fmp?.placa?.errors?.required && (fmp?.placa?.dirty || fmp?.placa?.touched)">Este campo es obligatorio *.</span>
@@ -31,7 +31,7 @@
             <div class="col-md-6">
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
                           [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
-                          [maxDate]="fmp?.fecahVigenciaHasta?.value || fechaActual">
+                          [maxDate]="filtroForm.get('fecahVigenciaHasta')?.value || fechaActual">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este campo es obligatorio *.</span>
@@ -39,7 +39,7 @@
             <div class="col-md-6">
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
                           [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body"
-                          [maxDate]="fechaActual" [minDate]="fmp?.fechaVigenciaDesde?.value">
+                          [maxDate]="fechaActual" [minDate]="filtroForm.get('fechaVigenciaDesde')?.value">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este campo es obligatorio *.</span>

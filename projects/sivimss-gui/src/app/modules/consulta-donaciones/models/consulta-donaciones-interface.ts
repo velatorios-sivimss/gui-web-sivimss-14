@@ -9,7 +9,8 @@ export interface ConsultaDonacionesInterface {
 }
 
 export interface AtaudDonado {
-  idAtaud?: number;
+  idInventarioArticulo?: number;
+  // idAtaud?: number;
   idArticulo?: number;
   noInventario?: string;
   folioArticulo?: string;

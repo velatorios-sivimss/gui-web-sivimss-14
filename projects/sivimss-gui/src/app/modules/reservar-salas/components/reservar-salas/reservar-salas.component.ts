@@ -1,4 +1,4 @@
-import {Component, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import { Component, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { RESERVAR_SALAS_BREADCRUMB } from '../../constants/breadcrumb';
@@ -23,7 +23,7 @@ export class ReservarSalasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.router.navigate(["../../reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]);
+    this.router.navigate(["../../reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]).then(() => { }).catch(() => { });
     this.actualizarBreadcrumb();
   }
 
@@ -32,7 +32,7 @@ export class ReservarSalasComponent implements OnInit {
   }
 
   redirigirOpcionSala(opcion: { value: SelectButtonOptions }): void {
-    this.router.navigate(["/reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]);
+    this.router.navigate(["/reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]).then(() => { }).catch(() => { });
   }
 
 }

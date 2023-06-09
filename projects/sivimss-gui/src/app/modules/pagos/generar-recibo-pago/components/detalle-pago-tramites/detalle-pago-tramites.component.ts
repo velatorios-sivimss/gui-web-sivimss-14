@@ -7,14 +7,12 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SolicitudReportePagoTramite} from "../../models/solicitudReporte.interface";
-import {Observable} from "rxjs";
-import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 
 @Component({
   selector: 'app-detalle-pago-tramites',
   templateUrl: './detalle-pago-tramites.component.html',
   styleUrls: ['./detalle-pago-tramites.component.scss'],
-  providers: [DescargaArchivosService]
 })
 export class DetallePagoTramitesComponent {
 
@@ -28,7 +26,6 @@ export class DetallePagoTramitesComponent {
     private generarReciboService: GenerarReciboService,
     private mensajesSistemaService: MensajesSistemaService,
     private cargadorService: LoaderService,
-    private descargaArchivosService: DescargaArchivosService
   ) {
     this.recibo = this.route.snapshot.data["respuesta"].datos[0];
     this.obtenerValoresFecha();
@@ -70,14 +67,23 @@ export class DetallePagoTramitesComponent {
   }
 
   generarPDF(): void {
-    const solicitud: SolicitudReportePagoTramite = this.generarSolicitudReporte();
+    const solicitud = this.generarSolicitudReporte();
     this.cargadorService.activar();
-    const reporte$: Observable<Blob> = this.generarReciboService.descargarReporte(solicitud);
-    this.descargaArchivosService.descargarArchivo(reporte$).pipe(
+    this.generarReciboService.descargarReporte(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: boolean): void => {
+      next: (respuesta: Blob): void => {
+        const downloadURL: string = window.URL.createObjectURL(respuesta);
+        const link: HTMLAnchorElement = document.createElement('a');
+        link.href = downloadURL;
+        link.download = `reporte.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error)
+      }
     });
   }
 

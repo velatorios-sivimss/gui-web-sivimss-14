@@ -12,7 +12,7 @@
         <div class="col-md-6">
           <label class="control-label" for="delegacion">Delegacion*:</label>
           <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-                      placeholder="Selecciona la delegacion">
+                      placeholder="Selecciona la delegacion" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="fmp?.delegacion?.errors?.required && (fmp?.delegacion?.dirty || fmp?.delegacion?.touched)">Este campo es obligatorio *.</span>
@@ -22,7 +22,7 @@
         <div class="col-md-6">
           <label class="control-label" for="velatorio">Velatorio:</label>
           <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                      placeholder="Selecciona el velatorio">
+                      placeholder="Selecciona el velatorio" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="fmp?.velatorio?.errors?.required && (fmp?.velatorio?.dirty || fmp?.velatorio?.touched)">Este campo es obligatorio *.</span>
@@ -30,7 +30,7 @@
         <div class="col-md-6">
           <label class="control-label" for="placa">Placa*:</label>
           <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
-                      placeholder="Seleccionar vehículo">
+                      placeholder="Seleccionar vehículo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="fmp?.placa?.errors?.required && (fmp?.placa?.dirty || fmp?.placa?.touched)">Este campo es obligatorio *.</span>
@@ -40,7 +40,7 @@
         <div class="col-md-6">
           <label class="control-label" for="tipoMantenimiento">Tipo de Mantenimiento*:</label>
           <p-dropdown id="tipoMantenimiento" class="form-control" formControlName="tipoMantenimiento"
-                      [options]="tipoMantenimientos"
+                      [options]="tipoMantenimientos" [filter]="true"
                       placeholder="Selecciona el tipo">
           </p-dropdown>
           <span class="campo-obligatorio"
@@ -56,7 +56,7 @@
             <div class="col-md-6">
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde"
                           styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
-                          [maxDate]="fmp?.fechaVigenciaHasta?.value">
+                          [maxDate]="filtroForm.get('fecahVigenciaHasta')?.value">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este campo es obligatorio *.</span>
@@ -64,7 +64,7 @@
             <div class="col-md-6">
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta"
                           styleClass="form-control" [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy"
-                          appendTo="body" [minDate]="fmp?.fechaVigenciaDesde?.value">
+                          appendTo="body" [minDate]="filtroForm.get('fechaVigenciaDesde')?.value">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este campo es obligatorio *.</span>
@@ -135,7 +135,7 @@
               <h6 class="titulo-acordion">Valores predictivos </h6>
 
               <div class="col-md-8">
-                <p-table [value]="data">
+                <p-table>
                   <ng-template pTemplate="header">
                     <tr>
                       <th id="mtto-predictivo-dia">Dia</th>
