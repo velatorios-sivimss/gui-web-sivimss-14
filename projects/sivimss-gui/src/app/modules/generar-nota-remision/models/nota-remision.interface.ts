@@ -51,6 +51,23 @@ export interface GenerarReporte {
   tipoReporte: string;
 }
 
+export interface GenerarDatosReporte {
+  idNota?: number;
+  idOrden?: number;
+  fechaNota?: string;
+  nomVelatorio?: string;
+  folioNota?: string;
+  dirVelatorio?: string;
+  nomSolicitante?: string;
+  dirSolicitante?: string;
+  curpSolicitante?: string;
+  velatorioOrigen?: string;
+  nomFinado?: string;
+  parFinado?: string;
+  folioODS?: string;
+  tipoReporte?: string;
+}
+
 export interface BusquedaFiltro {
   idNivel: number | null;
   idVelatorio: number | null;
