@@ -158,6 +158,8 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
       nomFinado: this.notaRemisionReporte.nomFinado,
       parFinado: this.notaRemisionReporte.parFinado,
       folioODS: this.notaRemisionReporte.folioODS,
+      folioConvenio: this.notaRemisionReporte.folioConvenio,
+      fechaConvenio: this.notaRemisionReporte.fechaConvenio,
       tipoReporte: "pdf"
     }
   }

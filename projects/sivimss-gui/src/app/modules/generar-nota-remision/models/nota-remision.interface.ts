@@ -36,6 +36,8 @@ export interface DetalleNotaRemision {
   dirSolicitante?: string;
   nombreConformidad?: string;
   nombreRepresentante?: string;
+  folioConvenio?: string;
+  fechaConvenio?: string;
   motivo?: string;
 }
 
@@ -65,6 +67,8 @@ export interface GenerarDatosReporte {
   nomFinado?: string;
   parFinado?: string;
   folioODS?: string;
+  folioConvenio?: string;
+  fechaConvenio?: string;
   tipoReporte?: string;
 }
 
