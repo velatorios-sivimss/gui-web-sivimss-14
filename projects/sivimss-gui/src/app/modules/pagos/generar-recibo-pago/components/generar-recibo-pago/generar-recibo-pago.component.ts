@@ -6,7 +6,7 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {GenerarReciboService} from '../../services/generar-recibo-pago.service';
@@ -51,6 +51,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   catalogoFolios: TipoDropdown[] = [];
   fechaActual: Date = new Date();
+  fechaAnterior: Date = new Date();
 
   paginacionConFiltrado: boolean = false;
 
@@ -68,6 +69,7 @@ export class GenerarReciboPagoComponent implements OnInit {
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
+    this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
   ngOnInit(): void {
@@ -100,6 +102,16 @@ export class GenerarReciboPagoComponent implements OnInit {
       fechaFinal: [{value: null, disabled: false}],
     });
     this.obtenerFolios();
+  }
+
+  validarMismaFechaInicioFin(): void {
+    const fechaInicial = this.filtroFormReciboPago.get('fechaInicial')?.value;
+    const fechaFinal = this.filtroFormReciboPago.get('fechaFinal')?.value;
+    if ([fechaInicial, fechaFinal].some(f => f === null)) return;
+    if (moment(fechaInicial).format('YYYY-MM-DD') !== moment(fechaFinal).format('YYYY-MM-DD')) return;
+    this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+    this.filtroFormReciboPago.get('fechaInicial')?.patchValue(null);
+    this.filtroFormReciboPago.get('fechaFinal')?.patchValue(null);
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {

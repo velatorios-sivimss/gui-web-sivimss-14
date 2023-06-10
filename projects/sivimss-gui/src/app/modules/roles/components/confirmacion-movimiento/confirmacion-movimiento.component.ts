@@ -23,6 +23,7 @@ export class ConfirmacionMovimientoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    debugger;
     this.datosRol = this.config.data;
   }
 
