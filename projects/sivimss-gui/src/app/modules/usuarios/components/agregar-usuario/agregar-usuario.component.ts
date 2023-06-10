@@ -14,7 +14,7 @@ import {ActivatedRoute} from '@angular/router';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
-import {DynamicDialogRef} from "primeng/dynamicdialog";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
@@ -36,6 +36,7 @@ export class AgregarUsuarioComponent implements OnInit {
 
   curpValida: boolean = false;
   matriculaValida: boolean = false;
+  folio: number = 0;
 
   catalogoRoles: TipoDropdown[] = [];
   catalogoNiveles: TipoDropdown[] = [];
@@ -64,6 +65,7 @@ export class AgregarUsuarioComponent implements OnInit {
     private route: ActivatedRoute,
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
+    public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private usuarioService: UsuarioService,
     private cargadorService: LoaderService,
@@ -72,6 +74,8 @@ export class AgregarUsuarioComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.folio = this.config.data.toString().padStart(3, '0');
+    console.log(this.folio);
     this.inicializarAgregarUsuarioForm();
     this.cargarCatalogos();
   }
@@ -160,7 +164,7 @@ export class AgregarUsuarioComponent implements OnInit {
   crearNombreUsuario(): string {
     const nombre = this.agregarUsuarioForm.get("nombre")?.value;
     const paterno = this.agregarUsuarioForm.get("primerApellido")?.value;
-    return `${nombre}${paterno.toString().charAt(0)}XXX`.toUpperCase();
+    return `${nombre}${paterno.toString().charAt(0)}${this.folio}`.toUpperCase();
   }
 
   creacionVariablesResumen(): void {
