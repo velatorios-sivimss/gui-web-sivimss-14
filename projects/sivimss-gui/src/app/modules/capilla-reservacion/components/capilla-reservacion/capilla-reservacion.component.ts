@@ -50,10 +50,9 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   delegaciones: TipoDropdown[] = [];
 
   opciones: SelectButtonModule[] = [
-    { icon: 'fs fs-barras-horizontales', value: '0' },
-    { icon: 'fs fs-calendario', value: '1' }
+    { icon: 'fs fs-barras-horizontales', justify: 'Center', value: '0' },
+    { icon: 'fs fs-calendario', justify: 'Center', value: '1' }
   ];
-
 
   value: number = 0;
 
