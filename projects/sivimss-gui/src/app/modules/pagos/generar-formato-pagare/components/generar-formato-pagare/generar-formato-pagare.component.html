@@ -20,8 +20,10 @@
                 </p-dropdown>
             </div>
             <div class="col-md-6">
-                <label class="control-label" for="folio">Folio de la ODS:</label>
-                <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa el folio">
+                <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span>:</label>
+                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados" optionLabel="label" placeholder="Selecciona el folio" [filter]="true" filterBy="label">
+                </p-dropdown>
+
             </div>
         </div>
         <div class="row mb-3">

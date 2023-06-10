@@ -51,8 +51,8 @@ export class GenerarFormatoPagareComponent implements OnInit {
   catatalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
-
   paginacionConFiltrado: boolean = false;
+  foliosGenerados: TipoDropdown[] = [];
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
@@ -80,6 +80,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.inicializarFiltroForm();
     this.cargarCatalogos();
+    this.obtenerFoliosGenerados();
   }
 
   private cargarCatalogos(): void {
@@ -187,6 +188,28 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.obtenerVelatorios();
     this.paginar();
+  }
+
+  obtenerFoliosGenerados() {
+    this.generarFormatoService.buscarTodasOdsGeneradas().subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        let filtrado: TipoDropdown[] = [];
+        if (respuesta?.datos.length > 0) {
+          respuesta?.datos.forEach((e: any) => {
+            filtrado.push({
+              label: e.nombre,
+              value: e.id,
+            });
+          });
+          this.foliosGenerados = filtrado;
+        } else {
+          this.foliosGenerados = [];
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
+    });
   }
 
   obtenerVelatorios(): void {

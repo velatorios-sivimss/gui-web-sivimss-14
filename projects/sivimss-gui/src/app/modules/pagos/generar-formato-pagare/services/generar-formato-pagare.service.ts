@@ -91,4 +91,8 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
+  buscarTodasOdsGeneradas(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/lista-ods-pag`);
+  }
+
 }
