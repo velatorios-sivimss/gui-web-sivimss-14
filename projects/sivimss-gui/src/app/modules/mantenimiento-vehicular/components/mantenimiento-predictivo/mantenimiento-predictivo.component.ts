@@ -88,6 +88,11 @@ export class MantenimientoPredictivoComponent implements OnInit {
       fechaVigenciaDesde: [{value: null, disabled: false}, [Validators.required]],
       fecahVigenciaHasta: [{value: null, disabled: false}, [Validators.required]],
     });
+    /*
+     * nivel: [{value: +usuario.idOficina, disabled: true}],
+     * delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
+     * velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
+     */
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
@@ -110,7 +115,13 @@ export class MantenimientoPredictivoComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
-    this.cargarVelatorios(true);
+    /*
+     * const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+     * this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
+     * this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
+     * this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+     * this.cargarVelatorios(true);
+     */
   }
 
   buscar(): void {
