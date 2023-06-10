@@ -73,7 +73,7 @@ export class AgregarRolComponent implements OnInit {
     this.rolService.guardar(solicitudRol).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Exito, msg + " " + this.f.nombre.value);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg );
         void this.router.navigate(["roles"]);
       },
       error: (error: HttpErrorResponse): void => {
