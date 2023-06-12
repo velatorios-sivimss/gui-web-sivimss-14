@@ -1,6 +1,7 @@
 export interface BeneficiarioInterface {
   velatorio?: number;
   descVelatorio?: string;
+  fechaNacimiento?: string;
   fecha?: string;
   edad?: number;
   nombre?: string;

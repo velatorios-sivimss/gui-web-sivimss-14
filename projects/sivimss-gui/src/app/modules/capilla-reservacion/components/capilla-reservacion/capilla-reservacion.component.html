@@ -1,7 +1,8 @@
 <app-titulo-principal titulo="Reservar capilla"></app-titulo-principal>
-<div class="row mx-4 mb-4">
-  <div class="col-md-3">
-    <p-selectButton [options]="opciones" [(ngModel)]="value" optionLabel="icon" optionValue="value">
+<div class="row">
+  <div class="col-md-12 flex justify-content-center mb-3">
+    <p-selectButton [options]="opciones" [(ngModel)]="value" optionLabel="icon" optionValue="value"
+      optionDisabled="inactive">
       <ng-template let-item>
         <i [class]="item.icon"></i>
       </ng-template>
@@ -14,15 +15,14 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
-          <p-dropdown id="delegacion" formControlName="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación"
-                      (onChange)="cambiarDelegacion()">
+          <p-dropdown id="delegacion" formControlName="delegacion" class="form-control" [options]="delegaciones"
+            placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()">
           </p-dropdown>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
           <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
-                      [options]="velatorios" (onChange)="obtenerCapillaPorIdVelatorio()"
-                      placeholder="Selecciona el velatorio">
+            [options]="velatorios" (onChange)="obtenerCapillaPorIdVelatorio()" placeholder="Selecciona el velatorio">
           </p-dropdown>
         </div>
       </div>
@@ -32,16 +32,20 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="fechaEntrada">Fecha<span class="req">*</span>:</label>
-          <p-calendar id="fechaEntrada" formControlName="fechaEntrada" styleClass="form-control"
-                      [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
+          <p-calendar id="fechaEntrada" formControlName="fechaEntrada" styleClass="form-control" [showIcon]="true"
+            placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
           </p-calendar>
-          <span class="campo-obligatorio" *ngIf="fe.fechaEntrada?.errors?.required && (fe.fechaEntrada?.dirty || fe.fechaEntrada?.touched)">Este campo es obligatorio *.</span>
+          <span class="campo-obligatorio"
+            *ngIf="fe.fechaEntrada?.errors?.required && (fe.fechaEntrada?.dirty || fe.fechaEntrada?.touched)">Este campo
+            es obligatorio *.</span>
         </div>
         <div class="col-md-3">
           <label class="control-label" for="horaEntrada">Hora<span class="req">*</span>:</label>
           <p-calendar id="horaEntrada" styleClass="form-control" formControlName="horaEntrada" placeholder="00:00"
-                      [timeOnly]="true"></p-calendar>
-          <span class="campo-obligatorio" *ngIf="fe.horaEntrada?.errors?.required && (fe.horaEntrada?.dirty || fe.horaEntrada?.touched)">Este campo es obligatorio *.</span>
+            [timeOnly]="true"></p-calendar>
+          <span class="campo-obligatorio"
+            *ngIf="fe.horaEntrada?.errors?.required && (fe.horaEntrada?.dirty || fe.horaEntrada?.touched)">Este campo es
+            obligatorio *.</span>
         </div>
       </div>
       <div class="row mt-4">
@@ -53,11 +57,11 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-            <button *appValidaRol="['CAPILLA_RESERVACION','ALTA']" type="button" class="btn btn-primary btn-md ml-5"
-                    [disabled]="registrarEntradaForm.invalid || !f.delegacion.value || !f.velatorio.value"
-                    onCloseOnNavigation  (click)="abrirModalAgregarEntrada()">
-              Buscar
-            </button>
+          <button *appValidaRol="['CAPILLA_RESERVACION','ALTA']" type="button" class="btn btn-primary btn-md ml-5"
+            [disabled]="registrarEntradaForm.invalid || !f.delegacion.value || !f.velatorio.value" onCloseOnNavigation
+            (click)="verificarCapillasDisponibles()">
+            Buscar
+          </button>
         </div>
       </div>
 
@@ -69,26 +73,28 @@
         <h2 class="subtitulo ml-4 mb-3">Registrar salida de capilla</h2>
         <div class="col-md-6">
           <label class="control-label" for="capilla">Nombre de capilla</label>
-          <p-dropdown appendTo="body" id="capilla" class="form-control" formControlName="capilla"
-                      [options]="capilla"
-                      placeholder="Selecciona la capilla">
+          <p-dropdown appendTo="body" id="capilla" class="form-control" formControlName="capilla" [options]="capilla"
+            placeholder="Selecciona la capilla">
           </p-dropdown>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="fechaSalida">Fecha<span class="req">*</span>:</label>
-          <p-calendar id="fechaSalida" formControlName="fechaSalida" styleClass="form-control"
-                      [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
+          <p-calendar id="fechaSalida" formControlName="fechaSalida" styleClass="form-control" [showIcon]="true"
+            placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
           </p-calendar>
-          <span class="campo-obligatorio" *ngIf="fs.fechaSalida?.errors?.required && (fs.fechaSalida?.dirty || fs.fechaSalida?.touched)">Este campo es obligatorio *.</span>
+          <span class="campo-obligatorio"
+            *ngIf="fs.fechaSalida?.errors?.required && (fs.fechaSalida?.dirty || fs.fechaSalida?.touched)">Este campo es
+            obligatorio *.</span>
         </div>
         <div class="col-md-3">
           <label class="control-label" for="horaSalida">Hora<span class="req">*</span>:</label>
           <p-calendar id="horaSalida" styleClass="form-control" formControlName="horaSalida" placeholder="00:00"
-                      [timeOnly]="true"></p-calendar>
+            [timeOnly]="true"></p-calendar>
           <span class="campo-obligatorio"
-                *ngIf="fs.horaSalida?.errors?.required && (fs.horaSalida?.dirty || fs.horaSalida?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="fs.horaSalida?.errors?.required && (fs.horaSalida?.dirty || fs.horaSalida?.touched)">Este campo es
+            obligatorio *.</span>
         </div>
       </div>
       <div class="row mt-4">
@@ -100,8 +106,9 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button *appValidaRol="['CAPILLA_RESERVACION','MODIFICAR']" onCloseOnNavigation type="button" class="btn btn-primary btn-md ml-5"
-                  [disabled]="registrarSalidaForm.invalid"  (click)="abrirModalAgregarSalida()" >Registrar salida</button>
+          <button *appValidaRol="['CAPILLA_RESERVACION','MODIFICAR']" onCloseOnNavigation type="button"
+            class="btn btn-primary btn-md ml-5" [disabled]="registrarSalidaForm.invalid"
+            (click)="abrirModalAgregarSalida()">Registrar salida</button>
         </div>
       </div>
     </form>
@@ -123,5 +130,3 @@
     <app-calendario></app-calendario>
   </section>
 </ng-container>
-
-

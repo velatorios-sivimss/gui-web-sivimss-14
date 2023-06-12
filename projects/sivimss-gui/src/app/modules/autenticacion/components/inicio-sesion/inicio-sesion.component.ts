@@ -33,7 +33,6 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   mostrarModalFechaContraseniaVencida: boolean = false;
   mostrarModalIntentosFallidos: boolean = false;
   mostrarModalCuentaBloqueada: boolean = false;
-  mostrarModalUsuarioNoExiste = false;
   mostrarModalSIAPSinConexion = false;
   mostrarModalSIAPDesactivado = false;
   usuarioIncorrecto: boolean = false;
