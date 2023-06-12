@@ -20,6 +20,7 @@ import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivims
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import * as moment from "moment/moment";
 
 type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
 
