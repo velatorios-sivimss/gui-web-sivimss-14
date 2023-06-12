@@ -36,6 +36,8 @@ export interface DetalleNotaRemision {
   dirSolicitante?: string;
   nombreConformidad?: string;
   nombreRepresentante?: string;
+  folioConvenio?: string;
+  fechaConvenio?: string;
   motivo?: string;
 }
 
@@ -49,6 +51,25 @@ export interface GenerarReporte {
   idNota: number;
   idOrden: number;
   tipoReporte: string;
+}
+
+export interface GenerarDatosReporte {
+  idNota?: number;
+  idOrden?: number;
+  fechaNota?: string;
+  nomVelatorio?: string;
+  folioNota?: string;
+  dirVelatorio?: string;
+  nomSolicitante?: string;
+  dirSolicitante?: string;
+  curpSolicitante?: string;
+  velatorioOrigen?: string;
+  nomFinado?: string;
+  parFinado?: string;
+  folioODS?: string;
+  folioConvenio?: string;
+  fechaConvenio?: string;
+  tipoReporte?: string;
 }
 
 export interface BusquedaFiltro {
