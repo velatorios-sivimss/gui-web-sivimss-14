@@ -13,21 +13,25 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-            <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP">
+            <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18" alphanumericOnly>
             <span class="campo-obligatorio"
-                  *ngIf="fp.curp?.errors?.required && (fp.curp?.dirty || fp.curp?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.curp?.errors?.required && (fp.curp?.dirty || fp.curp?.touched)">Este campo es obligatorio *.</span>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.curp?.errors?.pattern && (fp.curp?.dirty || fp.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="rfc">RFC<span class="req">*</span>:</label>
-            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa RFC">
+            <label class="control-label" for="rfc">R.F.C.<span class="req">*</span>:</label>
+            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa RFC" maxlength="13" alphanumericOnly>
             <span class="campo-obligatorio"
-                  *ngIf="fp.rfc?.errors?.required && (fp.rfc?.dirty || fp.rfc?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.rfc?.errors?.required && (fp.rfc?.dirty || fp.rfc?.touched)">Este campo es obligatorio *.</span>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.rfc?.errors?.pattern && (fp.rfc?.dirty || fp.rfc?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
             <label class="control-label" for="matricula">Matrícula <span class="req">*</span>:</label>
             <input id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa matrícula">
             <span class="campo-obligatorio"
-                  *ngIf="fp.matricula?.errors?.required && (fp.matricula?.dirty || fp.matricula?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.matricula?.errors?.required && (fp.matricula?.dirty || fp.matricula?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
@@ -35,19 +39,19 @@
             <label class="control-label" for="nombre">Nombres (s)<span class="req">*</span>:</label>
             <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
             <span class="campo-obligatorio"
-                  *ngIf="fp.nombre?.errors?.required && (fp.nombre?.dirty || fp.nombre?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.nombre?.errors?.required && (fp.nombre?.dirty || fp.nombre?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
             <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
             <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa primer apellido">
             <span class="campo-obligatorio"
-                  *ngIf="fp.primerApellido?.errors?.required && (fp.primerApellido?.dirty || fp.primerApellido?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.primerApellido?.errors?.required && (fp.primerApellido?.dirty || fp.primerApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
             <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
             <input id="segundoApellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa nombre">
             <span class="campo-obligatorio"
-                  *ngIf="fp.segundoApellido?.errors?.required && (fp.segundoApellido?.dirty || fp.segundoApellido?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.segundoApellido?.errors?.required && (fp.segundoApellido?.dirty || fp.segundoApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
@@ -56,27 +60,27 @@
             <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
                         dateFormat="dd/mm/yy" placeholder="Ingresa fecha de nacimiento"></p-calendar>
             <span class="campo-obligatorio"
-                  *ngIf="fp.fechaNacimiento?.errors?.required && (fp.fechaNacimiento?.dirty || fp.fechaNacimiento?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.fechaNacimiento?.errors?.required && (fp.fechaNacimiento?.dirty || fp.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
             <p-dropdown id="sexo" class="form-control" formControlName="sexo"
                         placeholder="Selecciona sexo" [options]="sexo"></p-dropdown>
             <span class="campo-obligatorio"
-                  *ngIf="fp.sexo?.errors?.required && (fp.sexo?.dirty || fp.sexo?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.sexo?.errors?.required && (fp.sexo?.dirty || fp.sexo?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
             <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
                         placeholder="Selecciona nacionalidad" [options]="nacionalidad"></p-dropdown>
             <span class="campo-obligatorio"
-                  *ngIf="fp.nacionalidad?.errors?.required && (fp.nacionalidad?.dirty || fp.nacionalidad?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.nacionalidad?.errors?.required && (fp.nacionalidad?.dirty || fp.nacionalidad?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
             <input id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento" placeholder="Ingresa lugar">
             <span class="campo-obligatorio"
-                  *ngIf="fp.lugarNacimiento?.errors?.required && (fp.lugarNacimiento?.dirty || fp.lugarNacimiento?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.lugarNacimiento?.errors?.required && (fp.lugarNacimiento?.dirty || fp.lugarNacimiento?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
@@ -84,13 +88,13 @@
             <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
             <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
             <span class="campo-obligatorio"
-                  *ngIf="fp.correoElectronico?.errors?.required && (fp.correoElectronico?.dirty || fp.correoElectronico?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.correoElectronico?.errors?.required && (fp.correoElectronico?.dirty || fp.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
             <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono">
             <span class="campo-obligatorio"
-                  *ngIf="fp.telefono?.errors?.required && (fp.telefono?.dirty || fp.telefono?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.telefono?.errors?.required && (fp.telefono?.dirty || fp.telefono?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <hr class="hr-accordion-content">
@@ -100,25 +104,25 @@
             <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
             <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa calle">
             <span class="campo-obligatorio"
-                  *ngIf="fp.calle?.errors?.required && (fp.calle?.dirty || fp.calle?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.calle?.errors?.required && (fp.calle?.dirty || fp.calle?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="noExterior">No. exterior<span class="req">*</span>:</label>
             <input id="noExterior" class="form-control" formControlName="noExterior" placeholder="Ingresa no. exterior">
             <span class="campo-obligatorio"
-                  *ngIf="fp.noExterior?.errors?.required && (fp.noExterior?.dirty || fp.noExterior?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.noExterior?.errors?.required && (fp.noExterior?.dirty || fp.noExterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="noInterior">No. interior<span class="req">*</span>:</label>
             <input id="noInterior" class="form-control" formControlName="noInterior" placeholder="Ingresa no. interior">
             <span class="campo-obligatorio"
-                  *ngIf="fp.noInterior?.errors?.required && (fp.noInterior?.dirty || fp.noInterior?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.noInterior?.errors?.required && (fp.noInterior?.dirty || fp.noInterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="cp">CP<span class="req">*</span>:</label>
             <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa CP">
             <span class="campo-obligatorio"
-                  *ngIf="fp.cp?.errors?.required && (fp.cp?.dirty || fp.cp?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.cp?.errors?.required && (fp.cp?.dirty || fp.cp?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
@@ -126,20 +130,20 @@
             <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
             <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa colonia">
             <span class="campo-obligatorio"
-                  *ngIf="fp.colonia?.errors?.required && (fp.colonia?.dirty || fp.colonia?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.colonia?.errors?.required && (fp.colonia?.dirty || fp.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
             <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
             <input id="municipio" class="form-control" formControlName="municipio" placeholder="Ingresa municipio">
             <span class="campo-obligatorio"
-                  *ngIf="fp.municipio?.errors?.required && (fp.municipio?.dirty || fp.municipio?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.municipio?.errors?.required && (fp.municipio?.dirty || fp.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
             <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
             <p-dropdown id="estado" class="form-control" formControlName="estado"
                         placeholder="Selecciona estado" [options]="sexo"></p-dropdown>
             <span class="campo-obligatorio"
-                  *ngIf="fp.estado?.errors?.required && (fp.estado?.dirty || fp.estado?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.estado?.errors?.required && (fp.estado?.dirty || fp.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <hr class="hr-accordion-content">
@@ -149,14 +153,14 @@
             <p-dropdown id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
                         placeholder="Selecciona tipo de paquete" [options]="tipoPaquete"></p-dropdown>
             <span class="campo-obligatorio"
-                  *ngIf="fp.tipoPaquete?.errors?.required && (fp.tipoPaquete?.dirty || fp.tipoPaquete?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.tipoPaquete?.errors?.required && (fp.tipoPaquete?.dirty || fp.tipoPaquete?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-6">
-            <label class="control-label" for="enfermedadPrexistente">Enfermedad prexistente<span class="req">*</span>:</label>
+            <label class="control-label" for="enfermedadPrexistente">Enfermedad preexistente<span class="req">*</span>:</label>
             <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente"
-                        placeholder="Selecciona enfermedad prexistente" [options]="enfermedadPrexistente"></p-dropdown>
+                        placeholder="Selecciona enfermedad preexistente" [options]="enfermedadPrexistente"></p-dropdown>
             <span class="campo-obligatorio"
-                  *ngIf="fp.enfermedadPrexistente?.errors?.required && (fp.enfermedadPrexistente?.dirty || fp.enfermedadPrexistente?.touched)">Campo obligatorio</span>
+                  *ngIf="fp.enfermedadPrexistente?.errors?.required && (fp.enfermedadPrexistente?.dirty || fp.enfermedadPrexistente?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row">
@@ -338,7 +342,7 @@
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" *ngIf="indice > 0" class="btn btn-default btn-md ml-5" (click)="regresar()">Regresar</button>
-      <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
+      <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../" (click)="cancelar()">Cancelar</button>
       <button type="submit" *ngIf="indice < menuStep.length" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
       <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
     </div>
