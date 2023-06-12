@@ -23,8 +23,9 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-notasrem`, filtros, { params });
   }
 
-  buscarTodasOdsGeneradas(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/lista-ods-gen`);
+  buscarTodasOdsGeneradas(delegacion: number, velatorio: number): Observable<HttpRespuesta<any>> {
+    const body = { idDelegacion: delegacion, idVelatorio: velatorio }
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-gen`, body);
   }
 
   obtenerDatosOrdenServicio(idOrdenServicio: number): Observable<HttpRespuesta<any>> {

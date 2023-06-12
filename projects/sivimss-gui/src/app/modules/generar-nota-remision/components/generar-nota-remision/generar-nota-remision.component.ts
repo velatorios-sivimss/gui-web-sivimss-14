@@ -97,7 +97,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
+      nivel: [{ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
       delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }],
       velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }],
       folio: [{ value: null, disabled: false }],
@@ -219,7 +219,9 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   obtenerFoliosGenerados() {
-    this.generarNotaRemisionService.buscarTodasOdsGeneradas().subscribe({
+    const iddelegacion = +this.f.delegacion.value;
+    const idVelatorio = +this.f.velatorio.value;
+    this.generarNotaRemisionService.buscarTodasOdsGeneradas(iddelegacion, idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         let filtrado: TipoDropdown[] = [];
         if (respuesta?.datos.length > 0) {
