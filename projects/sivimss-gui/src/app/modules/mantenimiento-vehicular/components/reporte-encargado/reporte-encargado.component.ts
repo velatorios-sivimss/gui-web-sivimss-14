@@ -3,7 +3,7 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DialogService} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
@@ -51,6 +51,7 @@ export class ReporteEncargadoComponent implements OnInit {
   readonly POSICION_CATALOGOS_TIPO_MTTO: number = 1;
 
   fechaActual: Date = new Date();
+  fechaValida: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -135,6 +136,15 @@ export class ReporteEncargadoComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
+  }
+
+  validarFechas() {
+    if (this.fmp.fechaVigenciaDesde.value > this.fmp.fecahVigenciaHasta.value && this.fmp.fecahVigenciaHasta.value) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+      this.fechaValida = false;
+    } else {
+      this.fechaValida = true;
+    }
   }
 
 

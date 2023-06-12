@@ -1,6 +1,6 @@
 <app-titulo-principal titulo="CONTROL DE VEHÍCULOS"></app-titulo-principal>
 <div class="row">
-    <div class="col-md-12 flex justify-content-start mb-3">
+    <div class="col-md-12 flex justify-content-center mb-3">
         <p-selectButton [options]="OpcionesControlVehiculos" optionLabel="icon" (onChange)="handleCambioVista($event)"
             [(ngModel)]="opcionControlVehiculo" optionDisabled="inactive">
             <ng-template let-item>

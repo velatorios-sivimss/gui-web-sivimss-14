@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { AutenticacionService } from '../../../services/autenticacion.service';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
-import { BusquedaFiltro, ConsultaNotaRemision, GenerarReporte } from '../models/nota-remision.interface';
+import { BusquedaFiltro, ConsultaNotaRemision, GenerarReporte, GenerarDatosReporte } from '../models/nota-remision.interface';
 
 @Injectable()
 export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, any> {
@@ -58,7 +58,7 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
-  generarReporteNotaRemision(generarReporte: GenerarReporte): Observable<Blob> {
+  generarReporteNotaRemision(generarReporte: GenerarDatosReporte): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
