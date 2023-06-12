@@ -1,24 +1,24 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
-import {SelectButtonModule} from "primeng/selectbutton";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../../servicios-funerarios/constants/dummies";
-import {RegistrarEntradaComponent} from "../registrar-entrada/registrar-entrada.component";
-import {RegistrarSalidaComponent} from "../registrar-salida/registrar-salida.component";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
+import { SelectButtonModule } from "primeng/selectbutton";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { CATALOGOS_DUMMIES } from "../../../servicios-funerarios/constants/dummies";
+import { RegistrarEntradaComponent } from "../registrar-entrada/registrar-entrada.component";
+import { RegistrarSalidaComponent } from "../registrar-salida/registrar-salida.component";
 import { ActivatedRoute } from '@angular/router';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { CapillaReservacionService } from '../../services/capilla-reservacion.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import {finalize} from "rxjs/operators";
+import { finalize } from "rxjs/operators";
 import * as moment from 'moment'
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { HttpErrorResponse } from '@angular/common/http';
-import {mensajes} from "../../../reservar-salas/constants/mensajes";
-import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
+import { mensajes } from "../../../reservar-salas/constants/mensajes";
+import { VelatorioInterface } from "../../../reservar-salas/models/velatorio.interface";
 
 @Component({
   selector: 'app-capilla-reservacion',
@@ -43,21 +43,20 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
   posicionPestania: number = 0;
   // delegacion: number = 0;
-  velatorioPosicion!: number ;
-  respuesta:any;
+  velatorioPosicion!: number;
+  respuesta: any;
 
   capilla: any[] = [];
   delegaciones: TipoDropdown[] = [];
 
   opciones: SelectButtonModule[] = [
-    {icon: 'fs fs-barras-horizontales', value: '0'},
-    {icon: 'fs fs-calendario', value: '1'}
+    { icon: 'fs fs-barras-horizontales', justify: 'Center', value: '0' },
+    { icon: 'fs fs-calendario', justify: 'Center', value: '1' }
   ];
-
 
   value: number = 0;
 
-  velatorios:TipoDropdown[] = [];
+  velatorios: TipoDropdown[] = [];
   // velatorioListado!: number;
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
@@ -87,12 +86,12 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
 
     this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
-      {label: delegacion.label, value: delegacion.value} )) || [];
+      { label: delegacion.label, value: delegacion.value })) || [];
 
     this.inicializarFiltroForm();
   }
 
-  actualizarBreadcrumb(): void{
+  actualizarBreadcrumb(): void {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
@@ -108,22 +107,22 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   inicializarRegistroEntradaForm(): void {
     this.registrarEntradaForm = this.formBuilder.group({
 
-      fechaEntrada: [{value: null, disabled: false}, [Validators.required]],
-      horaEntrada: [{value: null, disabled: false}, [Validators.required]],
+      fechaEntrada: [{ value: null, disabled: false }, [Validators.required]],
+      horaEntrada: [{ value: null, disabled: false }, [Validators.required]],
     })
   }
 
   inicializarRegistroSalidaForm(): void {
     this.registrarSalidaForm = this.formBuilder.group({
-      capilla: [{value: null, disabled: false}],
-      fechaSalida: [{value: null, disabled: false}, [Validators.required]],
-      horaSalida: [{value: null, disabled: false}, [Validators.required]],
+      capilla: [{ value: null, disabled: false }],
+      fechaSalida: [{ value: null, disabled: false }, [Validators.required]],
+      horaSalida: [{ value: null, disabled: false }, [Validators.required]],
     })
   }
 
   inicializarCalendarioForm(): void {
-    this.calendarioForm = this.formBuilder.group( {
-      velatorio: [{value: null, disabled: false}],
+    this.calendarioForm = this.formBuilder.group({
+      velatorio: [{ value: null, disabled: false }],
     });
   }
 
@@ -132,40 +131,59 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
       idVelatorio: this.f.velatorio.value || null,
       fechaEntrada: this.fe.fechaEntrada.value,
       horaEntrada: this.fe.horaEntrada.value,
-      registroEntrada:  this.fe.horaEntrada.value
+      registroEntrada: this.fe.horaEntrada.value
     }
   }
 
   obtenerObjetoParaRegistrarSalida() {
-    return this.capilla.filter( (capillaSeleccionada) => {
+    return this.capilla.filter((capillaSeleccionada) => {
       let idCapilla = this.registrarSalidaForm.get('capilla')?.value;
-      return capillaSeleccionada.value ==  idCapilla
+      return capillaSeleccionada.value == idCapilla
 
     })
   }
 
   abrirModalAgregarSalida(): void {
     let objParaRegistrarSalida = this.obtenerObjetoParaRegistrarSalida();
-    this.agregarSalidaRef = this.dialogService.open(RegistrarSalidaComponent,{
+    this.agregarSalidaRef = this.dialogService.open(RegistrarSalidaComponent, {
       data: {
-        idCapilla:this.registrarSalidaForm.get('capilla')?.value,
+        idCapilla: this.registrarSalidaForm.get('capilla')?.value,
         idVelatorio: +this.f.velatorio.value,
-        fecha: {fecha:this.registrarSalidaForm.get('fechaSalida')?.value,
-          hora: this.registrarSalidaForm.get('horaSalida')?.value}
+        fecha: {
+          fecha: this.registrarSalidaForm.get('fechaSalida')?.value,
+          hora: this.registrarSalidaForm.get('horaSalida')?.value
+        }
       },
       header: 'Registrar salida de capilla',
       width: "920px",
     });
 
-    this.agregarSalidaRef.onClose.subscribe((respuesta:boolean) => {
-      if(respuesta){
+    this.agregarSalidaRef.onClose.subscribe((respuesta: boolean) => {
+      if (respuesta) {
         this.f.delegacion.patchValue(0);
         this.f.velatorio.patchValue(0);
         this.velatorios = [];
         this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
-          {label: delegacion.label, value: delegacion.value} )) || [];
+          { label: delegacion.label, value: delegacion.value })) || [];
         this.registrarEntradaForm.reset();
         this.registrarSalidaForm.reset();
+      }
+    });
+  }
+
+  verificarCapillasDisponibles() {
+    this.capillaReservacionService.buscarPorIdVelatorio(+this.f.velatorio.value).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta.datos.length > 0) {
+          this.abrirModalAgregarEntrada();
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Precaucion,
+            "No contamos con capillas disponibles por el momento. Intenta más tarde.");
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     });
   }
@@ -178,20 +196,20 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
       width: "920px",
     })
 
-    this.creacionRef.onClose.subscribe( (estatus:boolean) => {
-      if(estatus){
+    this.creacionRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
         this.f.delegacion.patchValue(0);
         this.f.velatorio.patchValue(0);
-        this.velatorios = mapearArregloTipoDropdown(this.respuesta[0]?.datos,'velatorio','id');
+        this.velatorios = mapearArregloTipoDropdown(this.respuesta[0]?.datos, 'velatorio', 'id');
         this.delegaciones = this.respuesta[1]!.map((delegacion: any) => (
-          {label: delegacion.label, value: delegacion.value} )) || [];
+          { label: delegacion.label, value: delegacion.value })) || [];
         this.registrarEntradaForm.reset();
         this.registrarSalidaForm.reset();
       }
     })
   }
 
-  obtenerCapillaPorIdVelatorio(){
+  obtenerCapillaPorIdVelatorio() {
     let idVelatorio = +this.f.velatorio.value
     this.capillaReservacionService.capillaOcupadaPorIdVelatorio(idVelatorio).subscribe(
       (respuesta) => {
@@ -209,14 +227,14 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   }
 
 
-   cambiarDelegacion(): void {
+  cambiarDelegacion(): void {
     this.loaderService.activar();
     this.capillaReservacionService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
-      (respuesta: HttpRespuesta<any>)=> {
+      (respuesta: HttpRespuesta<any>) => {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+          { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
       },
       (error: HttpErrorResponse) => {
         console.log(error);
@@ -238,10 +256,10 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.creacionRef){
+    if (this.creacionRef) {
       this.creacionRef.destroy();
     }
-    if(this.agregarSalidaRef){
+    if (this.agregarSalidaRef) {
       this.agregarSalidaRef.destroy();
     }
   }
