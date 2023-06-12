@@ -20,16 +20,16 @@
                 </p-dropdown>
             </div>
             <div class="col-md-6">
-                <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span>:</label>
-                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados" optionLabel="label" placeholder="Selecciona el folio" [filter]="true" filterBy="label">
+                <label class="control-label" for="folioODS">Folio de la ODS<span class="req">*</span>:</label>
+                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados" (onChange)="obtenerContratanteGeneradoPorfolio()" optionLabel="label" placeholder="Selecciona el folio" [filter]="true" filterBy="label">
                 </p-dropdown>
-
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
-                <label class="control-label" for="nombreContratante">Nombre del contratante:</label>
-                <input id="nombreContratante" class="form-control" formControlName="nombreContratante" placeholder="Ingresa nombre del contratante">
+                <label class="control-label" for="nombreContratante">Nombre del contratante:<span class="req">*</span>:</label>
+                <p-dropdown id="nombreContratante" class="form-control" formControlName="nombreContratante" [options]="contratantesGenerados" optionLabel="label" placeholder="Selecciona el nombre del contratante" [filter]="true" filterBy="label">
+                </p-dropdown>
             </div>
             <div class="col-md-3">
                 <label class="control-label" for="fechaInicial">Fecha inicial:</label>

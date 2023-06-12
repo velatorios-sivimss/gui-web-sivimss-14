@@ -53,6 +53,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
   paginacionConFiltrado: boolean = false;
   foliosGenerados: TipoDropdown[] = [];
+  contratantesGenerados: TipoDropdown[] = [];
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
@@ -212,6 +213,29 @@ export class GenerarFormatoPagareComponent implements OnInit {
     });
   }
 
+  obtenerContratanteGeneradoPorfolio() {
+    const idFolioODS = +this.f.folioODS.value
+    this.generarFormatoService.buscarContratantesGeneradosPorfolio(idFolioODS).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        let filtrado: TipoDropdown[] = [];
+        if (respuesta?.datos.length > 0) {
+          respuesta?.datos.forEach((e: any) => {
+            filtrado.push({
+              label: e.nomContratante,
+              value: e.nomContratante,
+            });
+          });
+          this.contratantesGenerados = filtrado;
+        } else {
+          this.contratantesGenerados = [];
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+  
   obtenerVelatorios(): void {
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
