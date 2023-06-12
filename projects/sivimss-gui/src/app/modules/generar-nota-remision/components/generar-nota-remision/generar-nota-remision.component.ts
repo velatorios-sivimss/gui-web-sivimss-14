@@ -243,6 +243,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   async obtenerVelatorios() {
+    this.foliosGenerados = [];
     this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");

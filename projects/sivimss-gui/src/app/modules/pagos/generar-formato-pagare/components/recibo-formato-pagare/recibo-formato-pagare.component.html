@@ -9,7 +9,7 @@
         </div>
         <div class="table-panel-header-column">
             <div class="flex flex-column ml-5">
-                <a>
+                <a (click)="overlayPanel.toggle($event)">
                     <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
                 </a>
             </div>
@@ -80,8 +80,15 @@
              se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera.
           </span>
 
-                    <span class="col-md-12 etiqueta-base mt-7 mb-3">de <span class="etiqueta-formato-val">{{formatoPagare.redito}}</span> por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen
+                    <span class="col-md-12 etiqueta-base mt-7 mb-3" for="redito">de 
+                        <div class="col-md-2">
+                            <input id="redito" class="form-control" [(ngModel)]="formatoPagare.redito" formControlName="{{formatoPagare.redito}}" placeholder="Ingresa redito">
+                        </div>
+                        por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen
                     </span>
+
+
+
 
                     <div class="grid-item"></div>
                     <div class="grid-item"></div>
@@ -139,6 +146,15 @@
 </div>
 
 <div class="row flex justify-content-end mb-4">
-    <button class="btn btn-default btn-md" [routerLink]="'../'">Cancelar</button>
-    <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato de pagaré</button>
+    <button class="btn btn-default btn-md" [routerLink]="'../'">Regresar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato pagaré</button>
 </div>
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Vista previa" (click)="generarVistaPrevia()">
+            </app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>

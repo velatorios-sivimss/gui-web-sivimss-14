@@ -51,8 +51,9 @@ export class GenerarFormatoPagareComponent implements OnInit {
   catatalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
-
   paginacionConFiltrado: boolean = false;
+  foliosGenerados: TipoDropdown[] = [];
+  contratantesGenerados: TipoDropdown[] = [];
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
@@ -80,6 +81,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.inicializarFiltroForm();
     this.cargarCatalogos();
+    this.obtenerFoliosGenerados();
   }
 
   private cargarCatalogos(): void {
@@ -105,7 +107,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   inicializarFiltroForm() {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +usuario.idRol, disabled: true}],
+      nivel: [{value: +usuario.idOficina, disabled: true}],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idRol === 2}],
       velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idRol === 3}],
       folioODS: [{value: null, disabled: false}],
@@ -189,6 +191,51 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.paginar();
   }
 
+  obtenerFoliosGenerados() {
+    this.generarFormatoService.buscarTodasOdsGeneradas().subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        let filtrado: TipoDropdown[] = [];
+        if (respuesta?.datos.length > 0) {
+          respuesta?.datos.forEach((e: any) => {
+            filtrado.push({
+              label: e.nombre,
+              value: e.id,
+            });
+          });
+          this.foliosGenerados = filtrado;
+        } else {
+          this.foliosGenerados = [];
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+
+  obtenerContratanteGeneradoPorfolio() {
+    const idFolioODS = +this.f.folioODS.value
+    this.generarFormatoService.buscarContratantesGeneradosPorfolio(idFolioODS).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        let filtrado: TipoDropdown[] = [];
+        if (respuesta?.datos.length > 0) {
+          respuesta?.datos.forEach((e: any) => {
+            filtrado.push({
+              label: e.nomContratante,
+              value: e.nomContratante,
+            });
+          });
+          this.contratantesGenerados = filtrado;
+        } else {
+          this.contratantesGenerados = [];
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+  
   obtenerVelatorios(): void {
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
