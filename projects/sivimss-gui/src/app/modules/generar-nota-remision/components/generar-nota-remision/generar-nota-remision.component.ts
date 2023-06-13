@@ -97,7 +97,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +this.rolLocalStorage.idRol || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
+      nivel: [{ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
       delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }],
       velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }],
       folio: [{ value: null, disabled: false }],
@@ -219,7 +219,9 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   obtenerFoliosGenerados() {
-    this.generarNotaRemisionService.buscarTodasOdsGeneradas().subscribe({
+    const iddelegacion = +this.f.delegacion.value;
+    const idVelatorio = +this.f.velatorio.value;
+    this.generarNotaRemisionService.buscarTodasOdsGeneradas(iddelegacion, idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         let filtrado: TipoDropdown[] = [];
         if (respuesta?.datos.length > 0) {
@@ -241,6 +243,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   async obtenerVelatorios() {
+    this.foliosGenerados = [];
     this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
@@ -272,27 +275,6 @@ export class GenerarNotaRemisionComponent implements OnInit {
     });
   }
 
-  generarReporteTabla(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {};
-    if (tipoReporte == "xls") {
-      configuracionArchivo.ext = "xlsx"
-    }
-
-    this.loaderService.activar();
-    let busqueda = this.obtenerObjetoParaFiltrado();
-    busqueda = { ...busqueda, tipoReporte }
-
-    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteTabla(busqueda), configuracionArchivo).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe({
-      next: (respuesta: any) => {
-        console.log(respuesta);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.log(error);
-      },
-    });
-  }
 
   filtrosArchivos(tipoReporte: string): GenerarReporte {
     return {

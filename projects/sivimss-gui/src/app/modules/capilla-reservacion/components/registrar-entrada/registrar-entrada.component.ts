@@ -113,9 +113,6 @@ export class RegistrarEntradaComponent implements OnInit {
           this.registros2 = respuesta!.datos.map((capilla: any) => {
             return { label: capilla.nomCapilla, value: capilla.idCapilla };
           });
-        }else{
-          this.alertaService.mostrar(TipoAlerta.Precaucion,
-            "No contamos con capillas disponibles por el momento.Intenta más tarde.");
         }
       },
       (error: HttpErrorResponse) => {

@@ -161,9 +161,9 @@ export class RolesComponent implements OnInit {
         this.rolService.cambiarEstatus(solicitudId).subscribe({
           next: (): void => {
             if (solicitudId.estatusRol === 1) {
-              this.alertaService.mostrar(TipoAlerta.Exito, 'Activado correctamente. ' + rol.desRol);
+              this.alertaService.mostrar(TipoAlerta.Exito, 'Activado correctamente. ');
             } else {
-              this.alertaService.mostrar(TipoAlerta.Exito, 'Desactivado correctamente. ' + rol.desRol);
+              this.alertaService.mostrar(TipoAlerta.Exito, 'Desactivado correctamente.');
             }
           },
           error: (error: HttpErrorResponse): void => {

@@ -31,7 +31,7 @@
             <div class="col-md-6">
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
                           [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
-                          [maxDate]="filtroForm.get('fecahVigenciaHasta')?.value || fechaActual">
+                          (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este campo es obligatorio *.</span>
@@ -39,7 +39,7 @@
             <div class="col-md-6">
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
                           [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body"
-                          [maxDate]="fechaActual" [minDate]="filtroForm.get('fechaVigenciaDesde')?.value">
+                          [maxDate]="fechaActual" (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"
                     *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este campo es obligatorio *.</span>
@@ -56,7 +56,7 @@
         <div class="col-md-12 flex justify-content-end">
           <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
           <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()"
-                  [disabled]="filtroForm.invalid">Buscar
+                  [disabled]="filtroForm.invalid || !fechaValida">Buscar
           </button>
         </div>
       </div>

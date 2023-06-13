@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { AutenticacionService } from '../../../services/autenticacion.service';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
-import { BusquedaFiltro, ConsultaNotaRemision, GenerarReporte } from '../models/nota-remision.interface';
+import { BusquedaFiltro, ConsultaNotaRemision, GenerarReporte, GenerarDatosReporte } from '../models/nota-remision.interface';
 
 @Injectable()
 export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, any> {
@@ -23,8 +23,9 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-notasrem`, filtros, { params });
   }
 
-  buscarTodasOdsGeneradas(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/lista-ods-gen`);
+  buscarTodasOdsGeneradas(delegacion: number, velatorio: number): Observable<HttpRespuesta<any>> {
+    const body = { idDelegacion: delegacion, idVelatorio: velatorio }
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-gen`, body);
   }
 
   obtenerDatosOrdenServicio(idOrdenServicio: number): Observable<HttpRespuesta<any>> {
@@ -58,7 +59,7 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
-  generarReporteNotaRemision(generarReporte: GenerarReporte): Observable<Blob> {
+  generarReporteNotaRemision(generarReporte: GenerarDatosReporte): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'

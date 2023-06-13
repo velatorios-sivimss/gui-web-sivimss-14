@@ -166,7 +166,7 @@ export class ModificarUsuarioComponent implements OnInit {
   }
 
   modificarUsuario(): void {
-    const mensaje: string = `${this.MSG_USUARIO_MODIFICADO} ${this.usuarioModificado.usuario}`;
+    const mensaje: string = `${this.MSG_USUARIO_MODIFICADO}`;
     const respuesta: RespuestaModalUsuario = {mensaje, actualizar: true};
     this.cargadorService.activar();
     this.usuarioService.actualizar(this.usuarioModificado)
