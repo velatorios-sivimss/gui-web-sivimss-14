@@ -18,7 +18,7 @@ import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ConsultaConveniosService } from '../../services/consulta-convenios.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { FiltrosConvenioInterface } from '../../models/filtros-convenio.interface';
+import { FiltrosConvenio } from '../../models/filtros-convenio.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
@@ -42,11 +42,25 @@ export class ConsultaConveniosComponent implements OnInit {
   overlayPanel!: OverlayPanel;
 
   filtroForm!: FormGroup;
+  filtroSubForm!: FormGroup;
 
-
-  numPaginaActual: number = 0;
+  numPaginaActual = {
+    tablaConvenios: 0,
+    tablaAfiliados: 0,
+    tablaVigenciaConvenio: 0,
+    tablaFacturaConvenio: 0,
+    tablaBeneficiario: 0,
+    tablaSiniestros: 0,
+  };
+  totalElementos = {
+    tablaConvenios: 0,
+    tablaAfiliados: 0,
+    tablaVigenciaConvenio: 0,
+    tablaFacturaConvenio: 0,
+    tablaBeneficiario: 0,
+    tablaSiniestros: 0,
+  };
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
-  totalElementos: number = 0;
 
   estatusConvenio: TipoDropdown[] = [
     {
@@ -98,7 +112,6 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
-
     this.filtroForm = this.formBuilder.group({
       folioConvenio: [{ value: null, disabled: false }, Validators.maxLength(12)],
       rfc: [{ value: null, disabled: false }, Validators.maxLength(13)],
@@ -106,16 +119,26 @@ export class ConsultaConveniosComponent implements OnInit {
       curp: [{ value: null, disabled: false }, Validators.maxLength(18)],
       estatusConvenio: [{ value: null, disabled: false }]
     });
+
+    this.filtroSubForm = this.formBuilder.group({
+      folioConvenio: [{ value: null, disabled: false }, Validators.maxLength(12)],
+      rfc: [{ value: null, disabled: false }, Validators.maxLength(13)],
+      folioConvenioVigencia: [{ value: null, disabled: false }, Validators.maxLength(12)],
+      numeroFactura: [{ value: null, disabled: false }, Validators.maxLength(12)],
+      nombreBeneficiario: [{ value: null, disabled: false }, Validators.maxLength(75)],
+      folioSiniestro: [{ value: null, disabled: false }, Validators.maxLength(12)],
+    })
   }
 
   paginarConvenios(): void {
     this.cargadorService.activar();
-    this.consultaConvenioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+    // this.consultaConvenioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+    this.consultaConvenioService.buscarPorPagina(0, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           this.convenioPrevision = respuesta.datos?.content;
-          this.totalElementos = respuesta.datos?.totalElements;
+          this.totalElementos.tablaConvenios = respuesta.datos?.totalElements;
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
@@ -125,14 +148,15 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosConvenioInterface = this.crearSolicitudFiltros();
+    const filtros: FiltrosConvenio = this.crearSolicitudFiltros();
     this.cargadorService.activar();
-    this.consultaConvenioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+    // this.consultaConvenioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+    this.consultaConvenioService.buscarPorFiltros(filtros, 0, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           this.convenioPrevision = respuesta.datos?.content;
-          this.totalElementos = respuesta.datos?.totalElements;
+          this.totalElementos.tablaConvenios = respuesta.datos?.totalElements;
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
@@ -141,13 +165,13 @@ export class ConsultaConveniosComponent implements OnInit {
       });
   }
 
-  crearSolicitudFiltros(): FiltrosConvenioInterface {
+  crearSolicitudFiltros(): FiltrosConvenio {
     return {
       folioConvenio: this.filtroForm.get("folioConvenio")?.value,
       rfc: this.filtroForm.get("rfc")?.value,
-      nomCliente: this.filtroForm.get("nombre")?.value,
+      nombre: this.filtroForm.get("nombre")?.value,
       curp: this.filtroForm.get("curp")?.value,
-      estatus: this.filtroForm.get("estatusConvenio")?.value
+      estatusConvenio: this.filtroForm.get("estatusConvenio")?.value
     }
   }
 
@@ -296,7 +320,7 @@ export class ConsultaConveniosComponent implements OnInit {
           importe: 6000
         }
       ];
-      this.totalElementos = this.convenioPrevision.length;
+      this.totalElementos.tablaConvenios = this.convenioPrevision.length;
     }, 0)
 
 
@@ -320,36 +344,24 @@ export class ConsultaConveniosComponent implements OnInit {
     if (validarAlMenosUnCampoConValor(this.filtroForm.value)) {
       this.paginar_();
     } else {
-      this.ff.folioConvenio.setValidators(Validators.required);
-      this.ff.folioConvenio.updateValueAndValidity();
-      this.ff.rfc.setValidators(Validators.required);
-      this.ff.rfc.updateValueAndValidity();
-      this.ff.nombre.setValidators(Validators.required);
-      this.ff.nombre.updateValueAndValidity();
-      this.ff.curp.setValidators(Validators.required);
-      this.ff.curp.updateValueAndValidity();
-      this.ff.estatusConvenio.setValidators(Validators.required);
-      this.ff.estatusConvenio.updateValueAndValidity();
-      this.filtroForm.markAllAsTouched();
-
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
     }
   }
 
   paginar_(event?: LazyLoadEvent): void {
     if (event?.first !== undefined && event.rows !== undefined) {
-      this.numPaginaActual = Math.floor(event.first / event.rows);
+      this.numPaginaActual.tablaConvenios = Math.floor(event.first / event.rows);
     } else {
-      this.numPaginaActual = 0;
+      this.numPaginaActual.tablaConvenios = 0;
     }
     this.buscarPorFiltros();
   }
 
   buscarPorFiltros(): void {
-    this.consultaConvenioService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+    this.consultaConvenioService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.convenioPrevision = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
+        this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
@@ -381,6 +393,10 @@ export class ConsultaConveniosComponent implements OnInit {
     return this.filtroForm.controls;
   }
 
+  get fsf() {
+    return this.filtroSubForm.controls;
+  }
+
   guardarListadoPagaresPDF() {
     this.cargadorService.activar();
     this.descargaArchivosService.descargarArchivo(this.consultaConvenioService.descargarListadoPagaresPDF()).pipe(
@@ -409,6 +425,28 @@ export class ConsultaConveniosComponent implements OnInit {
             console.log(error)
           },
         })
+  }
+
+  realizarBusquedaSubForm(controlName: string) {
+    this.fsf[controlName].patchValue(this.fsf[controlName].value.trim());
+    if (this.fsf[controlName].value && this.fsf[controlName].value !== '') {
+      switch (controlName) {
+        case 'folioConvenio':
+          break;
+        case 'rfc':
+          break;
+        case 'folioConvenioVigencia':
+          break;
+        case 'numeroFactura':
+          break;
+        case 'nombreBeneficiario':
+          break;
+        case 'folioSiniestro':
+          break;
+        default:
+          break;
+      }
+    }
   }
 
 }

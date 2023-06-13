@@ -22,8 +22,8 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nombre">Nombre:</label>
-        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre del convenio"
-          maxlength="75" trimmer alphanumericOnly>
+        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre" maxlength="75"
+          trimmer alphanumericOnly>
         <span class="campo-obligatorio" *ngIf="ff.nombre?.errors?.required && (ff.nombre?.dirty || ff.nombre?.touched)">
           Campo obligatorio</span>
       </div>
@@ -39,7 +39,7 @@
       <div class="col-md-6">
         <label class="control-label" for="estatusConvenio">Estatus del convenio:</label>
         <p-dropdown id="estatusConvenio" class="form-control" formControlName="estatusConvenio"
-          [options]="estatusConvenio" placeholder="Selecciona la Entidad Federativa de nacimiento">
+          [options]="estatusConvenio" placeholder="Selecciona el estatus del convenio">
         </p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="ff.estatusConvenio?.errors?.required && (ff.estatusConvenio?.dirty || ff.estatusConvenio?.touched)">
@@ -61,24 +61,22 @@
     <button type="button" class="btn btn-primary btn-lg" routerLink="./ingresar-nuevo-convenio"
       (click)="agregarConvenio()">Agregar convenio</button>
   </div>
+
+  <div class="flex justify-content-end mt-7">
+    <form [formGroup]="filtroSubForm">
+      <label class="label-header-input">Folio convenio</label>
+      <span class="p-input-icon-left">
+        <i class="pi pi-search icon-header-input"></i>
+        <input class="form-control" pInputText type="text" formControlName="folioConvenio" maxlength="12"
+          (blur)="realizarBusquedaSubForm('folioConvenio')" textOnly trimmer />
+      </span>
+    </form>
+  </div>
+
   <p-table #tablaConvenio appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="convenioPrevision"
     [paginator]="convenioPrevision.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
-    [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)"
-    [globalFilterFields]="['folioConvenio']">
-    <ng-template pTemplate="caption">
-      <div class="row flex justify-content-end">
-        <div class="col-md-10"></div>
-        <div class="col-md-2">
-          <label>Folio convenio</label>
-          <br />
-          <span class="p-input-icon-left p-ml-auto">
-            <i class="pi pi-search"></i>
-            <input pInputText type="text" maxlength="12"
-              (input)="tablaConvenio.filterGlobal($event.target, 'contains')" />
-          </span>
-        </div>
-      </div>
-    </ng-template>
+    [totalRecords]="totalElementos.tablaConvenios" [pageLinks]="3" [(first)]="numPaginaActual.tablaConvenios"
+    (onLazyLoad)="paginar($event)" [globalFilterFields]="['folioConvenio']">
     <ng-template pTemplate="header">
       <tr>
         <th scope="col">Folio de convenio</th>
@@ -123,7 +121,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{convenioPrevision.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{convenioPrevision.length}} de {{totalElementos.tablaConvenios}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -155,22 +153,21 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Datos del afiliado</ng-template>
       <ng-template pTemplate="content">
-        <p-table #tablaAfiliado [value]="datosAfiliado" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" [globalFilterFields]="['rfc']">
 
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>RFC</label>
-                <br />
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText type="text" maxlength="13"
-                    (input)="tablaAfiliado.filterGlobal($event.target, 'contains')" />
-                </span>
-              </div>
-            </div>
-          </ng-template>
+        <div class="flex justify-content-end mb-5">
+          <form [formGroup]="filtroSubForm">
+            <label class="label-header-input">RFC</label>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search icon-header-input"></i>
+              <input class="form-control" pInputText type="text" formControlName="rfc" maxlength="13"
+                (blur)="realizarBusquedaSubForm('rfc')" textOnly trimmer />
+            </span>
+          </form>
+        </div>
+
+        <p-table #tablaAfiliado [value]="datosAfiliado" [rows]="cantElementosPorPagina" [lazy]="true"
+          [totalRecords]="totalElementos.tablaAfiliados" [pageLinks]="3" [(first)]="numPaginaActual.tablaAfiliados"
+          [globalFilterFields]="['rfc']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Velatorio</th>
@@ -199,22 +196,21 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Vigencia del convenio</ng-template>
       <ng-template pTemplate="content">
+
+        <div class="flex justify-content-end mb-5">
+          <form [formGroup]="filtroSubForm">
+            <label class="label-header-input">Folio convenio</label>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search icon-header-input"></i>
+              <input class="form-control" pInputText type="text" formControlName="folioConvenioVigencia" maxlength="12"
+                (blur)="realizarBusquedaSubForm('folioConvenioVigencia')" textOnly trimmer />
+            </span>
+          </form>
+        </div>
+
         <p-table #tablaVigencia [value]="vigenciaConvenio" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-          [globalFilterFields]="['folioConvenio']">
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>Folio convenio</label>
-                <br />
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText type="text" maxlength="12"
-                    (input)="tablaVigencia.filterGlobal($event.target, 'contains')" />
-                </span>
-              </div>
-            </div>
-          </ng-template>
+          [totalRecords]="totalElementos.tablaVigenciaConvenio" [pageLinks]="3"
+          [(first)]="numPaginaActual.tablaVigenciaConvenio" [globalFilterFields]="['folioConvenio']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Convenio</th>
@@ -237,22 +233,21 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Factura del convenio</ng-template>
       <ng-template pTemplate="content">
+
+        <div class="flex justify-content-end mb-5">
+          <form [formGroup]="filtroSubForm">
+            <label class="label-header-input">Número de factura</label>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search icon-header-input"></i>
+              <input class="form-control" pInputText type="text" formControlName="numeroFactura" maxlength="12"
+                (blur)="realizarBusquedaSubForm('numeroFactura')" textOnly trimmer />
+            </span>
+          </form>
+        </div>
+
         <p-table #tablaFactura [value]="facturaConvenio" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-          [globalFilterFields]="['factura']">
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>Número de factura</label>
-                <br />
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText maxlength="12" type="text"
-                    (input)="tablaFactura.filterGlobal($event.target, 'contains')" />
-                </span>
-              </div>
-            </div>
-          </ng-template>
+          [totalRecords]="totalElementos.tablaFacturaConvenio" [pageLinks]="3"
+          [(first)]="numPaginaActual.tablaFacturaConvenio" [globalFilterFields]="['factura']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Factura</th>
@@ -286,21 +281,21 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Beneficiarios</ng-template>
       <ng-template pTemplate="content">
+
+        <div class="flex justify-content-end mb-5">
+          <form [formGroup]="filtroSubForm">
+            <label class="label-header-input">Nombre beneficiario</label>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search icon-header-input"></i>
+              <input class="form-control" pInputText type="text" formControlName="nombreBeneficiario" maxlength="75"
+                (blur)="realizarBusquedaSubForm('nombreBeneficiario')" textOnly trimmer />
+            </span>
+          </form>
+        </div>
+
         <p-table #tablaBeneficiario [value]="beneficiario" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" [globalFilterFields]="['nombre']">
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>Nombre beneficiario</label>
-                <br />
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText maxlength="75" type="text"
-                    (input)="tablaBeneficiario.filterGlobal($event.target, 'contains')" />
-                </span>
-              </div>
-            </div>
-          </ng-template>
+          [totalRecords]="totalElementos.tablaBeneficiario" [pageLinks]="3"
+          [(first)]="numPaginaActual.tablaBeneficiario" [globalFilterFields]="['nombre']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Beneficiario</th>
@@ -323,22 +318,21 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Siniestros</ng-template>
       <ng-template pTemplate="content">
+
+        <div class="flex justify-content-end mb-5">
+          <form [formGroup]="filtroSubForm">
+            <label class="label-header-input">Folio siniestro</label>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search icon-header-input"></i>
+              <input class="form-control" pInputText type="text" formControlName="folioSiniestro" maxlength="12"
+                (blur)="realizarBusquedaSubForm('folioSiniestro')" textOnly trimmer />
+            </span>
+          </form>
+        </div>
+
         <p-table #tablaSiniestro [value]="siniestro" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+          [totalRecords]="totalElementos.tablaSiniestros" [pageLinks]="3" [(first)]="numPaginaActual.tablaSiniestros"
           [globalFilterFields]="['folioSinisestro']">
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>Folio siniestro</label>
-                <br />
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText maxlength="12" type="text"
-                    (input)="tablaSiniestro.filterGlobal($event.target, 'contains')" />
-                </span>
-              </div>
-            </div>
-          </ng-template>
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Velatorio</th>
