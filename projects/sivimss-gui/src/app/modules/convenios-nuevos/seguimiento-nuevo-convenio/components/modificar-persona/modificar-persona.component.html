@@ -144,8 +144,8 @@
               *ngIf="mpf.tipoPaquete?.errors?.required && (mpf.tipoPaquete?.dirty || mpf.tipoPaquete?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="enfermedadPrexistente">enfermedad prexistente<span class="req">*</span>:</label>
-        <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente" placeholder="No"
+        <label class="control-label" for="enfermedadPrexistente">Enfermedad preexistente<span class="req">*</span>:</label>
+        <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente" placeholder="Selecciona nfermedad preexistente"
                     [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="mpf.enfermedadPrexistente?.errors?.required && (mpf.enfermedadPrexistente?.dirty || mpf.enfermedadPrexistente?.touched)">Campo obligatorio</span>

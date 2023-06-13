@@ -14,7 +14,7 @@
             </div>
             <div class="col-md-4">
                 <label class="control-label" for="velatorio">Velatorio:</label>
-                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
+                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label" (onChange)="obtenerFoliosGenerados()">
                 </p-dropdown>
             </div>
         </div>
@@ -96,7 +96,8 @@
                 <span class="total-elements"> {{notasRemision.length}} de {{totalElementos}} </span>
             </div>
         </ng-template>
-
+        <ng-template pTemplate="paginatorright">
+        </ng-template>
     </p-table>
 </section>
 

@@ -33,6 +33,14 @@ import { DetalleConvenioPrevisionFunerariaComponent } from './components/detalle
 import { AgregarConveniosPrevisionFunerariaComponent } from './components/agregar-convenios-prevision-funeraria/agregar-convenios-prevision-funeraria.component';
 import { AgregarPersonaConveniosPrevisionFunerariaComponent } from './components/agregar-persona-convenios-prevision-funeraria/agregar-persona-convenios-prevision-funeraria.component';
 import { AgregarBeneficiarioConveniosPrevisionFunerariaComponent } from './components/agregar-beneficiario-convenios-prevision-funeraria/agregar-beneficiario-convenios-prevision-funeraria.component';
+import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import { PorEmpresaComponent } from './components/por-empresa/por-empresa.component';
+import { PorPersonaComponent } from './components/por-persona/por-persona.component';
+import {AgregarConvenioPFService} from "./services/agregar-convenio-pf.service";
+import {
+  DetalleBeneficiarioConveniosPrevisionFunerariaComponent
+} from "./components/detalle-beneficiario-convenios-prevision-funeraria/detalle-beneficiario-convenios-prevision-funeraria.component";
+import { ModificarBeneficiarioConveniosPrevisionFunerariaComponent } from './components/modificar-beneficiario-convenios-prevision-funeraria/modificar-beneficiario-convenios-prevision-funeraria.component';
 
 @NgModule({
   declarations:[
@@ -41,8 +49,12 @@ import { AgregarBeneficiarioConveniosPrevisionFunerariaComponent } from './compo
     AgregarConveniosPrevisionFunerariaComponent,
     AgregarPersonaConveniosPrevisionFunerariaComponent,
     AgregarBeneficiarioConveniosPrevisionFunerariaComponent,
+    DetalleBeneficiarioConveniosPrevisionFunerariaComponent,
+    PorEmpresaComponent,
+    PorPersonaComponent,
+    ModificarBeneficiarioConveniosPrevisionFunerariaComponent,
   ],
-  imports:[
+  imports: [
     CommonModule,
     ConveniosPrevisionFunerariaRoutingModule,
     FormsModule,
@@ -64,8 +76,10 @@ import { AgregarBeneficiarioConveniosPrevisionFunerariaComponent } from './compo
     CalendarModule,
     CheckboxModule,
     RadioButtonModule,
+    UtileriaModule,
   ],
   providers:[
+    AgregarConvenioPFService,
     ConsultaConveniosService,
     DescargaArchivosService
   ]
