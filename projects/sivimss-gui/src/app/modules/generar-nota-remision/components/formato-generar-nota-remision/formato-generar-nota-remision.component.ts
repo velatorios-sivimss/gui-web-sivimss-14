@@ -105,7 +105,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
 
   generarNotaRemision() {
     this.abrirModalGenerandoNotaRemision();
-    this.generarNotaRemisionService.guardar({ idOrden: 1 }).subscribe({
+    this.generarNotaRemisionService.guardar({ idOrden: this.idOds }).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.creacionRef.close();
         const mensaje = this.alertas?.filter((msj: any) => {
