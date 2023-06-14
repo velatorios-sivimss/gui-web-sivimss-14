@@ -13,7 +13,7 @@
           <div class="col-md-6">
             <label class="control-label" for="curp">CURP <span class="req">*</span></label>
             <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP" maxlength="18"
-                   (blur)="consultaCURP()">
+                   (blur)="consultaCURP()" (keyup)="convertirAMayusculas(0)">
             <span class="campo-obligatorio"
                   *ngIf="fds.curp?.errors?.required && (fds.curp?.dirty || fds.curp?.touched)">Este campo es obligatorio *.</span>
             <span class="campo-obligatorio"
@@ -22,7 +22,7 @@
           <div class="col-md-6">
             <label class="control-label" for="rfc">RFC </label>
             <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC"
-                   (blur)="consultaRFC()" maxlength="13" >
+                   (blur)="consultaRFC()" maxlength="13" (keyup)="convertirAMayusculas(1)" >
           </div>
         </div>
 
