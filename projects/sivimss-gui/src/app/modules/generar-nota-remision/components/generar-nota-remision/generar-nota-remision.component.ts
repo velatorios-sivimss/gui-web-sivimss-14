@@ -1,26 +1,25 @@
-
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { LazyLoadEvent } from 'primeng/api';
-import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { BusquedaFiltro, ClavesEstatus, GenerarReporte, NotaRemision } from '../../models/nota-remision.interface';
-import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {LazyLoadEvent} from 'primeng/api';
+import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {BusquedaFiltro, ClavesEstatus, GenerarReporte, NotaRemision} from '../../models/nota-remision.interface';
+import {GenerarNotaRemisionService} from '../../services/generar-nota-remision.service';
 import * as moment from "moment/moment";
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { finalize } from 'rxjs';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { mensajes } from '../../../reservar-salas/constants/mensajes';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {finalize} from 'rxjs';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 @Component({
   selector: 'app-generar-nota-remision',
@@ -75,7 +74,8 @@ export class GenerarNotaRemisionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private descargaArchivosService: DescargaArchivosService,
     private readonly loaderService: LoaderService,
-  ) { }
+  ) {
+  }
 
 
   async ngOnInit() {
@@ -97,26 +97,32 @@ export class GenerarNotaRemisionComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idRol >= 1 }],
-      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idRol >= 2 }],
-      velatorio: [{ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idRol === 3 }],
-      folio: [{ value: null, disabled: false }],
-      fechaInicial: [{ value: null, disabled: false }],
-      fechaFinal: [{ value: null, disabled: false }],
+      nivel: [{value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1}],
+      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2}],
+      velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3}],
+      folio: [{value: null, disabled: false}],
+      fechaInicial: [{value: null, disabled: false}],
+      fechaFinal: [{value: null, disabled: false}],
     });
     await this.obtenerVelatorios();
   }
 
   generarNotaRemision(): void {
-    this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+    this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute}).then(() => {
+    }).catch(() => {
+    });
   }
 
   verDetalleNotaRemision(): void {
-    this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+    this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute}).then(() => {
+    }).catch(() => {
+    });
   }
 
   cancelarNotaRemision(): void {
-    this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+    this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute}).then(() => {
+    }).catch(() => {
+    });
   }
 
   abrirPanel(event: MouseEvent, notaRemisionSeleccionada: NotaRemision): void {

@@ -8,6 +8,7 @@ export const funcionalidades: { [valor: string]: string } = {
   'VELATORIOS': '8',
   'SALAS_RESERVACION': '9',
   'CAPILLA_RESERVACION': '31',
+  'GENERAR_NOTA_REMISION': '54',
   'GESTIONAR_DONACIONES':'59',
   'CONSULTAR_DONADOS': '64',//Agregar los que falten.
 }
