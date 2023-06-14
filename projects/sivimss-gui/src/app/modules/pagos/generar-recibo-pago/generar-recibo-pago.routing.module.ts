@@ -13,7 +13,13 @@ const routes: Route[] = [
     component: GenerarReciboPagoComponent,
     resolve: {
       respuesta: GenerarReciboResolver,
-    }
+    },
+    data: {
+      validaRol: {
+        funcionalidad: 'GENERAR_RECIBO_PAGO',
+        permiso: 'CONSULTA'
+      }
+    },
   },
   {
     path: 'generar-recibo-pago-tramites/:idPagoBitacora',
@@ -27,7 +33,13 @@ const routes: Route[] = [
     component: DetallePagoTramitesComponent,
     resolve: {
       respuesta: DetalleReciboTramitesResolver
-    }
+    },
+    data: {
+      validaRol: {
+        funcionalidad: 'GENERAR_RECIBO_PAGO',
+        permiso: 'CONSULTA'
+      }
+    },
   }
 ];
 
