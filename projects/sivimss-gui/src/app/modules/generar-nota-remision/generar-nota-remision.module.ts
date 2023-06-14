@@ -27,6 +27,7 @@ import { DetalleFormatoGenerarNotaRemisionComponent } from './components/detalle
 import { ModalNotaRemisionComponent } from './components/modal/modal-nota-remision/modal-nota-remision.component';
 import { CancelarFormatoGenerarNotaRemisionComponent } from './components/cancelar-formato-generar-nota-remision/cancelar-formato-generar-nota-remision.component';
 import { LoaderModule } from '../../shared/loader/loader.module';
+import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 
 @NgModule({
   declarations: [
@@ -36,28 +37,29 @@ import { LoaderModule } from '../../shared/loader/loader.module';
     CancelarFormatoGenerarNotaRemisionComponent,
     ModalNotaRemisionComponent,
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    GenerarReciboRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    AutoCompleteModule,
-    UtileriaModule,
-    InputTextareaModule,
-    LoaderModule,
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        GenerarReciboRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        AutoCompleteModule,
+        UtileriaModule,
+        InputTextareaModule,
+        LoaderModule,
+        CeldaStickyModule,
+    ],
   providers: [GenerarNotaRemisionService]
 })
 export class GenerarNotaRemisionModule { }
