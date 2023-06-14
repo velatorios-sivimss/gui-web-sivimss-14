@@ -28,6 +28,7 @@ import { ModalNotaRemisionComponent } from './components/modal/modal-nota-remisi
 import { CancelarFormatoGenerarNotaRemisionComponent } from './components/cancelar-formato-generar-nota-remision/cancelar-formato-generar-nota-remision.component';
 import { LoaderModule } from '../../shared/loader/loader.module';
 import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
+import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
         UtileriaModule,
         InputTextareaModule,
         LoaderModule,
+        ValidaRolModule,
         CeldaStickyModule,
     ],
   providers: [GenerarNotaRemisionService]
