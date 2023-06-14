@@ -180,7 +180,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   limpiar(): void {
     this.filtroFormReciboPago.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroFormReciboPago.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroFormReciboPago.get('nivel')?.patchValue(+usuario.idOficina);
     this.filtroFormReciboPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
     this.filtroFormReciboPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.obtenerVelatorios();
