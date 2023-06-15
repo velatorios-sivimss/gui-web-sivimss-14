@@ -46,29 +46,24 @@ export class ReservarSalasService extends  BaseService<HttpRespuesta<any>, any> 
 
 
   consultarSalas(idVelatorio?: number,tipoSala?: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-buscar`,{idVelatorio:idVelatorio, tipoSala:tipoSala});
   }
 
   consultarODS(folioODS: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-datos`,{folioODS:folioODS});
   }
 
   consultarDetalleDia(fechaConsulta:string, idSala:number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-dia`,{fechaConsulta:fechaConsulta,idSala:idSala});
   }
 
   consultaMes(mes: number,anio: number, tipoSala: number, idVelatorio: number): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/veri-consulta-mes`,
       {"mes":mes,"anio":anio,"tipoSala":tipoSala,"idVelatorio":idVelatorio});
   }
 
   generarReporte(filtroArchivo:any): Observable<Blob> {
     const tipo = filtroArchivo.tipoReporte;
-    const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
     return this._http.post<any>(this._base + `${this._funcionalidad}/veri-reporte/generarDocumento/` + tipo,
       {idVelatorio:filtroArchivo.idVelatorio,indTipoSala:filtroArchivo.indTipoSala,
         mes:filtroArchivo.mes,anio:filtroArchivo.anio,rutaNombreReporte:filtroArchivo.rutaNombreReporte,
