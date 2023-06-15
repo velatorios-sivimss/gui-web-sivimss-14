@@ -625,6 +625,13 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     )
   }
 
+  convertirAMayusculas(posicion: number): void {
+    const formularios = [this.fds.curp,this.fds.rfc]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
   siguiente(): void {
     this.indice ++;
   }
