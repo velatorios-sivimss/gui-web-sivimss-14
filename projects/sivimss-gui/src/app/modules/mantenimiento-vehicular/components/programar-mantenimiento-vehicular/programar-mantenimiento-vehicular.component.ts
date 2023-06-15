@@ -1,31 +1,31 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core'
-import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes'
-import {FormBuilder, FormGroup, Validators} from '@angular/forms'
-import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
-import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
-import {ActivatedRoute, Router} from '@angular/router'
-import {NuevaVerificacionComponent} from '../nueva-verificacion/nueva-verificacion.component'
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes'
+import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
+import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
+import { ActivatedRoute, Router } from '@angular/router'
+import { NuevaVerificacionComponent } from '../nueva-verificacion/nueva-verificacion.component'
 import {
   RegistroMantenimientoComponent
 } from '../registro-mantenimiento/registro-mantenimiento.component'
 import {
   SolicitudMantenimientoComponent
 } from '../solicitud-mantenimiento/solicitud-mantenimiento.component'
-import {finalize} from "rxjs/operators";
-import {HttpErrorResponse} from "@angular/common/http";
-import {LoaderService} from "../../../../shared/loader/services/loader.service";
-import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
-import {MANTENIMIENTO_VEHICULAR_BREADCRUMB} from "../../constants/breadcrumb";
-import {FiltrosMantenimientoVehicular} from "../../models/filtrosMantenimientoVehicular.interface";
-import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {LazyLoadEvent} from "primeng/api";
-import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
-import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../utils/funciones";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import { finalize } from "rxjs/operators";
+import { HttpErrorResponse } from "@angular/common/http";
+import { LoaderService } from "../../../../shared/loader/services/loader.service";
+import { MantenimientoVehicularService } from "../../services/mantenimiento-vehicular.service";
+import { MANTENIMIENTO_VEHICULAR_BREADCRUMB } from "../../constants/breadcrumb";
+import { FiltrosMantenimientoVehicular } from "../../models/filtrosMantenimientoVehicular.interface";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { OverlayPanel } from "primeng/overlaypanel";
+import { LazyLoadEvent } from "primeng/api";
+import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
+import { UsuarioEnSesion } from "../../../../models/usuario-en-sesion.interface";
+import { mapearArregloTipoDropdown, validarUsuarioLogueado } from "../../../../utils/funciones";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
+import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 
 type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
 
@@ -113,10 +113,10 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormProgramarMantenimiento = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
-      placa: [{value: null, disabled: false}, [Validators.required]],
+      nivel: [{ value: +usuario.idOficina, disabled: true }],
+      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2 }, []],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
+      placa: [{ value: null, disabled: false }, []],
     })
   }
 
@@ -137,15 +137,15 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.cargadorService.activar();
     this.mantenimientoVehicularService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.vehiculos = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
-      }
-    });
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.vehiculos = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error.message);
+        }
+      });
   }
 
   paginarConFiltros(): void {
@@ -156,15 +156,15 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.cargadorService.activar();
     this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.vehiculos = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
-      }
-    });
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.vehiculos = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error.message);
+        }
+      });
   }
 
   buscar(): void {
@@ -175,9 +175,10 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
     return {
-      nivelOficina: this.filtroFormProgramarMantenimiento.get('nivel')?.value,
-      velatorio: this.filtroFormProgramarMantenimiento.get('velatorio')?.value,
-      placa: this.filtroFormProgramarMantenimiento.get('placa')?.value
+      nivelOficina: this.f.nivel.getRawValue() === '' ? null : this.f.nivel.getRawValue(),
+      delegacion: this.f.delegacion.getRawValue() === '' ? null : this.f.delegacion.getRawValue(),
+      velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
+      placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
     }
   }
 
@@ -185,18 +186,24 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.filtroFormProgramarMantenimiento.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idRol);
-    /* 
-     * TO DO Revision con negocio comportamiento issue 612
-     * this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
-     * this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
-     * this.cargarVelatorios(true);
-     * this.paginar();
-     */
+
+    if (+usuario.idRol >= 2) {
+      this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    }
+
+    if (+usuario.idRol === 3) {
+      this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    } else {
+      this.catalogoVelatorios = [];
+    }
+
+    this.cargarVelatorios(true);
+    this.paginar();
   }
 
   abrirModalnuevaVerificacion(): void {
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
-      data: {vehiculo: this.vehiculoSeleccionado},
+      data: { vehiculo: this.vehiculoSeleccionado },
       header: "Verificar al Inicio de la Jornada",
       width: "920px"
     });
@@ -206,7 +213,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Solicitud de Mantenimiento Vehicular",
       width: "920px",
-      data: {vehiculo: this.vehiculoSeleccionado},
+      data: { vehiculo: this.vehiculoSeleccionado },
     })
   }
 
@@ -214,41 +221,33 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Registro de Mantenimiento Vehicular",
       width: "920px",
-      data: {vehiculo: this.vehiculoSeleccionado},
+      data: { vehiculo: this.vehiculoSeleccionado },
     });
-  }
-
-  abrirModalExportarPDF(): void {
-    console.log()
-  }
-
-  abrirModalExportarExcel(): void {
-    console.log()
   }
 
   seleccionarDetalle(opcion: OpcionMtto): void {
     if (opcion === 'mtto') {
       void this.router.navigate(['./detalle-solicitud'], {
         relativeTo: this.route,
-        queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD}
+        queryParams: { id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD }
       });
       return;
     }
     if (opcion === 'registroMtto') {
       void this.router.navigate(['./detalle-registro'],
-        {relativeTo: this.route, queryParams: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO}});
+        { relativeTo: this.route, queryParams: { id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO } });
       return;
     }
     void this.router.navigate(['./detalle-verificacion'], {
       relativeTo: this.route,
-      queryParams: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO}
+      queryParams: { id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO }
     });
   }
 
   abrirModalModificarVerificacion(): void {
     this.modificarModal = !this.modificarModal;
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
-      data: {id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO},
+      data: { id: this.vehiculoSeleccionado.ID_MTTOVERIFINICIO },
       header: "Modificar verificación",
       width: "920px"
     });
@@ -259,7 +258,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Modificar solicitud de mantenimiento",
       width: "920px",
-      data: {id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD, vehiculo: this.vehiculoSeleccionado},
+      data: { id: this.vehiculoSeleccionado.ID_MTTO_SOLICITUD, vehiculo: this.vehiculoSeleccionado },
     });
   }
 
@@ -268,7 +267,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Modificar registro de mantenimiento vehicular",
       width: "920px",
-      data: {id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO, vehiculo: this.vehiculoSeleccionado},
+      data: { id: this.vehiculoSeleccionado.ID_MTTO_REGISTRO, vehiculo: this.vehiculoSeleccionado },
     });
   }
 

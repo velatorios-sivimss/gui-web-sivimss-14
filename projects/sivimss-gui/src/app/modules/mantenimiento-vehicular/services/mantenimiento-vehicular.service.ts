@@ -69,6 +69,12 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params})
   }
 
+  obtenerCatalogoPeriodo(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", 'cat-mtto-periodo')
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params})
+  }
+
   buscarPorFiltros(pagina: number, tamanio: number, t: any): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)

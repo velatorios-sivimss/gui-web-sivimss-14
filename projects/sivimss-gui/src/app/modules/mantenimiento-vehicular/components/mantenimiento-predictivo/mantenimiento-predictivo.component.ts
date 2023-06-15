@@ -41,12 +41,14 @@ export class MantenimientoPredictivoComponent implements OnInit {
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   catalogoPlacas: TipoDropdown[] = [];
+  catalogoPeriodo: TipoDropdown[] = [];
   tipoMantenimientos: TipoDropdown[] = [];
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
   readonly POSICION_CATALOGOS_PLACAS: number = 2;
   readonly POSICION_CATALOGOS_TIPO_MTTO: number = 3;
+  readonly POSICION_CATALOGOS_PERIODO: number = 4;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -71,6 +73,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
     this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
     this.tipoMantenimientos = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_TIPO_MTTO].datos, "DES_MTTO_REPORTE_TIPO", "ID_MTTO_REPORTE_TIPO");
+    this.catalogoPeriodo = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PERIODO].datos, "DES_PERIODO", "ID_MTTO_PERIODO");
   }
 
   get fmp() {
@@ -82,8 +85,9 @@ export class MantenimientoPredictivoComponent implements OnInit {
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: +usuario.idOficina, disabled: true}],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, []],
       placa: [{value: null, disabled: false}, [Validators.required]],
+      periodo: [{value: null, disabled: false}, []],
       tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
       fechaVigenciaDesde: [{value: null, disabled: false}, [Validators.required]],
       fecahVigenciaHasta: [{value: null, disabled: false}, [Validators.required]],
@@ -137,7 +141,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
       nivelOficina: this.filtroForm.get('nivel')?.value,
       placa: this.filtroForm.get('placa')?.value,
       tipoMtto: this.filtroForm.get('tipoMantenimiento')?.value,
-      velatorio: this.filtroForm.get('velatorio')?.value
+      velatorio: this.filtroForm.get('velatorio')?.getRawValue() === '' ? null : this.filtroForm.get('velatorio')?.getRawValue(),
     }
   }
 

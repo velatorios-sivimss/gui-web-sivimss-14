@@ -1,12 +1,12 @@
 <ng-container [ngSwitch]="pasoNuevaVerificacion">
   <ng-container *ngSwitchCase="CAPTURA_DE_NUEVA_VERIFICACION">
     <form [formGroup]="nuevaVerificacionForm" (submit)="aceptar()">
-      <app-table-panel>
+      <app-table-panel *ngIf="vehiculoSeleccionado">
         <div class="row table-panel-row">
           <div class="col-md-4">
             <div class="table-panel-column">
               <label>Velatorio</label>
-              <span> {{vehiculoSeleccionado.NOM_VELATORIO}} </span>
+              <span> {{vehiculoSeleccionado.DES_VELATORIO}} </span>
             </div>
           </div>
           <div class="col-md-4">
@@ -26,7 +26,8 @@
           <div class="col-md-4">
             <div class="table-panel-column">
               <label>Vehiculo</label>
-              <span> {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}} {{vehiculoSeleccionado.DES_MODELO}}</span>
+              <span> {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}}
+                {{vehiculoSeleccionado.DES_MODELO}}</span>
             </div>
           </div>
           <div class="col-md-6">
@@ -43,17 +44,17 @@
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelAceiteCorrecto" name="nivelAceite" value="10" formControlName="nivelAceite"
-                                 inputId="correcto"></p-radioButton>
+                    inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelAceite'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelAceiteMedio" name="nivelAceite" value="5" formControlName="nivelAceite"
-                                 inputId="medio"></p-radioButton>
+                    inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelAceite'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelAceiteBajo" name="nivelAceite" value="1" formControlName="nivelAceite"
-                                 inputId="bajo"></p-radioButton>
+                    inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelAceite'">Bajo</label>
                 </div>
               </div>
@@ -65,17 +66,17 @@
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelAguaCorrecto" name="nivelAgua" value="10" formControlName="nivelAgua"
-                                 inputId="correcto"></p-radioButton>
+                    inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelAgua'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelAguaMedio" name="nivelAgua" value="5" formControlName="nivelAgua"
-                                 inputId="medio"></p-radioButton>
+                    inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelAgua'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelAguaBajo" name="nivelAgua" value="1" formControlName="nivelAgua"
-                                 inputId="bajo"></p-radioButton>
+                    inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelAgua'">Bajo</label>
                 </div>
               </div>
@@ -85,56 +86,57 @@
         <div class="row table-panel-row">
           <div class="col-md-6">
             <div class="table-panel-column">
-              <label class="control-label">Calibración de Neumáticos Traseros <span class="req">*</span>:</label>
+              <label class="control-label">
+                Calibración de Neumáticos Traseros
+                <i class="pi pi-info-circle mr-2 ml-2 info-circle-calibracion" (click)="op.toggle($event)"></i>
+                <span class="req">*</span>:</label>
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="calibracionNeumaticosTraserosCorrecto" name="calibracionNeumaticosTraseros"
-                                 value="10"
-                                 formControlName="calibracionNeumaticosTraseros" inputId="correcto"></p-radioButton>
+                    value="10" formControlName="calibracionNeumaticosTraseros" inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosTraseros'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="calibracionNeumaticosTraserosMedio" name="calibracionNeumaticosTraseros" value="5"
-                                 formControlName="calibracionNeumaticosTraseros" inputId="medio"></p-radioButton>
+                    formControlName="calibracionNeumaticosTraseros" inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosTraseros'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="calibracionNeumaticosTraserosBajo" name="calibracionNeumaticosTraseros" value="1"
-                                 formControlName="calibracionNeumaticosTraseros" inputId="bajo"></p-radioButton>
+                    formControlName="calibracionNeumaticosTraseros" inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosTraseros'">Bajo</label>
                 </div>
               </div>
               <span class="campo-obligatorio"
-                    *ngIf="nvf.calibracionNeumaticosTraseros?.errors?.required && (nvf.calibracionNeumaticosTraseros?.dirty || nvf.calibracionNeumaticosTraseros?.touched)">
-              Campo obligatorio</span>
+                *ngIf="nvf.calibracionNeumaticosTraseros?.errors?.required && (nvf.calibracionNeumaticosTraseros?.dirty || nvf.calibracionNeumaticosTraseros?.touched)">
+                Campo obligatorio</span>
             </div>
           </div>
           <div class="col-md-6">
             <div class="table-panel-column">
-              <label class="control-label">Calibración de Neumáticos Delanteros <span class="req">*</span>:</label>
+              <label class="control-label">Calibración de Neumáticos Delanteros
+                <i class="pi pi-info-circle mr-2 ml-2 info-circle-calibracion" (click)="op.toggle($event)"></i>
+                <span class="req">*</span>:</label>
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="calibracionNeumaticosDelanterosCorrecto" name="calibracionNeumaticosDelanteros"
-                                 value="10" formControlName="calibracionNeumaticosDelanteros"
-                                 inputId="correcto"></p-radioButton>
+                    value="10" formControlName="calibracionNeumaticosDelanteros" inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosDelanteros'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="calibracionNeumaticosDelanterosMedio" name="calibracionNeumaticosDelanteros"
-                                 value="5" formControlName="calibracionNeumaticosDelanteros"
-                                 inputId="medio"></p-radioButton>
+                    value="5" formControlName="calibracionNeumaticosDelanteros" inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosDelanteros'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="calibracionNeumaticosDelanterosBajo" name="calibracionNeumaticosDelanteros"
-                                 value="1"
-                                 formControlName="calibracionNeumaticosDelanteros" inputId="bajo"></p-radioButton>
+                    value="1" formControlName="calibracionNeumaticosDelanteros" inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosDelanteros'">Bajo</label>
                 </div>
               </div>
               <span class="campo-obligatorio"
-                    *ngIf="nvf.calibracionNeumaticosDelanterosCorrecto?.errors?.required && (nvf.calibracionNeumaticosDelanterosCorrecto?.dirty || nvf.calibracionNeumaticosDelanterosCorrecto?.touched)">
-              Campo obligatorio</span>
+                *ngIf="nvf.calibracionNeumaticosDelanterosCorrecto?.errors?.required && (nvf.calibracionNeumaticosDelanterosCorrecto?.dirty || nvf.calibracionNeumaticosDelanterosCorrecto?.touched)">
+                Campo obligatorio</span>
             </div>
           </div>
         </div>
@@ -145,23 +147,23 @@
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelCombustibleCorrecto" name="nivelCombustible" value="10"
-                                 formControlName="nivelCombustible" inputId="correcto"></p-radioButton>
+                    formControlName="nivelCombustible" inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelCombustible'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelCombustibleMedio" name="nivelCombustible" value="5"
-                                 formControlName="nivelCombustible" inputId="medio"></p-radioButton>
+                    formControlName="nivelCombustible" inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelCombustible'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelCombustibleBajo" name="nivelCombustible" value="1"
-                                 formControlName="nivelCombustible" inputId="bajo"></p-radioButton>
+                    formControlName="nivelCombustible" inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelCombustible'">Bajo</label>
                 </div>
               </div>
               <span class="campo-obligatorio"
-                    *ngIf="nvf.nivelCombustibleCorrecto?.errors?.required && (nvf.nivelCombustibleCorrecto?.dirty || nvf.nivelCombustibleCorrecto?.touched)">
-              Campo obligatorio</span>
+                *ngIf="nvf.nivelCombustibleCorrecto?.errors?.required && (nvf.nivelCombustibleCorrecto?.dirty || nvf.nivelCombustibleCorrecto?.touched)">
+                Campo obligatorio</span>
             </div>
           </div>
           <div class="col-md-6">
@@ -170,23 +172,23 @@
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelBateriaCorrecto" name="nivelBateria" value="10" formControlName="nivelBateria"
-                                 inputId="correcto"></p-radioButton>
+                    inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelBateria'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelBateriaMedio" name="nivelBateria" value="5" formControlName="nivelBateria"
-                                 inputId="medio"></p-radioButton>
+                    inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelBateria'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="nivelBateriaBajo" name="nivelBateria" value="1" formControlName="nivelBateria"
-                                 inputId="bajo"></p-radioButton>
+                    inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'nivelBateria'">Bajo</label>
                 </div>
               </div>
               <span class="campo-obligatorio"
-                    *ngIf="nvf.nivelBateriaBajo?.errors?.required && (nvf.nivelBateriaBajo?.dirty || nvf.nivelBateriaBajo?.touched)">
-              Campo obligatorio</span>
+                *ngIf="nvf.nivelBateriaBajo?.errors?.required && (nvf.nivelBateriaBajo?.dirty || nvf.nivelBateriaBajo?.touched)">
+                Campo obligatorio</span>
             </div>
           </div>
         </div>
@@ -197,23 +199,23 @@
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="codigoFallaCorrecto" name="codigoFalla" value="10" formControlName="codigoFalla"
-                                 inputId="correcto"></p-radioButton>
+                    inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'codigoFalla'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="codigoFallaMedio" name="codigoFalla" value="5" formControlName="codigoFalla"
-                                 inputId="medio"></p-radioButton>
+                    inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'codigoFalla'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="codigoFallaBajo" name="codigoFalla" value="1" formControlName="codigoFalla"
-                                 inputId="bajo"></p-radioButton>
+                    inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'codigoFalla'">Bajo</label>
                 </div>
               </div>
               <span class="campo-obligatorio"
-                    *ngIf="nvf.codigoFallaCorrecto?.errors?.required && (nvf.codigoFallaCorrecto?.dirty || nvf.codigoFallaCorrecto?.touched)">
-              Campo obligatorio</span>
+                *ngIf="nvf.codigoFallaCorrecto?.errors?.required && (nvf.codigoFallaCorrecto?.dirty || nvf.codigoFallaCorrecto?.touched)">
+                Campo obligatorio</span>
             </div>
           </div>
           <div class="col-md-6">
@@ -222,23 +224,23 @@
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="limpiezaInteriorCorrecto" name="limpiezaInterior" value="10"
-                                 formControlName="limpiezaInterior" inputId="correcto"></p-radioButton>
+                    formControlName="limpiezaInterior" inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'limpiezaInterior'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="limpiezaInteriorMedio" name="limpiezaInterior" value="5"
-                                 formControlName="limpiezaInterior" inputId="medio"></p-radioButton>
+                    formControlName="limpiezaInterior" inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'limpiezaInterior'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="limpiezaInteriorBajo" name="limpiezaInterior" value="1"
-                                 formControlName="limpiezaInterior" inputId="bajo"></p-radioButton>
+                    formControlName="limpiezaInterior" inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'limpiezaInterior'">Bajo</label>
                 </div>
               </div>
               <span class="campo-obligatorio"
-                    *ngIf="nvf.limpiezaInteriorCorrecto?.errors?.required && (nvf.limpiezaInteriorCorrecto?.dirty || nvf.limpiezaInteriorCorrecto?.touched)">
-              Campo obligatorio</span>
+                *ngIf="nvf.limpiezaInteriorCorrecto?.errors?.required && (nvf.limpiezaInteriorCorrecto?.dirty || nvf.limpiezaInteriorCorrecto?.touched)">
+                Campo obligatorio</span>
             </div>
           </div>
         </div>
@@ -249,23 +251,23 @@
               <div class="flex">
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="limpiezaExteriorCorrecto" name="limpiezaExterior" value="10"
-                                 formControlName="limpiezaExterior" inputId="correcto"></p-radioButton>
+                    formControlName="limpiezaExterior" inputId="correcto"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'limpiezaExterior'">Correcto</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="limpiezaExteriorMedio" name="limpiezaExterior" value="5"
-                                 formControlName="limpiezaExterior" inputId="medio"></p-radioButton>
+                    formControlName="limpiezaExterior" inputId="medio"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'limpiezaExterior'">Medio</label>
                 </div>
                 <div class="flex align-items-center mx-2">
                   <p-radioButton id="limpiezaExteriorBajo" name="limpiezaExterior" value="1"
-                                 formControlName="limpiezaExterior" inputId="bajo"></p-radioButton>
+                    formControlName="limpiezaExterior" inputId="bajo"></p-radioButton>
                   <label class="control-label m-0 mx-3" [for]="'limpiezaExterior'">Bajo</label>
                 </div>
               </div>
               <span class="campo-obligatorio"
-                    *ngIf="nvf.limpiezaExteriorBajo?.errors?.required && (nvf.limpiezaExteriorBajo?.dirty || nvf.limpiezaExteriorBajo?.touched)">
-              Campo obligatorio</span>
+                *ngIf="nvf.limpiezaExteriorBajo?.errors?.required && (nvf.limpiezaExteriorBajo?.dirty || nvf.limpiezaExteriorBajo?.touched)">
+                Campo obligatorio</span>
             </div>
           </div>
         </div>
@@ -278,7 +280,7 @@
       <div class="flex mt-4 justify-content-end">
         <button type="button" class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
         <button type="submit" class="ml-6 mt-3 btn btn-primary btn-md" [disabled]="nuevaVerificacionForm.invalid">
-          Aceptar
+          Guardar
         </button>
       </div>
     </form>
@@ -294,7 +296,7 @@
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Velatorio</label>
-            <span> {{vehiculoSeleccionado.NOM_VELATORIO}} </span>
+            <span> {{vehiculoSeleccionado!.DES_VELATORIO}} </span>
           </div>
         </div>
         <div class="col-md-4">
@@ -314,7 +316,8 @@
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Vehiculo</label>
-            <span> {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}} {{vehiculoSeleccionado.DES_MODELO}}</span>
+            <span> {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}}
+              {{vehiculoSeleccionado.DES_MODELO}}</span>
           </div>
         </div>
         <div class="col-md-6">
@@ -398,3 +401,22 @@
     </div>
   </ng-container>
 </ng-container>
+
+<p-overlayPanel #op [style]="{'width': '200px'}" [showCloseIcon]="false">
+  <ng-template pTemplate="content">
+    <p-table [value]="calibraciones" selectionMode="none" [paginator]="false" [rows]="5" responsiveLayout="scroll">
+      <ng-template pTemplate="header">
+        <tr>
+          <th id="rin">RIN</th>
+          <th id="presion">PRESIÓN</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-calibracion>
+        <tr [pSelectableRow]="rowData">
+          <td>{{calibracion.rin}}</td>
+          <td>{{calibracion.presion}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+</p-overlayPanel>

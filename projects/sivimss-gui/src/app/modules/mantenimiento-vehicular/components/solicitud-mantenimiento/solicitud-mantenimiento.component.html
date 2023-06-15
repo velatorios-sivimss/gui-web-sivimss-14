@@ -98,7 +98,7 @@
       <div class="flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="ref.close()">Cancelar</button>
         <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="solicitudMantenimientoForm.invalid">
-          Agregar
+          Guardar
         </button>
       </div>
     </form>
@@ -159,9 +159,9 @@
             <span> {{resumenAsignacion.tipoMantenimiento | titlecase}}  </span>
           </div>
         </div>
-        <div class="col-md-6" *ngIf="solicitudMantenimientoForm.get('tipoMantenimiento')?.value == 2">
+        <div class="col-md-6" *ngIf="resumenAsignacion.tipoMantenimiento === 'Preventivo'">
           <div class="table-panel-column">
-            <label>Mantenimiento preventido</label>
+            <label>Mantenimiento preventivo</label>
             <span> {{resumenAsignacion.mantenimientoPreventivo}}  </span>
           </div>
         </div>

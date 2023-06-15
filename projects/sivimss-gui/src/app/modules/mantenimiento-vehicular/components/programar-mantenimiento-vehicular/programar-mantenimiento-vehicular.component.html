@@ -24,7 +24,7 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="placa">Placa:</label>
-        <p-dropdown id="placa" class="form-control" formControlName="delegacion" [options]="catalogoPlacas"
+        <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
                     placeholder="Seleccionar vehículo" [filter]="true">
         </p-dropdown>
       </div>
@@ -135,8 +135,6 @@
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = !modificarModal"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Exportar PDF" (click)="abrirModalExportarPDF()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Exportar Excel" (click)="abrirModalExportarExcel()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
