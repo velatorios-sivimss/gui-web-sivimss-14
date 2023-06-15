@@ -170,8 +170,8 @@ export class GenerarReciboPagoComponent implements OnInit {
       idVelatorio: this.filtroFormReciboPago.get("velatorio")?.value,
       claveFolio: this.filtroFormReciboPago.get("folio")?.value,
       nomContratante: this.filtroFormReciboPago.get("nombreContratante")?.value,
-      fecIniODS: moment(this.filtroFormReciboPago.get("fechaInicial")?.value).format('YYYY-MM-DD'),
-      fecFinODS: moment(this.filtroFormReciboPago.get("fechaFinal")?.value).format('YYYY-MM-DD'),
+      fecIniODS: this.filtroFormReciboPago.get("fechaInicial")?.value,
+      fecFinODS: this.filtroFormReciboPago.get("fechaFinal")?.value,
       rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
       tipoReporte: "pdf"
     }
