@@ -17,6 +17,7 @@ import { TabView } from "primeng/tabview";
 import { LoaderService } from "../../../../shared/loader/services/loader.service";
 import { finalize } from "rxjs/operators";
 import { FormBuilder, FormGroup } from '@angular/forms';
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-listado-salas',
@@ -53,7 +54,8 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     public dialogService: DialogService,
     private readonly loaderService: LoaderService,
-    private reservarSalasService: ReservarSalasService) {
+    private reservarSalasService: ReservarSalasService,
+    private mensajesSistemaService: MensajesSistemaService) {
   }
 
   ngOnInit(): void {
@@ -139,7 +141,8 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+
+        this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
     );
   }
@@ -164,6 +167,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         console.log(error);
+        this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
     )
 
