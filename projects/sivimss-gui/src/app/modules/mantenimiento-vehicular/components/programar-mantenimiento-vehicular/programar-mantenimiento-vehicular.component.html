@@ -127,9 +127,9 @@
       <app-overlay-panel-opcion titulo="Verificar al Inicio" (click)="abrirModalnuevaVerificacion()"
         *ngIf="vehiculoSeleccionado.verificacionDia === 'false'" onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
-        onCloseOnNavigation></app-overlay-panel-opcion>
+        *ngIf="!vehiculoSeleccionado.ID_MTTO_SOLICITUD" onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
-        onCloseOnNavigation></app-overlay-panel-opcion>
+        *ngIf="!vehiculoSeleccionado.ID_MTTO_REGISTRO" onCloseOnNavigation></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
