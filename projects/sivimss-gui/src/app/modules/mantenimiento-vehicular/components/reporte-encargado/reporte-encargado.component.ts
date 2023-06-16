@@ -16,12 +16,16 @@ import * as moment from "moment/moment";
 import { UsuarioEnSesion } from "../../../../models/usuario-en-sesion.interface";
 import { RegistroReporteEncargado } from "../../models/registroReporteEncargado.interface";
 import { tablaRin } from "../../constants/tabla-rines";
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-reporte-encargado',
   templateUrl: './reporte-encargado.component.html',
   styleUrls: ['./reporte-encargado.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class ReporteEncargadoComponent implements OnInit {
   dataDetalle = tablaRin;
@@ -61,6 +65,8 @@ export class ReporteEncargadoComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private mantenimientoVehicularService: MantenimientoVehicularService,
+    private loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
   ) {
   }
 
@@ -153,5 +159,40 @@ export class ReporteEncargadoComponent implements OnInit {
     } else {
       void this.router.navigate(['/programar-mantenimiento-vehicular']);
     }
+  }
+
+  generarReporteTabla(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
+    }
+
+    this.loaderService.activar();
+    const busqueda = this.filtrosArchivos(tipoReporte);
+
+    this.descargaArchivosService.descargarArchivo(this.mantenimientoVehicularService.generarReporteEncargado(busqueda), configuracionArchivo).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        console.log(respuesta);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
+  }
+
+  filtrosArchivos(tipoReporte: string) {
+    return {
+      numReporte: this.ff.tipoReporte.value,
+      fechaInicio: moment(this.ff.fechaVigenciaDesde.value).format('DD-MM-YYYY'),
+      fechaFin: moment(this.ff.fecahVigenciaHasta.value).format('DD-MM-YYYY'),
+      placas: this.ff.placa.value ? this.ff.placa.value : null,
+      tipoReporte,
+    }
+  }
+
+  get ff() {
+    return this.filtroForm.controls;
   }
 }

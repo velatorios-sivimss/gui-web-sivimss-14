@@ -6,10 +6,11 @@
         <div class="col-md-6">
           <label class="control-label" for="tipoReporte">Tipo de reporte<span class="req">*</span>:</label>
           <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
-                      placeholder="Selecciona el tipo" [filter]="true">
+            placeholder="Selecciona el tipo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este
+            campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="placa">Placa:</label>
@@ -131,6 +132,27 @@
                     </th>
                   </tr>
                 </ng-template>
+
+                <ng-template pTemplate="paginatorleft">
+                  <div class="paginator-template">
+                    <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
+                  </div>
+                </ng-template>
+
+                <ng-template pTemplate="paginatorright">
+                  <div class="paginator-template">
+                    <div class="export-table">
+                      <span class="export-table-text">Exportar tabla</span>
+                      <div class="export-table-icons">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                          (click)="generarReporteTabla('pdf');">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                          (click)="generarReporteTabla('xls');">
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+
               </p-table>
             </div>
           </div>
