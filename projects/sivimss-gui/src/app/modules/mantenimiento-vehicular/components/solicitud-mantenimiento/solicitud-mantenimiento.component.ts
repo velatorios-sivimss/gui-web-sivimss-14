@@ -129,7 +129,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   crearSolicitudMantenimiento(): RegistroSolicitudMttoInterface {
     return {
-      idMttoVehicular: this.idMttoVehicular,
+      idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
@@ -138,7 +138,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       verificacionInicio: null,
       solicitud: {
         idMttoSolicitud: this.idSolicitudMtto,
-        idMttoVehicular: this.idMttoVehicular,
+        idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
         idMttoTipo: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaRegistro")?.value, 'YYYY-MM-dd'),
@@ -219,7 +219,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       DESCRIPCION: "",
       DES_DELEGACION: respuesta.DES_DELEGACION,
       DES_MARCA: respuesta.DES_MARCA,
-      DES_MODALIDAD: "",
+      DES_MODALIDAD: respuesta.DES_MODALIDAD,
       DES_MODELO: respuesta.DES_MODELO,
       DES_MTTOESTADO: respuesta.DES_MTTOESTADO,
       DES_MTTO_TIPO: respuesta.DES_MTTO_TIPO,
@@ -229,7 +229,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       DES_PLACAS: respuesta.DES_PLACAS,
       DES_SUBMARCA: respuesta.DES_SUBMARCA,
       DES_USO: "",
-      ID_MTTOVEHICULAR: 0,
+      ID_MTTOVEHICULAR: respuesta.ID_MTTOVEHICULAR,
       ID_OFICINA: 0,
       ID_USOVEHICULO: 0,
       ID_VEHICULO: respuesta.ID_VEHICULO,

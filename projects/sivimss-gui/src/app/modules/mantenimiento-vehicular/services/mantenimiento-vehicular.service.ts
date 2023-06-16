@@ -4,7 +4,7 @@ import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
 import {BaseService} from "../../../utils/base-service";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../services/autenticacion.service";
 import {environment} from "../../../../environments/environment";
 import {CATALOGO_TIPO_REPORTE_ENCARGADO} from "../constants/catalogos-filtros";
@@ -127,5 +127,14 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   buscarReporteEncargado(t: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_encargado}`, t);
+  }
+
+  generarReporteTabla(generarReporte: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/descargar-mtto-vehicular/generarDocumento/pdf`
+      , generarReporte, { headers, responseType: 'blob' as 'json' });
   }
 }

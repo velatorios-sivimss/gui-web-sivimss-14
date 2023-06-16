@@ -1,4 +1,5 @@
 export interface RespuestaRegistroMantenimiento {
+  ID_MTTOVEHICULAR: number;
   NUM_KILOMETRAJE: number;
   DES_DELEGACION: string,
   DES_MARCA: string,

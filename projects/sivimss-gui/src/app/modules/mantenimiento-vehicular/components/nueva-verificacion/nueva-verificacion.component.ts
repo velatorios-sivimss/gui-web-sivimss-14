@@ -141,7 +141,7 @@ export class NuevaVerificacionComponent implements OnInit {
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
       idVelatorio: this.vehiculoSeleccionado.ID_VELATORIO,
-      idEstatus: this.idMttoVehicular ? 0 : 1,
+      idEstatus: 1,
       verificacionInicio: {
         idMttoVerifInicio: this.idVerificacion,
         idMttoVehicular: this.idMttoVehicular,
@@ -174,7 +174,7 @@ export class NuevaVerificacionComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion agregada correctamente');
-        this.abrirRegistroMantenimiento(respuesta.datos[0].ID_MTTOVEHICULAR);
+        this.abrirRegistroMantenimiento(respuesta.datos);
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);

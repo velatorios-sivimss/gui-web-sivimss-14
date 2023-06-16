@@ -26,6 +26,8 @@ import { mapearArregloTipoDropdown, validarUsuarioLogueado } from "../../../../u
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface'
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service'
 
 type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
 
@@ -33,7 +35,7 @@ type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
   selector: 'app-programar-mantenimiento-vehicular',
   templateUrl: './programar-mantenimiento-vehicular.component.html',
   styleUrls: ['./programar-mantenimiento-vehicular.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestroy {
   @ViewChild(OverlayPanel)
@@ -71,10 +73,11 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     public dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private cargadorService: LoaderService,
+    private loaderService: LoaderService,
     private mantenimientoVehicularService: MantenimientoVehicularService,
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
+    private descargaArchivosService: DescargaArchivosService,
   ) {
   }
 
@@ -134,9 +137,9 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   paginar(): void {
     if (!localStorage.getItem('sivimss_token')) return;
-    this.cargadorService.activar();
+    this.loaderService.activar();
     this.mantenimientoVehicularService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
-      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.vehiculos = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
@@ -153,9 +156,9 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     if (!Object.values(filtros).some(v => (v))) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
     }
-    this.cargadorService.activar();
+    this.loaderService.activar();
     this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
-      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.vehiculos = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
@@ -221,7 +224,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Registro de Mantenimiento Vehicular",
       width: "920px",
-      data: { vehiculo: this.vehiculoSeleccionado },
+      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create' },
     });
   }
 
@@ -280,6 +283,36 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     // debugger;
     void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_VEHICULO],
       { queryParams: { tabview: 0, id: vehiculo.ID_MTTOVEHICULAR } });
+  }
+
+  generarReporteTabla(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
+    }
+
+    this.loaderService.activar();
+    const busqueda = this.filtrosArchivos(tipoReporte);
+
+    this.descargaArchivosService.descargarArchivo(this.mantenimientoVehicularService.generarReporteTabla(busqueda), configuracionArchivo).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        console.log(respuesta);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
+  }
+
+  filtrosArchivos(tipoReporte: string) {
+    return {
+      idVelatorio: this.f.velatorio.value ? +this.f.velatorio.value : null,
+      placas: this.f.placa.value ? this.f.placa.value : null,
+      rutaNombreReporte: "reportes/generales/ReporteProgramarMttoVehicular.jrxml",
+      tipoReporte,
+    }
   }
 
   get f() {
