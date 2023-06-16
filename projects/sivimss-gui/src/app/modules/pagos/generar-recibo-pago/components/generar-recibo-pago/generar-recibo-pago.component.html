@@ -115,7 +115,7 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar recibo de pago" *ngIf="!reciboPagoSeleccionado.idReciboPago"
+      <app-overlay-panel-opcion *appValidaRol="['GENERAR_RECIBO_PAGO','ALTA']" titulo="Generar recibo de pago"
                                 [routerLink]="['./generar-recibo-pago-tramites', reciboPagoSeleccionado.idPagoBitacora]"
                                 routerLinkActive>
       </app-overlay-panel-opcion>

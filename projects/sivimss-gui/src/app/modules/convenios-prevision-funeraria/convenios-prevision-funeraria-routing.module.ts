@@ -4,6 +4,11 @@ import {ConsultaConveniosComponent} from "./components/convenios-prevision-funer
 import {
   AgregarConveniosPrevisionFunerariaComponent
 } from "./components/agregar-convenios-prevision-funeraria/agregar-convenios-prevision-funeraria.component";
+import {ConsultaConveniosResolver} from "./services/consulta-convenios.resolver";
+import {
+  AgregarPersonaConveniosPrevisionFunerariaComponent
+} from "./components/agregar-persona-convenios-prevision-funeraria/agregar-persona-convenios-prevision-funeraria.component";
+import {AgregarConvenioPfResolver} from "./services/agregar-convenio-pf.resolver";
 
 const routes: Routes = [
   {
@@ -12,13 +17,28 @@ const routes: Routes = [
   },
   {
     path: 'ingresar-nuevo-convenio',
-    component: AgregarConveniosPrevisionFunerariaComponent
+    component: AgregarConveniosPrevisionFunerariaComponent,
+    resolve: {
+      respuesta: AgregarConvenioPfResolver
+    },
+  },
+  {
+    path: 'ingresar-nuevo-convenio/agregar-persona',
+    component: AgregarPersonaConveniosPrevisionFunerariaComponent,
+    resolve: {
+      respuesta: AgregarConvenioPfResolver
+    }
   }
+
 ]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports:[RouterModule]
+  exports:[RouterModule],
+  providers:[
+    AgregarConvenioPfResolver,
+    ConsultaConveniosResolver
+  ]
 })
 
 export class ConveniosPrevisionFunerariaRoutingModule {}

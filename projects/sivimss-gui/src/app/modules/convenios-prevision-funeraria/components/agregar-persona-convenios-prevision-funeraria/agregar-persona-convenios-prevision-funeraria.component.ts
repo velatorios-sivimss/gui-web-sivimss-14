@@ -18,6 +18,13 @@ import {
 import {
   DetalleBeneficiarioConveniosPrevisionFunerariaComponent
 } from "../detalle-beneficiario-convenios-prevision-funeraria/detalle-beneficiario-convenios-prevision-funeraria.component";
+import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from "../../../../utils/constantes";
+import {
+  ModificarBeneficiarioComponent
+} from "../../../convenios-nuevos/seguimiento-nuevo-convenio/components/modificar-beneficiario/modificar-beneficiario.component";
+import {
+  ModificarBeneficiarioConveniosPrevisionFunerariaComponent
+} from "../modificar-beneficiario-convenios-prevision-funeraria/modificar-beneficiario-convenios-prevision-funeraria.component";
 
 @Component({
   selector: 'app-agregar-persona-convenios-prevision-funeraria',
@@ -36,6 +43,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   personaForm!: FormGroup;
   beneficiarioRef!: DynamicDialogRef;
   detalleBeneficiarioRef!: DynamicDialogRef;
+  modificarBeneficiarioRef!: DynamicDialogRef;
 
   sexo: TipoDropdown[] = CATALOGOS_DUMMIES;
   nacionalidad: TipoDropdown[] = CATALOGOS_DUMMIES;
@@ -56,27 +64,27 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
 
   inicializarFormPersona(): void {
     this.personaForm = this.formBuilder.group({
-      curp: [{value: null, disabled: false}, [Validators.required]],
-      rfc: [{value: null, disabled: false}, [Validators.required]],
-      matricula: [{value: null, disabled: false}, [Validators.required]],
-      nombre: [{value: null, disabled: false}, [Validators.required]],
-      primerApellido: [{value: null, disabled: false}, [Validators.required]],
-      segundoApellido: [{value: null, disabled: false}, [Validators.required]],
-      fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
-      sexo: [{value: null, disabled: false}, [Validators.required]],
-      nacionalidad: [{value: null, disabled: false}, [Validators.required]],
-      lugarNacimiento: [{value: null, disabled: false}, [Validators.required]],
-      correoElectronico: [{value: null, disabled: false}, [Validators.required]],
-      telefono: [{value: null, disabled: false}, [Validators.required]],
-      calle: [{value: null, disabled: false}, [Validators.required]],
-      noExterior: [{value: null, disabled: false}, [Validators.required]],
-      noInterior: [{value: null, disabled: false}, [Validators.required]],
-      cp: [{value: null, disabled: false}, [Validators.required]],
-      colonia: [{value: null, disabled: false}, [Validators.required]],
-      municipio: [{value: null, disabled: false}, [Validators.required]],
-      estado: [{value: null, disabled: false}, [Validators.required]],
-      tipoPaquete: [{value: null, disabled: false}, [Validators.required]],
-      enfermedadPrexistente: [{value: null, disabled: false}, [Validators.required]],
+                           curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
+                            rfc: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_RFC)]],
+                      matricula: [{value: null, disabled: false}, [Validators.required]],
+                         nombre: [{value: null, disabled: true},  [Validators.required]],
+                 primerApellido: [{value: null, disabled: true},  [Validators.required]],
+                segundoApellido: [{value: null, disabled: true},  [Validators.required]],
+                fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
+                           sexo: [{value: null, disabled: false}, [Validators.required]],
+                   nacionalidad: [{value: null, disabled: false}, [Validators.required]],
+                lugarNacimiento: [{value: null, disabled: false}, [Validators.required]],
+              correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+                       telefono: [{value: null, disabled: false}, [Validators.required]],
+                          calle: [{value: null, disabled: false}, [Validators.required]],
+                     noExterior: [{value: null, disabled: false}, [Validators.required]],
+                     noInterior: [{value: null, disabled: false}, [Validators.required]],
+                             cp: [{value: null, disabled: false}, [Validators.required]],
+                        colonia: [{value: null, disabled: false}, [Validators.required]],
+                      municipio: [{value: null, disabled: false}, [Validators.required]],
+                         estado: [{value: null, disabled: false}, [Validators.required]],
+                    tipoPaquete: [{value: null, disabled: false}, [Validators.required]],
+          enfermedadPrexistente: [{value: null, disabled: false}, [Validators.required]],
       descEnfermedadPrexistente: [{value: null, disabled: false}, [Validators.required]]
     });
   }
@@ -97,10 +105,18 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
 
   abrirModalDetalleBeneficiario(detalleBeneficiario: BeneficiarioInterface): void {
     this.detalleBeneficiarioRef = this.dialogService.open(DetalleBeneficiarioConveniosPrevisionFunerariaComponent, {
-      header:"Ver detalle de beneficiario",
+      header:"Detalle de beneficiario",
       width:"920px",
       data: detalleBeneficiario,
     });
+  }
+
+  abrirModalModificarBeneficiario(modificarBeneficiario: BeneficiarioInterface): void {
+    this.modificarBeneficiarioRef = this.dialogService.open(ModificarBeneficiarioConveniosPrevisionFunerariaComponent, {
+      header:"Modificar beneficiario",
+      width:"920px",
+      data: modificarBeneficiario,
+    })
   }
 
   abrirModalEliminarBeneficiario(eliminarBeneficiario: BeneficiarioInterface): void {

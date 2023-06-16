@@ -5,7 +5,8 @@
         <div class="col-md-6">
           <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
           <input id="curp" class="form-control" formControlName="curp" placeholder="Inserta el CURP"
-                 (blur)="validarCurp();" alphanumericOnly [maxlength]="18">
+                 (blur)="validarCurp();" alphanumericOnly [maxlength]="18"
+                 oninput="this.value = this.value.toUpperCase()">
           <span class="campo-obligatorio"
                 *ngIf="fau?.curp?.errors?.required && (fau?.curp?.dirty || fau?.curp?.touched)">Este campo es obligatorio *.</span>
           <span class="campo-obligatorio"

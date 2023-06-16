@@ -7,6 +7,7 @@ import { HttpRespuesta } from "../../models/http-respuesta.interface";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { MensajesSistemaService } from '../../services/mensajes-sistema.service';
+import {AlertaService, TipoAlerta} from "../../shared/alerta/services/alerta.service";
 
 export interface NotificacionInterface {
   path?: string;
@@ -36,6 +37,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly autenticacionService: AutenticacionService,
+    private alertaService: AlertaService,
     private readonly notificacionService: NotificacionesService,
     private router: Router,
     private mensajesSistemaService: MensajesSistemaService
@@ -51,6 +53,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         console.log(error)
+        this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
     )
   }

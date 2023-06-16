@@ -94,8 +94,8 @@ export class GenerarReciboPagoComponent implements OnInit {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormReciboPago = this.formBuilder.group({
       nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idRol === 2}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idRol === 3}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
       folio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
@@ -170,8 +170,8 @@ export class GenerarReciboPagoComponent implements OnInit {
       idVelatorio: this.filtroFormReciboPago.get("velatorio")?.value,
       claveFolio: this.filtroFormReciboPago.get("folio")?.value,
       nomContratante: this.filtroFormReciboPago.get("nombreContratante")?.value,
-      fecIniODS: moment(this.filtroFormReciboPago.get("fechaInicial")?.value).format('YYYY-MM-DD'),
-      fecFinODS: moment(this.filtroFormReciboPago.get("fechaFinal")?.value).format('YYYY-MM-DD'),
+      fecIniODS: this.filtroFormReciboPago.get("fechaInicial")?.value,
+      fecFinODS: this.filtroFormReciboPago.get("fechaFinal")?.value,
       rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
       tipoReporte: "pdf"
     }
@@ -180,7 +180,7 @@ export class GenerarReciboPagoComponent implements OnInit {
   limpiar(): void {
     this.filtroFormReciboPago.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroFormReciboPago.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroFormReciboPago.get('nivel')?.patchValue(+usuario.idOficina);
     this.filtroFormReciboPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
     this.filtroFormReciboPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.obtenerVelatorios();

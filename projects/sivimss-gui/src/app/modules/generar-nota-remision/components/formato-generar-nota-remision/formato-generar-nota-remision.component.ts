@@ -7,7 +7,7 @@ import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dy
 import { ModalNotaRemisionComponent } from '../modal/modal-nota-remision/modal-nota-remision.component';
 import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ArticulosServicios, DetalleNotaRemision, GenerarReporte } from '../../models/nota-remision.interface';
+import { ArticulosServicios, DetalleNotaRemision, GenerarReporte,  GenerarDatosReporte} from '../../models/nota-remision.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
@@ -31,6 +31,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   creacionRef!: DynamicDialogRef;
   idOds: number = 0;
   servicios: ArticulosServicios[] = [];
+  notaRemisionReporte: GenerarDatosReporte ={};
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
@@ -54,6 +55,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
       this.cancelar();
     }
 
+    this.notaRemisionReporte = respuesta[this.POSICION_DETALLE]?.datos[0];
     const detalleOrdenServicio = respuesta[this.POSICION_DETALLE]?.datos[0];
     this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
     this.inicializarNotaRemisionForm(detalleOrdenServicio);
@@ -103,7 +105,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
 
   generarNotaRemision() {
     this.abrirModalGenerandoNotaRemision();
-    this.generarNotaRemisionService.guardar({ idOrden: 1 }).subscribe({
+    this.generarNotaRemisionService.guardar({ idOrden: this.idOds }).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.creacionRef.close();
         const mensaje = this.alertas?.filter((msj: any) => {
@@ -127,8 +129,8 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     });
   }
 
-  generarReporteOrdenServicio(tipoReporte: string) {
-    const busqueda = this.filtrosArchivos(tipoReporte);
+  generarReporteOrdenServicio() {
+    const busqueda: GenerarDatosReporte = this.datosReporte();
     this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe({
       next: (response: any) => {
         const file = new Blob([response], { type: 'application/pdf' });
@@ -141,12 +143,24 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     });
   }
 
-
-  filtrosArchivos(tipoReporte: string): GenerarReporte {
+  datosReporte(): GenerarDatosReporte {
     return {
       idNota: 0,
       idOrden: this.idOds,
-      tipoReporte,
+      fechaNota: this.notaRemisionReporte.fechaNota,
+      velatorioOrigen: this.notaRemisionReporte.velatorioOrigen,
+      folioNota: this.notaRemisionReporte.folioNota,
+      dirVelatorio: this.notaRemisionReporte.dirVelatorio,
+      nomSolicitante: this.notaRemisionReporte.nomSolicitante,
+      dirSolicitante: this.notaRemisionReporte.dirSolicitante,
+      curpSolicitante: this.notaRemisionReporte.curpSolicitante,
+      nomVelatorio: this.notaRemisionReporte.nomVelatorio,
+      nomFinado: this.notaRemisionReporte.nomFinado,
+      parFinado: this.notaRemisionReporte.parFinado,
+      folioODS: this.notaRemisionReporte.folioODS,
+      folioConvenio: this.notaRemisionReporte.folioConvenio,
+      fechaConvenio: this.notaRemisionReporte.fechaConvenio,
+      tipoReporte: "pdf"
     }
   }
 

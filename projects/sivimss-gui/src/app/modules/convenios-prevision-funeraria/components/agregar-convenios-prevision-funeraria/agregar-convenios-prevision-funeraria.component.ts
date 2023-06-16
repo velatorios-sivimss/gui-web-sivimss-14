@@ -17,8 +17,8 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 })
 export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
 
-  empresaForm!: FormGroup;
   filtroForm!: FormGroup;
+  convenioForm!: FormGroup;
   documentacionForm!: FormGroup;
 
   menuStep: MenuItem[] = MENU_STEPPER;
@@ -27,9 +27,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   tipoContratacion:TipoDropdown[] = [{value:1,label:'Por Persona'},{value:2,label:'Por Grupo o por Empresa'}];
   pais: TipoDropdown[] = CATALOGOS_DUMMIES;
   estado: TipoDropdown[] = CATALOGOS_DUMMIES;
-
   personasConvenio: PersonaInterface[] = [];
-
   agregarPersona: boolean = false;
 
   constructor(
@@ -42,7 +40,6 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   ngOnInit(): void {
     this.actualizarBreadcrumb();
     this.inicializarFiltroForm();
-    this.inicializarEmpresaForm();
     this.inicializarDocumentacionForm();
   }
 
@@ -53,26 +50,16 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       numeroConvenio: [{value: null, disabled: false}, [Validators.required]],
-      tipoContratacion: [{value: null, disabled: false}, [Validators.required]]
+      tipoContratacion: [{value: null, disabled: false}, [Validators.required]],
+      rfcCurp: [{value: null, disabled: false}, [Validators.required]],
+
     })
   }
-  inicializarEmpresaForm(): void{
-    this.empresaForm = this.formBuilder.group({
-      nombre:[{value: null, disabled: false}, [Validators.required]],
-      razonSocial:[{value: null, disabled: false}, [Validators.required]],
-      rfc:[{value: null, disabled: false}, [Validators.required]],
-      pais:[{value: null, disabled: false}, [Validators.required]],
-      cp:[{value: null, disabled: false}, [Validators.required]],
-      colonia:[{value: null, disabled: false}, [Validators.required]],
-      estado:[{value: null, disabled: false}, [Validators.required]],
-      municipio:[{value: null, disabled: false}, [Validators.required]],
-      calle:[{value: null, disabled: false}, [Validators.required]],
-      numeroExterior:[{value: null, disabled: false}, [Validators.required]],
-      numeroInterior:[{value: null, disabled: false}],
-      telefono:[{value: null, disabled: false}, [Validators.required]],
-      correoElectronico:[{value: null, disabled: false}, [Validators.required]],
-      promotor: [{value: null, disabled: false}, [Validators.required]],
-      });
+
+  inicializarRegistrConvenioForm(): void{
+    this.convenioForm = this.formBuilder.group({
+      promotor:[{value:null, disabled:false}]
+    })
   }
 
   inicializarDocumentacionForm(): void {
@@ -89,11 +76,11 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     });
   }
 
-  cambioTipoContratacion(): void {
-    if(this.filtroForm.get('tipoContratacion')?.value == 1){
-      this.inicializarEmpresaForm();
-    }
+  inicializarPersonaForm(): void {
+
   }
+
+
 
   mostrarPersonas( personas: PersonaInterface): void {
     this.agregarPersona = false;
@@ -129,7 +116,4 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     return this.filtroForm.controls;
   }
 
-  get fe() {
-    return this.empresaForm.controls;
-  }
 }

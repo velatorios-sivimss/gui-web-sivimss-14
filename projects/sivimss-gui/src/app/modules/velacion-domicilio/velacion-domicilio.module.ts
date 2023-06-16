@@ -22,6 +22,7 @@ import { DetalleVelacionDomicilioComponent } from './components/detalle-velacion
 import { GenerarValeSalidaComponent } from './components/generar-vale-salida/generar-vale-salida.component';
 import { UtileriaModule } from "../../shared/utileria/utileria.module";
 import { EliminarArticuloComponent } from "./components/eliminar-articulo/eliminar-articulo.component";
+import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { EliminarArticuloComponent } from "./components/eliminar-articulo/elimin
     CeldaStickyModule,
     CalendarModule,
     AccordionModule,
+    ValidaRolModule,
     UtileriaModule,
   ],
   providers:[
