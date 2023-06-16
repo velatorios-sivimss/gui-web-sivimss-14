@@ -16,7 +16,8 @@ export class MantenimientoPredictivoResolver implements Resolve<any> {
     const delegaciones$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
     const placas$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
     const catalogoBase$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoMttoPredictivo();
-    return forkJoin([niveles$, delegaciones$, placas$, catalogoBase$]);
+    const periodo$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoPeriodo();
+    return forkJoin([niveles$, delegaciones$, placas$, catalogoBase$, periodo$]);
   }
 
 }

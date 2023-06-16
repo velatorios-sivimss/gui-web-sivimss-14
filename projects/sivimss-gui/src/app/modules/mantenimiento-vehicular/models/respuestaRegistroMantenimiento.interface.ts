@@ -1,4 +1,5 @@
 export interface RespuestaRegistroMantenimiento {
+  ID_MTTOVEHICULAR: number;
   NUM_KILOMETRAJE: number;
   DES_DELEGACION: string,
   DES_MARCA: string,
@@ -30,5 +31,10 @@ export interface RespuestaRegistroMantenimiento {
   NOM_PROVEEDOR: string,
   NOM_VELATORIO: string,
   DES_NOMBRE_TALLER: string,
-  COSTO_MTTO: string
+  COSTO_MTTO: string,
+  MON_COSTO_MTTO: string,
+  DES_MTTO_TIPO: string,
+  DES_MTTO_CORRECTIVO: string,
+  DES_NOMBRE_PROVEEDOR: string,
+  FEC_REGISTRO: string,
 }
