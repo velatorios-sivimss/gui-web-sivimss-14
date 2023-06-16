@@ -49,23 +49,11 @@ export class DetalleMantenimientoComponent implements OnInit {
   ) {
   }
 
-  // ngOnInit(): void {
-  //   debugger;
-  //   this.vehiculo = this.route.snapshot.data["respuesta"][0].datos.content[0];
-  //   this.route.queryParams.subscribe(params => {
-  //     if (params.tabview) {
-  //       this.indice = params.tabview;
-  //     }
-  //   })
-  //   this.obtenerRegistros();
-  // }
-
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       if (params.tabview) {
         this.indice = params.tabview;
       }
-      // debugger
       if (params.id) {
         this.idAgregarVehiculo = params.id;
         this.vehiculo = this.route.snapshot.data["respuesta"][0].datos.content.find((e: any) => e.ID_MTTOVEHICULAR == this.idAgregarVehiculo);
@@ -94,7 +82,6 @@ export class DetalleMantenimientoComponent implements OnInit {
   }
 
   obtenerVerificacionInicial(): Observable<HttpRespuesta<any>> {
-    // debugger
     if (!this.vehiculo.ID_MTTOVERIFINICIO) {
       return of({ datos: [], mensaje: '', codigo: 0, error: false });
     }
@@ -102,7 +89,6 @@ export class DetalleMantenimientoComponent implements OnInit {
   }
 
   obtenerSolicitudMantenimiento(): Observable<HttpRespuesta<any>> {
-    // debugger
     if (!this.vehiculo.ID_MTTO_SOLICITUD) {
       return of({ datos: [], mensaje: '', codigo: 0, error: false });
     }

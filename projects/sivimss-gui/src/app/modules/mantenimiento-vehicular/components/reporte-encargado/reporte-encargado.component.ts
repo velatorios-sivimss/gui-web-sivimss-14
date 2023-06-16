@@ -162,6 +162,7 @@ export class ReporteEncargadoComponent implements OnInit {
   }
 
   generarReporteTabla(tipoReporte: string): void {
+    if (this.filtroForm.invalid || !this.fechaValida) return;
     const configuracionArchivo: OpcionesArchivos = {};
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"

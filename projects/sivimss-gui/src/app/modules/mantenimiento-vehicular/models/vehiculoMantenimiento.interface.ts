@@ -20,9 +20,9 @@ export interface VehiculoMantenimiento {
   IND_ESTATUS: boolean,
   DES_VELATORIO: string,
   TOTAL: number,
-  ID_MTTO_SOLICITUD: number,
+  ID_MTTO_SOLICITUD: number | null,
   ID_MTTOVERIFINICIO: number,
-  ID_MTTO_REGISTRO: number,
+  ID_MTTO_REGISTRO: number | null,
   ID_MTTOVEHICULAR: number,
   verificacionDia: string,
   DES_DELEGACION: string

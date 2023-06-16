@@ -132,28 +132,20 @@
                     </th>
                   </tr>
                 </ng-template>
-
-                <ng-template pTemplate="paginatorleft">
-                  <div class="paginator-template">
-                    <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
-                  </div>
-                </ng-template>
-
-                <ng-template pTemplate="paginatorright">
-                  <div class="paginator-template">
-                    <div class="export-table">
-                      <span class="export-table-text">Exportar tabla</span>
-                      <div class="export-table-icons">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-                          (click)="generarReporteTabla('pdf');">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-                          (click)="generarReporteTabla('xls');">
-                      </div>
-                    </div>
-                  </div>
-                </ng-template>
-
               </p-table>
+
+              <div class="paginator-template">
+                <div class="export-table" style="float: right;">
+                  <span class="export-table-text">Exportar tabla</span>
+                  <div class="export-table-icons">
+                    <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                      (click)="generarReporteTabla('pdf');">
+                    <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                      (click)="generarReporteTabla('xls');">
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
