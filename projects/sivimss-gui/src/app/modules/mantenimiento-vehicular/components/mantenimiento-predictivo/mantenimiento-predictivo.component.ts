@@ -14,7 +14,6 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {FiltrosMantenimientoPredictivo} from "../../models/filtrosMantenimientoPredictivo.interface";
-import * as moment from "moment";
 
 @Component({
   selector: 'app-mantenimiento-predictivo',
@@ -46,6 +45,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
   tipoMantenimientos: TipoDropdown[] = [];
   titulos: string[] = ['Aceite', 'Agua', 'Calibración Neumáticos', 'Combustible', 'Código de Falla', 'Batería'];
   titulosSeleccionados: string[] = [];
+  velatorio: string = '';
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
@@ -144,9 +144,10 @@ export class MantenimientoPredictivoComponent implements OnInit {
   generarSolicitudFiltros(): FiltrosMantenimientoPredictivo {
     const mtto: number = this.filtroForm.get('tipoMantenimiento')?.value;
     this.titulosSeleccionados = (mtto > this.titulos.length) ? this.titulos : [this.titulos[mtto - 1]];
-    console.log(this.titulosSeleccionados)
-    this.rangoFecha = `${moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY')} a
-    ${moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY')}`
+    const periodo = this.filtroForm.get('periodo')?.value;
+    this.rangoFecha = this.catalogoPeriodo.find(cP => cP.value === periodo)?.label ?? '';
+    const velatorio = this.filtroForm.get('velatorio')?.value;
+    this.velatorio = this.catalogoVelatorios.find(cV => cV.value === velatorio)?.label ?? '';
     return {
       delegacion: this.filtroForm.get('delegacion')?.value,
       nivelOficina: this.filtroForm.get('nivel')?.value,

@@ -31,7 +31,7 @@
                       placeholder="Seleccionar periodo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="fmp?.placa?.errors?.required && (fmp?.placa?.dirty || fmp?.placa?.touched)">Este campo es obligatorio *.</span>
+                *ngIf="fmp?.periodo?.errors?.required && (fmp?.periodo?.dirty || fmp?.periodo?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-3">
           <label class="control-label" for="placa">Placa*:</label>
@@ -93,7 +93,7 @@
             <div class="col-md-4">
               <div class="table-panel-column">
                 <label>Velatorio</label>
-                <span></span>
+                <span>{{velatorio}}</span>
               </div>
             </div>
             <div class="col-md-4">
