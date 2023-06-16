@@ -207,14 +207,14 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   abrirModalnuevaVerificacion(): void {
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
       data: { vehiculo: this.vehiculoSeleccionado },
-      header: "Verificar al Inicio de la Jornada",
+      header: "Verificar al inicio de la jornada",
       width: "920px"
     });
   }
 
   abrirModalSolicitudMantenimiento(): void {
     this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
-      header: "Solicitud de Mantenimiento Vehicular",
+      header: "Solicitud de mantenimiento vehicular",
       width: "920px",
       data: { vehiculo: this.vehiculoSeleccionado },
     })
@@ -222,7 +222,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   abrirModalRegistroMantenimiento(): void {
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
-      header: "Registro de Mantenimiento Vehicular",
+      header: "Registro de mantenimiento vehicular",
       width: "920px",
       data: { vehiculo: this.vehiculoSeleccionado, mode: 'create' },
     });
