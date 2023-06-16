@@ -41,6 +41,7 @@ import {DetalleMantenimientoComponent} from "./components/detalle-mantenimiento/
 import {TabViewModule} from "primeng/tabview";
 import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
+import {ValueConverterPipe} from "./pipes/value.converter.pipe";
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
     RegistroMantenimientoComponent,
     MantenimientoPredictivoComponent,
     ReporteEncargadoComponent,
-    DetalleMantenimientoComponent
+    DetalleMantenimientoComponent,
+    ValueConverterPipe
   ],
   imports: [
     CalendarModule,
@@ -76,7 +78,7 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
     CeldaStickyModule,
     ValidaRolModule,
   ],
-  providers: [MantenimientoVehicularService]
+  providers: [MantenimientoVehicularService],
 })
 export class MantenimientoVehicularModule {
 }

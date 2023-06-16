@@ -14,7 +14,6 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {FiltrosMantenimientoPredictivo} from "../../models/filtrosMantenimientoPredictivo.interface";
-import * as moment from "moment";
 
 @Component({
   selector: 'app-mantenimiento-predictivo',
@@ -36,6 +35,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
 
   filtroForm!: FormGroup
   verDetallePredictivo: boolean = false;
+  rangoFecha: string = '';
 
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
@@ -43,6 +43,9 @@ export class MantenimientoPredictivoComponent implements OnInit {
   catalogoPlacas: TipoDropdown[] = [];
   catalogoPeriodo: TipoDropdown[] = [];
   tipoMantenimientos: TipoDropdown[] = [];
+  titulos: string[] = ['Aceite', 'Agua', 'Calibración Neumáticos', 'Combustible', 'Código de Falla', 'Batería'];
+  titulosSeleccionados: string[] = [];
+  velatorio: string = '';
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
@@ -85,7 +88,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: +usuario.idOficina, disabled: true}],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, []],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
       placa: [{value: null, disabled: false}, [Validators.required]],
       periodo: [{value: null, disabled: false}, []],
       tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
@@ -123,7 +126,14 @@ export class MantenimientoPredictivoComponent implements OnInit {
     const filtros: FiltrosMantenimientoPredictivo = this.generarSolicitudFiltros();
     this.mantenimientoVehicularService.buscarReporteMttoPreventivo(filtros).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        console.log(respuesta)
+        if (respuesta.datos?.content.length > 0) {
+          this.vehiculos = respuesta.datos.content;
+          this.vehiculoSeleccionado = respuesta.datos.content[0];
+          this.verDetallePredictivo = true;
+        } else {
+          this.verDetallePredictivo = false;
+          this.vehiculos = [];
+        }
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -132,12 +142,18 @@ export class MantenimientoPredictivoComponent implements OnInit {
   }
 
   generarSolicitudFiltros(): FiltrosMantenimientoPredictivo {
+    const mtto: number = this.filtroForm.get('tipoMantenimiento')?.value;
+    this.titulosSeleccionados = (mtto > this.titulos.length) ? this.titulos : [this.titulos[mtto - 1]];
+    const periodo = this.filtroForm.get('periodo')?.value;
+    this.rangoFecha = this.catalogoPeriodo.find(cP => cP.value === periodo)?.label ?? '';
+    const velatorio = this.filtroForm.get('velatorio')?.value;
+    this.velatorio = this.catalogoVelatorios.find(cV => cV.value === velatorio)?.label ?? '';
     return {
       delegacion: this.filtroForm.get('delegacion')?.value,
       nivelOficina: this.filtroForm.get('nivel')?.value,
       placa: this.filtroForm.get('placa')?.value,
-      tipoMtto: this.filtroForm.get('tipoMantenimiento')?.value,
       velatorio: this.filtroForm.get('velatorio')?.getRawValue() === '' ? null : this.filtroForm.get('velatorio')?.getRawValue(),
+      tipoMtto: mtto,
     }
   }
 
