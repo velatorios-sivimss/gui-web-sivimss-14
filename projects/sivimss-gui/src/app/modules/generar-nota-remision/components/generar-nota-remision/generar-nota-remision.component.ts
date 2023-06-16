@@ -97,7 +97,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
 
   async inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1}],
+      nivel: [{value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina > 1}],
       delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2}],
       velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3}],
       folio: [{value: null, disabled: false}],
@@ -211,16 +211,9 @@ export class GenerarNotaRemisionComponent implements OnInit {
   limpiar(): void {
     this.alertaService.limpiar();
     this.filtroForm.reset();
-    this.f.nivel.setValue(+this.rolLocalStorage.idOficina || null);
-
-    if (+this.rolLocalStorage.idRol >= 2) {
-      this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
-    }
-
-    if (+this.rolLocalStorage.idRol === 3) {
-      this.f.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
-    }
-
+    this.filtroForm.get('nivel')?.patchValue(+this.rolLocalStorage.idOficina || null);
+    this.filtroForm.get('delegacion')?.patchValue(+this.rolLocalStorage.idDelegacion || null);
+    this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio || null);
     this.paginar();
   }
 
