@@ -40,7 +40,7 @@
       <span class="control-label">*Campos obligatorios</span>
     </div>
     <div class="my-4" *ngIf="form.errors">
-      <span class="validacion-contrasenias" *ngIf="form.errors?.contraseniasDiferentes">
+      <span class="validacion-contrasenias campo-obligatorio" *ngIf="form.errors?.contraseniasDiferentes">
         Las contraseñas ingresadas no coinciden.
       </span>
     </div>
