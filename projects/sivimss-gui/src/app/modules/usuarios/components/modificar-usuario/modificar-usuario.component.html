@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="pasoModificarUsuario">
   <ng-container *ngSwitchCase="CAPTURA_DE_USUARIO">
-    <form [formGroup]="modificarUsuarioForm" (submit)="confirmarModificacion()">
+    <form [formGroup]="modificarUsuarioForm" (submit)="confirmarModificacion()" *ngIf="modificarUsuarioForm">
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="idModificar">ID:</label>
@@ -35,6 +35,25 @@
           <label class="control-label" for="segundoApellidoModificar">Segundo apellido:</label>
           <input id="segundoApellidoModificar" class="form-control" formControlName="segundoApellido"
                  placeholder="Inserta el segundo apellido">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="usuarioModificar">Usuario:</label>
+          <input id="usuarioModificar" class="form-control" formControlName="usuario"
+                 placeholder="Inserta el nombre de usuario">
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="contraseniaModificar">Contraseña:</label>
+          <input id="contraseniaModificar" class="form-control" formControlName="contrasenia" type="password"
+                 placeholder="Inserta el nombre de usuario">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="desEdoNacimientoModificar">Entidad Federativa de Nacimiento:</label>
+          <input id="desEdoNacimientoModificar" class="form-control" formControlName="desEdoNacimiento"
+                 placeholder="Inserta el lugar de nacimiento">
         </div>
       </div>
       <div class="row mb-3">
