@@ -308,6 +308,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   filtrosArchivos(tipoReporte: string) {
     return {
+      idNivelOficina: this.f.nivel.value ? +this.f.nivel.value : null,
+      idDelegacion: this.f.delegacion.value ? +this.f.delegacion.value : null,
       idVelatorio: this.f.velatorio.value ? +this.f.velatorio.value : null,
       placas: this.f.placa.value ? this.f.placa.value : null,
       rutaNombreReporte: "reportes/generales/ReporteProgramarMttoVehicular.jrxml",
