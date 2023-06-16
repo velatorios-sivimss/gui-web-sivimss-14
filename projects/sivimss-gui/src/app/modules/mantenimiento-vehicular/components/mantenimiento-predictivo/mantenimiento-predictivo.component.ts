@@ -89,8 +89,6 @@ export class MantenimientoPredictivoComponent implements OnInit {
       placa: [{value: null, disabled: false}, [Validators.required]],
       periodo: [{value: null, disabled: false}, []],
       tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
-      fechaVigenciaDesde: [{value: null, disabled: false}, [Validators.required]],
-      fecahVigenciaHasta: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
@@ -136,8 +134,6 @@ export class MantenimientoPredictivoComponent implements OnInit {
   generarSolicitudFiltros(): FiltrosMantenimientoPredictivo {
     return {
       delegacion: this.filtroForm.get('delegacion')?.value,
-      fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
-      fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
       nivelOficina: this.filtroForm.get('nivel')?.value,
       placa: this.filtroForm.get('placa')?.value,
       tipoMtto: this.filtroForm.get('tipoMantenimiento')?.value,

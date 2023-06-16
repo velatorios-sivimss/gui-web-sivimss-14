@@ -276,6 +276,12 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.overlayPanel.toggle(event);
   }
 
+  irADetalle(vehiculo: any): void {
+    // debugger;
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_VEHICULO],
+      { queryParams: { tabview: 0, id: vehiculo.ID_MTTOVEHICULAR } });
+  }
+
   get f() {
     return this.filtroFormProgramarMantenimiento?.controls;
   }

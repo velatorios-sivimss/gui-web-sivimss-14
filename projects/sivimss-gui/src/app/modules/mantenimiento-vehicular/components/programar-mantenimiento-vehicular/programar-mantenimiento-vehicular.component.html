@@ -85,7 +85,7 @@
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
             <span [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</span>
             <div class="contenedor-celda-iconos">
-              <a [routerLink]="['detalle-mantenimiento', vehiculo.ID_VEHICULO]">
+              <a (click)="irADetalle(vehiculo)">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
               </a>
               <a (click)="abrirPanel($event,vehiculo)">
@@ -132,8 +132,6 @@
       <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
-                                onCloseOnNavigation></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = !modificarModal"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

@@ -12,5 +12,5 @@ export function obtenerFechaActual(): string {
   const diaActual: string = fechaActual.getDate().toString().padStart(2, '0');
   const mesActual: string = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
   const anioActual: string = fechaActual.getFullYear().toString();
-  return `${diaActual}/${mesActual}/${anioActual}`;
+  return `${diaActual}-${mesActual}-${anioActual}`;
 }

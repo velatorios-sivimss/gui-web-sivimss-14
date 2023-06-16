@@ -177,9 +177,13 @@ export class SolicitudMantenimientoComponent implements OnInit {
   actualizarSolicitudMtto(): void {
     const verificacion: RegistroSolicitudMttoInterface = this.crearSolicitudMantenimiento();
     this.mantenimientoVehicularService.actualizar(verificacion).subscribe({
-      next: (): void => {
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud modificada correctamente');
-        this.abrirRegistroSolicitud();
+        if(!this.vehiculoSeleccionado.ID_MTTOVEHICULAR || this.vehiculoSeleccionado.ID_MTTOVEHICULAR === 0) {
+          this.ref.close(true);
+        } else {
+          this.abrirRegistroSolicitud();
+        }
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -191,7 +195,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
   abrirRegistroSolicitud(): void {
     this.ref.close(true);
     void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      { queryParams: { tabview: 1 } });
+      { queryParams: { tabview: 1, id: this.vehiculoSeleccionado.ID_MTTOVEHICULAR } });
   }
 
   realizarSolicitud(id: number): void {

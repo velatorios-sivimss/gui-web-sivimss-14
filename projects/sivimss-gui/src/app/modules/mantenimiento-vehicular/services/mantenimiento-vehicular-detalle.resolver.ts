@@ -19,7 +19,7 @@ export class MantenimientoVehicularDetalleResolver implements Resolve<any> {
     const proveedores$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoProvedores();
     const placas$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
 
-    return forkJoin([vehiculo$, niveles$, delegaciones$, proveedores$, placas$])
+    return forkJoin([vehiculo$, niveles$, proveedores$, delegaciones$, placas$])
   }
   // resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
   //   const idVehiculo: number = route.paramMap.get('idVehiculo') as unknown as number;

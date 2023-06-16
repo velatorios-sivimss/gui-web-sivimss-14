@@ -174,7 +174,7 @@ export class NuevaVerificacionComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion agregada correctamente');
-        this.abrirRegistroMantenimiento();
+        this.abrirRegistroMantenimiento(respuesta.datos[0].ID_MTTOVEHICULAR);
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -189,7 +189,11 @@ export class NuevaVerificacionComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion modificada correctamente');
-        this.abrirRegistroMantenimiento();
+        if (typeof respuesta.datos === 'boolean') {
+          this.ref.close(true);
+        } else {
+          this.abrirRegistroMantenimiento(respuesta.datos[0].ID_MTTOVEHICULAR);
+        }
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error)
@@ -198,10 +202,10 @@ export class NuevaVerificacionComponent implements OnInit {
     });
   }
 
-  abrirRegistroMantenimiento(): void {
+  abrirRegistroMantenimiento(idMttoVehicular: number): void {
     this.ref.close(true);
     void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      { queryParams: { tabview: 0 } });
+      { queryParams: { tabview: 0, id: idMttoVehicular } });
   }
 
   realizarVerificacion(id: number): void {

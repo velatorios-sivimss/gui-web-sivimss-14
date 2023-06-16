@@ -37,6 +37,7 @@ export class DetalleMantenimientoComponent implements OnInit {
   fechaActual: string = obtenerFechaActual();
   modificarModal: boolean = false;
   indice: number = 0;
+  idAgregarVehiculo: number = 0;
 
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
@@ -48,14 +49,29 @@ export class DetalleMantenimientoComponent implements OnInit {
   ) {
   }
 
+  // ngOnInit(): void {
+  //   debugger;
+  //   this.vehiculo = this.route.snapshot.data["respuesta"][0].datos.content[0];
+  //   this.route.queryParams.subscribe(params => {
+  //     if (params.tabview) {
+  //       this.indice = params.tabview;
+  //     }
+  //   })
+  //   this.obtenerRegistros();
+  // }
+
   ngOnInit(): void {
-    this.vehiculo = this.route.snapshot.data["respuesta"][0].datos.content[0];
     this.route.queryParams.subscribe(params => {
       if (params.tabview) {
         this.indice = params.tabview;
       }
+      // debugger
+      if (params.id) {
+        this.idAgregarVehiculo = params.id;
+        this.vehiculo = this.route.snapshot.data["respuesta"][0].datos.content.find((e: any) => e.ID_MTTOVEHICULAR == this.idAgregarVehiculo);
+        this.obtenerRegistros();
+      }
     })
-    this.obtenerRegistros();
   }
 
   abrirPanel(event: MouseEvent): void {
@@ -78,6 +94,7 @@ export class DetalleMantenimientoComponent implements OnInit {
   }
 
   obtenerVerificacionInicial(): Observable<HttpRespuesta<any>> {
+    // debugger
     if (!this.vehiculo.ID_MTTOVERIFINICIO) {
       return of({ datos: [], mensaje: '', codigo: 0, error: false });
     }
@@ -85,6 +102,7 @@ export class DetalleMantenimientoComponent implements OnInit {
   }
 
   obtenerSolicitudMantenimiento(): Observable<HttpRespuesta<any>> {
+    // debugger
     if (!this.vehiculo.ID_MTTO_SOLICITUD) {
       return of({ datos: [], mensaje: '', codigo: 0, error: false });
     }
@@ -122,7 +140,6 @@ export class DetalleMantenimientoComponent implements OnInit {
     });
 
     this.registroMttoRef.onClose.subscribe((estatus: boolean) => {
-      debugger
       if (estatus) {
         this.obtenerRegistros();
       }
@@ -134,8 +151,14 @@ export class DetalleMantenimientoComponent implements OnInit {
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Modificar registro de mantenimiento vehicular",
       width: "920px",
-      data: { id: this.vehiculo.ID_MTTO_REGISTRO },
+      data: { id: this.vehiculo.ID_MTTO_REGISTRO, mode: 'update' },
     });
+
+    this.registroMttoRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
+        this.obtenerRegistros();
+      }
+    })
   }
 
   ngOnDestroy(): void {

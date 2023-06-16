@@ -24,7 +24,7 @@ import { RespuestaRegistroMantenimiento } from "../../models/respuestaRegistroMa
 import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
 import { DatePipe } from '@angular/common';
 
-type VehiculoRegistro = Omit<VehiculoMantenimiento, "ID_MTTOVERIFINICIO" | "ID_MTTO_SOLICITUD" | "ID_MTTO_REGISTRO">
+type VehiculoRegistro = Omit<VehiculoMantenimiento, "ID_MTTOVERIFINICIO" | "ID_MTTO_SOLICITUD">
 
 @Component({
   selector: 'app-registro',
@@ -46,7 +46,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   contratos: TipoDropdown[] = [];
   resumenRegistro!: ResumenRegistro;
   solicitudMantenimientoForm!: FormGroup;
-
+  mode: string = 'update';
   modalidades: string[] = ['', 'Semestral', 'Anual', 'Frecuente'];
 
   constructor(
@@ -69,7 +69,9 @@ export class RegistroMantenimientoComponent implements OnInit {
     if (this.config.data.vehiculo) {
       this.vehiculoSeleccionado = this.config.data.vehiculo;
     }
-    this.inicializarRegistroMantenimientoForm();
+    if (this.config.data.mode) {
+      this.mode = this.config.data.mode;
+    }
     this.cargarCatalogos();
   }
 
@@ -78,6 +80,8 @@ export class RegistroMantenimientoComponent implements OnInit {
     const catalogos = respuesta[this.POSICION_CATALOGOS_PROVEEDORES].datos;
     this.catalogoProveedores = mapearArregloTipoDropdown(catalogos, "NOM_PROVEEDOR", "ID_PROVEEDOR");
     this.contratos = mapearArregloTipoDropdown(catalogos, "ID_PROVEEDOR", "DES_TIPO_CONTRATO");
+
+    this.inicializarRegistroMantenimientoForm();
   }
 
   inicializarRegistroMantenimientoForm(): void {
@@ -116,7 +120,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   }
 
   cerrar(): void {
-    this.ref.close()
+    this.ref.close(false)
   }
 
   asignarOpcionesMantenimiento(): void {
@@ -157,7 +161,7 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   crearSolicitudMantenimiento(): RegistroMantenimiento {
     return {
-      idMttoVehicular: null,
+      idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR ? +this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
@@ -166,7 +170,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       verificacionInicio: null,
       solicitud: null,
       registro: {
-        idMttoRegistro: null,
+        idMttoRegistro: this.vehiculoSeleccionado.ID_MTTO_REGISTRO,
         idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR ? +this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value ? +this.solicitudMantenimientoForm.get("modalidad")?.value : null,
         idMantenimiento: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value ? +this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value : null,
@@ -190,7 +194,11 @@ export class RegistroMantenimientoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
-          this.abrirRegistroSolicitud();
+          if (this.mode === 'update') {
+            this.ref.close(true);
+          } else {
+            this.abrirRegistroSolicitud();
+          }
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
@@ -200,9 +208,9 @@ export class RegistroMantenimientoComponent implements OnInit {
   }
 
   abrirRegistroSolicitud(): void {
-    this.ref.close();
+    this.ref.close(true);
     void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      { queryParams: { tabview: 2 } });
+      { queryParams: { tabview: 2, id: this.vehiculoSeleccionado.ID_MTTOVEHICULAR } });
   }
 
   gestionarCampos(): void {
@@ -286,6 +294,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       DES_VELATORIO: respuesta.NOM_VELATORIO,
       TOTAL: 0,
       DES_DELEGACION: respuesta.DES_DELEGACION,
+      ID_MTTO_REGISTRO: respuesta.ID_MTTO_REGISTRO,
     }
   }
 
@@ -294,12 +303,20 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA);
     this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO);
     this.solicitudMantenimientoForm.get('kilometraje')?.patchValue(respuesta.NUM_KILOMETRAJE);
+    this.solicitudMantenimientoForm.get('tipoMantenimiento')?.patchValue(String(respuesta.ID_MANTENIMIENTO));
     this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD); //Falta
+    this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.DES_MTTO_CORRECTIVO);
+    this.solicitudMantenimientoForm.get('fechaMantenimiento')?.patchValue(new Date(this.diferenciaUTC(respuesta.FEC_REGISTRO)));
     this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
-    this.solicitudMantenimientoForm.get('nombreProveedor')?.patchValue(respuesta.NOM_PROVEEDOR);
+    this.solicitudMantenimientoForm.get('nombreProveedor')?.patchValue(respuesta.ID_MANTENIMIENTO == 1 ? respuesta.ID_PROVEEDOR : respuesta.DES_NOMBRE_PROVEEDOR);
     this.solicitudMantenimientoForm.get('noContrato')?.patchValue(respuesta.DES_NUMCONTRATO);
     this.solicitudMantenimientoForm.get('taller')?.patchValue(respuesta.DES_NOMBRE_TALLER);
     this.solicitudMantenimientoForm.get('costoMantenimiento')?.patchValue(respuesta.MON_COSTO_MTTO);
+  }
+
+  diferenciaUTC(fecha: string) {
+    let objetoFecha = new Date(fecha);
+    return objetoFecha.setMinutes(objetoFecha.getMinutes() + objetoFecha.getTimezoneOffset());
   }
 
   get smf() {
