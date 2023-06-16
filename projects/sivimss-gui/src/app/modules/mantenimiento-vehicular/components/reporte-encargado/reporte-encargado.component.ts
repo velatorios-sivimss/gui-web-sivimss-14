@@ -1,27 +1,31 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {DialogService} from "primeng/dynamicdialog";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
-import {FiltrosReporteEncargado} from "../../models/filtrosReporteEncargado.interface";
-import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpErrorResponse} from "@angular/common/http";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DialogService } from "primeng/dynamicdialog";
+import { OverlayPanel } from "primeng/overlaypanel";
+import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
+import { FiltrosReporteEncargado } from "../../models/filtrosReporteEncargado.interface";
+import { MantenimientoVehicularService } from "../../services/mantenimiento-vehicular.service";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
+import { HttpErrorResponse } from "@angular/common/http";
 import * as moment from "moment/moment";
-import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-import {RegistroReporteEncargado} from "../../models/registroReporteEncargado.interface";
-import {tablaRin} from "../../constants/tabla-rines";
+import { UsuarioEnSesion } from "../../../../models/usuario-en-sesion.interface";
+import { RegistroReporteEncargado } from "../../models/registroReporteEncargado.interface";
+import { tablaRin } from "../../constants/tabla-rines";
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-reporte-encargado',
   templateUrl: './reporte-encargado.component.html',
   styleUrls: ['./reporte-encargado.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class ReporteEncargadoComponent implements OnInit {
   dataDetalle = tablaRin;
@@ -61,6 +65,8 @@ export class ReporteEncargadoComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private mantenimientoVehicularService: MantenimientoVehicularService,
+    private loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
   ) {
   }
 
@@ -86,10 +92,10 @@ export class ReporteEncargadoComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      tipoReporte: [{value: null, disabled: false}, [Validators.required]],
-      placa: [{value: null, disabled: false}, [Validators.required]],
-      fechaVigenciaDesde: [{value: null, disabled: false}, [Validators.required]],
-      fecahVigenciaHasta: [{value: null, disabled: false}, [Validators.required]],
+      tipoReporte: [{ value: null, disabled: false }, [Validators.required]],
+      placa: [{ value: null, disabled: false }, []],
+      fechaVigenciaDesde: [{ value: null, disabled: false }, [Validators.required]],
+      fecahVigenciaHasta: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
@@ -108,8 +114,8 @@ export class ReporteEncargadoComponent implements OnInit {
   }
 
   crearSolicitudFiltros(): FiltrosReporteEncargado {
-    this.rangoFecha = `${moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY')} a
-    ${moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY')}`
+    this.rangoFecha = `${moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD-MM-YYYY')} a
+    ${moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD-MM-YYYY')}`
     return {
       fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
       fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
@@ -129,8 +135,8 @@ export class ReporteEncargadoComponent implements OnInit {
 
     this.mantenimientoVehicularService.obtenerVelatorios(usuario.idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        const velatorio = respuesta.datos.find((v: { id: string | number; }) => (+v.id === +usuario.idVelatorio)).desc;
-        this.velatorio = `#${usuario.idVelatorio} ${velatorio}`;
+        const velatorio = respuesta.datos.find((v: { id: string | number; }) => (+v.id === +usuario.idVelatorio))?.desc;
+        this.velatorio = `#${usuario.idVelatorio} ${velatorio || ''}`;
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -147,5 +153,46 @@ export class ReporteEncargadoComponent implements OnInit {
     }
   }
 
+  cerrar() {
+    if (this.mostrarDetalle) {
+      this.mostrarDetalle = !this.mostrarDetalle;
+    } else {
+      void this.router.navigate(['/programar-mantenimiento-vehicular']);
+    }
+  }
 
+  generarReporteTabla(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
+    }
+
+    this.loaderService.activar();
+    const busqueda = this.filtrosArchivos(tipoReporte);
+
+    this.descargaArchivosService.descargarArchivo(this.mantenimientoVehicularService.generarReporteEncargado(busqueda), configuracionArchivo).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        console.log(respuesta);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
+  }
+
+  filtrosArchivos(tipoReporte: string) {
+    return {
+      numReporte: this.ff.tipoReporte.value,
+      fechaInicio: moment(this.ff.fechaVigenciaDesde.value).format('DD-MM-YYYY'),
+      fechaFin: moment(this.ff.fecahVigenciaHasta.value).format('DD-MM-YYYY'),
+      placas: this.ff.placa.value ? this.ff.placa.value : null,
+      tipoReporte,
+    }
+  }
+
+  get ff() {
+    return this.filtroForm.controls;
+  }
 }

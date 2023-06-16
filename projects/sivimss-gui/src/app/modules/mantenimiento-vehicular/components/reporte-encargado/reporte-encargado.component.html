@@ -6,43 +6,40 @@
         <div class="col-md-6">
           <label class="control-label" for="tipoReporte">Tipo de reporte<span class="req">*</span>:</label>
           <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
-                      placeholder="Selecciona el tipo" [filter]="true">
+            placeholder="Selecciona el tipo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este
+            campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="placa">Placa<span class="req">*</span>:</label>
+          <label class="control-label" for="placa">Placa:</label>
           <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
-                      placeholder="Seleccionar vehículo" [filter]="true">
+            placeholder="Seleccionar vehículo" [filter]="true">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fmp?.placa?.errors?.required && (fmp?.placa?.dirty || fmp?.placa?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
           <div class="row">
-            <div class="col-md-12">
-              <label class="control-label">
-                Fecha vigencia:
-                <span class="req">*</span>:</label>
-            </div>
             <div class="col-md-6">
+              <label class="control-label">Fecha inicial<span class="req">*</span>:</label>
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
-                          [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy"
-                          (onSelect)="validarFechas()">
+                [showIcon]="true" placeholder="" dateFormat="dd/mm/yy" (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"
-                    *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este campo es obligatorio *.</span>
+                *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este
+                campo es obligatorio *.</span>
             </div>
             <div class="col-md-6">
+              <label class="control-label">Fecha final<span class="req">*</span>:</label>
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
-                          [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body"
-                          [maxDate]="fechaActual" (onSelect)="validarFechas()">
+                [showIcon]="true" placeholder="" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="fechaActual"
+                (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"
-                    *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este campo es obligatorio *.</span>
+                *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este
+                campo es obligatorio *.</span>
             </div>
           </div>
         </div>
@@ -56,7 +53,7 @@
         <div class="col-md-12 flex justify-content-end">
           <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
           <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()"
-                  [disabled]="filtroForm.invalid || !fechaValida">Buscar
+            [disabled]="filtroForm.invalid || !fechaValida">Buscar
           </button>
         </div>
       </div>
@@ -79,7 +76,7 @@
             </div>
             <div class="col-md-6 colum-tam">
               <div class="table-panel-column">
-                <label>total de vehiculos</label>
+                <label>Total de vehiculos</label>
                 <span>{{totalVehiculos}}</span>
               </div>
             </div>
@@ -135,6 +132,27 @@
                     </th>
                   </tr>
                 </ng-template>
+
+                <ng-template pTemplate="paginatorleft">
+                  <div class="paginator-template">
+                    <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
+                  </div>
+                </ng-template>
+
+                <ng-template pTemplate="paginatorright">
+                  <div class="paginator-template">
+                    <div class="export-table">
+                      <span class="export-table-text">Exportar tabla</span>
+                      <div class="export-table-icons">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                          (click)="generarReporteTabla('pdf');">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                          (click)="generarReporteTabla('xls');">
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+
               </p-table>
             </div>
           </div>
@@ -223,7 +241,7 @@
                   </div>
                   <div class="table-panel-column col-md-6">
                     <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg"
-                         Alt="Calibracion neumaticos traseros">
+                      Alt="Calibracion neumaticos traseros">
                   </div>
                 </div>
                 <div class="col-md-12">
@@ -233,7 +251,7 @@
                   </div>
                   <div class="table-panel-column col-md-6">
                     <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg"
-                         alt="Calibración neumaticos delanteros">
+                      alt="Calibración neumaticos delanteros">
                   </div>
                 </div>
               </div>
@@ -298,7 +316,7 @@
 
 <ng-container>
   <div class="col-mb-12 row flex justify-content-end"
-       style="margin-top: 30px; margin-bottom: 30px;  padding-right: 14px;">
-    <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../">Cerrar</button>
+    style="margin-top: 30px; margin-bottom: 30px;  padding-right: 14px;">
+    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="cerrar()">Cerrar</button>
   </div>
 </ng-container>

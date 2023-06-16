@@ -12,19 +12,19 @@ export class TextColorDirective implements OnChanges {
 
   ngOnChanges() {
     switch (this.status) {
-      case 'En tiempo':
+      case 'EN TIEMPO':
         this.renderer.setStyle(this.el.nativeElement, 'color', '#217A6B');
         break;
-      case 'Cercano':
+      case 'CERCANO':
         this.renderer.setStyle(this.el.nativeElement, 'color', '#FFC700');
         break;
-      case 'Finalizado':
+      case 'FINALIZADO':
         this.renderer.setStyle(this.el.nativeElement, 'color', '#E10000');
         break;
-      case 'Activo':
+      case 'ACTIVO':
         this.renderer.setStyle(this.el.nativeElement, 'color', '#217A6B');
         break;
-      case 'Vence Hoy':
+      case 'VENCE HOY':
         this.renderer.setStyle(this.el.nativeElement, 'color', "blue");
         break;
       default:
