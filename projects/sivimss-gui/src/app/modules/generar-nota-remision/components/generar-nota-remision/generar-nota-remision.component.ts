@@ -211,7 +211,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   limpiar(): void {
     this.alertaService.limpiar();
     this.filtroForm.reset();
-    this.f.nivel.setValue(+this.rolLocalStorage.idRol || null);
+    this.f.nivel.setValue(+this.rolLocalStorage.idOficina || null);
 
     if (+this.rolLocalStorage.idRol >= 2) {
       this.f.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
