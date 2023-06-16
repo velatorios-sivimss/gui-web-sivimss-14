@@ -1,4 +1,5 @@
 export interface VehiculoMantenimiento {
+  FEC_REGISTRO?: string;
   DESCRIPCION: string,
   DES_MARCA: string,
   DES_MODALIDAD: string,

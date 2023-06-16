@@ -90,79 +90,87 @@
   </div>
 </ng-container>
 <ng-container *ngIf="verDetallePredictivo">
-  <div class="separador">
-  </div>
-  <p-accordion styleClass="sivimss-accordion">
+  <div class="separador"></div>
+  <p-accordion styleClass="sivimss-accordion" [activeIndex]="0">
     <p-accordionTab>
-      <ng-template pTemplate="header">
-        <h5 class="titulo-acordion">BLX4FR0 - </h5>
-        <h6 class="titulo-acordion-tipo-vehiculo">NISSAN Sentra 2015</h6>
-      </ng-template>
-      <app-table-panel>
-
-        <ng-template appCustomTemplate="left-header">
-          <div class="table-panel-header-column">
-            <h6 class="font-bold">Calibración Neumáticos</h6>
-          </div>
+      <div class="mb-3" *ngFor="let tituloSeleccionado of titulosSeleccionados">
+        <ng-template pTemplate="header">
+          <h5 class="titulo-acordion">{{vehiculoSeleccionado.DES_PLACAS}}</h5>
+          <br>
+          <h6
+            class="titulo-acordion-tipo-vehiculo">{{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}} {{vehiculoSeleccionado.DES_MODELO}}</h6>
         </ng-template>
-
-        <ng-template>
-        </ng-template>
-
-        <div class="row table-panel-row">
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>Velatorio</label>
-              <span>No. 18 Tequesquináhuac	</span>
+        <app-table-panel>
+          <ng-template appCustomTemplate="left-header">
+            <div class="table-panel-header-column">
+              <h6 class="font-bold">{{tituloSeleccionado}}</h6>
             </div>
-          </div>
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>total de vehiculos</label>
-              <span> 1</span>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>Periodo</label>
-              <span> 01/01/2021 a 01/01/2022</span>
-            </div>
-          </div>
-        </div>
-        <div class="row table-panel-row">
-          <div class="col-md-5">
-            <div class="table-panel-column">
-              <h6 class="titulo-acordion">Valores predictivos </h6>
-
-              <div class="col-md-8">
-                <p-table>
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th id="mtto-predictivo-dia">Dia</th>
-                      <th id="mtto-predictivo-valor">Valor</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-item>
-                    <tr>
-                      <td>{{ item.dia }}</td>
-                      <td>{{ item.valor }}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>
+          </ng-template>
+          <ng-template>
+          </ng-template>
+          <div class="row table-panel-row">
+            <div class="col-md-4">
+              <div class="table-panel-column">
+                <label>Velatorio</label>
+                <span></span>
               </div>
-
+            </div>
+            <div class="col-md-4">
+              <div class="table-panel-column">
+                <label>total de vehiculos</label>
+                <span>1</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="table-panel-column">
+                <label>Periodo</label>
+                <span>{{rangoFecha}}</span>
+              </div>
             </div>
           </div>
-          <div class="col-md-7">
-            <div class="table-panel-column">
-              <label>Placas</label>
-              <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
+          <div class="row table-panel-row">
+            <div class="col-md-5">
+              <div class="table-panel-column">
+                <h6 class="titulo-acordion">Valores predictivos </h6>
+                <div class="col-md-8">
+                  <p-table [value]="vehiculos">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th id="mtto-predictivo-dia">Dia</th>
+                        <th id="mtto-predictivo-valor">Valor</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-vehiculo>
+                      <tr>
+                        <td>{{ vehiculo.FEC_REGISTRO }}</td>
+                        <td *ngIf="tituloSeleccionado === 'Aceite'">{{vehiculo.DES_NIVEL_ACEITE | valueConverter}}</td>
+                        <td *ngIf="tituloSeleccionado === 'Agua'">{{vehiculo.DES_NIVEL_AGUA | valueConverter}}</td>
+                        <td
+                          *ngIf="tituloSeleccionado === 'Calibración Neumáticos'"
+                        >{{vehiculo.DES_NIVEL_NEUMADELA | valueConverter}}</td>
+                        <td
+                          *ngIf="tituloSeleccionado === 'Combustible'"
+                        >{{vehiculo.DES_NIVEL_COMBUSTIBLE | valueConverter}}</td>
+                        <td
+                          *ngIf="tituloSeleccionado === 'Código de Falla'"
+                        >{{vehiculo.DES_NIVEL_CODIGOFALLO | valueConverter}}</td>
+                        <td
+                          *ngIf="tituloSeleccionado === 'Batería'">{{vehiculo.DES_NIVEL_BATERIA | valueConverter}}</td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-7">
+              <div class="table-panel-column">
+                <label>Placas</label>
+                <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
+              </div>
             </div>
           </div>
-        </div>
-
-      </app-table-panel>
-
+        </app-table-panel>
+      </div>
     </p-accordionTab>
   </p-accordion>
 </ng-container>
