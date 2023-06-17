@@ -27,6 +27,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
   subGeneracionCodigo!: Subscription;
   subValidacionCodigo!: Subscription;
   correo: string = '';
+  renovarCodigo: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -54,6 +55,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
   }
 
   generarCodigo(): void {
+    this.renovarCodigo = false;
     const {usuario} = this.formRestContraUsuario.value;
     this.loaderService.activar();
     this.subGeneracionCodigo = this.autenticacionService.generarCodigoRestablecerContrasenia(usuario).pipe(
@@ -92,7 +94,8 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
             break;
           case MensajesRespuestaCodigo.CodigoExpirado:
             this.alertaService.mostrar(TipoAlerta.Error, 'Tu código ya caduco, debes solicitar el envío de un nuevo código.');
-            this.cerrarModal();
+            this.renovarCodigo = true;
+            this.formRestContraCodigo.reset();
             break;
         }
       },
@@ -109,7 +112,7 @@ export class ModalRestablecerContraseniaComponent implements OnInit, OnDestroy {
 
   restablecerContrasenia(): void {
     const {usuario} = this.formRestContraUsuario.value;
-     void this.router.navigate(["inicio-sesion/restablecer-contrasenia"], {
+    void this.router.navigate(["inicio-sesion/restablecer-contrasenia"], {
       relativeTo: this.activatedRoute,
       queryParams: {usuario}
     });
