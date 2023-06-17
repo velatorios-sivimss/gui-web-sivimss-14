@@ -29,14 +29,29 @@
   <ul>
     <li *ngFor="let notificacion of notificaciones">
       {{ notificacion.mensaje}}
-      <div class="flex justify-content-end" *ngIf="notificacion.path=='reservar-salas'">
-        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">
-          Registrar salida
-        </button>
-        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarMasTarde(notificacion)">
-          Registrar más tarde
-        </button>
-      </div>
+
+      <ng-container *ngIf="notificacion.cu =='19'">
+
+        <div class="flex justify-content-end">
+          <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">
+            Registrar salida
+          </button>
+          <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarMasTarde(notificacion)">
+            Registrar más tarde
+          </button>
+        </div>
+
+      </ng-container>
+
+
+<!--      <div class="flex justify-content-end" *ngIf="notificacion.path=='reservar-salas'">-->
+<!--        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">-->
+<!--          Registrar salida-->
+<!--        </button>-->
+<!--        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarMasTarde(notificacion)">-->
+<!--          Registrar más tarde-->
+<!--        </button>-->
+<!--      </div>-->
 
     </li>
 
