@@ -116,8 +116,9 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="costoMantenimiento">Costo de mantenimiento(IVA incluido)<span class="req">*</span>:</label>
-        <input id="costoMantenimiento" class="form-control" formControlName="costoMantenimiento"
-               placeholder="Ingresa el costo de mantenimiento">
+        <p-inputNumber id="costoMantenimiento" class="form-control" formControlName="costoMantenimiento" mode="decimal"
+          [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="Ingresa el costo de mantenimiento"
+          [maxlength]="9" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="smf.costoMantenimiento?.errors?.required && (smf.costoMantenimiento?.dirty || smf.costoMantenimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
