@@ -110,7 +110,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     const MODIFICAR_CONFIG: DynamicDialogConfig = {
       header: "Modificar usuario",
       width: MAX_WIDTH,
-      data: this.usuarioSeleccionado
+      data: this.usuarioSeleccionado.id
     }
     this.modificacionRef = this.dialogService.open(ModificarUsuarioComponent, MODIFICAR_CONFIG);
     this.modificacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
