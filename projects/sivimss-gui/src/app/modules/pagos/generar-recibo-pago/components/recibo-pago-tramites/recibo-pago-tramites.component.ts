@@ -46,15 +46,14 @@ export class ReciboPagoTramitesComponent implements OnInit {
   ) {
     this.recibo = this.route.snapshot.data["respuesta"].datos[0];
     this.obtenerCatalogosPorVelatorio();
-    this.inicializarForm();
   }
 
   ngOnInit(): void {
-    this.obtenerValoresFecha();
+    this.inicializarForm();
   }
 
   obtenerValoresFecha(): void {
-    const fecha: Date = new Date();
+    const fecha: Date = this.FormReciboPago.get('fechaTramite')?.value;
     this.dia = fecha.getDate().toString();
     this.mes = fecha.toLocaleString('default', {month: 'long'});
     this.anio = fecha.getFullYear().toString();
@@ -118,13 +117,16 @@ export class ReciboPagoTramitesComponent implements OnInit {
     });
   }
 
-  private inicializarForm(): void {
+  inicializarForm(): void {
     this.FormReciboPago = this.formBuilder.group({
       tramite: [{value: null, disable: false}, [Validators.required]],
+      fechaTramite: [{value: null, disable: true}, [Validators.required]],
       descripcionTramite: [{value: null, disabled: true}],
       derecho: [{value: null, disable: false}, [Validators.required]],
       descripcionDerecho: [{value: null, disabled: true}]
-    })
+    });
+    this.FormReciboPago.get('fechaTramite')?.patchValue(new Date());
+    this.obtenerValoresFecha();
   }
 
   cambiarTramite(): void {
