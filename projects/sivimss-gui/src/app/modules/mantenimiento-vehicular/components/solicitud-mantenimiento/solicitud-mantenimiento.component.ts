@@ -21,7 +21,6 @@ import { finalize } from "rxjs/operators";
 import { LoaderService } from "../../../../shared/loader/services/loader.service";
 import { RespuestaSolicitudMantenimiento } from "../../models/respuestaSolicitudMantenimiento.interface";
 import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
-import { diferenciaUTC } from "../../../../utils/funciones";
 import * as moment from 'moment';
 
 type VehiculoSolicitud = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
@@ -233,7 +232,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       ID_OFICINA: 0,
       ID_USOVEHICULO: 0,
       ID_VEHICULO: respuesta.ID_VEHICULO,
-      ID_VELATORIO: 0,
+      ID_VELATORIO: respuesta.ID_VELATORIO,
       IMPORTE_PRIMA: 0,
       IND_ESTATUS: false,
       DES_VELATORIO: respuesta.NOM_VELATORIO,
@@ -243,6 +242,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
   }
 
   llenarFormulario(respuesta: RespuestaSolicitudMantenimiento): void {
+    const fecha = moment(respuesta.FEC_REGISTRO, 'DD-MM-yyyy').format('yyyy-MM-DD');
     this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS);
     this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA);
     this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO);
@@ -252,7 +252,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.DES_MTTO_CORRECTIVO);
     }
     this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD);
-    this.solicitudMantenimientoForm.get('fechaRegistro')?.patchValue(new Date(this.diferenciaUTC(respuesta.FEC_REGISTRO)));
+    this.solicitudMantenimientoForm.get('fechaRegistro')?.patchValue(new Date(this.diferenciaUTC(fecha)));
     this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
     this.idSolicitudMtto = respuesta.ID_MTTO_SOLICITUD;
   }
