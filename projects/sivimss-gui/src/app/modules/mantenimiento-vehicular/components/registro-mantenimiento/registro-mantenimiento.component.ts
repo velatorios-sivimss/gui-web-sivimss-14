@@ -300,7 +300,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   }
 
   llenarFormulario(respuesta: RespuestaRegistroMantenimiento): void {
-    const fecha = moment(respuesta.FEC_REGISTRO, 'DD-MM-yyyy').format('yyyy-MM-DD')
+    const fecha = moment(respuesta.FEC_REGISTRO, 'DD-MM-yyyy').format('yyyy-MM-DD');
     this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS);
     this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA);
     this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO);
