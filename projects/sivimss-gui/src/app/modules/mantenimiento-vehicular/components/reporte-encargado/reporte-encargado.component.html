@@ -25,7 +25,7 @@
             <div class="col-md-6">
               <label class="control-label">Fecha inicial<span class="req">*</span>:</label>
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
-                [showIcon]="true" placeholder="" dateFormat="dd/mm/yy" (onSelect)="validarFechas()">
+                [showIcon]="true" placeholder="Fecha inicial" dateFormat="dd/mm/yy" (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"
                 *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este
@@ -34,7 +34,7 @@
             <div class="col-md-6">
               <label class="control-label">Fecha final<span class="req">*</span>:</label>
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
-                [showIcon]="true" placeholder="" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="fechaActual"
+                [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="fechaActual"
                 (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"

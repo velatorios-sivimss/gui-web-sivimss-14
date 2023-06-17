@@ -184,7 +184,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   limpiar(): void {
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
     this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
     this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.obtenerVelatorios();

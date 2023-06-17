@@ -23,6 +23,7 @@ import { MensajesSistemaService } from "../../../../services/mensajes-sistema.se
 import { RespuestaRegistroMantenimiento } from "../../models/respuestaRegistroMantenimiento.interface";
 import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
 import { DatePipe } from '@angular/common';
+import * as moment from 'moment';
 
 type VehiculoRegistro = Omit<VehiculoMantenimiento, "ID_MTTOVERIFINICIO" | "ID_MTTO_SOLICITUD">
 
@@ -98,7 +99,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       nombreProveedor: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(100)]],
       noContrato: [{ value: null, disabled: false }, []],
       taller: [{ value: null, disabled: false }, [Validators.required]],
-      costoMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
+      costoMantenimiento: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(9)]],
     });
     this.solicitudMantenimientoForm.get("modalidad")?.valueChanges.subscribe(() => {
       this.asignarOpcionesMantenimiento();
@@ -165,7 +166,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
-      idVelatorio: null,
+      idVelatorio: this.vehiculoSeleccionado.ID_VELATORIO,
       idEstatus: 1,
       verificacionInicio: null,
       solicitud: null,
@@ -299,6 +300,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   }
 
   llenarFormulario(respuesta: RespuestaRegistroMantenimiento): void {
+    const fecha = moment(respuesta.FEC_REGISTRO, 'DD-MM-yyyy').format('yyyy-MM-DD')
     this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS);
     this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA);
     this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO);
@@ -306,7 +308,7 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get('tipoMantenimiento')?.patchValue(String(respuesta.ID_MANTENIMIENTO));
     this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD); //Falta
     this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.DES_MTTO_CORRECTIVO);
-    this.solicitudMantenimientoForm.get('fechaMantenimiento')?.patchValue(respuesta.FEC_REGISTRO ? new Date(this.diferenciaUTC(respuesta.FEC_REGISTRO)) : null);
+    this.solicitudMantenimientoForm.get('fechaMantenimiento')?.patchValue(respuesta.FEC_REGISTRO ? new Date(this.diferenciaUTC(fecha)) : null);
     this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
     this.solicitudMantenimientoForm.get('nombreProveedor')?.patchValue(respuesta.ID_MANTENIMIENTO == 1 ? respuesta.ID_PROVEEDOR : respuesta.DES_NOMBRE_PROVEEDOR);
     this.solicitudMantenimientoForm.get('noContrato')?.patchValue(respuesta.DES_NUMCONTRATO);
@@ -324,7 +326,6 @@ export class RegistroMantenimientoComponent implements OnInit {
     }
     if (tipoMtto.toString() === '2') {
       this.solicitudMantenimientoForm.get("noContrato")?.enable();
-      this.solicitudMantenimientoForm.get("fechaMantenimiento")?.setValue(null);
       this.solicitudMantenimientoForm.get("fechaMantenimiento")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
