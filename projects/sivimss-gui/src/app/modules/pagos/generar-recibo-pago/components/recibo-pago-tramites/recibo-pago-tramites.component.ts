@@ -125,7 +125,7 @@ export class ReciboPagoTramitesComponent implements OnInit {
       derecho: [{value: null, disable: false}, [Validators.required]],
       descripcionDerecho: [{value: null, disabled: true}]
     });
-    this.FormReciboPago.get('fechaTramite')?.patchValue(new Date());
+    this.FormReciboPago.get('fechaTramite')?.patchValue(new Date(this.recibo.fecha));
     this.obtenerValoresFecha();
   }
 

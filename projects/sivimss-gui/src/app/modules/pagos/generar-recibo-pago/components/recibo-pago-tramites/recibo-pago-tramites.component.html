@@ -37,7 +37,7 @@
             <div class="col-md-4 grid-item ml-3">
               <label class="control-label" for="fechaTramite">Fecha<span class="req">*</span>:</label>
               <p-calendar id="fechaTramite" [formControlName]="'fechaTramite'" styleClass="form-control"
-                          [showIcon]="true"
+                          [showIcon]="true" [disabled]="true"
                           placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" (onSelect)="obtenerValoresFecha()">
               </p-calendar>
               <span class="campo-obligatorio"
