@@ -164,7 +164,7 @@ export class AgregarUsuarioComponent implements OnInit {
   crearNombreUsuario(): string {
     const nombre = this.agregarUsuarioForm.get("nombre")?.value;
     const paterno = this.agregarUsuarioForm.get("primerApellido")?.value;
-    return `${nombre}${paterno.toString().charAt(0)}${this.folio}`.toUpperCase();
+    return `${nombre.split(' ')[0]}${paterno.toString().charAt(0)}${this.folio}`.toUpperCase();
   }
 
   creacionVariablesResumen(): void {

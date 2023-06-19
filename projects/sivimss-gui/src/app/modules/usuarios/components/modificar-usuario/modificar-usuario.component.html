@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="pasoModificarUsuario">
   <ng-container *ngSwitchCase="CAPTURA_DE_USUARIO">
-    <form [formGroup]="modificarUsuarioForm" (submit)="confirmarModificacion()">
+    <form [formGroup]="modificarUsuarioForm" (submit)="confirmarModificacion()" *ngIf="modificarUsuarioForm">
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="idModificar">ID:</label>
@@ -39,8 +39,27 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
+          <label class="control-label" for="usuarioModificar">Usuario:</label>
+          <input id="usuarioModificar" class="form-control" formControlName="usuario"
+                 placeholder="Inserta el nombre de usuario">
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="contraseniaModificar">Contraseña:</label>
+          <input id="contraseniaModificar" class="form-control" formControlName="contrasenia" type="password"
+                 placeholder="Inserta el nombre de usuario">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="desEdoNacimientoModificar">Entidad Federativa de Nacimiento:</label>
+          <input id="desEdoNacimientoModificar" class="form-control" formControlName="desEdoNacimiento"
+                 placeholder="Inserta el lugar de nacimiento">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
           <label class="control-label" for="correoElectronicoModificar">Correo electrónico<span
-            class="req">*</span></label>
+            class="req">*</span>:</label>
           <input id="correoElectronicoModificar" class="form-control" formControlName="correoElectronico"
                  placeholder="Inserta el correo electrónico">
           <span class="campo-obligatorio"
@@ -210,7 +229,7 @@
       </div>
     </app-table-panel>
     <div class="mb-3 mt-3 row text-center">
-      ¿Estás seguro de modificar este nuevo registro? {{usuarioModificado.usuario}}
+      ¿Estás seguro de modificar el registro del usuario {{usuarioModificado.usuario}}?
     </div>
     <div class="flex justify-content-end mt-5">
       <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>

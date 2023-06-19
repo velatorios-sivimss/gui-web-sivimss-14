@@ -1,7 +1,7 @@
 import {TipoDropdown} from "../models/tipo-dropdown";
 
-export function diferenciaUTC(fecha: string): number {
-  const [dia, mes, anio]: string[] = fecha.split("/");
+export function diferenciaUTC(fecha: string, divisor: string = "/"): number {
+  const [dia, mes, anio]: string[] = fecha.split(divisor);
   const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
   return objetoFecha.setMinutes(objetoFecha.getMinutes() + objetoFecha.getTimezoneOffset());
 }

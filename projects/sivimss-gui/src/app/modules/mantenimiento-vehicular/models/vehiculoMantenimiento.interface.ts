@@ -1,4 +1,5 @@
 export interface VehiculoMantenimiento {
+  FEC_REGISTRO?: string;
   DESCRIPCION: string,
   DES_MARCA: string,
   DES_MODALIDAD: string,
@@ -17,12 +18,15 @@ export interface VehiculoMantenimiento {
   ID_VELATORIO: number,
   IMPORTE_PRIMA: number,
   IND_ESTATUS: boolean,
-  NOM_VELATORIO: string,
+  DES_VELATORIO: string,
   TOTAL: number,
-  ID_MTTO_SOLICITUD: number,
+  ID_MTTO_SOLICITUD: number | null,
   ID_MTTOVERIFINICIO: number,
-  ID_MTTO_REGISTRO: number,
+  ID_MTTO_REGISTRO: number | null,
   ID_MTTOVEHICULAR: number,
   verificacionDia: string,
   DES_DELEGACION: string
+  // Campos faltantes
+  KILOMETRAJE?: string,
+  FECHA_MANTENIMIENTO?: string,
 }

@@ -1,23 +1,23 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {tablaRin} from "../../constants/tabla-rines";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
-import {ActivatedRoute} from "@angular/router";
-import {forkJoin, Observable, of} from "rxjs";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
-import {RespuestaVerificacion} from "../../models/respuestaVerificacion.interface";
-import {RespuestaSolicitudMantenimiento} from "../../models/respuestaSolicitudMantenimiento.interface";
-import {RespuestaRegistroMantenimiento} from "../../models/respuestaRegistroMantenimiento.interface";
-import {obtenerFechaActual} from "../../../../utils/funciones-fechas";
-import {NuevaVerificacionComponent} from "../nueva-verificacion/nueva-verificacion.component";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { tablaRin } from "../../constants/tabla-rines";
+import { OverlayPanel } from "primeng/overlaypanel";
+import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
+import { ActivatedRoute } from "@angular/router";
+import { forkJoin, Observable, of } from "rxjs";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
+import { MantenimientoVehicularService } from "../../services/mantenimiento-vehicular.service";
+import { RespuestaVerificacion } from "../../models/respuestaVerificacion.interface";
+import { RespuestaSolicitudMantenimiento } from "../../models/respuestaSolicitudMantenimiento.interface";
+import { RespuestaRegistroMantenimiento } from "../../models/respuestaRegistroMantenimiento.interface";
+import { obtenerFechaActual } from "../../../../utils/funciones-fechas";
+import { NuevaVerificacionComponent } from "../nueva-verificacion/nueva-verificacion.component";
 import {
   SolicitudMantenimientoComponent
 } from "../solicitud-mantenimiento/solicitud-mantenimiento.component";
 import {
   RegistroMantenimientoComponent
 } from "../registro-mantenimiento/registro-mantenimiento.component";
-import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-detalle-mantenimiento',
@@ -37,25 +37,29 @@ export class DetalleMantenimientoComponent implements OnInit {
   fechaActual: string = obtenerFechaActual();
   modificarModal: boolean = false;
   indice: number = 0;
+  idAgregarVehiculo: number = 0;
 
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
   registroMttoRef!: DynamicDialogRef;
 
   constructor(private route: ActivatedRoute,
-              private mantenimientoVehicularService: MantenimientoVehicularService,
-              public dialogService: DialogService,
+    private mantenimientoVehicularService: MantenimientoVehicularService,
+    public dialogService: DialogService,
   ) {
   }
 
   ngOnInit(): void {
-    this.vehiculo = this.route.snapshot.data["respuesta"].datos.content[0];
     this.route.queryParams.subscribe(params => {
       if (params.tabview) {
         this.indice = params.tabview;
       }
+      if (params.id) {
+        this.idAgregarVehiculo = params.id;
+        this.vehiculo = this.route.snapshot.data["respuesta"][0].datos.content.find((e: any) => e.ID_MTTOVEHICULAR == this.idAgregarVehiculo);
+        this.obtenerRegistros();
+      }
     })
-    this.obtenerRegistros();
   }
 
   abrirPanel(event: MouseEvent): void {
@@ -79,21 +83,21 @@ export class DetalleMantenimientoComponent implements OnInit {
 
   obtenerVerificacionInicial(): Observable<HttpRespuesta<any>> {
     if (!this.vehiculo.ID_MTTOVERIFINICIO) {
-      return of({datos: [], mensaje: '', codigo: 0, error: false});
+      return of({ datos: [], mensaje: '', codigo: 0, error: false });
     }
     return this.mantenimientoVehicularService.obtenerDetalleVerificacion(this.vehiculo.ID_MTTOVERIFINICIO);
   }
 
   obtenerSolicitudMantenimiento(): Observable<HttpRespuesta<any>> {
     if (!this.vehiculo.ID_MTTO_SOLICITUD) {
-      return of({datos: [], mensaje: '', codigo: 0, error: false});
+      return of({ datos: [], mensaje: '', codigo: 0, error: false });
     }
     return this.mantenimientoVehicularService.obtenerDetalleSolicitud(this.vehiculo.ID_MTTO_SOLICITUD);
   }
 
   obtenerRegistroMantenimiento(): Observable<HttpRespuesta<any>> {
     if (!this.vehiculo.ID_MTTO_REGISTRO) {
-      return of({datos: [], mensaje: '', codigo: 0, error: false});
+      return of({ datos: [], mensaje: '', codigo: 0, error: false });
     }
     return this.mantenimientoVehicularService.obtenerDetalleRegistro(this.vehiculo.ID_MTTO_REGISTRO);
   }
@@ -101,10 +105,16 @@ export class DetalleMantenimientoComponent implements OnInit {
   abrirModalModificarVerificacion(): void {
     this.modificarModal = !this.modificarModal;
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
-      data: {id: this.vehiculo.ID_MTTOVERIFINICIO},
+      data: { id: this.vehiculo.ID_MTTOVERIFINICIO },
       header: "Modificar verificación",
       width: "920px"
     });
+
+    this.nuevaVerificacionRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
+        this.obtenerRegistros();
+      }
+    })
   }
 
   abrirModalModificarSolicitud(): void {
@@ -112,8 +122,14 @@ export class DetalleMantenimientoComponent implements OnInit {
     this.registroMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Modificar solicitud de mantenimiento",
       width: "920px",
-      data: {id: this.vehiculo.ID_MTTO_SOLICITUD},
+      data: { id: this.vehiculo.ID_MTTO_SOLICITUD },
     });
+
+    this.registroMttoRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
+        this.obtenerRegistros();
+      }
+    })
   }
 
   abrirModalModificarRegistro(): void {
@@ -121,8 +137,14 @@ export class DetalleMantenimientoComponent implements OnInit {
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Modificar registro de mantenimiento vehicular",
       width: "920px",
-      data: {id: this.vehiculo.ID_MTTO_REGISTRO},
+      data: { id: this.vehiculo.ID_MTTO_REGISTRO, mode: 'update' },
     });
+
+    this.registroMttoRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
+        this.obtenerRegistros();
+      }
+    })
   }
 
   ngOnDestroy(): void {
