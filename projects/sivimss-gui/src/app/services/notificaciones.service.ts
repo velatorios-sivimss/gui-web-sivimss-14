@@ -19,8 +19,10 @@ export class NotificacionesService {
   }
 
   consultaNotificacion(): Observable<HttpRespuesta<any>> {
-    const headers = new HttpHeaders({ Authorization: `Bearer ${this.auth_tokenCap}`, 'Content-Type': 'application/json' });
-    return this._http.post<HttpRespuesta<any>>(`${environment.api.mssivimss}9/buscar-filtros/veri-alertas`, {},{headers});
+    /*
+    * TODO se ingresa el 'idFuncionalidad 1' ya que el servicio se ejecuta de el inicio de sesión
+    *  y no desde que se ingresa a un módulo en específico, verificar comportamiento con otros aplicativos*/
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.notificaciones}`)
   }
 
   // renovarNotificacion: Observable<HttpRespuesta<any>> {

@@ -23,6 +23,7 @@ import {GenerarReciboRoutingModule} from './generar-recibo-pago.routing.module';
 import {ReciboPagoTramitesComponent} from './components/recibo-pago-tramites/recibo-pago-tramites.component';
 import {UtileriaModule} from '../../../shared/utileria/utileria.module';
 import {DetallePagoTramitesComponent} from "./components/detalle-pago-tramites/detalle-pago-tramites.component";
+import {ValidaRolModule} from '../../../shared/valida-rol/valida-rol.module';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import {DetallePagoTramitesComponent} from "./components/detalle-pago-tramites/d
     StepsModule,
     AccordionModule,
     AutoCompleteModule,
+    ValidaRolModule,
     UtileriaModule,
   ],
   providers: [GenerarReciboService]

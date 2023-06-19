@@ -1,4 +1,5 @@
 export interface RespuestaSolicitudMantenimiento {
+  ID_MTTOVEHICULAR: number;
   NUM_KILOMETRAJE: number;
   "DES_USO": string,
   "DES_NUMMOTOR": string,

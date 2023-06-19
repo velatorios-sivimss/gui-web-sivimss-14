@@ -5,12 +5,12 @@
       <div class="sivimss-acoordion-header">
         <div class="accordion-header-left">
           <span>ID </span>
-          <b>{{ vehiculo.ID_VEHICULO }}</b>
+          <b>{{ vehiculo?.ID_VEHICULO }}</b>
         </div>
         <div class="accordion-header-right">
-          <div class="estatus">
+          <div class="estatus" *ngIf="vehiculo?.DES_MTTOESTADO">
             <span>Estado de mantenimiento</span>
-            <b [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</b>
+            <b [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo?.DES_MTTOESTADO}}</b>
           </div>
           <a (click)="abrirPanel($event)">
             <i class="fs fs-barras-horizontales"></i>
@@ -21,12 +21,8 @@
     <ng-template pTemplate="content">
       <div class="row grid">
         <div class="col">
-          <span class="flex flex-column etiqueta-base">Delegación</span>
-          <span class="texto-base">{{vehiculo.DES_DELEGACION}}</span>
-        </div>
-        <div class="col">
           <span class="flex flex-column etiqueta-base">Velatorio</span>
-          <span class="texto-base">{{vehiculo.NOM_VELATORIO}}</span>
+          <span class="texto-base">{{vehiculo?.DES_VELATORIO}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Fecha</span>
@@ -34,35 +30,14 @@
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Vehiculo</span>
-          <span
-            class="texto-base">{{vehiculo.DES_MARCA}} {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</span>
+          <span class="texto-base">{{vehiculo?.DES_MARCA}} {{vehiculo?.DES_SUBMARCA}} {{vehiculo?.DES_MODELO}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Placas</span>
-          <span class="texto-base">{{vehiculo.DES_PLACAS}}</span>
-        </div>
-        <div class="col">
-          <span class="flex flex-column etiqueta-base">Kilometraje</span>
-          <span class="texto-base"></span>
-        </div>
-        <div class="col-2">
-          <span class="flex flex-column etiqueta-base">Fecha de mantenimiento</span>
-          <span class="texto-base"></span>
+          <span class="texto-base">{{vehiculo?.DES_PLACAS}}</span>
         </div>
       </div>
       <hr class="hr-accordion-content">
-      <div class="row grid">
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col-2">
-          <span class="flex flex-column etiqueta-base">Costo de mantenimiento</span>
-          <span class="texto-base"></span>
-        </div>
-      </div>
       <ng-container>
         <p-tabView [(activeIndex)]="indice">
           <p-tabPanel header="Verificación diaria" *ngIf="verificacion">
@@ -70,7 +45,7 @@
               <div class="row table-panel-row">
                 <div class="table-panel-column ml-4">
                   <label>Fecha</label>
-                  <span>{{verificacion.FEC_ALTA | date: 'dd/MM/YYYY'}}</span>
+                  <span>{{verificacion.FEC_ALTA}}</span>
                 </div>
               </div>
               <div class="row table-panel-row">
@@ -106,7 +81,7 @@
                       </div>
                       <div class="table-panel-column col-md-4">
                         <img class="icono" src="../../../../../../assets/images/velocimetroBajo.svg"
-                             alt="Nivel neumatico trasera">
+                          alt="Nivel neumatico trasera">
                       </div>
                     </div>
                     <div class="col-12 mt-3">
@@ -116,7 +91,7 @@
                       </div>
                       <div class="table-panel-column col-md-4">
                         <img class="icono" src="../../../../../../assets/images/belocimetroAlto.svg"
-                             alt="Nivel neumatico delantero">
+                          alt="Nivel neumatico delantero">
                       </div>
                     </div>
                   </div>
@@ -188,23 +163,23 @@
                   <div class="row grid">
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base ml-4">Placas</label>
-                      <span class="ml-4">{{vehiculo.DES_PLACAS}}</span>
+                      <span class="ml-4">{{vehiculo?.DES_PLACAS}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Marca</label>
-                      <span>{{vehiculo.DES_MARCA}}</span>
+                      <span>{{vehiculo?.DES_MARCA}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Año</label>
-                      <span>{{vehiculo.DES_MODELO}}</span>
+                      <span>{{vehiculo?.DES_MODELO}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Kilometraje</label>
                       <span>{{solicitudRegistro.NUM_KILOMETRAJE}}</span>
                     </div>
                     <div class="col-3 table-panel-column">
-                      <label class="flex flex-column etiqueta-base">Fecha registro</label>
-                      <span>{{solicitudRegistro.FEC_REGISTRO | date:'dd/MM/YYYY'}}</span>
+                      <label class="flex flex-column etiqueta-base">Fecha mantenimiento</label>
+                      <span>{{solicitudRegistro.FEC_REGISTRO}}</span>
                     </div>
                   </div>
                 </div>
@@ -213,7 +188,7 @@
               <div class="row table-panel-row">
                 <div class="col-md-7">
                   <div class="grid">
-                    <div class="col-4">
+                    <div class="col-3">
                       <div class="table-panel-column ">
                         <label class="ml-4">Tipo de mantenimiento</label>
                         <span class="ml-4">{{solicitudRegistro.DES_MTTO_TIPO}}</span>
@@ -225,7 +200,13 @@
                         <span>{{solicitudRegistro.DES_MODALIDAD}}</span>
                       </div>
                     </div>
-                    <div class="col-5">
+                    <div class="col-md-3">
+                      <div class="table-panel-column ">
+                        <label class="flex flex-column etiqueta-base">Notas</label>
+                        <span>{{solicitudRegistro.DES_NOTAS}}</span>
+                      </div>
+                    </div>
+                    <div class="col-3" *ngIf="solicitudRegistro.DES_MTTO_TIPO === 'Preventivo'">
                       <div class="table-panel-column ">
                         <label>Mantenimiento preventivo</label>
                         <span>{{solicitudRegistro.DES_MTTO_CORRECTIVO}}</span>
@@ -233,31 +214,25 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-5">
-                  <div class="table-panel-column ">
-                    <label class="flex flex-column etiqueta-base">Notas</label>
-                    <span>{{solicitudRegistro.DES_NOTAS}}</span>
-                  </div>
-                </div>
               </div>
             </app-table-panel>
           </p-tabPanel>
-          <p-tabPanel header="Registro de seguimiento" *ngIf="registro">
+          <p-tabPanel header="Registro de mantenimiento" *ngIf="registro">
             <app-table-panel>
               <div class="row table-panel-row">
                 <div class="col-md-6">
                   <div class="row grid">
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base ml-4">Placas</label>
-                      <span class="ml-4">{{vehiculo.DES_PLACAS}}</span>
+                      <span class="ml-4">{{vehiculo?.DES_PLACAS}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Marca</label>
-                      <span>{{vehiculo.DES_MARCA}}</span>
+                      <span>{{vehiculo?.DES_MARCA}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Año</label>
-                      <span>{{vehiculo.DES_MODELO}}</span>
+                      <span>{{vehiculo?.DES_MODELO}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Kilometraje</label>
@@ -272,11 +247,19 @@
                   <div class="row grid">
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base ml-4">Tipo de mantenimiento</label>
-                      <span class="ml-4"></span>
+                      <span class="ml-4">{{registro.DES_MTTO_TIPO}}</span>
                     </div>
-                    <div class="col table-panel-column">
+                    <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Preventivo'">
                       <label class="flex flex-column etiqueta-base">Modalidad</label>
                       <span>{{registro.DES_MODALIDAD}}</span>
+                    </div>
+                    <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Preventivo'">
+                      <label class="flex flex-column etiqueta-base">Mantenimiento</label>
+                      <span>{{registro.DES_MTTO_CORRECTIVO}}</span>
+                    </div>
+                    <div class="col table-panel-column">
+                      <label class="flex flex-column etiqueta-base">Notas</label>
+                      <span>{{registro.DES_NOTAS}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Número de contrato</label>
@@ -284,11 +267,19 @@
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Nombre de proveedor</label>
-                      <span>{{registro.NOM_PROVEEDOR}}</span>
+                      <span>{{registro.NOM_PROVEEDOR || registro.DES_NOMBRE_PROVEEDOR}}</span>
                     </div>
-                    <div class="col table-panel-column">
+                    <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Correctivo'">
                       <label class="flex flex-column etiqueta-base">Taller</label>
                       <span>{{registro.DES_NOMBRE_TALLER}}</span>
+                    </div>
+                    <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Correctivo'">
+                      <label class="flex flex-column etiqueta-base">Fecha de Mantenimiento</label>
+                      <span>{{registro.FEC_REGISTRO}}</span>
+                    </div>
+                    <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Correctivo'">
+                      <label class="flex flex-column etiqueta-base">Costo de Mantenimiento</label>
+                      <span>{{registro.MON_COSTO_MTTO}}</span>
                     </div>
                   </div>
                 </div>
@@ -312,8 +303,6 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = !modificarModal">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Exportar PDF"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Exportar Excel"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
@@ -321,28 +310,28 @@
 <p-dialog header="Modificar" [(visible)]="modificarModal" *ngIf="vehiculo">
   <div class="border-panel mb-4 w-440 bg-g">
     <div class="row flex justify-content-center">
-      {{vehiculo.ID_VEHICULO}} - {{vehiculo.DES_MARCA | uppercase }}
-      {{vehiculo.DES_SUBMARCA | uppercase}} {{vehiculo.DES_MODELO | uppercase}}
+      {{vehiculo?.ID_VEHICULO}} - {{vehiculo?.DES_MARCA | uppercase }}
+      {{vehiculo?.DES_SUBMARCA | uppercase}} {{vehiculo?.DES_MODELO | uppercase}}
     </div>
   </div>
   <div class=" border-panel w-440">
-    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo.verificacionDia !== 'false'">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo?.verificacionDia !== 'false'">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarVerificacion()">
         Modificar verificación al inicio
       </button>
     </div>
-    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo.ID_MTTO_SOLICITUD">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo?.ID_MTTO_SOLICITUD">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarSolicitud()">
         Modificar solicitud de mantenimiento
       </button>
     </div>
-    <div class="row flex justify-content-center" *ngIf="vehiculo.ID_MTTO_REGISTRO">
+    <div class="row flex justify-content-center" *ngIf="vehiculo?.ID_MTTO_REGISTRO">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarRegistro()">
         Modificar registro de mantenimiento
       </button>
     </div>
     <div class="row flex justify-content-center"
-         *ngIf="vehiculo.verificacionDia === 'false' && !vehiculo.ID_MTTO_SOLICITUD && !vehiculo.ID_MTTO_REGISTRO ">
+      *ngIf="vehiculo?.verificacionDia === 'false' && !vehiculo?.ID_MTTO_SOLICITUD && !vehiculo?.ID_MTTO_REGISTRO ">
       No existen solicitudes registradas previamente.
     </div>
   </div>

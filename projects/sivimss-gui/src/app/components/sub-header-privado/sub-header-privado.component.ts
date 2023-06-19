@@ -7,6 +7,7 @@ import { HttpRespuesta } from "../../models/http-respuesta.interface";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { MensajesSistemaService } from '../../services/mensajes-sistema.service';
+import {AlertaService, TipoAlerta} from "../../shared/alerta/services/alerta.service";
 
 export interface NotificacionInterface {
   path?: string;
@@ -16,6 +17,7 @@ export interface NotificacionInterface {
   usoSala?: string;
   idSala?: number;
   nombreSala?: string;
+  cu?: string;
 }
 
 @Component({
@@ -36,6 +38,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly autenticacionService: AutenticacionService,
+    private alertaService: AlertaService,
     private readonly notificacionService: NotificacionesService,
     private router: Router,
     private mensajesSistemaService: MensajesSistemaService
@@ -44,13 +47,24 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     this.notificacionService.consultaNotificacion().subscribe(
       (respuesta:HttpRespuesta<any>) => {
         if (respuesta.datos.length < 1){return}
-        this.notificaciones = respuesta.datos.filter((sala:any) => {
-          return sala.mensaje.trim() != ""
+        respuesta.datos.forEach( (notificacion: any) => {
+          if(notificacion.mensaje.trim() != "" && notificacion.cu.includes("9")){
+            this.notificaciones.push(notificacion)
+          }
         });
+
+
+        respuesta.datos.forEach( (notificacion: any) => {
+          if(notificacion.cu.includes("40")){
+            this.notificaciones.push(notificacion)
+          }
+        });
+
         if(this.notificaciones.length > 0 ){this.existeNotificacion = true}
       },
       (error: HttpErrorResponse) => {
         console.log(error)
+        this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
     )
   }
@@ -89,24 +103,24 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
 
   }
 
-  registrarSalida(notificacion: NotificacionInterface): void {
+  registrarSalida(notificacion: any): void {
     let validacionRuta: boolean = false;
     let datos = {
-      estadoSala: notificacion.usoSala,
-      tipoSala: notificacion.indTipoSala,
-      idRegistro: notificacion.idRegistro,
-      idSala: notificacion.idSala,
-      nombreSala: notificacion.nombreSala
+      estadoSala: notificacion.botones.usoSala,
+      tipoSala: notificacion.botones.indTipoSala,
+      idRegistro: notificacion.botones.idRegistro,
+      idSala: notificacion.botones.idSala,
+      nombreSala: notificacion.botones.nombreSala
     }
     localStorage.setItem('reserva-sala', JSON.stringify(datos));
     if(this.router.url.includes('/reservar-salas/(salas:salas)')){validacionRuta = true}
-    this.router.navigate(['../../', notificacion.path?.toLowerCase(), {outlets: {salas:"salas"}}]).then(()=> {
+    this.router.navigate(['../../', notificacion.botones.url?.toLowerCase(), {outlets: {salas:"salas"}}]).then(()=> {
       if(validacionRuta){window.location.reload()}
     })
   }
 
-  registrarMasTarde(notificacion: NotificacionInterface): void {
-    const idRegistro = notificacion.idRegistro;
+  registrarMasTarde(notificacion: any): void {
+    const idRegistro = notificacion.botones.idRegistro;
     this.notificacionService.renovarNotificacion(idRegistro).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         this.renovarNotificaciones();

@@ -5,7 +5,7 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span></label>
-          <input numbersOnly id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS" (blur)="consultaContratantePorFolioODS()">
+          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS" (blur)="consultaContratantePorFolioODS()">
           <span class="campo-obligatorio"
                 *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Este campo es obligatorio *.</span>
         </div>

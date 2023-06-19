@@ -53,7 +53,7 @@
           </div>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="fechaRegistro">Fecha de registro<span class="req">*:</span></label>
+          <label class="control-label" for="fechaRegistro">Fecha de mantenimiento<span class="req">*:</span></label>
           <p-calendar id="fechaRegistro" formControlName="fechaRegistro" styleClass="form-control"
                       [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
           </p-calendar>
@@ -98,7 +98,7 @@
       <div class="flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="ref.close()">Cancelar</button>
         <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="solicitudMantenimientoForm.invalid">
-          Agregar
+          Guardar
         </button>
       </div>
     </form>
@@ -147,8 +147,8 @@
         </div>
         <div class="col-md-6">
           <div class="table-panel-column">
-            <label>Fecha registro</label>
-            <span> {{resumenAsignacion.fechaRegistro | date: 'dd/MM/yyyy' }}  </span>
+            <label>Fecha mantenimiento</label>
+            <span> {{resumenAsignacion.fechaRegistro | date: 'dd-MM-yyyy' }}  </span>
           </div>
         </div>
       </div>
@@ -159,9 +159,9 @@
             <span> {{resumenAsignacion.tipoMantenimiento | titlecase}}  </span>
           </div>
         </div>
-        <div class="col-md-6" *ngIf="solicitudMantenimientoForm.get('tipoMantenimiento')?.value == 2">
+        <div class="col-md-6" *ngIf="resumenAsignacion.tipoMantenimiento === 'Preventivo'">
           <div class="table-panel-column">
-            <label>Mantenimiento preventido</label>
+            <label>Mantenimiento preventivo</label>
             <span> {{resumenAsignacion.mantenimientoPreventivo}}  </span>
           </div>
         </div>

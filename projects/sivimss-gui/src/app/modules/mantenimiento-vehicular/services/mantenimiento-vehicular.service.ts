@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
-import {Observable, of} from "rxjs";
-import {TipoDropdown} from "../../../models/tipo-dropdown";
-import {mapearArregloTipoDropdown} from "../../../utils/funciones";
-import {BaseService} from "../../../utils/base-service";
-import {HttpRespuesta} from "../../../models/http-respuesta.interface";
-import {HttpClient, HttpParams} from "@angular/common/http";
-import {AutenticacionService} from "../../../services/autenticacion.service";
-import {environment} from "../../../../environments/environment";
-import {CATALOGO_TIPO_REPORTE_ENCARGADO} from "../constants/catalogos-filtros";
+import { Injectable } from '@angular/core';
+import { Observable, of } from "rxjs";
+import { TipoDropdown } from "../../../models/tipo-dropdown";
+import { mapearArregloTipoDropdown } from "../../../utils/funciones";
+import { BaseService } from "../../../utils/base-service";
+import { HttpRespuesta } from "../../../models/http-respuesta.interface";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { AutenticacionService } from "../../../services/autenticacion.service";
+import { environment } from "../../../../environments/environment";
+import { CATALOGO_TIPO_REPORTE_ENCARGADO } from "../constants/catalogos-filtros";
 
 interface ConsultaVelatorio {
   idDelegacion: string | null
@@ -43,20 +43,20 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   }
 
   obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body: ConsultaVelatorio = {idDelegacion: delegacion}
+    const body: ConsultaVelatorio = { idDelegacion: delegacion }
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
   obtenerCatalogoProvedores(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._proveedores);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, { params });
   }
 
   obtenerCatalogoPlacas(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._vehiculos);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, { params });
   }
 
   obtenerCatalogoReporteEncargado(): Observable<TipoDropdown[]> {
@@ -66,7 +66,13 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   obtenerCatalogoMttoPredictivo(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._reporte_mtto)
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params})
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, { params })
+  }
+
+  obtenerCatalogoPeriodo(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("servicio", 'cat-mtto-periodo')
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, { params })
   }
 
   buscarPorFiltros(pagina: number, tamanio: number, t: any): Observable<HttpRespuesta<any>> {
@@ -74,7 +80,7 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
       .append("pagina", pagina)
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, t,
-      {params});
+      { params });
   }
 
   override buscarPorPagina(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -82,28 +88,28 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
       .append("pagina", pagina)
       .append("tamanio", tamanio)
       .append("servicio", this._paginado);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/`, { params });
   }
 
   obtenerDetalleVerificacion(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._detalle_verificacion)
       .append("palabra", id);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, { params });
   }
 
   obtenerDetalleSolicitud(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._detalle_solicitud)
       .append("palabra", id);
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params});
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, { params });
   }
 
   obtenerDetalleRegistro(id: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._detalle_registro)
       .append("palabra", id)
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, {params})
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar`, { params })
   }
 
   override actualizar(t: any): Observable<HttpRespuesta<any>> {
@@ -111,7 +117,7 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
   }
 
   obtenerRegistroVehiculo(idVehiculo: number): Observable<HttpRespuesta<any>> {
-    const body = {idVehiculo}
+    const body = { idVehiculo }
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, body)
   }
 
@@ -121,5 +127,23 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
 
   buscarReporteEncargado(t: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_encargado}`, t);
+  }
+
+  generarReporteTabla(generarReporte: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/descargar-mtto-vehicular/generarDocumento/pdf`
+      , generarReporte, { headers, responseType: 'blob' as 'json' });
+  }
+
+  generarReporteEncargado(generarReporte: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/descargar-reporte-encargado/generarDocumento/pdf`
+      , generarReporte, { headers, responseType: 'blob' as 'json' });
   }
 }

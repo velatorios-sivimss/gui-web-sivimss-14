@@ -71,7 +71,7 @@
         </div>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="matPreventivo">Mantenimiento preventivo<span class="req">*:</span></label>
+        <label class="control-label" for="matPreventivo">Mantenimiento<span class="req">*:</span></label>
         <p-dropdown appendTo="body" id="matPreventivo" class="form-control" formControlName="matPreventivo"
                     [options]="mantenimientosPrev"
                     placeholder="Selecciona el tamaño">
@@ -81,13 +81,13 @@
     <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value">
       <div class="col-md-12">
         <label class="control-label" for="notas">Notas<span class="req">*:</span></label>
-        <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa las notas">
+        <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa las notas" maxlength="350">
         <span class="campo-obligatorio"
               *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
-      <div class="col-md-6">
+      <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '1'">
         <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="nombreProveedor" class="form-control" formControlName="nombreProveedor"
                     [options]="catalogoProveedores"
@@ -96,11 +96,15 @@
         <span class="campo-obligatorio"
               *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Este campo es obligatorio *.</span>
       </div>
-      <div class="col-md-6">
-        <label class="control-label" for="noContrato">Número de contrato<span class="req">*</span>:</label>
-        <input id="noContrato" class="form-control" formControlName="noContrato" placeholder="Ingresa el marnúmero ca">
+      <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '2'">
+        <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
+        <input id="nombreProveedor" class="form-control" formControlName="nombreProveedor" placeholder="Ingresa el proovedor" maxlength="100">
         <span class="campo-obligatorio"
-              *ngIf="smf.noContrato?.errors?.required && (smf.noContrato?.dirty || smf.noContrato?.touched)">Este campo es obligatorio *.</span>
+              *ngIf="smf.nombreProveedor?.errors?.required && (smf.nombreProveedor?.dirty || smf.nombreProveedor?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="noContrato">Número de contrato:</label>
+        <input id="noContrato" class="form-control" formControlName="noContrato" placeholder="Ingresa el número de contrato" maxlength="20">
       </div>
     </div>
     <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '2'">
@@ -111,9 +115,10 @@
               *ngIf="smf.taller?.errors?.required && (smf.taller?.dirty || smf.taller?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="costoMantenimiento">Costo de mantenimiento<span class="req">*</span>:</label>
-        <input id="costoMantenimiento" class="form-control" formControlName="costoMantenimiento"
-               placeholder="Ingresa el costo de mantenimiento">
+        <label class="control-label" for="costoMantenimiento">Costo de mantenimiento(IVA incluido)<span class="req">*</span>:</label>
+        <p-inputNumber id="costoMantenimiento" class="form-control" formControlName="costoMantenimiento" mode="decimal"
+          [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="Ingresa el costo de mantenimiento"
+          [maxlength]="9" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="smf.costoMantenimiento?.errors?.required && (smf.costoMantenimiento?.dirty || smf.costoMantenimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -184,10 +189,24 @@
           <span> {{resumenRegistro.tipoMantenimiento}} </span>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" *ngIf="resumenRegistro.tipoMantenimiento === 'Correctivo'">
         <div class="table-panel-column">
           <label>Fecha de mantenimiento</label>
           <span> {{resumenRegistro.fechaMantenimiento | date:'dd/MM/YYYY'}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="resumenRegistro.tipoMantenimiento === 'Preventivo'">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Modalidad</label>
+          <span> {{resumenRegistro.modalidad}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Mantenimiento</label>
+          <span> {{resumenRegistro.matPreventivo}} </span>
         </div>
       </div>
     </div>
@@ -200,29 +219,35 @@
       </div>
     </div>
     <div class="row table-panel-row">
-      <div class="col-md-6">
+      <div class="col-md-6" *ngIf="resumenRegistro.tipoMantenimiento === 'Preventivo'">
         <div class="table-panel-column">
-          <label>nombre de proveedor</label>
+          <label>Nombre de proveedor</label>
           <span> {{resumenRegistro.nombreProveedor}} </span>
+        </div>
+      </div>
+      <div class="col-md-6" *ngIf="resumenRegistro.tipoMantenimiento === 'Correctivo'">
+        <div class="table-panel-column">
+          <label>Nombre de proveedor</label>
+          <span> {{resumenRegistro.nombreProveedorTexto}} </span>
         </div>
       </div>
       <div class="col-md-6">
         <div class="table-panel-column">
-          <label>numero de contrato</label>
+          <label>Número de contrato</label>
           <span> {{resumenRegistro.numeroContrato}} </span>
         </div>
       </div>
     </div>
-    <div class="row table-panel-row">
+    <div class="row table-panel-row" *ngIf="resumenRegistro.tipoMantenimiento === 'Correctivo'">
       <div class="col-md-6">
         <div class="table-panel-column">
-          <label>taller</label>
+          <label>Taller</label>
           <span> {{resumenRegistro.taller}} </span>
         </div>
       </div>
       <div class="col-md-6">
         <div class="table-panel-column">
-          <label>costo de mantenimiento</label>
+          <label>Costo de mantenimiento(IVA incluido)</label>
           <span> {{resumenRegistro.costo}} </span>
         </div>
       </div>
@@ -234,7 +259,7 @@
     </div>
   </ng-container>
   <div class="flex justify-content-end">
-    <button class="ml-4  btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
+    <button class="ml-4  btn btn-default btn-md" (click)="regresar()">Cancelar</button>
     <button class="ml-4 btn btn-primary btn-md" (click)="aceptarSolicitud()">Aceptar
     </button>
   </div>

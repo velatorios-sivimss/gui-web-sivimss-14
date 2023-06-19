@@ -53,10 +53,10 @@
       <span class="req">*Campos obligatorios</span>
     </div>
     <div class="my-4" *ngIf="form.errors">
-      <span class="validacion-contrasenias" *ngIf="form.errors?.contraseniasIguales">
+      <span class="validacion-contrasenias campo-obligatorio" *ngIf="form.errors?.contraseniasIguales">
         La contraseña anterior no puede ser igual a la contraseña nueva.
       </span>
-      <span class="validacion-contrasenias" *ngIf="form.errors?.contraseniasDiferentes">
+      <span class="validacion-contrasenias campo-obligatorio" *ngIf="form.errors?.contraseniasDiferentes">
         Las contraseñas ingresadas no coinciden.
       </span>
     </div>
@@ -95,7 +95,7 @@
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="block text-center">Excediste el número de intentos para ingresar al sistema</span>
-      <span class="block text-center mt-3">Tu cuenta quiedará inactiva por 5 minutos</span>
+      <span class="block text-center mt-3">Tu cuenta quedará inactiva por 5 minutos</span>
     </div>
     <div class="mt-8 contenedor-intentos flex justify-content-center align-items-center"
          *ngIf="minutosTemporizadorIntentos && segundosTemporizadorIntentos">

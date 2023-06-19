@@ -14,14 +14,15 @@ export const CATALOGOS_DUMMIES: TipoDropdown[] = [
     value: 'Opcion 3',
     label: 'Opcion 3'
   },
-]
+];
+
 export const CATALOGOS_TIPO_MANTENIMIENTO: TipoDropdown[] = [
   {
     value: '1',
-    label: 'PREVENTIVO'
+    label: 'Preventivo'
   },
   {
     value: '2',
-    label: 'CORRECTIVO'
+    label: 'Correctivo'
   },
 ]

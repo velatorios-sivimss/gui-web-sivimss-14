@@ -5,13 +5,13 @@
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
         <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-                    placeholder="Seleccionar el nivel" [filter]="true">
+          placeholder="Seleccionar el nivel" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-                    placeholder="Seleccionar delegación" (onChange)="cargarVelatorios()" [filter]="true">
+          placeholder="Seleccionar delegación" (onChange)="cargarVelatorios()" [filter]="true">
         </p-dropdown>
       </div>
     </div>
@@ -19,13 +19,13 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                    placeholder="Seleccionar el velatorio" [filter]="true">
+          placeholder="Seleccionar el velatorio" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="placa">Placa:</label>
-        <p-dropdown id="placa" class="form-control" formControlName="delegacion" [options]="catalogoPlacas"
-                    placeholder="Seleccionar vehículo" [filter]="true">
+        <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
+          placeholder="Seleccionar vehículo" [filter]="true">
         </p-dropdown>
       </div>
     </div>
@@ -43,8 +43,7 @@
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Vehículos</h2>
     <div>
-      <button type="button" class="btn btn-primary btn-lg btn-md"
-              [routerLink]="'./mantenimiento-predictivo'">
+      <button type="button" class="btn btn-primary btn-lg btn-md" [routerLink]="'./mantenimiento-predictivo'">
         Mantenimiento predictivo
       </button>
       <button type="button" class="btn btn-primary btn-lg btn-md ml-5" [routerLink]="'./reporte-encargado'">
@@ -53,11 +52,9 @@
     </div>
   </div>
 
-  <p-table styleClass="mt-5 mb-8" [value]="vehiculos" [paginator]="vehiculos.length > 0"
-           [rows]="cantElementosPorPagina"
-           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="seleccionarPaginacion($event)" [columnResizeMode]="'expand'"
-           appActivarUltimaCeldaSticky>
+  <p-table styleClass="mt-5 mb-8" [value]="vehiculos" [paginator]="vehiculos.length > 0" [rows]="cantElementosPorPagina"
+    [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+    (onLazyLoad)="seleccionarPaginacion($event)" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn id="columna_programar_mtto_id">ID</th>
@@ -74,23 +71,22 @@
     <ng-template pTemplate="body" let-vehiculo>
       <tr>
         <td pResizableColumn> {{vehiculo.ID_VEHICULO}} </td>
-        <td pResizableColumn> {{vehiculo.DES_MARCA}}  {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</td>
+        <td pResizableColumn> {{vehiculo.DES_MARCA}} {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</td>
         <td pResizableColumn> {{vehiculo.DES_PLACAS}} </td>
         <td pResizableColumn> {{vehiculo.NUM_KILOMETRAJE_REG}} </td>
         <td pResizableColumn> {{vehiculo.DES_MTTO_TIPO}} </td>
         <td pResizableColumn> {{vehiculo.DES_MODALIDAD}} </td>
-        <td pResizableColumn>{{vehiculo.FEC_REGISTRO_REG}}</td>
-        <td pResizableColumn></td>
+        <td pResizableColumn> {{vehiculo.FEC_MTTO_SOL}} </td>
+        <td pResizableColumn> {{vehiculo.MON_COSTO_MTTO}} </td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
             <span [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</span>
             <div class="contenedor-celda-iconos">
-              <a [routerLink]="['detalle-mantenimiento', vehiculo.ID_VEHICULO]">
+              <a (click)="irADetalle(vehiculo)">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
               </a>
               <a (click)="abrirPanel($event,vehiculo)">
-                <img src="assets/images/imagen-icono-barras-horizontales.svg"
-                     alt="icono barras horizontales">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
             </div>
           </div>
@@ -114,8 +110,10 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="generarReporteTabla('pdf');">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="generarReporteTabla('xls');">
           </div>
         </div>
       </div>
@@ -127,16 +125,11 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Verificar al Inicio" (click)="abrirModalnuevaVerificacion()"
-                                *ngIf="vehiculoSeleccionado.verificacionDia === 'false'"
-                                onCloseOnNavigation></app-overlay-panel-opcion>
+        *ngIf="vehiculoSeleccionado.verificacionDia === 'false'" onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
-                                onCloseOnNavigation></app-overlay-panel-opcion>
+        *ngIf="!vehiculoSeleccionado.ID_MTTO_SOLICITUD" onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
-                                onCloseOnNavigation></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = !modificarModal"
-                                onCloseOnNavigation></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Exportar PDF" (click)="abrirModalExportarPDF()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Exportar Excel" (click)="abrirModalExportarExcel()"></app-overlay-panel-opcion>
+        *ngIf="!vehiculoSeleccionado.ID_MTTO_REGISTRO" onCloseOnNavigation></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
@@ -165,7 +158,7 @@
       </button>
     </div>
     <div class="row flex justify-content-center"
-         *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
+      *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
       No existen solicitudes registradas previamente.
     </div>
   </div>
@@ -195,7 +188,7 @@
       </button>
     </div>
     <div class="row flex justify-content-center"
-         *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
+      *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
       No existen solicitudes registradas previamente.
     </div>
   </div>

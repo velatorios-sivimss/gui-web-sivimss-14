@@ -1,22 +1,25 @@
 export interface RegistroMantenimiento {
-  idMttoVehicular: null,
+  idMttoVehicular: number | null,
   idMttoestado: number,
   idVehiculo: number,
   idDelegacion: number,
-  idVelatorio: number,
+  idVelatorio: number | null,
   idEstatus: number,
   verificacionInicio: null,
   solicitud: null,
   registro: {
-    idMttoRegistro: null,
-    idMttoVehicular: number,
-    idMttoModalidad: string,
-    idMantenimiento: number,
+    idMttoRegistro: number | null,
+    idMttoVehicular: number | null,
+    idMttoModalidad: number | null,
+    idMantenimiento: number | null,
     desNotas: string,
     idProveedor: number,
     desNumcontrato: string,
+    desNombreProveedor: string,
     kilometraje: number,
     desNombreTaller: string,
-    costoMtto: string
+    costoMtto: string,
+    desMttoCorrectivo: string,
+    fecRegistro: string | null,
   }
 }

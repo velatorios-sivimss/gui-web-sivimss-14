@@ -20,7 +20,7 @@ import {TextColorDirective} from "./directives/text-color.directive";
     TextDirective,
     OnCloseOnNavigationDirective,
     PopoverDirective,
-    TextColorDirective
+    TextColorDirective,
   ],
   imports: [
     CommonModule
@@ -34,7 +34,7 @@ import {TextColorDirective} from "./directives/text-color.directive";
     TextDirective,
     OnCloseOnNavigationDirective,
     PopoverDirective,
-    TextColorDirective
+    TextColorDirective,
   ]
 })
 export class UtileriaModule {

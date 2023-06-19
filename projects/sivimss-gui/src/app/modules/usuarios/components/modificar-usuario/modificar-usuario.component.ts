@@ -17,6 +17,7 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type UsuarioModificado = Omit<Usuario, "password">
+type DetalleUsuario = Usuario & { contrasenia: string, desEdoNacimiento: string }
 
 @Component({
   selector: 'app-modificar-usuario',
@@ -30,6 +31,7 @@ export class ModificarUsuarioComponent implements OnInit {
 
   modificarUsuarioForm!: FormGroup;
   usuarioModificado!: UsuarioModificado;
+  id!: number;
 
   catalogoRoles: TipoDropdown[] = [];
   catalogoNiveles: TipoDropdown[] = [];
@@ -61,9 +63,8 @@ export class ModificarUsuarioComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const usuario = this.config.data;
-    this.inicializarModificarUsuarioForm(usuario);
-    this.cargarCatalogos(usuario.idDelegacion);
+    this.id = this.config.data;
+    this.obtenerUsuario(this.id);
   }
 
   cargarCatalogos(delegacion: string): void {
@@ -74,12 +75,14 @@ export class ModificarUsuarioComponent implements OnInit {
     this.buscarVelatorios();
   }
 
-  inicializarModificarUsuarioForm(usuario: Usuario): void {
+  inicializarModificarUsuarioForm(usuario: DetalleUsuario): void {
     this.modificarUsuarioForm = this.formBuilder.group({
       id: [{value: usuario.id, disabled: true}, [Validators.required]],
       curp: [{value: usuario.curp, disabled: true}, [Validators.required, Validators.maxLength(18)]],
       matricula: [{value: usuario.matricula, disabled: true}, [Validators.required, Validators.maxLength(10)]],
       usuario: [{value: usuario.usuario, disabled: true}],
+      contrasenia: [{value: usuario.contrasenia, disabled: true}],
+      desEdoNacimiento: [{value: usuario.desEdoNacimiento, disabled: true}],
       nombre: [{value: usuario.nombre, disabled: true}, [Validators.required, Validators.maxLength(20)]],
       primerApellido: [{value: usuario.paterno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
       segundoApellido: [{value: usuario.materno, disabled: true}, [Validators.required, Validators.maxLength(30)]],
@@ -93,6 +96,23 @@ export class ModificarUsuarioComponent implements OnInit {
       estatus: [{value: usuario.estatus, disabled: false}, [Validators.required]]
     });
     this.cargarRoles(true);
+  }
+
+  obtenerUsuario(id: number): void {
+    this.cargadorService.activar();
+    this.usuarioService.buscarPorId(id)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          const usuario = respuesta.datos[0];
+          this.inicializarModificarUsuarioForm(usuario);
+          this.cargarCatalogos(usuario.idDelegacion);
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error.message);
+        }
+      });
   }
 
   cargarRoles(cargaInicial: boolean = false): void {
@@ -202,7 +222,7 @@ export class ModificarUsuarioComponent implements OnInit {
   }
 
   get fmu() {
-    return this.modificarUsuarioForm.controls;
+    return this.modificarUsuarioForm?.controls;
   }
 
 }
