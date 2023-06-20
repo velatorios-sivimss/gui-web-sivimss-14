@@ -1,18 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {OverlayPanel} from "primeng/overlaypanel";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
-import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
-import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {ConfirmarContratante, UsuarioContratante} from "../../models/usuario-contratante.interface";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../constants/dummies";
-import {LazyLoadEvent} from "primeng/api";
-import {DetalleContratantesComponent} from "../detalle-contratantes/detalle-contratantes.component";
-import {ModificarContratantesComponent} from "../modificar-contratantes/modificar-contratantes.component";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {ALERTA_ESTATUS} from "../../constants/alertas";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { OverlayPanel } from "primeng/overlaypanel";
+import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
+import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import { ConfirmarContratante, UsuarioContratante } from "../../models/usuario-contratante.interface";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { CATALOGOS_DUMMIES } from "../../constants/dummies";
+import { LazyLoadEvent } from "primeng/api";
+import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
+import { ModificarContratantesComponent } from "../modificar-contratantes/modificar-contratantes.component";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { ALERTA_ESTATUS } from "../../constants/alertas";
 
 @Component({
   selector: 'app-contratantes',
@@ -38,9 +38,18 @@ export class ContratantesComponent implements OnInit {
 
   modificarRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
-  retorno:ConfirmarContratante = {};
+  retorno: ConfirmarContratante = {};
 
-  estatus:TipoDropdown[] = CATALOGOS_DUMMIES;
+  estatus: TipoDropdown[] = [
+    {
+      value: 1,
+      label: 'Activo'
+    },
+    {
+      value: 2,
+      label: 'Inactivo'
+    },
+  ];
 
   constructor(
     private alertaService: AlertaService,
@@ -60,15 +69,15 @@ export class ContratantesComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      curp:[{value: null, disabled:false}],
-      nss:[{value: null, disabled:false}],
-      nombre:[{value: null, disabled:false}],
-      estatus:[{value: null, disabled:false}]
+      curp: [{ value: null, disabled: false }, Validators.maxLength(18)],
+      nss: [{ value: null, disabled: false }, Validators.maxLength(11)],
+      nombre: [{ value: null, disabled: false }, Validators.maxLength(30)],
+      estatus: [{ value: null, disabled: false }]
     });
   }
 
   paginar(event: LazyLoadEvent): void {
-    setTimeout(()=> {
+    setTimeout(() => {
       this.contratante = [
         {
           curp: "FEMB121070HDFNCD00",
@@ -76,20 +85,20 @@ export class ContratantesComponent implements OnInit {
           nombre: "Federico Miguel",
           primerApellido: "Alameda",
           segundoApellido: "Barcenas",
-          rfc:"FEMAL12107034Y",
-          fechaNacimiento:"12/10/1970",
+          rfc: "FEMAL12107034Y",
+          fechaNacimiento: "12/10/1970",
           telefono: 5514236758,
-          nacionalidad:1,
-          lugarNacimiento:"CDMX",
-          cp:12345,
-          calle:"Miguel Alemán Barcenas",
-          numeroExterior:"121",
-          numeroInterior:"2b",
-          colonia:"Miguel Hidalgo",
-          pais:1,
-          correoElectronico:"hildalore1234@gmail.com",
-          estado:"CDMX",
-          municipio:"Azcapotzalco",
+          nacionalidad: 1,
+          lugarNacimiento: "CDMX",
+          cp: 12345,
+          calle: "Miguel Alemán Barcenas",
+          numeroExterior: "121",
+          numeroInterior: "2b",
+          colonia: "Miguel Hidalgo",
+          pais: 1,
+          correoElectronico: "hildalore1234@gmail.com",
+          estado: "CDMX",
+          municipio: "Azcapotzalco",
           estatus: true
         },
         {
@@ -98,8 +107,8 @@ export class ContratantesComponent implements OnInit {
           nombre: "Federico Miguel",
           primerApellido: "Alameda",
           segundoApellido: "Barcenas",
-          rfc:"FEMAL12107034Y",
-          fechaNacimiento:"12/10/1970",
+          rfc: "FEMAL12107034Y",
+          fechaNacimiento: "12/10/1970",
           telefono: 5645768950,
           estatus: true
         },
@@ -109,33 +118,33 @@ export class ContratantesComponent implements OnInit {
           nombre: "Federico Miguel",
           primerApellido: "Alameda",
           segundoApellido: "Barcenas",
-          rfc:"FEMAL12107034Y",
-          fechaNacimiento:"12/10/1970",
+          rfc: "FEMAL12107034Y",
+          fechaNacimiento: "12/10/1970",
           telefono: 5645768950,
           estatus: false
         }
       ];
       this.totalElementos = this.contratante.length;
-    },0)
+    }, 0)
 
   }
 
   abrirModalDetalleContratante(contratante: UsuarioContratante): void {
     this.detalleRef = this.dialogService.open(DetalleContratantesComponent, {
-      header:"Ver detalle",
-      width:"920px",
-      data: {contratante:contratante, origen: "detalle"},
+      header: "Ver detalle",
+      width: "920px",
+      data: { contratante: contratante, origen: "detalle" },
     });
   }
   abrirModalModificarContratante(): void {
-    this.modificarRef = this.dialogService.open(ModificarContratantesComponent ,{
-      header:"Modificar contratante",
-      width:"920px",
-      data: {contratante:this.contratanteSeleccionado, origen: "modificar"},
+    this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
+      header: "Modificar contratante",
+      width: "920px",
+      data: { contratante: this.contratanteSeleccionado, origen: "modificar" },
     });
 
-    this.modificarRef.onClose.subscribe((respuesta:ConfirmarContratante) => {
-      if(respuesta.estatus){
+    this.modificarRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
+      if (respuesta.estatus) {
         this.alertaService.mostrar(TipoAlerta.Exito, this.alertaEstatus[2]);
       }
     });
@@ -143,15 +152,15 @@ export class ContratantesComponent implements OnInit {
 
   abrirModalCambiarEstatus(contratante: UsuarioContratante): void {
     this.detalleRef = this.dialogService.open(DetalleContratantesComponent, {
-      header:contratante.estatus? "Activar contratante":"Desactivar contratante",
-      width:"920px",
-      data: {contratante:contratante, origen: "estatus"},
+      header: contratante.estatus ? "Activar contratante" : "Desactivar contratante",
+      width: "920px",
+      data: { contratante: contratante, origen: "estatus" },
     });
 
-    this.detalleRef.onClose.subscribe((respuesta:ConfirmarContratante) => {
-      if(respuesta.estatus){
+    this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
+      if (respuesta.estatus) {
         this.alertaService.mostrar(TipoAlerta.Exito,
-          respuesta.usuarioContratante?.estatus?this.alertaEstatus[0]:this.alertaEstatus[1] );
+          respuesta.usuarioContratante?.estatus ? this.alertaEstatus[0] : this.alertaEstatus[1]);
       }
     });
   }

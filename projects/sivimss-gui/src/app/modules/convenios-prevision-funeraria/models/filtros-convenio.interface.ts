@@ -1,8 +1,10 @@
-export interface FiltrosConvenioInterface {
-    folioConvenio?: string;
-    rfc?: string;
-    nomCliente?: string;
-    curp?: string;
-    estatus?: boolean;
-  }
-  
+export interface FiltrosConvenio {
+  folioConvenio?: string;
+  rfc?: string;
+  nombre?: string;
+  curp?: string;
+  estatusConvenio?: boolean;
+  nombreBeneficiario?: string;
+  folioSiniestro?: string;
+  numeroFactura?: string;
+}
