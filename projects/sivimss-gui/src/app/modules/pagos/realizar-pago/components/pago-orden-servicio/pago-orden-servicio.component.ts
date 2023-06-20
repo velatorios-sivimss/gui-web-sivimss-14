@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {OverlayPanel} from "primeng/overlaypanel";
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
-import {REGISTROS_PAGOS_ODS, TIPO_PAGO_CATALOGOS_ODS} from "../../constants/dummies";
+import {TIPO_PAGO_CATALOGOS_ODS} from "../../constants/dummies";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
@@ -16,6 +16,20 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
+
+interface DatosRegistro {
+  idPagoBitacora: number,
+  idFlujoPago: number,
+  idRegistro: number,
+  importePago: number
+}
+
+interface RegistroModal {
+  tipoPago: string,
+  idPago: string,
+  total: number,
+  datosRegistro: DatosRegistro
+}
 
 @Component({
   selector: 'app-pago-orden-servicio',
@@ -33,8 +47,9 @@ export class PagoOrdenServicioComponent implements OnInit {
   totalElementos: number = 0;
 
   pagos: PagoEspecifico[] = [];
+  pagoSeleccionado: any;
   pagoODSModal: boolean = false;
-  tipoPago: TipoDropdown[] = TIPO_PAGO_CATALOGOS_ODS;
+  tipoPago: any[] = TIPO_PAGO_CATALOGOS_ODS;
   pagoForm!: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
@@ -79,6 +94,7 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, pago: any): void {
     this.overlayPanel.toggle(event);
+    this.pagoSeleccionado = pago;
   }
 
   registrarPago(): void {
@@ -89,11 +105,11 @@ export class PagoOrdenServicioComponent implements OnInit {
     this.registrarPago();
     const tipoPago = this.pagoForm.get('tipoPago')?.value;
     this.pagoForm.reset();
-    if (tipoPago === 'Vale paritaria') {
+    if (tipoPago === 1) {
       this.abrirModalValeParitaria();
       return;
     }
-    if (tipoPago === 'Ayuda de gastos de funeral (AGF)') {
+    if (tipoPago === 2) {
       this.abrirModalAGF();
       return;
     }
@@ -116,11 +132,22 @@ export class PagoOrdenServicioComponent implements OnInit {
     this.dialogService.open(RegistrarAgfComponent, REGISTRAR_PAGO_CONFIG)
   }
 
-  abrirModalPago(tipoPago: string): void {
+  abrirModalPago(idPago: string): void {
+    const tipoPago = this.tipoPago.find(tp => tp.value === idPago).label;
+    const data: RegistroModal = {tipoPago, idPago,
+      total: this.pagoSeleccionado.diferenciasTotales,
+      datosRegistro: {
+        idPagoBitacora: this.pagoSeleccionado.idPagoBitacora,
+        idFlujoPago: this.pagoSeleccionado.idFlujoPago,
+        idRegistro: this.pagoSeleccionado.idRegistro,
+        importePago: this.pagoSeleccionado.total
+      }
+    }
+
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Registrar tipo de pago",
       width: MAX_WIDTH,
-      data: tipoPago
+      data
     }
     this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
   }
