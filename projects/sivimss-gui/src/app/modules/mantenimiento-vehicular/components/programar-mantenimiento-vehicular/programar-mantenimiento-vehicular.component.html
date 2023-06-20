@@ -76,7 +76,7 @@
         <td pResizableColumn> {{vehiculo.NUM_KILOMETRAJE_REG}} </td>
         <td pResizableColumn> {{vehiculo.DES_MTTO_TIPO}} </td>
         <td pResizableColumn> {{vehiculo.DES_MODALIDAD}} </td>
-        <td pResizableColumn> {{vehiculo.FEC_MTTO_SOL}} </td>
+        <td pResizableColumn> {{vehiculo.FEC_REGISTRO_REG}} </td>
         <td pResizableColumn> {{vehiculo.MON_COSTO_MTTO}} </td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
@@ -131,6 +131,8 @@
       <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
         *ngIf="!vehiculoSeleccionado.ID_MTTO_REGISTRO" onCloseOnNavigation></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
+    <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = true"
+      onCloseOnNavigation></app-overlay-panel-opcion>
   </ng-template>
 </p-overlayPanel>
 

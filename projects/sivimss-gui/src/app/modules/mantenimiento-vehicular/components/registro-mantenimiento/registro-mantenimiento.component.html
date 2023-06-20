@@ -39,7 +39,7 @@
         <span class="campo-obligatorio"
               *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
-      <div class="col-md-6" *ngIf="smf?.tipoMantenimiento?.value === '2'">
+      <div class="col-md-6">
         <label class="control-label" for="fechaMantenimiento">Fecha de mantenimiento<span class="req">*:</span></label>
         <p-calendar id="fechaMantenimiento" formControlName="fechaMantenimiento" styleClass="form-control"
                     [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
@@ -189,7 +189,7 @@
           <span> {{resumenRegistro.tipoMantenimiento}} </span>
         </div>
       </div>
-      <div class="col-md-6" *ngIf="resumenRegistro.tipoMantenimiento === 'Correctivo'">
+      <div class="col-md-6">
         <div class="table-panel-column">
           <label>Fecha de mantenimiento</label>
           <span> {{resumenRegistro.fechaMantenimiento | date:'dd/MM/YYYY'}} </span>

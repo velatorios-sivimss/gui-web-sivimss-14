@@ -175,13 +175,13 @@ export class RegistroMantenimientoComponent implements OnInit {
         idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR ? +this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value ? +this.solicitudMantenimientoForm.get("modalidad")?.value : null,
         idMantenimiento: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value ? +this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value : null,
-        desNombreProveedor: this.smf.tipoMantenimiento.value === '2' ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
+        desNombreProveedor: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
         desNotas: this.solicitudMantenimientoForm.get("notas")?.value,
-        idProveedor: this.smf.tipoMantenimiento.value === '1' ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
+        idProveedor: +this.smf.tipoMantenimiento.value == 1 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
         desNumcontrato: this.solicitudMantenimientoForm.get("noContrato")?.value,
         kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
         desNombreTaller: this.solicitudMantenimientoForm.get("taller")?.value,
-        costoMtto: this.solicitudMantenimientoForm.get("costoMantenimiento")?.value,
+        costoMtto: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("costoMantenimiento")?.value : null,
         desMttoCorrectivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value, 'YYYY-MM-dd'),
       }
@@ -195,11 +195,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
-          if (this.mode === 'update') {
-            this.ref.close(true);
-          } else {
-            this.abrirRegistroSolicitud();
-          }
+          this.abrirRegistroSolicitud();
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
