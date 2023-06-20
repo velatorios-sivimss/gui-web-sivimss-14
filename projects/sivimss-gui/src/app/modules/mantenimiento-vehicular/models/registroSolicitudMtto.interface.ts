@@ -3,7 +3,7 @@ export interface RegistroSolicitudMttoInterface {
   idMttoestado: number,
   idVehiculo: number,
   idDelegacion: number,
-  idVelatorio: number,
+  idVelatorio: number | null,
   idEstatus: number,
   verificacionInicio: null,
   solicitud: {
