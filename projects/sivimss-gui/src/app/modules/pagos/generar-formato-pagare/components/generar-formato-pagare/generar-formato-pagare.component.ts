@@ -115,6 +115,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
     });
+    this.obtenerFoliosGenerados();
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -173,7 +174,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       idNivel: this.filtroForm.get("nivel")?.value,
       idDelegacion: this.filtroForm.get("delegacion")?.value,
       idVelatorio: this.filtroForm.get("velatorio")?.value,
-      folioODS: this.filtroForm.get("folioODS")?.value,
+      folioODS: this.filtroForm.get("folioODS")?.value.label,
       nomContratante: this.filtroForm.get("nomContratante")?.value,
       fecIniODS: this.filtroForm.get("fechaInicial")?.value,
       fecFinODS: this.filtroForm.get("fechaFinal")?.value,
@@ -191,30 +192,26 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.paginar();
   }
 
-  obtenerFoliosGenerados() {
-    this.generarFormatoService.buscarTodasOdsGeneradas().subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        let filtrado: TipoDropdown[] = [];
-        if (respuesta?.datos.length > 0) {
-          respuesta?.datos.forEach((e: any) => {
-            filtrado.push({
-              label: e.nombre,
-              value: e.id,
-            });
-          });
-          this.foliosGenerados = filtrado;
-        } else {
-          this.foliosGenerados = [];
-        }
+
+  obtenerFoliosGenerados(): void {
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    const idVelatorio = this.filtroForm.get('velatorio')?.value;
+    this.foliosGenerados = [];
+    this.filtroForm.get('folioODS')?.patchValue(null);
+    if (!idVelatorio) return;
+    this.generarFormatoService.obtenerFoliosODS(idDelegacion,idVelatorio).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.foliosGenerados = mapearArregloTipoDropdown(respuesta.datos, "nombre", "id");
       },
-      error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
-    });
+    })
   }
 
   obtenerContratanteGeneradoPorfolio() {
-    const idFolioODS = +this.f.folioODS.value
+    const idFolioODS = +this.f.folioODS.value.value;
     this.generarFormatoService.buscarContratantesGeneradosPorfolio(idFolioODS).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         let filtrado: TipoDropdown[] = [];
@@ -237,6 +234,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
   
   obtenerVelatorios(): void {
+    this.foliosGenerados = [];
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.generarFormatoService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
