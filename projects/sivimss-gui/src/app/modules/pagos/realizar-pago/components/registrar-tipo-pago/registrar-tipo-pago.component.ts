@@ -5,6 +5,7 @@ import {SolicitudCrearPago} from "../../modelos/solicitudPago.interface";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import * as moment from "moment/moment";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -79,9 +80,10 @@ export class RegistrarTipoPagoComponent implements OnInit {
     this.realizarPagoService.guardar(solicitudPago).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         console.log(respuesta);
+        this.ref.close();
       },
       error: (error: HttpErrorResponse): void => {
-        console.log(error)
+        console.log(error);
       }
     });
   }
@@ -91,9 +93,11 @@ export class RegistrarTipoPagoComponent implements OnInit {
   }
 
   generarSolicitudPago(): SolicitudCrearPago {
+    let fechaPago = this.tipoPagoForm.get('fecha')?.value;
+    if (fechaPago) fechaPago = moment(fechaPago).format('YYYY-MM-DD');
     return {
       descBanco: this.tipoPagoForm.get('nombreBanco')?.value,
-      fechaPago: this.tipoPagoForm.get('fecha')?.value,
+      fechaPago,
       fechaValeAGF: null,
       idFlujoPago: this.registroPago.idFlujoPago,
       idMetodoPago: this.idPago,
