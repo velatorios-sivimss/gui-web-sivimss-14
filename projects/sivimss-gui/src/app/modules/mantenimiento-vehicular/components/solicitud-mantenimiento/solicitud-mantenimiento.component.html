@@ -6,13 +6,15 @@
           <label class="control-label" for="placas">Placas<span class="req">*</span>:</label>
           <input id="placas" class="form-control" formControlName="placas" placeholder="Ingresa el placas">
           <span class="campo-obligatorio"
-                *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Este campo es obligatorio
+            *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="marca">Marca<span class="req">*</span>:</label>
           <input id="marca" class="form-control" formControlName="marca" placeholder="Ingresa el marca">
           <span class="campo-obligatorio"
-                *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Este campo es obligatorio
+            *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -20,15 +22,16 @@
           <label class="control-label" for="anio">Año<span class="req">*</span>:</label>
           <input id="anio" class="form-control" formControlName="anio" placeholder="Ingresa el anio">
           <span class="campo-obligatorio"
-                *ngIf="smf.anio?.errors?.required && (smf.anio?.dirty || smf.anio?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="smf.anio?.errors?.required && (smf.anio?.dirty || smf.anio?.touched)">Este campo es obligatorio
+            *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
           <input id="kilometraje" class="form-control" formControlName="kilometraje"
-                 placeholder="Ingresa el kilometraje"
-                 [maxlength]="6" numbersOnly>
+            placeholder="Ingresa el kilometraje" [maxlength]="6" numbersOnly>
           <span class="campo-obligatorio"
-                *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Este campo
+            es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -37,48 +40,56 @@
           <div class="flex">
             <div class="flex align-items-center mx-2">
               <p-radioButton id="modalidadSemestral" name="modalidad" value="1" formControlName="modalidad"
-                             inputId="semestral"></p-radioButton>
+                (onClick)="validarFechaSemestral()" inputId="semestral"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'modalidad'">Semestral</label>
             </div>
             <div class="flex align-items-center mx-2">
               <p-radioButton id="modalidadAnual" name="modalidad" value="2" formControlName="modalidad"
-                             inputId="anual"></p-radioButton>
+                (onClick)="validarFechaSemestral()" inputId="anual"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'modalidad'">Anual</label>
             </div>
             <div class="flex align-items-center mx-2">
               <p-radioButton id="modalidadFrecuente" name="modalidad" value="3" formControlName="modalidad"
-                             inputId="frecuente"></p-radioButton>
+                (onClick)="validarFechaSemestral()" inputId="frecuente"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'modalidad'">Frecuente</label>
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div [ngClass]="smf.modalidad.value == 1 ? 'col-md-3' : 'col-md-6'">
           <label class="control-label" for="fechaRegistro">Fecha de registro<span class="req">*:</span></label>
-          <p-calendar id="fechaRegistro" formControlName="fechaRegistro" styleClass="form-control"
-                      [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+          <p-calendar id="fechaRegistro" formControlName="fechaRegistro" styleClass="form-control" [showIcon]="true"
+            placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
           </p-calendar>
           <span class="campo-obligatorio"
-                *ngIf="smf?.fechaRegistro?.errors?.required && (smf?.fechaRegistro?.dirty || smf?.fechaRegistro?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="smf?.fechaRegistro?.errors?.required && (smf?.fechaRegistro?.dirty || smf?.fechaRegistro?.touched)">Este
+            campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-3" style="margin-top: 2.5rem !important;" *ngIf="smf.modalidad.value == 1">
+          <p-calendar id="fechaRegistro2" formControlName="fechaRegistro2" styleClass="form-control" [showIcon]="true"
+            placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+          </p-calendar>
+          <span class="campo-obligatorio"
+            *ngIf="smf?.fechaRegistro2?.errors?.required && (smf?.fechaRegistro2?.dirty || smf?.fechaRegistro2?.touched)">Este
+            campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="tipoMantenimiento">Tipo de mantenimiento<span class="req">*:</span></label>
           <p-dropdown appendTo="body" id="tipoMantenimiento" class="form-control" formControlName="tipoMantenimiento"
-                      [options]="tiposMantenimiento"
-                      placeholder="Selecciona el tipo de mantenimiento">
+            [options]="tiposMantenimiento" placeholder="Selecciona el tipo de mantenimiento">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Este
+            campo es obligatorio *.</span>
         </div>
         <div class="col-md-6" *ngIf="solicitudMantenimientoForm.get('tipoMantenimiento')?.value == 1">
           <label class="control-label" for="matPreventivo">Mantenimiento preventivo<span class="req">*:</span></label>
           <p-dropdown appendTo="body" id="matPreventivo" class="form-control" formControlName="matPreventivo"
-                      [options]="mantenimientosPrev"
-                      placeholder="Selecciona el tamaño">
+            [options]="mantenimientosPrev" placeholder="Selecciona el tamaño">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">v</span>
+            *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">v</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -86,7 +97,8 @@
           <label class="control-label" for="notas">Notas<span class="req">*:</span></label>
           <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa el notas" maxlength="350">
           <span class="campo-obligatorio"
-                *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Este campo es obligatorio
+            *.</span>
         </div>
       </div>
       <div class="row mb-4">
@@ -141,13 +153,18 @@
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Modalidad</label>
-            <span> {{resumenAsignacion.modalidad}}  </span>
+            <span> {{resumenAsignacion.modalidad}} </span>
           </div>
         </div>
-        <div class="col-md-6">
+        <div [ngClass]="resumenAsignacion.modalidad == 'Semestral' ? 'col-md-3' : 'col-md-6'">
           <div class="table-panel-column">
             <label>Fecha de registro</label>
-            <span> {{resumenAsignacion.fechaRegistro | date: 'dd-MM-yyyy' }}  </span>
+            <span> {{resumenAsignacion.fechaRegistro | date: 'dd-MM-yyyy' }} </span>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="resumenAsignacion.modalidad == 'Semestral'">
+          <div class="table-panel-column mt-5">
+            <span> {{resumenAsignacion.fechaRegistro2 | date: 'dd-MM-yyyy' }} </span>
           </div>
         </div>
       </div>
@@ -155,13 +172,13 @@
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Tipo de mantenimiento</label>
-            <span> {{resumenAsignacion.tipoMantenimiento | titlecase}}  </span>
+            <span> {{resumenAsignacion.tipoMantenimiento | titlecase}} </span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="resumenAsignacion.tipoMantenimiento === 'Preventivo'">
           <div class="table-panel-column">
             <label>Mantenimiento preventivo</label>
-            <span> {{resumenAsignacion.mantenimientoPreventivo}}  </span>
+            <span> {{resumenAsignacion.mantenimientoPreventivo}} </span>
           </div>
         </div>
       </div>
@@ -169,7 +186,7 @@
         <div class="col-md-12">
           <div class="table-panel-column">
             <label>Notas</label>
-            <span> {{resumenAsignacion.notas}}  </span>
+            <span> {{resumenAsignacion.notas}} </span>
           </div>
         </div>
       </div>
@@ -179,7 +196,7 @@
     </div>
     <div class="flex justify-content-end">
       <button type="button" class="ml-4  btn btn-default btn-md"
-              (click)="pasoSolicitudMantenimiento = CAPTURA_DE_SOLICITUD_MANTENIMIENTO">Cancelar
+        (click)="pasoSolicitudMantenimiento = CAPTURA_DE_SOLICITUD_MANTENIMIENTO">Cancelar
       </button>
       <button type="button" class="ml-4 btn btn-primary btn-md" (click)="guardarSolicitudMtto()">
         Aceptar
