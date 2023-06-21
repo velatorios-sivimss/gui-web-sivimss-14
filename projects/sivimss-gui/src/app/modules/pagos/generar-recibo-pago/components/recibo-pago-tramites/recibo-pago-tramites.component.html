@@ -56,11 +56,11 @@
           <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
             otorgar el contrato de prestación de servicios
             <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span>
-            en dependencias de acuerdo al siguiente desgloce
+            en dependencias de acuerdo al siguiente desglose
           </span>
             <div class="grid-container">
               <div class="grid-item">
-                <label class="control-label" for="tramite">Tramites<span class="req">*</span>:</label>
+                <label class="control-label" for="tramite">Trámites<span class="req">*</span>:</label>
                 <p-dropdown id="tramite" class="form-control" [options]="catalogoTramites"
                             placeholder="Selecciona el tramite" [filter]="true" formControlName="tramite"
                             (onChange)="cambiarTramite()">
