@@ -6,6 +6,7 @@ import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import * as moment from "moment/moment";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -41,6 +42,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private realizarPagoService: RealizarPagoService,
+    private alertaService: AlertaService,
   ) {
   }
 
@@ -80,6 +82,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
     this.realizarPagoService.guardar(solicitudPago).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         console.log(respuesta);
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
         this.ref.close();
       },
       error: (error: HttpErrorResponse): void => {
@@ -103,8 +106,8 @@ export class RegistrarTipoPagoComponent implements OnInit {
       idMetodoPago: this.idPago,
       idPagoBitacora: this.registroPago.idPagoBitacora,
       idRegistro: this.registroPago.idRegistro,
-      importePago: this.registroPago.importePago,
-      importeRegistro: this.tipoPagoForm.get('importe')?.value,
+      importePago: this.tipoPagoForm.get('importe')?.value,
+      importeRegistro: this.registroPago.importePago,
       numAutorizacion: this.tipoPagoForm.get('noAutorizacion')?.value
     }
   }

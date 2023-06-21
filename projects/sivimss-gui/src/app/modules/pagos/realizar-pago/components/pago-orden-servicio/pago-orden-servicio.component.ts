@@ -3,9 +3,8 @@ import {OverlayPanel} from "primeng/overlaypanel";
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
 import {TIPO_PAGO_CATALOGOS_ODS} from "../../constants/dummies";
-import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {RegistrarTipoPagoComponent} from "../registrar-tipo-pago/registrar-tipo-pago.component";
 import {RegistrarAgfComponent} from "../registrar-agf/registrar-agf.component";
 import {RegistrarValeParitariaComponent} from "../registrar-vale-paritaria/registrar-vale-paritaria.component";
@@ -136,7 +135,8 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   abrirModalPago(idPago: string): void {
     const tipoPago = this.tipoPago.find(tp => tp.value === idPago).label;
-    const data: RegistroModal = {tipoPago, idPago,
+    const data: RegistroModal = {
+      tipoPago, idPago,
       total: this.pagoSeleccionado.diferenciasTotales,
       datosRegistro: {
         idPagoBitacora: this.pagoSeleccionado.idPagoBitacora,
@@ -145,13 +145,13 @@ export class PagoOrdenServicioComponent implements OnInit {
         importePago: this.pagoSeleccionado.total
       }
     }
-
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Registrar tipo de pago",
       width: MAX_WIDTH,
       data
     }
-    this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
+    const pago: DynamicDialogRef = this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
+    pago.onClose.subscribe({next: () => this.seleccionarPaginacion()})
   }
 
 }
