@@ -93,6 +93,8 @@ export class MantenimientoPredictivoComponent implements OnInit {
       periodo: [{ value: null, disabled: false }, []],
       tipoMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
     });
+
+    this.obtenerPlacas();
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
@@ -129,6 +131,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
       this.catalogoVelatorios = [];
     }
 
+    this.obtenerPlacas();
     this.cargarVelatorios(true);
     this.vehiculos = [];
     this.verDetallePredictivo = false;
@@ -167,6 +170,23 @@ export class MantenimientoPredictivoComponent implements OnInit {
       velatorio: this.filtroForm.get('velatorio')?.getRawValue() === '' ? null : this.filtroForm.get('velatorio')?.getRawValue(),
       tipoMtto: mtto,
     }
+  }
+
+  obtenerPlacas() {
+    let datos = {
+      delegacion: this.fmp.delegacion.value === '' ? null : this.fmp.delegacion.getRawValue(),
+      velatorio: this.fmp.velatorio.value === '' ? null : this.fmp.velatorio.getRawValue(),
+    };
+
+    this.mantenimientoVehicularService.obtenerPlacas(datos).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoPlacas = mapearArregloTipoDropdown(respuesta.datos, "DES_PLACAS", "DES_PLACAS");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
 }

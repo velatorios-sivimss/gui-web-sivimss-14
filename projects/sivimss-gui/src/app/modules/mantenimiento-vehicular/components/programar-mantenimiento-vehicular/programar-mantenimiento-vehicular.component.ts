@@ -92,7 +92,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
-    this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
+    // this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
@@ -120,7 +120,26 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
       velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
       placa: [{ value: null, disabled: false }, []],
-    })
+    });
+
+    this.obtenerPlacas();
+  }
+
+  obtenerPlacas() {
+    let datos = {
+      delegacion: this.f.delegacion.value === '' ? null : this.f.delegacion.getRawValue(),
+      velatorio: this.f.velatorio.value === '' ? null : this.f.velatorio.getRawValue(),
+    };
+
+    this.mantenimientoVehicularService.obtenerPlacas(datos).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoPlacas = mapearArregloTipoDropdown(respuesta.datos, "DES_PLACAS", "DES_PLACAS");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -138,7 +157,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   paginar(): void {
     if (!localStorage.getItem('sivimss_token')) return;
     this.loaderService.activar();
-    this.mantenimientoVehicularService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+    const filtros: FiltrosMantenimientoVehicular = this.crearSolicitudFiltros();
+    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.vehiculos = respuesta.datos.content;
@@ -177,20 +197,11 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
-    if (this.f.placa.value) {
-      return {
-        nivelOficina: this.f.nivel.getRawValue() === '' ? null : this.f.nivel.getRawValue(),
-        delegacion: null,
-        velatorio: null,
-        placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
-      }
-    } else {
-      return {
-        nivelOficina: this.f.nivel.getRawValue() === '' ? null : this.f.nivel.getRawValue(),
-        delegacion: this.f.delegacion.getRawValue() === '' ? null : this.f.delegacion.getRawValue(),
-        velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
-        placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
-      }
+    return {
+      nivelOficina: this.f.nivel.getRawValue() === '' ? null : this.f.nivel.getRawValue(),
+      delegacion: this.f.delegacion.getRawValue() === '' ? null : this.f.delegacion.getRawValue(),
+      velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
+      placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
     }
   }
 
@@ -208,7 +219,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     } else {
       this.catalogoVelatorios = [];
     }
-
+    this.obtenerPlacas();
     this.cargarVelatorios(true);
     this.paginar();
   }
@@ -225,7 +236,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Solicitud de mantenimiento vehicular",
       width: "920px",
-      data: { vehiculo: this.vehiculoSeleccionado },
+      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create' },
     })
   }
 
@@ -289,7 +300,6 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   irADetalle(vehiculo: any): void {
-    // debugger;
     void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_VEHICULO],
       { queryParams: { tabview: 0, id: vehiculo.ID_MTTOVEHICULAR } });
   }
