@@ -20,6 +20,7 @@ import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-a
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-reporte-encargado',
@@ -67,6 +68,7 @@ export class ReporteEncargadoComponent implements OnInit {
     private mantenimientoVehicularService: MantenimientoVehicularService,
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
   }
 
@@ -86,10 +88,6 @@ export class ReporteEncargadoComponent implements OnInit {
     this.filtroForm.reset();
   }
 
-  get fmp() {
-    return this.filtroForm?.controls;
-  }
-
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       tipoReporte: [{ value: null, disabled: false }, [Validators.required]],
@@ -97,6 +95,8 @@ export class ReporteEncargadoComponent implements OnInit {
       fechaVigenciaDesde: [{ value: null, disabled: false }, [Validators.required]],
       fecahVigenciaHasta: [{ value: null, disabled: false }, [Validators.required]],
     });
+
+    this.obtenerPlacas();
   }
 
   buscar(): void {
@@ -185,15 +185,33 @@ export class ReporteEncargadoComponent implements OnInit {
 
   filtrosArchivos(tipoReporte: string) {
     return {
-      numReporte: this.ff.tipoReporte.value,
-      fechaInicio: moment(this.ff.fechaVigenciaDesde.value).format('DD-MM-YYYY'),
-      fechaFin: moment(this.ff.fecahVigenciaHasta.value).format('DD-MM-YYYY'),
-      placas: this.ff.placa.value ? this.ff.placa.value : null,
+      numReporte: this.fmp.tipoReporte.value,
+      fechaInicio: moment(this.fmp.fechaVigenciaDesde.value).format('DD-MM-YYYY'),
+      fechaFin: moment(this.fmp.fecahVigenciaHasta.value).format('DD-MM-YYYY'),
+      placas: this.fmp.placa.value ? this.fmp.placa.value : null,
       tipoReporte,
     }
   }
 
-  get ff() {
-    return this.filtroForm.controls;
+  obtenerPlacas() {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    let datos = {
+      delegacion: +usuario.idDelegacion,
+      velatorio: +usuario.idVelatorio,
+    };
+
+    this.mantenimientoVehicularService.obtenerPlacas(datos).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoPlacas = mapearArregloTipoDropdown(respuesta.datos, "DES_PLACAS", "DES_PLACAS");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
+      }
+    });
+  }
+
+  get fmp() {
+    return this.filtroForm?.controls;
   }
 }

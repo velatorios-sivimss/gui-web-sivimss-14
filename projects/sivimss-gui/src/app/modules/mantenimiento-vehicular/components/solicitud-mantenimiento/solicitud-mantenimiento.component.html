@@ -58,8 +58,7 @@
                       [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
           </p-calendar>
           <span class="campo-obligatorio"
-                *ngIf="smf?.fechaRegistro?.errors?.required && (smf?.fechaRegistro?.dirty || smf?.fechaRegistro?.touched)">Campo
-        obligatorio</span>
+                *ngIf="smf?.fechaRegistro?.errors?.required && (smf?.fechaRegistro?.dirty || smf?.fechaRegistro?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -79,13 +78,13 @@
                       placeholder="Selecciona el tamaño">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">Este campo es obligatorio *.</span>
+                *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">v</span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-12">
           <label class="control-label" for="notas">Notas<span class="req">*:</span></label>
-          <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa el notas">
+          <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa el notas" maxlength="350">
           <span class="campo-obligatorio"
                 *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Este campo es obligatorio *.</span>
         </div>

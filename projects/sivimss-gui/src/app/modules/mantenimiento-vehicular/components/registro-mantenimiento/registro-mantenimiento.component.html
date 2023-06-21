@@ -5,13 +5,15 @@
         <label class="control-label" for="placas">Placas<span class="req">*</span>:</label>
         <input id="placas" class="form-control" formControlName="placas" placeholder="Ingresa el placas">
         <span class="campo-obligatorio"
-              *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Este campo es obligatorio
+          *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="marca">Marca<span class="req">*</span>:</label>
         <input id="marca" class="form-control" formControlName="marca" placeholder="Ingresa el marca">
         <span class="campo-obligatorio"
-              *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Este campo es obligatorio
+          *.</span>
       </div>
     </div>
     <div class="row mb-3">
@@ -19,34 +21,37 @@
         <label class="control-label" for="anio">Año<span class="req">*</span>:</label>
         <input id="anio" class="form-control" formControlName="anio" placeholder="Ingresa el anio">
         <span class="campo-obligatorio"
-              *ngIf="smf.anio?.errors?.required && (smf.anio?.dirty || smf.anio?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.anio?.errors?.required && (smf.anio?.dirty || smf.anio?.touched)">Este campo es obligatorio
+          *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
         <input id="kilometraje" class="form-control" formControlName="kilometraje" placeholder="Ingresa el kilometraje"
-               maxlength="6" numbersOnly>
+          maxlength="6" numbersOnly>
         <span class="campo-obligatorio"
-              *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Este campo
+          es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="tipoMantenimiento">Tipo de mantenimiento<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="tipoMantenimiento" class="form-control" formControlName="tipoMantenimiento"
-                    [options]="tiposMantenimiento"
-                    placeholder="Selecciona el tamaño" (onChange)="gestionarCampos()">
+          [options]="tiposMantenimiento" placeholder="Selecciona el tamaño" (onChange)="gestionarCampos()">
         </p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="fechaMantenimiento">Fecha de mantenimiento<span class="req">*:</span></label>
         <p-calendar id="fechaMantenimiento" formControlName="fechaMantenimiento" styleClass="form-control"
-                    [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+          [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
         </p-calendar>
         <span class="campo-obligatorio"
-              *ngIf="smf?.fecha?.errors?.required && (smf?.fecha?.dirty || smf?.fecha?.touched)">Campo
-        obligatorio</span>
+          *ngIf="smf.fechaMantenimiento?.errors?.required && (smf.fechaMantenimiento?.dirty || smf.fechaMantenimiento?.touched)">Este
+          campo es obligatorio *.
+        </span>
       </div>
     </div>
     <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '1'">
@@ -55,17 +60,17 @@
         <div class="flex">
           <div class="flex align-items-center mx-2">
             <p-radioButton id="modalidadSemestral" name="modalidad" value="1" formControlName="modalidad"
-                           inputId="semestral"></p-radioButton>
+              inputId="semestral"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'modalidad'">Semestral</label>
           </div>
           <div class="flex align-items-center mx-2">
             <p-radioButton id="modalidadAnual" name="modalidad" value="2" formControlName="modalidad"
-                           inputId="anual"></p-radioButton>
+              inputId="anual"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'modalidad'">Anual</label>
           </div>
           <div class="flex align-items-center mx-2">
             <p-radioButton id="modalidadFrecuente" name="modalidad" value="3" formControlName="modalidad"
-                           inputId="frecuente"></p-radioButton>
+              inputId="frecuente"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'modalidad'">Frecuente</label>
           </div>
         </div>
@@ -73,9 +78,11 @@
       <div class="col-md-6">
         <label class="control-label" for="matPreventivo">Mantenimiento<span class="req">*:</span></label>
         <p-dropdown appendTo="body" id="matPreventivo" class="form-control" formControlName="matPreventivo"
-                    [options]="mantenimientosPrev"
-                    placeholder="Selecciona el tamaño">
+          [options]="mantenimientosPrev" placeholder="Selecciona el tamaño">
         </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value">
@@ -83,28 +90,32 @@
         <label class="control-label" for="notas">Notas<span class="req">*:</span></label>
         <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa las notas" maxlength="350">
         <span class="campo-obligatorio"
-              *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Este campo es obligatorio
+          *.</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '1'">
         <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="nombreProveedor" class="form-control" formControlName="nombreProveedor"
-                    [options]="catalogoProveedores"
-                    placeholder="Ingresa el nombre del proveedor" (onChange)="asignarContrato()">
+          [options]="catalogoProveedores" placeholder="Ingresa el nombre del proveedor" (onChange)="asignarContrato()">
         </p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.nombreProveedor?.errors?.required && (smf.nombreProveedor?.dirty || smf.nombreProveedor?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
       <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '2'">
         <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
-        <input id="nombreProveedor" class="form-control" formControlName="nombreProveedor" placeholder="Ingresa el proovedor" maxlength="100">
+        <input id="nombreProveedor" class="form-control" formControlName="nombreProveedor"
+          placeholder="Ingresa el proovedor" maxlength="100">
         <span class="campo-obligatorio"
-              *ngIf="smf.nombreProveedor?.errors?.required && (smf.nombreProveedor?.dirty || smf.nombreProveedor?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.nombreProveedor?.errors?.required && (smf.nombreProveedor?.dirty || smf.nombreProveedor?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="noContrato">Número de contrato:</label>
-        <input id="noContrato" class="form-control" formControlName="noContrato" placeholder="Ingresa el número de contrato" maxlength="20">
+        <input id="noContrato" class="form-control" formControlName="noContrato"
+          placeholder="Ingresa el número de contrato" maxlength="20">
       </div>
     </div>
     <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '2'">
@@ -112,15 +123,18 @@
         <label class="control-label" for="taller">Taller<span class="req">*</span>:</label>
         <input id="taller" class="form-control" formControlName="taller" placeholder="Ingresa el taller">
         <span class="campo-obligatorio"
-              *ngIf="smf.taller?.errors?.required && (smf.taller?.dirty || smf.taller?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.taller?.errors?.required && (smf.taller?.dirty || smf.taller?.touched)">Este campo es obligatorio
+          *.</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="costoMantenimiento">Costo de mantenimiento(IVA incluido)<span class="req">*</span>:</label>
+        <label class="control-label" for="costoMantenimiento">Costo de mantenimiento(IVA incluido)<span
+            class="req">*</span>:</label>
         <p-inputNumber id="costoMantenimiento" class="form-control" formControlName="costoMantenimiento" mode="decimal"
           [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="Ingresa el costo de mantenimiento"
           [maxlength]="9" currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
-              *ngIf="smf.costoMantenimiento?.errors?.required && (smf.costoMantenimiento?.dirty || smf.costoMantenimiento?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="smf.costoMantenimiento?.errors?.required && (smf.costoMantenimiento?.dirty || smf.costoMantenimiento?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-4">
@@ -264,4 +278,3 @@
     </button>
   </div>
 </ng-container>
-

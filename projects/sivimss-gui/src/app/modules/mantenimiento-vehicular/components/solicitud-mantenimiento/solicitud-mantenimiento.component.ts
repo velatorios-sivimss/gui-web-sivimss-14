@@ -42,6 +42,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
   solicitudMantenimientoForm!: FormGroup;
   mantenimientosPrev: TipoDropdown[] = [];
   tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
+  mode: string = 'update';
   modalidades: string[] = ['', 'Semestral', 'Anual', 'Frecuente'];
 
   idMttoVehicular: number | null = null;
@@ -71,6 +72,9 @@ export class SolicitudMantenimientoComponent implements OnInit {
     if (this.config.data.id) {
       const id = this.config.data.id;
       this.realizarSolicitud(id);
+    }
+    if (this.config.data.mode) {
+      this.mode = this.config.data.mode;
     }
     this.inicializarSolicitudForm();
   }
@@ -143,7 +147,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaRegistro")?.value, 'YYYY-MM-dd'),
         desMttoCorrectivo: this.resumenAsignacion.tipoMantenimiento === 'Preventivo' ? this.solicitudMantenimientoForm.get("matPreventivo")?.value : null,
         idMttoModalidadDet: 1,
-        idEstatus: 1,
+        idEstatus: this.mode === 'update' ? (this.vehiculoSeleccionado.ID_MTTOESTADO ?? null) : 1,
         kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
         desNotas: this.solicitudMantenimientoForm.get("notas")?.value
       },
@@ -202,6 +206,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.mantenimientoVehicularService.obtenerDetalleSolicitud(id).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
+          debugger
           if (respuesta.datos.length === 0) return;
           this.llenarVehiculo(respuesta.datos[0]);
           this.llenarFormulario(respuesta.datos[0]);
@@ -216,6 +221,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
   llenarVehiculo(respuesta: RespuestaSolicitudMantenimiento): void {
     this.vehiculoSeleccionado = {
       DESCRIPCION: "",
+      ID_MTTOESTADO: respuesta.ID_MTTOESTADO,
       DES_DELEGACION: respuesta.DES_DELEGACION,
       DES_MARCA: respuesta.DES_MARCA,
       DES_MODALIDAD: respuesta.DES_MODALIDAD,

@@ -14,7 +14,7 @@ export interface RegistroSolicitudMttoInterface {
     fecRegistro: string | null,
     desMttoCorrectivo: string,
     idMttoModalidadDet: number,
-    idEstatus: number,
+    idEstatus: number | null,
     kilometraje: number,
     desNotas: string
   },
