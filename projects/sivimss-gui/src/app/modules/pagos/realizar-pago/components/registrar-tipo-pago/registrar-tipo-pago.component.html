@@ -7,7 +7,7 @@
           <input id="tipoPago" class="form-control" formControlName="tipoPago"
                  placeholder="Ingresar Tipo de pago">
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
           <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
           <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
                       placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
@@ -18,19 +18,19 @@
         <div class="col-md-6">
           <label class="control-label" for="noAutorizacion">No. de autorización<span class="req">*</span>:</label>
           <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
-                 placeholder="Ingresa número">
+                 placeholder="Ingresa número" [maxlength]="20">
         </div>
         <div class="col-md-6">
           <label class="control-label" for="nombreBanco">Nombre del banco<span class="req">*</span>:</label>
           <input id="nombreBanco" class="form-control" formControlName="nombreBanco"
-                 placeholder="Ingresar nombre">
+                 placeholder="Ingresar nombre" [maxlength]="20">
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
           <input id="importe" class="form-control" formControlName="importe"
-                 placeholder="Ingresa importe">
+                 placeholder="Ingresa importe" [maxlength]="10" numbersOnly>
         </div>
         <div class="col-md-6 flex justify-content-end  mt-2">
           <div class="flex flex-column">
@@ -61,7 +61,7 @@
             <span>{{ resumenSolicitud.tipoPago }}</span>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
           <div class="table-panel-column">
             <label>Fecha de pago</label>
             <span> {{ resumenSolicitud.fecha | date }}</span>
@@ -105,7 +105,7 @@
         <button type="submit" class="btn btn-default btn-md" (click)="pasoAgregarPago = CAPTURA_DE_PAGO">Regresar
         </button>
         <button type="submit" class="btn btn-gold btn-md ml-5" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar</button>
       </div>
     </div>
   </ng-container>

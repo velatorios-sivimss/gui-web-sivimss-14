@@ -16,6 +16,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
+import {validarUsuarioLogueado} from "../../../../../utils/funciones";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -71,6 +72,7 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }

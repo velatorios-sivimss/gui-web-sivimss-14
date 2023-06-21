@@ -2,6 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {SolicitudCrearPago} from "../../modelos/solicitudPago.interface";
+import {RealizarPagoService} from "../../services/realizar-pago.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -29,12 +32,14 @@ export class RegistrarTipoPagoComponent implements OnInit {
   idPago!: number;
   total: number = 0;
   pagos: string[] = ["Traslado oficial", "Efectivo"]
+  fechasDeshabilitadas = [3, 4]
   resumenSolicitud!: any;
 
   constructor(
     private formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
+    private realizarPagoService: RealizarPagoService,
   ) {
   }
 
@@ -44,6 +49,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
     this.total = this.config.data.total;
     this.registroPago = this.config.data.datosRegistro;
     this.inicializarTipoPagoForm();
+    this.validarCamposRequeridos(this.idPago);
   }
 
   inicializarTipoPagoForm(): void {
@@ -56,6 +62,12 @@ export class RegistrarTipoPagoComponent implements OnInit {
     });
   }
 
+  validarCamposRequeridos(id: number): void {
+    if (this.fechasDeshabilitadas.includes(id)) {
+      this.tipoPagoForm.get('fecha')?.clearValidators();
+    }
+  }
+
   aceptar(): void {
     this.resumenSolicitud = this.tipoPagoForm.getRawValue();
     this.pasoAgregarPago = this.RESUMEN_DE_PAGO;
@@ -63,6 +75,15 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   guardar(): void {
     const solicitudPago: SolicitudCrearPago = this.generarSolicitudPago();
+    console.log(solicitudPago);
+    this.realizarPagoService.guardar(solicitudPago).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        console.log(respuesta);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error)
+      }
+    });
   }
 
   cancelar(): void {

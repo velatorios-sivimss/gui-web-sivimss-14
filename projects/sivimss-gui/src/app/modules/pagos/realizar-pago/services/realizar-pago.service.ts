@@ -19,7 +19,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _renPrevFunFolios: string = 'consultar-folios-renPrevFun-pagos';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "", "",
+    super(_http, `${environment.api.mssivimss}`, "crear_pagos", "",
       36, "consultar-tabla-pagos", "", "");
   }
 
