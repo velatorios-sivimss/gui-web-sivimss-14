@@ -117,7 +117,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormProgramarMantenimiento = this.formBuilder.group({
       nivel: [{ value: +usuario.idOficina, disabled: true }],
-      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2 }, []],
+      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
       velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
       placa: [{ value: null, disabled: false }, []],
     })
@@ -177,24 +177,33 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
-    return {
-      nivelOficina: this.f.nivel.getRawValue() === '' ? null : this.f.nivel.getRawValue(),
-      delegacion: this.f.delegacion.getRawValue() === '' ? null : this.f.delegacion.getRawValue(),
-      velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
-      placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+    if (this.f.placa.value) {
+      return {
+        nivelOficina: this.f.nivel.getRawValue() === '' ? null : this.f.nivel.getRawValue(),
+        delegacion: null,
+        velatorio: null,
+        placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+      }
+    } else {
+      return {
+        nivelOficina: this.f.nivel.getRawValue() === '' ? null : this.f.nivel.getRawValue(),
+        delegacion: this.f.delegacion.getRawValue() === '' ? null : this.f.delegacion.getRawValue(),
+        velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
+        placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+      }
     }
   }
 
   limpiar(): void {
     this.filtroFormProgramarMantenimiento.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idRol);
+    this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idOficina);
 
-    if (+usuario.idRol >= 2) {
+    if (+usuario.idOficina >= 2) {
       this.filtroFormProgramarMantenimiento.get('delegacion')?.patchValue(+usuario.idDelegacion);
     }
 
-    if (+usuario.idRol === 3) {
+    if (+usuario.idOficina === 3) {
       this.filtroFormProgramarMantenimiento.get('velatorio')?.patchValue(+usuario.idVelatorio);
     } else {
       this.catalogoVelatorios = [];

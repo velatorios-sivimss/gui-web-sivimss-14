@@ -1,19 +1,19 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {OverlayPanel} from "primeng/overlaypanel";
-import {DialogService} from "primeng/dynamicdialog";
-import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
-import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
-import {HttpErrorResponse} from "@angular/common/http";
-import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
-import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {FiltrosMantenimientoPredictivo} from "../../models/filtrosMantenimientoPredictivo.interface";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { OverlayPanel } from "primeng/overlaypanel";
+import { DialogService } from "primeng/dynamicdialog";
+import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
+import { UsuarioEnSesion } from "../../../../models/usuario-en-sesion.interface";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
+import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
+import { HttpErrorResponse } from "@angular/common/http";
+import { MantenimientoVehicularService } from "../../services/mantenimiento-vehicular.service";
+import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
+import { FiltrosMantenimientoPredictivo } from "../../models/filtrosMantenimientoPredictivo.interface";
 
 @Component({
   selector: 'app-mantenimiento-predictivo',
@@ -86,12 +86,12 @@ export class MantenimientoPredictivoComponent implements OnInit {
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}, [Validators.required]],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, [Validators.required]],
-      placa: [{value: null, disabled: false}, [Validators.required]],
-      periodo: [{value: null, disabled: false}, []],
-      tipoMantenimiento: [{value: null, disabled: false}, [Validators.required]],
+      nivel: [{ value: +usuario.idOficina, disabled: true }],
+      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, [Validators.required]],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
+      placa: [{ value: null, disabled: false }, [Validators.required]],
+      periodo: [{ value: null, disabled: false }, []],
+      tipoMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
@@ -116,10 +116,22 @@ export class MantenimientoPredictivoComponent implements OnInit {
   limpiar(): void {
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
-    this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+
+    this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
+
+    if (+usuario.idOficina >= 2) {
+      this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    }
+
+    if (+usuario.idOficina === 3) {
+      this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    } else {
+      this.catalogoVelatorios = [];
+    }
+
     this.cargarVelatorios(true);
+    this.vehiculos = [];
+    this.verDetallePredictivo = false;
   }
 
   buscar(): void {
