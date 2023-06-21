@@ -94,7 +94,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       tipoMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
       modalidad: [{ value: null, disabled: false }, []],
       matPreventivo: [{ value: null, disabled: false }, []],
-      fechaMantenimiento: [{ value: null, disabled: false }, []],
+      fechaMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
       notas: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(350)]],
       nombreProveedor: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(100)]],
       noContrato: [{ value: null, disabled: false }, []],
@@ -175,13 +175,13 @@ export class RegistroMantenimientoComponent implements OnInit {
         idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR ? +this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value ? +this.solicitudMantenimientoForm.get("modalidad")?.value : null,
         idMantenimiento: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value ? +this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value : null,
-        desNombreProveedor: this.smf.tipoMantenimiento.value === '2' ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
+        desNombreProveedor: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
         desNotas: this.solicitudMantenimientoForm.get("notas")?.value,
-        idProveedor: this.smf.tipoMantenimiento.value === '1' ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
+        idProveedor: +this.smf.tipoMantenimiento.value == 1 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
         desNumcontrato: this.solicitudMantenimientoForm.get("noContrato")?.value,
         kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
         desNombreTaller: this.solicitudMantenimientoForm.get("taller")?.value,
-        costoMtto: this.solicitudMantenimientoForm.get("costoMantenimiento")?.value,
+        costoMtto: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("costoMantenimiento")?.value : null,
         desMttoCorrectivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value, 'YYYY-MM-dd'),
       }
@@ -195,11 +195,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
-          if (this.mode === 'update') {
-            this.ref.close(true);
-          } else {
-            this.abrirRegistroSolicitud();
-          }
+          this.abrirRegistroSolicitud();
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
@@ -218,7 +214,6 @@ export class RegistroMantenimientoComponent implements OnInit {
     const tipoMtto = this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value;
     this.solicitudMantenimientoForm.get("nombreProveedor")?.setValue(null);
     this.solicitudMantenimientoForm.get("noContrato")?.setValue(null);
-    this.solicitudMantenimientoForm.get("fechaMantenimiento")?.clearValidators();
     this.solicitudMantenimientoForm.get("modalidad")?.clearValidators();
     this.solicitudMantenimientoForm.get("matPreventivo")?.clearValidators();
     if (tipoMtto.toString() === '1') {
@@ -232,14 +227,11 @@ export class RegistroMantenimientoComponent implements OnInit {
     }
     if (tipoMtto.toString() === '2') {
       this.solicitudMantenimientoForm.get("noContrato")?.enable();
-      this.solicitudMantenimientoForm.get("fechaMantenimiento")?.setValue(null);
-      this.solicitudMantenimientoForm.get("fechaMantenimiento")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("taller")?.setValue(null);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("costoMantenimiento")?.setValue(null);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
     }
-    this.solicitudMantenimientoForm.get("fechaMantenimiento")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("costoMantenimiento")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("taller")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("modalidad")?.updateValueAndValidity();

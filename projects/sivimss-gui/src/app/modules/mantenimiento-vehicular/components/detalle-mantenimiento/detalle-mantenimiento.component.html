@@ -178,7 +178,7 @@
                       <span>{{solicitudRegistro.NUM_KILOMETRAJE}}</span>
                     </div>
                     <div class="col-3 table-panel-column">
-                      <label class="flex flex-column etiqueta-base">Fecha mantenimiento</label>
+                      <label class="flex flex-column etiqueta-base">Fecha de registro</label>
                       <span>{{solicitudRegistro.FEC_REGISTRO}}</span>
                     </div>
                   </div>
@@ -273,7 +273,7 @@
                       <label class="flex flex-column etiqueta-base">Taller</label>
                       <span>{{registro.DES_NOMBRE_TALLER}}</span>
                     </div>
-                    <div class="col table-panel-column" *ngIf="registro.DES_MTTO_TIPO === 'Correctivo'">
+                    <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Fecha de Mantenimiento</label>
                       <span>{{registro.FEC_REGISTRO}}</span>
                     </div>

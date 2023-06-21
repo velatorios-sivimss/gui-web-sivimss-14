@@ -11,7 +11,7 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-          placeholder="Seleccionar delegación" (onChange)="cargarVelatorios()" [filter]="true">
+          placeholder="Seleccionar delegación" (onChange)="cargarVelatorios(); obtenerPlacas();" [filter]="true">
         </p-dropdown>
       </div>
     </div>
@@ -19,7 +19,7 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-          placeholder="Seleccionar el velatorio" [filter]="true">
+          placeholder="Seleccionar el velatorio" [filter]="true" (onChange)="obtenerPlacas();">
         </p-dropdown>
       </div>
       <div class="col-md-6">
@@ -70,13 +70,13 @@
     </ng-template>
     <ng-template pTemplate="body" let-vehiculo>
       <tr>
-        <td pResizableColumn> {{vehiculo.ID_VEHICULO}} </td>
+        <td pResizableColumn> {{vehiculo.ID_MTTOVEHICULAR}} </td>
         <td pResizableColumn> {{vehiculo.DES_MARCA}} {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</td>
         <td pResizableColumn> {{vehiculo.DES_PLACAS}} </td>
         <td pResizableColumn> {{vehiculo.NUM_KILOMETRAJE_REG}} </td>
         <td pResizableColumn> {{vehiculo.DES_MTTO_TIPO}} </td>
         <td pResizableColumn> {{vehiculo.DES_MODALIDAD}} </td>
-        <td pResizableColumn> {{vehiculo.FEC_MTTO_SOL}} </td>
+        <td pResizableColumn> {{vehiculo.FEC_REGISTRO_REG}} </td>
         <td pResizableColumn> {{vehiculo.MON_COSTO_MTTO}} </td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
@@ -96,7 +96,7 @@
     <ng-template pTemplate="emptymessage">
       <tr>
         <th colspan=9 class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular">
-          No se encontro información relacionada a tu búsqueda
+          No se encontró información relacionada a tu búsqueda
         </th>
       </tr>
     </ng-template>
@@ -127,10 +127,12 @@
       <app-overlay-panel-opcion titulo="Verificar al Inicio" (click)="abrirModalnuevaVerificacion()"
         *ngIf="vehiculoSeleccionado.verificacionDia === 'false'" onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
-        *ngIf="!vehiculoSeleccionado.ID_MTTO_SOLICITUD" onCloseOnNavigation></app-overlay-panel-opcion>
+        onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
-        *ngIf="!vehiculoSeleccionado.ID_MTTO_REGISTRO" onCloseOnNavigation></app-overlay-panel-opcion>
+        onCloseOnNavigation></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
+    <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = true"
+      *ngIf="vehiculoSeleccionado.DES_MTTOESTADO !== 'FINALIZADO'" onCloseOnNavigation></app-overlay-panel-opcion>
   </ng-template>
 </p-overlayPanel>
 

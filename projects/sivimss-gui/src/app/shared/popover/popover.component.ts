@@ -27,6 +27,7 @@ import {Component, Input, Output, EventEmitter, HostListener, ElementRef} from '
       max-height: 800px;
       padding: 10px;
       display: none;
+      overflow-y: auto;
     }
 
     .popover-visible {
