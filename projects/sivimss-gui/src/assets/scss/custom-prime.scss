@@ -814,6 +814,11 @@ p-table .border-padding-top .p-datatable-wrapper {
     background-color: white;
   }
 
+  .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+    color: #9D2449;
+    font-weight: bold;
+  }
+
   .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon.pi-chevron-right {
     transform: rotate(90deg) scale(1.3);
     display: inline-block;

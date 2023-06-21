@@ -83,6 +83,10 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
       { params });
   }
 
+  obtenerPlacas(datos: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/cat-placas-vehiculos`, datos);
+  }
+
   override buscarPorPagina(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)

@@ -25,6 +25,19 @@ export interface UsuarioContratante {
 }
 
 export interface ConfirmarContratante {
-  usuarioContratante?:UsuarioContratante,
+  usuarioContratante?: UsuarioContratante,
   estatus?: boolean;
+}
+
+export interface BusquedaContratante {
+  NomContratante?: string;
+  idContratante?: number;
+  estatus?: boolean,
+  fecNacimiento?: string;
+  tel?: string;
+  idPersona?: number;
+  curp?: string;
+  rfc?: string;
+  idDomicilio?: number;
+  nss?: string;
 }

@@ -77,6 +77,11 @@ export class DetalleMantenimientoComponent implements OnInit {
           this.verificacion = respuesta[POSICION_VERIFICACION].datos[0] || null;
           this.registro = respuesta[POSICION_REGISTRO_MTTO].datos[0] || null;
           this.solicitudRegistro = respuesta[POSICION_SOLICITUD_MTTO].datos[0] || null;
+          if (this.solicitudRegistro.DES_MTTOESTADO) {
+            this.vehiculo.DES_MTTOESTADO = this.solicitudRegistro.DES_MTTOESTADO;
+          } else if (this.solicitudRegistro.DES_MTTOESTADO) {
+            this.vehiculo.DES_MTTOESTADO = this.registro.DES_MTTOESTADO;
+          }
         }
       });
   }

@@ -24,6 +24,7 @@ import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 import {ContratantesService} from "./services/contratantes.service";
 import { DetalleContratantesComponent } from './components/detalle-contratantes/detalle-contratantes.component';
 import { ModificarContratantesComponent } from './components/modificar-contratantes/modificar-contratantes.component';
+import { BtnRegresarModule } from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -48,7 +49,7 @@ import { ModificarContratantesComponent } from './components/modificar-contratan
     CeldaStickyModule,
     StepsModule,
     CalendarModule,
-
+    BtnRegresarModule,
   ],
   providers:[
     ContratantesService

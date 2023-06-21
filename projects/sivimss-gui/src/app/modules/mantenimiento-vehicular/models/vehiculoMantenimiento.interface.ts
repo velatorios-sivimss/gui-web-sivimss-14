@@ -29,4 +29,5 @@ export interface VehiculoMantenimiento {
   // Campos faltantes
   KILOMETRAJE?: string,
   FECHA_MANTENIMIENTO?: string,
+  ID_MTTOESTADO?: number,
 }
