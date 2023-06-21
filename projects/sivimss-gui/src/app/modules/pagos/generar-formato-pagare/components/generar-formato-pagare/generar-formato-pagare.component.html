@@ -16,19 +16,19 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label class="control-label" for="velatorio">Velatorio:</label>
-                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
+                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" (onChange)="obtenerFoliosGenerados()">
                 </p-dropdown>
             </div>
             <div class="col-md-6">
                 <label class="control-label" for="folioODS">Folio de la ODS<span class="req">*</span>:</label>
-                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados" (onChange)="obtenerContratanteGeneradoPorfolio()" optionLabel="label" placeholder="Selecciona el folio" [filter]="true" filterBy="label">
+                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados" (onChange)="obtenerContratanteGeneradoPorfolio()" optionLabel="label" placeholder="Selecciona el folio" [filter]="true">
                 </p-dropdown>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
                 <label class="control-label" for="nombreContratante">Nombre del contratante:<span class="req">*</span>:</label>
-                <p-dropdown id="nombreContratante" class="form-control" formControlName="nombreContratante" [options]="contratantesGenerados" optionLabel="label" placeholder="Selecciona el nombre del contratante" [filter]="true" filterBy="label">
+                <p-dropdown id="nombreContratante" class="form-control" formControlName="nombreContratante" [options]="contratantesGenerados" optionLabel="label" placeholder="Selecciona el nombre del contratante" [filter]="true">
                 </p-dropdown>
             </div>
             <div class="col-md-3">

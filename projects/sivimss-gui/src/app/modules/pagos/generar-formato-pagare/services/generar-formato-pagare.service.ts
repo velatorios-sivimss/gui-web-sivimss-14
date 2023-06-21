@@ -12,6 +12,11 @@ interface ConsultaVelatorio {
   idDelegacion: string | null
 }
 
+interface ConsultaFolio {
+  idDelegacion: string | null
+  idVelatorio: string | null
+}
+
 interface PeticionDescarga {
   tipoReporte: "pdf" | "xls"
 }
@@ -91,8 +96,10 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
-  buscarTodasOdsGeneradas(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/lista-ods-pag`);
+  obtenerFoliosODS(delegacion: string, idVelatorio: string): Observable<HttpRespuesta<any>> {
+    const body: ConsultaFolio = {idDelegacion: delegacion,
+    idVelatorio: idVelatorio}
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-pag`, body);
   }
 
   buscarContratantesGeneradosPorfolio(id: number): Observable<HttpRespuesta<any>> {

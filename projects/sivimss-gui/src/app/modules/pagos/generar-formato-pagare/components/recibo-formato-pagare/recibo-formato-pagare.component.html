@@ -1,154 +1,161 @@
 <div class="row">
     <h3>Pagaré</h3>
 </div>
+<form [formGroup]="filtroForm" (ngSubmit)="generarPdf()">
+    <div class="row mb-4">
 
-<div class="row mb-4">
-    <div class="col-md-12 border seccion-folio flex justify-content-between">
-        <div>
-            <span class="subtitulo texto-centrado">Folio {{formatoPagare.folioODS}}</span>
-        </div>
-        <div class="table-panel-header-column">
-            <div class="flex flex-column ml-5">
-                <a (click)="overlayPanel.toggle($event)">
-                    <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                </a>
+        <div class="col-md-12 border seccion-folio flex justify-content-between">
+            <div>
+                <span class="subtitulo texto-centrado">Folio</span>
+                <span class="etiqueta-formato-val"> {{formatoPagare.folioODS}} </span>
+            </div>
+            <div class="table-panel-header-column">
+                <div class="flex flex-column ml-5">
+                    <a (click)="overlayPanel.toggle($event)">
+                        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-12 border">
-        <div class="body">
-            <section class="logos">
-                <div class="logo-imss float-left">
-                    <span class="texto-imss">IMSS</span>
-                </div>
-                <div class="logo-fibeso float-right ">
-                    <span class="texto-fibeso">FIBESO</span>
-                </div>
-                <div class="float-right ">
-                    <div class="grid-item">
-                        <span class="etiqueta-formato">Fecha <span class="etiqueta-formato-val">{{formatoPagare.fechaODS}}</span></span>
+        <div class="col-md-12 border">
+            <div class="body">
+                <section class="logos">
+                    <div class="logo-imss float-left">
+                        <span class="texto-imss">IMSS</span>
                     </div>
-                    <div class="grid-item">
-                        <span class="etiqueta-formato">Hora <span class="etiqueta-formato-val">{{formatoPagare.hora}}</span>
-                        </span>
+                    <div class="logo-fibeso float-right ">
+                        <span class="texto-fibeso">FIBESO</span>
                     </div>
-                </div>
-            </section>
-            <section class="titulo-body">
+                    <div class="float-right ">
+                        <div class="grid-item">
+                            <span class="etiqueta-formato">Fecha <span class="etiqueta-formato-val">{{formatoPagare.fechaODS}}</span></span>
+                        </div>
+                        <div class="grid-item">
+                            <span class="etiqueta-formato">Hora <span class="etiqueta-formato-val">{{formatoPagare.hora}}</span>
+                            </span>
+                        </div>
+                    </div>
+                </section>
+                <section class="titulo-body">
 
-            </section>
+                </section>
 
-            <hr class="solid">
+                <hr class="solid">
 
-            <section class="flex justify-content-between info-gral-body mt-7 col-md-7">
-                <span class="etiqueta-formato">Pagaré <span
+                <section class="flex justify-content-between info-gral-body mt-7 col-md-7">
+                    <span class="etiqueta-formato">Pagaré <span
           class="etiqueta-formato-val">{{formatoPagare.folioPagare}}</span> </span>
-                <span class="etiqueta-formato">Bueno por $ <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
-                </span>
+                    <span class="etiqueta-formato">Bueno por $ <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
+                    </span>
 
 
 
-            </section>
+                </section>
 
 
-            <section class="border contenido-body">
-                <div class="mt-5">
-                    <span class="col-md-12 etiqueta-formato">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera</span>
+                <section class="border contenido-body">
+                    <div class="mt-5">
+                        <span class="col-md-12 etiqueta-formato">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera</span>
 
-                    <span class="col-md-12 etiqueta-formato-val">al INSTITUTO MEXICANO DEL SEGURO SOCIAL
+                        <span class="col-md-12 etiqueta-formato">al INSTITUTO MEXICANO DEL SEGURO SOCIAL
             <span class="etiqueta-base"> o a su orden el dia </span>
-                    <span class="etiqueta-formato-val"> {{formatoPagare.fechaODS}} </span>
-                    <!--
+                        <span class="etiqueta-formato-val"> {{formatoPagare.fechaODS}} </span>
+                        <!--
             <span class="etiqueta-base"> de </span>
             <span class="etiqueta-formato-val"> Abril </span>
             <span class="etiqueta-base"> de </span>
             <span class="etiqueta-formato-val"> 2021 </span>
             -->
-                    </span>
-                    <span class="col-md-12 etiqueta-base mt-3">la cantidad de $
-            <span class="etiqueta-formato-val">{{formatoPagare.importe}}  </span>
-                    <span class="etiqueta-formato-val">{{importeLetra}}</span>
-                    </span>
-                </div>
+                        </span>
+                        <span class="col-md-12 etiqueta-base mt-3">la cantidad de $
+                        <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
+                        <span class="etiqueta-formato-val">{{importeLetra}}</span>
+                        </span>
+                        <span class="col-md-12 etiqueta-base mt-3">Valor recibido SERVICIOS FUNERARIOS ORDEN DE SERVICIO No. 
+                            <span class="etiqueta-formato-val">{{formatoPagare.folioODS}} </span>
+                        </span>
+                    </div>
 
-                <div>
-                    <span class="col-md-12 etiqueta-base mt-7 mb-3">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente 
-            pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en 
-            cualquier otra en que se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente pagaré reconozco 
-            deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que
-             se me requieraPor el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera.
-          </span>
-
-                    <span class="col-md-12 etiqueta-base mt-7 mb-3" for="redito">de 
-                        <div class="col-md-2">
-                            <input id="redito" class="form-control" [(ngModel)]="formatoPagare.redito" formControlName="{{formatoPagare.redito}}" placeholder="Ingresa redito">
-                        </div>
-                        por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen
+                    <div>
+                        <span class="col-md-12 etiqueta-base mt-7 mb-3">
+                        A mi entera satisfacción. La cantidad que ampara este pagare es parte de cantidad mayor, por la cual se otorgan otros pagares con vencimientos posteriores y
+queda expresamente convenido que si no es pagado este documento precisamente a su vencimiento se darán por vencidos anticipadamente los demás
+pagares a que se refiere está cláusula. Este pagaré es mercantil está regido por la Ley General de Títulos y Operaciones de Crédito en su artículo 173 parte
+final y Artículos correlativos por no ser pagare domiciliado.
                     </span>
 
+                        <span class="col-md-12 etiqueta-base mt-7 mb-3">
+                        De no verificarse el pago de la cantidad que este pagare expresa el día de su vencimiento abonar a la
+                    </span>
 
+                        <span class="col-md-1 etiqueta-base mt-3">de </span>
+                        <span class="etiqueta-formato-val col-md-1">
+                            <input id="redito" class="form-control" [(ngModel)]="formatoPagare.redito" formControlName="redito" placeholder="Ingresa redito" size="2"></span>
+                        <span class="col-md-10 etiqueta-formato-val">por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen</span>
 
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
+                        <div class="grid-item"></div>
 
-                    <div class="grid-item"></div>
-                    <div class="grid-item"></div>
-
-
-                    <div class="row flex justify-content-between mt-7">
-                        <div class="card border">
-                            <div class="container-card">
-                                <hr class="solid">
-                                <div class="flex justify-content-between mt-5">
-                                    <div class="column-card etiqueta-card">Firma</div>
+                        <div class="row flex justify-content-between mt-7">
+                            <div class="card border">
+                                <div class="container-card">
+                                    <hr class="solid">
+                                    <div class="flex justify-content-between mt-5">
+                                        <div class="column-card etiqueta-card">Firma</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="grid-container">
-                        <div class="grid-item">
-                            <span class="etiqueta-formato">Otorgante <span
+                        <div class="grid-container">
+                            <div class="grid-item">
+                                <span class="etiqueta-formato">Otorgante <span
                 class="etiqueta-formato-val">{{formatoPagare.nomContratante}}</span></span>
-                        </div>
-                        <div class="grid-item">
+                            </div>
+                            <div class="grid-item">
 
-                        </div>
-                        <div class="grid-item"></div>
+                            </div>
+                            <div class="grid-item"></div>
 
-                        <div class="grid-item">
-                            <span class="etiqueta-formato">Domicilio <span
+                            <div class="grid-item">
+                                <span class="etiqueta-formato">Domicilio <span
                 class="etiqueta-formato-val ">{{formatoPagare.domContratante}}</span></span>
-                        </div>
-                        <div class="grid-item">
-                            <span class="etiqueta-formato">Fecha <span
+                            </div>
+                            <div class="grid-item">
+                                <span class="etiqueta-formato">Fecha <span
                 class="etiqueta-formato-val">{{formatoPagare.fechaPago}}</span>
-                            </span>
-                        </div>
-                        <div class="grid-item"></div>
-                        <div class="grid-item">
-                            <span class="etiqueta-formato">Agente <span
+                                </span>
+                            </div>
+                            <div class="grid-item"></div>
+                            <div class="grid-item">
+                                <span class="etiqueta-formato">Agente <span
                 class="etiqueta-formato-val">{{formatoPagare.nomUsuario}}</span></span>
+                            </div>
+                            <div class="grid-item">
+
+                            </div>
+
+
+                            <div class="grid-item"></div>
+                            <div class="grid-item"></div>
                         </div>
-                        <div class="grid-item">
 
-                        </div>
-
-
-                        <div class="grid-item"></div>
-                        <div class="grid-item"></div>
                     </div>
 
-                </div>
-
-            </section>
+                </section>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row flex justify-content-end mb-4">
-    <button class="btn btn-default btn-md" [routerLink]="'../'">Regresar</button>
-    <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato pagaré</button>
-</div>
+
+    <div class="row flex justify-content-end mb-4">
+        <button class="btn btn-default btn-md" [routerLink]="'../'">Regresar</button>
+        <button class="ml-4 btn btn-primary btn-md">Generar formato pagaré</button>
+    </div>
+</form>
 
 <p-overlayPanel #overlayPanel>
     <ng-template pTemplate="content">
