@@ -4,6 +4,7 @@ import {GenerarFormatoPagareService} from "../../services/generar-formato-pagare
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
+import {FormBuilder, FormGroup} from '@angular/forms';
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import {FormatoPagare} from '../../models/formato-pagare.interface';
 
@@ -16,19 +17,27 @@ export class ReciboFormatoPagareComponent implements OnInit {
 
   formatoPagare!: FormatoPagare;
   importeLetra: string = "";
+  filtroForm!: FormGroup;
 
   constructor(
     private router: Router,
     private generarFormatoPagareService: GenerarFormatoPagareService,
     private cargadorService: LoaderService,
-    private alertaService: AlertaService
+    private alertaService: AlertaService,
+    private formBuilder: FormBuilder
   ) {
     const idODS: number = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idODS;
     this.obtenerValoresPagare(idODS);
   }
 
   ngOnInit(): void {
+    
+  }
 
+  inicializarFiltroForm() {
+    this.filtroForm = this.formBuilder.group({
+      redito: [{ value: this.formatoPagare.redito, disabled: false }],
+    });
   }
 
   obtenerValoresPagare(idODS: number): void {
@@ -41,6 +50,7 @@ export class ReciboFormatoPagareComponent implements OnInit {
         this.formatoPagare = response.datos[0];
         this.formatoPagare.tipoReporte = "pdf";
         this.obtenerImporteLetra(this.formatoPagare.importe);
+        this.inicializarFiltroForm();
       },
       (error: HttpErrorResponse) => {
         console.log(error)
