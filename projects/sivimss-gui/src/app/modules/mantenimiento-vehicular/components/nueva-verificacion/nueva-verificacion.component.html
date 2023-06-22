@@ -392,8 +392,12 @@
         </div>
       </div>
     </app-table-panel>
-    <div class="mb-3 mt-3 row text-center">
+    <div class="mb-3 mt-3 row text-center" *ngIf="!idMttoVehicular">
       ¿Estás seguro de agregar este nuevo registro?
+    </div>
+    <div class="mt-4 mb-4 col-12 text-center" *ngIf="idMttoVehicular">
+      ¿Estás seguro de modificar el registro {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}}
+      {{vehiculoSeleccionado.DES_MODELO}}?
     </div>
     <div class="flex mt-4 justify-content-end">
       <button type="button" class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>

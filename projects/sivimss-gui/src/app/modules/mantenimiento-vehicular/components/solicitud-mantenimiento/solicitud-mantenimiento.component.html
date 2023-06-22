@@ -77,7 +77,8 @@
         <div class="col-md-6">
           <label class="control-label" for="tipoMantenimiento">Tipo de mantenimiento<span class="req">*:</span></label>
           <p-dropdown appendTo="body" id="tipoMantenimiento" class="form-control" formControlName="tipoMantenimiento"
-            [options]="tiposMantenimiento" placeholder="Selecciona el tipo de mantenimiento">
+            [options]="tiposMantenimiento" placeholder="Selecciona el tipo de mantenimiento"
+            (onChange)="handleChangeTipoMtto();">
           </p-dropdown>
           <span class="campo-obligatorio"
             *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Este
@@ -89,7 +90,8 @@
             [options]="mantenimientosPrev" placeholder="Selecciona el tamaño">
           </p-dropdown>
           <span class="campo-obligatorio"
-            *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">v</span>
+            *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">Este
+            campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -163,7 +165,8 @@
           </div>
         </div>
         <div class="col-md-3" *ngIf="resumenAsignacion.modalidad == 'Semestral'">
-          <div class="table-panel-column mt-5">
+          <div class="table-panel-column">
+            <label>Fecha de registro semestral</label>
             <span> {{resumenAsignacion.fechaRegistro2 | date: 'dd-MM-yyyy' }} </span>
           </div>
         </div>
@@ -191,8 +194,12 @@
         </div>
       </div>
     </app-table-panel>
-    <div class="mt-4 mb-4 col-12 text-center">
+    <div class="mt-4 mb-4 col-12 text-center" *ngIf="mode !== 'update'">
       ¿Estás seguro de agregar este nuevo registro?
+    </div>
+    <div class="mt-4 mb-4 col-12 text-center" *ngIf="mode === 'update'">
+      ¿Estás seguro de modificar el registro {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}}
+      {{vehiculoSeleccionado.DES_MODELO}}?
     </div>
     <div class="flex justify-content-end">
       <button type="button" class="ml-4  btn btn-default btn-md"

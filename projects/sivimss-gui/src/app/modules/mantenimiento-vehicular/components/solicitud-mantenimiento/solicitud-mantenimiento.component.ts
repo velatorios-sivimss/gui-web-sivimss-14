@@ -158,6 +158,16 @@ export class SolicitudMantenimientoComponent implements OnInit {
     }
   }
 
+  handleChangeTipoMtto() {
+    if (this.smf.tipoMantenimiento.value == 1) {
+      this.smf.matPreventivo.setValidators(Validators.required);
+    } else {
+      this.smf.matPreventivo.reset();
+      this.smf.matPreventivo.clearValidators();
+    }
+    this.smf.matPreventivo.updateValueAndValidity();
+  }
+
   guardarSolicitudMtto(): void {
     if (this.idSolicitudMtto) {
       this.actualizarSolicitudMtto();
@@ -187,6 +197,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud modificada correctamente');
         if (!this.vehiculoSeleccionado.ID_MTTOVEHICULAR || this.vehiculoSeleccionado.ID_MTTOVEHICULAR === 0) {
           this.ref.close(true);
+          this.alertaService.mostrar(TipoAlerta.Precaucion, 'Solicitud modificada correctamente');
         } else {
           this.abrirRegistroSolicitud();
         }

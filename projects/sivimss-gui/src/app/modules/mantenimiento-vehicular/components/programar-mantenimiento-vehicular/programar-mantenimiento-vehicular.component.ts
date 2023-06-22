@@ -317,7 +317,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        console.log(respuesta);
+        this.alertaService.mostrar(TipoAlerta.Exito,"El archivo se guardó correctamente.")
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);

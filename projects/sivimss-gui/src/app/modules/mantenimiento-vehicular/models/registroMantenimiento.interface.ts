@@ -15,6 +15,7 @@ export interface RegistroMantenimiento {
     desNotas: string,
     idProveedor: number,
     desNumcontrato: string,
+    idContrato: number,
     desNombreProveedor: string,
     kilometraje: number,
     desNombreTaller: string,

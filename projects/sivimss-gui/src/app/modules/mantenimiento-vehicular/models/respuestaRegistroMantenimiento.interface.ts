@@ -37,4 +37,5 @@ export interface RespuestaRegistroMantenimiento {
   DES_MTTO_CORRECTIVO: string,
   DES_NOMBRE_PROVEEDOR: string,
   FEC_REGISTRO: string,
+  DES_CONTRATO: string,
 }
