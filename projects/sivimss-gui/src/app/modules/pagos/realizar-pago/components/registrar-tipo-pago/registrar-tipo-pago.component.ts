@@ -7,6 +7,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -33,8 +35,8 @@ export class RegistrarTipoPagoComponent implements OnInit {
   tipoPago!: string;
   idPago!: number;
   total: number = 0;
-  pagos: string[] = ["Traslado oficial", "Efectivo"]
-  fechasDeshabilitadas = [3, 4]
+  pagosDeshabilitados: number[] = [5, 8];
+  fechasDeshabilitadas: number[] = [3, 4, 5];
   resumenSolicitud!: any;
 
   constructor(
@@ -43,6 +45,9 @@ export class RegistrarTipoPagoComponent implements OnInit {
     public ref: DynamicDialogRef,
     private realizarPagoService: RealizarPagoService,
     private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private router: Router,
+    private readonly activatedRoute: ActivatedRoute,
   ) {
   }
 
@@ -69,6 +74,10 @@ export class RegistrarTipoPagoComponent implements OnInit {
     if (this.fechasDeshabilitadas.includes(id)) {
       this.tipoPagoForm.get('fecha')?.clearValidators();
     }
+    if (this.pagosDeshabilitados.includes(id)) {
+      this.tipoPagoForm.get('noAutorizacion')?.clearValidators();
+      this.tipoPagoForm.get('nombreBanco')?.clearValidators();
+    }
   }
 
   aceptar(): void {
@@ -78,14 +87,14 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   guardar(): void {
     const solicitudPago: SolicitudCrearPago = this.generarSolicitudPago();
-    console.log(solicitudPago);
     this.realizarPagoService.guardar(solicitudPago).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        console.log(respuesta);
+      next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
         this.ref.close();
+        void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
       },
       error: (error: HttpErrorResponse): void => {
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
         console.log(error);
       }
     });
@@ -113,6 +122,6 @@ export class RegistrarTipoPagoComponent implements OnInit {
   }
 
   get pf() {
-    return this.tipoPagoForm?.errors
+    return this.tipoPagoForm?.controls
   }
 }

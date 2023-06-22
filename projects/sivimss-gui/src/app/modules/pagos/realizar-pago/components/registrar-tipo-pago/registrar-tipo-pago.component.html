@@ -6,24 +6,32 @@
           <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span>:</label>
           <input id="tipoPago" class="form-control" formControlName="tipoPago"
                  placeholder="Ingresar Tipo de pago">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.tipoPago?.errors?.required && (pf?.tipoPago?.dirty || pf?.tipoPago?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
           <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
           <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
                       placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
           </p-calendar>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.fecha?.errors?.required && (pf?.fecha?.dirty || pf?.fecha?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
-      <div class="row mb-3" *ngIf="!pagos.includes(tipoPago)">
+      <div class="row mb-3" *ngIf="!pagosDeshabilitados.includes(idPago)">
         <div class="col-md-6">
           <label class="control-label" for="noAutorizacion">No. de autorización<span class="req">*</span>:</label>
           <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
                  placeholder="Ingresa número" [maxlength]="20">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="nombreBanco">Nombre del banco<span class="req">*</span>:</label>
           <input id="nombreBanco" class="form-control" formControlName="nombreBanco"
                  placeholder="Ingresar nombre" [maxlength]="20">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.nombreBanco?.errors?.required && (pf?.nombreBanco?.dirty || pf?.nombreBanco?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -31,6 +39,8 @@
           <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
           <input id="importe" class="form-control" formControlName="importe"
                  placeholder="Ingresa importe" [maxlength]="10" numbersOnly>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6 flex justify-content-end  mt-2">
           <div class="flex flex-column">
@@ -64,11 +74,11 @@
         <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
           <div class="table-panel-column">
             <label>Fecha de pago</label>
-            <span> {{ resumenSolicitud.fecha | date }}</span>
+            <span> {{ resumenSolicitud.fecha | date:'dd/MM/YYYY' }}</span>
           </div>
         </div>
       </div>
-      <div class="row table-panel-row" *ngIf="!pagos.includes(tipoPago)">
+      <div class="row table-panel-row" *ngIf="!pagosDeshabilitados.includes(idPago)">
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>No. de autorización </label>

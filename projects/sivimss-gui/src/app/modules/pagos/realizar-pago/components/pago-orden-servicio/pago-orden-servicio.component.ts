@@ -4,7 +4,7 @@ import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constan
 import {LazyLoadEvent} from "primeng/api";
 import {TIPO_PAGO_CATALOGOS_ODS} from "../../constants/dummies";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {RegistrarTipoPagoComponent} from "../registrar-tipo-pago/registrar-tipo-pago.component";
 import {RegistrarAgfComponent} from "../registrar-agf/registrar-agf.component";
 import {RegistrarValeParitariaComponent} from "../registrar-vale-paritaria/registrar-vale-paritaria.component";
@@ -150,8 +150,7 @@ export class PagoOrdenServicioComponent implements OnInit {
       width: MAX_WIDTH,
       data
     }
-    const pago: DynamicDialogRef = this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
-    pago.onClose.subscribe({next: () => this.seleccionarPaginacion()})
+    this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
   }
 
 }
