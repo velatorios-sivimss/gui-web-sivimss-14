@@ -17,6 +17,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _odsFolios: string = 'consultar-folios-ods-pagos';
   private readonly _prevFunFolios: string = 'consultar-folios-prevFun-pagos';
   private readonly _renPrevFunFolios: string = 'consultar-folios-renPrevFun-pagos';
+  private readonly _detallePago: string = 'buscar-detalle-pago';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "crear_pagos", "",
@@ -89,6 +90,11 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._renPrevFunFolios);
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, {params});
+  }
+
+  consultarDetallePago(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
+    const body = {idPagoBitacora}
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._detallePago}`, body)
   }
 
 }
