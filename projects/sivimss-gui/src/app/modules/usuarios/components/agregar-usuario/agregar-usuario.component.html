@@ -78,14 +78,14 @@
         <div class="col-md-6">
           <label class="control-label" for="nivelAgregarUsuario">Delegación</label>
           <p-dropdown appendTo="body" id="delegacionAgregarUsuario" class="form-control" formControlName="delegacion"
-                      [options]="catalogoDelegaciones" placeholder="Seleccione el nivel"
+                      [options]="catalogoDelegaciones" placeholder="Seleccione la delegación"
                       (onChange)="buscarVelatorios()">
           </p-dropdown>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="velatorioAgregarUsuario">Velatorio</label>
           <p-dropdown appendTo="body" id="velatorioAgregarUsuario" class="form-control" formControlName="velatorio"
-                      [options]="catalogoVelatorios" placeholder="Seleccione la delegación">
+                      [options]="catalogoVelatorios" placeholder="Seleccione el velatorio">
           </p-dropdown>
         </div>
       </div>

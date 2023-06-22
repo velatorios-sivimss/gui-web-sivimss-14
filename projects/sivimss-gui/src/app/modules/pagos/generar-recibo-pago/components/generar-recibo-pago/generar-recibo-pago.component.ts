@@ -94,7 +94,7 @@ export class GenerarReciboPagoComponent implements OnInit {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormReciboPago = this.formBuilder.group({
       nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina === 2}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
       velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
       folio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],

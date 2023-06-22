@@ -67,6 +67,14 @@ export class ConsultaConveniosService extends BaseService<HttpRespuesta<any>, an
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-facturas`, filtros, { params });
   }
 
+  descargarPDF(datos: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/reporte-tabla-convenios/generarDocumento/pdf`, datos);
+  }
+
+  descargarExcel(datos: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/reporte-tabla-convenios/generarDocumento/xls`, datos);
+  }
+
   descargarListadoPagaresPDF(): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
