@@ -1,4 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+
+interface DetallePago {
+  folio: string,
+  metodosPago: MetodoPago[],
+  totalAPagar: number
+  totalPagado: number
+  totalPorCubrir: number
+}
+
+interface MetodoPago {
+  fechaPago: string
+  idPagoDetalle: number
+  importe: number
+  metodoPago: string
+  nomBanco: string
+  numAutorizacion: string
+}
 
 @Component({
   selector: 'app-detalle-metodo-pago',
@@ -7,9 +25,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DetalleMetodoPagoComponent implements OnInit {
 
-  constructor() { }
+  registroPago!: DetallePago;
+
+  constructor(
+    private route: ActivatedRoute,
+  ) {
+  }
 
   ngOnInit(): void {
+    this.registroPago = this.route.snapshot.data["respuesta"].datos;
   }
 
 }

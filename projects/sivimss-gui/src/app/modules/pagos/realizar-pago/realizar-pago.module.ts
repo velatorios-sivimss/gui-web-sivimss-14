@@ -32,6 +32,7 @@ import {
 import {DetalleMetodoPagoComponent} from './components/detalle-metodo-pago/detalle-metodo-pago.component';
 import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 import {RealizarPagoService} from "./services/realizar-pago.service";
+import {AccordionModule} from "primeng/accordion";
 
 
 @NgModule({
@@ -46,24 +47,25 @@ import {RealizarPagoService} from "./services/realizar-pago.service";
     SeleccionBeneficiariosAgfComponent,
     DetalleMetodoPagoComponent
   ],
-  imports: [
-    CommonModule,
-    RealizarPagoRoutingModule,
-    TituloPrincipalModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    CalendarModule,
-    UtileriaModule,
-    ValidaRolModule,
-    TableModule,
-    InputSwitchModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    DialogModule,
-    TablePanelModule,
-    CheckboxModule,
-    CeldaStickyModule
-  ],
+    imports: [
+        CommonModule,
+        RealizarPagoRoutingModule,
+        TituloPrincipalModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        CalendarModule,
+        UtileriaModule,
+        ValidaRolModule,
+        TableModule,
+        InputSwitchModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        DialogModule,
+        TablePanelModule,
+        CheckboxModule,
+        CeldaStickyModule,
+        AccordionModule
+    ],
   providers: [RealizarPagoService]
 })
 export class RealizarPagoModule {
