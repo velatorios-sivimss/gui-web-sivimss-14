@@ -14,6 +14,22 @@ import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
+import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+
+interface DatosRegistro {
+  idPagoBitacora: number,
+  idFlujoPago: number,
+  idRegistro: number,
+  importePago: number
+}
+
+interface RegistroModal {
+  tipoPago: string,
+  idPago: string,
+  total: number,
+  datosRegistro: DatosRegistro
+}
+
 
 @Component({
   selector: 'app-pago-convenio',
@@ -34,6 +50,7 @@ export class PagoConvenioComponent implements OnInit {
   pagoForm!: FormGroup;
 
   pagos: PagoEspecifico[] = [];
+  pagoSeleccionado: any;
 
   constructor(private formBuilder: FormBuilder,
               public dialogService: DialogService,
@@ -54,6 +71,7 @@ export class PagoConvenioComponent implements OnInit {
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
@@ -77,20 +95,36 @@ export class PagoConvenioComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, pago: any): void {
     this.overlayPanel.toggle(event);
+    this.pagoSeleccionado = pago;
   }
 
   abrirModalPago(): void {
     this.registrarPago();
-    const tipoPago = this.pagoForm.get('tipoPago')?.value;
+    const idPago = this.pagoForm.get('tipoPago')?.value;
+    const tipoPago: string = this.tipoPago.find(tp => tp.value === idPago)?.label || '';
+    const data: RegistroModal = {
+      tipoPago, idPago,
+      total: this.pagoSeleccionado.diferenciasTotales,
+      datosRegistro: {
+        idPagoBitacora: this.pagoSeleccionado.idPagoBitacora,
+        idFlujoPago: this.pagoSeleccionado.idFlujoPago,
+        idRegistro: this.pagoSeleccionado.idRegistro,
+        importePago: this.pagoSeleccionado.total
+      }
+    }
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Registrar tipo de pago",
       width: MAX_WIDTH,
-      data: tipoPago
+      data
     }
     this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
   }
 
   registrarPago(): void {
     this.pagoConvenioModal = !this.pagoConvenioModal;
+  }
+
+  get pcf() {
+    return this.pagoForm?.controls;
   }
 }

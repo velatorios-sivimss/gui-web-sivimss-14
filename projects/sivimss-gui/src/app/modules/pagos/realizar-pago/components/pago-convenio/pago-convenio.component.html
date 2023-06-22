@@ -54,7 +54,8 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar" (click)="registrarPago()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Registrar" (click)="registrarPago()"
+                                onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
@@ -67,6 +68,9 @@
       <p-dropdown appendTo="body" id="tipoPago" class="form-control" formControlName="tipoPago"
                   [options]="tipoPago" placeholder="Seleccionar tipo">
       </p-dropdown>
+      <span class="campo-obligatorio"
+            *ngIf="pcf?.tipoPago?.errors?.required && (pcf?.tipoPago?.dirty || pcf?.tipoPago?.touched)">Este campo es obligatorio *.</span>
+
     </div>
   </div>
   <div class="row mb-4">
