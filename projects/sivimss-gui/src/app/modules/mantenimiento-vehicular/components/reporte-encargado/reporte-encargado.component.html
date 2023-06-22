@@ -134,7 +134,7 @@
                 </ng-template>
               </p-table>
 
-              <div class="paginator-template">
+              <div class="paginator-template" *ngIf="registrosReporte.length > 0">
                 <div class="export-table" style="float: right;">
                   <span class="export-table-text">Exportar tabla</span>
                   <div class="export-table-icons">
