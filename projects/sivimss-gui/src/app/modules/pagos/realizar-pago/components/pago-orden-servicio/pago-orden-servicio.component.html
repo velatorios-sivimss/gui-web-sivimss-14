@@ -68,6 +68,8 @@
       <p-dropdown appendTo="body" id="tipoPago" class="form-control" formControlName="tipoPago"
                   [options]="tipoPago" placeholder="Seleccionar tipo" optionDisabled="deshabilitado">
       </p-dropdown>
+      <span class="campo-obligatorio"
+            *ngIf="odsf?.tipoPago?.errors?.required && (odsf?.tipoPago?.dirty || odsf?.tipoPago?.touched)">Este campo es obligatorio *.</span>
     </div>
   </div>
   <div class="row mb-4">
