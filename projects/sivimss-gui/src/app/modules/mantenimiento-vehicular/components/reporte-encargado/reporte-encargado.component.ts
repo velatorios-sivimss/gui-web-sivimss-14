@@ -35,7 +35,7 @@ export class ReporteEncargadoComponent implements OnInit {
   overlayPanel!: OverlayPanel
 
   numPaginaActual: number = 0
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
+  cantElementosPorPagina: number = 1000; // DIEZ_ELEMENTOS_POR_PAGINA
   totalElementos: number = 0
 
   velatorio: string = '';
@@ -57,6 +57,7 @@ export class ReporteEncargadoComponent implements OnInit {
 
   fechaActual: Date = new Date();
   fechaValida: boolean = false;
+  tipoBusqueda: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -103,15 +104,32 @@ export class ReporteEncargadoComponent implements OnInit {
   buscar(): void {
     const filtros: FiltrosReporteEncargado = this.crearSolicitudFiltros();
     this.mostrarTabla = true;
-    this.mantenimientoVehicularService.buscarReporteEncargado(filtros).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.totalVehiculos = respuesta.datos.totalElements;
-        this.registrosReporte = respuesta.datos.content;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-      }
-    });
+    this.loaderService.activar();
+    if (this.fmp.tipoReporte.value == 1) {
+      this.tipoBusqueda = 1;
+      this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.totalVehiculos = respuesta.datos.totalElements;
+            this.registrosReporte = respuesta.datos.content;
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+          }
+        });
+    } else {
+      this.tipoBusqueda = 2;
+      this.mantenimientoVehicularService.buscarReporteEncargado(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.totalVehiculos = respuesta.datos.totalElements;
+            this.registrosReporte = respuesta.datos.content;
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+          }
+        });
+    }
   }
 
   crearSolicitudFiltros(): FiltrosReporteEncargado {
@@ -121,7 +139,6 @@ export class ReporteEncargadoComponent implements OnInit {
       fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
       fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
       placa: this.filtroForm.get('placa')?.value,
-      tipoReporte: this.filtroForm.get('tipoReporte')?.value
     }
   }
 
@@ -176,7 +193,7 @@ export class ReporteEncargadoComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        this.alertaService.mostrar(TipoAlerta.Exito,"El archivo se guardó correctamente.")
+        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);

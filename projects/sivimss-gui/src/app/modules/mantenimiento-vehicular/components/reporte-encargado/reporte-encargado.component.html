@@ -34,8 +34,8 @@
             <div class="col-md-6">
               <label class="control-label">Fecha final<span class="req">*</span>:</label>
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
-                [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="fechaActual"
-                (onSelect)="validarFechas()">
+                [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" appendTo="body"
+                [maxDate]="fechaActual" (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"
                 *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este
@@ -92,7 +92,63 @@
         <div class="row table-panel-row">
           <div class="col-md-12">
             <div class="table-panel-column">
-              <p-table [value]="registrosReporte">
+              <p-table [value]="registrosReporte" *ngIf="tipoBusqueda == 1">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th id="reporte-encargado-placas">Placas</th>
+                    <th id="reporte-encargado-marca">Marca</th>
+                    <th id="reporte-encargado-anio">Año</th>
+                    <th id="reporte-encargado-kilometraje">Kilometraje</th>
+                    <th id="reporte-encargado-tipo-mtto">Tipo de mantenimiento</th>
+                    <th id="reporte-encargado-modalidad">Modalidad</th>
+                    <th id="reporte-encargado-estado-mtto">Estado de mantenimiento</th>
+                    <th id="reporte-encargado-notas">Notas</th>
+                    <th id="reporte-encargado-numero-contrato">Número de contrato</th>
+                    <th id="reporte-encargado-taller">Taller</th> <!-- Solo si es preventivo -->
+                    <th id="reporte-encargado-fecha-mtto">Fecha de mantenimiento</th>
+                    <th id="reporte-encargado-costo">Costo de mantenimiento (IVA incluido)</th>
+                    <th id="reporte-encargado-estatus"></th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                  <tr>
+                    <td>{{ item.DES_PLACAS }}</td>
+                    <td>{{ item.DES_MARCA }}</td>
+                    <td>{{ item.DES_MODELO }}</td>
+                    <td>{{ item.NUM_KILOMETRAJE_SOL }}</td>
+                    <td>{{ item.DES_MTTO_TIPO }}</td>
+                    <td>{{ item.DES_MODALIDAD }}</td>
+                    <td>{{ item.DES_MTTOESTADO }}</td>
+                    <td>{{ item.DES_NOTAS_SOL }}</td>
+                    <td>{{ item.DES_NUMCONTRATO }}</td>
+                    <td>{{ item.DES_NOMBRE_TALLER }}</td> <!-- Solo si es preventivo -->
+                    <td>{{ item.FEC_MTTO_SOL }}</td>
+                    <td>{{ item.MON_COSTO_MTTO }}</td>
+                    <td>
+                      <div class="contenedor-celda-iconos">
+                        <a (click)="abrirDetallereporteEncargado(item)">
+                          <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+                      No se encontró información relacionada a tu búsqueda.
+                    </th>
+                  </tr>
+                </ng-template>
+
+                <ng-template pTemplate="paginatorleft">
+                  <div class="paginator-template">
+                    <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
+                  </div>
+                </ng-template>
+              </p-table>
+
+              <p-table [value]="registrosReporte" *ngIf="tipoBusqueda == 2">
                 <ng-template pTemplate="header">
                   <tr>
                     <th id="reporte-encargado-fecha">Fecha</th>
@@ -131,6 +187,12 @@
                       No se encontró información relacionada a tu búsqueda.
                     </th>
                   </tr>
+                </ng-template>
+
+                <ng-template pTemplate="paginatorleft">
+                  <div class="paginator-template">
+                    <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
+                  </div>
                 </ng-template>
               </p-table>
 
