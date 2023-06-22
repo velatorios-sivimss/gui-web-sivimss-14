@@ -57,13 +57,13 @@
           <div class="col-md-6">
             <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                        [maxDate]="fP?.periodoFin?.value || fecha">
+                        [maxDate]="filtroForm.get('periodoFin')?.value || fecha">
             </p-calendar>
           </div>
           <div class="col-md-6">
             <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                        [minDate]="fP?.periodoInicio?.value" [maxDate]="fecha">
+                        [minDate]="filtroForm.get('periodoInicio')?.value || fecha">
             </p-calendar>
           </div>
         </div>
