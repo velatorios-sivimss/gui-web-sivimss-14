@@ -80,9 +80,22 @@ export class RegistroMantenimientoComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     const catalogos = respuesta[this.POSICION_CATALOGOS_PROVEEDORES].datos;
     this.catalogoProveedores = mapearArregloTipoDropdown(catalogos, "NOM_PROVEEDOR", "ID_PROVEEDOR");
-    this.contratos = mapearArregloTipoDropdown(catalogos, "ID_PROVEEDOR", "DES_TIPO_CONTRATO");
+    this.obtenerCatalogoContratos();
 
     this.inicializarRegistroMantenimientoForm();
+  }
+
+  obtenerCatalogoContratos(value: number | null = null) {
+    this.mantenimientoVehicularService.obtenerCatalogoContratos(value).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.contratos = mapearArregloTipoDropdown(respuesta.datos, "DES_CONTRATO", "ID_CONTRATO");
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.log(error);
+          this.mensajesSistemaService.mostrarMensajeError(error.message);
+        }
+      });
   }
 
   inicializarRegistroMantenimientoForm(): void {
@@ -145,12 +158,18 @@ export class RegistroMantenimientoComponent implements OnInit {
     const modalidadValor: string = this.modalidades[modalidad] || "";
     const proveedor = this.solicitudMantenimientoForm.get("nombreProveedor")?.value;
     const nombreProveedor = this.catalogoProveedores.find(p => p.value === proveedor)?.label;
+
+    let descContrato = this.solicitudMantenimientoForm.get("noContrato")?.value;
+    if (this.smf.tipoMantenimiento.value == 1) {
+      descContrato = this.contratos.find(p => p.value === descContrato)?.label;
+    }
+
     return {
       tipoMantenimiento: tipoMantenimientoValor ?? "",
       fechaMantenimiento: this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value,
       notas: this.solicitudMantenimientoForm.get("notas")?.value,
       nombreProveedor: nombreProveedor ?? '',
-      numeroContrato: this.solicitudMantenimientoForm.get("noContrato")?.value,
+      numeroContrato: descContrato,
       taller: this.solicitudMantenimientoForm.get("taller")?.value,
       costo: this.solicitudMantenimientoForm.get("costoMantenimiento")?.value,
       kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
@@ -177,8 +196,9 @@ export class RegistroMantenimientoComponent implements OnInit {
         idMantenimiento: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value ? +this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value : null,
         desNombreProveedor: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
         desNotas: this.solicitudMantenimientoForm.get("notas")?.value,
-        idProveedor: +this.smf.tipoMantenimiento.value == 1 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
-        desNumcontrato: this.solicitudMantenimientoForm.get("noContrato")?.value,
+        idProveedor: +this.smf.tipoMantenimiento.value == 1 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,        
+        desNumcontrato: this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("noContrato")?.value : null,
+        idContrato: this.smf.tipoMantenimiento.value == 1 ? this.solicitudMantenimientoForm.get("noContrato")?.value : null,
         kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
         desNombreTaller: this.solicitudMantenimientoForm.get("taller")?.value,
         costoMtto: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("costoMantenimiento")?.value : null,
@@ -218,15 +238,15 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("matPreventivo")?.clearValidators();
     if (tipoMtto.toString() === '1') {
       this.solicitudMantenimientoForm.get("costoMantenimiento")?.clearValidators()
-      this.solicitudMantenimientoForm.get("taller")?.clearValidators()
-      this.solicitudMantenimientoForm.get("noContrato")?.disable();
+      this.solicitudMantenimientoForm.get("taller")?.clearValidators();
+      this.solicitudMantenimientoForm.get("noContrato")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("modalidad")?.setValue(null);
       this.solicitudMantenimientoForm.get("modalidad")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("matPreventivo")?.setValue(null);
       this.solicitudMantenimientoForm.get("matPreventivo")?.addValidators([Validators.required]);
     }
     if (tipoMtto.toString() === '2') {
-      this.solicitudMantenimientoForm.get("noContrato")?.enable();
+      this.solicitudMantenimientoForm.get("noContrato")?.clearValidators();
       this.solicitudMantenimientoForm.get("taller")?.setValue(null);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("costoMantenimiento")?.setValue(null);
@@ -236,14 +256,13 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("taller")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("modalidad")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("matPreventivo")?.updateValueAndValidity();
+    this.solicitudMantenimientoForm.get("noContrato")?.updateValueAndValidity();
   }
 
   asignarContrato(): void {
     const tipoMtto = this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value;
     if (tipoMtto && tipoMtto.toString() !== '1') return;
-    const proveedor = this.solicitudMantenimientoForm.get("nombreProveedor")?.value;
-    const contrato = this.contratos.find(c => c.label === proveedor)?.value;
-    this.solicitudMantenimientoForm.get("noContrato")?.setValue(contrato);
+    this.obtenerCatalogoContratos(this.solicitudMantenimientoForm.get('nombreProveedor')?.value);
   }
 
   realizarRegistro(id: number): void {
@@ -303,7 +322,7 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get('fechaMantenimiento')?.patchValue(respuesta.FEC_REGISTRO ? new Date(this.diferenciaUTC(fecha)) : null);
     this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
     this.solicitudMantenimientoForm.get('nombreProveedor')?.patchValue(respuesta.ID_MANTENIMIENTO == 1 ? respuesta.ID_PROVEEDOR : respuesta.DES_NOMBRE_PROVEEDOR);
-    this.solicitudMantenimientoForm.get('noContrato')?.patchValue(respuesta.DES_NUMCONTRATO);
+    this.solicitudMantenimientoForm.get('noContrato')?.patchValue(respuesta.ID_MANTENIMIENTO == 1 ? respuesta.ID_PROVEEDOR : respuesta.DES_NUMCONTRATO);
     this.solicitudMantenimientoForm.get('taller')?.patchValue(respuesta.DES_NOMBRE_TALLER);
     this.solicitudMantenimientoForm.get('costoMantenimiento')?.patchValue(respuesta.MON_COSTO_MTTO);
 

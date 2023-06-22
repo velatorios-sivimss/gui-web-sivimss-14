@@ -86,6 +86,7 @@ export class ReporteEncargadoComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
+    this.mostrarTabla = false;
   }
 
   inicializarFiltroForm(): void {
@@ -175,7 +176,7 @@ export class ReporteEncargadoComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        console.log(respuesta);
+        this.alertaService.mostrar(TipoAlerta.Exito,"El archivo se guardó correctamente.")
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);

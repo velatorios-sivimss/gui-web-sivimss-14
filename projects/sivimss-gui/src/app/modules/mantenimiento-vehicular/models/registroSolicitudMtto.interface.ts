@@ -12,6 +12,7 @@ export interface RegistroSolicitudMttoInterface {
     idMttoTipo: string,
     idMttoModalidad: string,
     fecRegistro: string | null,
+    fecRegistro2: string | null,
     desMttoCorrectivo: string,
     idMttoModalidadDet: number,
     idEstatus: number | null,

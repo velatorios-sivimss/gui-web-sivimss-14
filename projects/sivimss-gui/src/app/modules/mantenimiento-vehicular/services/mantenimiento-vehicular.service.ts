@@ -53,6 +53,10 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}`, { params });
   }
 
+  obtenerCatalogoContratos(proveedor: number | null): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/cat-contratos-proveedores`, { proveedor });
+  }
+
   obtenerCatalogoPlacas(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
       .append("servicio", this._vehiculos);
