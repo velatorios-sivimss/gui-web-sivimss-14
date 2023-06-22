@@ -331,12 +331,10 @@ export class RegistroMantenimientoComponent implements OnInit {
     if (tipoMtto.toString() === '1') {
       this.solicitudMantenimientoForm.get("costoMantenimiento")?.clearValidators()
       this.solicitudMantenimientoForm.get("taller")?.clearValidators()
-      this.solicitudMantenimientoForm.get("noContrato")?.disable();
       this.solicitudMantenimientoForm.get("modalidad")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("matPreventivo")?.addValidators([Validators.required]);
     }
     if (tipoMtto.toString() === '2') {
-      this.solicitudMantenimientoForm.get("noContrato")?.enable();
       this.solicitudMantenimientoForm.get("fechaMantenimiento")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);

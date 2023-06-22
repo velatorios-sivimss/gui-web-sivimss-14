@@ -133,8 +133,12 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_predictivo}`, t);
   }
 
-  buscarReporteEncargado(t: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_encargado}`, t);
+  buscarReporteEncargado(pagina: number, tamanio: number, t: any): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio)
+      .append("servicio", this._paginado);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_encargado}`, t, { params });
   }
 
   generarReporteTabla(generarReporte: any): Observable<Blob> {
