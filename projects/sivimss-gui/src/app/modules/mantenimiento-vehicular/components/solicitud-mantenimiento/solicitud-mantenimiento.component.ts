@@ -89,6 +89,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       matPreventivo: [{ value: null, disabled: false }],
       modalidad: [{ value: null, disabled: false }, [Validators.required]],
       fechaRegistro: [{ value: null, disabled: false }, [Validators.required]],
+      fechaRegistro2: [{ value: null, disabled: false }, []],
       notas: [{ value: null, disabled: false }, [Validators.required]],
     });
     this.solicitudMantenimientoForm.get("modalidad")?.valueChanges.subscribe((): void => {
@@ -124,6 +125,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
       modalidad: modalidadValor,
       fechaRegistro: this.solicitudMantenimientoForm.get("fechaRegistro")?.value,
+      fechaRegistro2: this.solicitudMantenimientoForm.get("fechaRegistro2")?.value,
       tipoMantenimiento: tipoMantenimientoValor ?? "",
       mantenimientoPreventivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
       notas: this.solicitudMantenimientoForm.get("notas")?.value
@@ -132,7 +134,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   crearSolicitudMantenimiento(): RegistroSolicitudMttoInterface {
     return {
-      idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
+      idMttoVehicular: this.idSolicitudMtto ? this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
@@ -141,10 +143,11 @@ export class SolicitudMantenimientoComponent implements OnInit {
       verificacionInicio: null,
       solicitud: {
         idMttoSolicitud: this.idSolicitudMtto,
-        idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
+        idMttoVehicular: this.idSolicitudMtto ? this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
         idMttoTipo: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaRegistro")?.value, 'YYYY-MM-dd'),
+        fecRegistro2: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaRegistro2")?.value, 'YYYY-MM-dd'),
         desMttoCorrectivo: this.resumenAsignacion.tipoMantenimiento === 'Preventivo' ? this.solicitudMantenimientoForm.get("matPreventivo")?.value : null,
         idMttoModalidadDet: 1,
         idEstatus: this.mode === 'update' ? (this.vehiculoSeleccionado.ID_MTTOESTADO ?? null) : 1,
@@ -153,6 +156,16 @@ export class SolicitudMantenimientoComponent implements OnInit {
       },
       registro: null
     }
+  }
+
+  handleChangeTipoMtto() {
+    if (this.smf.tipoMantenimiento.value == 1) {
+      this.smf.matPreventivo.setValidators(Validators.required);
+    } else {
+      this.smf.matPreventivo.reset();
+      this.smf.matPreventivo.clearValidators();
+    }
+    this.smf.matPreventivo.updateValueAndValidity();
   }
 
   guardarSolicitudMtto(): void {
@@ -166,9 +179,11 @@ export class SolicitudMantenimientoComponent implements OnInit {
   guardarNuevaSolicitudMtto(): void {
     const verificacion: RegistroSolicitudMttoInterface = this.crearSolicitudMantenimiento();
     this.mantenimientoVehicularService.guardar(verificacion).subscribe({
-      next: (): void => {
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud agregada correctamente');
-        this.abrirRegistroSolicitud();
+        if (respuesta.datos.length > 0) {
+          this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+        }
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -182,10 +197,11 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.mantenimientoVehicularService.actualizar(verificacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud modificada correctamente');
-        if(!this.vehiculoSeleccionado.ID_MTTOVEHICULAR || this.vehiculoSeleccionado.ID_MTTOVEHICULAR === 0) {
+        if (!this.vehiculoSeleccionado.ID_MTTOVEHICULAR || this.vehiculoSeleccionado.ID_MTTOVEHICULAR === 0) {
           this.ref.close(true);
+          this.alertaService.mostrar(TipoAlerta.Precaucion, 'Solicitud modificada correctamente');
         } else {
-          this.abrirRegistroSolicitud();
+          this.abrirRegistroSolicitud(this.vehiculoSeleccionado.ID_MTTOVEHICULAR);
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -195,10 +211,10 @@ export class SolicitudMantenimientoComponent implements OnInit {
     });
   }
 
-  abrirRegistroSolicitud(): void {
+  abrirRegistroSolicitud(idMttoVehiculo: number): void {
     this.ref.close(true);
-    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      { queryParams: { tabview: 1, id: this.vehiculoSeleccionado.ID_MTTOVEHICULAR } });
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', idMttoVehiculo],
+      { queryParams: { tabview: 1 } });
   }
 
   realizarSolicitud(id: number): void {
@@ -206,7 +222,6 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.mantenimientoVehicularService.obtenerDetalleSolicitud(id).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          debugger
           if (respuesta.datos.length === 0) return;
           this.llenarVehiculo(respuesta.datos[0]);
           this.llenarFormulario(respuesta.datos[0]);
@@ -258,9 +273,22 @@ export class SolicitudMantenimientoComponent implements OnInit {
       this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.DES_MTTO_CORRECTIVO);
     }
     this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD);
+    this.solicitudMantenimientoForm.get('fechaRegistro2')?.patchValue(new Date(this.diferenciaUTC(fecha)));
     this.solicitudMantenimientoForm.get('fechaRegistro')?.patchValue(new Date(this.diferenciaUTC(fecha)));
     this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
     this.idSolicitudMtto = respuesta.ID_MTTO_SOLICITUD;
+
+    this.validarFechaSemestral();
+  }
+
+  validarFechaSemestral() {
+    if (this.smf.modalidad.value == 1) {
+      this.smf.fechaRegistro2.setValidators(Validators.required);
+    } else {
+      this.smf.fechaRegistro2.reset();
+      this.smf.fechaRegistro2.clearValidators();
+    }
+    this.smf.fechaRegistro2.updateValueAndValidity();
   }
 
   get smf() {

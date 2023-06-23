@@ -21,6 +21,7 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 
 @Component({
   selector: 'app-reporte-encargado',
@@ -35,7 +36,7 @@ export class ReporteEncargadoComponent implements OnInit {
   overlayPanel!: OverlayPanel
 
   numPaginaActual: number = 0
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
+  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0
 
   velatorio: string = '';
@@ -57,6 +58,7 @@ export class ReporteEncargadoComponent implements OnInit {
 
   fechaActual: Date = new Date();
   fechaValida: boolean = false;
+  tipoBusqueda: number = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -86,6 +88,7 @@ export class ReporteEncargadoComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
+    this.mostrarTabla = false;
   }
 
   inicializarFiltroForm(): void {
@@ -99,28 +102,57 @@ export class ReporteEncargadoComponent implements OnInit {
     this.obtenerPlacas();
   }
 
+  paginar(event?: LazyLoadEvent): void {
+    if (this.filtroForm.valid) {
+      if (event?.first !== undefined && event.rows !== undefined) {
+        this.numPaginaActual = Math.floor(event.first / event.rows);
+      } else {
+        this.numPaginaActual = 0;
+      }
+      this.buscar();
+    }
+  }
+
   buscar(): void {
     const filtros: FiltrosReporteEncargado = this.crearSolicitudFiltros();
     this.mostrarTabla = true;
-    this.mantenimientoVehicularService.buscarReporteEncargado(filtros).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.totalVehiculos = respuesta.datos.totalElements;
-        this.registrosReporte = respuesta.datos.content;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-      }
-    });
+    this.loaderService.activar();
+    if (this.fmp.tipoReporte.value == 1) {
+      this.tipoBusqueda = 1;
+      this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.totalVehiculos = respuesta.datos.totalElements;
+            this.totalElementos = respuesta.datos.totalElements;
+            this.registrosReporte = respuesta.datos.content;
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+          }
+        });
+    } else {
+      this.tipoBusqueda = 2;
+      this.mantenimientoVehicularService.buscarReporteEncargado(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.totalVehiculos = respuesta.datos.totalElements;
+            this.totalElementos = respuesta.datos.totalElements;
+            this.registrosReporte = respuesta.datos.content;
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+          }
+        });
+    }
   }
 
   crearSolicitudFiltros(): FiltrosReporteEncargado {
     this.rangoFecha = `${moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD-MM-YYYY')} a
     ${moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD-MM-YYYY')}`
     return {
-      fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
-      fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+      fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+      fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
       placa: this.filtroForm.get('placa')?.value,
-      tipoReporte: this.filtroForm.get('tipoReporte')?.value
     }
   }
 
@@ -175,7 +207,7 @@ export class ReporteEncargadoComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        console.log(respuesta);
+        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);

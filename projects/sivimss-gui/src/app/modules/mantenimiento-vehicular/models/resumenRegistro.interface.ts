@@ -9,5 +9,6 @@ export interface ResumenRegistro {
   kilometraje: string,
   modalidad: string,
   matPreventivo: string,
-  nombreProveedorTexto: string
+  nombreProveedorTexto: string,
+  idContrato?: number,
 }

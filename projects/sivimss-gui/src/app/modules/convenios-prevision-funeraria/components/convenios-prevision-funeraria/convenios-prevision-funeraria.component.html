@@ -93,9 +93,9 @@
     <ng-template pTemplate="body" let-convenioPrevision>
       <tr>
         <td>{{convenioPrevision.folioConvenio}}</td>
-        <td>{{convenioPrevision.fechaContratacion}}</td>
-        <td>{{convenioPrevision.fechaVigenciaInicio}}</td>
-        <td>{{convenioPrevision.fechaVigenciaFin}}</td>
+        <td>{{convenioPrevision.fechaContratacion | date: 'dd/MM/yyyy'}}</td>
+        <td>{{convenioPrevision.fechaVigenciaInicio | date: 'dd/MM/yyyy'}}</td>
+        <td>{{convenioPrevision.fechaVigenciaFin | date: 'dd/MM/yyyy'}}</td>
         <td>{{convenioPrevision.cantidadBeneficiarios}}</td>
         <td>{{convenioPrevision.situacion}}</td>
         <td>{{convenioPrevision.factura}}</td>
@@ -121,7 +121,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{convenioPrevision.length}} de {{totalElementos.tablaConvenios}</span>
+        <span class="total-elements">{{convenioPrevision.length}} de {{totalElementos.tablaConvenios}}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -129,8 +129,8 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" (click)="descargarPDF()" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" (click)="descargarExcel()" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@
               <td> {{datosAfiliado.descVelatorio}} </td>
               <td> {{datosAfiliado.afiliado}} </td>
               <td> {{datosAfiliado.rfcTitular}} </td>
-              <td> {{datosAfiliado.fechaNacimiento}} </td>
+              <td> {{datosAfiliado.fechaNacimiento | date: 'dd/MM/yyyy'}} </td>
               <td> {{datosAfiliado.edad}} </td>
               <td> {{datosAfiliado.genero}} </td>
               <td> {{datosAfiliado.correoElectronico}} </td>
@@ -221,10 +221,10 @@
           </ng-template>
           <ng-template pTemplate="body" let-vigenciaConvenio>
             <tr>
-              <td> {{vigenciaConvenio.convenio}} </td>
-              <td> {{vigenciaConvenio.fechaInicio}} </td>
-              <td> {{vigenciaConvenio.fechaFin}} </td>
-              <td> {{vigenciaConvenio.fechaRenovacion}} </td>
+              <td> {{vigenciaConvenio.folioConvenio}} </td>
+              <td> {{vigenciaConvenio.fechaInicio | date: 'dd/MM/yyyy'}} </td>
+              <td> {{vigenciaConvenio.fechaFin | date: 'dd/MM/yyyy'}} </td>
+              <td> {{vigenciaConvenio.fechaRenovacion | date: 'dd/MM/yyyy'}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -263,7 +263,7 @@
             <tr>
               <td> {{facturaConvenio.factura}} </td>
               <td> {{facturaConvenio.uuid}} </td>
-              <td> {{facturaConvenio.fecha}} </td>
+              <td> {{facturaConvenio.fecha | date: 'dd/MM/yyyy'}} </td>
               <td> {{facturaConvenio.rfc}} </td>
               <td> {{facturaConvenio.cliente}} </td>
               <td> {{facturaConvenio.total}} </td>
@@ -307,7 +307,7 @@
           <ng-template pTemplate="body" let-beneficiario>
             <tr>
               <td> {{beneficiario.nombre}} {{beneficiario.primerApellido}} </td>
-              <td> {{beneficiario.fecha}} </td>
+              <td> {{beneficiario.fecha | date: 'dd/MM/yyyy'}} </td>
               <td> {{beneficiario.edad}} </td>
               <td> {{beneficiario.descParentesco}} </td>
             </tr>
@@ -348,7 +348,7 @@
           <ng-template pTemplate="body" let-siniestro>
             <tr>
               <td> {{siniestro.descVelatorio}} </td>
-              <td> {{siniestro.fechaSiniestro}} </td>
+              <td> {{siniestro.fechaSiniestro | date: 'dd/MM/yyyy'}} </td>
               <td> {{siniestro.folio}} </td>
               <td> {{siniestro.nota}} </td>
               <td> {{siniestro.finado}} </td>
