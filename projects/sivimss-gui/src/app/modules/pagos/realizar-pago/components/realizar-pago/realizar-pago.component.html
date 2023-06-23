@@ -163,7 +163,7 @@
         habilitaIrPagoEstatus.includes(pagoSeleccionado.estatusPago)" (click)="redireccionPago()" >
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
-        habilitaModificarPago.includes(pagoSeleccionado.estatusPago)">
+        habilitaModificarPago.includes(pagoSeleccionado.estatusPago)" (click)="modificarPago()">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

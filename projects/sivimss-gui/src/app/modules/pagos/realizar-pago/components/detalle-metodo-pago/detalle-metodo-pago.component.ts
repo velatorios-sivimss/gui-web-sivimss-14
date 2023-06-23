@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, ActivatedRouteSnapshot, Router} from "@angular/router";
 
 interface DetallePago {
   folio: string,
@@ -23,11 +23,12 @@ interface MetodoPago {
 @Component({
   selector: 'app-detalle-metodo-pago',
   templateUrl: './detalle-metodo-pago.component.html',
-  styleUrls: ['./detalle-metodo-pago.component.scss']
+  styleUrls: ['./detalle-metodo-pago.component.scss'],
 })
 export class DetalleMetodoPagoComponent implements OnInit {
 
   registroPago!: DetallePago;
+  idPagoBitacora!: number;
 
   constructor(
     private router: Router,
@@ -37,6 +38,7 @@ export class DetalleMetodoPagoComponent implements OnInit {
 
   ngOnInit(): void {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
+    this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
   }
 
   redireccionPago(): void {

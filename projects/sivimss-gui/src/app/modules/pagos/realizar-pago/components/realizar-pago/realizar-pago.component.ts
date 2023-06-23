@@ -249,4 +249,8 @@ export class RealizarPagoComponent implements OnInit {
     return this.filtroForm?.controls;
   }
 
+  modificarPago(): void {
+    void this.router.navigate(["./modificar-metodo-de-pago", this.pagoSeleccionado.idPagoBitacora],
+      {relativeTo: this.activatedRoute});
+  }
 }

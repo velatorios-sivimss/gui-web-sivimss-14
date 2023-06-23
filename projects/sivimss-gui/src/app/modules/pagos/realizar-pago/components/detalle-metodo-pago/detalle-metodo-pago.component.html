@@ -128,7 +128,8 @@
       <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagada'"
                                 (click)="redireccionPago()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Modificar" *ngIf="registroPago.estatusPago === 'Pagada'">
+      <app-overlay-panel-opcion class="text-center" titulo="Modificar" *ngIf="registroPago.estatusPago === 'Pagada'"
+                                [routerLink]="['../../modificar-metodo-de-pago', idPagoBitacora]">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
