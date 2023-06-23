@@ -65,6 +65,25 @@
     </ng-template>
   </p-accordionTab>
 </p-accordion>
+<div class="row flex mb-4">
+  <div class="col-md-8 font-17">
+    Total a pagar para cubrir el total de la ODS:
+    <span class="activo">{{ registroPago.totalPorCubrir | currency }}</span>
+  </div>
+  <div class="col-md-4">
+    <div class="row grid">
+      <div class="col ">
+        <span class="flex flex-column etiqueta-base align-items-end">Total Pagado</span>
+        <span class="flex flex-column texto-base align-items-end">{{registroPago.totalPagado | currency}}</span>
+      </div>
+      <div class="col">
+        <span class="flex flex-column etiqueta-base align-items-end">Total a pagar</span>
+        <span class="flex flex-column texto-base align-items-end">{{registroPago.totalAPagar | currency}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="flex  mb-4 justify-content-end">
   <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./../..'">
     Regresar

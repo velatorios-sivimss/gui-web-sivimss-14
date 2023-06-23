@@ -151,7 +151,7 @@ export class RealizarPagoComponent implements OnInit {
     console.log();
   }
 
-  private paginarConFiltros(): void {
+  paginarConFiltros(): void {
     const filtros: FiltrosPago = this.crearSolicitudFiltros();
     this.cargadorService.activar();
     this.realizarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
@@ -167,7 +167,7 @@ export class RealizarPagoComponent implements OnInit {
     });
   }
 
-  private paginar(): void {
+  paginar(): void {
     this.cargadorService.activar();
     this.realizarPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -182,7 +182,7 @@ export class RealizarPagoComponent implements OnInit {
     });
   }
 
-  private crearSolicitudFiltros(): FiltrosPago {
+  crearSolicitudFiltros(): FiltrosPago {
     let folio = null
     if (this.tipoFolio === 1) {
       folio = this.filtroForm.get('folioOrden')?.value;
@@ -193,17 +193,18 @@ export class RealizarPagoComponent implements OnInit {
     if (this.tipoFolio === 3) {
       folio = this.filtroForm.get('folioRenovacion')?.value;
     }
+    const velatorio = this.filtroForm.get('velatorio')?.value
     return {
-      claveFolio: folio,
+      folio,
       fechaFin: this.filtroForm.get('periodoFin')?.value,
       fechaInicio: this.filtroForm.get('periodoInicio')?.value,
-      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      idVelatorio: velatorio === 0 ? null : velatorio,
       nomContratante: this.filtroForm.get('nombreContratante')?.value,
-      idFlujoPago: this.tipoFolio
+      idFlujoPagos: this.tipoFolio
     }
   }
 
-  private obtenerVelatorios(): void {
+  obtenerVelatorios(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.realizarPagoService.obtenerVelatoriosPorDelegacion(usuario.idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {

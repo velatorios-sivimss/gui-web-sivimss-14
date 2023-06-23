@@ -1,8 +1,8 @@
 export interface FiltrosPago {
   idVelatorio: number,
-  claveFolio: string,
+  folio: string,
   nomContratante: string,
   fechaInicio: string,
   fechaFin: string,
-  idFlujoPago: number | null;
+  idFlujoPagos: number | null;
 }
