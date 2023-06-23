@@ -1,4 +1,4 @@
-<app-table-panel class="pb-3">
+<app-table-panel>
   <ng-template appCustomTemplate="left-header">
     <div class="table-panel-header-column">
       <span class="activo">Folio {{registroPago.folio}}</span>
@@ -18,6 +18,36 @@
     </div>
   </ng-template>
 </app-table-panel>
+<div class="bg-g">
+  <app-table-panel class="pb-3 bg-g">
+    <div class="row grid mt-2 mb-2">
+      <div class="col">
+        <span class="ml-5">Número de autorización</span>
+        <div class="contenedor-inputswitch">
+          <span class="font-bold"></span>
+        </div>
+      </div>
+      <div class="col">
+        <span class="ml-5">Tipo de pago</span>
+        <div class="contenedor-inputswitch">
+          <span class="font-bold">{{registroPago.tipoPago}}</span>
+        </div>
+      </div>
+      <div class="col">
+        <span class="ml-5">Fecha</span>
+        <div class="contenedor-inputswitch">
+          <span class="font-bold"></span>
+        </div>
+      </div>
+      <div class="col">
+        <span class="ml-5">Estatus ODS </span>
+        <div class="contenedor-inputswitch">
+          <span class="font-bold"></span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+</div>
 <h2 class="subtitulo pt-4 pb-4">Métodos de pago</h2>
 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor">
   <p-accordionTab *ngFor="let pago of registroPago.metodosPago">
@@ -66,19 +96,21 @@
   </p-accordionTab>
 </p-accordion>
 <div class="row flex mb-4">
-  <div class="col-md-8 font-17">
+  <div class="col-md-8 font-17 ">
     Total a pagar para cubrir el total de la ODS:
-    <span class="activo">{{ registroPago.totalPorCubrir | currency }}</span>
+    <span class="font-bold activo">{{ registroPago.totalPorCubrir | currency }}</span>
   </div>
   <div class="col-md-4">
     <div class="row grid">
       <div class="col ">
         <span class="flex flex-column etiqueta-base align-items-end">Total Pagado</span>
-        <span class="flex flex-column texto-base align-items-end">{{registroPago.totalPagado | currency}}</span>
+        <span
+          class="flex flex-column texto-base align-items-end font-bold">{{registroPago.totalPagado | currency}}</span>
       </div>
       <div class="col">
         <span class="flex flex-column etiqueta-base align-items-end">Total a pagar</span>
-        <span class="flex flex-column texto-base align-items-end">{{registroPago.totalAPagar | currency}}</span>
+        <span
+          class="flex flex-column texto-base align-items-end font-bold">{{registroPago.totalAPagar | currency}}</span>
       </div>
     </div>
   </div>
