@@ -12,6 +12,7 @@ import {
 import {DetalleMetodoPagoComponent} from "./components/detalle-metodo-pago/detalle-metodo-pago.component";
 import {RealizarPagoResolver} from "./services/realizar-pago.resolver";
 import {DetallePagoResolver} from "./services/detalle-pago.resolver";
+import {ModificarMetodoPagoComponent} from "./components/modificar-metodo-pago/modificar-metodo-pago.component";
 
 const routes: Routes = [
   {
@@ -40,6 +41,13 @@ const routes: Routes = [
   {
     path: 'detalle-de-pago/:idPagoBitacora',
     component: DetalleMetodoPagoComponent,
+    resolve: {
+      respuesta: DetallePagoResolver
+    }
+  },
+  {
+    path: 'modificar-metodo-de-pago/:idPagoBitacora',
+    component: ModificarMetodoPagoComponent,
     resolve: {
       respuesta: DetallePagoResolver
     }

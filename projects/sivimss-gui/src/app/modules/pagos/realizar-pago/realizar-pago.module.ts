@@ -33,6 +33,7 @@ import {DetalleMetodoPagoComponent} from './components/detalle-metodo-pago/detal
 import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 import {RealizarPagoService} from "./services/realizar-pago.service";
 import {AccordionModule} from "primeng/accordion";
+import { ModificarMetodoPagoComponent } from './components/modificar-metodo-pago/modificar-metodo-pago.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import {AccordionModule} from "primeng/accordion";
     RegistrarAgfComponent,
     RegistrarValeParitariaComponent,
     SeleccionBeneficiariosAgfComponent,
-    DetalleMetodoPagoComponent
+    DetalleMetodoPagoComponent,
+    ModificarMetodoPagoComponent
   ],
     imports: [
         CommonModule,
