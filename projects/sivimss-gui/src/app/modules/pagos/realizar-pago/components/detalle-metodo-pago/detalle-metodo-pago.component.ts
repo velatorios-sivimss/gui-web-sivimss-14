@@ -1,12 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 interface DetallePago {
   folio: string,
   metodosPago: MetodoPago[],
   totalAPagar: number
   totalPagado: number
-  totalPorCubrir: number
+  totalPorCubrir: number,
+  estatusPago: string,
+  tipoPago: string
 }
 
 interface MetodoPago {
@@ -28,12 +30,25 @@ export class DetalleMetodoPagoComponent implements OnInit {
   registroPago!: DetallePago;
 
   constructor(
-    private route: ActivatedRoute,
+    private router: Router,
+    private readonly activatedRoute: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
-    this.registroPago = this.route.snapshot.data["respuesta"].datos;
+    this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
+  }
+
+  redireccionPago(): void {
+    if (this.registroPago.tipoPago === 'Orden de Servicio') {
+      void this.router.navigate(["./../../pago-orden-servicio"], {relativeTo: this.activatedRoute});
+      return;
+    }
+    if (this.registroPago.tipoPago === 'Nuevos Convenios de Previsión Funeraria') {
+      void this.router.navigate(["./../../pago-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
+      return;
+    }
+    void this.router.navigate(["./../../pago-renovacion-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
   }
 
 }

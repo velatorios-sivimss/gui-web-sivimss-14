@@ -16,7 +16,7 @@ import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../
 import {Pago} from "../../modelos/pago.interface";
 import {FiltrosPago} from "../../modelos/filtrosPago.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-realizar-pago',
@@ -63,7 +63,8 @@ export class RealizarPagoComponent implements OnInit {
               private realizarPagoService: RealizarPagoService,
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService,
-              private route: ActivatedRoute,
+              private router: Router,
+              private readonly activatedRoute: ActivatedRoute,
   ) {
   }
 
@@ -74,7 +75,7 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   cargarCatalogos(): void {
-    const respuesta = this.route.snapshot.data["respuesta"];
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     const foliosODS = respuesta[this.POSICION_FOLIO_ODS].datos;
     this.foliosODS = mapearArregloTipoDropdown(foliosODS, "folio", "folio");
@@ -230,6 +231,18 @@ export class RealizarPagoComponent implements OnInit {
     }
     this.filtroForm.get('folioOrden')?.patchValue(null);
     this.filtroForm.get('folioConvenio')?.patchValue(null);
+  }
+
+  redireccionPago(): void {
+    if (this.pagoSeleccionado.tipoPago === 'Orden de Servicio') {
+      void this.router.navigate(["./pago-orden-servicio"], {relativeTo: this.activatedRoute});
+      return;
+    }
+    if (this.pagoSeleccionado.tipoPago === 'Nuevos Convenios de Previsión Funeraria') {
+      void this.router.navigate(["./pago-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
+      return;
+    }
+    void this.router.navigate(["./pago-renovacion-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
   }
 
   get fP() {
