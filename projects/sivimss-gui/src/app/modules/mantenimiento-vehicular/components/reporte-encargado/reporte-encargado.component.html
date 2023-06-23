@@ -89,128 +89,133 @@
           </div>
         </ng-template>
 
-        <div class="row table-panel-row">
-          <div class="col-md-12">
-            <div class="table-panel-column">
-              <p-table [value]="registrosReporte" *ngIf="tipoBusqueda == 1">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th id="reporte-encargado-placas">Placas</th>
-                    <th id="reporte-encargado-marca">Marca</th>
-                    <th id="reporte-encargado-anio">Año</th>
-                    <th id="reporte-encargado-kilometraje">Kilometraje</th>
-                    <th id="reporte-encargado-tipo-mtto">Tipo de mantenimiento</th>
-                    <th id="reporte-encargado-modalidad">Modalidad</th>
-                    <th id="reporte-encargado-estado-mtto">Estado de mantenimiento</th>
-                    <th id="reporte-encargado-notas">Notas</th>
-                    <th id="reporte-encargado-numero-contrato">Número de contrato</th>
-                    <th id="reporte-encargado-taller">Taller</th> <!-- Solo si es preventivo -->
-                    <th id="reporte-encargado-fecha-mtto">Fecha de mantenimiento</th>
-                    <th id="reporte-encargado-costo">Costo de mantenimiento (IVA incluido)</th>
-                    <th id="reporte-encargado-estatus"></th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-item>
-                  <tr>
-                    <td>{{ item.DES_PLACAS }}</td>
-                    <td>{{ item.DES_MARCA }}</td>
-                    <td>{{ item.DES_MODELO }}</td>
-                    <td>{{ item.NUM_KILOMETRAJE_SOL }}</td>
-                    <td>{{ item.DES_MTTO_TIPO }}</td>
-                    <td>{{ item.DES_MODALIDAD }}</td>
-                    <td>{{ item.DES_MTTOESTADO }}</td>
-                    <td>{{ item.DES_NOTAS_SOL }}</td>
-                    <td>{{ item.DES_NUMCONTRATO }}</td>
-                    <td>{{ item.DES_NOMBRE_TALLER }}</td> <!-- Solo si es preventivo -->
-                    <td>{{ item.FEC_MTTO_SOL }}</td>
-                    <td>{{ item.MON_COSTO_MTTO }}</td>
-                    <td>
-                      <div class="contenedor-celda-iconos">
-                        <a (click)="abrirDetallereporteEncargado(item)">
-                          <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                  <tr>
-                    <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
-                      No se encontró información relacionada a tu búsqueda.
-                    </th>
-                  </tr>
-                </ng-template>
+        <p-table [value]="registrosReporte" [paginator]="registrosReporte.length > 0" *ngIf="tipoBusqueda == 1"
+          [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+          [(first)]="numPaginaActual" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky
+          (onLazyLoad)="paginar($event)">
+          <ng-template pTemplate="header">
+            <tr>
+              <th id="reporte-encargado-placas">Placas</th>
+              <th id="reporte-encargado-marca">Marca</th>
+              <th id="reporte-encargado-anio">Año</th>
+              <th id="reporte-encargado-kilometraje">Kilometraje</th>
+              <th id="reporte-encargado-tipo-mtto">Tipo de mantenimiento</th>
+              <th id="reporte-encargado-mantenimiento">Mantenimiento</th>
+              <th id="reporte-encargado-modalidad">Modalidad</th>
+              <th id="reporte-encargado-estado-mtto">Estado de mantenimiento</th>
+              <th id="reporte-encargado-notas">Notas</th>
+              <th id="reporte-encargado-numero-contrato">Número de contrato</th>
+              <th id="reporte-encargado-taller">Taller</th>
+              <th id="reporte-encargado-fecha-mtto">Fecha de mantenimiento</th>
+              <th id="reporte-encargado-nombre-proveedor">Nombre del proveedor</th>
+              <th id="reporte-encargado-costo">Costo de mantenimiento (IVA incluido)</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.DES_PLACAS }}</td>
+              <td>{{ item.DES_MARCA }}</td>
+              <td>{{ item.DES_MODELO }}</td>
+              <td>{{ item.NUM_KILOMETRAJE_SOL }}</td>
+              <td>{{ item.DES_MTTO_TIPO }}</td>
+              <td>{{ item.DES_MTTO_CORRECTIVO }}</td>
+              <td>{{ item.DES_MODALIDAD }}</td>
+              <td>{{ item.DES_MTTOESTADO }}</td>
+              <td>{{ item.DES_NOTAS_SOL }}</td>
+              <td>{{ item.DES_NUMCONTRATO }}</td>
+              <td>{{ item.DES_NOMBRE_TALLER }}</td>
+              <td>{{ item.FEC_MTTO_SOL }}</td>
+              <td>{{ item.NOM_PROVEEDOR }}</td>
+              <td>{{ item.MON_COSTO_MTTO }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+                No se encontró información relacionada a tu búsqueda.
+              </th>
+            </tr>
+          </ng-template>
 
-                <ng-template pTemplate="paginatorleft">
-                  <div class="paginator-template">
-                    <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
-                  </div>
-                </ng-template>
-              </p-table>
+          <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+              <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
+            </div>
+          </ng-template>
 
-              <p-table [value]="registrosReporte" *ngIf="tipoBusqueda == 2">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th id="reporte-encargado-fecha">Fecha</th>
-                    <th id="reporte-encargado-placa">Placa</th>
-                    <th id="reporte-encargado-aceite">Aceite</th>
-                    <th id="reporte-encargado-agua">Agua</th>
-                    <th id="reporte-encargado-calibracion">Calibración neumáticos</th>
-                    <th id="reporte-encargado-combustible">Combustible</th>
-                    <th id="reporte-encargado-codigo">Código falla</th>
-                    <th id="reporte-encargado-bateria">Bateria</th>
-                    <th id="reporte-encargado-estatus"></th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-item>
-                  <tr>
-                    <td>{{ item.FEC_REGISTRO }}</td>
-                    <td>{{ item.DES_PLACAS }}</td>
-                    <td>{{ item.DES_NIVEL_ACEITE }}</td>
-                    <td>{{ item.DES_NIVEL_AGUA }}</td>
-                    <td>{{ item.DES_NIVEL_NEUMADELA }}</td>
-                    <td>{{ item.DES_NIVEL_COMBUSTIBLE }}</td>
-                    <td>{{ item.DES_NIVEL_CODIGOFALLO }}</td>
-                    <td>{{ item.DES_NIVEL_BATERIA }}</td>
-                    <td>
-                      <div class="contenedor-celda-iconos">
-                        <a (click)="abrirDetallereporteEncargado(item)">
-                          <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                  <tr>
-                    <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
-                      No se encontró información relacionada a tu búsqueda.
-                    </th>
-                  </tr>
-                </ng-template>
-
-                <ng-template pTemplate="paginatorleft">
-                  <div class="paginator-template">
-                    <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
-                  </div>
-                </ng-template>
-              </p-table>
-
-              <div class="paginator-template" *ngIf="registrosReporte.length > 0">
-                <div class="export-table" style="float: right;">
-                  <span class="export-table-text">Exportar tabla</span>
-                  <div class="export-table-icons">
-                    <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-                      (click)="generarReporteTabla('pdf');">
-                    <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-                      (click)="generarReporteTabla('xls');">
-                  </div>
+          <ng-template pTemplate="paginatorright">
+            <div class="paginator-template" *ngIf="registrosReporte.length > 0">
+              <div class="export-table" style="float: right;">
+                <span class="export-table-text">Exportar tabla</span>
+                <div class="export-table-icons">
+                  <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                    (click)="generarReporteTabla('pdf');">
+                  <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                    (click)="generarReporteTabla('xls');">
                 </div>
               </div>
-
             </div>
-          </div>
-        </div>
+          </ng-template>
+        </p-table>
+
+        <p-table [value]="registrosReporte" [paginator]="registrosReporte.length > 0" *ngIf="tipoBusqueda == 2"
+          [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+          [(first)]="numPaginaActual" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky
+          (onLazyLoad)="paginar($event)">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th id="reporte-encargado-fecha">Fecha</th>
+              <th id="reporte-encargado-placa">Placa</th>
+              <th id="reporte-encargado-aceite">Aceite</th>
+              <th id="reporte-encargado-agua">Agua</th>
+              <th id="reporte-encargado-calibracion">Calibración neumáticos</th>
+              <th id="reporte-encargado-combustible">Combustible</th>
+              <th id="reporte-encargado-codigo">Código falla</th>
+              <th id="reporte-encargado-bateria">Bateria</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.FEC_REGISTRO }}</td>
+              <td>{{ item.DES_PLACAS }}</td>
+              <td>{{ item.DES_NIVEL_ACEITE }}</td>
+              <td>{{ item.DES_NIVEL_AGUA }}</td>
+              <td>{{ item.DES_NIVEL_NEUMADELA }}</td>
+              <td>{{ item.DES_NIVEL_COMBUSTIBLE }}</td>
+              <td>{{ item.DES_NIVEL_CODIGOFALLO }}</td>
+              <td>{{ item.DES_NIVEL_BATERIA }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+                No se encontró información relacionada a tu búsqueda.
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+              <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="paginatorright">
+            <div class="paginator-template" *ngIf="registrosReporte.length > 0">
+              <div class="export-table" style="float: right;">
+                <span class="export-table-text">Exportar tabla</span>
+                <div class="export-table-icons">
+                  <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                    (click)="generarReporteTabla('pdf');">
+                  <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                    (click)="generarReporteTabla('xls');">
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-table>
+
       </app-table-panel>
     </p-accordion>
   </ng-container>

@@ -196,7 +196,7 @@ export class RegistroMantenimientoComponent implements OnInit {
         idMantenimiento: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value ? +this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value : null,
         desNombreProveedor: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
         desNotas: this.solicitudMantenimientoForm.get("notas")?.value,
-        idProveedor: +this.smf.tipoMantenimiento.value == 1 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,        
+        idProveedor: +this.smf.tipoMantenimiento.value == 1 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
         desNumcontrato: this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("noContrato")?.value : null,
         idContrato: this.smf.tipoMantenimiento.value == 1 ? this.solicitudMantenimientoForm.get("noContrato")?.value : null,
         kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
@@ -226,8 +226,8 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   abrirRegistroSolicitud(): void {
     this.ref.close(true);
-    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      { queryParams: { tabview: 2, id: this.vehiculoSeleccionado.ID_MTTOVEHICULAR } });
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_MTTOVEHICULAR],
+      { queryParams: { tabview: 2 } });
   }
 
   gestionarCampos(): void {

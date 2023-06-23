@@ -129,6 +129,10 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`, body)
   }
 
+  obtenerRegistroVehiculoByIdMtto(idMttoVehicular: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/busqueda-mtto-by-id`, { idMttoVehicular: +idMttoVehicular })
+  }
+
   buscarReporteMttoPreventivo(t: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_predictivo}`, t);
   }

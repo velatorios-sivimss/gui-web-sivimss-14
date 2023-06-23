@@ -54,11 +54,7 @@ export class DetalleMantenimientoComponent implements OnInit {
       if (params.tabview) {
         this.indice = params.tabview;
       }
-      if (params.id) {
-        this.idAgregarVehiculo = params.id;
-        this.vehiculo = this.route.snapshot.data["respuesta"][0].datos.content.find((e: any) => e.ID_MTTOVEHICULAR == this.idAgregarVehiculo);
-        this.obtenerRegistros();
-      }
+      this.obtenerRegistros();
     })
   }
 
@@ -68,6 +64,7 @@ export class DetalleMantenimientoComponent implements OnInit {
   }
 
   obtenerRegistros(): void {
+    this.vehiculo = this.route.snapshot.data["respuesta"][0].datos[0];
     const POSICION_VERIFICACION: number = 0;
     const POSICION_REGISTRO_MTTO: number = 1;
     const POSICION_SOLICITUD_MTTO: number = 2;
@@ -77,9 +74,35 @@ export class DetalleMantenimientoComponent implements OnInit {
           this.verificacion = respuesta[POSICION_VERIFICACION].datos[0] || null;
           this.registro = respuesta[POSICION_REGISTRO_MTTO].datos[0] || null;
           this.solicitudRegistro = respuesta[POSICION_SOLICITUD_MTTO].datos[0] || null;
+          if (this.verificacion) {
+            this.vehiculo.ID_VEHICULO = this.verificacion.ID_VEHICULO;
+            this.vehiculo.DES_MTTOESTADO = this.verificacion.DES_MTTOESTADO;
+            this.vehiculo.DES_VELATORIO = this.verificacion.DES_VELATORIO;
+            this.vehiculo.DES_MARCA = this.verificacion.DES_MARCA;
+            this.vehiculo.DES_SUBMARCA = this.verificacion.DES_SUBMARCA;
+            this.vehiculo.DES_MODELO = this.verificacion.DES_MODELO;
+            this.vehiculo.DES_PLACAS = this.verificacion.DES_PLACAS;
+          } else if (this.registro) {
+            this.vehiculo.ID_VEHICULO = this.registro.ID_VEHICULO;
+            this.vehiculo.DES_MTTOESTADO = this.registro.DES_MTTOESTADO;
+            this.vehiculo.DES_VELATORIO = this.registro.NOM_VELATORIO;
+            this.vehiculo.DES_MARCA = this.registro.DES_MARCA;
+            this.vehiculo.DES_SUBMARCA = this.registro.DES_SUBMARCA;
+            this.vehiculo.DES_MODELO = this.registro.DES_MODELO;
+            this.vehiculo.DES_PLACAS = this.registro.DES_PLACAS;
+          } else {
+            this.vehiculo.ID_VEHICULO = this.solicitudRegistro.ID_VEHICULO;
+            this.vehiculo.DES_MTTOESTADO = this.solicitudRegistro.DES_MTTOESTADO;
+            this.vehiculo.DES_VELATORIO = this.solicitudRegistro.DES_VELATORIO;
+            this.vehiculo.DES_MARCA = this.solicitudRegistro.DES_MARCA;
+            this.vehiculo.DES_SUBMARCA = this.solicitudRegistro.DES_SUBMARCA;
+            this.vehiculo.DES_MODELO = this.solicitudRegistro.DES_MODELO;
+            this.vehiculo.DES_PLACAS = this.solicitudRegistro.DES_PLACAS;
+          }
+          this.vehiculo.DES_VELATORIO = this.verificacion?.DES_VELATORIO || this.registro?.NOM_VELATORIO || this.solicitudRegistro?.DES_VELATORIO;
           if (this.solicitudRegistro?.DES_MTTOESTADO) {
             this.vehiculo.DES_MTTOESTADO = this.solicitudRegistro.DES_MTTOESTADO;
-          } else if (this.solicitudRegistro?.DES_MTTOESTADO) {
+          } else if (this.solicitudRegistro.DES_MTTOESTADO) {
             this.vehiculo.DES_MTTOESTADO = this.registro.DES_MTTOESTADO;
           }
         }
