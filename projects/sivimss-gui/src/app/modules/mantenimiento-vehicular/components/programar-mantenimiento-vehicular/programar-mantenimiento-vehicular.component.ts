@@ -92,7 +92,6 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
-    // this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
@@ -300,8 +299,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   irADetalle(vehiculo: any): void {
-    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_VEHICULO],
-      { queryParams: { tabview: 0, id: vehiculo.ID_MTTOVEHICULAR } });
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_MTTOVEHICULAR],
+      { queryParams: { tabview: 0 } });
   }
 
   generarReporteTabla(tipoReporte: string): void {
@@ -317,7 +316,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        this.alertaService.mostrar(TipoAlerta.Exito,"El archivo se guardó correctamente.")
+        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);

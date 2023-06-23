@@ -134,7 +134,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   crearSolicitudMantenimiento(): RegistroSolicitudMttoInterface {
     return {
-      idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
+      idMttoVehicular: this.idSolicitudMtto ? this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
@@ -143,7 +143,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       verificacionInicio: null,
       solicitud: {
         idMttoSolicitud: this.idSolicitudMtto,
-        idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
+        idMttoVehicular: this.idSolicitudMtto ? this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
         idMttoTipo: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaRegistro")?.value, 'YYYY-MM-dd'),
@@ -179,9 +179,11 @@ export class SolicitudMantenimientoComponent implements OnInit {
   guardarNuevaSolicitudMtto(): void {
     const verificacion: RegistroSolicitudMttoInterface = this.crearSolicitudMantenimiento();
     this.mantenimientoVehicularService.guardar(verificacion).subscribe({
-      next: (): void => {
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud agregada correctamente');
-        this.abrirRegistroSolicitud();
+        if (respuesta.datos.length > 0) {
+          this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+        }
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -199,7 +201,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
           this.ref.close(true);
           this.alertaService.mostrar(TipoAlerta.Precaucion, 'Solicitud modificada correctamente');
         } else {
-          this.abrirRegistroSolicitud();
+          this.abrirRegistroSolicitud(this.vehiculoSeleccionado.ID_MTTOVEHICULAR);
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -209,10 +211,10 @@ export class SolicitudMantenimientoComponent implements OnInit {
     });
   }
 
-  abrirRegistroSolicitud(): void {
+  abrirRegistroSolicitud(idMttoVehiculo: number): void {
     this.ref.close(true);
-    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_VEHICULO],
-      { queryParams: { tabview: 1, id: this.vehiculoSeleccionado.ID_MTTOVEHICULAR } });
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', idMttoVehiculo],
+      { queryParams: { tabview: 1 } });
   }
 
   realizarSolicitud(id: number): void {

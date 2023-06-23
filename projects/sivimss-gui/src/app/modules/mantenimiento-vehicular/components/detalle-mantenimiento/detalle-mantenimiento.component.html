@@ -1,16 +1,16 @@
 <app-titulo-principal titulo="VER DETALLE"></app-titulo-principal>
-<p-accordion styleClass="sivimss-accordion sivimss-accordionColor" [activeIndex]="0">
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor" [activeIndex]="0" *ngIf="vehiculo">
   <p-accordionTab>
     <ng-template pTemplate="header">
       <div class="sivimss-acoordion-header">
         <div class="accordion-header-left">
           <span>ID </span>
-          <b>{{ vehiculo?.ID_VEHICULO }}</b>
+          <b>{{ vehiculo.ID_VEHICULO }}</b>
         </div>
         <div class="accordion-header-right">
-          <div class="estatus" *ngIf="vehiculo?.DES_MTTOESTADO">
+          <div class="estatus" *ngIf="vehiculo.DES_MTTOESTADO">
             <span>Estado de mantenimiento</span>
-            <b [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo?.DES_MTTOESTADO}}</b>
+            <b [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</b>
           </div>
           <a (click)="abrirPanel($event)">
             <i class="fs fs-barras-horizontales"></i>
@@ -22,7 +22,7 @@
       <div class="row grid">
         <div class="col">
           <span class="flex flex-column etiqueta-base">Velatorio</span>
-          <span class="texto-base">{{vehiculo?.DES_VELATORIO}}</span>
+          <span class="texto-base">{{vehiculo.DES_VELATORIO}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Fecha</span>
@@ -30,11 +30,11 @@
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Vehiculo</span>
-          <span class="texto-base">{{vehiculo?.DES_MARCA}} {{vehiculo?.DES_SUBMARCA}} {{vehiculo?.DES_MODELO}}</span>
+          <span class="texto-base">{{vehiculo.DES_MARCA}} {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">Placas</span>
-          <span class="texto-base">{{vehiculo?.DES_PLACAS}}</span>
+          <span class="texto-base">{{vehiculo.DES_PLACAS}}</span>
         </div>
       </div>
       <hr class="hr-accordion-content">
@@ -163,15 +163,15 @@
                   <div class="row grid">
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base ml-4">Placas</label>
-                      <span class="ml-4">{{vehiculo?.DES_PLACAS}}</span>
+                      <span class="ml-4">{{vehiculo.DES_PLACAS}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Marca</label>
-                      <span>{{vehiculo?.DES_MARCA}}</span>
+                      <span>{{vehiculo.DES_MARCA}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Año</label>
-                      <span>{{vehiculo?.DES_MODELO}}</span>
+                      <span>{{vehiculo.DES_MODELO}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Kilometraje</label>
@@ -224,15 +224,15 @@
                   <div class="row grid">
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base ml-4">Placas</label>
-                      <span class="ml-4">{{vehiculo?.DES_PLACAS}}</span>
+                      <span class="ml-4">{{vehiculo.DES_PLACAS}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Marca</label>
-                      <span>{{vehiculo?.DES_MARCA}}</span>
+                      <span>{{vehiculo.DES_MARCA}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Año</label>
-                      <span>{{vehiculo?.DES_MODELO}}</span>
+                      <span>{{vehiculo.DES_MODELO}}</span>
                     </div>
                     <div class="col table-panel-column">
                       <label class="flex flex-column etiqueta-base">Kilometraje</label>
@@ -314,28 +314,28 @@
 <p-dialog header="Modificar" [(visible)]="modificarModal" *ngIf="vehiculo">
   <div class="border-panel mb-4 w-440 bg-g">
     <div class="row flex justify-content-center">
-      {{vehiculo?.ID_VEHICULO}} - {{vehiculo?.DES_MARCA | uppercase }}
-      {{vehiculo?.DES_SUBMARCA | uppercase}} {{vehiculo?.DES_MODELO | uppercase}}
+      {{vehiculo.ID_VEHICULO}} - {{vehiculo.DES_MARCA | uppercase }}
+      {{vehiculo.DES_SUBMARCA | uppercase}} {{vehiculo.DES_MODELO | uppercase}}
     </div>
   </div>
   <div class=" border-panel w-440">
-    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo?.verificacionDia !== 'false'">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo.verificacionDia !== 'false'">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarVerificacion()">
         Modificar verificación al inicio
       </button>
     </div>
-    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo?.ID_MTTO_SOLICITUD">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculo.ID_MTTO_SOLICITUD">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarSolicitud()">
         Modificar solicitud de mantenimiento
       </button>
     </div>
-    <div class="row flex justify-content-center" *ngIf="vehiculo?.ID_MTTO_REGISTRO">
+    <div class="row flex justify-content-center" *ngIf="vehiculo.ID_MTTO_REGISTRO">
       <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarRegistro()">
         Modificar registro de mantenimiento
       </button>
     </div>
     <div class="row flex justify-content-center"
-      *ngIf="vehiculo?.verificacionDia === 'false' && !vehiculo?.ID_MTTO_SOLICITUD && !vehiculo?.ID_MTTO_REGISTRO ">
+      *ngIf="vehiculo.verificacionDia === 'false' && !vehiculo.ID_MTTO_SOLICITUD && !vehiculo.ID_MTTO_REGISTRO ">
       No existen solicitudes registradas previamente.
     </div>
   </div>

@@ -29,4 +29,5 @@ export interface RespuestaSolicitudMantenimiento {
   DES_SUBMARCA: string,
   DES_NOTAS: string,
   KILOMETRAJE: string,
+  DES_VELATORIO: string,
 }
