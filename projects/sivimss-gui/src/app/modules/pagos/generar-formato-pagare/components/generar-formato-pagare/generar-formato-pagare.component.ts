@@ -81,7 +81,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.inicializarFiltroForm();
     this.cargarCatalogos();
-    this.obtenerFoliosGenerados();
   }
 
   private cargarCatalogos(): void {
@@ -115,7 +114,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
     });
-    this.obtenerFoliosGenerados();
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -245,6 +243,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
+    this.obtenerFoliosGenerados();
   }
 
   get f() {
