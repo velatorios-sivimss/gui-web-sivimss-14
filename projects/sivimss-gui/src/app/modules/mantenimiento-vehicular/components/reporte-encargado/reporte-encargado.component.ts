@@ -21,6 +21,7 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 
 @Component({
   selector: 'app-reporte-encargado',
@@ -35,7 +36,7 @@ export class ReporteEncargadoComponent implements OnInit {
   overlayPanel!: OverlayPanel
 
   numPaginaActual: number = 0
-  cantElementosPorPagina: number = 1000; // DIEZ_ELEMENTOS_POR_PAGINA
+  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0
 
   velatorio: string = '';
@@ -101,6 +102,17 @@ export class ReporteEncargadoComponent implements OnInit {
     this.obtenerPlacas();
   }
 
+  paginar(event?: LazyLoadEvent): void {
+    if (this.filtroForm.valid) {
+      if (event?.first !== undefined && event.rows !== undefined) {
+        this.numPaginaActual = Math.floor(event.first / event.rows);
+      } else {
+        this.numPaginaActual = 0;
+      }
+      this.buscar();
+    }
+  }
+
   buscar(): void {
     const filtros: FiltrosReporteEncargado = this.crearSolicitudFiltros();
     this.mostrarTabla = true;
@@ -111,6 +123,7 @@ export class ReporteEncargadoComponent implements OnInit {
         .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
           next: (respuesta: HttpRespuesta<any>): void => {
             this.totalVehiculos = respuesta.datos.totalElements;
+            this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
           },
           error: (error: HttpErrorResponse): void => {
@@ -123,6 +136,7 @@ export class ReporteEncargadoComponent implements OnInit {
         .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
           next: (respuesta: HttpRespuesta<any>): void => {
             this.totalVehiculos = respuesta.datos.totalElements;
+            this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
           },
           error: (error: HttpErrorResponse): void => {
