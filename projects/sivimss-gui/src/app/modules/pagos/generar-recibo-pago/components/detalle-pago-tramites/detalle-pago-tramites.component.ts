@@ -8,11 +8,14 @@ import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {SolicitudReportePagoTramite} from "../../models/solicitudReporte.interface";
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {Observable} from "rxjs";
+import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 
 @Component({
   selector: 'app-detalle-pago-tramites',
   templateUrl: './detalle-pago-tramites.component.html',
   styleUrls: ['./detalle-pago-tramites.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class DetallePagoTramitesComponent {
 
@@ -26,6 +29,7 @@ export class DetallePagoTramitesComponent {
     private generarReciboService: GenerarReciboService,
     private mensajesSistemaService: MensajesSistemaService,
     private cargadorService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService
   ) {
     this.recibo = this.route.snapshot.data["respuesta"].datos[0];
     this.obtenerValoresFecha();
@@ -46,19 +50,14 @@ export class DetallePagoTramitesComponent {
   }
 
   generarExcel(): void {
-    const solicitud = this.generarSolicitudReporte('xls');
+    const solicitud: SolicitudReportePagoTramite = this.generarSolicitudReporte('xls');
     this.cargadorService.activar();
-    this.generarReciboService.descargarReporte(solicitud).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: Blob): void => {
-        const downloadURL: string = window.URL.createObjectURL(respuesta);
-        const link: HTMLAnchorElement = document.createElement('a');
-        link.href = downloadURL;
-        link.download = `reporte.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    const servicio$: Observable<Blob> = this.generarReciboService.descargarReporte(solicitud);
+    const opcionesArchivo: OpcionesArchivos = {nombreArchivo: 'reciboPago', ext: 'xlsx'}
+    this.descargaArchivosService.descargarArchivo(servicio$, opcionesArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta): void => {
+        console.log(respuesta)
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error)
@@ -67,19 +66,13 @@ export class DetallePagoTramitesComponent {
   }
 
   generarPDF(): void {
-    const solicitud = this.generarSolicitudReporte();
+    const solicitud: SolicitudReportePagoTramite = this.generarSolicitudReporte();
     this.cargadorService.activar();
-    this.generarReciboService.descargarReporte(solicitud).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: Blob): void => {
-        const downloadURL: string = window.URL.createObjectURL(respuesta);
-        const link: HTMLAnchorElement = document.createElement('a');
-        link.href = downloadURL;
-        link.download = `reporte.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    const servicio$: Observable<Blob> = this.generarReciboService.descargarReporte(solicitud);
+    this.descargaArchivosService.descargarArchivo(servicio$, {nombreArchivo: 'reciboPago'}).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta): void => {
+        console.log(respuesta)
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error)
