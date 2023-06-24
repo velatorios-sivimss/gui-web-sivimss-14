@@ -1,139 +1,136 @@
 h3 {
-    font-style: normal;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 45px;
-    text-transform: uppercase;
-    color: #272829;
-    margin: 0;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 45px;
+  text-transform: uppercase;
+  color: #272829;
+  margin: 0;
 }
 
 hr {
-    margin-top: 5px;
-    margin-bottom: 35px;
+  margin-top: 5px;
+  margin-bottom: 35px;
 }
 
 .seccion-folio {
-    border-bottom: 0px !important;
-    height: 40px;
+  border-bottom: 0 !important;
+  height: 40px;
 }
 
 .texto-centrado {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .valor-subtitulo {
-    color: #272829;
+  color: #272829;
 }
 
 .border {
-    border: 0.5px solid #98989A;
-    border-radius: 5px;
+  border: 0.5px solid #98989A;
+  border-radius: 5px;
 }
 
 .body {
-    padding: 15px 0px;
+  padding: 15px 0;
 }
 
 .titulo-body {
-    margin-left: auto;
-    margin-right: auto;
-    width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 75%;
 
-    p {
-        font-style: normal;
-        font-weight: 700;
-        font-size: 18px;
-        line-height: 26px;
-        color: #000000;
-        margin: 0;
-        margin-top: 20px;
-        margin-bottom: 30px;
-        text-align: center;
-    }
+  p {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 26px;
+    color: #000000;
+    margin: 0;
+    text-align: center;
+  }
 }
 
 hr.solid {
-    border-top: 0.5px solid #98989A;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  border-top: 0.5px solid #98989A;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .info-gral-body span {
-    display: inline-block;
-    margin-bottom: 15px;
-    width: 50%;
+  display: inline-block;
+  margin-bottom: 15px;
+  width: 50%;
 }
 
 .etiqueta-formato {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19.5px;
-    color: #484848;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19.5px;
+  color: #484848;
 }
 
 .etiqueta-formato-val {
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-    color: #484848;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #484848;
 }
 
 .grid-container {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    padding: 10px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
 }
 
 .grid-item {
-    margin-left: 5px;
-    text-align: left;
+  margin-left: 5px;
+  text-align: left;
 }
 
 .column-card {
-    width: 48%;
+  width: 48%;
 }
 
 .card {
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    height: 200px;
-    margin-bottom: 100px;
-    transition: 0.3s;
-    width: 30%;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  height: 200px;
+  margin-bottom: 100px;
+  transition: 0.3s;
+  width: 30%;
 }
 
 .card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
-.card>p {
-    margin-top: -35px;
+.card > p {
+  margin-top: -35px;
 }
 
-.card>.p~.p {
-    margin-top: 0px;
+.card > .p ~ .p {
+  margin-top: 0;
 }
 
 .container-card {
-    height: 90%;
-    margin: 10px;
-    margin-top: 20px;
+  height: 90%;
+  margin: 20px 10px 10px;
 }
 
 .etiqueta-card {
-    font-weight: 400;
-    font-size: 13px;
-    line-height: 15.85px;
-    color: #272829;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 15.85px;
+  color: #272829;
 }
 
 .etiqueta-totales {
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 20px;
-    color: #484848;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 20px;
+  color: #484848;
 }
