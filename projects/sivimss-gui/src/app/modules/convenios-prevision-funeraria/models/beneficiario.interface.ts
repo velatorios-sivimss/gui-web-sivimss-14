@@ -14,4 +14,6 @@ export interface BeneficiarioInterface {
   actaNacimiento?: string;
   correoElectronico?: string;
   telefono?: number;
+  actaDeNacimiento?: boolean;
+  copiaINE?: boolean;
 }

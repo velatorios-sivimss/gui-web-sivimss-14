@@ -27,23 +27,34 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
     return of(mapearArregloTipoDropdown(estados, "desc", "id"));
   }
 
-  consultaCURP(curp: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-contratante-curp`,
-      {curp: curp});
+  consultaCURPRFC(rfc?:string, curp?: string): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-validaCurpRfc`,
+      {curp: curp, rfc:rfc})
   }
 
-  consultaRFC(rfc: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-contratante-rfc`,
-      {rfc: rfc});
+  consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/siap/${matricula}`);
   }
 
-  consutaCP(cp:String): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/codigo-postal/`+ cp )
+  consutaCP(cp:number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-consultar-cp`, {cp:cp} )
   }
 
   obtenerCatalogoParentesco(): Observable<TipoDropdown[]> {
     const catalogo_parentesco = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_parentesco'));
     return of(mapearArregloTipoDropdown(catalogo_parentesco, "desc", "id"));
+  }
+
+  consultarPaquetes(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/catalogo/convenio-pf-paquetes`);
+  }
+
+  obtenerCatalogoVelatoriosPorDelegacion(delegacion:number): Observable<HttpRespuesta<any>>{
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/velatorios/${delegacion}`);
+  }
+
+  consultaPromotores(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/catalogo/convenio-pf-promotores`);
   }
 
 

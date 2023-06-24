@@ -5,17 +5,35 @@
     <div class="col-md-4">
       <span>  Velatorio: </span>
       <br/>
-      <label>{{beneficiario.velatorio}}</label>
+      <label>{{velatorioDescripcion}}</label>
     </div>
     <div class="col-md-4">
       <span> Fecha:  </span>
       <br/>
-      <label>{{beneficiario.fechaNacimiento | date: 'dd/MM/yyyy'}}</label>
+      <label>{{beneficiario?.fechaNacimiento | date: 'dd/MM/yyyy'}}</label>
     </div>
     <div class="col-md-4">
       <span> Edad: </span>
       <br/>
-      <label>{{beneficiario.edad}}</label>
+      <label>{{beneficiario?.edad}}</label>
+    </div>
+  </div>
+  <hr class="hr-accordion-content">
+  <div class="row">
+    <div class="col-md-4">
+      <span>  Nombre (s): </span>
+      <br/>
+      <label>{{ beneficiario.nombre}}</label>
+    </div>
+    <div class="col-md-4">
+      <span>  Primer apellido: </span>
+      <br/>
+      <label>{{ beneficiario.primerApellido}}</label>
+    </div>
+    <div class="col-md-4">
+      <span>  Segundo apellido: </span>
+      <br/>
+      <label>{{ beneficiario.segundoApellido}}</label>
     </div>
   </div>
   <hr class="hr-accordion-content">
@@ -23,7 +41,7 @@
     <div class="col-md-4">
       <span>  Parentesco: </span>
       <br/>
-      <label>{{ parentescoDescripcion[0].label}}</label>
+      <label>{{ parentescoDescripcion[0]?.label}}</label>
     </div>
     <div class="col-md-4">
       <span> CURP:  </span>
@@ -33,7 +51,7 @@
     <div class="col-md-4">
       <span> RFC: </span>
       <br/>
-      <label>{{beneficiario.rfc}}</label>
+      <label>{{beneficiario?.rfc}}</label>
     </div>
   </div>
   <hr class="hr-accordion-content">
@@ -41,17 +59,34 @@
     <div class="col-md-4">
       <span>  Acta de nacimiento: </span>
       <br/>
-      <label>{{beneficiario.actaNacimiento}}</label>
+      <label>{{beneficiario?.actaNacimiento}}</label>
     </div>
     <div class="col-md-4">
       <span> Correo electrónico:  </span>
       <br/>
-      <label>{{beneficiario.correoElectronico}}</label>
+      <label>{{beneficiario?.correoElectronico}}</label>
     </div>
     <div class="col-md-4">
       <span> Teléfono: </span>
       <br/>
-      <label>{{beneficiario.telefono}}</label>
+      <label>{{beneficiario?.telefono}}</label>
+    </div>
+  </div>
+  <hr class="hr-accordion-content">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="flex">
+        <p-checkbox [disabled]="true" [(ngModel)]="beneficiario.actaDeNacimiento" styleClass="mr-3" [binary]="true" inputId="actaDeNacimiento"></p-checkbox>
+        <label [for]="'actaDeNacimiento'" class="control-label"><strong>Acta de Nacimiento (Original o Copia Certificada)</strong></label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="flex">
+        <p-checkbox [disabled]="true" [(ngModel)]="beneficiario.copiaINE" styleClass="mr-3" [binary]="true" inputId="copiaINE"></p-checkbox>
+        <label [for]="'copiaINE'" class="control-label"><strong>Copia INE del beneficiario si es mayor de edad</strong></label>
+      </div>
     </div>
   </div>
 </div>

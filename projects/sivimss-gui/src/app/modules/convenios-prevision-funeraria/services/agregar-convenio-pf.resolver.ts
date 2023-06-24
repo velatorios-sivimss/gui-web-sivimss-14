@@ -12,7 +12,8 @@ export class AgregarConvenioPfResolver implements Resolve<any> {
     const catalogoPaises$ = this.agregarConvenioPFService.obtenerCatalogoPaises();
     const catalogoEstados$ = this.agregarConvenioPFService.obtenerCatalogoEstados();
     const catalogoParentesco$ = this.agregarConvenioPFService.obtenerCatalogoParentesco();
-
-    return forkJoin([catalogoPaises$,catalogoEstados$, catalogoParentesco$]);
+    const catalogoPaquete$ = this.agregarConvenioPFService.consultarPaquetes();
+    const catalogoPromotores$ = this.agregarConvenioPFService.consultaPromotores();
+    return forkJoin([catalogoPaises$,catalogoEstados$, catalogoParentesco$, catalogoPaquete$,catalogoPromotores$]);
   }
 }

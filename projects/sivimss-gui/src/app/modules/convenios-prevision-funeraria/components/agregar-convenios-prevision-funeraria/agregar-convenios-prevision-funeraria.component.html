@@ -1,13 +1,12 @@
-<ng-container *ngIf="!agregarPersona">
   <app-titulo-principal titulo="Registro de Convenio Nuevo"></app-titulo-principal>
-  <div class="row mb-3 flex justify-content-center">
+  <div class="row mb-3 flex justify-content-center" *ngIf="ff.tipoContratacion.value== 1">
     <div class="col-md-6">
       <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps>
     </div>
   </div>
-  <ng-container *ngIf="indice == 0">
 
-    <div class="border-panel">
+  <ng-container *ngIf="indice == 0">
+    <div class="border-panel mb-3">
       <form [formGroup]="filtroForm">
         <div class="row mb-3">
           <div class="col-md-4">
@@ -21,7 +20,7 @@
           <div class="col-md-4">
             <label class="control-label" for="tipoContratacion">Tipo de contratación <span class="req">*</span></label>
             <p-dropdown id="tipoContratacion" class="form-control" formControlName="tipoContratacion" [options]="tipoContratacion"
-                         placeholder="Selecciona el tipo de contratación">
+                         placeholder="Selecciona el tipo de contratación" [filter]="true" filterBy="label" (onChange)="validarTipoContratacion" >
             </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="ff.tipoContratacion?.errors?.required && (ff.tipoContratacion?.dirty || ff.tipoContratacion?.touched)">
@@ -30,41 +29,45 @@
           <div class="col-md-4">
             <label class="control-label" for="rfcCurp">RFC o CURP</label>
             <input id="rfcCurp" class="form-control" formControlName="rfcCurp" placeholder="Ingresa el RFC o CURP"
-                   maxlength="10" alphanumericOnly>
+                   maxlength="18" alphanumericOnly (blur)="consultaRFCCURP()">
             <span class="campo-obligatorio"
                   *ngIf="ff.rfcCurp?.errors?.required && (ff.rfcCurp?.dirty || ff.rfcCurp?.touched)">
                               Campo obligatorio</span>
-
           </div>
         </div>
-      </form>
       <ng-container *ngIf="ff.tipoContratacion.value== 1" >
         <app-por-persona></app-por-persona>
       </ng-container>
       <ng-container *ngIf="ff.tipoContratacion.value== 2" >
-        <app-por-empresa ></app-por-empresa>
+        <app-por-empresa [existePersona]="existePersona"></app-por-empresa>
       </ng-container>
-<!--      <form [formGroup]="convenioForm">-->
-<!--        <div class="row mt-7 mb-3">-->
-<!--          <div class="col-md-12">-->
-<!--            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>-->
-<!--            <div class="flex">-->
-<!--              <div class="flex align-items-center mx-2">-->
-<!--                <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"-->
-<!--                               formControlName="promotor"></p-radioButton>-->
-<!--                <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>-->
-<!--              </div>-->
-<!--              <div class="flex align-items-center mx-2">-->
-<!--                <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"-->
-<!--                               formControlName="promotor"></p-radioButton>-->
-<!--                <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--        </div>-->
-<!--      </form>-->
-
+        <div class="row mt-7 mb-3">
+          <div class="col-md-3">
+            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
+            <div class="flex">
+              <div class="flex align-items-center mx-2">
+                <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
+                               formControlName="promotor" (onClick)="existePromotor(true)" ></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+              </div>
+              <div class="flex align-items-center mx-2">
+                <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
+                               formControlName="promotor" (onClick)="existePromotor(false)"></p-radioButton>
+                <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3" *ngIf="agregarPromotor">
+            <label class="control-label" for="promotor">Promotor<span class="req">*</span></label>
+            <p-dropdown id="promotor" class="form-control" formControlName="promotor" [options]="promotores"
+                        placeholder="Selecciona el promotor" [filter]="true" filterBy="label">
+            </p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="ff.promotor?.errors?.required && (ff.promotor?.dirty || ff.promotor?.touched)">
+                        Campo obligatorio</span>
+          </div>
+        </div>
+      </form>
 
       <div class="row">
         <div class="col-md-12">
@@ -73,32 +76,24 @@
           </span>
         </div>
       </div>
-      <div class="row my-3">
-        <div class="col-md-12 flex justify-content-end">
-          <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
-          <button type="submit" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
-        </div>
-      </div>
     </div>
   </ng-container>
-  <ng-container *ngIf="indice == 1">
-
+  <ng-container *ngIf="indice == 1" >
     <form [formGroup]="documentacionForm">
       <app-table-panel>
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
               <p-checkbox inputId="ineAfiliado" formControlName="ineAfiliado" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'ineAfiliado'" class="control-label"><strong>INE del afiliado *</strong></label>
+              <label [for]="'ineAfiliado'" class="control-label"><strong>INE del afiliado </strong></label>
             </div>
           </div>
         </div>
-
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
               <p-checkbox inputId="copiaCURP" formControlName="copiaCURP" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaCURP'" class="control-label"><strong>Copia CURP *</strong></label>
+              <label [for]="'copiaCURP'" class="control-label"><strong>Copia CURP </strong></label>
             </div>
           </div>
         </div>
@@ -106,62 +101,28 @@
           <div class="col-md-12">
             <div class="flex">
               <p-checkbox inputId="copiaRFC" formControlName="copiaRFC" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaRFC'" class="control-label"><strong>Copia RFC *</strong></label>
+              <label [for]="'copiaRFC'" class="control-label"><strong>Copia RFC </strong></label>
             </div>
           </div>
         </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="convenioAnterior" formControlName="convenioAnterior" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'convenioAnterior'" class="control-label"><strong>Convenio Anterior *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaActaNacimiento" formControlName="copiaActaNacimiento" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaActaNacimiento'" class="control-label">
-                <strong>Copia acta de nacimiento del beneficiario si es menor de edad *</strong>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaINE" formControlName="copiaINE" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaINE'" class="control-label"><strong>Copias del INE del beneficiario si es mayor de edad *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="comprobanteEstudios" formControlName="comprobanteEstudios" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'comprobanteEstudios'" class="control-label">
-                <strong>Comprobante de estudios del beneficiario si es mayor de 18 años y estudia *</strong>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="actaMatrimonio" formControlName="actaMatrimonio" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'actaMatrimonio'" class="control-label"><strong>Acta de matrimonio *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="declaracionConcubinato" formControlName="declaracionConcubinato" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'declaracionConcubinato'" class="control-label"><strong>Declaración de concubinato *</strong></label>
-            </div>
-          </div>
-        </div>
+<!--        <div class="row p-3 table-panel-row">-->
+<!--          <div class="col-md-12">-->
+<!--            <div class="flex">-->
+<!--              <p-checkbox inputId="copiaActaNacimiento" formControlName="copiaActaNacimiento" styleClass="mr-3" [binary]="true"></p-checkbox>-->
+<!--              <label [for]="'copiaActaNacimiento'" class="control-label">-->
+<!--                <strong>Copia acta de nacimiento del beneficiario si es menor de edad </strong>-->
+<!--              </label>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="row p-3 table-panel-row">-->
+<!--          <div class="col-md-12">-->
+<!--            <div class="flex">-->
+<!--              <p-checkbox inputId="copiaINE" formControlName="copiaINE" styleClass="mr-3" [binary]="true"></p-checkbox>-->
+<!--              <label [for]="'copiaINE'" class="control-label"><strong>Copias del INE del beneficiario si es mayor de edad </strong></label>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
       </app-table-panel>
     </form>
 
@@ -172,131 +133,12 @@
       </span>
       </div>
     </div>
-    <div class="row my-3">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
-      </div>
-    </div>
-</ng-container>
-  <ng-container *ngIf="indice == menuStep.length">
-    <app-table-panel>
-      <ng-template appCustomTemplate="left-header">
-        <div class="table-panel-header-column">
-          <span class="font-bold">No. de convenio</span>
-        </div>
-      </ng-template>
-      <ng-template appCustomTemplate="right-header">
-        <div class="table-panel-header-column">
-          <div class="flex flex-column">
-            <span>Estatus</span>
-            <div class="contenedor-inputswitch">
-              <span class="activo" >Vigente</span>
-            </div>
-          </div>
-        </div>
-      </ng-template>
-    </app-table-panel>
-<!--    <p-accordion styleClass="sivimss-accordion">-->
-<!--      <p-accordionTab>-->
-<!--        <ng-template pTemplate="header">Datos la contratación</ng-template>-->
-<!--        <ng-template pTemplate="content">-->
-
-
-<!--          <div class="row">-->
-<!--            <div class="col-md-4">-->
-<!--              <label>No. del convenio:</label> <br/>-->
-<!--              <label> {{ff.numeroConvenio.value}}  </label>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--              <span>Tipo de contratación:</span> <br/>-->
-<!--              <label> {{ff.tipoContratacion.value}}  </label>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <hr class="hr-accordion-content">-->
-<!--          <h2 class="subtitulo">Empresa</h2>-->
-<!--          <div class="row mb-3">-->
-<!--            <div class="col-md-4">-->
-<!--              <span>Matrícula*:</span> <br/>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--              <span>RFC:</span> <br/>-->
-<!--              <label> {{fe.rfc.value}}  </label>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--              <span>CURP:</span> <br/>-->
-<!--              <label> {{fe.curp.value}}  </label>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <h2 class="subtitulo">Dirección</h2>-->
-<!--          <div class="row mb-3">-->
-<!--            <div class="col-md-4">-->
-<!--              <span>Calle:</span> <br/>-->
-<!--              <label> {{fe.calle.value}}  </label>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--              <span>No. exterior*:</span> <br/>-->
-<!--              <label> {{fe.numeroExterior.value}}  </label>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--              <span>No. interior:</span> <br/>-->
-<!--              <label> {{fe.numeroInterior.value}}  </label>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row mb-3">-->
-<!--            <div class="col-md-4">-->
-<!--              <span>CP:</span> <br/>-->
-<!--              <label> {{fe.cp.value}}  </label>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--              <span>Colonia:</span> <br/>-->
-<!--              <label> {{fe.colonia.value}}  </label>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--              <span>Municipio:</span> <br/>-->
-<!--              <label> {{fe.municipio.value}}  </label>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row mb-3">-->
-<!--            <div class="col-md-4">-->
-<!--              <span>Estado:</span> <br/>-->
-<!--              <label> {{fe.estado.value}}  </label>-->
-<!--            </div>-->
-<!--            <div class="col-md-4">-->
-<!--              <span>País:</span> <br/>-->
-<!--              <label> {{fe.pais.value}}  </label>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </ng-template>-->
-<!--      </p-accordionTab>-->
-
-<!--      <p-accordionTab>-->
-<!--        <ng-template pTemplate="header">Documentación</ng-template>-->
-<!--        <ng-template pTemplate="content">-->
-
-<!--        </ng-template>-->
-<!--      </p-accordionTab>-->
-<!--    </p-accordion>-->
-    <div class="flex justify-content-center">
-      <div class="mt-4 col-md-12">
-        <p class="text-center">¿Estás seguro que desea contratar este nuevo convenio?</p>
-
-      </div>
-    </div>
-    <div class="row my-3">
-      <div class="col-md-12 flex justify-content-end">
-        <button class="btn btn-md btn-default" >Regresar</button>
-        <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
-      </div>
-    </div>
   </ng-container>
-
-
-</ng-container>
-
-<ng-container *ngIf="agregarPersona">
-  <app-agregar-persona-convenios-prevision-funeraria (personaConvenio) = "mostrarPersonas($event) ">
-
-  </app-agregar-persona-convenios-prevision-funeraria>
-</ng-container>
+<div class="row my-3">
+  <div class="col-md-12 flex justify-content-end">
+    <button type="button" class="btn btn-default btn-md ml-5" routerLink="../">Cancelar</button>
+    <button type="button"  class="btn btn-default btn-md ml-5" (click)="regresar()" *ngIf="indice > 0 && ff.tipoContratacion.value== 1">Regresar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="siguiente()" *ngIf="indice < menuStep.length && ff.tipoContratacion.value== 1">Siguiente</button>
+    <button type="button" class="btn btn-primary btn-md ml-5"  (click)="guardar()" *ngIf="indice == menuStep.length && ff.tipoContratacion.value== 1 || ff.tipoContratacion.value== 2">Guardar</button>
+  </div>
+</div>

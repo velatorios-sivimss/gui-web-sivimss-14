@@ -135,7 +135,6 @@ export class ConsultaConveniosComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          debugger;
           this.convenioPrevision = respuesta.datos?.content;
           this.totalElementos.tablaConvenios = respuesta.datos?.totalElements;
         },
@@ -456,7 +455,7 @@ export class ConsultaConveniosComponent implements OnInit {
   descargarExcel(): void {
     let datosBusqueda = this.obtenerObjetoParaFiltrado();
     datosBusqueda.ruta = "reportes/generales/ReporteTablaConsultaConvenios.jrxml";
-    datosBusqueda.tipoReporte = "xls"; 
+    datosBusqueda.tipoReporte = "xls";
     this.consultaConvenioService.descargarExcel(datosBusqueda).subscribe(
       (respuesta:any) => {
         const file = new Blob([respuesta], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'});

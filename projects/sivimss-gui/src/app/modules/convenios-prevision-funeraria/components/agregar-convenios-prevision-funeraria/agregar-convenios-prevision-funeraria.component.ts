@@ -7,8 +7,16 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {CATALOGOS_DUMMIES} from "../../constants/dummies"
 import {PersonaInterface} from "../../models/persona.interface";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {AgregarConvenioPFService} from "../../services/agregar-convenio-pf.service";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {Promotor} from "../../models/promotor.interface";
+import {Empresa} from "../../models/empresa.interface";
 
 @Component({
   selector: 'app-agregar-convenios-prevision-funeraria',
@@ -17,9 +25,14 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 })
 export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
 
+  readonly POSICION_PROMOTOR:number = 4;
+
+
   filtroForm!: FormGroup;
   convenioForm!: FormGroup;
   documentacionForm!: FormGroup;
+
+  personasAgregadas!:PersonaInterface[];
 
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
@@ -27,20 +40,44 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   tipoContratacion:TipoDropdown[] = [{value:1,label:'Por Persona'},{value:2,label:'Por Grupo o por Empresa'}];
   pais: TipoDropdown[] = CATALOGOS_DUMMIES;
   estado: TipoDropdown[] = CATALOGOS_DUMMIES;
+  //TODO Verificar si cambiar variable por personasAgregadas
   personasConvenio: PersonaInterface[] = [];
+  promotores: Promotor[] = [];
   agregarPersona: boolean = false;
+  agregarPromotor: boolean = false;
+
+  existePersona: boolean = false;
 
   constructor(
+    private route: ActivatedRoute,
+    private agregarConvenioPFService:AgregarConvenioPFService,
     private alertaService: AlertaService,
     private breadcrumbService: BreadcrumbService,
     private formBuilder: FormBuilder,
+    private mensajesSistemaService: MensajesSistemaService,
+    private loaderService: LoaderService,
     private router: Router,
   ) { }
 
   ngOnInit(): void {
+
+    this.personasAgregadas = JSON.parse(localStorage.getItem('persona') as string) || [];
+    if(this.personasAgregadas.length > 0){
+      // localStorage.removeItem('persona')
+      this.existePersona = true;
+    }
+
+
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.promotores = respuesta[this.POSICION_PROMOTOR]!.datos.map(
+      (promotor: any) => (
+        {label: promotor.nombrePromotor, value: promotor.idPromotor}
+      )
+    )
     this.actualizarBreadcrumb();
     this.inicializarFiltroForm();
     this.inicializarDocumentacionForm();
+    this.validarEscenarioPorEmpresa();
   }
 
   actualizarBreadcrumb(): void {
@@ -49,37 +86,57 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      numeroConvenio: [{value: null, disabled: false}, [Validators.required]],
+        numeroConvenio: [{value: null, disabled: false}, [Validators.required]],
       tipoContratacion: [{value: null, disabled: false}, [Validators.required]],
-      rfcCurp: [{value: null, disabled: false}, [Validators.required]],
-
-    })
-  }
-
-  inicializarRegistrConvenioForm(): void{
-    this.convenioForm = this.formBuilder.group({
-      promotor:[{value:null, disabled:false}]
+               rfcCurp: [{value: null, disabled: false}, [Validators.required]],
+              promotor: [{value: null, disabled: false}, [Validators.required]],
     })
   }
 
   inicializarDocumentacionForm(): void {
     this.documentacionForm = this.formBuilder.group( {
-      ineAfiliado: [{value: null, disabled: false}, [Validators.required]],
-      copiaCURP: [{value: null, disabled: false}, [Validators.required]],
-      copiaRFC: [{value: null, disabled: false}, [Validators.required]],
-      convenioAnterior: [{value: null, disabled: false}, [Validators.required]],
-      copiaActaNacimiento: [{value: null, disabled: false}, [Validators.required]],
-      copiaINE: [{value: null, disabled: false}, [Validators.required]],
-      comprobanteEstudios: [{value: null, disabled: false}, [Validators.required]],
-      actaMatrimonio: [{value: null, disabled: false}, [Validators.required]],
-      declaracionConcubinato: [{value: null, disabled: false}, [Validators.required]]
+                 ineAfiliado: [{value: null, disabled: false}],
+                   copiaCURP: [{value: null, disabled: false}],
+                    copiaRFC: [{value: null, disabled: false}],
+         // copiaActaNacimiento: [{value: null, disabled: false}],
+         //            copiaINE: [{value: null, disabled: false}],
     });
   }
 
-  inicializarPersonaForm(): void {
+  consultaRFCCURP(): void {
+    if(!this.ff.rfcCurp.value){return}
+    const tipo = this.ff.rfcCurp.value;
+    let rfc = "";
+    let curp = "";
+    tipo.length <= 13 ? rfc = tipo : curp = tipo;
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultaCURPRFC(rfc,curp).pipe(
+      finalize(()=>  this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
 
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+        this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+      }
+    )
   }
 
+  validarTipoContratacion(): void{
+    localStorage.removeItem('persona');
+    localStorage.removeItem('personasAgregadas');
+  }
+
+  validarEscenarioPorEmpresa(): void {
+    if(this.personasAgregadas.length > 0){
+      this.ff.tipoContratacion.setValue(2);
+    }
+  }
+
+  existePromotor(existePromotor: boolean): void {
+    this.agregarPromotor = existePromotor;
+  }
 
 
   mostrarPersonas( personas: PersonaInterface): void {
@@ -111,6 +168,12 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   regresar(): void {
     this.indice --;
   }
+
+  guardar(): void {
+
+  }
+
+
 
   get ff() {
     return this.filtroForm.controls;

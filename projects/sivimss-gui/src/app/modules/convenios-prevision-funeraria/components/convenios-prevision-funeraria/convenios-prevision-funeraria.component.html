@@ -39,7 +39,7 @@
       <div class="col-md-6">
         <label class="control-label" for="estatusConvenio">Estatus del convenio:</label>
         <p-dropdown id="estatusConvenio" class="form-control" formControlName="estatusConvenio"
-          [options]="estatusConvenio" placeholder="Selecciona el estatus del convenio">
+          [options]="estatusConvenio" placeholder="Selecciona el estatus del convenio" [filter]="true" filterBy="label">
         </p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="ff.estatusConvenio?.errors?.required && (ff.estatusConvenio?.dirty || ff.estatusConvenio?.touched)">

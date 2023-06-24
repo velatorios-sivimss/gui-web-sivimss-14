@@ -7,21 +7,20 @@ export interface PersonaInterface {
   nombre?: string;
   primerApellido?: string;
   segundoApellido?: string;
-  fechaNacimiento?: string;
-  sexo?: number;
-  nacionalidad?: number;
-  lugarNacimiento?: string;
   correoElectronico?: string;
   telefono?: number;
   calle?: string;
   noExterior?: string;
   noInterior?: string;
+  pais?: number;
   cp?: number;
   colonia?: string;
   municipio?: string;
-  estado?: number;
+  estado?: string;
   tipoPaquete?: number;
   enfermedadPrexistente?: number;
-  descEnfermedadPrexistente?: string;
+  ineAfiliado?: boolean,
+  copiaCURP?: boolean,
+  copiaRFC?: boolean,
   beneficiario?: BeneficiarioInterface[];
 }

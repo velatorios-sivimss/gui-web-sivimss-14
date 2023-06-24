@@ -12,14 +12,14 @@
       <div class="col-md-4">
         <label class="control-label" for="fechaNacimiento">Fecha<span class="req">*</span>:</label>
         <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Ingresa fechaNacimiento"></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fechaNacimiento" [maxDate]="hoy"></p-calendar>
         <span class="campo-obligatorio"
               *ngIf="f.fechaNacimiento?.errors?.required && (f.fechaNacimiento?.dirty || f.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="edad">Edad<span class="req">*</span>:</label>
         <input id="edad" class="form-control" formControlName="edad" placeholder="Ingresa edad" numbersOnly
-               maxlength="3">
+               maxlength="3" (blur)="validarEdad()">
         <span class="campo-obligatorio"
               *ngIf="f.edad?.errors?.required && (f.edad?.dirty || f.edad?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -96,6 +96,22 @@
         <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono" maxlength="10">
         <span class="campo-obligatorio"
               *ngIf="f.telefono?.errors?.required && (f.telefono?.dirty || f.telefono?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="flex">
+          <p-checkbox inputId="actaDeNacimiento" formControlName="actaDeNacimiento" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <label [for]="'actaDeNacimiento'" class="control-label"><strong>Acta de Nacimiento (Original o Copia Certificada)</strong></label>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <div class="flex">
+          <p-checkbox inputId="copiaINE" formControlName="copiaINE" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <label [for]="'copiaINE'" class="control-label"><strong>Copia INE del beneficiario si es mayor de edad</strong></label>
+        </div>
       </div>
     </div>
   </form>
