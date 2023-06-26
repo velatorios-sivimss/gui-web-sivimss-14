@@ -162,6 +162,12 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
         next: (respuesta: HttpRespuesta<any>): void => {
           this.vehiculos = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
+
+          const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+          if (usuario?.idRol == '17' && this.vehiculos.length > 0) {
+            this.vehiculoSeleccionado = this.vehiculos[0];
+            this.abrirModalnuevaVerificacion();
+          }
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
