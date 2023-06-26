@@ -102,7 +102,7 @@ export class DetalleMantenimientoComponent implements OnInit {
           this.vehiculo.DES_VELATORIO = this.verificacion?.DES_VELATORIO || this.registro?.NOM_VELATORIO || this.solicitudRegistro?.DES_VELATORIO;
           if (this.solicitudRegistro?.DES_MTTOESTADO) {
             this.vehiculo.DES_MTTOESTADO = this.solicitudRegistro.DES_MTTOESTADO;
-          } else if (this.solicitudRegistro.DES_MTTOESTADO) {
+          } else if (this.solicitudRegistro?.DES_MTTOESTADO) {
             this.vehiculo.DES_MTTOESTADO = this.registro.DES_MTTOESTADO;
           }
         }
