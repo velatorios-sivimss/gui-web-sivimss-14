@@ -56,7 +56,7 @@
     </div>
     <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '1'">
       <div class="col-md-6">
-        <label class="control-label">Modalidad:</label>
+        <label class="control-label">Modalidad<span class="req">*:</span></label>
         <div class="flex">
           <div class="flex align-items-center mx-2">
             <p-radioButton id="modalidadSemestral" name="modalidad" value="1" formControlName="modalidad"
@@ -74,6 +74,10 @@
             <label class="control-label m-0 mx-3" [for]="'modalidad'">Frecuente</label>
           </div>
         </div>
+        <span class="campo-obligatorio"
+          *ngIf="smf.modalidad?.errors?.required && (smf.modalidad?.dirty || smf.modalidad?.touched)">Este
+          campo es obligatorio *.
+        </span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="matPreventivo">Mantenimiento<span class="req">*:</span></label>
