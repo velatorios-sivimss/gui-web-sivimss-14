@@ -1,6 +1,8 @@
 export interface FiltrosReporteEncargado {
-  tipoReporte: string,
-  fechaInicio: string,
-  fechaFinal: string,
+  delegacion?: number | null,
+  velatorio?: number | null,
+  tipoReporte?: string | null,
+  fecInicio: string,
+  fecFin: string,
   placa: string
 }

@@ -112,7 +112,16 @@
           *ngIf="smf.nombreProveedor?.errors?.required && (smf.nombreProveedor?.dirty || smf.nombreProveedor?.touched)">Este
           campo es obligatorio *.</span>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '1'">
+        <label class="control-label" for="noContrato">Número de contrato<span class="req">*</span>:</label>
+        <p-dropdown appendTo="body" id="noContrato" class="form-control" formControlName="noContrato"
+          [options]="contratos" placeholder="Ingresa el número de contrato">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="smf.noContrato?.errors?.required && (smf.noContrato?.dirty || smf.noContrato?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '2'">
         <label class="control-label" for="noContrato">Número de contrato:</label>
         <input id="noContrato" class="form-control" formControlName="noContrato"
           placeholder="Ingresa el número de contrato" maxlength="20">
@@ -268,8 +277,12 @@
     </div>
   </app-table-panel>
   <ng-container>
-    <div class="mt-4 mb-4 col-12 text-center">
+    <div class="mt-4 mb-4 col-12 text-center" *ngIf="mode !== 'update'">
       ¿Estás seguro de agregar este nuevo registro?
+    </div>
+    <div class="mt-4 mb-4 col-12 text-center" *ngIf="mode === 'update'">
+      ¿Estás seguro de modificar el registro {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}}
+      {{vehiculoSeleccionado.DES_MODELO}}?
     </div>
   </ng-container>
   <div class="flex justify-content-end">

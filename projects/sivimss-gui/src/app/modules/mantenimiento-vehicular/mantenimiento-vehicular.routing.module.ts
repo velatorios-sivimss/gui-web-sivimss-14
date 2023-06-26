@@ -36,7 +36,7 @@ const routes: Route[] = [
     }
   },
   {
-    path: 'detalle-mantenimiento/:idVehiculo',
+    path: 'detalle-mantenimiento/:idMttoVehicular',
     component: DetalleMantenimientoComponent,
     resolve: {
       respuesta: MantenimientoVehicularDetalleResolver

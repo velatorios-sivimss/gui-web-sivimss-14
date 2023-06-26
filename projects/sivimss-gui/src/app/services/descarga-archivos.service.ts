@@ -12,9 +12,9 @@ export class DescargaArchivosService {
   readonly excel_nom = "Excel workbook";
 
   base64_2Blob(base64: string, contentType: string): Blob {
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
+    const byteCharacters: string = atob(base64);
+    const byteNumbers: any[] = new Array(byteCharacters.length);
+    for (let i: number = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
@@ -42,24 +42,16 @@ export class DescargaArchivosService {
 
     return archivo$.pipe(
       switchMap((archivoBlob: Blob) => {
-        // Safari
-        if (typeof (window.navigator as any).msSaveOrOpenBlob !== 'undefined') {
-          (window.navigator as any).msSaveOrOpenBlob(archivoBlob, configuracion.suggestedName);
-          console.log('Archivo guardado correctamente.');
-          return of(true);
-        }
 
         // Firefox
-        if (typeof window.showSaveFilePicker === 'undefined' && typeof window.showDirectoryPicker !== 'undefined') {
-          return window.showDirectoryPicker().then((directoryHandle: FileSystemDirectoryHandle) => {
-            return directoryHandle.getFileHandle(nombreArchivo, {create: true}).then((fileHandle: FileSystemFileHandle) => {
-              return fileHandle.createWritable().then((writable: FileSystemWritableFileStream): boolean => {
-                void writable.write(archivoBlob);
-                void writable.close();
-                return true;
-              });
-            });
-          });
+        if (typeof window.showSaveFilePicker === 'undefined') {
+          const downloadURL: string = window.URL.createObjectURL(archivoBlob);
+          const link: HTMLAnchorElement = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `${nombreArchivo}.${ext}`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         }
 
         // (Chrome, Edge)

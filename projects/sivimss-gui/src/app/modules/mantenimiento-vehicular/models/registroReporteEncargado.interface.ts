@@ -15,4 +15,5 @@ export interface RegistroReporteEncargado {
   ID_MTTOVERIFINICIO: number
   ID_VEHICULO: number
   TOTAL_VEHICULOS: number
+  DES_MTTO_TIPO: string
 }

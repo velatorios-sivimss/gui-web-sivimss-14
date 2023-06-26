@@ -1,10 +1,8 @@
-<div class="row">
-  <h3>Recibo de pago</h3>
-</div>
+<app-titulo-principal titulo="Formato de Pago"></app-titulo-principal>
 <div class="row mb-4">
   <div class="col-md-12 border seccion-folio flex justify-content-between">
     <div>
-      <span class="subtitulo texto-centrado">Folio <span class="valor-subtitulo">{{recibo.folio}}</span></span>
+      <span class="subtitulo texto-centrado">FOLIO <span class="valor-subtitulo">{{recibo.folio}}</span></span>
     </div>
   </div>
   <div class="col-md-12 border">
@@ -12,80 +10,87 @@
       <section class="titulo-body">
         <p>
           DIRECCIÓN DE PRESTACIONES ECONÓMICAS Y SOCIALES COORDINACIÓN DE CENTROS VACACIONALES, VELATORIOS, UNIDAD DE
-          CONGRESO Y TIENDAS RECIBO DE PAGO DE TRÁMITES POR CUENTA DEL CONTRATANTE
+          CONGRESO Y TIENDAS
+        </p>
+        <p>
+          RECIBO DE PAGO DE TRÁMITES POR CUENTA DEL CONTRATANTE
         </p>
       </section>
       <hr class="solid">
-      <section class="flex justify-content-between info-gral-body mt-7">
-        <span class="etiqueta-formato">Delegación
-          <span class="etiqueta-formato-val">{{recibo.delegacion}}</span>
-        </span>
-        <span class="etiqueta-formato">Velatorio
-          <span class="etiqueta-formato-val">{{recibo.velatorio}}</span>
-        </span>
+      <section class="row grid mt-7">
+        <div class="col">
+              <span>DELEGACIÓN:*
+                <span class="etiqueta-formato-val">{{recibo.delegacion}}</span>
+              </span>
+        </div>
+        <div class="col">
+              <span>VELATORIO:*
+                <span class="etiqueta-formato-val"># {{recibo.idVelatorio}}</span>
+              </span>
+        </div>
       </section>
       <section class="border contenido-body">
         <div class="mt-5">
-          <span class="col-md-12 etiqueta-formato-val">México CDMX
-            <span class="etiqueta-base"> a </span>
+          <span class="col-md-12 etiqueta-formato-val">MÉXICO CDMX
+            <span class="etiqueta-base"> A </span>
             <span class="etiqueta-formato-val"> {{dia}} </span>
-            <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> {{mes | titlecase}} </span>
-            <span class="etiqueta-base"> de </span>
+            <span class="etiqueta-base"> DE </span>
+            <span class="etiqueta-formato-val"> {{mes | uppercase}} </span>
+            <span class="etiqueta-base"> DE </span>
             <span class="etiqueta-formato-val"> {{anio}} </span>
           </span>
-          <span class="col-md-12 mt-5 etiqueta-base">Recibimos del SR(A)
+          <span class="col-md-12 mt-5 etiqueta-base">RECIBIMOS DEL SR.(A):
             <span class="etiqueta-formato-val">{{recibo.recibimos}}</span>
           </span>
-          <span class="col-md-12 etiqueta-base mt-3">la cantidad de
+          <span class="col-md-12 etiqueta-base mt-3">LA CANTIDAD DE:
             <span class="etiqueta-formato-val">{{recibo.cantidad}}</span>
           </span>
         </div>
         <div>
-          <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
-            otorgar el contrato de prestación de servicios
+          <span class="col-md-12 etiqueta-base mt-7 mb-3">PARA QUE A SU NOMBRE Y REPRESENTACIÓN PAGUE LOS TRAMITES PARA
+            OTORGAR EL CONTRATO DE PRESTACIÓN DE SERVICIOS
             <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span>
-            en dependencias de acuerdo al siguiente desglose
+             EN DEPENDENCIAS OFICIALES, DE ACUERDO AL SIGUIENTE DESGLOSE:
           </span>
           <div class="grid-container">
             <div class="grid-item">
-              <span class="etiqueta-formato">Trámites
+              <span class="etiqueta-formato">TRÁMITES:
                 <span class="etiqueta-formato-val">{{ recibo.canTramites}}</span>
               </span>
             </div>
             <div class="grid-item">
-              <span class="etiqueta-formato">Descripción
+              <span class="etiqueta-formato">DESCRIPCIÓN:
                 <span class="etiqueta-formato-val">{{recibo.descTramites}}</span>
               </span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item">
-              <span class="etiqueta-formato">Derechos
+              <span class="etiqueta-formato">DERECHOS:
                 <span class="etiqueta-formato-val">{{recibo.canDerechos}}</span>
               </span>
             </div>
             <div class="grid-item">
-              <span class="etiqueta-formato">Descripción
+              <span class="etiqueta-formato">DESCRIPCIÓN:
                 <span class="etiqueta-formato-val">{{recibo.descDerechos}}</span>
               </span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item mt-5">
-              <span class="etiqueta-formato">Total
+              <span class="etiqueta-formato">TOTAL
                 <span class="etiqueta-totales">{{recibo.canSuma}}</span>
               </span>
             </div>
             <div class="grid-item"></div>
             <div class="grid-item"></div>
           </div>
-          <span class="col-md-12 etiqueta-base mt-7 mb-2">LAS PARTES ACUERDAN QUE SI EXISTIERA UNA DIFERENCIA EN DINERO
-            A FAVOR DEL CONTRATANTE ESTA SERÁ
-            DEVUELTA, JUNTO CON LOS COMPROBANTES ORIGINALES DE LOS TRÁMITES O DERECHOS PAGADOS A SU ENTERA
-            SATISFACCIÓN, ANTES DEL TÉRMINO DEL SERVICIO FUNERARIO.
+          <span class="col-md-12 etiqueta-base mt-7 mb-2">
+              LAS PARTES ACUERDAN QUE SI EXISTIERA UNA DIFERENCIA EN DINERO A FAVOR DEL CONTRATANTE ESTA SERÁ
+              DEVUELTA, JUNTO CON LOS COMPROBANTES ORIGINALES DE LOS TRÁMITES O DERECHOS PAGADOS A SU ENTERA
+              SATISFACCIÓN, ANTES DEL TÉRMINO DEL SERVICIO FUNERARIO.
           </span>
           <div class="grid-container mb-4">
             <div class="grid-item">
-              <span class="etiqueta-formato">Total
+              <span class="etiqueta-formato">TOTAL
                 <span class="etiqueta-totales">{{recibo.canTotal}}</span>
               </span>
             </div>
@@ -95,13 +100,13 @@
         </div>
         <div class="row flex justify-content-between mt-7">
           <div class="card border">
-            <p class="etiqueta-formato-val">Agente de funerales</p>
+            <p class="etiqueta-formato-val">AGENTE DE FUNERALES</p>
             <div class="container-card">
-              <p class="mb-7 etiqueta-card">Nombre</p>
+              <p class="mb-7 etiqueta-card">NOMBRE</p>
               <hr class="solid">
               <div class="flex justify-content-between mt-5">
-                <div class="column-card etiqueta-card">Matrícula</div>
-                <div class="column-card etiqueta-card">Firma</div>
+                <div class="column-card etiqueta-card">MATRÍCULA</div>
+                <div class="column-card etiqueta-card">FIRMA</div>
               </div>
               <div class="flex justify-content-between mt-5">
                 <hr class="column-card solid">
@@ -110,22 +115,22 @@
             </div>
           </div>
           <div class="card border">
-            <p class="etiqueta-formato-val">Contratante</p>
+            <p class="etiqueta-formato-val">CONTRATANTE</p>
             <div class="container-card">
-              <p class="mb-7 etiqueta-card">Nombre</p>
+              <p class="mb-7 etiqueta-card">NOMBRE</p>
               <hr class="solid">
-              <p class="mt-5 etiqueta-card">Firma</p>
+              <p class="mt-5 etiqueta-card">FIRMA</p>
               <hr class="solid mt-7">
             </div>
           </div>
           <div class="card border">
-            <p class="etiqueta-formato-val">Recibe</p>
+            <p class="etiqueta-formato-val">RECIBE</p>
             <div class="container-card">
-              <p class="mb-7 etiqueta-card">Nombre</p>
+              <p class="mb-7 etiqueta-card">NOMBRE</p>
               <hr class="solid">
               <div class="flex justify-content-between mt-5">
-                <div class="column-card etiqueta-card">Matrícula</div>
-                <div class="column-card etiqueta-card">Firma</div>
+                <div class="column-card etiqueta-card">MATRÍCULA</div>
+                <div class="column-card etiqueta-card">FIRMA</div>
               </div>
               <div class="flex justify-content-between mt-5">
                 <hr class="column-card solid">
@@ -141,6 +146,6 @@
 
 <div class="row flex justify-content-end mb-4">
   <button class="btn btn-default btn-md" [routerLink]="'../../'">Regresar</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="generarExcel()">Generar Excel</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="generarPDF()">Generar PDF</button>
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarExcel()">Exportar Excel</button>
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarPDF()">Exportar PDF</button>
 </div>

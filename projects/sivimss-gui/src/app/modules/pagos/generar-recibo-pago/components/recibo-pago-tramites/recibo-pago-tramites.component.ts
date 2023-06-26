@@ -179,7 +179,8 @@ export class ReciboPagoTramitesComponent implements OnInit {
       total: this.convertirMoneda(this.totalServicios),
       totalFinal: this.convertirMoneda(this.total),
       rutaNombreReporte: "reportes/plantilla/DetalleRecPagos.jrxml",
-      tipoReporte: "pdf"
+      tipoReporte: "pdf",
+      folioPF: this.recibo.folioPF
     }
   }
 

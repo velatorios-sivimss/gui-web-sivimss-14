@@ -50,7 +50,6 @@ hr {
     margin-left: auto;
     margin-right: auto;
     width: 75%;
-
     p {
         font-style: normal;
         font-weight: 700;
@@ -197,7 +196,6 @@ section.info-gral-remision>div:first-child {
 
 .float-left {
     float: left;
-
 }
 
 .float-right {
@@ -260,4 +258,8 @@ section.info-gral-remision>div:first-child {
     font-size: 14px;
     color: #000000;
     overflow-wrap: break-word;
+}
+
+textarea {
+    resize: none;
 }

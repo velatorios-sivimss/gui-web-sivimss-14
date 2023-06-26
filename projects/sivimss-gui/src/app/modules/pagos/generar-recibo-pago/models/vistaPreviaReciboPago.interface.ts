@@ -13,5 +13,6 @@ export interface VistaPreviaReciboPago {
   total: string,
   totalFinal: string,
   rutaNombreReporte: string,
-  tipoReporte: string
+  tipoReporte: string,
+  folioPF: string
 }
