@@ -117,7 +117,6 @@ export class ReporteEncargadoComponent implements OnInit {
     ${moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD-MM-YYYY')}`
     this.mostrarTabla = true;
     this.loaderService.activar();
-    debugger
     if (this.fmp.tipoReporte.value == 1) {
       this.tipoBusqueda = 1;
       this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.crearSolicitudFiltrosPrograma())

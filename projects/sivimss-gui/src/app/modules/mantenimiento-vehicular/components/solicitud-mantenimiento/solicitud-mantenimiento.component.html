@@ -87,10 +87,21 @@
         <div class="col-md-6" *ngIf="solicitudMantenimientoForm.get('tipoMantenimiento')?.value == 1">
           <label class="control-label" for="matPreventivo">Mantenimiento preventivo<span class="req">*:</span></label>
           <p-dropdown appendTo="body" id="matPreventivo" class="form-control" formControlName="matPreventivo"
-            [options]="mantenimientosPrev" placeholder="Selecciona el tamaño">
+            [options]="mantenimientosPrev" placeholder="Selecciona el mantenimiento">
           </p-dropdown>
           <span class="campo-obligatorio"
             *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">Este
+            campo es obligatorio *.</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6" *ngIf="smf.modalidad.value == 1 && smf.tipoMantenimiento.value == 1">
+          <label class="control-label" for="opcionesSemestrales">Opciones semestrales<span class="req">*:</span></label>
+          <p-dropdown appendTo="body" id="opcionesSemestrales" class="form-control" formControlName="opcionesSemestrales"
+            [options]="opcionesSemestrales" placeholder="Selecciona una opción">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+            *ngIf="smf.opcionesSemestrales?.errors?.required && (smf.opcionesSemestrales?.dirty || smf.opcionesSemestrales?.touched)">Este
             campo es obligatorio *.</span>
         </div>
       </div>
@@ -165,8 +176,7 @@
           </div>
         </div>
         <div class="col-md-3" *ngIf="resumenAsignacion.modalidad == 'Semestral'">
-          <div class="table-panel-column">
-            <label>Fecha de registro semestral</label>
+          <div class="table-panel-column mt-5">
             <span> {{resumenAsignacion.fechaRegistro2 | date: 'dd-MM-yyyy' }} </span>
           </div>
         </div>

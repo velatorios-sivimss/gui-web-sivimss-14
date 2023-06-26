@@ -299,8 +299,10 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   irADetalle(vehiculo: any): void {
-    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_MTTOVEHICULAR],
-      { queryParams: { tabview: 0 } });
+    if (vehiculo?.ID_MTTOVEHICULAR) {
+      void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_MTTOVEHICULAR],
+        { queryParams: { tabview: 0 } });
+    }
   }
 
   generarReporteTabla(tipoReporte: string): void {

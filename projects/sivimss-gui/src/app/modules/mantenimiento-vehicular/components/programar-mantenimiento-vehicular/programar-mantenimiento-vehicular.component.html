@@ -82,9 +82,10 @@
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
             <span [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</span>
             <div class="contenedor-celda-iconos">
-              <a (click)="irADetalle(vehiculo)">
+              <a (click)="irADetalle(vehiculo)" *ngIf="vehiculo.ID_MTTOVEHICULAR">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
               </a>
+              <a *ngIf="!vehiculo.ID_MTTOVEHICULAR"></a>
               <a (click)="abrirPanel($event,vehiculo)">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
@@ -131,8 +132,8 @@
       <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
         onCloseOnNavigation></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
-    <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = true"
-      *ngIf="vehiculoSeleccionado.DES_MTTOESTADO !== 'FINALIZADO'" onCloseOnNavigation></app-overlay-panel-opcion>
+    <!-- <app-overlay-panel-opcion titulo="Modificar" (click)="modificarModal = true"
+      *ngIf="vehiculoSeleccionado.DES_MTTOESTADO !== 'FINALIZADO'" onCloseOnNavigation></app-overlay-panel-opcion> -->
   </ng-template>
 </p-overlayPanel>
 
