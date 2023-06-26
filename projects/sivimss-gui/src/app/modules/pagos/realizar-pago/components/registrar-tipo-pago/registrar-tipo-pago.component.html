@@ -37,8 +37,11 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
-          <input id="importe" class="form-control" formControlName="importe"
-                 placeholder="Ingresa importe" [maxlength]="10" numbersOnly>
+          <p-inputNumber class="form-control" id="importe" formControlName="importe"
+                         placeholder="Ingresa importe" type="text" [maxlength]="10"
+                         [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD">
+          </p-inputNumber>
           <span class="campo-obligatorio"
                 *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
         </div>

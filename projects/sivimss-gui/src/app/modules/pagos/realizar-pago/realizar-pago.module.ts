@@ -34,6 +34,7 @@ import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.modul
 import {RealizarPagoService} from "./services/realizar-pago.service";
 import {AccordionModule} from "primeng/accordion";
 import { ModificarMetodoPagoComponent } from './components/modificar-metodo-pago/modificar-metodo-pago.component';
+import {InputNumberModule} from "primeng/inputnumber";
 
 
 @NgModule({
@@ -66,7 +67,8 @@ import { ModificarMetodoPagoComponent } from './components/modificar-metodo-pago
         TablePanelModule,
         CheckboxModule,
         CeldaStickyModule,
-        AccordionModule
+        AccordionModule,
+        InputNumberModule
     ],
   providers: [RealizarPagoService]
 })
