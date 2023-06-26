@@ -250,6 +250,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       this.solicitudMantenimientoForm.get("taller")?.setValue(null);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("costoMantenimiento")?.setValue(null);
+      this.solicitudMantenimientoForm.get("costoMantenimiento")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
     }
     this.solicitudMantenimientoForm.get("costoMantenimiento")?.updateValueAndValidity();
