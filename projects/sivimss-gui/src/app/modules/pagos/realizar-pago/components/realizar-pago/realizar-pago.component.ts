@@ -17,6 +17,8 @@ import {Pago} from "../../modelos/pago.interface";
 import {FiltrosPago} from "../../modelos/filtrosPago.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {ActivatedRoute, Router} from "@angular/router";
+import * as moment from "moment";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-realizar-pago',
@@ -42,7 +44,8 @@ export class RealizarPagoComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   pagos: Pago[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
-  fecha: Date = new Date();
+  fechaActual: Date = new Date();
+  fechaAnterior: Date = new Date();
   pagoSeleccionado!: Pago;
 
   habilitaIrPago: string[] = ['Generada', 'Vigente', 'Generado'];
@@ -65,7 +68,9 @@ export class RealizarPagoComponent implements OnInit {
               private mensajesSistemaService: MensajesSistemaService,
               private router: Router,
               private readonly activatedRoute: ActivatedRoute,
+              private alertaService: AlertaService,
   ) {
+    this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
   ngOnInit(): void {
@@ -243,6 +248,16 @@ export class RealizarPagoComponent implements OnInit {
       return;
     }
     void this.router.navigate(["./pago-renovacion-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
+  }
+
+  validarMismaFechaInicioFin(): void {
+    const fechaInicial = this.filtroForm.get('periodoInicio')?.value;
+    const fechaFinal = this.filtroForm.get('periodoFin')?.value;
+    if ([fechaInicial, fechaFinal].some(f => f === null)) return;
+    if (moment(fechaInicial).format('YYYY-MM-DD') !== moment(fechaFinal).format('YYYY-MM-DD')) return;
+    this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+    this.filtroForm.get('periodoInicio')?.patchValue(null);
+    this.filtroForm.get('periodoFin')?.patchValue(null);
   }
 
   get fP() {

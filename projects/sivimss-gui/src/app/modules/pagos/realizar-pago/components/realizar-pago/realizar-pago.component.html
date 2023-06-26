@@ -57,13 +57,15 @@
           <div class="col-md-6">
             <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                        [maxDate]="filtroForm.get('periodoFin')?.value || fecha">
+                        (onSelect)="validarMismaFechaInicioFin()"
+                        [maxDate]="filtroForm.get('periodoFin')?.value || fechaAnterior">
             </p-calendar>
           </div>
           <div class="col-md-6">
             <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                        [minDate]="filtroForm.get('periodoInicio')?.value || fecha">
+                        (onSelect)="validarMismaFechaInicioFin()"
+                        [minDate]="filtroForm.get('periodoInicio')?.value" [maxDate]="fechaActual">
             </p-calendar>
           </div>
         </div>
