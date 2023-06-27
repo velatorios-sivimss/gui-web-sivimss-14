@@ -66,7 +66,6 @@ export class VelacionDomicilioComponent implements OnInit {
     this.actualizarBreadcrumb();
     await this.inicializarFiltroForm();
     this.cargarCatalogos();
-    this.paginar();
   }
 
   cargarCatalogos(): void {
@@ -100,19 +99,23 @@ export class VelacionDomicilioComponent implements OnInit {
       } else {
         this.numPaginaActual = 0;
       }
-      this.velacionDomicilioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          this.vale = respuesta.datos?.content;
-          this.totalElementos = respuesta.datos?.totalElements;
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error("ERROR: ", error);
-          const mensaje = this.alertas.filter((msj: any) => {
-            return msj.idMensaje == error?.error?.mensaje;
-          })
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
-        }
-      });
+      if (this.f.delegacion && this.f.velatorio) {
+        this.buscarPorFiltros();
+      } else {
+        this.velacionDomicilioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+          next: (respuesta: HttpRespuesta<any>) => {
+            this.vale = respuesta.datos?.content;
+            this.totalElementos = respuesta.datos?.totalElements;
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error("ERROR: ", error);
+            const mensaje = this.alertas.filter((msj: any) => {
+              return msj.idMensaje == error?.error?.mensaje;
+            })
+            this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
+          }
+        });
+      }
     }
   }
 
