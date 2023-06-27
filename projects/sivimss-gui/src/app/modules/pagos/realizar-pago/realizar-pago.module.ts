@@ -35,6 +35,7 @@ import {RealizarPagoService} from "./services/realizar-pago.service";
 import {AccordionModule} from "primeng/accordion";
 import { ModificarMetodoPagoComponent } from './components/modificar-metodo-pago/modificar-metodo-pago.component';
 import {InputNumberModule} from "primeng/inputnumber";
+import { ModificarTipoPagoComponent } from './components/modificar-tipo-pago/modificar-tipo-pago.component';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import {InputNumberModule} from "primeng/inputnumber";
     RegistrarValeParitariaComponent,
     SeleccionBeneficiariosAgfComponent,
     DetalleMetodoPagoComponent,
-    ModificarMetodoPagoComponent
+    ModificarMetodoPagoComponent,
+    ModificarTipoPagoComponent
   ],
     imports: [
         CommonModule,
