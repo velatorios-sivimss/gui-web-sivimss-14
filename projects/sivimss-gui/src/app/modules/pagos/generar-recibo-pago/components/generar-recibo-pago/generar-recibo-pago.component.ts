@@ -128,7 +128,12 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   paginar(): void {
     this.cargadorService.activar();
-    this.generarReciboService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+    const filtros = {
+      idNivel: this.filtroFormReciboPago.get("nivel")?.value,
+      idDelegacion: this.filtroFormReciboPago.get("delegacion")?.value,
+      idVelatorio: this.filtroFormReciboPago.get("velatorio")?.value,
+    }
+    this.generarReciboService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.recibosPago = respuesta.datos.content;
