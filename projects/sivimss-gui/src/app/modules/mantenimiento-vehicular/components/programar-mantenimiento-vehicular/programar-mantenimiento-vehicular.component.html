@@ -40,7 +40,7 @@
 </div>
 
 <section class="mt-5" *ngIf="vehiculos">
-  <div class="flex justify-content-between align-items-center">
+  <div class="flex justify-content-between align-items-center" *ngIf="usuario?.idRol == '13' && usuario?.idOficina == '3'">
     <h2 class="subtitulo">Vehículos</h2>
     <div>
       <button type="button" class="btn btn-primary btn-lg btn-md" [routerLink]="'./mantenimiento-predictivo'">

@@ -102,9 +102,9 @@ export class SolicitudMantenimientoComponent implements OnInit {
       this.asignarOpcionesMantenimiento();
     });
 
-    this.solicitudMantenimientoForm.get("matPreventivo")?.valueChanges.subscribe((): void => {
-      this.asignarOpcionesSemestrales();
-    });
+    // this.solicitudMantenimientoForm.get("matPreventivo")?.valueChanges.subscribe((): void => {
+    //   this.asignarOpcionesSemestrales();
+    // });
 
     this.solicitudMantenimientoForm.markAllAsTouched();
   }
@@ -119,7 +119,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     if (![1, 2, 3].includes(modalidad)) return;
     if (modalidad === 1) {
       this.mantenimientosPrev = CATALOGOS_PREV_SEMESTRALES;
-      this.asignarOpcionesSemestrales();
+      // this.asignarOpcionesSemestrales();
       return;
     }
     if (modalidad === 2) {

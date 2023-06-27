@@ -50,7 +50,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   vehiculos: VehiculoMantenimiento[] = [];
   vehiculoSeleccionado!: VehiculoMantenimiento;
-
+  once: boolean = true;
   filtroFormProgramarMantenimiento!: FormGroup;
 
   solicitudMttoRef!: DynamicDialogRef;
@@ -65,6 +65,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
   readonly POSICION_CATALOGOS_PLACAS: number = 3;
+
+  usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -164,9 +166,10 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
           this.totalElementos = respuesta.datos.totalElements;
 
           const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-          if (usuario?.idRol == '17' && this.vehiculos.length > 0) {
+          if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
             this.vehiculoSeleccionado = this.vehiculos[0];
             this.abrirModalnuevaVerificacion();
+            this.once = false;
           }
         },
         error: (error: HttpErrorResponse): void => {
