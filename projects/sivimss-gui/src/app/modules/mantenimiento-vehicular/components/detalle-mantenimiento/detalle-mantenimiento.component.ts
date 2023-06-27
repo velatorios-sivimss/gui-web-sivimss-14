@@ -9,7 +9,7 @@ import { MantenimientoVehicularService } from "../../services/mantenimiento-vehi
 import { RespuestaVerificacion } from "../../models/respuestaVerificacion.interface";
 import { RespuestaSolicitudMantenimiento } from "../../models/respuestaSolicitudMantenimiento.interface";
 import { RespuestaRegistroMantenimiento } from "../../models/respuestaRegistroMantenimiento.interface";
-import { obtenerFechaActual } from "../../../../utils/funciones-fechas";
+import { obtenerFechaActual, obtenerHoraActual } from "../../../../utils/funciones-fechas";
 import { NuevaVerificacionComponent } from "../nueva-verificacion/nueva-verificacion.component";
 import {
   SolicitudMantenimientoComponent
@@ -34,7 +34,7 @@ export class DetalleMantenimientoComponent implements OnInit {
   verificacion!: RespuestaVerificacion;
   solicitudRegistro!: RespuestaSolicitudMantenimiento;
   registro!: RespuestaRegistroMantenimiento;
-  fechaActual: string = obtenerFechaActual();
+  fechaActual: string = `${obtenerFechaActual()} ${obtenerHoraActual()}`;
   modificarModal: boolean = false;
   indice: number = 0;
   idAgregarVehiculo: number = 0;
@@ -102,7 +102,7 @@ export class DetalleMantenimientoComponent implements OnInit {
           this.vehiculo.DES_VELATORIO = this.verificacion?.DES_VELATORIO || this.registro?.NOM_VELATORIO || this.solicitudRegistro?.DES_VELATORIO;
           if (this.solicitudRegistro?.DES_MTTOESTADO) {
             this.vehiculo.DES_MTTOESTADO = this.solicitudRegistro.DES_MTTOESTADO;
-          } else if (this.solicitudRegistro.DES_MTTOESTADO) {
+          } else if (this.solicitudRegistro?.DES_MTTOESTADO) {
             this.vehiculo.DES_MTTOESTADO = this.registro.DES_MTTOESTADO;
           }
         }

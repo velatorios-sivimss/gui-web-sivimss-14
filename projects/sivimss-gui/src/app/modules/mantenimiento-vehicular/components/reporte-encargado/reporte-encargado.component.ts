@@ -109,17 +109,17 @@ export class ReporteEncargadoComponent implements OnInit {
       } else {
         this.numPaginaActual = 0;
       }
-      this.buscar();
     }
   }
 
   buscar(): void {
-    const filtros: FiltrosReporteEncargado = this.crearSolicitudFiltros();
+    this.rangoFecha = `${moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD-MM-YYYY')} a
+    ${moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD-MM-YYYY')}`
     this.mostrarTabla = true;
     this.loaderService.activar();
     if (this.fmp.tipoReporte.value == 1) {
       this.tipoBusqueda = 1;
-      this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+      this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.crearSolicitudFiltrosPrograma())
         .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
           next: (respuesta: HttpRespuesta<any>): void => {
             this.totalVehiculos = respuesta.datos.totalElements;
@@ -132,7 +132,7 @@ export class ReporteEncargadoComponent implements OnInit {
         });
     } else {
       this.tipoBusqueda = 2;
-      this.mantenimientoVehicularService.buscarReporteEncargado(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+      this.mantenimientoVehicularService.buscarReporteEncargado(this.numPaginaActual, this.cantElementosPorPagina, this.crearSolicitudFiltrosVerificacion())
         .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
           next: (respuesta: HttpRespuesta<any>): void => {
             this.totalVehiculos = respuesta.datos.totalElements;
@@ -146,12 +146,18 @@ export class ReporteEncargadoComponent implements OnInit {
     }
   }
 
-  crearSolicitudFiltros(): FiltrosReporteEncargado {
-    this.rangoFecha = `${moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD-MM-YYYY')} a
-    ${moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD-MM-YYYY')}`
+  crearSolicitudFiltrosPrograma(): FiltrosReporteEncargado {
     return {
       fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
       fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+      placa: this.filtroForm.get('placa')?.value,
+    }
+  }
+
+  crearSolicitudFiltrosVerificacion(): FiltrosReporteEncargado {
+    return {
+      fechaFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+      fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
       placa: this.filtroForm.get('placa')?.value,
     }
   }

@@ -102,7 +102,7 @@
             <div class="col-md-4">
               <div class="table-panel-column">
                 <label>total de vehiculos</label>
-                <span>1</span>
+                <span>{{vehiculos.length}}</span>
               </div>
             </div>
             <div class="col-md-4">
@@ -161,6 +161,18 @@
       </div>
     </p-accordionTab>
   </p-accordion>
+
+  <div class="col-mb-12 flex justify-content-end" *ngIf="titulosSeleccionados.length > 0">
+    <div class="export-table" style="float: right;">
+      <span class="export-table-text">Exportar tabla</span>
+      <div class="export-table-icons flex justify-content-around">
+        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+          (click)="generarReporteTabla('pdf');">
+        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+          (click)="generarReporteTabla('xls');">
+      </div>
+    </div>
+  </div>
 </ng-container>
 
 

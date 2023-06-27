@@ -250,6 +250,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       this.solicitudMantenimientoForm.get("taller")?.setValue(null);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("costoMantenimiento")?.setValue(null);
+      this.solicitudMantenimientoForm.get("costoMantenimiento")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
     }
     this.solicitudMantenimientoForm.get("costoMantenimiento")?.updateValueAndValidity();
@@ -257,6 +258,8 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("modalidad")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("matPreventivo")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("noContrato")?.updateValueAndValidity();
+
+    this.solicitudMantenimientoForm.markAllAsTouched();
   }
 
   asignarContrato(): void {

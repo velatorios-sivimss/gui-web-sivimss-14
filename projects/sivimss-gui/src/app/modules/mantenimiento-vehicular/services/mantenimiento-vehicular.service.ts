@@ -162,4 +162,13 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return this._http.post<any>(this._base + `${this._funcionalidad}/descargar-reporte-encargado/generarDocumento/pdf`
       , generarReporte, { headers, responseType: 'blob' as 'json' });
   }
+
+  generarReportePredictivo(generarReporte: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/descargar-reporte-predictivo/generarDocumento/pdf`
+      , generarReporte, { headers, responseType: 'blob' as 'json' });
+  }
 }
