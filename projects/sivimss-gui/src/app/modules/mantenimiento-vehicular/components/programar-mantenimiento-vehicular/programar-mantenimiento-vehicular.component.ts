@@ -52,6 +52,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   vehiculoSeleccionado!: VehiculoMantenimiento;
   once: boolean = true;
   filtroFormProgramarMantenimiento!: FormGroup;
+  cicloCompleto: boolean = false;
 
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
@@ -234,7 +235,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   abrirModalnuevaVerificacion(): void {
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
-      data: { vehiculo: this.vehiculoSeleccionado },
+      data: { vehiculo: this.vehiculoSeleccionado, cicloCompleto: this.cicloCompleto },
       header: "Verificar al inicio de la jornada",
       width: "920px"
     });
@@ -244,7 +245,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Solicitud de mantenimiento vehicular",
       width: "920px",
-      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create' },
+      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create', cicloCompleto: this.cicloCompleto },
     })
   }
 
@@ -252,7 +253,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Registro de mantenimiento vehicular",
       width: "920px",
-      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create' },
+      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create', cicloCompleto: this.cicloCompleto },
     });
   }
 
@@ -303,6 +304,10 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   abrirPanel(event: MouseEvent, vehiculoSeleccionado: VehiculoMantenimiento): void {
+    this.cicloCompleto = false;
+    if (vehiculoSeleccionado.ID_MTTOVERIFINICIO && vehiculoSeleccionado.ID_MTTO_SOLICITUD && vehiculoSeleccionado.ID_MTTO_REGISTRO) {
+      this.cicloCompleto = true;
+    }
     this.vehiculoSeleccionado = vehiculoSeleccionado;
     this.overlayPanel.toggle(event);
   }

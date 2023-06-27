@@ -38,7 +38,6 @@ export class RegistroMantenimientoComponent implements OnInit {
   readonly POSICION_CATALOGOS_PROVEEDORES: number = 2;
 
   ventanaConfirmacion: boolean = false;
-
   tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
   catalogoProveedores: TipoDropdown[] = [];
   mantenimientosPrev: TipoDropdown[] = [];
@@ -49,6 +48,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   solicitudMantenimientoForm!: FormGroup;
   mode: string = 'update';
   modalidades: string[] = ['', 'Semestral', 'Anual', 'Frecuente'];
+  cicloCompleto: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -69,6 +69,9 @@ export class RegistroMantenimientoComponent implements OnInit {
   ngOnInit(): void {
     if (this.config.data.vehiculo) {
       this.vehiculoSeleccionado = this.config.data.vehiculo;
+    }
+    if (this.config.data.cicloCompleto) {
+      this.cicloCompleto = this.config.data.cicloCompleto;
     }
     if (this.config.data.mode) {
       this.mode = this.config.data.mode;
@@ -181,7 +184,7 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   crearSolicitudMantenimiento(): RegistroMantenimiento {
     return {
-      idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR ? +this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
+      idMttoVehicular: this.cicloCompleto ? null : +this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
@@ -190,8 +193,8 @@ export class RegistroMantenimientoComponent implements OnInit {
       verificacionInicio: null,
       solicitud: null,
       registro: {
-        idMttoRegistro: this.mode === 'update' ? this.vehiculoSeleccionado.ID_MTTO_REGISTRO : null,
-        idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR ? +this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
+        idMttoRegistro: this.mode === 'update' ? this.vehiculoSeleccionado.ID_MTTO_REGISTRO : this.cicloCompleto ? null : this.vehiculoSeleccionado.ID_MTTO_REGISTRO,
+        idMttoVehicular: this.cicloCompleto ? null : +this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value ? +this.solicitudMantenimientoForm.get("modalidad")?.value : null,
         idMantenimiento: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value ? +this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value : null,
         desNombreProveedor: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,

@@ -53,6 +53,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
   idMttoVehicular: number | null = null;
   idSolicitudMtto: number | null = null;
   pasoSolicitudMantenimiento: number = 1;
+  cicloCompleto: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -73,6 +74,9 @@ export class SolicitudMantenimientoComponent implements OnInit {
   ngOnInit(): void {
     if (this.config.data.vehiculo) {
       this.vehiculoSeleccionado = this.config.data.vehiculo;
+    }
+    if (this.config.data.cicloCompleto) {
+      this.cicloCompleto = this.config.data.cicloCompleto;
     }
     if (this.config.data.id) {
       const id = this.config.data.id;
@@ -175,7 +179,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   crearSolicitudMantenimiento(): RegistroSolicitudMttoInterface {
     return {
-      idMttoVehicular: this.idSolicitudMtto ? this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
+      idMttoVehicular: this.cicloCompleto ? null : this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
@@ -183,8 +187,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
       idEstatus: 1,
       verificacionInicio: null,
       solicitud: {
-        idMttoSolicitud: this.idSolicitudMtto,
-        idMttoVehicular: this.idSolicitudMtto ? this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
+        idMttoSolicitud: this.cicloCompleto ? null : this.idSolicitudMtto,
+        idMttoVehicular: this.cicloCompleto ? null : this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
         idMttoTipo: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaRegistro")?.value, 'YYYY-MM-dd'),
@@ -224,6 +228,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud agregada correctamente');
         if (respuesta.datos.length > 0) {
           this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+        } else {
+          this.abrirRegistroSolicitud(respuesta.datos);
         }
       },
       error: (error: HttpErrorResponse): void => {
