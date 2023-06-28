@@ -48,8 +48,8 @@ export class RealizarPagoComponent implements OnInit {
   fechaAnterior: Date = new Date();
   pagoSeleccionado!: Pago;
 
-  habilitaIrPago: string[] = ['Generada', 'Vigente', 'Generado'];
-  habilitaIrPagoEstatus: string[] = ['Pendiente']
+  habilitaIrPago: string[] = ['Generada', 'Vigente'];
+  habilitaIrPagoEstatus: string[] = ['Pendiente', 'Generado']
   habilitaModificar: string[] = ['Pagada'];
   habilitaModificarPago: string[] = ['Pagado'];
 
