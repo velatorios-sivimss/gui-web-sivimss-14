@@ -49,9 +49,11 @@ export class DescargaArchivosService {
           const link: HTMLAnchorElement = document.createElement('a');
           link.href = downloadURL;
           link.download = `${nombreArchivo}.${ext}`;
+          console.log(link.download);
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
+          return of(true)
         }
 
         // (Chrome, Edge)

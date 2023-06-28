@@ -3,6 +3,7 @@ import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/co
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OverlayPanel } from "primeng/overlaypanel";
 import { DialogService } from "primeng/dynamicdialog";
@@ -14,12 +15,16 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { MantenimientoVehicularService } from "../../services/mantenimiento-vehicular.service";
 import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
 import { FiltrosMantenimientoPredictivo } from "../../models/filtrosMantenimientoPredictivo.interface";
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-mantenimiento-predictivo',
   templateUrl: './mantenimiento-predictivo.component.html',
   styleUrls: ['./mantenimiento-predictivo.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class MantenimientoPredictivoComponent implements OnInit {
 
@@ -46,6 +51,12 @@ export class MantenimientoPredictivoComponent implements OnInit {
   titulos: string[] = ['Aceite', 'Agua', 'Calibración Neumáticos', 'Combustible', 'Código de Falla', 'Batería'];
   titulosSeleccionados: string[] = [];
   velatorio: string = '';
+  niveles: any =
+    {
+      BAJO: '1',
+      MEDIO: '5',
+      CORRECTO: '10'
+    };
 
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
@@ -61,6 +72,9 @@ export class MantenimientoPredictivoComponent implements OnInit {
     private route: ActivatedRoute,
     private mantenimientoVehicularService: MantenimientoVehicularService,
     private mensajesSistemaService: MensajesSistemaService,
+    private loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
+    private alertaService: AlertaService,
   ) {
   }
 
@@ -168,6 +182,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
       nivelOficina: this.filtroForm.get('nivel')?.value,
       placa: this.filtroForm.get('placa')?.value,
       velatorio: this.filtroForm.get('velatorio')?.getRawValue() === '' ? null : this.filtroForm.get('velatorio')?.getRawValue(),
+      periodo: this.filtroForm.get('periodo')?.value ? String(this.filtroForm.get('periodo')?.value) : null,
       tipoMtto: mtto,
     }
   }
@@ -187,6 +202,62 @@ export class MantenimientoPredictivoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
     });
+  }
+
+  generarReporteTabla(tipoReporte: string): void {
+    if (this.filtroForm.invalid) return;
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
+    }
+
+    this.loaderService.activar();
+    const busqueda = this.filtrosArchivos(tipoReporte);
+    this.descargaArchivosService.descargarArchivo(this.mantenimientoVehicularService.generarReportePredictivo(busqueda), configuracionArchivo).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      },
+    });
+  }
+
+  filtrosArchivos(tipoReporte: string) {
+    let tipoMttoDesc: string | null = null;
+    let valor: string | null = null;
+
+    if (this.vehiculos.length === 1 && this.vehiculos[0].TOTAL_VEHICULOS !== 0) {
+      tipoMttoDesc = this.tipoMantenimientos.find(item => item.value === this.fmp.tipoMantenimiento.value)?.label ?? '';
+      switch (tipoMttoDesc) {
+        case "Aceite":
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_ACEITE || 'BAJO']
+          break;
+        case "Agua":
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_AGUA || 'BAJO']
+          break;
+        case "Combustible":
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_COMBUSTIBLE || 'BAJO']
+          break;
+        case "Código de Falla":
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_CODIGOFALLO || 'BAJO']
+          break;
+        case "Batería":
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_BATERIA || 'BAJO']
+          break;
+      }
+    }
+    return {
+      idDelegacion: this.fmp.delegacion.value ? +this.fmp.delegacion.value : null,
+      idVelatorio: this.fmp.velatorio.value ? +this.fmp.velatorio.value : null,
+      periodo: this.fmp.periodo.value ? String(this.fmp.periodo.value) : null,
+      tipoMtto: tipoMttoDesc,
+      valor: valor,
+      placas: this.fmp.placa.value,
+      tipoReporte
+    }
   }
 
 }

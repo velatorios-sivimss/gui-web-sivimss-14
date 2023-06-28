@@ -58,6 +58,7 @@
                   <label class="control-label m-0 mx-3" [for]="'nivelAceite'">Bajo</label>
                 </div>
               </div>
+              <span class="campo-obligatorio" *ngIf="nvf.nivelAceite?.errors?.required && (nvf.nivelAceite?.dirty || nvf.nivelAceite?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
           <div class="col-md-6">
@@ -80,6 +81,7 @@
                   <label class="control-label m-0 mx-3" [for]="'nivelAgua'">Bajo</label>
                 </div>
               </div>
+              <span class="campo-obligatorio" *ngIf="nvf.nivelAgua?.errors?.required && (nvf.nivelAgua?.dirty || nvf.nivelAgua?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
         </div>
@@ -107,9 +109,7 @@
                   <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosTraseros'">Bajo</label>
                 </div>
               </div>
-              <span class="campo-obligatorio"
-                *ngIf="nvf.calibracionNeumaticosTraseros?.errors?.required && (nvf.calibracionNeumaticosTraseros?.dirty || nvf.calibracionNeumaticosTraseros?.touched)">
-                Campo obligatorio</span>
+              <span class="campo-obligatorio" *ngIf="nvf.calibracionNeumaticosTraseros?.errors?.required && (nvf.calibracionNeumaticosTraseros?.dirty || nvf.calibracionNeumaticosTraseros?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
           <div class="col-md-6">
@@ -134,9 +134,7 @@
                   <label class="control-label m-0 mx-3" [for]="'calibracionNeumaticosDelanteros'">Bajo</label>
                 </div>
               </div>
-              <span class="campo-obligatorio"
-                *ngIf="nvf.calibracionNeumaticosDelanterosCorrecto?.errors?.required && (nvf.calibracionNeumaticosDelanterosCorrecto?.dirty || nvf.calibracionNeumaticosDelanterosCorrecto?.touched)">
-                Campo obligatorio</span>
+              <span class="campo-obligatorio" *ngIf="nvf.calibracionNeumaticosDelanteros?.errors?.required && (nvf.calibracionNeumaticosDelanteros?.dirty || nvf.calibracionNeumaticosDelanteros?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
         </div>
@@ -161,9 +159,7 @@
                   <label class="control-label m-0 mx-3" [for]="'nivelCombustible'">Bajo</label>
                 </div>
               </div>
-              <span class="campo-obligatorio"
-                *ngIf="nvf.nivelCombustibleCorrecto?.errors?.required && (nvf.nivelCombustibleCorrecto?.dirty || nvf.nivelCombustibleCorrecto?.touched)">
-                Campo obligatorio</span>
+              <span class="campo-obligatorio" *ngIf="nvf.nivelCombustible?.errors?.required && (nvf.nivelCombustible?.dirty || nvf.nivelCombustible?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
           <div class="col-md-6">
@@ -186,9 +182,7 @@
                   <label class="control-label m-0 mx-3" [for]="'nivelBateria'">Bajo</label>
                 </div>
               </div>
-              <span class="campo-obligatorio"
-                *ngIf="nvf.nivelBateriaBajo?.errors?.required && (nvf.nivelBateriaBajo?.dirty || nvf.nivelBateriaBajo?.touched)">
-                Campo obligatorio</span>
+              <span class="campo-obligatorio" *ngIf="nvf.nivelBateria?.errors?.required && (nvf.nivelBateria?.dirty || nvf.nivelBateria?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
         </div>
@@ -213,9 +207,7 @@
                   <label class="control-label m-0 mx-3" [for]="'codigoFalla'">Bajo</label>
                 </div>
               </div>
-              <span class="campo-obligatorio"
-                *ngIf="nvf.codigoFallaCorrecto?.errors?.required && (nvf.codigoFallaCorrecto?.dirty || nvf.codigoFallaCorrecto?.touched)">
-                Campo obligatorio</span>
+              <span class="campo-obligatorio" *ngIf="nvf.codigoFalla?.errors?.required && (nvf.codigoFalla?.dirty || nvf.codigoFalla?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
           <div class="col-md-6">
@@ -238,9 +230,7 @@
                   <label class="control-label m-0 mx-3" [for]="'limpiezaInterior'">Bajo</label>
                 </div>
               </div>
-              <span class="campo-obligatorio"
-                *ngIf="nvf.limpiezaInteriorCorrecto?.errors?.required && (nvf.limpiezaInteriorCorrecto?.dirty || nvf.limpiezaInteriorCorrecto?.touched)">
-                Campo obligatorio</span>
+              <span class="campo-obligatorio" *ngIf="nvf.limpiezaInterior?.errors?.required && (nvf.limpiezaInterior?.dirty || nvf.limpiezaInterior?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
         </div>
@@ -265,9 +255,7 @@
                   <label class="control-label m-0 mx-3" [for]="'limpiezaExterior'">Bajo</label>
                 </div>
               </div>
-              <span class="campo-obligatorio"
-                *ngIf="nvf.limpiezaExteriorBajo?.errors?.required && (nvf.limpiezaExteriorBajo?.dirty || nvf.limpiezaExteriorBajo?.touched)">
-                Campo obligatorio</span>
+              <span class="campo-obligatorio" *ngIf="nvf.limpiezaExterior?.errors?.required && (nvf.limpiezaExterior?.dirty || nvf.limpiezaExterior?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
         </div>

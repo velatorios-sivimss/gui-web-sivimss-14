@@ -632,6 +632,12 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     )
   }
 
+  convertirAMinusculas(): void {
+    this.fds.correoElectronico.setValue(
+      this.fds.correoElectronico.value.toLowerCase()
+    )
+  }
+
   siguiente(): void {
     this.indice ++;
   }
