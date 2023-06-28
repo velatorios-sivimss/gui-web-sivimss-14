@@ -50,12 +50,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   readonly POSICION_ESTADOS = 1;
   readonly POSICION_PAQUETES = 3;
 
-  objectoConfirmacion!: PersonaInterface;
-
-
-  menuStep: MenuItem[] = MENU_STEPPER_AGREGAR_PERSONA;
-  indice: number = 0;
-
   personaForm!: FormGroup;
   documentacionForm!: FormGroup;
 
@@ -63,24 +57,25 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   detalleBeneficiarioRef!: DynamicDialogRef;
   modificarBeneficiarioRef!: DynamicDialogRef;
 
+  menuStep: MenuItem[] = MENU_STEPPER_AGREGAR_PERSONA;
+  indice: number = 0;
+
   tipoPaquete!: TipoDropdown[];
   enfermedadPrexistente: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
   estado!: TipoDropdown[];
   pais!: TipoDropdown[];
 
+  objectoConfirmacion!: PersonaInterface;
   beneficiario: BeneficiarioInterface[] = [];
 
   otroTipoEnferemdad: boolean = false;
   mostrarModalConfirmacion: boolean = false;
-
   infoTipoPaquete!: any[];
-  infoPaqueteSeleccionado!: any;
-
-  respuesta: any;
-
   detallePais!: any;
   detalleEnfermedad!: any;
   detalleTipoPaquete!: any;
+  infoPaqueteSeleccionado!: any;
+  respuesta: any;
 
 
   constructor(
@@ -129,7 +124,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
                    telefono: [{value: null, disabled: false}, [Validators.required]],
                       calle: [{value: null, disabled: false}, [Validators.required]],
                  noExterior: [{value: null, disabled: false}, [Validators.required]],
-                 noInterior: [{value: null, disabled: false}, [Validators.required]],
+                 noInterior: [{value: null, disabled: false}],
                          cp: [{value: null, disabled: false}, [Validators.required]],
                     colonia: [{value: null, disabled: false}, [Validators.required]],
                   municipio: [{value: null, disabled: true}, [Validators.required]],
@@ -316,6 +311,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   siguiente(): void {
     this.indice++;
     if(this.indice == 3){
+      debugger
       this.objectoConfirmacion = {
           curp: this.personaForm.get('curp')?.value ? this.personaForm.get('curp')?.value : "",
           rfc: this.personaForm.get('rfc')?.value ? this.personaForm.get('rfc')?.value : "",
@@ -326,18 +322,25 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           correoElectronico: this.personaForm.get('correoElectronico')?.value ? this.personaForm.get('correoElectronico')?.value : "",
           telefono: this.personaForm.get('telefono')?.value ? this.personaForm.get('telefono')?.value : "",
           calle: this.personaForm.get('calle')?.value ? this.personaForm.get('calle')?.value : "",
-          noExterior: this.personaForm.get('noExterior')?.value ? this.personaForm.get('noExterior')?.value : "",
-          noInterior: this.personaForm.get('noInterior')?.value ? this.personaForm.get('noInterior')?.value : "",
+          numeroExterior: this.personaForm.get('noExterior')?.value ? this.personaForm.get('noExterior')?.value : "",
+          numeroInterior: this.personaForm.get('noInterior')?.value ? this.personaForm.get('noInterior')?.value : "",
           cp: this.personaForm.get('cp')?.value ? this.personaForm.get('cp')?.value : "",
           colonia: this.personaForm.get('colonia')?.value ? this.personaForm.get('colonia')?.value : "",
           municipio: this.personaForm.get('municipio')?.value ? this.personaForm.get('municipio')?.value : "",
           estado: this.personaForm.get('estado')?.value ? this.personaForm.get('estado')?.value : "",
-          tipoPaquete: this.personaForm.get('tipoPaquete')?.value ? this.personaForm.get('tipoPaquete')?.value : "",
-          enfermedadPrexistente: this.personaForm.get('enfermedadPrexistente')?.value ? this.personaForm.get('enfermedadPrexistente')?.value : "",
+          paquete: this.personaForm.get('tipoPaquete')?.value ? this.personaForm.get('tipoPaquete')?.value : "",
+          enfermedadPreexistente: this.personaForm.get('enfermedadPrexistente')?.value ? this.personaForm.get('enfermedadPrexistente')?.value : "",
           ineAfiliado: this.documentacionForm.get('ineAfiliado')?.value ? this.documentacionForm.get('ineAfiliado')?.value : false,
           copiaCURP: this.documentacionForm.get('copiaCURP')?.value ? this.documentacionForm.get('copiaCURP')?.value : false,
           copiaRFC: this.documentacionForm.get('copiaRFC')?.value ? this.documentacionForm.get('copiaRFC')?.value : false,
-          beneficiario: this.beneficiario
+          beneficiarios: this.beneficiario,
+          nss:"",
+          numIne:"",
+          sexo:"",
+          otroSexo:"",
+          fechaNacimiento:"",
+          tipoPersona:"",
+          otraEnfermedad:"",
       }
       this.detallePais = this.pais.filter(pais => {
         return pais.value == this.fp.pais.value;
@@ -345,7 +348,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       this.detalleTipoPaquete = this.tipoPaquete.filter(paquete => {
         return paquete.value == this.fp.tipoPaquete.value;
       })
-      console.log(CATALOGO_ENFERMEDAD_PREEXISTENTE)
       this.detalleEnfermedad = CATALOGO_ENFERMEDAD_PREEXISTENTE.filter(enfermedad => {
         return enfermedad.value == this.fp.enfermedadPrexistente.value;
       });

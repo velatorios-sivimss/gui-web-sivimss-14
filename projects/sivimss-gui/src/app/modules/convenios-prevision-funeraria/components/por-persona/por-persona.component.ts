@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
@@ -34,7 +34,13 @@ import {TipoPaquete} from "../../models/tipo-paquete.interface";
   styleUrls: ['./por-persona.component.scss'],
   providers: [DialogService]
 })
-export class PorPersonaComponent implements OnInit {
+export class PorPersonaComponent implements OnInit,OnChanges {
+
+  @Input() folioConvenio!: string;
+  @Input() consultarFormularioValido!: boolean;
+  @Input() confirmacionGuardado!: boolean;
+  @Output() formularioValido = new EventEmitter<{ origen:string,valido:boolean }>();
+  @Output() formularioPersona = new EventEmitter<any>();
 
   readonly POSICION_PAISES = 0;
   readonly POSICION_ESTADOS = 1;
@@ -94,13 +100,14 @@ export class PorPersonaComponent implements OnInit {
     this.personaForm= this.formBuilder.group({
                   matricula: [{value:null, disabled: false}],
                         rfc: [{value:null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
+                  idPersona: {value:null, disabled: false},
                        curp: [{value:null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
                      nombre: [{value:null, disabled: true}, [Validators.required]],
              primerApellido: [{value:null, disabled: true}, [Validators.required]],
             segundoApellido: [{value:null, disabled: true}, [Validators.required]],
                       calle: [{value:null, disabled: false}, [Validators.required]],
              numeroExterior: [{value:null, disabled: false}, [Validators.required]],
-             numeroInterior: [{value:null, disabled: false}, [Validators.required]],
+             numeroInterior: [{value:null, disabled: false}],
                          cp: [{value:null, disabled: false}, [Validators.required]],
                     colonia: [{value:null, disabled: false}, [Validators.required]],
                   municipio: [{value:null, disabled: true}, [Validators.required]],
@@ -109,7 +116,7 @@ export class PorPersonaComponent implements OnInit {
           correoElectronico: [{value:null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
                    telefono: [{value:null, disabled: false}, [Validators.required]],
       enfermedadPrexistente: [{value:null, disabled: false}, [Validators.required]],
-             otraEnferdedad: [{value:null, disabled: false}, [Validators.required]],
+             otraEnferdedad: [{value:null, disabled: false}],
                 tipoPaquete: [{value:null, disabled: false}, [Validators.required]],
     })
   }
@@ -134,7 +141,15 @@ export class PorPersonaComponent implements OnInit {
 
   cambioEnfermedadPrexistente(): void {
     this.otroTipoEnferemdad = false;
-    if(this.fp.enfermedadPrexistente.value == 4){this.otroTipoEnferemdad = true}
+
+    this.fp.otraEnferdedad.disabled;
+    this.fp.otraEnferdedad.clearValidators();
+    if(this.fp.enfermedadPrexistente.value == 4){
+      this.otroTipoEnferemdad = true
+      this.fp.otraEnferdedad.enabled;
+      this.fp.otraEnferdedad.setValidators(Validators.required);
+    }
+    this.validarFormularioVacio(false,'local');
   }
 
   abrirModalDetalleBeneficario(beneficiario: BeneficiarioInterface): void {
@@ -160,17 +175,14 @@ export class PorPersonaComponent implements OnInit {
   }
 
   mostrarModalTipoPaquete(): void {
-    // let descripcion: TipoPaquete = this.infoTipoPaquete.filter((paqueteSeleccion:TipoPaquete) => {
-    //   return paqueteSeleccion.idPaquete == this.fp.tipoPaquete.value;
-    // });
-
     this.infoTipoPaquete.forEach((paquete: TipoPaquete) => {
       if(paquete.idPaquete == this.fp.tipoPaquete.value){
         this.infoPaqueteSeleccionado = paquete.descPaquete
       }
     })
 
-    // this.infoPaqueteSeleccionado = descripcion.nomPaquete;
+    this.validarFormularioVacio(false,'local')
+
     this.mostrarModalConfirmacion = true;
   }
 
@@ -182,6 +194,7 @@ export class PorPersonaComponent implements OnInit {
       return;
     }
     this.loaderService.activar();
+    this.validarFormularioVacio(false,'local');
     this.agregarConvenioPFService.consultaCURPRFC("",this.fp.curp.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
@@ -189,6 +202,7 @@ export class PorPersonaComponent implements OnInit {
         this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
         this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
         this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+        this.fp.idPersona.setValue(respuesta.datos[0].idPersona)
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -246,6 +260,7 @@ export class PorPersonaComponent implements OnInit {
       (respuesta: HttpRespuesta<any>) => {
         this.fp.estado.setValue(respuesta.datos[0]?.estado);
         this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.validarFormularioVacio(false,'local');
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -253,11 +268,51 @@ export class PorPersonaComponent implements OnInit {
     )
   }
 
+  consultarFolioPersona(): void {
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultarFolioPersona(this.folioConvenio).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        if(!respuesta.datos)return;
+          this.fp.curp.setValue(respuesta.datos.datosContratante.curp);
+          this.fp.rfc.setValue(respuesta.datos.datosContratante.rfc);
+          this.fp.nombre.setValue(respuesta.datos.datosContratante.nombrePersona);
+          this.fp.primerApellido.setValue(respuesta.datos.datosContratante.primerApellido);
+          this.fp.segundoApellido.setValue(respuesta.datos.datosContratante.segundoApellido);
+          this.fp.correoElectronico.setValue(respuesta.datos.datosContratante.correo);
+          this.fp.telefono.setValue(respuesta.datos.datosContratante.telefono);
+
+
+          // this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
+          // this.fp.matricula.setValue(respuesta.datosContratante.matricula);
+          // this.fp.calle.setValue(respuesta.datos.datosContratante.calle);
+          // this.fp.numeroExterior.setValue(respuesta.datos.datosContratante.numeroExterior);
+          // this.fp.numeroInterior.setValue(respuesta.datos.datosContratante.numeroInterior);
+          // this.fp.cp.setValue(respuesta.datos.datosContratante.cp);
+          // this.fp.colonia.setValue(respuesta.datos.datosContratante.colonia);
+          // this.fp.municipio.setValue(respuesta.datos.datosContratante.municipio);
+          // this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
+          // this.fp.pais.setValue(respuesta.datos.datosContratante.pais);
+          // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
+          // this.fp.otraEnferdedad.setValue(respuesta.datos.datosContratante.otraEnferdedad);
+
+
+
+
+      },
+      (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+      }
+    );
+  }
+
   validarCorreoElectornico(): void {
     if(!this.fp.correoElectronico.value){return}
     if (this.personaForm.controls.correoElectronico?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
     }
+    this.validarFormularioVacio(false,'local');
   }
 
   limpiarCampos(origen: string): void {
@@ -269,7 +324,66 @@ export class PorPersonaComponent implements OnInit {
   }
 
 
+  validarFormularioVacio(formularioPrincipalValido?: boolean, origen?:string): void{
+
+    if(this.personaForm.valid && formularioPrincipalValido && origen?.includes('externo')){
+      this.formularioValido.emit({origen:origen,valido:true})
+      return
+    }
+    if(this.personaForm.valid && formularioPrincipalValido == false && origen?.includes('local')){
+      this.formularioValido.emit({origen:origen,valido:true})
+      return
+    }
+    this.formularioValido.emit({origen:'',valido:false})
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes.confirmacionGuardado && changes.consultarFormularioValido && changes.folioConvenio){
+      return
+    }
+    if(this.consultarFormularioValido && changes.consultarFormularioValido) {
+      this.validarFormularioVacio(changes.consultarFormularioValido.currentValue,'externo')
+    }
+    if(this.confirmacionGuardado){
+      this.formularioPersona.emit(
+        {
+          idPersona: this.fp.idPersona?.value ?? "",
+          matricula: this.fp.matricula?.value ?? "",
+          rfc:this.fp.rfc?.value ?? "",
+          curp:this.fp.curp.value,
+          nss:"",
+          numIne:"",
+          nombre:this.fp.nombre.value,
+          primerApellido:this.fp.primerApellido.value,
+          segundoApellido:this.fp.segundoApellido.value,
+          sexo:"",
+          otroSexo:"",
+          fechaNacimiento:"",
+          tipoPersona:"",
+          calle:this.fp.calle.value,
+          numeroExterior:this.fp.numeroExterior.value,
+          numeroInterior:this.fp.numeroInterior?.value ?? "",
+          cp:this.fp.cp.value,
+          colonia:this.fp.colonia.value,
+          municipio:this.fp.municipio.value,
+          estado:this.fp.estado.value,
+          pais:this.fp.pais.value,
+          correoElectronico:this.fp.correoElectronico.value,
+          telefono:this.fp.telefono.value,
+          enfermedadPreexistente:this.fp.enfermedadPrexistente.value,
+          otraEnfermedad:this.fp.otraEnfermedad?.value ?? "",
+          paquete:this.fp.tipoPaquete.value,
+          beneficiarios: this.beneficiarios
+        }
+      )
+    }
+
+    if(this.folioConvenio === "" || this.folioConvenio == undefined) return;
+    this.consultarFolioPersona();
+  }
+
   get fp() {
     return this.personaForm.controls;
   }
 }
+

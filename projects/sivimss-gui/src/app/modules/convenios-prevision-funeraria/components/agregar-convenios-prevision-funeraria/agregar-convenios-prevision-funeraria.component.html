@@ -4,27 +4,26 @@
       <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps>
     </div>
   </div>
-
   <ng-container *ngIf="indice == 0">
     <div class="border-panel mb-3">
       <form [formGroup]="filtroForm">
         <div class="row mb-3">
           <div class="col-md-4">
-            <label class="control-label" for="numeroConvenio">Número de convenio anterior</label>
-            <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio" placeholder="Ingresa el número de convenio"
-            maxlength="10" alphanumericOnly>
-            <span class="campo-obligatorio"
-                  *ngIf="ff.numeroConvenio?.errors?.required && (ff.numeroConvenio?.dirty || ff.numeroConvenio?.touched)">
-                            Campo obligatorio</span>
-          </div>
-          <div class="col-md-4">
             <label class="control-label" for="tipoContratacion">Tipo de contratación <span class="req">*</span></label>
             <p-dropdown id="tipoContratacion" class="form-control" formControlName="tipoContratacion" [options]="tipoContratacion"
-                         placeholder="Selecciona el tipo de contratación" [filter]="true" filterBy="label" (onChange)="validarTipoContratacion" >
+                        placeholder="Selecciona el tipo de contratación" [filter]="true" filterBy="label" (onChange)="validarTipoContratacion()" >
             </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="ff.tipoContratacion?.errors?.required && (ff.tipoContratacion?.dirty || ff.tipoContratacion?.touched)">
                       Campo obligatorio</span>
+          </div>
+          <div class="col-md-4">
+            <label class="control-label" for="numeroConvenio">Número de convenio anterior</label>
+            <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio" placeholder="Ingresa el número de convenio"
+            maxlength="10" (change)="consultarConvenio()">
+            <span class="campo-obligatorio"
+                  *ngIf="ff.numeroConvenio?.errors?.required && (ff.numeroConvenio?.dirty || ff.numeroConvenio?.touched)">
+                            Campo obligatorio</span>
           </div>
           <div class="col-md-4">
             <label class="control-label" for="rfcCurp">RFC o CURP</label>
@@ -35,15 +34,9 @@
                               Campo obligatorio</span>
           </div>
         </div>
-      <ng-container *ngIf="ff.tipoContratacion.value== 1" >
-        <app-por-persona></app-por-persona>
-      </ng-container>
-      <ng-container *ngIf="ff.tipoContratacion.value== 2" >
-        <app-por-empresa [existePersona]="existePersona"></app-por-empresa>
-      </ng-container>
-        <div class="row mt-7 mb-3">
-          <div class="col-md-3">
-            <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="control-label">¿El servicio fue gestionado por un promotor? *</label>
             <div class="flex">
               <div class="flex align-items-center mx-2">
                 <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
@@ -57,18 +50,34 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3" *ngIf="agregarPromotor">
-            <label class="control-label" for="promotor">Promotor<span class="req">*</span></label>
-            <p-dropdown id="promotor" class="form-control" formControlName="promotor" [options]="promotores"
-                        placeholder="Selecciona el promotor" [filter]="true" filterBy="label">
+          <div class="col-md-4" *ngIf="agregarPromotor">
+            <label class="control-label" for="listaPromotor">Promotor<span class="req">*</span></label>
+            <p-dropdown id="listaPromotor" class="form-control" formControlName="listaPromotor" [options]="promotores"
+                        placeholder="Selecciona el promotor" [filter]="true" filterBy="label" (onChange)="validarListadoPormotores()">
             </p-dropdown>
             <span class="campo-obligatorio"
-                  *ngIf="ff.promotor?.errors?.required && (ff.promotor?.dirty || ff.promotor?.touched)">
-                        Campo obligatorio</span>
+                  *ngIf="ff.listaPromotor?.errors?.required && (ff.listaPromotor?.dirty || ff.listaPromotor?.touched)">
+                      Campo obligatorio</span>
           </div>
         </div>
+      <ng-container *ngIf="ff.tipoContratacion.value== 1" >
+        <app-por-persona [folioConvenio]="folioConvenioPersona"
+                         [confirmacionGuardado]="confirmarGuardadoPersona"
+                         [consultarFormularioValido]="consultarFormularioValido"
+                         (formularioValido)="validarFormularioPersona($event)"
+                         (formularioPersona)="datosFormularioPersona($event)"
+        ></app-por-persona>
+      </ng-container>
+      <ng-container *ngIf="ff.tipoContratacion.value== 2" >
+        <app-por-empresa [folioEmpresa]="folioEmpresa"
+                         [confirmacionGuardado]="confirmacionGuardadoEmpresa"
+                         [existePersona]="existePersona"
+                         (guardarFormularioPrincipal)="guardarFormularioLocalStorage($event)"
+                         (formularioValido)="validarFormularioEmpresa($event)"
+                         (formularioEmpresa)="datosFormularioEmpresa($event)">
+        </app-por-empresa>
+      </ng-container>
       </form>
-
       <div class="row">
         <div class="col-md-12">
           <span class="etiqueta-base">
@@ -84,7 +93,8 @@
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="ineAfiliado" formControlName="ineAfiliado" styleClass="mr-3" [binary]="true"></p-checkbox>
+              <p-checkbox inputId="ineAfiliado" formControlName="ineAfiliado" styleClass="mr-3" [binary]="true"
+              (click)="mofificarModeloPersona()"></p-checkbox>
               <label [for]="'ineAfiliado'" class="control-label"><strong>INE del afiliado </strong></label>
             </div>
           </div>
@@ -92,40 +102,23 @@
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="copiaCURP" formControlName="copiaCURP" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaCURP'" class="control-label"><strong>Copia CURP </strong></label>
+              <p-checkbox inputId="copiaCURP" formControlName="copiaCURP" styleClass="mr-3" [binary]="true"
+                          (click)="mofificarModeloPersona()"></p-checkbox>
+              <label [for]="'copiaCURP'" class="control-label"><strong>Copia CURP</strong></label>
             </div>
           </div>
         </div>
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="copiaRFC" formControlName="copiaRFC" styleClass="mr-3" [binary]="true"></p-checkbox>
+              <p-checkbox inputId="copiaRFC" formControlName="copiaRFC" styleClass="mr-3" [binary]="true"
+                          (click)="mofificarModeloPersona()"></p-checkbox>
               <label [for]="'copiaRFC'" class="control-label"><strong>Copia RFC </strong></label>
             </div>
           </div>
         </div>
-<!--        <div class="row p-3 table-panel-row">-->
-<!--          <div class="col-md-12">-->
-<!--            <div class="flex">-->
-<!--              <p-checkbox inputId="copiaActaNacimiento" formControlName="copiaActaNacimiento" styleClass="mr-3" [binary]="true"></p-checkbox>-->
-<!--              <label [for]="'copiaActaNacimiento'" class="control-label">-->
-<!--                <strong>Copia acta de nacimiento del beneficiario si es menor de edad </strong>-->
-<!--              </label>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="row p-3 table-panel-row">-->
-<!--          <div class="col-md-12">-->
-<!--            <div class="flex">-->
-<!--              <p-checkbox inputId="copiaINE" formControlName="copiaINE" styleClass="mr-3" [binary]="true"></p-checkbox>-->
-<!--              <label [for]="'copiaINE'" class="control-label"><strong>Copias del INE del beneficiario si es mayor de edad </strong></label>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
       </app-table-panel>
     </form>
-
     <div class="row">
       <div class="col-md-12">
       <span class="etiqueta-base">
@@ -134,11 +127,31 @@
       </div>
     </div>
   </ng-container>
+  <ng-container *ngIf="indice == 2">
+    <app-detalle-guarda-convenio [objetoDetalleEmpresa]="modeloGuardarEmpresa"
+                                 [objetoDetallePersona]="modeloGuardarPersona"
+                                 [confirmarGuardarPersona]="banderaGuardarPersona"
+                                 [confirmarGuardarEmpresa]="banderaGuardarEmpresa"
+    ></app-detalle-guarda-convenio>
+    <div class="flex mt-4 justify-content-center">
+      <div class="col-md-12">
+        <p class="text-center">¿Estás seguro de agregar este nuevo registro?</p>
+      </div>
+    </div>
+  </ng-container>
 <div class="row my-3">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-default btn-md ml-5" routerLink="../">Cancelar</button>
-    <button type="button"  class="btn btn-default btn-md ml-5" (click)="regresar()" *ngIf="indice > 0 && ff.tipoContratacion.value== 1">Regresar</button>
-    <button type="button" class="btn btn-primary btn-md ml-5" (click)="siguiente()" *ngIf="indice < menuStep.length && ff.tipoContratacion.value== 1">Siguiente</button>
-    <button type="button" class="btn btn-primary btn-md ml-5"  (click)="guardar()" *ngIf="indice == menuStep.length && ff.tipoContratacion.value== 1 || ff.tipoContratacion.value== 2">Guardar</button>
+<!--    <button type="button"  class="btn btn-default btn-md ml-5" (click)="regresar()" *ngIf="indice > 0 && ff.tipoContratacion.value== 1">Regresar</button>-->
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" (click)="siguiente()" *ngIf="indice < menuStep.length && ff.tipoContratacion.value== 1">Siguiente</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" *ngIf="indice == menuStep.length && ff.tipoContratacion.value== 1">Guardar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarEmpresa" (click)="confirmarGuardarEmpresa()" *ngIf="ff.tipoContratacion.value== 2">Guardar</button>
+
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar('empresa')">Aceptar guardar Empresa</button>
+
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar('persona')">Aceptar guardar Persona</button>
+
+
   </div>
 </div>
+

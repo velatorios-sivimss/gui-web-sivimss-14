@@ -5,24 +5,21 @@
       <div class="col-md-4">
         <label class="control-label" for="nombre">Nombre <span class="req">*</span>:</label>
         <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombre" alphanumericOnly
-        maxlength="20">
+        maxlength="20" (change)="validarFormularioVacio()">
         <span class="campo-obligatorio"
               *ngIf="fe.nombre?.errors?.required && (fe.nombre?.dirty || fe.nombre?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="razonSocial">Razón social <span class="req">*</span>:</label>
         <input id="razonSocial" class="form-control" formControlName="razonSocial" placeholder="Ingresa razón social"
-        maxlength="50">
+        maxlength="50" (change)="validarFormularioVacio()">
         <span class="campo-obligatorio"
               *ngIf="fe.razonSocial?.errors?.required && (fe.razonSocial?.dirty || fe.razonSocial?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="rfc">RFC <span class="req">*</span>:</label>
-        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa RFC" maxlength="13" (blur)="consultarRFC()">
-        <span class="campo-obligatorio"
-              *ngIf="fe.rfc?.errors?.required && (fe.rfc?.dirty || fe.rfc?.touched)">Este campo es obligatorio *.</span>
-        <span class="campo-obligatorio"
-              *ngIf="fe.rfc?.errors?.pattern && (fe.rfc?.dirty || fe.rfc?.touched)">Este campo es obligatorio *.</span>
+        <label class="control-label" for="rfc">RFC :</label>
+        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa RFC" maxlength="13" (blur)="consultarRFC()"
+               (change)="validarFormularioVacio()">
       </div>
     </div>
     <h2 class="subtitulo">Dirección</h2>
@@ -30,7 +27,8 @@
       <div class="col-md-3">
         <label class="control-label" for="numeroInterior">País <span class="req">*</span>:</label>
         <p-dropdown id="pais" class="form-control" formControlName="pais" [options]="pais"
-                    placeholder="Selecciona país" [filter]="true" filterBy="label">
+                    placeholder="Selecciona país" [filter]="true" filterBy="label"
+        (onChange)="validarFormularioVacio()">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="fe.pais?.errors?.required && (fe.pais?.dirty || fe.pais?.touched)">Este campo es obligatorio *.</span>
@@ -59,20 +57,22 @@
     <div class="row mb-3">
       <div class="col-md-3">
         <label class="control-label" for="colonia">Asentamiento / Colonia <span class="req">*</span>:</label>
-        <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa colonia">
+        <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa colonia"
+               (change)="validarFormularioVacio()">
         <span class="campo-obligatorio"
               *ngIf="fe.colonia?.errors?.required && (fe.colonia?.dirty || fe.colonia?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="calle">Calle <span class="req">*</span>:</label>
-        <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa calle" maxlength="30">
+        <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa calle" maxlength="30"
+               (change)="validarFormularioVacio()">
         <span class="campo-obligatorio"
               *ngIf="fe.calle?.errors?.required && (fe.calle?.dirty || fe.calle?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="numeroExterior">Número exterior <span class="req">*</span>:</label>
         <input id="numeroExterior" class="form-control" formControlName="numeroExterior" placeholder="Ingresa número exterior"
-        maxlength="5">
+        maxlength="5" (change)="validarFormularioVacio()">
         <span class="campo-obligatorio"
               *ngIf="fe.numeroExterior?.errors?.required && (fe.numeroExterior?.dirty || fe.numeroExterior?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -81,7 +81,7 @@
       <div class="col-md-3">
         <label class="control-label" for="numeroInterior">Número interior:</label>
         <input id="numeroInterior" class="form-control" formControlName="numeroInterior" placeholder="Ingresa número interior"
-        maxlength="4">
+        maxlength="4" (change)="validarFormularioVacio()">
         <span class="campo-obligatorio"
               *ngIf="fe.numeroInterior?.errors?.required && (fe.numeroInterior?.dirty || fe.numeroInterior?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -100,14 +100,14 @@
       <div class="col-md-6">
         <label class="control-label" for="numeroInterior">Teléfono <span class="req">*</span>:</label>
         <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono"
-        maxlength="10" numbersOnly>
+        maxlength="10" numbersOnly (change)="validarFormularioVacio()">
         <span class="campo-obligatorio"
               *ngIf="fe.telefono?.errors?.required && (fe.telefono?.dirty || fe.telefono?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <section class="mt-6">
-      <div class="flex justify-content-between align-items-center">
-        <h2 class="subtitulo">Persona de esta empresa</h2>
+      <div class="flex justify-content-between align-items-center mb-3">
+        <h2 class="subtitulo">Personas de esta empresa</h2>
         <button class="ml-4 btn btn-primary btn-lg" (click)="agregarPersonaSolicitante()" routerLink="agregar-persona" >
           Agregar persona
         </button>
@@ -130,20 +130,12 @@
             <div class="col-md-10">
               <span> {{personaElement.nombre}} {{personaElement.primerApellido}} {{personaElement.segundoApellido}} </span>
             </div>
-            <div class="col-md-2">
-              <div class="flex justify-content-end contenedor-celda-iconos">
-                <a (click)="abrirModalDetallePersona(personaElement)">
-                  <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-                </a>
-              </div>
-            </div>
           </div>
         </app-table-panel>
       </ng-container>
     </section>
   </form>
 </ng-container>
-
 
 <!--<ng-container *ngIf="agregarPersona">-->
 <!--  <app-agregar-persona-convenios-prevision-funeraria (personaConvenio) = "mostrarPersonas($event) ">-->

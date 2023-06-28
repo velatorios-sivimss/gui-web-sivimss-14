@@ -11,6 +11,7 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {AgregarConvenioPFService} from "../../services/agregar-convenio-pf.service";
+import * as moment from "moment/moment";
 
 @Component({
   selector: 'app-modificar-beneficiario-convenios-prevision-funeraria',
@@ -23,10 +24,12 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
 
   beneficiarioForm!: FormGroup;
 
-  datosBeneficiario!: BeneficiarioInterface;
+  // TODO se tiene la interfaz pero marca posibles datos indefinidos, validar cómo quitar ese error de compilación
+  datosBeneficiario!: any;
 
   velatorio: TipoDropdown[] = [];
   parentesco!: TipoDropdown[];
+  fechaNacimientoFormateada!: any;
 
   hoy = new Date();
 
@@ -41,36 +44,58 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
 
   ngOnInit(): void {
     this.datosBeneficiario = this.config.data;
+    let [anio,mes,dia] = this.datosBeneficiario.fechaNacimiento.split('-');
+    dia = dia.substr(0,2);
+
     let respuesta = this.route.snapshot.data['respuesta'];
     this.parentesco = respuesta[this.POSICION_PARENTESCO]!.map((parentesco: TipoDropdown) => (
       {label: parentesco.label, value: parentesco.value} )) || [];
-    this.inicializarBeneficiarioForm();
+    this.inicializarBeneficiarioForm(new Date(anio+"/"+mes+"/"+dia));
     this.consultaVelatorio();
     if(+this.f.edad.value < 18){
-      this.f.actaDeNacimiento.enable();
-      this.f.copiaINE.disable();
+      this.f.validaActaNacimientoBeneficiario.enable();
+      this.f.validaIneBeneficiario.disable();
     }else{
-      this.f.actaDeNacimiento.disable();
-      this.f.copiaINE.disable();
+      this.f.validaActaNacimientoBeneficiario.disable();
+      this.f.validaIneBeneficiario.disable();
     }
   }
 
-  inicializarBeneficiarioForm(): void {
+  inicializarBeneficiarioForm(fecha: Date): void {
     this.beneficiarioForm = this.formBuilder.group({
-              velatorio: [{value: this.datosBeneficiario.velatorio, disabled: true}, [Validators.required]],
-        fechaNacimiento: [{value: this.datosBeneficiario.fechaNacimiento, disabled: false}, [Validators.required]],
-                   edad: [{value: this.datosBeneficiario.edad, disabled: false}, [Validators.required]],
-                 nombre: [{value: this.datosBeneficiario.nombre, disabled: false}, [Validators.required]],
-         primerApellido: [{value: this.datosBeneficiario.primerApellido, disabled: false}, [Validators.required]],
-        segundoApellido: [{value: this.datosBeneficiario.segundoApellido, disabled: false}, [Validators.required]],
-             parentesco: [{value: this.datosBeneficiario.parentesco, disabled: false}, [Validators.required]],
-                   curp: [{value: this.datosBeneficiario.curp, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
-                    rfc: [{value: this.datosBeneficiario.rfc, disabled: false}, [Validators.required, Validators.pattern(PATRON_RFC)]],
-         actaNacimiento: [{value: this.datosBeneficiario.actaNacimiento, disabled: false}, [Validators.required]],
-      correoElectronico: [{value: this.datosBeneficiario.correoElectronico, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
-               telefono: [{value: this.datosBeneficiario.telefono, disabled: false}, [Validators.required]],
-       actaDeNacimiento: [{value: this.datosBeneficiario.actaDeNacimiento, disabled: false}],
-               copiaINE: [{value: this.datosBeneficiario.copiaINE, disabled: true}],
+                             velatorio: [{value: this.datosBeneficiario.velatorio, disabled: true}, [Validators.required]],
+                       fechaNacimiento: [{value: fecha, disabled: false}, [Validators.required]],
+                                  edad: [{value: this.datosBeneficiario.edad, disabled: false}, [Validators.required]],
+                                nombre: [{value: this.datosBeneficiario.nombre, disabled: false}, [Validators.required]],
+                        primerApellido: [{value: this.datosBeneficiario.primerApellido, disabled: false}, [Validators.required]],
+                       segundoApellido: [{value: this.datosBeneficiario.segundoApellido, disabled: false}, [Validators.required]],
+                            parentesco: [{value: this.datosBeneficiario.parentesco, disabled: false}, [Validators.required]],
+                                  curp: [{value: this.datosBeneficiario.curp, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
+                                   rfc: [{value: this.datosBeneficiario.rfc, disabled: false}, [Validators.pattern(PATRON_RFC)]],
+                        actaNacimiento: [{value: this.datosBeneficiario.actaNacimiento, disabled: false}, [Validators.required]],
+                     correoElectronico: [{value: this.datosBeneficiario.correoElectronico, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+                              telefono: [{value: this.datosBeneficiario.telefono, disabled: false}, [Validators.required]],
+      validaActaNacimientoBeneficiario: [{value: this.datosBeneficiario.documentacion?.validaActaNacimientoBeneficiario ?? false, disabled: false}],
+                 validaIneBeneficiario: [{value: this.datosBeneficiario.documentacion?.validaIneBeneficiario ?? false, disabled: true}],
+
+      matricula:[{value:'',disabled:true}],
+      nss:[{value:'',disabled:true}],
+      numIne:[{value:'',disabled:true}],
+      sexo:[{value:'',disabled:true}],
+      otroSexo:[{value:'',disabled:true}],
+      tipoPersona:[{value:'',disabled:true}],
+      calle:[{value:'',disabled:true}],
+      numeroExterior:[{value:'',disabled:true}],
+      numeroInterior:[{value:'',disabled:true}],
+      cp:[{value:'',disabled:true}],
+      colonia:[{value:'',disabled:true}],
+      municipio:[{value:'',disabled:true}],
+      estado:[{value:'',disabled:true}],
+      pais:[{value:'',disabled:true}],
+      enfermedadPreexistente:[{value:'',disabled:true}],
+      otraEnfermedad:[{value:'',disabled:true}],
+
+
     });
   }
 
@@ -96,18 +121,51 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
 
   validarEdad(): void {
     if(+this.f.edad.value < 18){
-      this.f.actaDeNacimiento.enable();
-      this.f.copiaINE.disable();
-      this.f.copiaINE.patchValue(null);
+      this.f.validaActaNacimientoBeneficiario.enable();
+      this.f.validaIneBeneficiario.disable();
+      this.f.validaIneBeneficiario.patchValue(null);
     }else{
-      this.f.copiaINE.enable();
-      this.f.actaDeNacimiento.disable();
-      this.f.actaDeNacimiento.patchValue(null);
+      this.f.validaIneBeneficiario.enable();
+      this.f.validaActaNacimientoBeneficiario.disable();
+      this.f.validaActaNacimientoBeneficiario.patchValue(null);
     }
   }
 
   aceptar(): void {
-    this.ref.close(this.beneficiarioForm.value);
+    const beneficiarioGuardar: BeneficiarioInterface = {
+      velatorio: this.f.velatorio.value,
+      fechaNacimiento: moment(this.f.fechaNacimiento.value).format('yyyy-MM-DD'),
+      edad: this.f.edad.value,
+      nombre: this.f.nombre.value,
+      primerApellido: this.f.primerApellido.value,
+      segundoApellido: this.f.segundoApellido.value,
+      parentesco: this.f.parentesco.value,
+      curp: this.f.curp.value,
+      rfc: this.f.rfc.value,
+      actaNacimiento: this.f.actaNacimiento.value,
+      correoElectronico: this.f.correoElectronico.value,
+      telefono: this.f.telefono.value,
+      documentacion:{
+        validaActaNacimientoBeneficiario: this.f.validaActaNacimientoBeneficiario?.value ?? false,
+        validaIneBeneficiario: this.f.validaIneBeneficiario?.value ?? false,
+      },
+      nss: this.f.nss.value,
+      numIne: this.f.numIne.value,
+      sexo: this.f.sexo.value,
+      otroSexo: this.f.otroSexo.value,
+      tipoPersona: this.f.tipoPersona.value,
+      calle: this.f.calle.value,
+      numeroExterior: this.f.numeroExterior.value,
+      numeroInterior: this.f.numeroInterior.value,
+      cp: this.f.cp.value,
+      colonia: this.f.colonia.value,
+      municipio: this.f.municipio.value,
+      estado: this.f.estado.value,
+      pais: this.f.pais.value,
+      enfermedadPreexistente: this.f.enfermedadPreexistente.value,
+      otraEnfermedad: this.f.otraEnfermedad.value,
+    }
+    this.ref.close(beneficiarioGuardar);
   }
 
   cancelar(): void {

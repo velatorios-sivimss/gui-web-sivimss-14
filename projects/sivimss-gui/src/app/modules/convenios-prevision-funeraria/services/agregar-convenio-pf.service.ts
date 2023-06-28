@@ -10,6 +10,8 @@ import {environment} from "../../../../environments/environment";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
+import {ModeloGuardarPorEmpresa} from "../models/modelo-guardar-por-empresa.interface";
+import {ModeloGuardarPorPersona} from "../models/modelo-guardar-por-persona.interface";
 
 @Injectable()
 export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any> {
@@ -45,8 +47,8 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
     return of(mapearArregloTipoDropdown(catalogo_parentesco, "desc", "id"));
   }
 
-  consultarPaquetes(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/catalogo/convenio-pf-paquetes`);
+  consultarPaquetes(idVelatorio:number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/convenio-pf-paquetes`,{idVelatorio:idVelatorio});
   }
 
   obtenerCatalogoVelatoriosPorDelegacion(delegacion:number): Observable<HttpRespuesta<any>>{
@@ -57,5 +59,20 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
     return this._http.get<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/catalogo/convenio-pf-promotores`);
   }
 
+  consultarFolioConvenioEmpresa(folioConvenio:string):  Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-buscar-folio-empresa`,{folioConvenio:folioConvenio});
+  }
+
+  consultarFolioPersona(folioConvenio:string):  Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-buscar-folio-persona`,{folioConvenio:folioConvenio});
+  }
+
+  guardarConvenioPorGrupoEmpresa(objetoEmpresa: ModeloGuardarPorEmpresa): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-agregar-convenio-empresa`,objetoEmpresa);
+  }
+
+  guardarConvenioPorPersona(objetoPersona: ModeloGuardarPorPersona): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-agregar-convenio-persona`,objetoPersona);
+  }
 
 }

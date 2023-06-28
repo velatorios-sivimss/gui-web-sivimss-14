@@ -4,7 +4,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogRef} from "primeng/dynamicdialog";
 
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../constants/dummies";
 import {ActivatedRoute} from "@angular/router";
 import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from "../../../../utils/constantes";
 import {AgregarConvenioPFService} from "../../services/agregar-convenio-pf.service";
@@ -14,6 +13,8 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {BeneficiarioInterface} from "../../models/beneficiario.interface";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-agregar-beneficiario-convenios-prevision-funeraria',
@@ -51,20 +52,37 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
 
   inicializarBeneficiarioForm(): void {
     this.beneficiarioForm = this.formBuilder.group({
-              velatorio: [{value: null, disabled: true}, [Validators.required]],
-        fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
-                   edad: [{value: null, disabled: false}, [Validators.required]],
-                 nombre: [{value: null, disabled: false}, [Validators.required]],
-         primerApellido: [{value: null, disabled: false}, [Validators.required]],
-        segundoApellido: [{value: null, disabled: false}, [Validators.required]],
-             parentesco: [{value: null, disabled: false}, [Validators.required]],
-                   curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
-                    rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
-         actaNacimiento: [{value: null, disabled: false}, [Validators.required]],
-      correoElectronico: [{value: null, disabled: false}, [Validators.required,Validators.pattern(PATRON_CORREO)]],
-               telefono: [{value: null, disabled: false}, [Validators.required]],
-       actaDeNacimiento: [{value: null, disabled: true}],
-               copiaINE: [{value: null, disabled: true}],
+                             velatorio: [{value: null, disabled: true}, [Validators.required]],
+                       fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
+                                  edad: [{value: null, disabled: false}, [Validators.required]],
+                                nombre: [{value: null, disabled: false}, [Validators.required]],
+                        primerApellido: [{value: null, disabled: false}, [Validators.required]],
+                       segundoApellido: [{value: null, disabled: false}, [Validators.required]],
+                            parentesco: [{value: null, disabled: false}, [Validators.required]],
+                                  curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
+                                   rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
+                        actaNacimiento: [{value: null, disabled: false}, [Validators.required]],
+                     correoElectronico: [{value: null, disabled: false}, [Validators.required,Validators.pattern(PATRON_CORREO)]],
+                              telefono: [{value: null, disabled: false}, [Validators.required]],
+      validaActaNacimientoBeneficiario: [{value: null, disabled: true}],
+                 validaIneBeneficiario: [{value: null, disabled: true}],
+
+                             matricula: [{value:'' ,disabled: true}],
+                                   nss: [{value:'' ,disabled: true}],
+                                numIne: [{value:'' ,disabled: true}],
+                                  sexo: [{value:'' ,disabled: true}],
+                              otroSexo: [{value:'' ,disabled: true}],
+                           tipoPersona: [{value:'' ,disabled: true}],
+                                 calle: [{value:'' ,disabled: true}],
+                        numeroExterior: [{value:'' ,disabled: true}],
+                        numeroInterior: [{value:'' ,disabled: true}],
+                                    cp: [{value:'' ,disabled: true}],
+                               colonia: [{value:'' ,disabled: true}],
+                             municipio: [{value:'' ,disabled: true}],
+                                estado: [{value:'' ,disabled: true}],
+                                  pais: [{value:'' ,disabled: true}],
+                enfermedadPreexistente: [{value:'' ,disabled: true}],
+                        otraEnfermedad: [{value:'' ,disabled: true}],
     });
   }
 
@@ -90,13 +108,13 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
 
   validarEdad(): void {
     if(+this.f.edad.value < 18){
-      this.f.actaDeNacimiento.enable();
-      this.f.copiaINE.disable();
-      this.f.copiaINE.patchValue(null);
+      this.f.validaActaNacimientoBeneficiario.enable();
+      this.f.validaIneBeneficiario.disable();
+      this.f.validaIneBeneficiario.patchValue(null);
     }else{
-      this.f.copiaINE.enable();
-      this.f.actaDeNacimiento.disable();
-      this.f.actaDeNacimiento.patchValue(null);
+      this.f.validaIneBeneficiario.enable();
+      this.f.validaActaNacimientoBeneficiario.disable();
+      this.f.validaActaNacimientoBeneficiario.patchValue(null);
     }
   }
 
@@ -119,7 +137,40 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   aceptar(): void {
-    this.ref.close(this.beneficiarioForm.value);
+    const beneficiarioGuardar: BeneficiarioInterface = {
+      velatorio: this.f.velatorio.value,
+      fechaNacimiento: moment(this.f.fechaNacimiento.value).format('yyyy-MM-DD'),
+      edad: this.f.edad.value,
+      nombre: this.f.nombre.value,
+      primerApellido: this.f.primerApellido.value,
+      segundoApellido: this.f.segundoApellido.value,
+      parentesco: this.f.parentesco.value,
+      curp: this.f.curp.value,
+      rfc: this.f.rfc.value,
+      actaNacimiento: this.f.actaNacimiento.value,
+      correoElectronico: this.f.correoElectronico.value,
+      telefono: this.f.telefono.value,
+      documentacion:{
+      validaActaNacimientoBeneficiario: this.f.validaActaNacimientoBeneficiario?.value ?? false,
+      validaIneBeneficiario: this.f.validaIneBeneficiario?.value ?? false,
+      },
+      nss: this.f.nss.value,
+      numIne: this.f.numIne.value,
+      sexo: this.f.sexo.value,
+      otroSexo: this.f.otroSexo.value,
+      tipoPersona: this.f.tipoPersona.value,
+      calle: this.f.calle.value,
+      numeroExterior: this.f.numeroExterior.value,
+      numeroInterior: this.f.numeroInterior.value,
+      cp: this.f.cp.value,
+      colonia: this.f.colonia.value,
+      municipio: this.f.municipio.value,
+      estado: this.f.estado.value,
+      pais: this.f.pais.value,
+      enfermedadPreexistente: this.f.enfermedadPreexistente.value,
+      otraEnfermedad: this.f.otraEnfermedad.value,
+    }
+    this.ref.close(beneficiarioGuardar);
   }
 
   cancelar(): void {

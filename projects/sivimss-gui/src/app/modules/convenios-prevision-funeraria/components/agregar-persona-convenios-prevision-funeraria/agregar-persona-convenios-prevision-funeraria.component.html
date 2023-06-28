@@ -20,8 +20,8 @@
                   *ngIf="fp.curp?.errors?.pattern && (fp.curp?.dirty || fp.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="rfc">R.F.C.:</label>
-            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C" maxlength="13" alphanumericOnly
+            <label class="control-label" for="rfc">R.F.C:</label>
+            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C." maxlength="13" alphanumericOnly
                    (blur)="consultaRFC()">
           </div>
           <div class="col-md-4">
@@ -82,11 +82,9 @@
                   *ngIf="fp.noExterior?.errors?.required && (fp.noExterior?.dirty || fp.noExterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="noInterior">Número interior<span class="req">*</span>:</label>
+            <label class="control-label" for="noInterior">Número interior:</label>
             <input id="noInterior" class="form-control" formControlName="noInterior" placeholder="Ingresa número interior"
             alphanumericOnly maxlength="4">
-            <span class="campo-obligatorio"
-                  *ngIf="fp.noInterior?.errors?.required && (fp.noInterior?.dirty || fp.noInterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="cp">C.P.<span class="req">*</span>:</label>
@@ -138,9 +136,9 @@
                   *ngIf="fp.tipoPaquete?.errors?.required && (fp.tipoPaquete?.dirty || fp.tipoPaquete?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="enfermedadPrexistente">Enfermedad preexistente<span class="req">*</span>:</label>
+            <label class="control-label" for="enfermedadPrexistente">Enfermedad prexistente<span class="req">*</span>:</label>
             <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente"
-                        placeholder="Selecciona enfermedad preexistente" [options]="enfermedadPrexistente"
+                        placeholder="Selecciona enfermedad prexistente" [options]="enfermedadPrexistente"
                         (onChange)="cambioEnfermedadPrexistente()" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fp.enfermedadPrexistente?.errors?.required && (fp.enfermedadPrexistente?.dirty || fp.enfermedadPrexistente?.touched)">Este campo es obligatorio *.</span>
@@ -271,11 +269,9 @@
     <app-table-panel>
       <ng-template appCustomTemplate="left-header">
         <div class="table-panel-header-column">
-          <span class="font-bold">{{fp.nombre.value}} {{fp.primerApellido.value}} {{fp.segundoApellido.value }} </span>
           <span> Contratar convenio de previsión funeraria</span>
         </div>
       </ng-template>
-
       <div class="row m-4 table-panel-row">
         <h2 class="subtitulo">Datos personales</h2>
         <div class="row mb-3">
@@ -284,12 +280,12 @@
             <label> {{fp.curp.value}} </label>
           </div>
           <div class="col-md-3" *ngIf="fp.rfc.value">
-            <span>R.F.C.:</span><br/>
+            <span>R.F.C:</span><br/>
             <label> {{fp.rfc.value}} </label>
           </div>
           <div class="col-md-3" *ngIf="this.fp.matricula.value">
             <span>Matrícula:</span><br/>
-            <label> {{fp.matricula?.value}} </label>
+            <label> {{fp.matricula.value}} </label>
           </div>
         </div>
         <div class="row mb-3">
@@ -360,7 +356,7 @@
             <label> {{detalleTipoPaquete[0]?.label}} </label>
           </div>
           <div class="col-md-3">
-            <span>Enfermedad preexistente:</span><br/>
+            <span>Enfermedad prexistente:</span><br/>
             <label> {{detalleEnfermedad[0]?.label}} </label>
           </div>
           <div class="col-md-3" *ngIf="fp.enfermedadPrexistente.value == 4">
