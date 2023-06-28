@@ -208,6 +208,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
             this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
             this.fds.segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno);
+            this.fds.rfc.setValue(respuesta.datos[0]?.rfc ?? "");
             this.fds.fechaNacimiento.setValue(fecha);
             this.fds.sexo.setValue(respuesta.datos[0].numSexo);
 
@@ -259,6 +260,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
             this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
             this.fds.segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno);
+            this.fds.curp.setValue(respuesta.datos[0].curp);
             this.fds.fechaNacimiento.setValue(fecha);
             this.fds.sexo.setValue(respuesta.datos[0].numSexo);
           }
