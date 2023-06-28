@@ -3,13 +3,13 @@
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nivelRealizarPago">Nivel<span class="req">*</span></label>
+        <label class="control-label" for="nivelRealizarPago">Nivel:</label>
         <p-dropdown appendTo="body" id="nivelRealizarPago" class="form-control" formControlName="nivel"
                     [options]="catalogoNiveles" placeholder="Seleccionar el nivel">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="velatorioRealizarPago">Velatorio<span class="req">*</span></label>
+        <label class="control-label" for="velatorioRealizarPago">Velatorio:</label>
         <p-dropdown appendTo="body" id="velatorioRealizarPago" class="form-control" formControlName="velatorio"
                     [options]="catalogoVelatorios" placeholder="Seleccione el velatorio">
         </p-dropdown>
@@ -17,15 +17,14 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="folioOrden">Folio de la orden de servicio inmediato (ODS)<span
-          class="req">*</span></label>
+        <label class="control-label" for="folioOrden">Folio de la orden de servicio inmediato (ODS):</label>
         <p-dropdown appendTo="body" id="folioOrden" class="form-control" formControlName="folioOrden"
                     [options]="foliosODS" placeholder="Seleccione el folio" (onChange)="limpiarFolios(1)">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="folioConvenio">Folio del nuevo convenio de previsión funeraria (PNCPF)<span
-          class="req">*</span></label>
+        <label class="control-label" for="folioConvenio">Folio del nuevo convenio de previsión funeraria
+          (PNCPF):</label>
         <p-dropdown appendTo="body" id="folioConvenio" class="form-control" formControlName="folioConvenio"
                     [options]="foliosPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(2)">
         </p-dropdown>
@@ -34,14 +33,13 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="folioRenovacion">Folio de la renovación de convenios de previsión funeraria
-          (PRCPF)<span class="req">*</span></label>
+          (PRCPF):</label>
         <p-dropdown appendTo="body" id="folioRenovacion" class="form-control" formControlName="folioRenovacion"
                     [options]="foliosRevPrevFun" placeholder="Seleccione el folio" (onChange)="limpiarFolios(3)">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="nombreContratante">Nombre contratante<span
-          class="req">*</span></label>
+        <label class="control-label" for="nombreContratante">Nombre contratante:</label>
         <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
                placeholder="Ingresar nombre">
       </div>
@@ -52,7 +50,7 @@
           <div class="col-md-12">
             <label class="control-label">
               Periodo:
-              <span class="req">*</span>:</label>
+            </label>
           </div>
           <div class="col-md-6">
             <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
@@ -69,11 +67,6 @@
             </p-calendar>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-md-12 control-label">
-        <span>*Campos obligatorios</span>
       </div>
     </div>
     <div class="row mt-6">
