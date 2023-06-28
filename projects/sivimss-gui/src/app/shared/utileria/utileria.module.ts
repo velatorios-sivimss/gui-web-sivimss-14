@@ -9,6 +9,7 @@ import {TextDirective} from './directives/only-text.directive';
 import {OnCloseOnNavigationDirective} from "./directives/close-on-navigation.directive";
 import {PopoverDirective} from "./directives/popover.directive";
 import {TextColorDirective} from "./directives/text-color.directive";
+import { FolioODSAlphanumericDirective } from './directives/folio-ods-alphanumeric.directive';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import {TextColorDirective} from "./directives/text-color.directive";
     OnCloseOnNavigationDirective,
     PopoverDirective,
     TextColorDirective,
+    FolioODSAlphanumericDirective,
   ],
   imports: [
     CommonModule
@@ -35,6 +37,7 @@ import {TextColorDirective} from "./directives/text-color.directive";
     OnCloseOnNavigationDirective,
     PopoverDirective,
     TextColorDirective,
+    FolioODSAlphanumericDirective,
   ]
 })
 export class UtileriaModule {
