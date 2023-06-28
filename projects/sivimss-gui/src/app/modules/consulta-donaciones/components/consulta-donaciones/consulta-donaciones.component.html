@@ -92,12 +92,12 @@
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn scope="col">Velatorio</th>
-        <th pResizableColumn scope="col">Tipo (Material)</th>
+        <th pResizableColumn scope="col">Tipo</th>
         <th pResizableColumn scope="col">Modelo del ataúd</th>
         <th pResizableColumn scope="col">Número de inventario</th>
-        <th pResizableColumn scope="col">Fecha de donación (Fecha de salida o entrada)</th>
-        <th pResizableColumn scope="col">Donado por (Instituto / ODS)</th>
-        <th pResizableColumn scope="col">Nombre del donador (Solicitante / Contratante)</th>
+        <th pResizableColumn scope="col">Fecha de donación</th>
+        <th pResizableColumn scope="col">Donado por</th>
+        <th pResizableColumn scope="col">Nombre del donador</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ataudesDonados>
@@ -125,13 +125,13 @@
     </ng-template>
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table" *appValidaRol="['CONSULTAR_DONADOS','IMPRIMIR']">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table"  src="assets/images/imagen-icono-pdf.svg" (click)="generarArchivo('pdf')" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" (click)="generarArchivo('xls')"  alt="exportar excel">
-          </div>
-        </div>
+<!--        <div class="export-table" *appValidaRol="['CONSULTAR_DONADOS','IMPRIMIR']">-->
+<!--          <span class="export-table-text">Exportar tabla</span>-->
+<!--          <div class="export-table-icons">-->
+<!--            <img class="icon-export-table"  src="assets/images/imagen-icono-pdf.svg" (click)="generarArchivo('pdf')" alt="exportar pdf">-->
+<!--            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" (click)="generarArchivo('xls')"  alt="exportar excel">-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
     </ng-template>
   </p-table>
