@@ -4,7 +4,6 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {SolicitudCrearPago} from "../../modelos/solicitudPago.interface";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";

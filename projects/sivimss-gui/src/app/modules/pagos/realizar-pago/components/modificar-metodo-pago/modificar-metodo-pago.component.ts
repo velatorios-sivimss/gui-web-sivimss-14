@@ -1,6 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {OverlayPanel} from "primeng/overlaypanel";
+import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
+import {MAX_WIDTH} from "../../../../../utils/constantes";
+import {ModificarTipoPagoComponent} from "../modificar-tipo-pago/modificar-tipo-pago.component";
 
 interface DetallePago {
   folio: string,
@@ -24,7 +27,8 @@ interface MetodoPago {
 @Component({
   selector: 'app-modificar-metodo-pago',
   templateUrl: './modificar-metodo-pago.component.html',
-  styleUrls: ['./modificar-metodo-pago.component.scss']
+  styleUrls: ['./modificar-metodo-pago.component.scss'],
+  providers: [DialogService]
 })
 export class ModificarMetodoPagoComponent implements OnInit {
 
@@ -36,12 +40,21 @@ export class ModificarMetodoPagoComponent implements OnInit {
   constructor(
     private router: Router,
     private readonly activatedRoute: ActivatedRoute,
+    public dialogService: DialogService,
   ) {
   }
 
   mostrarOverlay(event: MouseEvent): void {
     event.stopPropagation();
     this.overlayPanel.toggle(event);
+  }
+
+  modificarTipoPago(): void {
+    const MODIFICAR_TIPO_PAGO_CONFIG: DynamicDialogConfig = {
+      header: "Modificar pago",
+      width: MAX_WIDTH,
+    };
+    this.dialogService.open(ModificarTipoPagoComponent, MODIFICAR_TIPO_PAGO_CONFIG)
   }
 
   ngOnInit(): void {
