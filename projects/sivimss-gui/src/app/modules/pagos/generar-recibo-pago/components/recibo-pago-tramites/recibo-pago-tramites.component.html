@@ -13,7 +13,7 @@
     </div>
   </div>
   <form [formGroup]="FormReciboPago">
-    <div class="col-md-12 border">
+    <div class="col-md-12 border-inferior">
       <div class="body">
         <section class="titulo-body">
           <p>
@@ -28,16 +28,16 @@
         <section class="row grid mt-7">
           <div class="col">
               <span>DELEGACIÓN:*
-                <span class="etiqueta-formato-val">{{recibo.delegacion}}</span>
+                <span class="font-bold titulo-body">{{recibo.delegacion}}</span>
               </span>
           </div>
           <div class="col">
               <span>VELATORIO:*
-                <span class="etiqueta-formato-val"># {{recibo.idVelatorio}}</span>
+                <span class="font-bold titulo-body"># {{recibo.idVelatorio}}</span>
               </span>
           </div>
         </section>
-        <section class="border contenido-body">
+        <section class="border contenido-body ">
           <div class="row mt-5">
             <div class="col-md-4 grid-item ml-3">
               <label class="control-label" for="fechaTramite">FECHA<span class="req">*</span>:</label>
@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="mt-2">
-          <span class="col-md-12 mt-5 etiqueta-base">RECIBIMOS DEL SR.(A):*
+          <span class="col-md-12 mt-5 etiqueta-base titulo-body">RECIBIMOS DEL SR.(A):*
             <span class="etiqueta-formato-val">{{recibo.recibimos | uppercase}}</span>
           </span>
             <span class="col-md-12 etiqueta-base mt-3">LA CANTIDAD DE:*
