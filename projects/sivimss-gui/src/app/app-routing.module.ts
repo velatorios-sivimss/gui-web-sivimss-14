@@ -200,6 +200,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'comisiones',
+    loadChildren: () => import('./modules/calculo-comisiones/calculo-comisiones.module').then(m => m.CalculoComisionesModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: '**',
     component: PaginaNoEncontradaComponent,
   },
