@@ -31,9 +31,8 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folioODS">Folio de la ODS:</label>
-        <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados"
-          optionLabel="label" placeholder="Ingresa el folio de la ODS" [filter]="true" filterBy="label">
-        </p-dropdown>
+        <input id="folioODS" class="form-control" formControlName="folioODS"
+          optionLabel="label" placeholder="Ingresa el folio de la ODS" folioOdsAlphanumeric trimmer maxlength="11">
       </div>
     </div>
     <div class="row mb-3">
