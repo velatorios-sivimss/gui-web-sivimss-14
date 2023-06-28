@@ -85,7 +85,7 @@ export class VelacionDomicilioComponent implements OnInit {
       nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, []),
       delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, [Validators.required]),
       velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, [Validators.required]),
-      folioODS: new FormControl({ value: null, disabled: false }, []),
+      folioODS: new FormControl({ value: null, disabled: false }, [Validators.maxLength(11)]),
       fechaInicio: new FormControl({ value: null, disabled: false }, []),
       fechaFinal: new FormControl({ value: null, disabled: false }, []),
     });
@@ -287,7 +287,7 @@ export class VelacionDomicilioComponent implements OnInit {
       idNivel: +this.f.nivel.value || null,
       idDelegacion: +this.f.delegacion.value || null,
       idVelatorio: +this.f.velatorio.value || null,
-      folioOds: this.f.folioODS.value?.label,
+      folioOds: this.f.folioODS.value,
       fechaInicio: this.f.fechaInicio.value ? moment(this.f.fechaInicio.value).format('YYYY-MM-DD') : null,
       fechaFinal: this.f.fechaFinal.value ? moment(this.f.fechaFinal.value).format('YYYY-MM-DD') : null,
     }
