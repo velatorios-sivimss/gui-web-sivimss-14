@@ -98,6 +98,7 @@
         <th pResizableColumn scope="col">Fecha de donación</th>
         <th pResizableColumn scope="col">Donado por</th>
         <th pResizableColumn scope="col">Nombre del donador</th>
+        <th pResizableColumn scope="col" *appValidaRol="['CONSULTAR_DONADOS','IMPRIMIR']"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ataudesDonados>
@@ -109,6 +110,11 @@
         <td> {{ataudesDonados.fecDonacion}} </td>
         <td> {{ataudesDonados.donadoPor}} </td>
         <td> {{ataudesDonados.nomDonador}} </td>
+        <td *appValidaRol="['CONSULTAR_DONADOS','IMPRIMIR']">
+          <a  (click)="abrirPanel($event,ataudesDonados)">
+            <img  src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+          </a>
+        </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
@@ -167,3 +173,12 @@
     </div>
   </ng-template>
 </p-dialog>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Exportar a PDF" (click)="validarTipoReporte('pdf')"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Exportar a Excel" (click)="validarTipoReporte('xls')"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
