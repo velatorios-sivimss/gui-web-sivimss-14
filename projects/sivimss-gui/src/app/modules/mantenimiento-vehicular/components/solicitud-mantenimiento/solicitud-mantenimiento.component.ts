@@ -6,7 +6,11 @@ import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import {
   CATALOGOS_PREV_ANUALES,
   CATALOGOS_PREV_EVENTUALES,
-  CATALOGOS_PREV_SEMESTRALES
+  CATALOGOS_PREV_SEMESTRALES,
+  CATALOGOS_PREV_SEMESTRALES_MECANICO,
+  CATALOGOS_PREV_SEMESTRALES_ELECTRICO,
+  CATALOGOS_PREV_SEMESTRALES_HERRAMIENTAS,
+  CATALOGOS_PREV_SEMESTRALES_VEHICULO,
 } from "../../constants/catalogos-preventivo";
 import { CATALOGOS_TIPO_MANTENIMIENTO } from "../../../inventario-vehicular/constants/dummies";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -41,6 +45,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   solicitudMantenimientoForm!: FormGroup;
   mantenimientosPrev: TipoDropdown[] = [];
+  opcionesSemestrales: TipoDropdown[] = [];
   tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
   mode: string = 'update';
   modalidades: string[] = ['', 'Semestral', 'Anual', 'Frecuente'];
@@ -48,6 +53,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
   idMttoVehicular: number | null = null;
   idSolicitudMtto: number | null = null;
   pasoSolicitudMantenimiento: number = 1;
+  cicloCompleto: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -69,6 +75,9 @@ export class SolicitudMantenimientoComponent implements OnInit {
     if (this.config.data.vehiculo) {
       this.vehiculoSeleccionado = this.config.data.vehiculo;
     }
+    if (this.config.data.cicloCompleto) {
+      this.cicloCompleto = this.config.data.cicloCompleto;
+    }
     if (this.config.data.id) {
       const id = this.config.data.id;
       this.realizarSolicitud(id);
@@ -88,13 +97,20 @@ export class SolicitudMantenimientoComponent implements OnInit {
       tipoMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
       matPreventivo: [{ value: null, disabled: false }],
       modalidad: [{ value: null, disabled: false }, [Validators.required]],
+      opcionesSemestrales: [{ value: null, disabled: false }],
       fechaRegistro: [{ value: null, disabled: false }, [Validators.required]],
       fechaRegistro2: [{ value: null, disabled: false }, []],
       notas: [{ value: null, disabled: false }, [Validators.required]],
     });
     this.solicitudMantenimientoForm.get("modalidad")?.valueChanges.subscribe((): void => {
       this.asignarOpcionesMantenimiento();
-    })
+    });
+
+    // this.solicitudMantenimientoForm.get("matPreventivo")?.valueChanges.subscribe((): void => {
+    //   this.asignarOpcionesSemestrales();
+    // });
+
+    this.solicitudMantenimientoForm.markAllAsTouched();
   }
 
   agregar(): void {
@@ -107,6 +123,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     if (![1, 2, 3].includes(modalidad)) return;
     if (modalidad === 1) {
       this.mantenimientosPrev = CATALOGOS_PREV_SEMESTRALES;
+      // this.asignarOpcionesSemestrales();
       return;
     }
     if (modalidad === 2) {
@@ -114,6 +131,34 @@ export class SolicitudMantenimientoComponent implements OnInit {
       return;
     }
     this.mantenimientosPrev = CATALOGOS_PREV_EVENTUALES;
+  }
+
+  asignarOpcionesSemestrales(): void {
+
+    if (+this.smf.modalidad.value === 1 && +this.smf.tipoMantenimiento.value == 1) {
+      this.opcionesSemestrales = [];
+      this.smf.opcionesSemestrales.setValidators(Validators.required);
+      switch (this.smf.matPreventivo.value) {
+        case 'Verificación del sistema mecánico':
+          this.opcionesSemestrales = CATALOGOS_PREV_SEMESTRALES_MECANICO;
+          break;
+        case 'Verificación del sistema eléctrico':
+          this.opcionesSemestrales = CATALOGOS_PREV_SEMESTRALES_ELECTRICO;
+          break;
+        case 'Verificación de accesorios y herramientas':
+          this.opcionesSemestrales = CATALOGOS_PREV_SEMESTRALES_HERRAMIENTAS;
+          break;
+        case 'Verificación del vehículo':
+          this.opcionesSemestrales = CATALOGOS_PREV_SEMESTRALES_VEHICULO;
+          break;
+        default:
+          break;
+      }
+    } else {
+      this.smf.opcionesSemestrales.reset();
+      this.smf.opcionesSemestrales.clearValidators();
+    }
+    this.smf.opcionesSemestrales.updateValueAndValidity();
   }
 
   crearResumenAsignacion(): ResumenAsignacion {
@@ -134,7 +179,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   crearSolicitudMantenimiento(): RegistroSolicitudMttoInterface {
     return {
-      idMttoVehicular: this.idSolicitudMtto ? this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
+      idMttoVehicular: this.cicloCompleto ? null : this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
@@ -142,8 +187,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
       idEstatus: 1,
       verificacionInicio: null,
       solicitud: {
-        idMttoSolicitud: this.idSolicitudMtto,
-        idMttoVehicular: this.idSolicitudMtto ? this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
+        idMttoSolicitud: this.cicloCompleto ? null : this.idSolicitudMtto,
+        idMttoVehicular: this.cicloCompleto ? null : this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
         idMttoTipo: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaRegistro")?.value, 'YYYY-MM-dd'),
@@ -183,6 +228,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud agregada correctamente');
         if (respuesta.datos.length > 0) {
           this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+        } else {
+          this.abrirRegistroSolicitud(respuesta.datos);
         }
       },
       error: (error: HttpErrorResponse): void => {

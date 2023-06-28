@@ -1,13 +1,11 @@
-<div class="row">
-  <h3>Recibo de pago</h3>
-</div>
+<app-titulo-principal titulo="Formato de Pago"></app-titulo-principal>
 <div class="row mb-4">
   <div class="col-md-12 border seccion-folio flex justify-content-between">
     <div>
       <span class="subtitulo texto-centrado">FOLIO <span class="valor-subtitulo">{{recibo.folio}}</span></span>
     </div>
   </div>
-  <div class="col-md-12 border">
+  <div class="col-md-12 border-inferior">
     <div class="body">
       <section class="titulo-body">
         <p>
@@ -148,6 +146,6 @@
 
 <div class="row flex justify-content-end mb-4">
   <button class="btn btn-default btn-md" [routerLink]="'../../'">Regresar</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="generarExcel()">Generar Excel</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="generarPDF()">Generar PDF</button>
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarExcel()">Exportar a Excel</button>
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarPDF()">Exportar a PDF</button>
 </div>
