@@ -5,5 +5,6 @@ export interface ResumenAsignacion {
   mantenimientoPreventivo: string,
   modalidad: string,
   notas: string,
-  tipoMantenimiento: string
+  tipoMantenimiento: string,
+  mantenimientoPreventivoDetalle: string
 }

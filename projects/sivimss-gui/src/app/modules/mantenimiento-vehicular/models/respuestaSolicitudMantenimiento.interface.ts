@@ -30,4 +30,8 @@ export interface RespuestaSolicitudMantenimiento {
   DES_NOTAS: string,
   KILOMETRAJE: string,
   DES_VELATORIO: string,
+  DES_MTTO_MODALIDAD: string,
+  DES_MTTO_MODALIDAD_DET: string,
+  ID_MTTO_MODALIDAD: number,
+  ID_MTTO_MODALIDAD_DET: number,
 }

@@ -29,6 +29,7 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 
 @Component({
   selector: 'app-control-salida-donaciones',
@@ -108,7 +109,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   actualizarBreadcrumb(): void {
-    this.breadcrumbService.actualizar([]);
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
   inicializarDatosSolicitantesForm(): void {
@@ -435,7 +436,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       nomAdministrador: this.datosAdministrador.nombreAdministrador,
       claveAdministrador:this.datosAdministrador.matriculaAdministrador,
       lugar: this.datosAdministrador.lugardonacion,
-      ooadNom:usuario.idVelatorio,
+      ooadNom: this.nombreOoad(usuario.idDelegacion),
       velatorioId:usuario.idVelatorio,
       velatorioNom: this.consultaNombreVelatorio(),
       claveResponsableAlmacen: this.fa.matriculaResponsable.value,
