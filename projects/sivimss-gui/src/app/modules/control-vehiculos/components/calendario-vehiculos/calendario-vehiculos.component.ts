@@ -101,6 +101,12 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
       dayMaxEventRows: 3,
       titleFormat: { year: 'numeric', month: 'long' },
       events: [],
+      validRange: event => {
+        return {
+          start: moment().subtract(2, 'months').format('YYYY-MM-DD'),
+          end: moment().add(1, 'months').format('YYYY-MM-DD')
+        };
+      },
       datesSet: event => {
         let mesInicio = +moment(event.start).format("MM");
         let mesFinal = +moment(event.end).format("MM");
