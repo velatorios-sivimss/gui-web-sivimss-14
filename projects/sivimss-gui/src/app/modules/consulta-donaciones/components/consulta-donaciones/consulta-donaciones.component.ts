@@ -23,7 +23,7 @@ import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.inter
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {Sala} from "../../../salas/models/salas.interface";
+
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 
 @Component({
@@ -74,8 +74,6 @@ export class ConsultaDonacionesComponent implements OnInit {
   mostrarModalFechaMayor: boolean = false;
   mensajeArchivoConfirmacion: string = "";
 
-  donacionseleccionada!:any;
-
   fechaActual = new Date();
   fechaRango = moment().subtract(10,'years').toDate();
   constructor(
@@ -92,22 +90,23 @@ export class ConsultaDonacionesComponent implements OnInit {
 
   ngOnInit(): void {
     this.inicializarFiltroForm()
-    this.actualizarBreadcrumb();
     let respuesta = this.route.snapshot.data['respuesta']
     this.niveles = respuesta[this.POSICION_NIVELES].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.delegacion = mapearArregloTipoDropdown(respuesta[this.POSICION_DELEGACIONES],'label','value');
+    this.actualizarBreadcrumb();
     this.validarFiltros();
   }
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-           nivel: [{ value: null, disabled: true }, [Validators.required]],
+      nivel: [{ value: null, disabled: true }, [Validators.required]],
       delegacion: [{ value: null, disabled: +this.rolLocaleStorage.idOficina != 1 }, [Validators.required]],
-       velatorio: [{ value: null, disabled: +this.rolLocaleStorage.idOficina == 3 }, [Validators.required]],
-       donadoPor: [{ value: null, disabled: false }],
+      velatorio: [{ value: null, disabled: +this.rolLocaleStorage.idOficina == 3 }, [Validators.required]],
+      donadoPor: [{ value: null, disabled: false }],
       fechaDesde: [{ value: null, disabled: false }],
       fechaHasta: [{ value: null, disabled: false }],
     })
   }
+
   actualizarBreadcrumb(): void {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
@@ -120,7 +119,7 @@ export class ConsultaDonacionesComponent implements OnInit {
       this.ff.velatorio.setValue(+this.rolLocaleStorage.idVelatorio);
     }
     this.cambiarDelegacion();
-}
+  }
 
   obtenerObjetoParaFiltrado(): FiltroDonacionesInterface {
     let fechaHasta = this.filtroForm.get('fechaHasta')?.value
@@ -217,7 +216,13 @@ export class ConsultaDonacionesComponent implements OnInit {
       )
   }
 
-
+  abrirPanel(
+    event: MouseEvent,
+    ataudDonado: ConsultaDonacionesInterface,
+  ): void {
+    this.ataudDonadoSeleccionado = ataudDonado
+    this.overlayPanel.toggle(event)
+  }
 
   abrirModarRegistrarDonacion(): void {
     this.registrarDonacionRef = this.dialogService.open(
@@ -274,61 +279,17 @@ export class ConsultaDonacionesComponent implements OnInit {
     )
   }
 
-  validarTipoReporte(tipoReporte:String): void {
-    this.donacionseleccionada.donadoPor.includes("ODS") ? this.generarReporteEntrada(tipoReporte) : this.generarReporteSalida(tipoReporte);
-  }
-
-  generarReporteEntrada( tipoReporte:any): void{
-    const donacion = this.donacionseleccionada;
+  generarArchivo(tipoReporte: string): void {
     const configuracionArchivo: OpcionesArchivos = {};
     if(tipoReporte == "xls"){
       configuracionArchivo.ext = "xlsx"
     }
     this.loaderService.activar();
-
-    const busqueda = this.objetoArchivo(donacion,tipoReporte);
-    this.consultaDonacionesService.generarReporteEntrada(busqueda).pipe(
+    const busqueda = this.objetoArchivo(tipoReporte);
+    this.consultaDonacionesService.generarReporte(busqueda).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-
-        const file = new Blob([this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
-        );
-        this.descargaArchivosService.descargarArchivo(of(file),configuracionArchivo).pipe(
-          finalize(() => this.loaderService.desactivar())
-        ).subscribe(
-          (repuesta) => {
-            this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-            this.mostrarModalConfirmacion = true;
-          },
-          (error) => {
-            this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        )
-      },
-      (error: HttpErrorResponse) => {
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, msg);
-      }
-    )
-  }
-
-  generarReporteSalida(tipoReporte:any): void {
-    const donacion = this.donacionseleccionada;
-    const configuracionArchivo: OpcionesArchivos = {};
-    if(tipoReporte == "xls"){
-      configuracionArchivo.ext = "xlsx"
-    }
-    this.loaderService.activar();
-
-    const busqueda = this.objetoArchivo(donacion,tipoReporte);
-    this.consultaDonacionesService.generarReporteSalida(busqueda).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-
         const file = new Blob([this.descargaArchivosService.base64_2Blob(
             respuesta.datos,this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
           { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
@@ -359,35 +320,15 @@ export class ConsultaDonacionesComponent implements OnInit {
     }
   }
 
-  objetoArchivo(donacion:any,tipoReporte: any) {
-
-    if(donacion.donadoPor.includes('Instituto')){
-      return{
-        idSalidaDona: donacion.idDonacion,
-        tipoReporte:tipoReporte,
-      }
+  objetoArchivo(tipoReporte: string) {
+    return {
+      idVelatorio: this.ff.velatorio?.value,
+      idDelegacion: this.ff.delegacion?.value,
+      donadoPor: this.ff.donadoPor?.value,
+      fechaInicio: this.ff.fechaDesde.value? moment(this.ff.fechaDesde?.value).format('YYYY-MM-DD') : null,
+      fechaFin: this.ff.fechaHasta.value ? moment(this.ff.fechaHasta?.value).format('YYYY-MM-DD') : null,
+      tipoReporte: tipoReporte
     }
-
-    return{
-      idDonacion:donacion.idDonacion,
-      idAtaudDonacion:donacion.idAtaudDonacion,
-      tipoReporte:tipoReporte,
-
-    }
-  }
-
-
-  // abrirPanel(
-  //   event: MouseEvent,
-  //   ataudDonado: ConsultaDonacionesInterface,
-  // ): void {
-  //   this.ataudDonadoSeleccionado = ataudDonado
-  //   this.overlayPanel.toggle(event)
-  // }
-
-  abrirPanel(event: MouseEvent, donacionseleccionada: Sala): void {
-    this.donacionseleccionada = donacionseleccionada;
-    this.overlayPanel.toggle(event);
   }
 
   get ff() {
