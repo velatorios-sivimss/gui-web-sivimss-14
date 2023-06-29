@@ -170,8 +170,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
         idEstatus: this.mode === 'update' ? (this.vehiculoSeleccionado.ID_MTTOESTADO ?? null) : 1,
         kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
         desNotas: this.solicitudMantenimientoForm.get("notas")?.value,
-        idMttoTipoModalidad: +this.smf.matPreventivo.value,
-        idMttoTipoModalidadDet: +this.smf.opcionesSemestrales.value,
+        idMttoTipoModalidad: this.smf.matPreventivo.value ? +this.smf.matPreventivo.value : null,
+        idMttoTipoModalidadDet: this.smf.opcionesSemestrales.value ? +this.smf.opcionesSemestrales.value : null,
       },
       registro: null
     }
