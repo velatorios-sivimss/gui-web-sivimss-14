@@ -7,11 +7,6 @@ export const RESERVAR_SALAS_BREADCRUMB: ElementoBreadcrumb[] = [
     },
     {
         icono: '',
-        titulo: 'Convenios nuevos'
-    }
-    ,
-    {
-        icono: '',
-        titulo: 'Seguimiento de nuevo convenio'
+        titulo: 'Elección de vehículo'
     }
 ]

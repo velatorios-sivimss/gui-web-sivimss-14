@@ -20,6 +20,7 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-velacion-domicilio',
@@ -49,6 +50,7 @@ export class VelacionDomicilioComponent implements OnInit {
   fechaActual: Date = new Date();
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  mensajeArchivoConfirmacion: string | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +62,7 @@ export class VelacionDomicilioComponent implements OnInit {
     private velacionDomicilioService: VelacionDomicilioService,
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   async ngOnInit() {
@@ -173,7 +176,8 @@ export class VelacionDomicilioComponent implements OnInit {
         finalize(() => this.loaderService.desactivar())
       ).subscribe({
         next: (respuesta: any) => {
-          console.log(respuesta);
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.alertaService.mostrar(TipoAlerta.Exito, this.mensajeArchivoConfirmacion);
         },
         error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
@@ -202,7 +206,8 @@ export class VelacionDomicilioComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        console.log(respuesta);
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.alertaService.mostrar(TipoAlerta.Exito, this.mensajeArchivoConfirmacion);
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
