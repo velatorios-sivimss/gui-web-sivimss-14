@@ -29,6 +29,7 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 
 @Component({
   selector: 'app-control-salida-donaciones',
@@ -71,6 +72,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   datosAdministrador!: DatosAdministrador;
   existeStock: boolean = true;
+  curpDesactivado: boolean = false;
 
 
 
@@ -108,7 +110,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   actualizarBreadcrumb(): void {
-    this.breadcrumbService.actualizar([]);
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
   inicializarDatosSolicitantesForm(): void {
@@ -201,6 +203,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(respuesta.datos){
+          this.curpDesactivado = false;
           if(respuesta.mensaje.includes("interno")){
             let [anio,mes,dia]= respuesta.datos[0].fechaNacimiento.split('-');
             dia = dia.substr(0,2);
@@ -221,6 +224,10 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.primerApellido.setValue(respuesta.datos.apellido1);
             this.fds.segundoApellido.setValue(respuesta.datos.apellido2);
             this.fds.fechaNacimiento.setValue(fecha);
+            if(respuesta.datos.desEstatusCURP.includes('Baja por Defunción')){
+              this.curpDesactivado = true;
+              this.alertaService.mostrar(TipoAlerta.Precaucion, "Baja por Defunción");
+            }
             if(respuesta.datos.sexo.includes("MUJER")){
               this.fds.sexo.setValue(1);
             }else{
@@ -231,6 +238,9 @@ export class ControlSalidaDonacionesComponent implements OnInit {
               return
             }
             this.fds.nacionalidad.setValue(2);
+
+
+
           }
         }
       },
@@ -435,7 +445,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       nomAdministrador: this.datosAdministrador.nombreAdministrador,
       claveAdministrador:this.datosAdministrador.matriculaAdministrador,
       lugar: this.datosAdministrador.lugardonacion,
-      ooadNom:usuario.idVelatorio,
+      ooadNom: this.nombreOoad(usuario.idDelegacion),
       velatorioId:usuario.idVelatorio,
       velatorioNom: this.consultaNombreVelatorio(),
       claveResponsableAlmacen: this.fa.matriculaResponsable.value,

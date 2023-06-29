@@ -18,6 +18,7 @@ import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import { GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 
 @Component({
   selector: 'app-aceptacion-donacion',
@@ -66,7 +67,7 @@ export class AceptacionDonacionComponent implements OnInit {
   }
 
   actualizarBreadcrumb(): void {
-    this.breadcrumbService.actualizar([]);
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
   inicializarDonacionForm(): void {

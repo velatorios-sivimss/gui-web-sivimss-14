@@ -17,6 +17,9 @@ import {MensajesSistemaService} from "../../../../services/mensajes-sistema.serv
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 import {ActivatedRoute} from "@angular/router";
 import * as moment from 'moment';
+import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 
 @Component({
   selector: 'app-datos-finado',
@@ -24,6 +27,9 @@ import * as moment from 'moment';
   styleUrls: ['./datos-finado.component.scss']
 })
 export class DatosFinadoComponent implements OnInit {
+
+  @Output()
+  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
 
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
@@ -48,7 +54,8 @@ export class DatosFinadoComponent implements OnInit {
     private dialogService: DialogService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private loaderService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private gestionarEtapasService: GestionarEtapasService
   ) {
   }
 
@@ -221,6 +228,136 @@ export class DatosFinadoComponent implements OnInit {
     this.datosFinado.fechaNacimiento.patchValue(null);
     this.datosFinado.sexo.reset();
     this.datosFinado.nacionalidad.reset();
+  }
+
+  regresar() {
+    let etapas: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Activo,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "solid"
+        }
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "solid"
+        }
+      },
+      {
+        idEtapa: 2,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "solid"
+        }
+      },
+      {
+        idEtapa: 3,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: "solid"
+        }
+      }
+    ];
+    window.scrollTo(0,0);
+    this.gestionarEtapasService.etapas$.next(etapas);
+    this.seleccionarEtapa.emit(0);
+    console.log("INFO A GUARDAR STEP 2: ", this.form.value);
+  }
+  
+  continuar() {
+    let etapas: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Completado,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Completado,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 2,
+        estado: EtapaEstado.Activo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "solid"
+        }
+      },
+      {
+        idEtapa: 3,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: "solid"
+        }
+      }
+    ];
+    window.scrollTo(0,0);
+    this.gestionarEtapasService.etapas$.next(etapas);
+    this.seleccionarEtapa.emit(2);
+    console.log("INFO A GUARDAR STEP 2: ", this.form.value);
   }
 
   get datosFinado() {

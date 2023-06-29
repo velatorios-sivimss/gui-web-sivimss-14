@@ -15,6 +15,9 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {GenerarOrdenServicioService} from "../../services/generar-orden-servicio.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {ConfirmacionServicio} from "../../../renovacion-extemporanea/models/convenios-prevision.interface";
+import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
+import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 
 @Component({
   selector: 'app-datos-contratante',
@@ -23,7 +26,10 @@ import {ConfirmacionServicio} from "../../../renovacion-extemporanea/models/conv
 })
 export class DatosContratanteComponent implements OnInit {
 
-  @Output() confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
+  @Output() 
+  confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
+  @Output()
+  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
 
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
@@ -45,7 +51,8 @@ export class DatosContratanteComponent implements OnInit {
     private formBuilder: FormBuilder,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private loaderService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private gestionarEtapasService: GestionarEtapasService
   ) {
   }
 
@@ -59,37 +66,39 @@ export class DatosContratanteComponent implements OnInit {
       {label: parentesco.label, value: parentesco.value} )) || [];
 
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
-    this.inicializarForm();
+    this.gestionarEtapasService.datosEtapaContratante$.asObservable().subscribe(
+     (datosEtapaContratante) => this.inicializarForm(datosEtapaContratante)
+    )
   }
 
-  inicializarForm(): void {
+  inicializarForm(datosEtapaContratante: any): void {
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
-        matricula: [{value: null, disabled: false}, [Validators.required]],
-        matriculaCheck: [{value: true, disabled: false}],
-        rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
-        curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
-        nombre: [{value: null, disabled: false}, [Validators.required]],
-        primerApellido: [{value: null, disabled: false}, [Validators.required]],
-        segundoApellido: [{value: null, disabled: false}, [Validators.required]],
-        fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
-        sexo: [{value: null, disabled: false}, [Validators.required]],
-        otroTipoSexo: [{value: null, disabled: false}],
-        nacionalidad: [{value: null, disabled: false}, [Validators.required]],
-        lugarNacimiento: [{value: null, disabled: false}, [Validators.required]],
-        paisNacimiento: [{value: null, disabled: false}],
-        telefono: [{value: null, disabled: false}, [Validators.required]],
-        correoElectronico: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
-        parentesco: [{value: null, disabled: false}, [Validators.required]]
+        matricula: [{value: datosEtapaContratante.datosContratante.matricula, disabled: false}, [Validators.required]],
+        matriculaCheck: [{value: datosEtapaContratante.datosContratante.matriculaCheck, disabled: false}],
+        rfc: [{value: datosEtapaContratante.datosContratante.rfc, disabled: false}, [Validators.pattern(PATRON_RFC)]],
+        curp: [{value: datosEtapaContratante.datosContratante.curp, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
+        nombre: [{value: datosEtapaContratante.datosContratante.nombre, disabled: false}, [Validators.required]],
+        primerApellido: [{value: datosEtapaContratante.datosContratante.primerApellido, disabled: false}, [Validators.required]],
+        segundoApellido: [{value: datosEtapaContratante.datosContratante.segundoApellido, disabled: false}, [Validators.required]],
+        fechaNacimiento: [{value: datosEtapaContratante.datosContratante.fechaNacimiento, disabled: false}, [Validators.required]],
+        sexo: [{value: datosEtapaContratante.datosContratante.sexo, disabled: false}, [Validators.required]],
+        otroTipoSexo: [{value: datosEtapaContratante.datosContratante.otroTipoSexo, disabled: false}],
+        nacionalidad: [{value: datosEtapaContratante.datosContratante.nacionalidad, disabled: false}, [Validators.required]],
+        lugarNacimiento: [{value: datosEtapaContratante.datosContratante.lugarNacimiento, disabled: false}, [Validators.required]],
+        paisNacimiento: [{value: datosEtapaContratante.datosContratante.paisNacimiento, disabled: false}],
+        telefono: [{value: datosEtapaContratante.datosContratante.telefono, disabled: false}, [Validators.required]],
+        correoElectronico: [{value: datosEtapaContratante.datosContratante.correoElectronico, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+        parentesco: [{value: datosEtapaContratante.datosContratante.parentesco, disabled: false}, [Validators.required]]
       }),
       direccion: this.formBuilder.group({
-        calle: [{value: null, disabled: false}, [Validators.required]],
-        noExterior: [{value: null, disabled: false}, [Validators.required]],
-        noInterior: [{value: null, disabled: false}, []],
-        cp: [{value: null, disabled: false}, [Validators.required]],
-        colonia: [{value: null, disabled: true}, [Validators.required]],
-        municipio: [{value: null, disabled: true}, [Validators.required]],
-        estado: [{value: null, disabled: true}, [Validators.required]]
+        calle: [{value: datosEtapaContratante.datosContratante.calle, disabled: false}, [Validators.required]],
+        noExterior: [{value: datosEtapaContratante.datosContratante.noExterior, disabled: false}, [Validators.required]],
+        noInterior: [{value: datosEtapaContratante.datosContratante.noInterior, disabled: false}, []],
+        cp: [{value: datosEtapaContratante.datosContratante.cp, disabled: false}, [Validators.required]],
+        colonia: [{value: datosEtapaContratante.datosContratante.colonia, disabled: true}, [Validators.required]],
+        municipio: [{value: datosEtapaContratante.datosContratante.municipio, disabled: true}, [Validators.required]],
+        estado: [{value: datosEtapaContratante.datosContratante.estado, disabled: true}, [Validators.required]]
       })
     });
   }
@@ -239,6 +248,102 @@ export class DatosContratanteComponent implements OnInit {
     this.datosContratante.fechaNacimiento.patchValue(null);
     this.datosContratante.sexo.reset();
     this.datosContratante.nacionalidad.reset();
+  }
+
+  continuar() {
+    let etapas: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Completado,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Activo,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "solid"
+        }
+      },
+      {
+        idEtapa: 2,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "solid"
+        }
+      },
+      {
+        idEtapa: 3,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: "solid"
+        }
+      }
+    ];
+    window.scrollTo(0,0);
+    this.gestionarEtapasService.etapas$.next(etapas);
+    this.seleccionarEtapa.emit(1);
+
+    let datosEtapaContratante = {
+      datosContratante: {
+        matricula: this.form.value.datosContratante.matricula,
+        matriculaCheck: this.form.value.datosContratante.matriculaCheck,
+        rfc: this.form.value.datosContratante.rfc,
+        curp: this.form.value.datosContratante.curp,
+        nombre: this.form.value.datosContratante.nombre,
+        primerApellido: this.form.value.datosContratante.primerApellido,
+        segundoApellido: this.form.value.datosContratante.segundoApellido,
+        fechaNacimiento: this.form.value.datosContratante.fechaNacimiento,
+        sexo: this.form.value.datosContratante.sexo,
+        otroTipoSexo: this.form.value.datosContratante.otroTipoSexo,
+        nacionalidad: this.form.value.datosContratante.nacionalidad,
+        lugarNacimiento: this.form.value.datosContratante.lugarNacimiento,
+        paisNacimiento: this.form.value.datosContratante.paisNacimiento,
+        telefono: this.form.value.datosContratante.telefono,
+        correoElectronico: this.form.value.datosContratante.correoElectronico,
+        parentesco: this.form.value.datosContratante.parentesco
+      },
+      direccion: {
+        calle: this.form.value.direccion.calle,
+        noExterior: this.form.value.direccion.noExterior,
+        noInterior: this.form.value.direccion.noInterior,
+        cp: this.form.value.direccion.cp,
+        colonia: this.form.value.direccion.colonia,
+        municipio: this.form.value.direccion.municipio,
+        estado: this.form.value.direccion.estado
+      }
+    }
+    this.gestionarEtapasService.datosEtapaContratante$.next(datosEtapaContratante);
+    console.log("INFO A GUARDAR: ", datosEtapaContratante);
   }
 
   get datosContratante() {
