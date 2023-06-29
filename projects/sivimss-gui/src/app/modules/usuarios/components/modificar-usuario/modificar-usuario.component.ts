@@ -196,8 +196,9 @@ export class ModificarUsuarioComponent implements OnInit {
           this.ref.close(respuesta);
         },
         error: (error: HttpErrorResponse): void => {
+          const ERROR: string = 'Error al guardar la información. Intenta nuevamente.';
           console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error.message, ERROR);
         }
       });
   }
