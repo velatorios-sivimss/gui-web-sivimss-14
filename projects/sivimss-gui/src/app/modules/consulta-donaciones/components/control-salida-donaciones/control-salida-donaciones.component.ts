@@ -436,7 +436,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       nomAdministrador: this.datosAdministrador.nombreAdministrador,
       claveAdministrador:this.datosAdministrador.matriculaAdministrador,
       lugar: this.datosAdministrador.lugardonacion,
-      ooadNom:usuario.idVelatorio,
+      ooadNom: this.nombreOoad(usuario.idDelegacion),
       velatorioId:usuario.idVelatorio,
       velatorioNom: this.consultaNombreVelatorio(),
       claveResponsableAlmacen: this.fa.matriculaResponsable.value,
