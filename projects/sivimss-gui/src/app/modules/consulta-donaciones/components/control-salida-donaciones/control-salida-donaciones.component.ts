@@ -72,6 +72,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   datosAdministrador!: DatosAdministrador;
   existeStock: boolean = true;
+  curpDesactivado: boolean = false;
 
 
 
@@ -202,6 +203,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(respuesta.datos){
+          this.curpDesactivado = false;
           if(respuesta.mensaje.includes("interno")){
             let [anio,mes,dia]= respuesta.datos[0].fechaNacimiento.split('-');
             dia = dia.substr(0,2);
@@ -222,6 +224,10 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.primerApellido.setValue(respuesta.datos.apellido1);
             this.fds.segundoApellido.setValue(respuesta.datos.apellido2);
             this.fds.fechaNacimiento.setValue(fecha);
+            if(respuesta.datos.desEstatusCURP.includes('Baja por Defunción')){
+              this.curpDesactivado = true;
+              this.alertaService.mostrar(TipoAlerta.Precaucion, "Baja por Defunción");
+            }
             if(respuesta.datos.sexo.includes("MUJER")){
               this.fds.sexo.setValue(1);
             }else{
@@ -232,6 +238,9 @@ export class ControlSalidaDonacionesComponent implements OnInit {
               return
             }
             this.fds.nacionalidad.setValue(2);
+
+
+
           }
         }
       },
