@@ -51,7 +51,14 @@
           <p-inputNumber class="form-control" id="importe" formControlName="importe"
                          placeholder="Ingresa importe" [maxlength]="10"
                          [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
-                         [locale]="'en-US'" [mode]="'currency'" currency="USD">
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD"
+                         (onInput)="
+                            tipoPagoForm.patchValue({
+                                importe:
+                                $event.value >= 0 && $event.value <= 99999999999
+                                  ? $event.value
+                                  : tipoPagoForm.value?.importe
+                            })">
           </p-inputNumber>
           <span class="campo-obligatorio"
                 *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
@@ -70,7 +77,8 @@
       </div>
       <div class="flex justify-content-end mt-5">
         <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="tipoPagoForm.invalid">
+        <button type="submit" class="ml-4 btn btn-primary btn-md"
+                [disabled]="tipoPagoForm.invalid">
           Guardar
         </button>
       </div>

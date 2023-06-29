@@ -79,6 +79,9 @@ export class RegistrarTipoPagoComponent implements OnInit {
       this.tipoPagoForm.get('noAutorizacion')?.clearValidators();
       this.tipoPagoForm.get('nombreBanco')?.clearValidators();
     }
+    if (id === 8) {
+      this.tipoPagoForm.get('importe')?.addValidators([Validators.max(this.total), Validators.min(this.total)]);
+    }
   }
 
   aceptar(): void {
@@ -121,6 +124,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
       numAutorizacion: this.tipoPagoForm.get('noAutorizacion')?.value
     }
   }
+
 
   get pf() {
     return this.tipoPagoForm?.controls

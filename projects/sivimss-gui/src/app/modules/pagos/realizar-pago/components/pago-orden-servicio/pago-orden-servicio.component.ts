@@ -142,7 +142,7 @@ export class PagoOrdenServicioComponent implements OnInit {
         idPagoBitacora: this.pagoSeleccionado.idPagoBitacora,
         idFlujoPago: this.pagoSeleccionado.idFlujoPago,
         idRegistro: this.pagoSeleccionado.idRegistro,
-        importePago: this.pagoSeleccionado.total
+        importePago: this.pagoSeleccionado.total,
       }
     }
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
