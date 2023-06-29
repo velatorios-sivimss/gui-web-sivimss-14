@@ -19,17 +19,28 @@
         </div>
       </div>
       <div class="row mb-3" *ngIf="!pagosDeshabilitados.includes(idPago)">
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="!recibeFolio.includes(idPago)">
           <label class="control-label" for="noAutorizacion">No. de autorización<span class="req">*</span>:</label>
           <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
+                 placeholder="Ingresa número" [maxlength]="10">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6" *ngIf="recibeFolio.includes(idPago)">
+          <label class="control-label" for="folioAutorizacion">Folio de autorización<span class="req">*</span>:</label>
+          <input id="folioAutorizacion" class="form-control" formControlName="noAutorizacion"
                  placeholder="Ingresa número" [maxlength]="20">
           <span class="campo-obligatorio"
                 *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
         </div>
+
         <div class="col-md-6">
-          <label class="control-label" for="nombreBanco">Nombre del banco<span class="req">*</span>:</label>
+          <label class="control-label" for="nombreBanco" *ngIf="bancoLabelDiferente.includes(idPago)">Banco<span
+            class="req">*</span>:</label>
+          <label class="control-label" for="nombreBanco" *ngIf="!bancoLabelDiferente.includes(idPago)">Nombre del
+            banco<span class="req">*</span>:</label>
           <input id="nombreBanco" class="form-control" formControlName="nombreBanco"
-                 placeholder="Ingresar nombre" [maxlength]="20">
+                 placeholder="Ingresar nombre del banco" [maxlength]="20">
           <span class="campo-obligatorio"
                 *ngIf="pf?.nombreBanco?.errors?.required && (pf?.nombreBanco?.dirty || pf?.nombreBanco?.touched)">Este campo es obligatorio *.</span>
         </div>

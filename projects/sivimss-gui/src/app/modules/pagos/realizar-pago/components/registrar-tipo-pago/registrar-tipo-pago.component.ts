@@ -36,6 +36,8 @@ export class RegistrarTipoPagoComponent implements OnInit {
   total: number = 0;
   pagosDeshabilitados: number[] = [5, 8];
   fechasDeshabilitadas: number[] = [3, 4, 5];
+  bancoLabelDiferente: number[] = [6, 7]
+  recibeFolio: number[] = [6, 7];
   resumenSolicitud!: any;
 
   constructor(
