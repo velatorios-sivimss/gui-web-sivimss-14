@@ -23,11 +23,13 @@ import { CalculoComisionesService } from './services/calculo-comisiones.service'
 import { CalculoComisionesoRoutingModule } from './calculo-comisiones.routing.module';
 import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import { ModalComisionComponent } from "./components/modal-comision/modal-comision.component";  
 
 @NgModule({
   declarations: [
     ComisionesComponent,
-    DetalleComisionComponent
+    DetalleComisionComponent,
+    ModalComisionComponent
   ],
   imports: [
     CalendarModule,
