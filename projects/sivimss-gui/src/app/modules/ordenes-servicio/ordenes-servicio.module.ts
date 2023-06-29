@@ -44,6 +44,7 @@ import { ModificarDatosFinadoComponent } from './components/modificar-datos-fina
 import { ModificarInformacionServicioComponent } from './components/modificar-informacion-servicio/modificar-informacion-servicio.component';
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {GenerarOrdenServicioService} from "./services/generar-orden-servicio.service";
+import { GestionarEtapasService } from './services/gestionar-etapas.service';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import {GenerarOrdenServicioService} from "./services/generar-orden-servicio.ser
   ],
   providers: [
     GenerarOrdenServicioService,
-    DialogService
+    DialogService,
+    GestionarEtapasService
   ]
 })
 export class OrdenesServicioModule {

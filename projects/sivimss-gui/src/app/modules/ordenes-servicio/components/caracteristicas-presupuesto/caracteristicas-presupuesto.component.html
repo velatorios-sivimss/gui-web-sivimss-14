@@ -144,9 +144,9 @@
   </div>
   <div class="row">
     <div class="col-md-12 flex justify-content-end align-items-center">
-      <button class="btn btn-md btn-default">Regresar</button>
+      <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
       <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-      <button type="button" class="btn btn-md btn-primary ml-5">Aceptar</button>
+      <button type="button" (click)="continuar()" class="btn btn-md btn-primary ml-5">Aceptar</button>
     </div>
   </div>
 </form>

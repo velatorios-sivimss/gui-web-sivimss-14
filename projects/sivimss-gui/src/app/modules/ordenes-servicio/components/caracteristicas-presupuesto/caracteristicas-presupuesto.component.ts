@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DialogService } from "primeng/dynamicdialog";
 import { OverlayPanel } from "primeng/overlaypanel";
@@ -6,6 +6,9 @@ import { ModalAgregarAlPaqueteComponent } from "projects/sivimss-gui/src/app/mod
 import { ModalAgregarAlPresupuestoComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-presupuesto/modal-agregar-al-presupuesto.component";
 import { ModalAgregarServicioComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-servicio/modal-agregar-servicio.component";
 import { ModalVerKilometrajeComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-kilometraje/modal-ver-kilometraje.component";
+import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 
 @Component({
   selector: 'app-caracteristicas-presupuesto',
@@ -14,6 +17,8 @@ import { ModalVerKilometrajeComponent } from "projects/sivimss-gui/src/app/modul
 })
 export class CaracteristicasPresupuestoComponent implements OnInit {
 
+  @Output()
+  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
@@ -61,7 +66,8 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly dialogService: DialogService
+    private readonly dialogService: DialogService,
+    private gestionarEtapasService: GestionarEtapasService
   ) {
   }
 
@@ -146,6 +152,135 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       if (val) { //Obtener info cuando se cierre el modal en ModalVerKilometrajeComponent
       }
     });
+  }
+
+  regresar() {
+    let etapas: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Completado,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Activo,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "solid"
+        }
+      },
+      {
+        idEtapa: 2,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "solid"
+        }
+      },
+      {
+        idEtapa: 3,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: "solid"
+        }
+      }
+    ];
+    window.scrollTo(0,0);
+    this.gestionarEtapasService.etapas$.next(etapas);
+    this.seleccionarEtapa.emit(1);
+  }
+  
+  continuar() {
+    let etapas: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Completado,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Completado,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 2,
+        estado: EtapaEstado.Completado,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 3,
+        estado: EtapaEstado.Activo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: "solid"
+        }
+      }
+    ];
+    window.scrollTo(0,0);
+    this.gestionarEtapasService.etapas$.next(etapas);
+    this.seleccionarEtapa.emit(3);
+    console.log("INFO A GUARDAR STEP 3: ", this.form.value);
   }
 
   get f() {
