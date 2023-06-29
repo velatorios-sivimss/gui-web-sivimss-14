@@ -524,7 +524,7 @@
     </button>
     <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
     <button type="submit" *ngIf="indice == 0" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
-            [disabled]="formDatosSolicitante.invalid">Siguiente</button>
+            [disabled]="formDatosSolicitante.invalid || curpDesactivado">Siguiente</button>
 
     <button type="submit" *ngIf="indice==1" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
             [disabled]="!fds.nombreInstitucion.value && finados.length == 0 ">Siguiente</button>
