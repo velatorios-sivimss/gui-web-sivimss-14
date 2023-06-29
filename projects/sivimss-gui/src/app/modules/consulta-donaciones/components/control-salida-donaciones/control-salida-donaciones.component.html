@@ -125,7 +125,7 @@
           <div class="col-md-6">
             <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
             <input maxlength="45" id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa el correo electrónico"
-            (blur)="validarCorreElectronico()">
+            (blur)="validarCorreElectronico()" (keyup)="convertirAMinusculas()" >
             <span class="campo-obligatorio"
                   *ngIf="fds.correoElectronico?.errors?.required && (fds.correoElectronico?.dirty || fds.correoElectronico?.touched)">Este campo es obligatorio *.</span>
             <span class="campo-obligatorio"
@@ -251,7 +251,7 @@
   </ng-container>
   <ng-container *ngIf="indice == 2">
     <div class="border-panel">
-      <h2 class="subtitulo">Selección de ataudes</h2>
+      <h2 class="subtitulo">Selección de ataúdes</h2>
       <div class="flex justify-content-end">
         <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAtaud()" onCloseOnNavigation>
           Agregar ataúd
@@ -285,7 +285,7 @@
         </p-table>
         <div class="flex justify-content-end my-2">
           <div class="col-md-6">
-            <p class="text-right bold"> Total de ataudes a donar {{ataudes.length}}</p>
+            <p class="text-right bold"> Total de ataúdes a donar {{ataudes.length}}</p>
           </div>
         </div>
       </ng-container>
@@ -341,7 +341,7 @@
 
     <p-accordion styleClass="sivimss-accordion">
       <p-accordionTab>
-        <ng-template pTemplate="header">Datos del solicitante</ng-template>
+        <ng-template pTemplate="header">Datos del contratante o solicitante</ng-template>
         <ng-template pTemplate="content">
           <app-table-panel class="mb-6">
             <div class="row table-panel-row">
@@ -467,7 +467,7 @@
           </p-table>
           <div class="flex justify-content-end my-2">
             <div class="col-md-6">
-              <p class="text-right bold" style="font-size: 18px"> Total de ataudes a donar {{ataudes.length}}</p>
+              <p class="text-right bold" style="font-size: 18px"> Total de ataúdes a donar {{ataudes.length}}</p>
             </div>
           </div>
 

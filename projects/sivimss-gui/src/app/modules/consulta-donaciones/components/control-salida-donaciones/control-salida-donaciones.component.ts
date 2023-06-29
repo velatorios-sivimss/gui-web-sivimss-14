@@ -29,6 +29,7 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {GestionarDonacionesService} from "../../services/gestionar-donaciones.service";
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 
 @Component({
   selector: 'app-control-salida-donaciones',
@@ -108,7 +109,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   }
 
   actualizarBreadcrumb(): void {
-    this.breadcrumbService.actualizar([]);
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
   inicializarDatosSolicitantesForm(): void {
@@ -208,6 +209,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
             this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
             this.fds.segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno);
+            this.fds.rfc.setValue(respuesta.datos[0]?.rfc ?? "");
             this.fds.fechaNacimiento.setValue(fecha);
             this.fds.sexo.setValue(respuesta.datos[0].numSexo);
 
@@ -259,6 +261,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
             this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
             this.fds.segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno);
+            this.fds.curp.setValue(respuesta.datos[0].curp);
             this.fds.fechaNacimiento.setValue(fecha);
             this.fds.sexo.setValue(respuesta.datos[0].numSexo);
           }
@@ -629,6 +632,12 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     const formularios = [this.fds.curp,this.fds.rfc]
     formularios[posicion].setValue(
       formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirAMinusculas(): void {
+    this.fds.correoElectronico.setValue(
+      this.fds.correoElectronico.value.toLowerCase()
     )
   }
 

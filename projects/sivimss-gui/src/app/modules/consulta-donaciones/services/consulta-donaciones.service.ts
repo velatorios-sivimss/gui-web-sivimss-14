@@ -37,6 +37,16 @@ export class ConsultaDonacionesService extends BaseService<HttpRespuesta<any>, a
     return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/generarDocumento`, filtro)
   }
 
+  generarReporteEntrada(filtro:any) : Observable<HttpRespuesta<any>> {
+    const tipo = filtro.tipoReporte;
+    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/generarDocumentoEntrada`, filtro)
+  }
+
+  generarReporteSalida(filtro:any) : Observable<HttpRespuesta<any>> {
+    const tipo = filtro.tipoReporte;
+    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/generarDocumentoSalida`, filtro)
+  }
+
   obtenerCatalogoataudes(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const headers = new HttpHeaders({Authorization: `Bearer ${this.auth_token2}`, 'Content-Type': 'application/json'});
     const params = new HttpParams().append("servicio", "consultar-donados").append("pagina", pagina).append("tamanio", tamanio)

@@ -24,6 +24,8 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+
 @Component({
   selector: 'app-consulta-donaciones',
   templateUrl: './consulta-donaciones.component.html',
@@ -91,17 +93,22 @@ export class ConsultaDonacionesComponent implements OnInit {
     let respuesta = this.route.snapshot.data['respuesta']
     this.niveles = respuesta[this.POSICION_NIVELES].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
     this.delegacion = mapearArregloTipoDropdown(respuesta[this.POSICION_DELEGACIONES],'label','value');
+    this.actualizarBreadcrumb();
     this.validarFiltros();
   }
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-           nivel: [{ value: null, disabled: true }, [Validators.required]],
+      nivel: [{ value: null, disabled: true }, [Validators.required]],
       delegacion: [{ value: null, disabled: +this.rolLocaleStorage.idOficina != 1 }, [Validators.required]],
-       velatorio: [{ value: null, disabled: +this.rolLocaleStorage.idOficina == 3 }, [Validators.required]],
-       donadoPor: [{ value: null, disabled: false }],
+      velatorio: [{ value: null, disabled: +this.rolLocaleStorage.idOficina == 3 }, [Validators.required]],
+      donadoPor: [{ value: null, disabled: false }],
       fechaDesde: [{ value: null, disabled: false }],
       fechaHasta: [{ value: null, disabled: false }],
     })
+  }
+
+  actualizarBreadcrumb(): void {
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
   validarFiltros(): void {
@@ -112,7 +119,7 @@ export class ConsultaDonacionesComponent implements OnInit {
       this.ff.velatorio.setValue(+this.rolLocaleStorage.idVelatorio);
     }
     this.cambiarDelegacion();
-}
+  }
 
   obtenerObjetoParaFiltrado(): FiltroDonacionesInterface {
     let fechaHasta = this.filtroForm.get('fechaHasta')?.value
@@ -315,12 +322,12 @@ export class ConsultaDonacionesComponent implements OnInit {
 
   objetoArchivo(tipoReporte: string) {
     return {
-       idVelatorio: this.ff.velatorio?.value,
+      idVelatorio: this.ff.velatorio?.value,
       idDelegacion: this.ff.delegacion?.value,
-         donadoPor: this.ff.donadoPor?.value,
-       fechaInicio: this.ff.fechaDesde.value? moment(this.ff.fechaDesde?.value).format('YYYY-MM-DD') : null,
-          fechaFin: this.ff.fechaHasta.value ? moment(this.ff.fechaHasta?.value).format('YYYY-MM-DD') : null,
-       tipoReporte: tipoReporte
+      donadoPor: this.ff.donadoPor?.value,
+      fechaInicio: this.ff.fechaDesde.value? moment(this.ff.fechaDesde?.value).format('YYYY-MM-DD') : null,
+      fechaFin: this.ff.fechaHasta.value ? moment(this.ff.fechaHasta?.value).format('YYYY-MM-DD') : null,
+      tipoReporte: tipoReporte
     }
   }
 

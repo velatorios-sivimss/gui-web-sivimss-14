@@ -48,6 +48,7 @@ export class GenerarValeSalidaComponent implements OnInit {
   };
   equipoSeleccionado: EquipoVelacionInterface = {};
   bloquearRegistrarSalida: boolean = false;
+  idOds: number = 0;
   paso: 'formulario' | 'confirmacion' = 'formulario';
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
@@ -79,7 +80,7 @@ export class GenerarValeSalidaComponent implements OnInit {
       nivel: new FormControl({ value: 1, disabled: true }, [Validators.required]),
       delegacion: new FormControl({ value: null, disabled: false }),
       velatorio: new FormControl({ value: null, disabled: false }),
-      folio: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      folio: new FormControl({ value: null, disabled: false }, [Validators.required, Validators.maxLength(11)]),
       nombreContratante: new FormControl({ value: null, disabled: true }, []),
       nombreFinado: new FormControl({ value: null, disabled: true }, []),
       nombreResponsableEntrega: new FormControl({ value: null, disabled: false }, [Validators.maxLength(70), Validators.required]),
@@ -123,9 +124,9 @@ export class GenerarValeSalidaComponent implements OnInit {
   }
 
   obtenerDatosFolioOds() {
-    if (this.f.folio.valid && this.f.delegacion.valid && this.f.velatorio) {
+    if (this.f.folio.valid && this.f.delegacion.value && this.f.velatorio.value) {
       const datos = {
-        folioOds: this.f.folio.value?.label,
+        folioOds: this.f.folio.value,
         idDelegacion: this.f.delegacion.value,
         idVelatorio: this.f.velatorio.value,
       }
@@ -137,7 +138,10 @@ export class GenerarValeSalidaComponent implements OnInit {
           this.datosFolio.articulos = [];
           this.articulos.clear();
 
-          if (respuesta.datos.length === 0) {
+          if (respuesta.datos) {
+            this.datosFolio = respuesta.datos;
+            this.idOds = respuesta.datos.idOds;
+          } else {
             this.datosFolio.nombreContratante = '';
             this.datosFolio.nombreFinado = '';
             this.datosFolio.cp = '';
@@ -147,8 +151,11 @@ export class GenerarValeSalidaComponent implements OnInit {
             this.datosFolio.colonia = '';
             this.datosFolio.municipio = '';
             this.datosFolio.estado = '';
-          } else {
-            this.datosFolio = respuesta.datos;
+
+            const mensaje = this.alertas.filter((msj: any) => {
+              return msj.idMensaje == respuesta.mensaje;
+            })
+            this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
           }
 
           this.generarValeSalidaForm.patchValue({
@@ -216,11 +223,11 @@ export class GenerarValeSalidaComponent implements OnInit {
     return {
       ...this.generarValeSalidaForm.getRawValue(),
       nombreVelatorio: this.catalogoVelatorios.filter((item: TipoDropdown) => item.value === this.f.velatorio.value)[0].label,
-      folioOds: this.f.folio.value?.label,
+      folioOds: this.f.folio.value,
       diasNovenario: +this.f.diasNovenario.value,
       cantidadArticulos: this.articulos.length,
       fechaSalida: moment(this.f.fechaSalida.value).format('DD-MM-yyyy'),
-      idOds: +this.f.folio.value?.value,
+      idOds: this.idOds,
       idVelatorio: this.f.velatorio.value,
     }
   }

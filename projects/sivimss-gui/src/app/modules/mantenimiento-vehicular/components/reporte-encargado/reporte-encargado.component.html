@@ -51,8 +51,8 @@
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-          <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()"
+          <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+          <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar()"
             [disabled]="filtroForm.invalid || !fechaValida">Buscar
           </button>
         </div>
@@ -376,6 +376,6 @@
 <ng-container>
   <div class="col-mb-12 row flex justify-content-end"
     style="margin-top: 30px; margin-bottom: 30px;  padding-right: 14px;">
-    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="cerrar()">Cerrar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="cerrar()">Cerrar</button>
   </div>
 </ng-container>
