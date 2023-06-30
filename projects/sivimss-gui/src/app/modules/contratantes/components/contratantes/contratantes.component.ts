@@ -7,7 +7,7 @@ import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { BusquedaContratante, ConfirmarContratante, UsuarioContratante } from "../../models/usuario-contratante.interface";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { LazyLoadEvent } from "primeng/api";
+import { ConfirmationService, LazyLoadEvent } from "primeng/api";
 import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
 import { ModificarContratantesComponent } from "../modificar-contratantes/modificar-contratantes.component";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
@@ -16,12 +16,17 @@ import { ContratantesService } from '../../services/contratantes.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { finalize } from 'rxjs';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { ReporteTabla } from '../../../velacion-domicilio/models/velacion-domicilio.interface';
 
 @Component({
   selector: 'app-contratantes',
   templateUrl: './contratantes.component.html',
   styleUrls: ['./contratantes.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService, ConfirmationService]
 })
 export class ContratantesComponent implements OnInit {
 
@@ -42,7 +47,7 @@ export class ContratantesComponent implements OnInit {
   modificarRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
   retorno: ConfirmarContratante = {};
-
+  mensajeArchivoConfirmacion: string | undefined;
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
   estatus: TipoDropdown[] = [
@@ -62,6 +67,10 @@ export class ContratantesComponent implements OnInit {
     public dialogService: DialogService,
     private formBuilder: FormBuilder,
     private contratantesService: ContratantesService,
+    private loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
@@ -79,6 +88,13 @@ export class ContratantesComponent implements OnInit {
       nss: [{ value: null, disabled: false }, Validators.maxLength(11)],
       nombre: [{ value: null, disabled: false }, Validators.maxLength(30)],
       estatus: [{ value: null, disabled: false }]
+    });
+  }
+
+  modalConfirmacion() {
+    this.confirmationService.confirm({
+      message: this.mensajeArchivoConfirmacion,
+      accept: () => { },
     });
   }
 
@@ -183,6 +199,38 @@ export class ContratantesComponent implements OnInit {
   abrirPanel(event: MouseEvent, contratante: BusquedaContratante): void {
     this.contratanteSeleccionado = contratante;
     this.overlayPanel.toggle(event);
+  }
+
+  descargarReporteTabla(tipoReporte: string): void {
+    this.loaderService.activar();
+    this.descargaArchivosService.descargarArchivo(
+      this.contratantesService.descargarReporteTabla(this.reporteTabla(tipoReporte))
+    ).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.modalConfirmacion();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
+      },
+    });
+  }
+
+  reporteTabla(tipoReporte: string): ReporteTabla {
+    return {
+      curp: this.ff.curp.value,
+      nss: this.ff.nss.value,
+      nomContratante: this.ff.nombre.value,
+      estatus: this.ff.estatus.value,
+      rutaNombreReporte: 'reportes/generales/ReporteCatUsrContra.jrxml',
+      tipoReporte,
+    }
   }
 
   get ff() {

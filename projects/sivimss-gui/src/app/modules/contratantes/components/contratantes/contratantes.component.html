@@ -80,8 +80,7 @@
             </div> -->
 
             <div class="contenedor-inputswitch">
-              <p-inputSwitch
-                [(ngModel)]="contratante.estatus"
+              <p-inputSwitch [(ngModel)]="contratante.estatus"
                 (click)="contratante.estatus = !contratante.estatus; abrirModalCambiarEstatus(contratante)">
               </p-inputSwitch>
               <span class="activo" *ngIf="contratante.estatus">Activo</span>
@@ -110,8 +109,10 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="descargarReporteTabla('pdf')">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="descargarReporteTabla('xls')">
           </div>
         </div>
       </div>
@@ -127,3 +128,17 @@
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-confirmDialog #cd [style]="{width: '30vw'}">
+  <ng-template pTemplate="header">
+    <h5></h5>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="cd.accept()">Aceptar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>

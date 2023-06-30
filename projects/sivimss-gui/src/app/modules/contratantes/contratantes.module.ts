@@ -25,6 +25,7 @@ import {ContratantesService} from "./services/contratantes.service";
 import { DetalleContratantesComponent } from './components/detalle-contratantes/detalle-contratantes.component';
 import { ModificarContratantesComponent } from './components/modificar-contratantes/modificar-contratantes.component';
 import { BtnRegresarModule } from "../../shared/btn-regresar/btn-regresar.module";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { BtnRegresarModule } from "../../shared/btn-regresar/btn-regresar.module
     StepsModule,
     CalendarModule,
     BtnRegresarModule,
+    ConfirmDialogModule,
   ],
   providers:[
     ContratantesService
