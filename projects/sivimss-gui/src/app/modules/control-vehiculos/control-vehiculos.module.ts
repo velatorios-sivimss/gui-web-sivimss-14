@@ -24,7 +24,10 @@ import { UtileriaModule } from "../../shared/utileria/utileria.module";
 import { InputNumberModule } from "primeng/inputnumber";
 import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
 import {PdfViewerModule} from "ng2-pdf-viewer";
+import { DialogModule } from 'primeng/dialog';
 import { PrevisualizacionArchivoComponent } from './components/calendario-vehiculos/previsualizacion-archivo/previsualizacion-archivo.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
 
 @NgModule({
   declarations: [
@@ -53,7 +56,9 @@ import { PrevisualizacionArchivoComponent } from './components/calendario-vehicu
     UtileriaModule,
     InputNumberModule,
     ValidaRolModule,
-    PdfViewerModule
+    PdfViewerModule,
+    DialogModule,
+    ConfirmDialogModule
   ],
   providers: [
     ControlVehiculosService

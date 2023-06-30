@@ -27,6 +27,8 @@ export class RegistrarEntradaComponent implements OnInit {
   registroEntradaForm!: FormGroup;
   salaSeleccionada: SalaVelatorio = {};
 
+  fechaActual = new Date();
+
   indice: number = 0;
   idOds!: any;
   tipoSala: number = 0;
@@ -69,7 +71,7 @@ export class RegistrarEntradaComponent implements OnInit {
 
   consultaODS(): void {
     this.loaderService.activar();
-    const folioODS = +this.entradaF.folioODS.value;
+    const folioODS = this.entradaF.folioODS.value;
     if (!folioODS) {
       this.loaderService.desactivar();
       return;

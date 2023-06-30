@@ -27,7 +27,7 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="fecha">Fecha <span class="req">*</span>:</label>
-        <p-calendar appendTo="body" id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"></p-calendar>
+        <p-calendar appendTo="body" id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true" [minDate]="fechaActual" ></p-calendar>
         <span class="campo-obligatorio"
               *ngIf="salidaF.fecha?.errors?.required && (salidaF.fecha?.dirty || salidaF.fecha?.touched)">
                     Este campo es obligatorio *.</span>
@@ -46,7 +46,7 @@
       </div>
     </div>
     <div class="row mb-3">
-      <div class="col-md-6 mb-3" *ngIf="!tipoSala && estadoSala != 'MANTENIMIENTO'">
+      <div class="col-md-6 mb-3" *ngIf="tipoSala != 1 && estadoSala != 'MANTENIMIENTO'">
 
         <label class="control-label" for="nivelGas">Nivel de gas final(litros) <span class="req">*</span>:</label>
         <p-inputNumber [useGrouping]="false" mode="decimal" currency="USD" locale="en-US" [minFractionDigits]="2" [maxFractionDigits]="2" suffix="L"

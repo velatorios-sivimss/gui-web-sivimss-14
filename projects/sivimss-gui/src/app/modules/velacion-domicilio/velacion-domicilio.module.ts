@@ -23,6 +23,7 @@ import { GenerarValeSalidaComponent } from './components/generar-vale-salida/gen
 import { UtileriaModule } from "../../shared/utileria/utileria.module";
 import { EliminarArticuloComponent } from "./components/eliminar-articulo/eliminar-articulo.component";
 import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
     AccordionModule,
     ValidaRolModule,
     UtileriaModule,
+    ConfirmDialogModule,
   ],
   providers:[
     VelacionDomicilioService,

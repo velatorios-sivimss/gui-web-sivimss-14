@@ -218,8 +218,8 @@ export class RegistroMantenimientoComponent implements OnInit {
         costoMtto: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("costoMantenimiento")?.value : null,
         // desMttoCorrectivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value, 'YYYY-MM-dd'),
-        idMttoTipoModalidad: +this.smf.matPreventivo.value,
-        idMttoTipoModalidadDet: +this.smf.opcionesSemestrales.value,
+        idMttoTipoModalidad: this.smf.matPreventivo.value ? +this.smf.matPreventivo.value : null,
+        idMttoTipoModalidadDet: this.smf.opcionesSemestrales.value ? +this.smf.opcionesSemestrales.value : null,
       }
     }
   }
