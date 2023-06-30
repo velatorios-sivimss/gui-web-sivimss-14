@@ -9,7 +9,7 @@ import { mapearArregloTipoDropdown } from '../../../utils/funciones';
 import { AutenticacionService } from '../../../services/autenticacion.service';
 
 @Injectable()
-export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, any> {
+export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 23, "consultar-rec-pagos", "", "");
   }
