@@ -110,7 +110,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -139,7 +139,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -175,7 +175,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }
@@ -194,7 +194,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }

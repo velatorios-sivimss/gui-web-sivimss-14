@@ -52,7 +52,7 @@ export class CambioEstatusUsuarioComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }
@@ -77,7 +77,7 @@ export class CambioEstatusUsuarioComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }

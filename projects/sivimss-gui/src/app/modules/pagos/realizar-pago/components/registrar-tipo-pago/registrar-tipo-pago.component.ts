@@ -98,7 +98,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
         void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
       },
       error: (error: HttpErrorResponse): void => {
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
         console.log(error);
       }
     });
