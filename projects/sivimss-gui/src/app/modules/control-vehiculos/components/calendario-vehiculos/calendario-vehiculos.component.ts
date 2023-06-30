@@ -23,14 +23,14 @@ import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models
 import { PrevisualizacionArchivoComponent } from "./previsualizacion-archivo/previsualizacion-archivo.component";
 import { of } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-calendario-vehiculos',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendario-vehiculos.component.html',
   styleUrls: ['./calendario-vehiculos.component.scss'],
-  providers: [DialogService, DescargaArchivosService, ConfirmationService, MessageService]
+  providers: [DialogService, DescargaArchivosService, ConfirmationService]
 })
 export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
   @ViewChild('calendarioVehiculos') calendarioVehiculos!: FullCalendarComponent;
@@ -80,8 +80,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     private controlVehiculosService: ControlVehiculosService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
