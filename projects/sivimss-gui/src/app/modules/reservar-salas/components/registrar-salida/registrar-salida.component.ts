@@ -44,7 +44,11 @@ export class RegistrarSalidaComponent implements OnInit {
   ngOnInit(): void {
     this.salaSeleccionada = this.config.data.sala;
     this.estadoSala = this.config.data.sala.estadoSala;
-    this.tipoSala = this.config.data.tipoSala;
+    if(this.config.data.sala.tipoSala){
+      this.tipoSala = this.config.data.sala.tipoSala;
+    }else{
+      this.tipoSala = this.config.data.tipoSala;
+    }
     this.inicializarFormRegistroSalida();
     this.confFormTipoSala(this.tipoSala);
   }

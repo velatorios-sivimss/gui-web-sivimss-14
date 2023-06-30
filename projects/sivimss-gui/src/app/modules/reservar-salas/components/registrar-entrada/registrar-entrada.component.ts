@@ -69,7 +69,7 @@ export class RegistrarEntradaComponent implements OnInit {
 
   consultaODS(): void {
     this.loaderService.activar();
-    const folioODS = +this.entradaF.folioODS.value;
+    const folioODS = this.entradaF.folioODS.value;
     if (!folioODS) {
       this.loaderService.desactivar();
       return;
