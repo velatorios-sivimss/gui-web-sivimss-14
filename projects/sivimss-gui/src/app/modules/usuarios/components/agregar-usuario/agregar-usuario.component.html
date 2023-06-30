@@ -11,6 +11,13 @@
                 *ngIf="fau?.curp?.errors?.required && (fau?.curp?.dirty || fau?.curp?.touched)">Este campo es obligatorio *.</span>
           <span class="campo-obligatorio"
                 *ngIf="fau?.curp?.errors?.pattern && (fau?.curp?.dirty || fau?.curp?.touched)">CURP no válido.</span>
+          <div class="form-group mb-0 mt-1">
+            <div class="flex justify-content-between align-items-end">
+              <a id="href_renapo" [href]='HREF_RENAPO' target="_blank">
+                <span class="olvidaste-contrasena">No recuerdas tu CURP, da click aquí.</span>
+              </a>
+            </div>
+          </div>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="matricula">Matrícula<span class="req">*</span>:</label>

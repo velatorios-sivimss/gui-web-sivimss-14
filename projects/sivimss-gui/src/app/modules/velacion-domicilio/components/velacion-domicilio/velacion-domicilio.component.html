@@ -31,9 +31,8 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folioODS">Folio de la ODS:</label>
-        <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados"
-          optionLabel="label" placeholder="Ingresa el folio de la ODS" [filter]="true" filterBy="label">
-        </p-dropdown>
+        <input id="folioODS" class="form-control" formControlName="folioODS"
+          optionLabel="label" placeholder="Ingresa el folio de la ODS" folioOdsAlphanumeric trimmer maxlength="11">
       </div>
     </div>
     <div class="row mb-3">
@@ -154,3 +153,15 @@
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-confirmDialog #cd [style]="{width: '30vw'}">
+  <ng-template pTemplate="header"><h5></h5></ng-template>
+  <ng-template pTemplate="footer">
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="cd.accept()">Aceptar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>

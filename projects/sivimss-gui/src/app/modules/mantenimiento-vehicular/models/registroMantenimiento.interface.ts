@@ -20,7 +20,8 @@ export interface RegistroMantenimiento {
     kilometraje: number,
     desNombreTaller: string,
     costoMtto: string,
-    desMttoCorrectivo: string,
     fecRegistro: string | null,
+    idMttoTipoModalidad: number | null,
+    idMttoTipoModalidadDet: number | null,
   }
 }

@@ -167,7 +167,7 @@
               </ng-template>
               <ng-template pTemplate="body" let-articulo>
                 <tr>
-                  <td> {{articulo.nombreArticulo}} </td>
+                  <td> {{articulo.nombreArticulo || articulo.articulo}} </td>
                   <td> {{articulo.cantidad}} </td>
                   <td> {{articulo.observaciones}} </td>
                 </tr>

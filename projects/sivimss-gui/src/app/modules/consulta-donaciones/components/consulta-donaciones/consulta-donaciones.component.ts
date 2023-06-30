@@ -24,11 +24,13 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+
 @Component({
   selector: 'app-consulta-donaciones',
   templateUrl: './consulta-donaciones.component.html',
   styleUrls: ['./consulta-donaciones.component.scss'],
-  providers: [DialogService,DescargaArchivosService],
+  providers: [DialogService, DescargaArchivosService],
 })
 
 export class ConsultaDonacionesComponent implements OnInit {
@@ -40,7 +42,7 @@ export class ConsultaDonacionesComponent implements OnInit {
   overlayPanel!: OverlayPanel
 
 
-  rolLocaleStorage = JSON.parse(localStorage.getItem('usuario')as string);
+  rolLocaleStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   registrarDonacionRef!: DynamicDialogRef
   paginacionConFiltrado: boolean = false
@@ -73,7 +75,9 @@ export class ConsultaDonacionesComponent implements OnInit {
   mensajeArchivoConfirmacion: string = "";
 
   fechaActual = new Date();
-  fechaRango = moment().subtract(10,'years').toDate();
+  fechaRango = moment().subtract(10, 'years').toDate();
+  filtrosNoSeleccionados: boolean = false;
+
   constructor(
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
@@ -84,35 +88,47 @@ export class ConsultaDonacionesComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.inicializarFiltroForm()
     let respuesta = this.route.snapshot.data['respuesta']
-    this.niveles = respuesta[this.POSICION_NIVELES].map((nivel: any) => ({label: nivel.label, value: nivel.value})) || [];
-    this.delegacion = mapearArregloTipoDropdown(respuesta[this.POSICION_DELEGACIONES],'label','value');
+    this.niveles = respuesta[this.POSICION_NIVELES].map((nivel: any) => ({
+      label: nivel.label,
+      value: nivel.value
+    })) || [];
+    this.delegacion = mapearArregloTipoDropdown(respuesta[this.POSICION_DELEGACIONES], 'label', 'value');
+    this.actualizarBreadcrumb();
     this.validarFiltros();
   }
+
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-           nivel: [{ value: null, disabled: true }, [Validators.required]],
-      delegacion: [{ value: null, disabled: +this.rolLocaleStorage.idOficina != 1 }, [Validators.required]],
-       velatorio: [{ value: null, disabled: +this.rolLocaleStorage.idOficina == 3 }, [Validators.required]],
-       donadoPor: [{ value: null, disabled: false }],
-      fechaDesde: [{ value: null, disabled: false }],
-      fechaHasta: [{ value: null, disabled: false }],
+      nivel: [{value: null, disabled: true}, [Validators.required]],
+      delegacion: [{value: null, disabled: +this.rolLocaleStorage.idOficina != 1}, [Validators.required]],
+      velatorio: [{value: null, disabled: +this.rolLocaleStorage.idOficina == 3}, [Validators.required]],
+      donadoPor: [{value: null, disabled: false}],
+      fechaDesde: [{value: null, disabled: false}],
+      fechaHasta: [{value: null, disabled: false}],
     })
+  }
+
+  actualizarBreadcrumb(): void {
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
   validarFiltros(): void {
     this.ff.nivel.setValue(+this.rolLocaleStorage.idOficina);
-    if(+this.rolLocaleStorage.idOficina == 1){return}
+    if (+this.rolLocaleStorage.idOficina == 1) {
+      return
+    }
     this.ff.delegacion.setValue(+this.rolLocaleStorage.idDelegacion);
-    if(+this.rolLocaleStorage.idOficina == 3){
+    if (+this.rolLocaleStorage.idOficina == 3) {
       this.ff.velatorio.setValue(+this.rolLocaleStorage.idVelatorio);
     }
     this.cambiarDelegacion();
-}
+  }
 
   obtenerObjetoParaFiltrado(): FiltroDonacionesInterface {
     let fechaHasta = this.filtroForm.get('fechaHasta')?.value
@@ -140,6 +156,10 @@ export class ConsultaDonacionesComponent implements OnInit {
   }
 
   buscar(): void {
+    if (this.filtroForm.invalid) {
+      this.filtrosNoSeleccionados = !this.filtrosNoSeleccionados;
+      return;
+    }
     this.totalElementos = 0
     this.numPaginaActual = 0
     this.paginacionConFiltrado = true
@@ -180,7 +200,6 @@ export class ConsultaDonacionesComponent implements OnInit {
     }
     this.paginarPorFiltros()
   }
-
 
 
   limpiar(): void {
@@ -230,13 +249,13 @@ export class ConsultaDonacionesComponent implements OnInit {
   cambiarDelegacion(): void {
     this.loaderService.activar();
     this.consultaDonacionesService.obtenerCatalogoVelatoriosPorDelegacion(this.ff.delegacion.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
 
-      },(error: HttpErrorResponse) => {
+      }, (error: HttpErrorResponse) => {
         console.log(error);
       }
     )
@@ -274,7 +293,7 @@ export class ConsultaDonacionesComponent implements OnInit {
 
   generarArchivo(tipoReporte: string): void {
     const configuracionArchivo: OpcionesArchivos = {};
-    if(tipoReporte == "xls"){
+    if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
     this.loaderService.activar();
@@ -284,10 +303,10 @@ export class ConsultaDonacionesComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         const file = new Blob([this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
+            respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)}
         );
-        this.descargaArchivosService.descargarArchivo(of(file),configuracionArchivo).pipe(
+        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())
         ).subscribe(
           (repuesta) => {
@@ -295,7 +314,7 @@ export class ConsultaDonacionesComponent implements OnInit {
             this.mostrarModalConfirmacion = true;
           },
           (error) => {
-            this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
           }
         )
       },
@@ -307,20 +326,22 @@ export class ConsultaDonacionesComponent implements OnInit {
   }
 
   validarFechaFinal(): void {
-    if(!this.ff.fechaDesde?.value || !this.ff.fechaHasta?.value){return}
-    if(this.ff.fechaDesde.value > this.ff.fechaHasta.value){
+    if (!this.ff.fechaDesde?.value || !this.ff.fechaHasta?.value) {
+      return
+    }
+    if (this.ff.fechaDesde.value > this.ff.fechaHasta.value) {
       this.mostrarModalFechaMayor = true;
     }
   }
 
   objetoArchivo(tipoReporte: string) {
     return {
-       idVelatorio: this.ff.velatorio?.value,
+      idVelatorio: this.ff.velatorio?.value,
       idDelegacion: this.ff.delegacion?.value,
-         donadoPor: this.ff.donadoPor?.value,
-       fechaInicio: this.ff.fechaDesde.value? moment(this.ff.fechaDesde?.value).format('YYYY-MM-DD') : null,
-          fechaFin: this.ff.fechaHasta.value ? moment(this.ff.fechaHasta?.value).format('YYYY-MM-DD') : null,
-       tipoReporte: tipoReporte
+      donadoPor: this.ff.donadoPor?.value,
+      fechaInicio: this.ff.fechaDesde.value ? moment(this.ff.fechaDesde?.value).format('YYYY-MM-DD') : null,
+      fechaFin: this.ff.fechaHasta.value ? moment(this.ff.fechaHasta?.value).format('YYYY-MM-DD') : null,
+      tipoReporte: tipoReporte
     }
   }
 

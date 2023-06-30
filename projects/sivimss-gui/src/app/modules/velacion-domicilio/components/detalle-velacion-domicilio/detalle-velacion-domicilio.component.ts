@@ -49,8 +49,6 @@ export class DetalleVelacionDomicilioComponent implements OnInit {
       this.actualizarBreadcrumb();
     } else {
       window.scrollTo(0, 0);
-      console.log(this.detalleForm);
-
       this.detalleValeSalida = this.detalleForm;
     }
   }

@@ -173,6 +173,7 @@ export class RegistrarSalidaComponent implements OnInit {
             this.f.nombreFinado.patchValue(nombreFinado);
             this.f.municipioOrigen.patchValue(nombreOrigen);
             this.f.municipioDestino.patchValue(nombreDestino);
+            this.f.folioOds.setErrors(null);
             this.idOds = +idOds;
           } else {
             const mensaje = this.alertas?.filter((msj: any) => {
@@ -183,6 +184,7 @@ export class RegistrarSalidaComponent implements OnInit {
             this.f.nombreFinado.patchValue(null);
             this.f.municipioOrigen.patchValue(null);
             this.f.municipioDestino.patchValue(null);
+            this.f.folioOds.setErrors({ 'incorrect': true });
           }
         },
         error: (error: HttpErrorResponse) => {
