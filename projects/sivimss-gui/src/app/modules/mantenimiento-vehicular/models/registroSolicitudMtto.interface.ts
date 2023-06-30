@@ -1,6 +1,6 @@
 export interface RegistroSolicitudMttoInterface {
-  idMttoVehicular: null | number,
-  idMttoestado: number,
+  idMttoVehicular: number | null,
+  idMttoestado: number | null,
   idVehiculo: number,
   idDelegacion: number,
   idVelatorio: number | null,

@@ -21,7 +21,7 @@ export interface RespuestaSolicitudMantenimiento {
   ID_VELATORIO: number,
   DES_MTTOESTADO: string,
   FEC_REGISTRO: string,
-  FEC_REGISTRO2: string,
+  FEC_REGISTRO_FIN: string,
   ID_VEHICULO: number,
   ID_DELEGACION: number,
   FEC_ALTA: string,
