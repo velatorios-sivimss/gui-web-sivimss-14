@@ -31,6 +31,8 @@ export class RegistrarSalidaComponent implements OnInit {
 
   salaSeleccionada: SalaVelatorio = {};
 
+  fechaActual = new Date();
+
   constructor(
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
