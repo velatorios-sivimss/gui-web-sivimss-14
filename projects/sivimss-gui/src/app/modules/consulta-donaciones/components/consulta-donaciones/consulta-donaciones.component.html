@@ -72,7 +72,7 @@
   <div class="row mt-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar filtros</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
+      <button type="submit" class="btn btn-primary btn-md ml-5"
               (click)="buscar()">Buscar</button>
     </div>
   </div>
@@ -184,3 +184,20 @@
 <!--    </app-overlay-panel-opciones>-->
 <!--  </ng-template>-->
 <!--</p-overlayPanel>-->
+
+<p-dialog [(visible)]="filtrosNoSeleccionados" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">
+        Selecciona por favor un criterio de búsqueda.
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="filtrosNoSeleccionados = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
