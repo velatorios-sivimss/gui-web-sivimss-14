@@ -1,5 +1,5 @@
 export interface UsuarioContratante {
-  id?: number;
+  idContratante?: number;
   curp?: string;
   nss?: number;
   nombre?: string;
@@ -30,7 +30,7 @@ export interface ConfirmarContratante {
 }
 
 export interface BusquedaContratante {
-  NomContratante?: string;
+  nomContratante?: string;
   idContratante?: number;
   estatus?: boolean,
   fecNacimiento?: string;

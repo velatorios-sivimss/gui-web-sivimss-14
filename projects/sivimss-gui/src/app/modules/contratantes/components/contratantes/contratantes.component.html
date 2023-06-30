@@ -66,18 +66,28 @@
       <tr>
         <td> {{contratante.curp}}</td>
         <td> {{contratante.nss}}</td>
-        <td> {{contratante.nombre}} {{contratante.primerApellido}} {{contratante.segundoApellido}}</td>
+        <td> {{contratante.nomContratante}}</td>
         <td> {{contratante.rfc}}</td>
-        <td> {{contratante.fechaNacimiento}}</td>
-        <td> {{contratante.telefono}}</td>
+        <td> {{contratante.fecNacimiento}}</td>
+        <td> {{contratante.tel}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
-            <div class="contenedor-inputswitch">
+            <!-- <div class="contenedor-inputswitch">
               <p-inputSwitch (onChange)="abrirModalCambiarEstatus(contratante)"
                 [(ngModel)]="contratante.estatus"></p-inputSwitch>
               <span class="activo" *ngIf="contratante.estatus">Activo</span>
               <span class="inactivo" *ngIf="!contratante.estatus">Inactivo</span>
+            </div> -->
+
+            <div class="contenedor-inputswitch">
+              <p-inputSwitch
+                [(ngModel)]="contratante.estatus"
+                (click)="contratante.estatus = !contratante.estatus; abrirModalCambiarEstatus(contratante)">
+              </p-inputSwitch>
+              <span class="activo" *ngIf="contratante.estatus">Activo</span>
+              <span class="inactivo" *ngIf="!contratante.estatus">Inactivo</span>
             </div>
+
             <div class="contenedor-celda-iconos">
               <a (click)="abrirModalDetalleContratante(contratante)">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">

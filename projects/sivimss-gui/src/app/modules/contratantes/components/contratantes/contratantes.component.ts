@@ -7,7 +7,6 @@ import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { BusquedaContratante, ConfirmarContratante, UsuarioContratante } from "../../models/usuario-contratante.interface";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { CATALOGOS_DUMMIES } from "../../constants/dummies";
 import { LazyLoadEvent } from "primeng/api";
 import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
 import { ModificarContratantesComponent } from "../modificar-contratantes/modificar-contratantes.component";
@@ -82,59 +81,6 @@ export class ContratantesComponent implements OnInit {
       estatus: [{ value: null, disabled: false }]
     });
   }
-
-  // paginar(event: LazyLoadEvent): void {
-  //   setTimeout(() => {
-  //     this.contratante = [
-  //       {
-  //         curp: "FEMB121070HDFNCD00",
-  //         nss: 727956804078700,
-  //         nombre: "Federico Miguel",
-  //         primerApellido: "Alameda",
-  //         segundoApellido: "Barcenas",
-  //         rfc: "FEMAL12107034Y",
-  //         fechaNacimiento: "12/10/1970",
-  //         telefono: 5514236758,
-  //         nacionalidad: 1,
-  //         lugarNacimiento: "CDMX",
-  //         cp: 12345,
-  //         calle: "Miguel Alemán Barcenas",
-  //         numeroExterior: "121",
-  //         numeroInterior: "2b",
-  //         colonia: "Miguel Hidalgo",
-  //         pais: 1,
-  //         correoElectronico: "hildalore1234@gmail.com",
-  //         estado: "CDMX",
-  //         municipio: "Azcapotzalco",
-  //         estatus: true
-  //       },
-  //       {
-  //         curp: "FEMB121070HDFNCD00",
-  //         nss: 727956804078700,
-  //         nombre: "Federico Miguel",
-  //         primerApellido: "Alameda",
-  //         segundoApellido: "Barcenas",
-  //         rfc: "FEMAL12107034Y",
-  //         fechaNacimiento: "12/10/1970",
-  //         telefono: 5645768950,
-  //         estatus: true
-  //       },
-  //       {
-  //         curp: "FEMB121070HDFNCD00",
-  //         nss: 727956804078700,
-  //         nombre: "Federico Miguel",
-  //         primerApellido: "Alameda",
-  //         segundoApellido: "Barcenas",
-  //         rfc: "FEMAL12107034Y",
-  //         fechaNacimiento: "12/10/1970",
-  //         telefono: 5645768950,
-  //         estatus: false
-  //       }
-  //     ];
-  //     this.totalElementos = this.contratante.length;
-  //   }, 0)
-
-  // }
 
   paginar(event?: LazyLoadEvent): void {
     if (event?.first !== undefined && event.rows !== undefined) {
@@ -222,15 +168,14 @@ export class ContratantesComponent implements OnInit {
 
   abrirModalCambiarEstatus(contratante: UsuarioContratante): void {
     this.detalleRef = this.dialogService.open(DetalleContratantesComponent, {
-      header: contratante.estatus ? "Activar contratante" : "Desactivar contratante",
+      header: contratante.estatus ? "Desactivar contratante" : "Activar contratante",
       width: "920px",
       data: { contratante: contratante, origen: "estatus" },
     });
 
     this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
       if (respuesta.estatus) {
-        this.alertaService.mostrar(TipoAlerta.Exito,
-          respuesta.usuarioContratante?.estatus ? this.alertaEstatus[0] : this.alertaEstatus[1]);
+        this.paginar();
       }
     });
   }
