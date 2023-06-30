@@ -110,7 +110,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, 'Ha ocurrido un error');
+        this.alertaService.mostrar(TipoAlerta.Error, 'Error al consultar la información.');
       }
     });
   }
