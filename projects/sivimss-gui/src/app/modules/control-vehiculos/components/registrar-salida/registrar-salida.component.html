@@ -144,7 +144,7 @@
       <div class="col-md-6">
         <label class="control-label" for="folioOds">Folio ODS<span class="req">*</span>:</label>
         <input id="folioOds" class="form-control" formControlName="folioOds" placeholder="Ingresa el folio ODS"
-          numbersOnly (blur)="obtenerDatosFolioOds();">
+        folioOdsAlphanumeric trimmer (blur)="obtenerDatosFolioOds();" maxlength="11">
         <span class="campo-obligatorio"
           *ngIf="f.folioOds?.errors?.required && (f.folioOds?.dirty || f.folioOds?.touched)">
           Este campo es obligatorio *.</span>

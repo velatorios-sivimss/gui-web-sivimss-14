@@ -23,8 +23,7 @@ const routes: Routes = [
   {
     path: 'inicio-sesion',
     loadChildren: () => import('./modules/autenticacion/autenticacion.module').then((m) => m.AutenticacionModule),
-    canActivate: [BloqueaUsuarioLogueadoGuard],
-    canActivateChild: [BloqueaUsuarioLogueadoGuard]
+    canActivate: [BloqueaUsuarioLogueadoGuard]
   },
   {
     path: 'roles',
@@ -188,15 +187,22 @@ const routes: Routes = [
   },
   {
     path: 'generar-nota-remision',
-    loadChildren: () => import('./modules/generar-nota-remision/generar-nota-remision.module').then(m => m.GenerarNotaRemisionModule)
+    loadChildren: () => import('./modules/generar-nota-remision/generar-nota-remision.module').then(m => m.GenerarNotaRemisionModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: 'programar-mantenimiento-vehicular',
     loadChildren: () => import('./modules/mantenimiento-vehicular/mantenimiento-vehicular.module').then(m => m.MantenimientoVehicularModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: 'control-de-vehiculos',
     loadChildren: () => import('./modules/control-vehiculos/control-vehiculos.module').then(m => m.ControlVehiculosModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'comisiones',
+    loadChildren: () => import('./modules/calculo-comisiones/calculo-comisiones.module').then(m => m.CalculoComisionesModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {

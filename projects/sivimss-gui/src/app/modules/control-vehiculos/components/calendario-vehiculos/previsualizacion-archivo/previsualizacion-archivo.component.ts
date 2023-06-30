@@ -23,15 +23,10 @@ export class PrevisualizacionArchivoComponent implements OnInit, AfterViewInit {
   }
 
   guardar(): void {
-    let link = this.renderer.createElement('a');
-    link.setAttribute('download', 'Disponibilidad de vehículos');
-    link.setAttribute('href', this.blob);
-    link.click();
-    link.remove();
-    this.ref.close();
+    this.ref.close(true);
   }
 
   cancelar(): void {
-    this.ref.close();
+    this.ref.close(false);
   }
 }

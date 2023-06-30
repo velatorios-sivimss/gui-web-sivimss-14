@@ -40,7 +40,7 @@
             <span class="etiqueta-formato-val"> {{anio}} </span>
           </span>
           <span class="col-md-12 mt-5 etiqueta-base">RECIBIMOS DEL SR.(A):
-            <span class="etiqueta-formato-val">{{recibo.recibimos}}</span>
+            <span class="etiqueta-formato-val">{{recibo.recibimos | uppercase}}</span>
           </span>
           <span class="col-md-12 etiqueta-base mt-3">LA CANTIDAD DE:
             <span class="etiqueta-formato-val">{{recibo.cantidad}}</span>
@@ -55,12 +55,12 @@
           <div class="grid-container">
             <div class="grid-item">
               <span class="etiqueta-formato">TRÁMITES:
-                <span class="etiqueta-formato-val">{{ recibo.canTramites}}</span>
+                <span class="etiqueta-formato-val">{{ recibo.canTramites | uppercase}}</span>
               </span>
             </div>
             <div class="grid-item">
               <span class="etiqueta-formato">DESCRIPCIÓN:
-                <span class="etiqueta-formato-val">{{recibo.descTramites}}</span>
+                <span class="etiqueta-formato-val">{{recibo.descTramites | uppercase}}</span>
               </span>
             </div>
             <div class="grid-item"></div>

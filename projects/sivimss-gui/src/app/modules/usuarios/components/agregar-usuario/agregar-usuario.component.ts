@@ -31,6 +31,7 @@ export class AgregarUsuarioComponent implements OnInit {
 
   readonly CAPTURA_DE_USUARIO: number = 1;
   readonly RESUMEN_DE_USUARIO: number = 2;
+  readonly HREF_RENAPO: string = "https://www.gob.mx/curp/";
 
   agregarUsuarioForm!: FormGroup;
 

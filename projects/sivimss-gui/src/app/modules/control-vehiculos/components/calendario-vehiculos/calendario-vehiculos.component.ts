@@ -23,13 +23,14 @@ import { BuscarVehiculosDisponibles, ControlVehiculoListado } from '../../models
 import { PrevisualizacionArchivoComponent } from "./previsualizacion-archivo/previsualizacion-archivo.component";
 import { of } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-calendario-vehiculos',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendario-vehiculos.component.html',
   styleUrls: ['./calendario-vehiculos.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, ConfirmationService]
 })
 export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
   @ViewChild('calendarioVehiculos') calendarioVehiculos!: FullCalendarComponent;
@@ -79,10 +80,18 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     private controlVehiculosService: ControlVehiculosService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
     this.inicializarCalendario();
+  }
+
+  modalConfirmacion() {
+    this.confirmationService.confirm({
+      message: this.mensajeArchivoConfirmacion,
+      accept: () => { },
+    });
   }
 
   inicializarCalendario(): void {
@@ -101,6 +110,12 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
       dayMaxEventRows: 3,
       titleFormat: { year: 'numeric', month: 'long' },
       events: [],
+      validRange: event => {
+        return {
+          start: moment().subtract(2, 'months').format('YYYY-MM-DD'),
+          end: moment().add(1, 'months').format('YYYY-MM-DD')
+        };
+      },
       datesSet: event => {
         let mesInicio = +moment(event.start).format("MM");
         let mesFinal = +moment(event.end).format("MM");
@@ -119,7 +134,7 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
     const fechaSeleccionada: string = moment(clickInfo.event._instance?.range.end).format('yyyy-MM-DD');
     this.actividadRef = this.dialogService.open(VerActividadVehiculosComponent, {
       header: 'Ver actividad del día',
-      width: "920px",
+      width: "1000px",
       data: { fechaSeleccionada, idVehiculo }
     })
   }
@@ -152,15 +167,30 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
             this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
               data: url,
               header: "",
-              width: "920px",
+              width: "1000px",
             });
+            this.archivoRef.onClose.subscribe((response: any) => {
+              if (response) {
+                this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+                  finalize(() => this.loaderService.desactivar())
+                ).subscribe({
+                  next: (respuesta: any) => {
+                    this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                    this.modalConfirmacion();
+                  },
+                  error: (error: HttpErrorResponse) => {
+                    this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+                  }
+                });
+              }
+            })
           } else {
             this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
               finalize(() => this.loaderService.desactivar())
             ).subscribe({
               next: (respuesta: any) => {
                 this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-                this.alertaService.mostrar(TipoAlerta.Exito, this.mensajeArchivoConfirmacion);
+                this.modalConfirmacion();
               },
               error: (error: HttpErrorResponse) => {
                 this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))

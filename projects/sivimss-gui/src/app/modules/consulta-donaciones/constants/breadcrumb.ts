@@ -7,6 +7,6 @@ export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   },
   {
     icono: '',
-    titulo: 'Control de existencias de donados'
+    titulo: 'Control de salida de ataúdes  de donación'
   },
 ]

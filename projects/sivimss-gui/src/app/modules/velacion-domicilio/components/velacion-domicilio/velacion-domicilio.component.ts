@@ -4,7 +4,7 @@ import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { OverlayPanel } from "primeng/overlaypanel";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { LazyLoadEvent } from "primeng/api";
+import { ConfirmationService, LazyLoadEvent } from "primeng/api";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
 import { BuscarFoliosOds, ControlMovimiento, ReporteTabla, VelacionDomicilioInterface } from "../../models/velacion-domicilio.interface";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -20,12 +20,14 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+
 
 @Component({
   selector: 'app-velacion-domicilio',
   templateUrl: './velacion-domicilio.component.html',
   styleUrls: ['./velacion-domicilio.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, ConfirmationService]
 })
 export class VelacionDomicilioComponent implements OnInit {
   readonly POSICION_NIVELES: number = 0;
@@ -49,6 +51,7 @@ export class VelacionDomicilioComponent implements OnInit {
   fechaActual: Date = new Date();
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  mensajeArchivoConfirmacion: string | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,12 +63,21 @@ export class VelacionDomicilioComponent implements OnInit {
     private velacionDomicilioService: VelacionDomicilioService,
     private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private confirmationService: ConfirmationService
   ) { }
 
   async ngOnInit() {
     this.actualizarBreadcrumb();
     await this.inicializarFiltroForm();
     this.cargarCatalogos();
+  }
+
+  modalConfirmacion() {
+    this.confirmationService.confirm({
+      message: this.mensajeArchivoConfirmacion,
+      accept: () => { },
+    });
   }
 
   cargarCatalogos(): void {
@@ -173,7 +185,8 @@ export class VelacionDomicilioComponent implements OnInit {
         finalize(() => this.loaderService.desactivar())
       ).subscribe({
         next: (respuesta: any) => {
-          console.log(respuesta);
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.alertaService.mostrar(TipoAlerta.Exito, this.mensajeArchivoConfirmacion);
         },
         error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
@@ -202,7 +215,8 @@ export class VelacionDomicilioComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        console.log(respuesta);
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.modalConfirmacion();
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);

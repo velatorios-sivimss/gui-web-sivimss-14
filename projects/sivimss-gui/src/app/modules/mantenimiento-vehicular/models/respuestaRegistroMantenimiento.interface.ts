@@ -38,4 +38,8 @@ export interface RespuestaRegistroMantenimiento {
   DES_NOMBRE_PROVEEDOR: string,
   FEC_REGISTRO: string,
   DES_CONTRATO: string,
+  ID_MTTO_MODALIDAD: string,
+  ID_MTTO_MODALIDAD_DET: string,
+  DES_MTTO_MODALIDAD: string,
+  DES_MTTO_MODALIDAD_DET: string,
 }
