@@ -9,11 +9,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { MantenimientoVehicularService } from "../../services/mantenimiento-vehicular.service";
 import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import {
-  CATALOGOS_PREV_ANUALES,
-  CATALOGOS_PREV_EVENTUALES,
-  CATALOGOS_PREV_SEMESTRALES
-} from "../../constants/catalogos-preventivo";
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { ResumenRegistro } from "../../models/resumenRegistro.interface";
 import { RegistroMantenimiento } from "../../models/registroMantenimiento.interface";
@@ -38,10 +33,10 @@ export class RegistroMantenimientoComponent implements OnInit {
   readonly POSICION_CATALOGOS_PROVEEDORES: number = 2;
 
   ventanaConfirmacion: boolean = false;
-
   tiposMantenimiento: TipoDropdown[] = CATALOGOS_TIPO_MANTENIMIENTO;
   catalogoProveedores: TipoDropdown[] = [];
   mantenimientosPrev: TipoDropdown[] = [];
+  opcionesSemestrales: TipoDropdown[] = [];
   vehiculoSeleccionado!: VehiculoRegistro;
   idVehiculo: number = 0;
   contratos: TipoDropdown[] = [];
@@ -49,6 +44,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   solicitudMantenimientoForm!: FormGroup;
   mode: string = 'update';
   modalidades: string[] = ['', 'Semestral', 'Anual', 'Frecuente'];
+  cicloCompleto: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -69,6 +65,9 @@ export class RegistroMantenimientoComponent implements OnInit {
   ngOnInit(): void {
     if (this.config.data.vehiculo) {
       this.vehiculoSeleccionado = this.config.data.vehiculo;
+    }
+    if (this.config.data.cicloCompleto) {
+      this.cicloCompleto = this.config.data.cicloCompleto;
     }
     if (this.config.data.mode) {
       this.mode = this.config.data.mode;
@@ -107,6 +106,7 @@ export class RegistroMantenimientoComponent implements OnInit {
       tipoMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
       modalidad: [{ value: null, disabled: false }, []],
       matPreventivo: [{ value: null, disabled: false }, []],
+      opcionesSemestrales: [{ value: null, disabled: false }],
       fechaMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
       notas: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(350)]],
       nombreProveedor: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(100)]],
@@ -114,8 +114,13 @@ export class RegistroMantenimientoComponent implements OnInit {
       taller: [{ value: null, disabled: false }, [Validators.required]],
       costoMantenimiento: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(9)]],
     });
+
     this.solicitudMantenimientoForm.get("modalidad")?.valueChanges.subscribe(() => {
       this.asignarOpcionesMantenimiento();
+    });
+
+    this.solicitudMantenimientoForm.get("matPreventivo")?.valueChanges.subscribe((): void => {
+      this.asignarOpcionesSemestrales();
     });
 
     if (this.config.data.id) {
@@ -139,16 +144,21 @@ export class RegistroMantenimientoComponent implements OnInit {
 
   asignarOpcionesMantenimiento(): void {
     const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
-    if (![1, 2, 3].includes(modalidad)) return;
-    if (modalidad === 1) {
-      this.mantenimientosPrev = CATALOGOS_PREV_SEMESTRALES;
-      return;
+    if (+this.smf.tipoMantenimiento.value === 1 && [1, 2, 3].includes(modalidad)) {
+      this.obtenerCatalogoMtto(modalidad);
     }
-    if (modalidad === 2) {
-      this.mantenimientosPrev = CATALOGOS_PREV_ANUALES;
-      return;
+  }
+
+  asignarOpcionesSemestrales(): void {
+    if (+this.smf.modalidad.value === 1 && +this.smf.tipoMantenimiento.value == 1) {
+      this.opcionesSemestrales = [];
+      this.smf.opcionesSemestrales.setValidators(Validators.required);
+      this.obtenerCatalogoMttoDetalle(this.smf.matPreventivo.value);
+    } else {
+      this.smf.opcionesSemestrales.reset();
+      this.smf.opcionesSemestrales.clearValidators();
     }
-    this.mantenimientosPrev = CATALOGOS_PREV_EVENTUALES;
+    this.smf.opcionesSemestrales.updateValueAndValidity();
   }
 
   crearResumenRegistro(): ResumenRegistro {
@@ -158,6 +168,9 @@ export class RegistroMantenimientoComponent implements OnInit {
     const modalidadValor: string = this.modalidades[modalidad] || "";
     const proveedor = this.solicitudMantenimientoForm.get("nombreProveedor")?.value;
     const nombreProveedor = this.catalogoProveedores.find(p => p.value === proveedor)?.label;
+
+    const mttoPreventivo = this.mantenimientosPrev.find(e => e.value === this.smf.matPreventivo.value)?.label;
+    const mttoPreventivoDetalle = this.opcionesSemestrales.find(e => e.value === this.smf.opcionesSemestrales.value)?.label;
 
     let descContrato = this.solicitudMantenimientoForm.get("noContrato")?.value;
     if (this.smf.tipoMantenimiento.value == 1) {
@@ -174,14 +187,15 @@ export class RegistroMantenimientoComponent implements OnInit {
       costo: this.solicitudMantenimientoForm.get("costoMantenimiento")?.value,
       kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
       modalidad: modalidadValor,
-      matPreventivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
       nombreProveedorTexto: this.solicitudMantenimientoForm.get("nombreProveedor")?.value,
+      mantenimientoPreventivo: mttoPreventivo ?? '',
+      mantenimientoPreventivoDetalle: mttoPreventivoDetalle ?? '',
     }
   }
 
   crearSolicitudMantenimiento(): RegistroMantenimiento {
     return {
-      idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR ? +this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
+      idMttoVehicular: this.cicloCompleto ? null : +this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
@@ -190,8 +204,8 @@ export class RegistroMantenimientoComponent implements OnInit {
       verificacionInicio: null,
       solicitud: null,
       registro: {
-        idMttoRegistro: this.mode === 'update' ? this.vehiculoSeleccionado.ID_MTTO_REGISTRO : null,
-        idMttoVehicular: this.vehiculoSeleccionado.ID_MTTOVEHICULAR ? +this.vehiculoSeleccionado.ID_MTTOVEHICULAR : null,
+        idMttoRegistro: this.mode === 'update' ? this.vehiculoSeleccionado.ID_MTTO_REGISTRO : this.cicloCompleto ? null : this.vehiculoSeleccionado.ID_MTTO_REGISTRO,
+        idMttoVehicular: this.cicloCompleto ? null : +this.vehiculoSeleccionado.ID_MTTOVEHICULAR,
         idMttoModalidad: this.solicitudMantenimientoForm.get("modalidad")?.value ? +this.solicitudMantenimientoForm.get("modalidad")?.value : null,
         idMantenimiento: this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value ? +this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value : null,
         desNombreProveedor: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("nombreProveedor")?.value : null,
@@ -202,8 +216,10 @@ export class RegistroMantenimientoComponent implements OnInit {
         kilometraje: this.solicitudMantenimientoForm.get("kilometraje")?.value,
         desNombreTaller: this.solicitudMantenimientoForm.get("taller")?.value,
         costoMtto: +this.smf.tipoMantenimiento.value == 2 ? this.solicitudMantenimientoForm.get("costoMantenimiento")?.value : null,
-        desMttoCorrectivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
+        // desMttoCorrectivo: this.solicitudMantenimientoForm.get("matPreventivo")?.value,
         fecRegistro: this.datePipe.transform(this.solicitudMantenimientoForm.get("fechaMantenimiento")?.value, 'YYYY-MM-dd'),
+        idMttoTipoModalidad: this.smf.matPreventivo.value ? +this.smf.matPreventivo.value : null,
+        idMttoTipoModalidadDet: this.smf.opcionesSemestrales.value ? +this.smf.opcionesSemestrales.value : null,
       }
     }
   }
@@ -215,7 +231,11 @@ export class RegistroMantenimientoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
-          this.abrirRegistroSolicitud();
+          if (respuesta.datos.length > 0) {
+            this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+          } else {
+            this.abrirRegistroSolicitud(respuesta.datos);
+          }
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
@@ -224,10 +244,36 @@ export class RegistroMantenimientoComponent implements OnInit {
       });
   }
 
-  abrirRegistroSolicitud(): void {
+  abrirRegistroSolicitud(idMttoVehiculo: number): void {
     this.ref.close(true);
-    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', this.vehiculoSeleccionado.ID_MTTOVEHICULAR],
+    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', idMttoVehiculo],
       { queryParams: { tabview: 2 } });
+  }
+
+  obtenerCatalogoMtto(id: number): void {
+    this.cargadorService.activar()
+    this.mantenimientoVehicularService.obtenerCatalogoMtto(id).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.mantenimientosPrev = mapearArregloTipoDropdown(respuesta.datos, "DES_MTTO_MODALIDAD", "ID_MTTO_MODALIDAD");
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.log(error);
+        }
+      });
+  }
+
+  obtenerCatalogoMttoDetalle(id: number): void {
+    this.cargadorService.activar()
+    this.mantenimientoVehicularService.obtenerCatalogoMttoDetalle(id).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.opcionesSemestrales = mapearArregloTipoDropdown(respuesta.datos, "DES_MTTO_MODALIDAD_DET", "ID_MTTO_MODALIDAD_DET");
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.log(error);
+        }
+      });
   }
 
   gestionarCampos(): void {
@@ -244,12 +290,21 @@ export class RegistroMantenimientoComponent implements OnInit {
       this.solicitudMantenimientoForm.get("modalidad")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("matPreventivo")?.setValue(null);
       this.solicitudMantenimientoForm.get("matPreventivo")?.addValidators([Validators.required]);
+
+      const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
+      if ([1, 2, 3].includes(modalidad)) {
+        this.obtenerCatalogoMtto(modalidad);
+      }
+    } else {
+      this.mantenimientosPrev = [];
+      this.opcionesSemestrales = [];
     }
     if (tipoMtto.toString() === '2') {
       this.solicitudMantenimientoForm.get("noContrato")?.clearValidators();
       this.solicitudMantenimientoForm.get("taller")?.setValue(null);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("costoMantenimiento")?.setValue(null);
+      this.solicitudMantenimientoForm.get("costoMantenimiento")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("taller")?.addValidators([Validators.required]);
     }
     this.solicitudMantenimientoForm.get("costoMantenimiento")?.updateValueAndValidity();
@@ -257,6 +312,8 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("modalidad")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("matPreventivo")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("noContrato")?.updateValueAndValidity();
+
+    this.solicitudMantenimientoForm.markAllAsTouched();
   }
 
   asignarContrato(): void {
@@ -318,13 +375,16 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get('kilometraje')?.patchValue(respuesta.NUM_KILOMETRAJE);
     this.solicitudMantenimientoForm.get('tipoMantenimiento')?.patchValue(String(respuesta.ID_MANTENIMIENTO));
     this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD); //Falta
-    this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.DES_MTTO_CORRECTIVO);
+    // this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.DES_MTTO_CORRECTIVO);
     this.solicitudMantenimientoForm.get('fechaMantenimiento')?.patchValue(respuesta.FEC_REGISTRO ? new Date(this.diferenciaUTC(fecha)) : null);
     this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
     this.solicitudMantenimientoForm.get('nombreProveedor')?.patchValue(respuesta.ID_MANTENIMIENTO == 1 ? respuesta.ID_PROVEEDOR : respuesta.DES_NOMBRE_PROVEEDOR);
     this.solicitudMantenimientoForm.get('noContrato')?.patchValue(respuesta.ID_MANTENIMIENTO == 1 ? respuesta.ID_PROVEEDOR : respuesta.DES_NUMCONTRATO);
     this.solicitudMantenimientoForm.get('taller')?.patchValue(respuesta.DES_NOMBRE_TALLER);
     this.solicitudMantenimientoForm.get('costoMantenimiento')?.patchValue(respuesta.MON_COSTO_MTTO);
+
+    this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.ID_MTTO_MODALIDAD);
+    this.solicitudMantenimientoForm.get('opcionesSemestrales')?.patchValue(respuesta.ID_MTTO_MODALIDAD_DET);
 
     const tipoMtto = this.solicitudMantenimientoForm.get("tipoMantenimiento")?.value;
 
@@ -344,6 +404,8 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("taller")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("modalidad")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("matPreventivo")?.updateValueAndValidity();
+
+    this.asignarOpcionesSemestrales();
   }
 
   diferenciaUTC(fecha: string) {

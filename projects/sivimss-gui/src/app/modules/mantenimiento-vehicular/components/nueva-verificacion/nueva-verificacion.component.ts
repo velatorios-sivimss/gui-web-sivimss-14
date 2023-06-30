@@ -56,6 +56,7 @@ export class NuevaVerificacionComponent implements OnInit {
     { rin: 14, presion: 32 },
     { rin: 15, presion: 34 },
   ]
+  cicloCompleto: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -76,6 +77,9 @@ export class NuevaVerificacionComponent implements OnInit {
     if (this.config.data.vehiculo) {
       this.vehiculoSeleccionado = this.config.data.vehiculo;
     }
+    if (this.config.data.cicloCompleto) {
+      this.cicloCompleto = this.config.data.cicloCompleto;
+    }
     if (this.config.data.id) {
       const id = this.config.data.id;
       this.realizarVerificacion(id);
@@ -95,6 +99,7 @@ export class NuevaVerificacionComponent implements OnInit {
       limpiezaExterior: [{ value: null, disabled: false }, [Validators.required]],
       codigoFalla: [{ value: null, disabled: false }, [Validators.required]],
     });
+    this.nuevaVerificacionForm.markAllAsTouched();
   }
 
   obtenerValorNivel(valor: number): string {
@@ -136,15 +141,15 @@ export class NuevaVerificacionComponent implements OnInit {
 
   crearVerificacion(): RegistroVerificacionInterface {
     return {
-      idMttoVehicular: this.idMttoVehicular,
+      idMttoVehicular: this.cicloCompleto ? null : this.idMttoVehicular,
       idMttoestado: 1,
       idVehiculo: this.vehiculoSeleccionado.ID_VEHICULO,
       idDelegacion: 1,
       idVelatorio: this.vehiculoSeleccionado.ID_VELATORIO,
       idEstatus: 1,
       verificacionInicio: {
-        idMttoVerifInicio: this.idVerificacion,
-        idMttoVehicular: this.idMttoVehicular,
+        idMttoVerifInicio: this.cicloCompleto ? null : this.idVerificacion,
+        idMttoVehicular: this.cicloCompleto ? null : this.idMttoVehicular,
         idCalNeuDelanteros: this.nuevaVerificacionForm.get("calibracionNeumaticosDelanteros")?.value,
         idCalNeuTraseros: this.nuevaVerificacionForm.get("calibracionNeumaticosTraseros")?.value,
         idCodigoFallo: this.nuevaVerificacionForm.get("codigoFalla")?.value,
@@ -174,7 +179,11 @@ export class NuevaVerificacionComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
         this.alertaService.mostrar(TipoAlerta.Exito, 'Verificacion agregada correctamente');
-        this.abrirRegistroMantenimiento(respuesta.datos);
+        if (respuesta.datos.length > 0) {
+          this.abrirRegistroMantenimiento(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+        } else {
+          this.abrirRegistroMantenimiento(respuesta.datos);
+        }
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);

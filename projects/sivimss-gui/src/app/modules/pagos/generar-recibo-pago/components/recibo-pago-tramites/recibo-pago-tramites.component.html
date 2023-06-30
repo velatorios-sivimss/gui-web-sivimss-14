@@ -1,10 +1,8 @@
-<div class="row">
-  <h3>Generar recibo de pago</h3>
-</div>
+<app-titulo-principal titulo="Formato de Pago"></app-titulo-principal>
 <div class="row mb-4">
   <div class="col-md-12 border seccion-folio flex justify-content-between">
     <div>
-      <span class="subtitulo texto-centrado">Folio
+      <span class="subtitulo texto-centrado">FOLIO
         <span class="valor-subtitulo">XXXXXX</span>
       </span>
     </div>
@@ -15,27 +13,34 @@
     </div>
   </div>
   <form [formGroup]="FormReciboPago">
-    <div class="col-md-12 border">
+    <div class="col-md-12 border-inferior">
       <div class="body">
         <section class="titulo-body">
           <p>
             DIRECCIÓN DE PRESTACIONES ECONÓMICAS Y SOCIALES COORDINACIÓN DE CENTROS VACACIONALES, VELATORIOS, UNIDAD DE
-            CONGRESO Y TIENDAS RECIBO DE PAGO DE TRÁMITES POR CUENTA DEL CONTRATANTE
+            CONGRESO Y TIENDAS
+          </p>
+          <p>
+            RECIBO DE PAGO DE TRÁMITES POR CUENTA DEL CONTRATANTE
           </p>
         </section>
         <hr class="solid">
-        <section class="flex justify-content-between align-items-stretch info-gral-body mt-7">
-        <span class="etiqueta-formato">Delegación:*
-          <span class="etiqueta-formato-val">{{recibo.delegacion}}</span>
-        </span>
-          <span class="etiqueta-formato">Velatorio:*
-          <span class="etiqueta-formato-val"># {{recibo.idVelatorio}}</span>
-        </span>
+        <section class="row grid mt-7">
+          <div class="col">
+              <span>DELEGACIÓN:*
+                <span class="font-bold titulo-body">{{recibo.delegacion}}</span>
+              </span>
+          </div>
+          <div class="col">
+              <span>VELATORIO:*
+                <span class="font-bold titulo-body"># {{recibo.idVelatorio}}</span>
+              </span>
+          </div>
         </section>
-        <section class="border contenido-body">
+        <section class="border contenido-body ">
           <div class="row mt-5">
             <div class="col-md-4 grid-item ml-3">
-              <label class="control-label" for="fechaTramite">Fecha<span class="req">*</span>:</label>
+              <label class="control-label" for="fechaTramite">FECHA<span class="req">*</span>:</label>
               <p-calendar id="fechaTramite" [formControlName]="'fechaTramite'" styleClass="form-control"
                           [showIcon]="true" [disabled]="true"
                           placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" (onSelect)="obtenerValoresFecha()">
@@ -45,22 +50,22 @@
             </div>
           </div>
           <div class="mt-2">
-          <span class="col-md-12 mt-5 etiqueta-base">Recibimos del SR(A):*
-            <span class="etiqueta-formato-val">{{recibo.recibimos}}</span>
+          <span class="col-md-12 mt-5 etiqueta-base titulo-body">RECIBIMOS DEL SR.(A):*
+            <span class="etiqueta-formato-val">{{recibo.recibimos | uppercase}}</span>
           </span>
-            <span class="col-md-12 etiqueta-base mt-3">la cantidad de:*
+            <span class="col-md-12 etiqueta-base mt-3">LA CANTIDAD DE:*
             <span class="etiqueta-formato-val">{{recibo.cantidad | currency}}  ({{recibo.cantidadLetra}})</span>
           </span>
           </div>
           <div>
-          <span class="col-md-12 etiqueta-base mt-7 mb-3">Para que a su nombre y representación pague los trámites para
-            otorgar el contrato de prestación de servicios
+          <span class="col-md-12 etiqueta-base mt-7 mb-3">PARA QUE A SU NOMBRE Y REPRESENTACIÓN PAGUE LOS TRAMITES PARA
+            OTORGAR EL CONTRATO DE PRESTACIÓN DE SERVICIOS
             <span class="etiqueta-formato-val"> No. {{recibo.folioPF}} </span>
-            en dependencias de acuerdo al siguiente desglose
+             EN DEPENDENCIAS OFICIALES, DE ACUERDO AL SIGUIENTE DESGLOSE:
           </span>
             <div class="grid-container">
               <div class="grid-item">
-                <label class="control-label" for="tramite">Trámites<span class="req">*</span>:</label>
+                <label class="control-label" for="tramite">TRÁMITES<span class="req">*</span>:</label>
                 <p-dropdown id="tramite" class="form-control" [options]="catalogoTramites"
                             placeholder="Selecciona el tramite" [filter]="true" formControlName="tramite"
                             (onChange)="cambiarTramite()">
@@ -69,12 +74,12 @@
                       *ngIf="f?.tramite?.errors?.required && (f?.tramite?.dirty || f?.tramite?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item">
-                <label class="control-label" for="descripcionTramite">Descripción:</label>
+                <label class="control-label" for="descripcionTramite">DESCRIPCIÓN:</label>
                 <input id="descripcionTramite" class="form-control" formControlName="descripcionTramite">
               </div>
               <div class="grid-item"></div>
               <div class="grid-item">
-                <label class="control-label" for="derecho">Derechos<span class="req">*</span>:</label>
+                <label class="control-label" for="derecho">DERECHOS<span class="req">*</span>:</label>
                 <p-dropdown id="derecho" class="form-control" [options]="catalogoDerechos"
                             placeholder="Selecciona el derecho" [filter]="true" formControlName="derecho"
                             (onChange)="cambiarDerechos()">
@@ -83,26 +88,26 @@
                       *ngIf="f?.derecho?.errors?.required && (f?.derecho?.dirty || f?.derecho?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="grid-item">
-                <label class="control-label" for="descripcionDerecho">Descripción:</label>
+                <label class="control-label" for="descripcionDerecho">DESCRIPCIÓN:</label>
                 <input id="descripcionDerecho" class="form-control" formControlName="descripcionDerecho">
               </div>
               <div class="grid-item"></div>
               <div class="grid-item mt-5">
-                <span class="etiqueta-formato">Total:*
+                <span class="etiqueta-formato">TOTAL:*
                   <span class="etiqueta-totales">{{totalServicios | currency}}</span>
                 </span>
               </div>
               <div class="grid-item"></div>
               <div class="grid-item"></div>
             </div>
-            <span class="col-md-12 etiqueta-base mt-7 mb-2">LAS PARTES ACUERDAN QUE SI EXISTIERA UNA DIFERENCIA EN DINERO
-            A FAVOR DEL CONTRATANTE ESTA SERÁ
-            DEVUELTA, JUNTO CON LOS COMPROBANTES ORIGINALES DE LOS TRÁMITES O DERECHOS PAGADOS A SU ENTERA
-            SATISFACCIÓN, ANTES DEL TÉRMINO DEL SERVICIO FUNERARIO.
-          </span>
+            <span class="col-md-12 etiqueta-base mt-7 mb-2">
+              LAS PARTES ACUERDAN QUE SI EXISTIERA UNA DIFERENCIA EN DINERO A FAVOR DEL CONTRATANTE ESTA SERÁ
+              DEVUELTA, JUNTO CON LOS COMPROBANTES ORIGINALES DE LOS TRÁMITES O DERECHOS PAGADOS A SU ENTERA
+              SATISFACCIÓN, ANTES DEL TÉRMINO DEL SERVICIO FUNERARIO.
+            </span>
             <div class="grid-container mb-4">
               <div class="grid-item">
-              <span class="etiqueta-formato">Total
+              <span class="etiqueta-formato">TOTAL
                 <span class="etiqueta-totales">{{total | currency}}</span>
               </span>
               </div>
@@ -112,13 +117,13 @@
           </div>
           <div class="row flex justify-content-between mt-7">
             <div class="card border">
-              <p class="etiqueta-formato-val">Agente de funerales</p>
+              <p class="etiqueta-formato-val">AGENTE DE FUNERALES</p>
               <div class="container-card">
-                <p class="mb-7 etiqueta-card">Nombre</p>
+                <p class="mb-7 etiqueta-card">NOMBRE</p>
                 <hr class="solid">
                 <div class="flex justify-content-between mt-5">
-                  <div class="column-card etiqueta-card">Matrícula</div>
-                  <div class="column-card etiqueta-card">Firma</div>
+                  <div class="column-card etiqueta-card">MATRÍCULA</div>
+                  <div class="column-card etiqueta-card">FIRMA</div>
                 </div>
                 <div class="flex justify-content-between mt-5">
                   <hr class="column-card solid">
@@ -127,22 +132,22 @@
               </div>
             </div>
             <div class="card border">
-              <p class="etiqueta-formato-val">Contratante</p>
+              <p class="etiqueta-formato-val">CONTRATANTE</p>
               <div class="container-card">
-                <p class="mb-7 etiqueta-card">Nombre</p>
+                <p class="mb-7 etiqueta-card">NOMBRE</p>
                 <hr class="solid">
-                <p class="mt-5 etiqueta-card">Firma</p>
+                <p class="mt-5 etiqueta-card">FIRMA</p>
                 <hr class="solid mt-7">
               </div>
             </div>
             <div class="card border">
-              <p class="etiqueta-formato-val">Recibe</p>
+              <p class="etiqueta-formato-val">RECIBE</p>
               <div class="container-card">
-                <p class="mb-7 etiqueta-card">Nombre</p>
+                <p class="mb-7 etiqueta-card">NOMBRE</p>
                 <hr class="solid">
                 <div class="flex justify-content-between mt-5">
-                  <div class="column-card etiqueta-card">Matrícula</div>
-                  <div class="column-card etiqueta-card">Firma</div>
+                  <div class="column-card etiqueta-card">MATRÍCULA</div>
+                  <div class="column-card etiqueta-card">FIRMA</div>
                 </div>
                 <div class="flex justify-content-between mt-5">
                   <hr class="column-card solid">

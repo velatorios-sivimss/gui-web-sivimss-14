@@ -50,8 +50,9 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   vehiculos: VehiculoMantenimiento[] = [];
   vehiculoSeleccionado!: VehiculoMantenimiento;
-
+  once: boolean = true;
   filtroFormProgramarMantenimiento!: FormGroup;
+  cicloCompleto: boolean = false;
 
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
@@ -65,6 +66,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
   readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
   readonly POSICION_CATALOGOS_PLACAS: number = 3;
+
+  usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -162,6 +165,13 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
         next: (respuesta: HttpRespuesta<any>): void => {
           this.vehiculos = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
+
+          const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+          if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
+            this.vehiculoSeleccionado = this.vehiculos[0];
+            this.abrirModalnuevaVerificacion();
+            this.once = false;
+          }
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -225,7 +235,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   abrirModalnuevaVerificacion(): void {
     this.nuevaVerificacionRef = this.dialogService.open(NuevaVerificacionComponent, {
-      data: { vehiculo: this.vehiculoSeleccionado },
+      data: { vehiculo: this.vehiculoSeleccionado, cicloCompleto: this.cicloCompleto },
       header: "Verificar al inicio de la jornada",
       width: "920px"
     });
@@ -235,7 +245,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.solicitudMttoRef = this.dialogService.open(SolicitudMantenimientoComponent, {
       header: "Solicitud de mantenimiento vehicular",
       width: "920px",
-      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create' },
+      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create', cicloCompleto: this.cicloCompleto },
     })
   }
 
@@ -243,7 +253,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.registroMttoRef = this.dialogService.open(RegistroMantenimientoComponent, {
       header: "Registro de mantenimiento vehicular",
       width: "920px",
-      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create' },
+      data: { vehiculo: this.vehiculoSeleccionado, mode: 'create', cicloCompleto: this.cicloCompleto },
     });
   }
 
@@ -294,13 +304,19 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   abrirPanel(event: MouseEvent, vehiculoSeleccionado: VehiculoMantenimiento): void {
+    this.cicloCompleto = false;
+    if (vehiculoSeleccionado.ID_MTTOVERIFINICIO && vehiculoSeleccionado.ID_MTTO_SOLICITUD && vehiculoSeleccionado.ID_MTTO_REGISTRO) {
+      this.cicloCompleto = true;
+    }
     this.vehiculoSeleccionado = vehiculoSeleccionado;
     this.overlayPanel.toggle(event);
   }
 
   irADetalle(vehiculo: any): void {
-    void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_MTTOVEHICULAR],
-      { queryParams: { tabview: 0 } });
+    if (vehiculo?.ID_MTTOVEHICULAR) {
+      void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', vehiculo.ID_MTTOVEHICULAR],
+        { queryParams: { tabview: 0 } });
+    }
   }
 
   generarReporteTabla(tipoReporte: string): void {

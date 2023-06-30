@@ -31,11 +31,12 @@ export class AgregarUsuarioComponent implements OnInit {
 
   readonly CAPTURA_DE_USUARIO: number = 1;
   readonly RESUMEN_DE_USUARIO: number = 2;
+  readonly HREF_RENAPO: string = "https://www.gob.mx/curp/";
 
   agregarUsuarioForm!: FormGroup;
 
   curpValida: boolean = false;
-  matriculaValida: boolean = false;
+  matriculaValida: boolean = true;
   folio: number = 0;
 
   catalogoRoles: TipoDropdown[] = [];
@@ -90,7 +91,7 @@ export class AgregarUsuarioComponent implements OnInit {
     this.agregarUsuarioForm = this.formBuilder.group({
       curp: [{value: null, disabled: false},
         [Validators.required, Validators.maxLength(18), Validators.pattern(PATRON_CURP)]],
-      matricula: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(10)]],
+      matricula: [{value: null, disabled: false}],
       nombre: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(20)]],
       primerApellido: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(30)]],
       segundoApellido: [{value: null, disabled: true}, [Validators.required, Validators.maxLength(30)]],
@@ -232,7 +233,10 @@ export class AgregarUsuarioComponent implements OnInit {
 
   validarMatricula(): void {
     const consulta: SolicitudMatricula = {claveMatricula: this.agregarUsuarioForm.get("matricula")?.value};
-    if (!consulta.claveMatricula) return;
+    if (!consulta.claveMatricula) {
+      this.matriculaValida = true;
+      return;
+    }
     this.usuarioService.validarMatricula(consulta).pipe(
       finalize(() => this.validarMatriculaSiap(consulta.claveMatricula))
     ).subscribe({

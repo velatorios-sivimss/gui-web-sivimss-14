@@ -14,7 +14,7 @@ hr {
 }
 
 .seccion-folio {
-  border-bottom: 0px !important;
+  border-bottom: 0 !important;
   height: 40px;
 }
 
@@ -31,11 +31,16 @@ hr {
 
 .border {
   border: 0.5px solid #98989A;
-  border-radius: 5px;
+  border-radius: 5px 5px 0 0 ;
+}
+
+.border-inferior {
+  border: 0.5px solid #98989A;
+  border-radius: 0 0 5px 5px;
 }
 
 .body {
-  padding: 15px 0px;
+  padding: 15px 0;
 }
 
 .titulo-body {
@@ -50,8 +55,6 @@ hr {
     line-height: 26px;
     color: #000000;
     margin: 0;
-    margin-top: 20px;
-    margin-bottom: 30px;
     text-align: center;
   }
 }
@@ -64,20 +67,20 @@ hr.solid {
 
 .info-gral-body span {
   display: inline-block;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
   width: 50%;
 }
 
 .etiqueta-formato {
   font-weight: 400;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 19.5px;
   color: #484848;
 }
 
 .etiqueta-formato-val {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 20px;
   color: #484848;
 }
@@ -115,18 +118,17 @@ hr.solid {
 }
 
 .card > .p ~ .p {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 .container-card {
   height: 90%;
-  margin: 10px;
-  margin-top: 20px;
+  margin: 20px 10px 10px;
 }
 
 .etiqueta-card {
   font-weight: 400;
-  font-size: 13px;
+  font-size: 18px;
   line-height: 15.85px;
   color: #272829;
 }
@@ -136,4 +138,12 @@ hr.solid {
   font-size: 18px;
   line-height: 20px;
   color: #484848;
+}
+
+.etiqueta-base {
+  font-size: 18px;
+}
+
+.control-label {
+  font-size: 18px;
 }

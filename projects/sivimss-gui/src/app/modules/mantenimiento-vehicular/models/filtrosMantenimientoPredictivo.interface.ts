@@ -3,5 +3,6 @@ export interface FiltrosMantenimientoPredictivo {
   velatorio: number,
   delegacion: number,
   tipoMtto: number,
-  placa: string
+  placa: string,
+  periodo: string | null,
 }

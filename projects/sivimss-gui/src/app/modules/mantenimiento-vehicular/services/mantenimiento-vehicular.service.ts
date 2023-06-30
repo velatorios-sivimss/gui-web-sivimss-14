@@ -145,6 +145,14 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._reporte_encargado}`, t, { params });
   }
 
+  obtenerCatalogoMtto(idGenerico: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/cat-mttotipo-modalidad`, { idGenerico })
+  }
+
+  obtenerCatalogoMttoDetalle(idGenerico: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/cat-mttotipo-modalidaddetalle`, { idGenerico })
+  }
+
   generarReporteTabla(generarReporte: any): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -160,6 +168,15 @@ export class MantenimientoVehicularService extends BaseService<HttpRespuesta<any
       Accept: 'application/json'
     });
     return this._http.post<any>(this._base + `${this._funcionalidad}/descargar-reporte-encargado/generarDocumento/pdf`
+      , generarReporte, { headers, responseType: 'blob' as 'json' });
+  }
+
+  generarReportePredictivo(generarReporte: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/descargar-reporte-predictivo/generarDocumento/pdf`
       , generarReporte, { headers, responseType: 'blob' as 'json' });
   }
 }

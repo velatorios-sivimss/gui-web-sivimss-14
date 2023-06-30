@@ -20,6 +20,7 @@ import {finalize} from 'rxjs';
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {mensajes} from '../../../reservar-salas/constants/mensajes';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-generar-nota-remision',
@@ -74,6 +75,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private descargaArchivosService: DescargaArchivosService,
     private readonly loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -136,28 +138,15 @@ export class GenerarNotaRemisionComponent implements OnInit {
     } else {
       this.numPaginaActual = 0;
     }
+    this.notasRemision = [];
     this.generarNotaRemisionService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos?.content.length > 0) {
           this.notasRemision = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
-        } else {
-          const mensaje = this.alertas?.filter((msj: any) => {
-            return msj.idMensaje == respuesta.mensaje;
-          });
-          if (mensaje && mensaje.length > 0) {
-            this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
-          }
-        }
       },
       error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error?.error?.mensaje;
-        })
-        if (mensaje && mensaje.length > 0) {
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        }
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
     });
   }
@@ -176,22 +165,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
         } else {
           this.notasRemision = [];
           this.totalElementos = 0;
-          const mensaje = this.alertas?.filter((msj: any) => {
-            return msj.idMensaje == respuesta.mensaje;
-          });
-          if (mensaje && mensaje.length > 0) {
-            this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
-          }
         }
       },
       error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error?.error?.mensaje;
-        })
-        if (mensaje && mensaje.length > 0) {
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        }
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error.message);
       }
     });
   }
@@ -211,9 +189,10 @@ export class GenerarNotaRemisionComponent implements OnInit {
   limpiar(): void {
     this.alertaService.limpiar();
     this.filtroForm.reset();
-    this.filtroForm.get('nivel')?.patchValue(+this.rolLocalStorage.idOficina || null);
-    this.filtroForm.get('delegacion')?.patchValue(+this.rolLocalStorage.idDelegacion || null);
-    this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio || null);
+    this.filtroForm.get('nivel')?.patchValue(+this.rolLocalStorage.idOficina );
+    this.filtroForm.get('delegacion')?.patchValue(+this.rolLocalStorage.idDelegacion);
+    this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio);
+    this.obtenerVelatorios();
     this.paginar();
   }
 

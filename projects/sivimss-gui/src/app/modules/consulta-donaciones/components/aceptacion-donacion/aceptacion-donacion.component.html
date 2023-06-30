@@ -4,24 +4,24 @@
     <form [formGroup]="donacionForm">
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span></label>
+          <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span>:</label>
           <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS" (blur)="consultaContratantePorFolioODS()">
           <span class="campo-obligatorio"
                 *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="nombreContratante">Nombre del contratante</label>
+          <label class="control-label" for="nombreContratante">Nombre del contratante:</label>
           <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
                  placeholder="Ingresa el nombre del contratante">
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="nombreFinado">Nombre del finado</label>
+          <label class="control-label" for="nombreFinado">Nombre del finado:</label>
           <input id="nombreFinado" class="form-control" formControlName="nombreFinado" placeholder="Ingresa el nombre del finado">
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="responsableAlmacen">Responsable de almacén<span class="req">*</span></label>
+          <label class="control-label" for="responsableAlmacen">Responsable de almacén<span class="req">*:</span></label>
           <input id="responsableAlmacen" class="form-control" formControlName="responsableAlmacen" placeholder="Ingresa el responsable de almacén"
                  (keyup.space)="noEspaciosAlPrincipio()" lettersOnly maxlength="70">
           <span class="campo-obligatorio"
@@ -32,7 +32,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="matricula">Matrícula del responsable<span class="req">*</span></label>
+          <label class="control-label" for="matricula">Matrícula del responsable<span class="req">*</span>:</label>
           <input alphanumericOnly id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula del responsable"
           maxlength="45">
           <span class="campo-obligatorio"
@@ -61,9 +61,9 @@
                  [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
           <ng-template pTemplate="header">
             <tr>
-              <th scope="col">Material (Tipo de ataúd)</th>
-              <th scope="col">Modelo (Modelo del ataúd)</th>
-              <th scope="col">Número de inventario (el número de inventario del ataúd según etiqueta)</th>
+              <th scope="col">Material</th>
+              <th scope="col">Modelo</th>
+              <th scope="col">Número de inventario</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-ataudDonado>
@@ -94,7 +94,7 @@
   <p-accordion styleClass="sivimss-accordion">
     <p-accordionTab>
       <ng-template pTemplate="header">
-        <span class="etiqueta-base" >FolioODS <span class="texto-base" >{{f.folio.value}}</span></span>
+        <span class="etiqueta-base" >FolioODS: <span class="texto-base" >{{f.folio.value}}</span></span>
       </ng-template>
       <ng-template pTemplate="content">
         <div class="row mb-3">
