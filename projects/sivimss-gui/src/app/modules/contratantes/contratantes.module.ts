@@ -26,6 +26,7 @@ import { DetalleContratantesComponent } from './components/detalle-contratantes/
 import { ModificarContratantesComponent } from './components/modificar-contratantes/modificar-contratantes.component';
 import { BtnRegresarModule } from "../../shared/btn-regresar/btn-regresar.module";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { UtileriaModule } from "../../shared/utileria/utileria.module";
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     CalendarModule,
     BtnRegresarModule,
     ConfirmDialogModule,
+    UtileriaModule,
   ],
   providers:[
     ContratantesService

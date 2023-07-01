@@ -110,37 +110,18 @@ export class ContratantesComponent implements OnInit {
   buscarPorFiltros(): void {
     this.contratantesService.buscarPorFiltros(this.filtroForm.getRawValue(), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.contratantes = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
+        if (respuesta.datos) {
+          this.contratantes = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        } else {
+          this.contratantes = [];
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     });
-  }
-
-  buscarContratante() {
-    this.clearValidatorsFiltroForm();
-    if (validarAlMenosUnCampoConValor(this.filtroForm.getRawValue())) {
-      this.paginar();
-    } else {
-      const mensaje = this.alertas?.filter((msj: any) => {
-        return msj.idMensaje == 22;
-      })
-      if (mensaje) {
-        this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
-      }
-      this.ff.curp.setValidators(Validators.required);
-      this.ff.curp.updateValueAndValidity();
-      this.ff.nss.setValidators(Validators.required);
-      this.ff.nss.updateValueAndValidity();
-      this.ff.nombre.setValidators(Validators.required);
-      this.ff.nombre.updateValueAndValidity();
-      this.ff.estatus.setValidators(Validators.required);
-      this.ff.estatus.updateValueAndValidity();
-      this.filtroForm.markAllAsTouched();
-    }
   }
 
   limpiar(): void {
@@ -168,19 +149,19 @@ export class ContratantesComponent implements OnInit {
     });
   }
 
-  abrirModalModificarContratante(): void {
-    this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
-      header: "Modificar contratante",
-      width: "920px",
-      data: { contratante: this.contratanteSeleccionado, origen: "modificar" },
-    });
+  // abrirModalModificarContratante(): void {
+  //   this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
+  //     header: "Modificar contratante",
+  //     width: "920px",
+  //     data: { contratante: this.contratanteSeleccionado, origen: "modificar" },
+  //   });
 
-    this.modificarRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
-      if (respuesta.estatus) {
-        this.alertaService.mostrar(TipoAlerta.Exito, this.alertaEstatus[2]);
-      }
-    });
-  }
+  //   this.modificarRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
+  //     if (respuesta?.estatus) {
+  //       this.paginar();
+  //     }
+  //   });
+  // }
 
   abrirModalCambiarEstatus(contratante: UsuarioContratante): void {
     this.detalleRef = this.dialogService.open(DetalleContratantesComponent, {
@@ -190,16 +171,16 @@ export class ContratantesComponent implements OnInit {
     });
 
     this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
-      if (respuesta.estatus) {
+      if (respuesta?.estatus) {
         this.paginar();
       }
     });
   }
 
-  abrirPanel(event: MouseEvent, contratante: BusquedaContratante): void {
-    this.contratanteSeleccionado = contratante;
-    this.overlayPanel.toggle(event);
-  }
+  // abrirPanel(event: MouseEvent, contratante: BusquedaContratante): void {
+  //   this.contratanteSeleccionado = contratante;
+  //   this.overlayPanel.toggle(event);
+  // }
 
   descargarReporteTabla(tipoReporte: string): void {
     this.loaderService.activar();
@@ -214,10 +195,12 @@ export class ContratantesComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
-        const mensaje = this.alertas.filter((msj: any) => {
+        const mensaje = this.alertas?.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
         })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error Desconocido");
+        if (mensaje) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error en la descarga del documento. Intenta nuevamente.");
+        }
       },
     });
   }

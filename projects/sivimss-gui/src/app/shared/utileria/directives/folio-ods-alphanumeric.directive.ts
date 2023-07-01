@@ -10,7 +10,7 @@ export class FolioODSAlphanumericDirective {
 
   @HostListener('input', ['$event']) onInputChange(event: any) {
     const initalValue = this._el.nativeElement.value;
-    let newValue = initalValue.replace(/[^a-zA-Z0-9ñÑ-]+/g, '');
+    let newValue = initalValue.replace(/[^a-zA-Z0-9-]+/g, '');
     newValue = newValue.replace(/\s+/g, ' ');
     this._el.nativeElement.value = newValue;
     this.valueChange.emit(newValue);

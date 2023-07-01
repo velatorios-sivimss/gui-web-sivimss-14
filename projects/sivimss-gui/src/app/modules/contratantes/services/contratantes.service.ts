@@ -4,6 +4,8 @@ import { environment } from 'projects/sivimss-gui/src/environments/environment';
 import { Observable } from 'rxjs';
 import { HttpRespuesta } from '../../../models/http-respuesta.interface';
 import { BaseService } from '../../../utils/base-service';
+import { TipoCatalogo } from '../models/usuario-contratante.interface';
+import { ReporteTabla } from '../../velacion-domicilio/models/velacion-domicilio.interface';
 
 @Injectable()
 export class ContratantesService extends BaseService<HttpRespuesta<any>, any> {
@@ -12,7 +14,6 @@ export class ContratantesService extends BaseService<HttpRespuesta<any>, any> {
       11, "usr-contratantes", "detalle-contratante", "cambiar-estatus");
   }
 
-  // Buscar Contratantes
   buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params = new HttpParams()
       .append("pagina", pagina)
@@ -20,7 +21,6 @@ export class ContratantesService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, filtros, { params });
   }
 
-  // Detalle Contratante
   obtenerDetalleContratante(id: number): Observable<HttpRespuesta<any>> {
     const params = new HttpParams()
       .append("servicio", this._detalle)
@@ -28,17 +28,21 @@ export class ContratantesService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar`, { params });
   }
 
-  // Actualizar - BASE , actualizar
-
-  // Cambiar estatus - BASE , cambiarEstatus
-
-  descargarReporteTabla(datosBusqueda: any): Observable<Blob> {
-    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-cat-usr-contra/generarDocumento/pdf`
+  descargarReporteTabla(datosBusqueda: ReporteTabla): Observable<Blob> {
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-cat-usr-contra/generarDocumento/${datosBusqueda.tipoReporte}`
       , datosBusqueda, { responseType: 'blob' as 'json' });
   }
 
   obtenerCatalogoTiposMateriales(): Observable<HttpRespuesta<any>> {
     const params = new HttpParams().append("servicio", "art-tipo-materiales")
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo`, { params });
+  }
+
+  consultarCatalogo(obj: TipoCatalogo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-catalogos`, obj);
+  }
+
+  override actualizar(t: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._actualizar}`, t);
   }
 }

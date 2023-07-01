@@ -13,7 +13,7 @@
           <span class="inactivo" *ngIf="!contratante.estatus">Inactivo</span>
         </div>
       </div>
-      <div class="flex flex-column ml-5" *ngIf="(origen == 'detalle')">
+      <div class="flex flex-column ml-5" style="cursor: pointer;" *ngIf="origen == 'detalle'">
         <a (click)="overlayPanel.toggle($event)">
           <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
         </a>
@@ -42,6 +42,13 @@
         <span> {{contratante.nss}} </span>
       </div>
     </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Fecha de nacimiento</label>
+        <span *ngIf="origen !== 'modificar'"> {{contratante.fecNacimiento}} </span>
+        <span *ngIf="origen === 'modificar'"> {{contratante.fecNacimiento | date:'dd-MM-YYYY'}} </span>
+      </div>
+    </div>
   </div>
   <div class="row table-panel-row">
     <div class="col-md-3">
@@ -53,19 +60,19 @@
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Primer apellido</label>
-        <span> {{contratante.primerApellido}} </span>
+        <span> {{contratante.paterno}} </span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Segundo apellido</label>
-        <span> {{contratante.segundoApellido}} </span>
+        <span> {{contratante.materno}} </span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Fecha de nacimiento</label>
-        <span> {{contratante.fechaNacimiento}} </span>
+        <label>Sexo</label>
+        <span> {{tipoSexoDesc}} </span>
       </div>
     </div>
   </div>
@@ -76,10 +83,16 @@
         <span> {{contratante.nacionalidad}} </span>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3" *ngIf="contratante.nacionalidad === 'MEXICANA'">
       <div class="table-panel-column">
         <label>Lugar de nacimiento</label>
         <span> {{contratante.lugarNacimiento}} </span>
+      </div>
+    </div>
+    <div class="col-md-3" *ngIf="contratante.nacionalidad !== 'MEXICANA'">
+      <div class="table-panel-column">
+        <label>País</label>
+        <span> {{contratante.pais}} </span>
       </div>
     </div>
     <div class="col-md-3">
@@ -90,8 +103,8 @@
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Sexo</label>
-        <span> {{contratante.sexo}} </span>
+        <label>Correo</label>
+        <span> {{contratante.correo}} </span>
       </div>
     </div>
   </div>
@@ -101,7 +114,7 @@
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Código postal</label>
+        <label>C.P.</label>
         <span> {{contratante.cp}} </span>
       </div>
     </div>
@@ -113,24 +126,18 @@
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Núm. exterior</label>
-        <span> {{contratante.numeroExterior}} </span>
+        <label>Número exterior</label>
+        <span> {{contratante.numExt}} </span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Núm. interior</label>
-        <span> {{contratante.numeroInterior}} </span>
+        <label>Número interior</label>
+        <span> {{contratante.numInt}} </span>
       </div>
     </div>
   </div>
   <div class="row table-panel-row">
-    <div class="col-md-3">
-      <div class="table-panel-column">
-        <label>País</label>
-        <span> {{contratante.pais}} </span>
-      </div>
-    </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Estado</label>
@@ -143,20 +150,27 @@
         <span> {{contratante.municipio}} </span>
       </div>
     </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Colonia</label>
+        <span> {{contratante.colonia}} </span>
+      </div>
+    </div>
   </div>
 </app-table-panel>
 <section>
-  <ng-container *ngIf="origen == 'detalle'">
+  <ng-container *ngIf="origen === 'detalle'">
     <div class="flex justify-content-end">
       <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="aceptar()">
-        Aceptar
+        Cerrar
       </button>
     </div>
   </ng-container>
-  <ng-container *ngIf="origen != 'detalle'">
+  <ng-container *ngIf="origen !== 'detalle'">
     <div class="row my-6">
       <div class="col-md-12">
-        <p class="etiqueta-base text-center">{{mensaje}}</p>
+        <p class="etiqueta-base text-center">{{mensaje}} {{contratante.nombre}} {{contratante.paterno}}
+          {{contratante.materno}}</p>
       </div>
     </div>
     <div class="flex justify-content-end">

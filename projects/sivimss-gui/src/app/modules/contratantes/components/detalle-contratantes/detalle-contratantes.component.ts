@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { UsuarioContratante, ConfirmarContratante } from "../../models/usuario-contratante.interface";
 import { OverlayPanel } from "primeng/overlaypanel";
@@ -9,6 +9,8 @@ import { ALERTA_ESTATUS, MENSAJE_CONFIRMACION } from "../../constants/alertas";
 import { ContratantesService } from '../../services/contratantes.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { TIPO_SEXO, CATALOGO_SEXO } from '../../constants/catalogos-complementarios';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-detalle-contratantes',
@@ -17,18 +19,25 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
   providers: [DialogService]
 })
 export class DetalleContratantesComponent implements OnInit {
-  @Input() contratante!: UsuarioContratante;
-  @Input() origen!: string;
-
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  @Input() contratante!: UsuarioContratante;
+
+  @Input() origen!: string;
+
+  @Output()
+  confirmacionAceptar: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @Output()
+  cancelarConfirmacion: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   cambiarEstatusRef!: DynamicDialogRef;
   modificarRef!: DynamicDialogRef;
 
   mensaje: string = "";
   retorno: ConfirmarContratante = {};
-
+  tipoSexoDesc: string = '';
   tipoMensaje: string[] = MENSAJE_CONFIRMACION;
   alertaEstatus: string[] = ALERTA_ESTATUS;
 
@@ -38,16 +47,16 @@ export class DetalleContratantesComponent implements OnInit {
     public config: DynamicDialogConfig,
     public dialogService: DialogService,
     private contratantesService: ContratantesService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
-    if (this.contratante == undefined) {
-      if (this.config?.data) {
-        this.contratante = this.config.data.contratante;
-        this.origen = this.config.data.origen;
-        if (this.origen == "estatus") {
-          this.mensaje = this.contratante.estatus ? this.tipoMensaje[1] : this.tipoMensaje[0];
-        }
+    if (this.config?.data && this.origen !== "modificar") {
+      this.contratante = this.config.data.contratante;
+      this.origen = this.config.data.origen;
+      if (this.origen === "estatus" || this.origen === "detalle") {
+        this.mensaje = this.contratante.estatus ? this.tipoMensaje[1] : this.tipoMensaje[0];
+        this.obtenerDetalleContratante();
       }
     }
     if (this.origen == "modificar") {
@@ -55,13 +64,31 @@ export class DetalleContratantesComponent implements OnInit {
     }
   }
 
+  obtenerDetalleContratante() {
+    if (this.contratante.idContratante) {
+      this.contratantesService.obtenerDetalleContratante(this.contratante.idContratante).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.codigo === 200) {
+            this.contratante = respuesta?.datos[0] || [];
+            let idTipoSexo = this.contratante.otroSexo ? 3 : this.contratante.numSexo;
+            this.tipoSexoDesc = TIPO_SEXO[idTipoSexo || 1];
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      });
+    }
+  }
+
   aceptar(): void {
     switch (this.origen) {
       case 'detalle':
-        this.ref.close();
+        this.ref.close({ estatus: false });
         break;
       case 'modificar':
-        // this.confirmacionAceptar.emit({ estatus: true, origen: this.origen });
+        this.confirmacionAceptar.emit(true);
         break;
       case 'estatus':
         this.cambiarEstatus();
@@ -70,7 +97,15 @@ export class DetalleContratantesComponent implements OnInit {
   }
 
   cancelar(): void {
-    this.ref.close();
+    switch (this.origen) {
+      case 'detalle':
+      case 'estatus':
+        this.ref.close({ estatus: false });
+        break;
+      case 'modificar':
+        this.cancelarConfirmacion.emit(true);
+        break;
+    }
   }
 
   cambiarEstatus() {
@@ -83,20 +118,21 @@ export class DetalleContratantesComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error.message, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
 
   abrirModalModificarContratante(): void {
+    this.ref.close({ estatus: true });
     this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
       header: "Modificar contratante",
       width: "920px",
       data: { contratante: this.contratante, origen: "modificar" },
     });
+
     this.modificarRef.onClose.subscribe((resultado: ConfirmarContratante) => {
       if (resultado.estatus) {
-        this.ref.close();
         this.alertaService.mostrar(TipoAlerta.Exito, this.alertaEstatus[2]);
       }
     });
