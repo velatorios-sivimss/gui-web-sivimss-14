@@ -27,6 +27,8 @@ export class RegistrarEntradaComponent implements OnInit {
   registroEntradaForm!: FormGroup;
   salaSeleccionada: SalaVelatorio = {};
 
+  fechaActual = new Date();
+
   indice: number = 0;
   idOds!: any;
   tipoSala: number = 0;

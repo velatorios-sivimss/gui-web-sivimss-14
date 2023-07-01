@@ -89,7 +89,7 @@
     <div class="row">
       <div class="col-md-6">
         <label class="control-label" for="fecha">Fecha <span class="req">*</span>:</label>
-        <p-calendar appendTo="body" id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"></p-calendar>
+        <p-calendar appendTo="body" id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true" [minDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
               *ngIf="entradaF.fecha?.errors?.required && (entradaF.fecha?.dirty || entradaF.fecha?.touched)">
                     Este campo es obligatorio *.</span>

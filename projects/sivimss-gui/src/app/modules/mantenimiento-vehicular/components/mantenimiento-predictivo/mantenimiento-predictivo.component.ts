@@ -124,7 +124,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -199,7 +199,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
