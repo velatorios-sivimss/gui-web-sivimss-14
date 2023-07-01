@@ -1,109 +1,144 @@
-<ng-container *ngIf="indice === 0">
-  <form [formGroup]="tipoPagoForm" (submit)="aceptar()">
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span>:</label>
-        <input id="tipoPago" class="form-control" formControlName="tipoPago"
-               placeholder="Ingresar Tipo de pago">
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
-        <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
-                    placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
-        </p-calendar>
-      </div>
-    </div>
-    <div class="row mb-3" *ngIf="!pagos.includes(tipoPago)">
-      <div class="col-md-6">
-        <label class="control-label" for="noAutorizacion">No. de autorización<span class="req">*</span>:</label>
-        <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
-               placeholder="Ingresa número">
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="nombreBanco">Nombre del banco<span class="req">*</span>:</label>
-        <input id="nombreBanco" class="form-control" formControlName="nombreBanco"
-               placeholder="Ingresar nombre">
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
-        <input id="importe" class="form-control" formControlName="importe"
-               placeholder="Ingresa importe">
-      </div>
-      <div class="col-md-6 flex justify-content-end  mt-2">
-        <div class="flex flex-column">
-          <span class=" etiqueta-base mt-2">Total a pagar</span>
-          <span class="text-bold mt-2 total-pago">$56,000.00</span>
+<ng-container [ngSwitch]="pasoAgregarPago">
+  <ng-container *ngSwitchCase="CAPTURA_DE_PAGO">
+    <form [formGroup]="tipoPagoForm" (submit)="aceptar()">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span>:</label>
+          <input id="tipoPago" class="form-control" formControlName="tipoPago"
+                 placeholder="Ingresar Tipo de pago">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.tipoPago?.errors?.required && (pf?.tipoPago?.dirty || pf?.tipoPago?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
+          <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
+          <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
+                      placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+          </p-calendar>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.fecha?.errors?.required && (pf?.fecha?.dirty || pf?.fecha?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-md-12 control-label">
-        <span>*Campos obligatorios</span>
-      </div>
-    </div>
-    <div class="flex justify-content-end mt-5">
-      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="ml-4 btn btn-primary btn-md">
-        Guardar
-      </button>
-    </div>
-  </form>
-</ng-container>
-<ng-container *ngIf="indice === 1">
-  <app-table-panel>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Tipo de pago</label>
-          <span>Tarjeta crédito</span>
+      <div class="row mb-3" *ngIf="!pagosDeshabilitados.includes(idPago)">
+        <div class="col-md-6" *ngIf="!recibeFolio.includes(idPago)">
+          <label class="control-label" for="noAutorizacion">No. de autorización<span class="req">*</span>:</label>
+          <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
+                 placeholder="Ingresa número" [maxlength]="10">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6" *ngIf="recibeFolio.includes(idPago)">
+          <label class="control-label" for="folioAutorizacion">Folio de autorización<span class="req">*</span>:</label>
+          <input id="folioAutorizacion" class="form-control" formControlName="noAutorizacion"
+                 placeholder="Ingresa número" [maxlength]="20">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
+        </div>
+
+        <div class="col-md-6">
+          <label class="control-label" for="nombreBanco" *ngIf="bancoLabelDiferente.includes(idPago)">Banco<span
+            class="req">*</span>:</label>
+          <label class="control-label" for="nombreBanco" *ngIf="!bancoLabelDiferente.includes(idPago)">Nombre del
+            banco<span class="req">*</span>:</label>
+          <input id="nombreBanco" class="form-control" formControlName="nombreBanco"
+                 placeholder="Ingresar nombre del banco" [maxlength]="20">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.nombreBanco?.errors?.required && (pf?.nombreBanco?.dirty || pf?.nombreBanco?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Fecha de pago</label>
-          <span>02/12/2021</span>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
+          <p-inputNumber class="form-control" id="importe" formControlName="importe"
+                         placeholder="Ingresa importe" [maxlength]="10"
+                         [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD"
+                         (onInput)="
+                            tipoPagoForm.patchValue({
+                                importe:
+                                $event.value >= 0 && $event.value <= 99999999999
+                                  ? $event.value
+                                  : tipoPagoForm.value?.importe
+                            })">
+          </p-inputNumber>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
         </div>
+        <div class="col-md-6 flex justify-content-end  mt-2">
+          <div class="flex flex-column">
+            <span class=" etiqueta-base mt-2">Total a pagar</span>
+            <span class="text-bold mt-2 total-pago">{{total | currency}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-12 control-label">
+          <span>*Campos obligatorios</span>
+        </div>
+      </div>
+      <div class="flex justify-content-end mt-5">
+        <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md"
+                [disabled]="tipoPagoForm.invalid">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="RESUMEN_DE_PAGO">
+    <app-table-panel>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Tipo de pago</label>
+            <span>{{ resumenSolicitud.tipoPago }}</span>
+          </div>
+        </div>
+        <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
+          <div class="table-panel-column">
+            <label>Fecha de pago</label>
+            <span> {{ resumenSolicitud.fecha | date:'dd/MM/YYYY' }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row" *ngIf="!pagosDeshabilitados.includes(idPago)">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>No. de autorización </label>
+            <span>{{ resumenSolicitud.noAutorizacion }}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Nombre del banco </label>
+            <span>{{ resumenSolicitud.nombreBanco }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Importe</label>
+            <span>{{ resumenSolicitud.importe }}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Total a pagar</label>
+            <span>{{total}}</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <div class="mb-3 mt-3 row text-center">
+      ¿Estás seguro que deseas registrar este pago?
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="submit" class="btn btn-default btn-md" (click)="pasoAgregarPago = CAPTURA_DE_PAGO">Regresar
+        </button>
+        <button type="submit" class="btn btn-gold btn-md ml-5" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar</button>
       </div>
     </div>
-    <div class="row table-panel-row" *ngIf="!pagos.includes(tipoPago)">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>No. de autorización </label>
-          <span>1029384756</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Nombre del banco </label>
-          <span>BBVA BANCOMER</span>
-        </div>
-      </div>
-    </div>
-    <div class="row table-panel-row">
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Importe</label>
-          <span>$ 10,000.00</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Total a pagar</label>
-          <span>$50,000.00</span>
-        </div>
-      </div>
-    </div>
-  </app-table-panel>
-  <div class="mb-3 mt-3 row text-center">
-    ¿Estás seguro que deseas registrar este pago?
-  </div>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-center">
-      <button type="submit" class="btn btn-default btn-md" (click)="cancelar()">Regresar</button>
-      <button type="submit" class="btn btn-gold btn-md ml-5" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
-    </div>
-  </div>
+  </ng-container>
 </ng-container>

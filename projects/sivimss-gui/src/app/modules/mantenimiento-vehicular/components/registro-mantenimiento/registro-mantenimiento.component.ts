@@ -93,7 +93,7 @@ export class RegistroMantenimientoComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }
@@ -243,7 +243,7 @@ export class RegistroMantenimientoComponent implements OnInit {
           if (error.statusText === 'Unknown Error') {
             this.alertaService.mostrar(TipoAlerta.Error, ERROR_GUARDAR_INFORMACION);
           } else {
-            this.mensajesSistemaService.mostrarMensajeError(error.message);
+            this.mensajesSistemaService.mostrarMensajeError(error);
           }
         }
       });
@@ -338,7 +338,7 @@ export class RegistroMantenimientoComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }

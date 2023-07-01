@@ -216,7 +216,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message, 'Error al guardar la información. Intenta nuevamente.');
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
@@ -239,7 +239,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -287,7 +287,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }

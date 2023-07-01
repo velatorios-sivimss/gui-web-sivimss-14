@@ -10,11 +10,17 @@ import {
   SeleccionBeneficiariosAgfComponent
 } from "./components/seleccion-beneficiarios-agf/seleccion-beneficiarios-agf.component";
 import {DetalleMetodoPagoComponent} from "./components/detalle-metodo-pago/detalle-metodo-pago.component";
+import {RealizarPagoResolver} from "./services/realizar-pago.resolver";
+import {DetallePagoResolver} from "./services/detalle-pago.resolver";
+import {ModificarMetodoPagoComponent} from "./components/modificar-metodo-pago/modificar-metodo-pago.component";
 
 const routes: Routes = [
   {
     path: '',
-    component: RealizarPagoComponent
+    component: RealizarPagoComponent,
+    resolve: {
+      respuesta: RealizarPagoResolver
+    }
   },
   {
     path: 'pago-orden-servicio',
@@ -33,14 +39,25 @@ const routes: Routes = [
     component: SeleccionBeneficiariosAgfComponent
   },
   {
-    path: 'detalle-de-pago',
-    component: DetalleMetodoPagoComponent
+    path: 'detalle-de-pago/:idPagoBitacora',
+    component: DetalleMetodoPagoComponent,
+    resolve: {
+      respuesta: DetallePagoResolver
+    }
+  },
+  {
+    path: 'modificar-metodo-de-pago/:idPagoBitacora',
+    component: ModificarMetodoPagoComponent,
+    resolve: {
+      respuesta: DetallePagoResolver
+    }
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [RealizarPagoResolver, DetallePagoResolver]
 })
 export class RealizarPagoRoutingModule {
 }

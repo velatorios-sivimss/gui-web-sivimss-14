@@ -1,0 +1,75 @@
+<ng-container [ngSwitch]="pasoModificarPago">
+  <ng-container *ngSwitchCase="CAPTURA_DE_PAGO">
+    <form [formGroup]="tipoPagoForm">
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <label class="control-label" for="tipoPagoAnterior">Tipo de pago anterior:</label>
+          <input id="tipoPagoAnterior" class="form-control" formControlName="tipoPagoAnterior"
+                 placeholder="">
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span>:</label>
+          <input id="tipoPago" class="form-control" formControlName="tipoPago"
+                 placeholder="Ingresar Tipo de pago">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.tipoPago?.errors?.required && (pf?.tipoPago?.dirty || pf?.tipoPago?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
+          <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
+          <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
+                      placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+          </p-calendar>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.fecha?.errors?.required && (pf?.fecha?.dirty || pf?.fecha?.touched)">Este campo es obligatorio *.</span>
+        </div>
+      </div>
+      <div class="row mb-3" *ngIf="!pagosDeshabilitados.includes(idPago)">
+        <div class="col-md-6">
+          <label class="control-label" for="noAutorizacion">No. de autorización<span class="req">*</span>:</label>
+          <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
+                 placeholder="Ingresa número" [maxlength]="20">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="nombreBanco">Nombre del banco<span class="req">*</span>:</label>
+          <input id="nombreBanco" class="form-control" formControlName="nombreBanco"
+                 placeholder="Ingresar nombre" [maxlength]="20">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.nombreBanco?.errors?.required && (pf?.nombreBanco?.dirty || pf?.nombreBanco?.touched)">Este campo es obligatorio *.</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
+          <p-inputNumber class="form-control" id="importe" formControlName="importe"
+                         placeholder="Ingresa importe" type="text" [maxlength]="10"
+                         [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD">
+          </p-inputNumber>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-3 flex justify-content-center  mt-2">
+          <div class="flex flex-column">
+            <span class=" etiqueta-base mt-2">Total pagado</span>
+            <span class="text-bold mt-2 total-pago text-center">{{total | currency}}</span>
+          </div>
+        </div>
+        <div class="col-md-3 flex justify-content-center  mt-2">
+          <div class="flex flex-column">
+            <span class=" etiqueta-base mt-2">Total a pagar</span>
+            <span class="text-bold mt-2 total-pago text-center">{{total | currency}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-12 control-label">
+          <span>*Campos obligatorios</span>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</ng-container>
