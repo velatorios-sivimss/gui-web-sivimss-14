@@ -28,6 +28,13 @@ const routes: Routes = [
     resolve: {
       respuesta: AgregarConvenioPfResolver
     }
+  },
+  {
+    path: 'ingresar-nuevo-convenio/modificar-persona',
+    component: AgregarPersonaConveniosPrevisionFunerariaComponent,
+    resolve: {
+      respuesta: AgregarConvenioPfResolver
+    }
   }
 
 ]

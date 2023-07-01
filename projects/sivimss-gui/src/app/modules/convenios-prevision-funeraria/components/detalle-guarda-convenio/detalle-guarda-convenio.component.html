@@ -1,12 +1,8 @@
 
-<ng-container *ngIf="objetoDetallePersona?.persona">
+<ng-container *ngIf="objetoDetallePersona.indTipoContratacion != ''">
   <div class="border-panel mb-3">
     <div class="row m-4 table-panel-row">
       <div class="row mb-3">
-        <div class="col-md-3">
-          <span>Número de convenio anterior:</span><br/>
-          <label> {{objetoDetallePersona.numeroConvenio}} </label>
-        </div>
         <div class="col-md-3">
           <span>Tipo de contratación:</span><br/>
           <label> Por persona </label>
@@ -119,7 +115,7 @@
       <div class="row p-3 table-panel-row">
         <div class="col-md-12">
           <div class="flex">
-            <p-checkbox inputId="ineAfiliadoDetalle" [(ngModel)]="this.objetoDetallePersona.documentacion.validaIneContratante" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
+            <p-checkbox inputId="ineAfiliadoDetalle" [(ngModel)]="this.objetoDetallePersona.persona.documentacion.validaIneContratante" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
             <label [for]="'ineAfiliadoDetalle'" class="control-label"><strong>INE del afiliado </strong></label>
           </div>
         </div>
@@ -127,7 +123,7 @@
       <div class="row p-3 table-panel-row">
         <div class="col-md-12">
           <div class="flex">
-            <p-checkbox inputId="copiaCURPDetalle" [(ngModel)]="this.objetoDetallePersona.documentacion.validaCurp" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
+            <p-checkbox inputId="copiaCURPDetalle" [(ngModel)]="this.objetoDetallePersona.persona.documentacion.validaCurp" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
             <label [for]="'copiaCURPDetalle'" class="control-label"><strong>Copia CURP </strong></label>
           </div>
         </div>
@@ -135,14 +131,14 @@
       <div class="row p-3 table-panel-row">
         <div class="col-md-12">
           <div class="flex">
-            <p-checkbox inputId="copiaRFCDetalle" [(ngModel)]="this.objetoDetallePersona.documentacion.validaRfc" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
+            <p-checkbox inputId="copiaRFCDetalle" [(ngModel)]="this.objetoDetallePersona.persona.documentacion.validaRfc" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
             <label [for]="'copiaRFCDetalle'" class="control-label"><strong>Copia RFC </strong></label>
           </div>
         </div>
       </div>
     </div>
   </div>
-    <div class="row mx-4 table-panel-row">
+    <div class="row mx-4 table-panel-row" *ngIf="objetoDetallePersona.persona?.beneficiarios .length > 0">
       <h2 class="subtitulo">Beneficiarios</h2>
       <div class="flex justify-content-center">
         <div class="col-md-11">

@@ -12,6 +12,7 @@ import {mapearArregloTipoDropdown} from "../../../utils/funciones";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
 import {ModeloGuardarPorEmpresa} from "../models/modelo-guardar-por-empresa.interface";
 import {ModeloGuardarPorPersona} from "../models/modelo-guardar-por-persona.interface";
+import {PlantillaControlSalida} from "../../consulta-donaciones/models/generar-plantilla-interface";
 
 @Injectable()
 export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any> {
@@ -73,6 +74,12 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
 
   guardarConvenioPorPersona(objetoPersona: ModeloGuardarPorPersona): Observable<HttpRespuesta<any>>{
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-agregar-convenio-persona`,objetoPersona);
+  }
+
+  generarPlantilla(plantailla:PlantillaControlSalida): Observable<Blob> {
+    return this._http.post<any>(
+      this._base + `${this._funcionalidad}/convenio-pf-generar-pdf/generarDocumento/pdf`, plantailla,
+      {responseType: 'blob' as any});
   }
 
 }

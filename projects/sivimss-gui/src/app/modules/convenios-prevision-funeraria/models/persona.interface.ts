@@ -8,17 +8,17 @@ export interface PersonaInterface {
   primerApellido?: string;
   segundoApellido?: string;
   correoElectronico?: string;
-  telefono?: number;
+  telefono?: string;
   calle?: string;
   numeroExterior?: string;
   numeroInterior?: string;
-  pais?: number;
-  cp?: number;
+  pais?: string;
+  cp?: string;
   colonia?: string;
   municipio?: string;
   estado?: string;
-  paquete?: number;
-  enfermedadPreexistente?: number;
+  paquete?: string;
+  enfermedadPreexistente?: string;
   ineAfiliado?: boolean,
   copiaCURP?: boolean,
   copiaRFC?: boolean,
@@ -27,6 +27,8 @@ export interface PersonaInterface {
     validaIneContratante?:boolean,
     validaCurp?:boolean,
     validaRfc?:boolean,
+    validaActaNacimientoBeneficiario?: boolean,
+    validaIneBeneficiario?: boolean,
   },
 
 

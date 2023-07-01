@@ -25,6 +25,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   @Input() existePersona: boolean = false;
   @Input() folioEmpresa!: any;
   @Input() confirmacionGuardado!: boolean;
+  @Input() @Input() consultarFormularioValido!: boolean;
   @Output() guardarFormularioPrincipal = new EventEmitter<boolean>();
   @Output() formularioValido = new EventEmitter<boolean>();
   @Output() formularioEmpresa = new EventEmitter<any>();
@@ -33,10 +34,10 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   readonly POSICION_ESTADOS = 1;
 
   empresaForm!: FormGroup;
-  empresaFormTempora!: Empresa;
+  empresaFormTempora!: any;
 
   agregarPersona: boolean = false;
-  personasConvenio: PersonaInterface[] = [];
+  personasConvenio!: any;
 
   estado!: TipoDropdown[];
   pais!: TipoDropdown[]
@@ -52,16 +53,20 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
+    const respuesta = this.route.snapshot.data['respuesta'];
 
     this.empresaFormTempora = JSON.parse(localStorage.getItem('empresaForm') as string) || {};
-    if(this.empresaFormTempora)localStorage.removeItem('empresaForm');
+    localStorage.removeItem('empresaForm');
     // if(!this.existePersona) this.empresaFormTempora = {};
-    this.personasConvenio = JSON.parse(localStorage.getItem('persona') as string) || [];
+    this.personasConvenio = this.empresaFormTempora.personas || [];
+    if(JSON.parse(localStorage.getItem('persona') as string)){
+      this.personasConvenio.push(JSON.parse(localStorage.getItem('persona') as string));
+    }
+
     localStorage.removeItem('persona');
 
 
 
-    const respuesta = this.route.snapshot.data['respuesta'];
     this.estado = respuesta[this.POSICION_ESTADOS]!.map((estado: TipoDropdown) => (
       {label: estado.label, value: estado.value} )) || [];
     this.pais = respuesta[this.POSICION_PAISES]!.map((pais: TipoDropdown) => (
@@ -75,7 +80,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     this.empresaForm = this.formBuilder.group({
                  nombre: [{value: this.empresaFormTempora?.nombre ?? null, disabled: false}, [Validators.required]],
             razonSocial: [{value: this.empresaFormTempora?.razonSocial ?? null, disabled: false}, [Validators.required]],
-                    rfc: [{value: this.empresaFormTempora?.rfc ?? null, disabled: false}],
+                    rfc: [{value: this.empresaFormTempora?.rfc ?? null, disabled: false},[Validators.required]],
                    pais: [{value: this.empresaFormTempora?.pais ?? null, disabled: false}, [Validators.required]],
                      cp: [{value: this.empresaFormTempora?.cp ?? null, disabled: false}, [Validators.required]],
                 colonia: [{value: this.empresaFormTempora?.colonia ?? null, disabled: false}, [Validators.required]],
@@ -85,7 +90,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
          numeroExterior: [{value: this.empresaFormTempora?.numeroExterior ?? null, disabled: false}, [Validators.required]],
          numeroInterior: [{value: this.empresaFormTempora?.numeroInterior ?? null, disabled: false}],
                telefono: [{value: this.empresaFormTempora?.telefono ?? null, disabled: false}, [Validators.required]],
-      correoElectronico: [{value: this.empresaFormTempora?.correoElectronico ?? null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
+      correoElectronico: [{value: this.empresaFormTempora?.correoElectronico ?? null, disabled: false}, [Validators.pattern(PATRON_CORREO)]],
     });
   }
 
@@ -112,6 +117,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
         console.log(error);
       }
     )
+    this.validarFormularioVacio(false,'local')
   }
 
   validarCorreoElectornico(): void {
@@ -137,9 +143,11 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
       numeroInterior: this.fe.numeroInterior.value,
       telefono: this.fe.telefono.value,
       correoElectronico: this.fe.correoElectronico.value,
+      personas: this.personasConvenio
     }
     localStorage.setItem('empresaForm',JSON.stringify(this.empresaFormTempora));
-    // localStorage.setItem('personasAgregadas',JSON.stringify(this.empresaFormTempora));
+
+    // localStorage.setItem('personasAgregadas',JSON.stringify(this.personasConvenio));
     this.guardarFormularioPrincipal.emit(true);
   }
 
@@ -188,13 +196,21 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     );
   }
 
-  validarFormularioVacio(): void {
-    //if(this.empresaForm.valid && this.personasConvenio.length > 0){
-    if(this.empresaForm.valid){
-      this.formularioValido.emit(true);
-    }else{
-      this.formularioValido.emit(false);
-    }
+  validarFormularioVacio(formularioPrincipalValido?: boolean, origen?: string): void {
+    this.empresaForm.valid ? this.formularioValido.emit(true):this.formularioValido.emit(false)
+    // if(this.empresaForm.valid && formularioPrincipalValido && origen?.includes('externo')){
+    //   this.formularioValido.emit({origen:origen,valido:true})
+    //   return;
+    // }
+    //
+    // if(this.empresaForm.valid && formularioPrincipalValido == false && origen?.includes('local')){
+    //   this.formularioValido.emit({origen:origen,valido:true})
+    //   return;
+    // }
+    //
+    // this.formularioValido.emit({origen:'',valido:false})
+
+
   }
 
   get fe() {
@@ -202,6 +218,13 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if(changes.confirmacionGuardado && changes.consultarFormularioValido && changes.folioConvenio){
+      return
+    }
+    if(this.consultarFormularioValido && changes.consultarFormularioValido) {
+      this.validarFormularioVacio(changes.consultarFormularioValido.currentValue,'externo')
+    }
+
     if(this.confirmacionGuardado){
       this.formularioEmpresa .emit(
         {

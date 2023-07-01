@@ -204,8 +204,9 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   }
 
   guardar(): void {
-    let personasAgregadas: PersonaInterface[] = JSON.parse(localStorage.getItem('persona') as string) || [];
-    personasAgregadas.push(this.objectoConfirmacion);
+    let personasAgregadas: PersonaInterface = JSON.parse(localStorage.getItem('persona') as string);
+    personasAgregadas = this.objectoConfirmacion
+    // personasAgregadas.push(this.objectoConfirmacion);
     localStorage.setItem('persona',JSON.stringify(personasAgregadas));
     this.router.navigate(['convenios-prevision-funeraria/ingresar-nuevo-convenio']);
   }
@@ -311,7 +312,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   siguiente(): void {
     this.indice++;
     if(this.indice == 3){
-      debugger
       this.objectoConfirmacion = {
           curp: this.personaForm.get('curp')?.value ? this.personaForm.get('curp')?.value : "",
           rfc: this.personaForm.get('rfc')?.value ? this.personaForm.get('rfc')?.value : "",
@@ -334,6 +334,11 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           copiaCURP: this.documentacionForm.get('copiaCURP')?.value ? this.documentacionForm.get('copiaCURP')?.value : false,
           copiaRFC: this.documentacionForm.get('copiaRFC')?.value ? this.documentacionForm.get('copiaRFC')?.value : false,
           beneficiarios: this.beneficiario,
+          documentacion:{
+            validaIneContratante:false,
+            validaCurp:false,
+            validaRfc:false
+          },
           nss:"",
           numIne:"",
           sexo:"",

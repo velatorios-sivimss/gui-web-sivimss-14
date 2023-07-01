@@ -21,9 +21,6 @@
             <label class="control-label" for="numeroConvenio">Número de convenio anterior</label>
             <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio" placeholder="Ingresa el número de convenio"
             maxlength="10" (change)="consultarConvenio()">
-            <span class="campo-obligatorio"
-                  *ngIf="ff.numeroConvenio?.errors?.required && (ff.numeroConvenio?.dirty || ff.numeroConvenio?.touched)">
-                            Campo obligatorio</span>
           </div>
           <div class="col-md-4">
             <label class="control-label" for="rfcCurp">RFC o CURP</label>
@@ -71,6 +68,7 @@
       <ng-container *ngIf="ff.tipoContratacion.value== 2" >
         <app-por-empresa [folioEmpresa]="folioEmpresa"
                          [confirmacionGuardado]="confirmacionGuardadoEmpresa"
+                         [consultarFormularioValido]="consultarFormularioValido"
                          [existePersona]="existePersona"
                          (guardarFormularioPrincipal)="guardarFormularioLocalStorage($event)"
                          (formularioValido)="validarFormularioEmpresa($event)"
@@ -147,9 +145,9 @@
     <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" *ngIf="indice == menuStep.length && ff.tipoContratacion.value== 1">Guardar</button>
     <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarEmpresa" (click)="confirmarGuardarEmpresa()" *ngIf="ff.tipoContratacion.value== 2">Guardar</button>
 
-    <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar('empresa')">Aceptar guardar Empresa</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 2" (click)="guardar('empresa')">Aceptar guardar Empresa</button>
 
-    <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar('persona')">Aceptar guardar Persona</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 1" (click)="guardar('persona')">Aceptar guardar Persona</button>
 
 
   </div>

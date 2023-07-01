@@ -32,10 +32,15 @@ export interface ModeloGuardarPorPersona
   enfermedadPreexistente?:string,
   otraEnfermedad?:string,
   paquete?:string,
-  persona?: PersonaInterface,
-  idPersona?: string,
-  idDomicilio?: string,
-  idContratante?: string,
-  numeroConvenio?: string,
+  persona: PersonaInterface,
+  idPersona?: unknown,
+  idDomicilio?: string | null,
+  idContratante?: string | null,
+  numeroConvenio?: string ,
   rfcCurp?: string,
+  documentacion?:{
+    validaIneContratante?: boolean | undefined,
+    validaCurp?: boolean | undefined,
+    validaRfc?: boolean | undefined,
+  }
 }

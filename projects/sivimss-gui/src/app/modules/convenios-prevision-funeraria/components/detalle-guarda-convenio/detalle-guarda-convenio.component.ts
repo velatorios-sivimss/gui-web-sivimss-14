@@ -11,16 +11,21 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {PlantillaConvenioInterface} from "../../models/plantilla-convenio.interface";
+import * as moment from "moment";
 
 @Component({
   selector: 'app-detalle-guarda-convenio',
   templateUrl: './detalle-guarda-convenio.component.html',
-  styleUrls: ['./detalle-guarda-convenio.component.scss']
+  styleUrls: ['./detalle-guarda-convenio.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
 
   @Input() objetoDetalleEmpresa: ModeloGuardarPorEmpresa = {};
-  @Input() objetoDetallePersona!: ModeloGuardarPorPersona;
+  @Input() objetoDetallePersona!: any;
   @Input() confirmarGuardarPersona!: boolean;
   @Input() confirmarGuardarEmpresa!: boolean;
 
@@ -36,12 +41,15 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
   descripcionPromotor!: TipoDropdown[];
   detalleTipoPaquete!:TipoDropdown[];
   detalleEnfermedad!:TipoDropdown[];
+  velatorio!: TipoDropdown[] ;
+  velatorioDescripcion!: string;
 
 
   constructor(
     private route: ActivatedRoute,
     private agregarConvenioPFService:AgregarConvenioPFService,
     private alertaService: AlertaService,
+    private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private router: Router,
@@ -60,7 +68,6 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       )
     )
 
-
     if(this.objetoDetalleEmpresa.empresa){
       this.descripcionPais = this.paises.filter(pais =>{
         return pais.value == this.objetoDetalleEmpresa.empresa?.pais
@@ -70,7 +77,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       });
     }
 
-    if(this.objetoDetallePersona.persona){
+    if(this.objetoDetallePersona.indTipoContratacion != ""){
       this.descripcionPais = this.paises.filter(pais =>{
         return pais.value == this.objetoDetallePersona.persona?.pais
       });
@@ -89,13 +96,14 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
 
     console.log(this.objetoDetalleEmpresa)
     console.log(this.objetoDetallePersona)
+
+    this.consultaVelatorio();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if(this.confirmarGuardarEmpresa)this.guardarEmpresa();
     if(this.confirmarGuardarPersona)this.guardarPersona();
   }
-
 
   guardarEmpresa(): void {
     this.loaderService.activar();
@@ -104,6 +112,10 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>)=> {
+        this.generarArchivo(respuesta.datos.idConvenio);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        this.router.navigate(["convenios-prevision-funeraria"]);
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -119,10 +131,68 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>)=> {
+        this.generarArchivo(respuesta.datos.idConvenio);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        this.router.navigate(["convenios-prevision-funeraria"]);
       },
       (error:HttpErrorResponse) => {
         console.log(error);
         this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+      }
+    )
+  }
+
+  generarArchivo(idConvenio:string): void {
+    this.loaderService.activar();
+    const configuracionArchivo: OpcionesArchivos = {};
+    const plantilla = this.generarDatosPlantilla(idConvenio);
+
+    this.agregarConvenioPFService.generarPlantilla(plantilla).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: any) => {
+        const file = new Blob([respuesta], {type: 'application/pdf'});
+        const url = window.URL.createObjectURL(file);
+        window.open(url);
+
+      },(error:HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
+  }
+
+  generarDatosPlantilla(idConvenio:string): PlantillaConvenioInterface {
+    let usuario = JSON.parse(localStorage.getItem('usuario') as string)
+    return {
+      rutaNombreReporte: "reportes/plantilla/ANEXO5_CONVENIO_PF_NUEVO.jrxml",
+      tipoReporte: "pdf",
+      ciudadExpedicion:this.velatorioDescripcion,
+      fechaExpedicion: moment().format('DD/MM/yyyy'),
+      idConvenio:idConvenio
+    }
+  }
+
+  consultaVelatorio(): void {
+    let usuario = JSON.parse(localStorage.getItem('usuario') as string);
+    this.loaderService.activar();
+    this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        this.velatorio = respuesta.datos!.map(
+          (velatorio: any) => (
+            {label: velatorio.nomVelatorio, value: velatorio.idVelatorio}
+          )
+        )
+
+        let velatorioSeleccionado = this.velatorio.filter(velatorio => {
+          return velatorio.value == usuario.idVelatorio;
+        })
+        this.velatorioDescripcion =  velatorioSeleccionado[0].label;
+      },
+      (error: HttpErrorResponse)=> {
+        console.log(error);
       }
     )
   }
