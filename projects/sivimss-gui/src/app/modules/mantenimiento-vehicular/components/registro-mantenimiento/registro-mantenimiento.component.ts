@@ -19,6 +19,7 @@ import { RespuestaRegistroMantenimiento } from "../../models/respuestaRegistroMa
 import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
+import { ERROR_GUARDAR_INFORMACION } from '../../constants/catalogos-filtros';
 
 type VehiculoRegistro = Omit<VehiculoMantenimiento, "ID_MTTOVERIFINICIO" | "ID_MTTO_SOLICITUD">
 
@@ -239,7 +240,11 @@ export class RegistroMantenimientoComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          if (error.statusText === 'Unknown Error') {
+            this.alertaService.mostrar(TipoAlerta.Error, ERROR_GUARDAR_INFORMACION);
+          } else {
+            this.mensajesSistemaService.mostrarMensajeError(error.message);
+          }
         }
       });
   }
