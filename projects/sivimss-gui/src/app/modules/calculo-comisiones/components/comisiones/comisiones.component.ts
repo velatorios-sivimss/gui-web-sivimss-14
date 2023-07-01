@@ -131,7 +131,7 @@ export class ComisionesComponent implements OnInit {
       idDelegacion: this.filtroFormComisiones.get("delegacion")?.value,
       idVelatorio: this.filtroFormComisiones.get("velatorio")?.value,
     }
-    this.comisiones = [ 
+    this.comisiones = [
       {
         id: 1,
         numEmpleado: '000001',
@@ -171,7 +171,7 @@ export class ComisionesComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }

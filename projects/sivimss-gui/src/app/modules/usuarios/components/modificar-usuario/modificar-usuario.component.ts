@@ -110,7 +110,7 @@ export class ModificarUsuarioComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }
@@ -133,7 +133,7 @@ export class ModificarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -148,7 +148,7 @@ export class ModificarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -198,7 +198,7 @@ export class ModificarUsuarioComponent implements OnInit {
         error: (error: HttpErrorResponse): void => {
           const ERROR: string = 'Error al guardar la información. Intenta nuevamente.';
           console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message, ERROR);
+          this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
         }
       });
   }

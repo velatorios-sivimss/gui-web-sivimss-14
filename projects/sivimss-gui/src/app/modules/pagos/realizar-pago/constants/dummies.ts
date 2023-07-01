@@ -1,48 +1,5 @@
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
-export const REGISTROS_PAGOS = [
-  {
-    fecha: '10/08/2021',
-    folio: 'DOC-000001',
-    nombreContratante: 'Heriberto Angelo Sanchez Maldonado',
-    tipoPago: 'Pago de Orden de Servicio',
-    total: '$25000',
-    estatus: 'Generada'
-  },
-  {
-    fecha: '10/08/2021',
-    folio: 'DOC-000001',
-    nombreContratante: 'Heriberto Angelo Sanchez Maldonado',
-    tipoPago: 'Pago de Orden de Servicio',
-    total: '$25000',
-    estatus: 'Vigente'
-  },
-  {
-    fecha: '10/08/2021',
-    folio: 'DOC-000001',
-    nombreContratante: 'Heriberto Angelo Sanchez Maldonado',
-    tipoPago: 'Pago de Orden de Servicio',
-    total: '$25000',
-    estatus: 'Pagada'
-  },
-  {
-    fecha: '10/08/2021',
-    folio: 'DOC-000001',
-    nombreContratante: 'Heriberto Angelo Sanchez Maldonado',
-    tipoPago: 'Pago de Orden de Servicio',
-    total: '$25000',
-    estatus: 'Cancelada'
-  },
-  {
-    fecha: '10/08/2021',
-    folio: 'DOC-000001',
-    nombreContratante: 'Heriberto Angelo Sanchez Maldonado',
-    tipoPago: 'Pago de Orden de Servicio',
-    total: '$25000',
-    estatus: 'Generada'
-  },
-];
-
 export const REGISTROS_PAGOS_ODS = [
   {
     fechaPago: '10/08/2021',
@@ -86,57 +43,65 @@ export const REGISTROS_PAGOS_ODS = [
   },
 ];
 
-export const TIPO_PAGO_CATALOGOS_ODS: TipoDropdown[] = [
+export const TIPO_PAGO_CATALOGOS_ODS: any[] = [
   {
-    value: 'Vale paritaria',
-    label: 'Vale paritaria'
+    value: 1,
+    label: 'Vale paritaria',
+    deshabilitado: true
   },
   {
-    value: 'Ayuda de gastos de funeral (AGF)',
-    label: 'Ayuda de gastos de funeral (AGF)'
+    value: 2,
+    label: 'Ayuda de Gastos de Funeral (AGF)',
+    deshabilitado: true
   },
   {
-    value: 'Tarjeta credito',
-    label: 'Tarjeta credito'
+    value: 3,
+    label: 'Tarjeta crédito',
+    deshabilitado: false
   },
   {
-    value: 'Tarjeta debito',
-    label: 'Tarjeta debito'
+    value: 4,
+    label: 'Tarjeta débito',
+    deshabilitado: false
   },
   {
-    value: 'Efectivo',
-    label: 'Efectivo'
+    value: 5,
+    label: 'Efectivo',
+    deshabilitado: false
   },
   {
-    value: 'Transferencia',
-    label: 'Transferencia'
+    value: 6,
+    label: 'Transferencia',
+    deshabilitado: false
   },
   {
-    value: 'Deposito',
-    label: 'Deposito'
+    value: 7,
+    label: 'Deposito',
+    deshabilitado: false
   },
   {
-    value: 'Traslado oficial',
-    label: 'Traslado oficial'
+    value: 8,
+    label: 'Traslado oficial',
+    deshabilitado: false
   }
 ];
 
 
 export const TIPO_PAGO_CATALOGOS_CONVENIO: TipoDropdown[] = [
   {
-    value: 'Tarjeta credito',
-    label: 'Tarjeta credito'
+    value: 3,
+    label: 'Tarjeta crédito'
   },
   {
-    value: 'Tarjeta debito',
-    label: 'Tarjeta debito'
+    value: 4,
+    label: 'Tarjeta débito'
   },
   {
-    value: 'Transferencia',
+    value: 6,
     label: 'Transferencia'
   },
   {
-    value: 'Deposito',
+    value: 7,
     label: 'Deposito'
   }
 ]

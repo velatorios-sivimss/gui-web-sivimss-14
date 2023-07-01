@@ -205,7 +205,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     })
   }
@@ -232,7 +232,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       }
     });
   }
-  
+
   obtenerVelatorios(): void {
     this.foliosGenerados = [];
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
