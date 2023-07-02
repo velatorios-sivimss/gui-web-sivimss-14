@@ -38,6 +38,8 @@ import { ServicioDetalleTrasladotoInterface } from '../../models/ServicioDetalle
 import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.interface';
 import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-datos-contratante',
   templateUrl: './datos-contratante.component.html',
@@ -58,6 +60,7 @@ export class DatosContratanteComponent implements OnInit {
   tipoSexo: TipoDropdown[] = sexo;
   muestraOtroSexo: boolean = false;
   nacionalidad: TipoDropdown[] = nacionalidad;
+  radonlyMatricula: boolean = false;
 
   estado!: TipoDropdown[];
   pais!: TipoDropdown[];
@@ -67,19 +70,29 @@ export class DatosContratanteComponent implements OnInit {
   contratante: ContratanteInterface = {} as ContratanteInterface;
   cp: CodigoPostalIterface = {} as CodigoPostalIterface;
   finado: FinadoInterface = {} as FinadoInterface;
-  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface = {} as CaracteristicasPresupuestoInterface;
-  caracteristicasPaquete: CaracteristicasPaqueteInterface = {} as CaracteristicasPaqueteInterface;
-  detallePaquete: Array<DetallePaqueteInterface> = [] as Array<DetallePaqueteInterface>;
-  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface = {} as ServicioDetalleTrasladotoInterface;
+  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface =
+    {} as CaracteristicasPresupuestoInterface;
+  caracteristicasPaquete: CaracteristicasPaqueteInterface =
+    {} as CaracteristicasPaqueteInterface;
+  detallePaquete: Array<DetallePaqueteInterface> =
+    [] as Array<DetallePaqueteInterface>;
+  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface =
+    {} as ServicioDetalleTrasladotoInterface;
   paquete: DetallePaqueteInterface = {} as DetallePaqueteInterface;
   cpFinado: CodigoPostalIterface = {} as CodigoPostalIterface;
-  caracteristicasDelPresupuesto: CaracteristicasDelPresupuestoInterface = {} as CaracteristicasDelPresupuestoInterface;
-  detallePresupuesto: Array<DetallePresupuestoInterface> = [] as Array<DetallePresupuestoInterface>;
+  caracteristicasDelPresupuesto: CaracteristicasDelPresupuestoInterface =
+    {} as CaracteristicasDelPresupuestoInterface;
+  detallePresupuesto: Array<DetallePresupuestoInterface> =
+    [] as Array<DetallePresupuestoInterface>;
   presupuesto: DetallePresupuestoInterface = {} as DetallePresupuestoInterface;
-  servicioDetalleTrasladoPresupuesto: ServicioDetalleTrasladotoInterface = {} as ServicioDetalleTrasladotoInterface;
-  informacionServicio: InformacionServicioInterface = {} as InformacionServicioInterface;
-  informacionServicioVelacion: InformacionServicioVelacionInterface = {} as InformacionServicioVelacionInterface;
+  servicioDetalleTrasladoPresupuesto: ServicioDetalleTrasladotoInterface =
+    {} as ServicioDetalleTrasladotoInterface;
+  informacionServicio: InformacionServicioInterface =
+    {} as InformacionServicioInterface;
+  informacionServicioVelacion: InformacionServicioVelacionInterface =
+    {} as InformacionServicioVelacionInterface;
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
+
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -89,23 +102,7 @@ export class DatosContratanteComponent implements OnInit {
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarEtapasService: GestionarEtapasService
-  ) {
-    this.altaODS.contratante = this.contratante;
-    this.contratante.cp = this.cp;
-    this.altaODS.finado = this.finado;
-    this.finado.cp = this.cpFinado;
-    this.altaODS.caracteristicasPresupuesto = this.caracteristicasPresupuesto;
-    this.caracteristicasPresupuesto.caracteristicasPaquete = this.caracteristicasPaquete;
-    this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
-    this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
-    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto = this.caracteristicasDelPresupuesto;
-    this.caracteristicasDelPresupuesto.detallePresupuesto = this.detallePresupuesto;
-    this.presupuesto.servicioDetalleTraslado = this.servicioDetalleTrasladoPresupuesto;
-    this.altaODS.informacionServicio = this.informacionServicio;
-    this.informacionServicio.informacionServicioVelacion = this.informacionServicioVelacion;
-    this.informacionServicioVelacion.cp = this.cpVelacion;
-
-  }
+  ) {}
 
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
@@ -131,10 +128,17 @@ export class DatosContratanteComponent implements OnInit {
       .subscribe((datosEtapaContratante) =>
         this.inicializarForm(datosEtapaContratante)
       );
-
-
+    this.gestionarEtapasService.altaODS$
+      .asObservable()
+      .subscribe((datosPrevios) => this.llenarAlta(datosPrevios));
   }
 
+  llenarAlta(datosPrevios: AltaODSInterface): void {
+    console.log(datosPrevios);
+
+    this.altaODS = datosPrevios;
+    console.log('incicio', this.altaODS);
+  }
   inicializarForm(datosEtapaContratante: any): void {
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
@@ -428,7 +432,7 @@ export class DatosContratanteComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            this.direccion.colonia.setValue(respuesta.datos[11].nombre);
+            this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].localidad.municipio.nombre
             );
@@ -448,13 +452,14 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   cambiarValidacion(): void {
+    this.radonlyMatricula = false;
     if (!this.datosContratante.matriculaCheck.value) {
+      this.radonlyMatricula = true;
       this.datosContratante.matricula.clearValidators();
-      this.datosContratante.matricula.patchValue(
-        this.datosContratante.matricula.value
-      );
+      this.datosContratante.matricula.patchValue(null);
       return;
     }
+
     this.datosContratante.matricula.setValidators(Validators.required);
     this.datosContratante.matricula.patchValue(
       this.datosContratante.matricula.value
@@ -497,7 +502,8 @@ export class DatosContratanteComponent implements OnInit {
     this.datosContratante.nacionalidad.reset();
   }
 
-  continuar() {
+  continuar(): void {
+    if (!this.form.valid) return;
     let etapas: Etapa[] = [
       {
         idEtapa: 0,
@@ -589,10 +595,7 @@ export class DatosContratanteComponent implements OnInit {
         estado: this.form.value.direccion.estado,
       },
     };
-    this.gestionarEtapasService.datosEtapaContratante$.next(
-      datosEtapaContratante
-    );
-    console.log('INFO A GUARDAR: ', datosEtapaContratante);
+
     this.datosAlta(datosEtapaContratante);
   }
 
@@ -613,8 +616,9 @@ export class DatosContratanteComponent implements OnInit {
     this.contratante.sexo = datosEtapaContratante.datosContratante.sexo;
     this.contratante.otroSexo =
       datosEtapaContratante.datosContratante.otroTipoSexo;
-    this.contratante.fechaNac =
-      datosEtapaContratante.datosContratante.fechaNacimiento;
+    this.contratante.fechaNac = moment(
+      datosEtapaContratante.datosContratante.fechaNacimiento
+    ).format('DD/MM/yyyy');
     this.contratante.idPais =
       datosEtapaContratante.datosContratante.paisNacimiento;
     this.contratante.idEstado =
@@ -629,11 +633,20 @@ export class DatosContratanteComponent implements OnInit {
     this.cp.desColonia = datosEtapaContratante.direccion.colonia;
     this.cp.desMunicipio = datosEtapaContratante.direccion.municipio;
     this.cp.desEstado = datosEtapaContratante.direccion.estado;
+    this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
+
+    this.gestionarEtapasService.datosEtapaContratante$.next(
+      datosEtapaContratante
+    );
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
-    console.log('se asignaron los calle', datosEtapaContratante.direccion.calle);
-    console.log('se asignaron los valores', this.altaODS);
+    console.log(
+      'se asignaron los calle',
+      datosEtapaContratante.direccion.calle
+    );
+    console.log('se asignaron los valores ante de mandarlso', this.altaODS);
   }
+
   get datosContratante() {
     return (this.form.controls['datosContratante'] as FormGroup).controls;
   }

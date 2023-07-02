@@ -1,22 +1,40 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { DialogService } from "primeng/dynamicdialog";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { ModalAgregarAlPaqueteComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-paquete/modal-agregar-al-paquete.component";
-import { ModalAgregarAlPresupuestoComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-presupuesto/modal-agregar-al-presupuesto.component";
-import { ModalAgregarServicioComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-servicio/modal-agregar-servicio.component";
-import { ModalVerKilometrajeComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-kilometraje/modal-ver-kilometraje.component";
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DialogService } from 'primeng/dynamicdialog';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { ModalAgregarAlPaqueteComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-paquete/modal-agregar-al-paquete.component';
+import { ModalAgregarAlPresupuestoComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-presupuesto/modal-agregar-al-presupuesto.component';
+import { ModalAgregarServicioComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-servicio/modal-agregar-servicio.component';
+import { ModalVerKilometrajeComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-kilometraje/modal-ver-kilometraje.component';
 import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 
+import { AltaODSInterface } from '../../models/AltaODS.interface';
+import { ContratanteInterface } from '../../models/Contratante.interface';
+import { CodigoPostalIterface } from '../../models/CodigoPostal.interface';
+import { FinadoInterface } from '../../models/Finado.interface';
+import { CaracteristicasPresupuestoInterface } from '../../models/CaracteristicasPresupuesto,interface';
+import { CaracteristicasPaqueteInterface } from '../../models/CaracteristicasPaquete.interface';
+import { CaracteristicasDelPresupuestoInterface } from '../../models/CaracteristicasDelPresupuesto.interface';
+import { DetallePaqueteInterface } from '../../models/DetallePaquete.interface';
+import { ServicioDetalleTrasladotoInterface } from '../../models/ServicioDetalleTraslado.interface';
+import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.interface';
+import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
+import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
+
 @Component({
   selector: 'app-caracteristicas-presupuesto',
   templateUrl: './caracteristicas-presupuesto.component.html',
-  styleUrls: ['./caracteristicas-presupuesto.component.scss']
+  styleUrls: ['./caracteristicas-presupuesto.component.scss'],
 })
 export class CaracteristicasPresupuestoComponent implements OnInit {
-
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @ViewChild(OverlayPanel)
@@ -28,6 +46,33 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   mostrarModalAgregarAtaud: boolean = false;
   formAgregarAtaud!: FormGroup;
 
+  altaODS: AltaODSInterface = {} as AltaODSInterface;
+  contratante: ContratanteInterface = {} as ContratanteInterface;
+  cp: CodigoPostalIterface = {} as CodigoPostalIterface;
+  finado: FinadoInterface = {} as FinadoInterface;
+  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface =
+    {} as CaracteristicasPresupuestoInterface;
+  caracteristicasPaquete: CaracteristicasPaqueteInterface =
+    {} as CaracteristicasPaqueteInterface;
+  detallePaquete: Array<DetallePaqueteInterface> =
+    [] as Array<DetallePaqueteInterface>;
+  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface =
+    {} as ServicioDetalleTrasladotoInterface;
+  paquete: DetallePaqueteInterface = {} as DetallePaqueteInterface;
+  cpFinado: CodigoPostalIterface = {} as CodigoPostalIterface;
+  caracteristicasDelPresupuesto: CaracteristicasDelPresupuestoInterface =
+    {} as CaracteristicasDelPresupuestoInterface;
+  detallePresupuesto: Array<DetallePresupuestoInterface> =
+    [] as Array<DetallePresupuestoInterface>;
+  presupuesto: DetallePresupuestoInterface = {} as DetallePresupuestoInterface;
+  servicioDetalleTrasladoPresupuesto: ServicioDetalleTrasladotoInterface =
+    {} as ServicioDetalleTrasladotoInterface;
+  informacionServicio: InformacionServicioInterface =
+    {} as InformacionServicioInterface;
+  informacionServicioVelacion: InformacionServicioVelacionInterface =
+    {} as InformacionServicioVelacionInterface;
+  cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
+
   paquetes: any[] = [
     {
       id: 0,
@@ -38,7 +83,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       importe: '$6,000.00',
       proveedor: 'Logística y movilidad S.A. de C.V.',
       totalPaquete: '$7,000.00',
-      deseaUtilizarArtServ: true
+      deseaUtilizarArtServ: true,
     },
     {
       id: 1,
@@ -49,7 +94,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       importe: '$3,000.00',
       proveedor: 'Logística y movilidad S.A. de C.V.',
       totalPaquete: '$4,000.00',
-      deseaUtilizarArtServ: true
+      deseaUtilizarArtServ: true,
     },
     {
       id: 2,
@@ -60,15 +105,34 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       importe: '$4,000.00',
       proveedor: 'Logística y movilidad S.A. de C.V.',
       totalPaquete: '$7,000.00',
-      deseaUtilizarArtServ: true
-    }
-  ]
+      deseaUtilizarArtServ: true,
+    },
+  ];
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
     private gestionarEtapasService: GestionarEtapasService
   ) {
+    this.altaODS.contratante = this.contratante;
+    this.contratante.cp = this.cp;
+    this.altaODS.finado = this.finado;
+    this.finado.cp = this.cpFinado;
+    this.altaODS.caracteristicasPresupuesto = this.caracteristicasPresupuesto;
+    this.caracteristicasPresupuesto.caracteristicasPaquete =
+      this.caracteristicasPaquete;
+    this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
+    this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
+    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto =
+      this.caracteristicasDelPresupuesto;
+    this.caracteristicasDelPresupuesto.detallePresupuesto =
+      this.detallePresupuesto;
+    this.presupuesto.servicioDetalleTraslado =
+      this.servicioDetalleTrasladoPresupuesto;
+    this.altaODS.informacionServicio = this.informacionServicio;
+    this.informacionServicio.informacionServicioVelacion =
+      this.informacionServicioVelacion;
+    this.informacionServicioVelacion.cp = this.cpVelacion;
   }
 
   ngOnInit(): void {
@@ -77,8 +141,8 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
 
   inicializarForm(): void {
     this.form = this.formBuilder.group({
-      observaciones: [{value: null, disabled: false}, [Validators.required]],
-      notasServicio: [{value: null, disabled: false}, [Validators.required]]
+      observaciones: [{ value: null, disabled: false }, [Validators.required]],
+      notasServicio: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
@@ -91,10 +155,10 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarAlPresupuestoComponent, {
       header: 'Agregar a presupuesto',
-      style: {maxWidth: '876px', width: '100%'},
+      style: { maxWidth: '876px', width: '100%' },
       data: {
-        dummy: ''
-      }
+        dummy: '',
+      },
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
@@ -106,10 +170,10 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarAlPaqueteComponent, {
       header: 'Agregar a paquete',
-      style: {maxWidth: '876px', width: '100%'},
+      style: { maxWidth: '876px', width: '100%' },
       data: {
-        dummy: ''
-      }
+        dummy: '',
+      },
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
@@ -119,23 +183,23 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
 
   abrirModalAgregarAtaud(): void {
     this.formAgregarAtaud = this.formBuilder.group({
-      ataud: [{value: null, disabled: false}, [Validators.required]],
-      proveedor: [{value: null, disabled: false}, [Validators.required]]
+      ataud: [{ value: null, disabled: false }, [Validators.required]],
+      proveedor: [{ value: null, disabled: false }, [Validators.required]],
     });
     this.mostrarModalAgregarAtaud = true;
   }
 
-
   abrirModalAgregarServicio() {
     const ref = this.dialogService.open(ModalAgregarServicioComponent, {
       header: 'Agregar servicio',
-      style: {maxWidth: '876px', width: '100%'},
+      style: { maxWidth: '876px', width: '100%' },
       data: {
-        dummy: '' //Pasa info a ModalVerTarjetaIdentificacionComponent
-      }
+        dummy: '', //Pasa info a ModalVerTarjetaIdentificacionComponent
+      },
     });
     ref.onClose.subscribe((val: boolean) => {
-      if (val) { //Obtener info cuando se cierre el modal en ModalVerTarjetaIdentificacionComponent
+      if (val) {
+        //Obtener info cuando se cierre el modal en ModalVerTarjetaIdentificacionComponent
       }
     });
   }
@@ -143,13 +207,14 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   abrirModalVerKm(): void {
     const ref = this.dialogService.open(ModalVerKilometrajeComponent, {
       header: 'Ver kilometraje',
-      style: {maxWidth: '876px', width: '100%'},
+      style: { maxWidth: '876px', width: '100%' },
       data: {
-        dummy: '' //Pasa info a ModalVerKilometrajeComponent
-      }
+        dummy: '', //Pasa info a ModalVerKilometrajeComponent
+      },
     });
     ref.onClose.subscribe((val: boolean) => {
-      if (val) { //Obtener info cuando se cierre el modal en ModalVerKilometrajeComponent
+      if (val) {
+        //Obtener info cuando se cierre el modal en ModalVerKilometrajeComponent
       }
     });
   }
@@ -163,12 +228,12 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         textoExterior: 'Datos del contratante',
         lineaIzquierda: {
           mostrar: false,
-          estilo: "solid"
+          estilo: 'solid',
         },
         lineaDerecha: {
           mostrar: true,
-          estilo: "dashed"
-        }
+          estilo: 'dashed',
+        },
       },
       {
         idEtapa: 1,
@@ -177,12 +242,12 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         textoExterior: 'Datos del finado',
         lineaIzquierda: {
           mostrar: true,
-          estilo: "dashed"
+          estilo: 'dashed',
         },
         lineaDerecha: {
           mostrar: true,
-          estilo: "solid"
-        }
+          estilo: 'solid',
+        },
       },
       {
         idEtapa: 2,
@@ -191,12 +256,12 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         textoExterior: 'Características del presupuesto',
         lineaIzquierda: {
           mostrar: true,
-          estilo: "solid"
+          estilo: 'solid',
         },
         lineaDerecha: {
           mostrar: true,
-          estilo: "solid"
-        }
+          estilo: 'solid',
+        },
       },
       {
         idEtapa: 3,
@@ -205,19 +270,19 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         textoExterior: 'Información del servicio',
         lineaIzquierda: {
           mostrar: true,
-          estilo: "solid"
+          estilo: 'solid',
         },
         lineaDerecha: {
           mostrar: false,
-          estilo: "solid"
-        }
-      }
+          estilo: 'solid',
+        },
+      },
     ];
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(1);
   }
-  
+
   continuar() {
     let etapas: Etapa[] = [
       {
@@ -227,12 +292,12 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         textoExterior: 'Datos del contratante',
         lineaIzquierda: {
           mostrar: false,
-          estilo: "solid"
+          estilo: 'solid',
         },
         lineaDerecha: {
           mostrar: true,
-          estilo: "dashed"
-        }
+          estilo: 'dashed',
+        },
       },
       {
         idEtapa: 1,
@@ -241,12 +306,12 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         textoExterior: 'Datos del finado',
         lineaIzquierda: {
           mostrar: true,
-          estilo: "dashed"
+          estilo: 'dashed',
         },
         lineaDerecha: {
           mostrar: true,
-          estilo: "dashed"
-        }
+          estilo: 'dashed',
+        },
       },
       {
         idEtapa: 2,
@@ -255,12 +320,12 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         textoExterior: 'Características del presupuesto',
         lineaIzquierda: {
           mostrar: true,
-          estilo: "dashed"
+          estilo: 'dashed',
         },
         lineaDerecha: {
           mostrar: true,
-          estilo: "dashed"
-        }
+          estilo: 'dashed',
+        },
       },
       {
         idEtapa: 3,
@@ -269,24 +334,21 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         textoExterior: 'Información del servicio',
         lineaIzquierda: {
           mostrar: true,
-          estilo: "dashed"
+          estilo: 'dashed',
         },
         lineaDerecha: {
           mostrar: false,
-          estilo: "solid"
-        }
-      }
+          estilo: 'solid',
+        },
+      },
     ];
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(3);
-    console.log("INFO A GUARDAR STEP 3: ", this.form.value);
+    console.log('INFO A GUARDAR STEP 3: ', this.form.value);
   }
 
   get f() {
     return this.form.controls;
   }
-
-
-
 }
