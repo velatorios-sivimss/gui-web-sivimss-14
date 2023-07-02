@@ -87,13 +87,13 @@ export class GenerarOrdenServicioService extends BaseService<
     );
   }
 
-  consutaNSS(nss: string): Observable<HttpRespuesta<any>> {
+  consultarNSS(nss: string): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       `${environment.api.servicios_externos}consultar/nss/` + nss
     );
   }
 
-  consutaPaquetes(parametros: any): Observable<HttpRespuesta<any>> {
+  consultarPaquetes(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
         `${this._funcionalidad}/buscar-filtros/orden-paquete-consultar`,
@@ -101,7 +101,7 @@ export class GenerarOrdenServicioService extends BaseService<
     );
   }
 
-  consutaDetallePaquete(parametros: any): Observable<HttpRespuesta<any>> {
+  consultarDetallePaquete(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
         `${this._funcionalidad}/buscar-filtros/orden-paquete-consultar-caracteristicas`,
@@ -109,10 +109,33 @@ export class GenerarOrdenServicioService extends BaseService<
     );
   }
 
-  consutaTipoAsignacion(parametros: any): Observable<HttpRespuesta<any>> {
+  consultarTipoAsignacion(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
         `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-asignacion`,
+      parametros
+    );
+  }
+
+  consultarAtaudes(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud`,
+      parametros
+    );
+  }
+
+  consultarProveedorAtaudes(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-proveedor`,
+      parametros
+    );
+  }
+
+  consultarAtaudInventario(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-inventario`,
       parametros
     );
   }

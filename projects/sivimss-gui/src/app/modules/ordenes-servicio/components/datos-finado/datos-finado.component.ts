@@ -784,7 +784,7 @@ export class DatosFinadoComponent implements OnInit {
       return;
     }
     this.gestionarOrdenServicioService
-      .consutaNSS(this.datosFinado.nss.value)
+      .consultarNSS(this.datosFinado.nss.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {

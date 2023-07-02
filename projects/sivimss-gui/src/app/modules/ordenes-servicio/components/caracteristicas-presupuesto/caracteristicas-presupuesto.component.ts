@@ -94,6 +94,8 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   mostrarProveedor: boolean = false;
   mostrarAtaudes: boolean = false;
   tipoAsignacion: any[] = [];
+
+  idVelatorio: number = 1; /// falta agregarlo del front
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -139,7 +141,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     this.loaderService.activar();
     const parametros = { idVelatorio: 1 };
     this.gestionarOrdenServicioService
-      .consutaPaquetes(parametros)
+      .consultarPaquetes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -185,7 +187,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     this.buscarTipoAsignacion();
     const parametros = { idPaquete: this.paqueteSeleccionado };
     this.gestionarOrdenServicioService
-      .consutaDetallePaquete(parametros)
+      .consultarDetallePaquete(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -226,18 +228,25 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     this.loaderService.activar();
     const parametros = { idPaquete: this.paqueteSeleccionado };
     this.gestionarOrdenServicioService
-      .consutaTipoAsignacion(parametros)
+      .consultarTipoAsignacion(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           console.log('tipo asignacion', respuesta);
-          const datos = respuesta.datos;
+
           if (respuesta.error) {
             this.tipoAsignacion = [];
 
             return;
           }
-          // this.tipoAsignacion = datos;
+          const datos = respuesta.datos[0]['idAsignacion'];
+          if (datos == '0') {
+            this.tipoAsignacion = [];
+            return;
+          }
+          this.tipoAsignacion = datos.split(',');
+
+          console.log(this.tipoAsignacion);
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -247,20 +256,19 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, paqueteSeleccionado: any): void {
     console.log(paqueteSeleccionado);
-    console.log(Number(paqueteSeleccionado.idProveedor));
     this.mostrarKilometrajes = false;
     this.mostrarTraslado = false;
     this.mostrarProveedor = false;
     this.mostrarAtaudes = false;
 
+    if (Number(paqueteSeleccionado.idTipoServicio) == 4) {
+      this.mostrarTraslado = true;
+    }
     if (
       Number(paqueteSeleccionado.idProveedor) > 0 &&
       Number(paqueteSeleccionado.idTipoServicio) == 4
     ) {
       this.mostrarKilometrajes = true;
-    }
-    if (Number(paqueteSeleccionado.idTipoServicio) == 4) {
-      this.mostrarTraslado = true;
     }
     if (
       Number(paqueteSeleccionado.idTipoServicio) != 4 &&
@@ -290,22 +298,37 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     });
   }
 
-  abrirModalAgregarAlPaquete(event: MouseEvent) {
+  abrirModalAgregarAtaud(event: MouseEvent) {
     event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarAlPaqueteComponent, {
-      header: 'Agregar a paquete',
+      header: 'Agregar ataúd',
       style: { maxWidth: '876px', width: '100%' },
       data: {
-        dummy: '',
+        tipoAsignacion: this.tipoAsignacion,
+        idVelatorio: this.idVelatorio,
+      },
+    });
+    ref.onClose.subscribe((val: any) => {
+      console.log(val);
+    });
+  }
+
+  abrirModalAgregarServicioTraslado() {
+    const ref = this.dialogService.open(ModalAgregarServicioComponent, {
+      header: 'Agregar servicio traslado',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        dummy: '', //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
+        //Obtener info cuando se cierre el modal en ModalVerTarjetaIdentificacionComponent
       }
     });
   }
 
-  abrirModalAgregarAtaud(): void {
+  abrirModalAgregarAtauds(): void {
     this.formAgregarAtaud = this.formBuilder.group({
       ataud: [{ value: null, disabled: false }, [Validators.required]],
       proveedor: [{ value: null, disabled: false }, [Validators.required]],

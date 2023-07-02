@@ -1,24 +1,218 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import {
+  AlertaService,
+  TipoAlerta,
+} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
 
+import { finalize } from 'rxjs/operators';
+import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
+import { ActivatedRoute } from '@angular/router';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 @Component({
   selector: 'app-modal-agregar-al-paquete',
   templateUrl: './modal-agregar-al-paquete.component.html',
-  styleUrls: ['./modal-agregar-al-paquete.component.scss']
+  styleUrls: ['./modal-agregar-al-paquete.component.scss'],
 })
 export class ModalAgregarAlPaqueteComponent implements OnInit {
-
+  tipoAsignacion: any[] = [];
+  listaAtaudes: any[] = [];
+  selectIdAsignacion: string | null = null;
+  ataudSeleccionado: number | null = null;
+  proveedorSeleccionado: number | null = null;
+  listaProveedores: any[] = [];
+  idVelatorio!: number;
+  selectAtaudInventario: number | null = null;
+  listaAtaudesInventario: any[] = [];
+  salida: any = {};
   constructor(
     private readonly ref: DynamicDialogRef,
-    private readonly config: DynamicDialogConfig
-  ) { }
+    private readonly config: DynamicDialogConfig,
+    private loaderService: LoaderService,
+    private alertaService: AlertaService,
+    private gestionarOrdenServicioService: GenerarOrdenServicioService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.tipoAsignacion = this.config.data.tipoAsignacion;
+    this.idVelatorio = this.config.data.idVelatorio;
+    if (this.tipoAsignacion.length > 0) {
+      this.selectIdAsignacion = this.tipoAsignacion[0];
+      this.buscarAtaudes();
+    }
+  }
+
+  buscarAtaudes(): void {
+    this.loaderService.activar();
+    const parametros = {
+      idVelatorio: this.idVelatorio,
+      idAsignacion: this.selectIdAsignacion,
+    };
+    console.log(parametros);
+    this.gestionarOrdenServicioService
+      .consultarAtaudes(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.listaAtaudes = [];
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(respuesta.datos)
+              )
+            );
+            return;
+          }
+          this.listaAtaudes = mapearArregloTipoDropdown(
+            datos,
+            'nombreArticulo',
+            'idArticulo'
+          );
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          try {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(error.error.datos)
+              )
+            );
+          } catch (error) {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+            );
+          }
+        }
+      );
+  }
+
+  buscarProveedor(): void {
+    this.loaderService.activar();
+    const parametros = {
+      idArticulo: this.ataudSeleccionado,
+    };
+    this.gestionarOrdenServicioService
+      .consultarProveedorAtaudes(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.listaProveedores = [];
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(respuesta.datos)
+              )
+            );
+            return;
+          }
+          this.listaProveedores = mapearArregloTipoDropdown(
+            datos,
+            'nombreProveedor',
+            'idProveedor'
+          );
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          try {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(error.error.datos)
+              )
+            );
+          } catch (error) {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+            );
+          }
+        }
+      );
+  }
+
+  limpiarSelects(): void {
+    this.listaAtaudes = [];
+    this.listaProveedores = [];
+    this.buscarAtaudes();
+  }
+
+  buscarAtaudInventario() {
+    this.loaderService.activar();
+    const parametros = {
+      idArticulo: this.ataudSeleccionado,
+      idAsignacion: this.selectIdAsignacion,
+      idProveedor: this.proveedorSeleccionado,
+      idVelatorio: this.idVelatorio,
+    };
+    this.gestionarOrdenServicioService
+      .consultarAtaudInventario(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.listaAtaudesInventario = [];
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(respuesta.datos)
+              )
+            );
+            return;
+          }
+
+          this.listaAtaudesInventario = mapearArregloTipoDropdown(
+            datos,
+            'idFolioArticulo',
+            'idInventario'
+          );
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          try {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(error.error.datos)
+              )
+            );
+          } catch (error) {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+            );
+          }
+        }
+      );
   }
 
   cerrarModal() {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
-    this.ref.close(true);
+
+    this.ref.close(this.salida);
   }
 
+  aceptarModal(): void {
+    this.salida = {
+      idAsignacion: this.selectIdAsignacion,
+      idArticulo: this.ataudSeleccionado,
+      idProveedor: this.proveedorSeleccionado,
+      idInventario: this.selectAtaudInventario,
+    };
+    this.ref.close(this.salida);
+  }
 }
