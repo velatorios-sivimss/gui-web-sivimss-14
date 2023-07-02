@@ -28,6 +28,20 @@ import { ServicioDetalleTrasladotoInterface } from '../../models/ServicioDetalle
 import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.interface';
 import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
+import { ContenidoPaqueteInterface } from '../../models/ContenidoPaquete,interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import {
+  AlertaService,
+  TipoAlerta,
+} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+
+import { finalize } from 'rxjs/operators';
+
+import { LoaderService } from '../../../../shared/loader/services/loader.service';
+import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
+
+import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 
 @Component({
   selector: 'app-caracteristicas-presupuesto',
@@ -73,45 +87,19 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     {} as InformacionServicioVelacionInterface;
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
 
-  paquetes: any[] = [
-    {
-      id: 0,
-      noConsecutivo: '1029384',
-      grupo: 'Traslado',
-      concepto: 'Traslado nacional',
-      cantidad: 1,
-      importe: '$6,000.00',
-      proveedor: 'Logística y movilidad S.A. de C.V.',
-      totalPaquete: '$7,000.00',
-      deseaUtilizarArtServ: true,
-    },
-    {
-      id: 1,
-      noConsecutivo: '5463723',
-      grupo: 'Cremación',
-      concepto: 'Cremación familiar',
-      cantidad: 1,
-      importe: '$3,000.00',
-      proveedor: 'Logística y movilidad S.A. de C.V.',
-      totalPaquete: '$4,000.00',
-      deseaUtilizarArtServ: true,
-    },
-    {
-      id: 2,
-      noConsecutivo: '4534664',
-      grupo: 'Ataúd',
-      concepto: 'Ataúd',
-      cantidad: 1,
-      importe: '$4,000.00',
-      proveedor: 'Logística y movilidad S.A. de C.V.',
-      totalPaquete: '$7,000.00',
-      deseaUtilizarArtServ: true,
-    },
-  ];
-
+  paquetes: any[] = [];
+  datosPaquetes: ContenidoPaqueteInterface[] = [];
+  mostrarKilometrajes: boolean = false;
+  mostrarTraslado: boolean = false;
+  mostrarProveedor: boolean = false;
+  mostrarAtaudes: boolean = false;
+  tipoAsignacion: any[] = [];
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
+    private loaderService: LoaderService,
+    private alertaService: AlertaService,
+    private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private gestionarEtapasService: GestionarEtapasService
   ) {
     this.altaODS.contratante = this.contratante;
@@ -137,6 +125,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
 
   ngOnInit(): void {
     this.inicializarForm();
+    this.buscarPaquetes();
   }
 
   inicializarForm(): void {
@@ -146,8 +135,143 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     });
   }
 
+  buscarPaquetes(): void {
+    this.loaderService.activar();
+    const parametros = { idVelatorio: 1 };
+    this.gestionarOrdenServicioService
+      .consutaPaquetes(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.paquetes = [];
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(respuesta.datos)
+              )
+            );
+            return;
+          }
+          this.paquetes = mapearArregloTipoDropdown(
+            datos,
+            'nombrePaquete',
+            'idPaquete'
+          );
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          try {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(error.error.datos)
+              )
+            );
+          } catch (error) {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+            );
+          }
+        }
+      );
+  }
+
+  detallePaqueteFunction(): void {
+    this.loaderService.activar();
+    this.buscarTipoAsignacion();
+    const parametros = { idPaquete: this.paqueteSeleccionado };
+    this.gestionarOrdenServicioService
+      .consutaDetallePaquete(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log('detalle paquete', respuesta);
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.paquetes = [];
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(respuesta.datos)
+              )
+            );
+            return;
+          }
+          this.datosPaquetes = datos;
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          try {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(error.error.datos)
+              )
+            );
+          } catch (error) {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+            );
+          }
+        }
+      );
+  }
+
+  buscarTipoAsignacion(): void {
+    this.loaderService.activar();
+    const parametros = { idPaquete: this.paqueteSeleccionado };
+    this.gestionarOrdenServicioService
+      .consutaTipoAsignacion(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log('tipo asignacion', respuesta);
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.tipoAsignacion = [];
+
+            return;
+          }
+          // this.tipoAsignacion = datos;
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      );
+  }
+
   abrirPanel(event: MouseEvent, paqueteSeleccionado: any): void {
-    this.paqueteSeleccionado = paqueteSeleccionado;
+    console.log(paqueteSeleccionado);
+    console.log(Number(paqueteSeleccionado.idProveedor));
+    this.mostrarKilometrajes = false;
+    this.mostrarTraslado = false;
+    this.mostrarProveedor = false;
+    this.mostrarAtaudes = false;
+
+    if (
+      Number(paqueteSeleccionado.idProveedor) > 0 &&
+      Number(paqueteSeleccionado.idTipoServicio) == 4
+    ) {
+      this.mostrarKilometrajes = true;
+    }
+    if (Number(paqueteSeleccionado.idTipoServicio) == 4) {
+      this.mostrarTraslado = true;
+    }
+    if (
+      Number(paqueteSeleccionado.idTipoServicio) != 4 &&
+      paqueteSeleccionado.idTipoServicio != ''
+    ) {
+      this.mostrarProveedor = true;
+    }
+    if (paqueteSeleccionado.idTipoServicio == '') {
+      this.mostrarAtaudes = true;
+    }
+
     this.overlayPanel.toggle(event);
   }
 

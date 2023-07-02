@@ -4,9 +4,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AutenticacionService } from '../../../services/autenticacion.service';
 import { environment } from '../../../../environments/environment';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
+import { MensajeSistema } from '../../../models/mensaje-sistema';
 
 @Injectable()
 export class GenerarOrdenServicioService extends BaseService<
@@ -16,6 +17,9 @@ export class GenerarOrdenServicioService extends BaseService<
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, '', '', 20, '', '', '');
   }
+
+  private mensajesSistemaSubject: BehaviorSubject<MensajeSistema[] | null> =
+    new BehaviorSubject<MensajeSistema[] | null>(null);
 
   obtenerCatalogoParentesco(): Observable<TipoDropdown[]> {
     const catalogo_parentesco = this.authService.obtenerCatalogoDeLocalStorage(
@@ -54,6 +58,15 @@ export class GenerarOrdenServicioService extends BaseService<
     );
   }
 
+  obtenerMensajeSistemaPorId(id: number): string {
+    const mensajeSistema = this.mensajesSistemaSubject
+      .getValue()
+      ?.find(
+        (mensajeSistema: MensajeSistema) => mensajeSistema.idMensaje === id
+      );
+    return mensajeSistema ? mensajeSistema.desMensaje : '';
+  }
+
   consutaCP(cp: String): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       `${environment.api.servicios_externos}consultar/codigo-postal/` + cp
@@ -77,6 +90,30 @@ export class GenerarOrdenServicioService extends BaseService<
   consutaNSS(nss: string): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       `${environment.api.servicios_externos}consultar/nss/` + nss
+    );
+  }
+
+  consutaPaquetes(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-paquete-consultar`,
+      parametros
+    );
+  }
+
+  consutaDetallePaquete(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-paquete-consultar-caracteristicas`,
+      parametros
+    );
+  }
+
+  consutaTipoAsignacion(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-asignacion`,
+      parametros
     );
   }
 }

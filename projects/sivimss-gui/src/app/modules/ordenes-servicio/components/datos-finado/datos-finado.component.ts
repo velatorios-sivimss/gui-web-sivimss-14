@@ -710,18 +710,24 @@ export class DatosFinadoComponent implements OnInit {
       this.radonlyEstremidad = false;
       this.radonlyNSS = false;
       this.radonlyNoContrato = true;
+      this.radonlyCurp = false;
+      this.agregarValidaciones();
     } else if (idTipoOden == 2) {
       this.datosFinado.tipoOrden.setValue(2);
       this.radonlyMatricula = false;
       this.radonlyEstremidad = false;
       this.radonlyNSS = false;
       this.radonlyNoContrato = false;
+      this.radonlyCurp = false;
+      this.agregarValidaciones();
     } else {
       this.datosFinado.tipoOrden.setValue(3);
       this.radonlyMatricula = true;
       this.radonlyEstremidad = true;
       this.radonlyNSS = true;
       this.radonlyNoContrato = true;
+      this.radonlyCurp = true;
+      this.removerValidaciones();
     }
   }
 
