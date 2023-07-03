@@ -5,7 +5,7 @@
     <div class="col-md-4">
       <span>  Velatorio: </span>
       <br/>
-      <label>{{beneficiario.velatorio}}</label>
+      <label>{{velatorioDescripcion}}</label>
     </div>
     <div class="col-md-4">
       <span> Fecha:  </span>
@@ -16,6 +16,24 @@
       <span> Edad: </span>
       <br/>
       <label>{{beneficiario.edad}}</label>
+    </div>
+  </div>
+  <hr class="hr-accordion-content">
+  <div class="row">
+    <div class="col-md-4">
+      <span>  Nombre (s): </span>
+      <br/>
+      <label>{{ beneficiario.nombre}}</label>
+    </div>
+    <div class="col-md-4">
+      <span>  Primer apellido: </span>
+      <br/>
+      <label>{{ beneficiario.primerApellido}}</label>
+    </div>
+    <div class="col-md-4">
+      <span>  Segundo apellido: </span>
+      <br/>
+      <label>{{ beneficiario.segundoApellido}}</label>
     </div>
   </div>
   <hr class="hr-accordion-content">
@@ -52,6 +70,23 @@
       <span> Teléfono: </span>
       <br/>
       <label>{{beneficiario.telefono}}</label>
+    </div>
+  </div>
+  <hr class="hr-accordion-content">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="flex">
+        <p-checkbox [disabled]="true" [(ngModel)]="beneficiario.documentacion.validaActaNacimientoBeneficiario" styleClass="mr-3" [binary]="true" inputId="actaDeNacimiento"></p-checkbox>
+        <label [for]="'actaDeNacimiento'" class="control-label"><strong>Acta de Nacimiento (Original o Copia Certificada)</strong></label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="flex">
+        <p-checkbox [disabled]="true" [(ngModel)]="beneficiario.documentacion.validaIneBeneficiario" styleClass="mr-3" [binary]="true" inputId="copiaINE"></p-checkbox>
+        <label [for]="'copiaINE'" class="control-label"><strong>Copia INE del beneficiario si es mayor de edad</strong></label>
+      </div>
     </div>
   </div>
 </div>
