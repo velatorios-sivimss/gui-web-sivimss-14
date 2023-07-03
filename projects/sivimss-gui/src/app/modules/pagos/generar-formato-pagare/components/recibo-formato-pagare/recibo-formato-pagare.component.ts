@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {GenerarFormatoPagareService} from "../../services/generar-formato-pagare.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -20,14 +20,16 @@ export class ReciboFormatoPagareComponent implements OnInit {
   filtroForm!: FormGroup;
 
   constructor(
-    private router: Router,
+    private route: ActivatedRoute,
     private generarFormatoPagareService: GenerarFormatoPagareService,
     private cargadorService: LoaderService,
     private alertaService: AlertaService,
     private formBuilder: FormBuilder
   ) {
-    const idODS: number = this.router.getCurrentNavigation()?.extractedUrl.queryParams?.idODS;
-    this.obtenerValoresPagare(idODS);
+    this.formatoPagare = this.route.snapshot.data["respuesta"].datos[0];
+    this.formatoPagare.tipoReporte = "pdf";
+    this.obtenerImporteLetra(this.formatoPagare.importe);
+    this.inicializarFiltroForm();
   }
 
   ngOnInit(): void {
@@ -39,25 +41,6 @@ export class ReciboFormatoPagareComponent implements OnInit {
       redito: [{ value: this.formatoPagare.redito, disabled: false }],
     });
   }
-
-  obtenerValoresPagare(idODS: number): void {
-    this.cargadorService.activar();
-    this.generarFormatoPagareService.buscarDatosPagare(idODS).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (response) => {
-        if (response.datos.length === 0) return;
-        this.formatoPagare = response.datos[0];
-        this.formatoPagare.tipoReporte = "pdf";
-        this.obtenerImporteLetra(this.formatoPagare.importe);
-        this.inicializarFiltroForm();
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error)
-      }
-    );
-  }
-
   
   obtenerImporteLetra(importe: number): void {
     this.cargadorService.activar();
