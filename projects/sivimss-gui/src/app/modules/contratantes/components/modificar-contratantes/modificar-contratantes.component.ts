@@ -1,101 +1,285 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {MenuItem} from "primeng/api";
-import {MENU_STEPPER} from "../../constants/menu-steppers";
-import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {UsuarioContratante} from "../../models/usuario-contratante.interface";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../constants/dummies";
+import { Component, Input, OnInit } from '@angular/core';
+import { ConfirmationService, MenuItem } from "primeng/api";
+import { MENU_STEPPER } from "../../constants/menu-steppers";
+import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { TipoCatalogo, UsuarioContratante, ValorCP } from "../../models/usuario-contratante.interface";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { ContratantesService } from '../../services/contratantes.service';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import * as moment from 'moment';
+import { TIPO_SEXO, CATALOGO_NACIONALIDAD, CATALOGO_SEXO } from '../../constants/catalogos-complementarios';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { finalize } from 'rxjs';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-modificar-contratantes',
   templateUrl: './modificar-contratantes.component.html',
-  styleUrls: ['./modificar-contratantes.component.scss']
+  styleUrls: ['./modificar-contratantes.component.scss'],
+  providers: [DatePipe, ConfirmationService]
 })
 export class ModificarContratantesComponent implements OnInit {
+  readonly ID_CATALOGO_PAISES: number = 1;
+  readonly ID_CATALOGO_ESTADOS: number = 2;
 
   @Input() contratante!: UsuarioContratante;
   @Input() origen!: string;
 
   contratanteModificado: UsuarioContratante = {};
-
+  mensajeRegistroDuplicado: string | undefined;
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
-
+  vistaConfirmarCambio: boolean = false;
   datosGeneralesForm!: FormGroup;
   domicilioForm!: FormGroup;
-
-  sexo: TipoDropdown[] = CATALOGOS_DUMMIES;
-  nacionalidad: TipoDropdown[] = CATALOGOS_DUMMIES;
+  colonias: TipoDropdown[] = [];
+  tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
+  nacionalidad: TipoDropdown[] = CATALOGO_NACIONALIDAD;
+  catalogoEstados: TipoDropdown[] = [];
+  catalogoPaises: TipoDropdown[] = [];
 
   constructor(
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private formBuilder: FormBuilder,
+    private contratantesService: ContratantesService,
+    private alertaService: AlertaService,
+    private loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private datePipe: DatePipe,
+    private confirmationService: ConfirmationService,
   ) { }
 
   ngOnInit(): void {
-    if(this.config?.data){
+    if (this.config?.data) {
       this.contratante = this.config.data.contratante;
+      this.obtenerDetalleContratante();
     }
-
-    this.incializarDatosGeneralesForm(this.contratante);
-    this.inicializarDomicilioForm(this.contratante);
   }
 
-  incializarDatosGeneralesForm(contratanteSeleccionado:UsuarioContratante): void {
+  mdoalRegistroDuplicado() {
+    this.confirmationService.confirm({
+      message: this.mensajeRegistroDuplicado,
+      accept: () => { },
+    });
+  }
+
+  obtenerDetalleContratante() {
+    if (this.contratante.idContratante) {
+      this.contratantesService.obtenerDetalleContratante(this.contratante.idContratante).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.codigo === 200) {
+            this.contratante = respuesta?.datos[0] || [];
+            this.incializarDatosGeneralesForm(this.contratante);
+            this.inicializarDomicilioForm(this.contratante);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      });
+    }
+  }
+
+  incializarDatosGeneralesForm(contratante: UsuarioContratante): void {
+    let fechaNacimiento = moment(contratante.fecNacimiento, 'DD-MM-YYYY').format('YYYY-MM-DD');
+    let idTipoSexo = this.contratante.otroSexo ? 3 : this.contratante.numSexo;
     this.datosGeneralesForm = this.formBuilder.group({
-      curp: [{value: contratanteSeleccionado.curp, disabled: false}, [Validators.required]],
-      rfc: [{value: contratanteSeleccionado.rfc, disabled: false}, [Validators.required]],
-      nss: [{value: contratanteSeleccionado.nss, disabled: false}, [Validators.required]],
-      nombre: [{value: contratanteSeleccionado.nombre, disabled: false}, [Validators.required]],
-      primerApellido: [{value: contratanteSeleccionado.primerApellido, disabled: false}, [Validators.required]],
-      segundoApellido: [{value: contratanteSeleccionado.segundoApellido, disabled: false}, [Validators.required]],
-      sexo: [{value: contratanteSeleccionado.sexo, disabled: false}, [Validators.required]],
-      fechaNacimiento: [{value: contratanteSeleccionado.fechaNacimiento, disabled: false}, [Validators.required]],
-      nacionalidad: [{value: contratanteSeleccionado.nacionalidad, disabled: false}, [Validators.required]],
-      lugarNacimiento: [{value: contratanteSeleccionado.lugarNacimiento, disabled: false}, [Validators.required]],
-      telefono: [{value: contratanteSeleccionado.telefono, disabled: false}, [Validators.required]],
-      correoElectronico: [{value: contratanteSeleccionado.correoElectronico, disabled: false}, [Validators.required]]
+      curp: [{ value: contratante.curp, disabled: true }, []],
+      rfc: [{ value: contratante.rfc, disabled: false }, [Validators.maxLength(13)]],
+      nss: [{ value: contratante.nss, disabled: true }, []],
+      nombre: [{ value: contratante.nombre, disabled: false }, [Validators.maxLength(30)]],
+      paterno: [{ value: contratante.paterno, disabled: false }, [Validators.maxLength(30)]],
+      materno: [{ value: contratante.materno, disabled: false }, [Validators.maxLength(30)]],
+      numSexo: [{ value: idTipoSexo, disabled: false }, []],
+      otroSexo: [{ value: idTipoSexo, disabled: false }, [Validators.maxLength(15)]],
+      fecNacimiento: [{ value: new Date(this.diferenciaUTC(fechaNacimiento)), disabled: false }, []],
+      nacionalidad: [{
+        value: String(contratante.nacionalidad).toLocaleLowerCase() === 'mexicana' ? 1 : 2,
+        disabled: false
+      }, []],
+      idEstado: [{ value: contratante.idEstado, disabled: false }, []],
+      idPais: [{ value: contratante.idPais, disabled: false }, []],
+      telefono: [{ value: contratante.telefono, disabled: false }, [Validators.maxLength(10)]],
+      correo: [{ value: contratante.correo, disabled: false }, [Validators.email]]
     });
+    if (this.dgf.nacionalidad.value === 1) {
+      this.obtenerEstadosPaises(this.ID_CATALOGO_ESTADOS);
+    } else {
+      this.obtenerEstadosPaises(this.ID_CATALOGO_PAISES);
+    }
   }
 
-  inicializarDomicilioForm(contratanteSeleccionado:UsuarioContratante): void {
+  inicializarDomicilioForm(contratante: UsuarioContratante): void {
     this.domicilioForm = this.formBuilder.group({
-      cp: [{value: contratanteSeleccionado.cp, disabled: false}, [Validators.required]],
-      calle: [{value: contratanteSeleccionado.calle, disabled: false}, [Validators.required]],
-      numeroExterior: [{value: contratanteSeleccionado.numeroExterior, disabled: false}, [Validators.required]],
-      numeroInterior: [{value: contratanteSeleccionado.numeroInterior, disabled: false}, [Validators.required]],
-      colonia: [{value: contratanteSeleccionado.colonia, disabled: false}, [Validators.required]],
-      municipio: [{value: contratanteSeleccionado.municipio, disabled: false}, [Validators.required]],
-      estado: [{value: contratanteSeleccionado.estado, disabled: false}, [Validators.required]],
-      estatus: [{value: contratanteSeleccionado.estatus, disabled: false}, [Validators.required]],
+      cp: [{ value: contratante.cp, disabled: false }, [Validators.maxLength(5)]],
+      calle: [{ value: contratante.calle, disabled: false }, [Validators.maxLength(30)]],
+      numExt: [{ value: contratante.numExt, disabled: false }, [Validators.maxLength(10)]],
+      numInt: [{ value: contratante.numInt, disabled: false }, [Validators.maxLength(10)]],
+      colonia: [{ value: contratante.colonia, disabled: false }, []],
+      municipio: [{ value: contratante.municipio, disabled: true }, []],
+      estado: [{ value: contratante.estado, disabled: true }, []],
+      estatus: [{ value: contratante.estatus, disabled: false }, []],
     });
+
+    this.obtenerCP();
+  }
+
+  diferenciaUTC(fecha: string) {
+    let objetoFecha = new Date(fecha);
+    return objetoFecha.setMinutes(objetoFecha.getMinutes() + objetoFecha.getTimezoneOffset());
+  }
+
+  obtenerEstadosPaises(idCatalogo: number) {
+    this.contratantesService.consultarCatalogo({ idCatalogo })
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (idCatalogo === 2) {
+            this.catalogoEstados = mapearArregloTipoDropdown(respuesta.datos, "estado", "id");
+          } else {
+            this.catalogoPaises = mapearArregloTipoDropdown(respuesta.datos, "pais", "id");
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error("ERROR: ", error);
+        }
+      });
+  }
+
+  obtenerCP(): void {
+    if (!this.df.cp?.value) return;
+    this.loaderService.activar();
+    let datos: TipoCatalogo = {
+      idCatalogo: 3,
+      cp: +this.df.cp?.value,
+    }
+    this.contratantesService.consultarCatalogo(datos)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          const { datos } = respuesta;
+          if (datos.length === 0 || !datos) {
+            this.limpiarCP();
+          }
+          const { estado, municipio } = datos[0];
+          this.colonias = datos.map((d: ValorCP) => ({ value: d.colonia, label: d.colonia }));
+          this.df.municipio.patchValue(municipio);
+          this.df.estado.patchValue(estado);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
+          console.error("ERROR: ", error);
+        }
+      });
+  }
+
+  limpiarCP(): void {
+    this.df.municipio.patchValue("");
+    this.df.estado.patchValue("");
+    this.df.colonia.patchValue("");
+    // this.df.colonia.disable();
+    this.colonias = [];
+  }
+
+  validarEmail() {
+    if (this.dgf.correoElectronico.invalid) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Tu correo electrónico no es válido.');
+    }
+  }
+
+  validarRfc() {
+    const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/);
+    if (!regex.test(this.dgf.rfc.value)) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C.no valido.');
+      this.dgf.rfc.setErrors({ 'incorrect': true });
+    } else {
+      this.dgf.rfc.setErrors(null);
+    }
   }
 
   siguiente(): void {
-    this.indice ++;
-    if(this.indice == this.menuStep.length){
-      this.crearResumenContratante();
+    this.indice++;
+    if (this.indice == this.menuStep.length) {
+      if (this.domicilioForm.valid && this.datosGeneralesForm.valid) {
+        this.datosContratante();
+        this.vistaConfirmarCambio = true;
+      }
     }
-  }
-  cancelar(): void {
-    this.ref.close();
   }
 
-  crearResumenContratante(): void {
+  cancelarConfirmacion(): void {
+    this.indice--;
+    this.vistaConfirmarCambio = false;
+  }
+
+  cancelar(): void {
+    this.ref.close({ estatus: false });
+  }
+
+  datosContratante(): void {
     this.contratanteModificado = {
-      id: null,
-      ...this.datosGeneralesForm.value,
-      ...this.domicilioForm.value
+      ...this.contratante,
+      ...this.datosGeneralesForm.getRawValue(),
+      ...this.domicilioForm.getRawValue(),
+      nacionalidad: this.contratante.nacionalidad,
+    };
+  }
+
+  datosActualizar() {
+    return {
+      idPersona: this.contratanteModificado.idContratante,
+      nombre: this.contratanteModificado.nombre,
+      paterno: this.contratanteModificado.paterno,
+      materno: this.contratanteModificado.materno,
+      rfc: this.contratanteModificado.rfc,
+      numSexo: this.contratanteModificado.numSexo,
+      otroSexo: this.contratanteModificado.otroSexo,
+      fecNacimiento: moment(this.contratanteModificado.fecNacimiento).format('DD-MM-YYYY'),
+      idPais: this.contratanteModificado.idPais,
+      idLugarNac: this.contratanteModificado.idEstado,
+      tel: this.contratanteModificado.telefono,
+      correo: this.contratanteModificado.correo,
+      calle: this.contratanteModificado.calle,
+      numInt: this.contratanteModificado.numInt,
+      numExt: this.contratanteModificado.numExt,
+      cp: this.contratanteModificado.cp,
+      desColonia: this.contratanteModificado.colonia,
+      idDomicilio: this.contratanteModificado.idDomicilio,
     }
+  }
+
+  actualizarContratante() {
+    this.contratantesService.actualizar(this.datosActualizar()).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.codigo === 200 && !respuesta.error) {
+          this.alertaService.mostrar(TipoAlerta.Exito,
+            `Modificado correctamente. ${this.contratanteModificado.nombre} ${this.contratanteModificado.paterno} ${this.contratanteModificado.materno}`);
+          this.vistaConfirmarCambio = false;
+          this.ref.close({ estatus: true });
+        } else {
+          this.mensajeRegistroDuplicado = 'El contratante que deseas ingresar ya se encuentra registrado en el sistema.'; //this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mdoalRegistroDuplicado();
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
+      }
+    });
   }
 
   get dgf() {
     return this.datosGeneralesForm.controls;
   }
 
-  get df(){
+  get df() {
     return this.domicilioForm.controls;
   }
 
