@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {BreadcrumbService} from "../../../../../shared/breadcrumb/services/breadcrumb.service";
 import {GESTIONAR_PAGO_BREADCRUMB} from "../../constants/breadcrumb";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
+import {LazyLoadEvent} from "primeng/api";
+import {validarUsuarioLogueado} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-gestionar-pago',
@@ -10,6 +14,18 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 })
 export class GestionarPagoComponent implements OnInit {
   filtroGestionarPagoForm!: FormGroup;
+
+  catalogoVelatorios: TipoDropdown[] = [];
+  foliosODS: TipoDropdown[] = [];
+  foliosPNCPF: TipoDropdown[] = [];
+  foliosPRCPF: TipoDropdown[] = [];
+
+  pagos: any[] = [];
+
+  numPaginaActual: number = 0;
+  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
+  totalElementos: number = 0;
+  paginacionConFiltrado: boolean = false;
 
   constructor(private breadcrumbService: BreadcrumbService,
               private formBuilder: FormBuilder) {
@@ -22,8 +38,21 @@ export class GestionarPagoComponent implements OnInit {
 
   inicializarForm(): void {
     this.filtroGestionarPagoForm = this.formBuilder.group({
-      velatorio: [{value: null, disabled: false}]
+      velatorio: [{value: null, disabled: false}],
+      folioODS: [{value: null, disabled: false}],
+      folioPNCPF: [{value: null, disabled: false}],
+      folioPRCPF: [{value: null, disabled: false}],
+      elaboracionInicio: [{value: null, disabled: false}],
+      elaboracionFin: [{value: null, disabled: false}],
+      nombreContratante: [{value: null, disabled: false}],
     });
+  }
+
+  seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+    }
   }
 
 }
