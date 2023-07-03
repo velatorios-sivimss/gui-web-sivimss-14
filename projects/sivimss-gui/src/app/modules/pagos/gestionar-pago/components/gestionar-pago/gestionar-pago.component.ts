@@ -21,6 +21,7 @@ export class GestionarPagoComponent implements OnInit {
   foliosPRCPF: TipoDropdown[] = [];
 
   pagos: any[] = [];
+  tipoFolio: null | 1 | 2 | 3 = null;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -46,6 +47,22 @@ export class GestionarPagoComponent implements OnInit {
       elaboracionFin: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
     });
+  }
+
+  limpiarFolios(folio: 1 | 2 | 3): void {
+    this.tipoFolio = folio;
+    if (folio === 1) {
+      this.filtroGestionarPagoForm.get('folioPNCPF')?.patchValue(null);
+      this.filtroGestionarPagoForm.get('folioPRCPF')?.patchValue(null);
+      return;
+    }
+    if (folio === 2) {
+      this.filtroGestionarPagoForm.get('folioODS')?.patchValue(null);
+      this.filtroGestionarPagoForm.get('folioPRCPF')?.patchValue(null);
+      return;
+    }
+    this.filtroGestionarPagoForm.get('folioODS')?.patchValue(null);
+    this.filtroGestionarPagoForm.get('folioPNCPF')?.patchValue(null);
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
