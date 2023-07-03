@@ -43,6 +43,7 @@ import { CeldaStickyModule } from "../../shared/celda-sticky/celda-sticky.module
 import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
 import { ValueConverterPipe } from "./pipes/value.converter.pipe";
 import { InputNumberModule } from "primeng/inputnumber";
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { InputNumberModule } from "primeng/inputnumber";
     CeldaStickyModule,
     ValidaRolModule,
     InputNumberModule,
+    ConfirmDialogModule,
   ],
   providers: [MantenimientoVehicularService],
 })

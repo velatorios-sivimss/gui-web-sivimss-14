@@ -41,7 +41,8 @@ export class MantenimientoPredictivoComponent implements OnInit {
   filtroForm!: FormGroup
   verDetallePredictivo: boolean = false;
   rangoFecha: string = '';
-
+  mostrarModalConfirmacion: boolean = false;
+  mensajeArchivoConfirmacion: string = "";
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
@@ -217,7 +218,8 @@ export class MantenimientoPredictivoComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.mostrarModalConfirmacion = true;
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
