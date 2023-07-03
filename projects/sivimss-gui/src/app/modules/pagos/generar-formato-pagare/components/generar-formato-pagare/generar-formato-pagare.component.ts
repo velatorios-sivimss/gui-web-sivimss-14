@@ -96,7 +96,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
-  abrirModalformatoPagareTramites(): void {
+ abrirModalformatoPagareTramites (): void {
     this.router.navigate(['generar-formato-pagare'], {
       relativeTo: this.activatedRoute,
       queryParams: {idODS: this.formatoPagareSeleccionado.id}
