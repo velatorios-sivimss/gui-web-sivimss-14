@@ -142,12 +142,12 @@
     <button type="button" class="btn btn-default btn-md ml-5" routerLink="../">Cancelar</button>
 <!--    <button type="button"  class="btn btn-default btn-md ml-5" (click)="regresar()" *ngIf="indice > 0 && ff.tipoContratacion.value== 1">Regresar</button>-->
     <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" (click)="siguiente()" *ngIf="indice < menuStep.length && ff.tipoContratacion.value== 1">Siguiente</button>
-    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" *ngIf="indice == menuStep.length && ff.tipoContratacion.value== 1">Guardar</button>
-    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarEmpresa" (click)="confirmarGuardarEmpresa()" *ngIf="ff.tipoContratacion.value== 2">Guardar</button>
+<!--    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" *ngIf="indice == menuStep.length && ff.tipoContratacion.value== 1">Guardar</button>-->
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarEmpresa" (click)="confirmarGuardarEmpresa()" *ngIf="ff.tipoContratacion.value== 2  && indice < 2">Guardar</button>
 
-    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 2" (click)="guardar('empresa')">Aceptar guardar Empresa</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 2" (click)="guardar('empresa')">Aceptar</button>
 
-    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 1" (click)="guardar('persona')">Aceptar guardar Persona</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 1" (click)="guardar('persona')">Aceptar</button>
 
 
   </div>

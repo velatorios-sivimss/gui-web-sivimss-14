@@ -76,6 +76,10 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-agregar-convenio-persona`,objetoPersona);
   }
 
+  cambiarEstatusConvenio(datosConvenio:{folioConvenio:any,banderaActivo: any}) :Observable<HttpRespuesta<any>>{
+    return this._http.put<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-activar-desactivar`,datosConvenio);
+  }
+
   generarPlantilla(plantailla:PlantillaControlSalida): Observable<Blob> {
     return this._http.post<any>(
       this._base + `${this._funcionalidad}/convenio-pf-generar-pdf/generarDocumento/pdf`, plantailla,

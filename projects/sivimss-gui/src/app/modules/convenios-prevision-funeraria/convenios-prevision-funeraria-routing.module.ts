@@ -9,6 +9,9 @@ import {
   AgregarPersonaConveniosPrevisionFunerariaComponent
 } from "./components/agregar-persona-convenios-prevision-funeraria/agregar-persona-convenios-prevision-funeraria.component";
 import {AgregarConvenioPfResolver} from "./services/agregar-convenio-pf.resolver";
+import {
+  ConveniosPfModificarComponent
+} from "./components/modificar-convenios-prevision-funeraria/convenios-prevision-funeraria-modificar/convenios-pf-modificar.component";
 
 const routes: Routes = [
   {
@@ -30,8 +33,8 @@ const routes: Routes = [
     }
   },
   {
-    path: 'ingresar-nuevo-convenio/modificar-persona',
-    component: AgregarPersonaConveniosPrevisionFunerariaComponent,
+    path: 'modificar-nuevo-convenio',
+    component: ConveniosPfModificarComponent,
     resolve: {
       respuesta: AgregarConvenioPfResolver
     }

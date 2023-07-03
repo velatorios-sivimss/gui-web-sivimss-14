@@ -141,8 +141,9 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Renovar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Activar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarConvenio()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('2')" (click)="cambiarEstatusConvenio()" titulo="Desactivar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('3')" (click)="cambiarEstatusConvenio()" titulo="Activar"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Convenio PF anterior"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Hoja de afiliación"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
