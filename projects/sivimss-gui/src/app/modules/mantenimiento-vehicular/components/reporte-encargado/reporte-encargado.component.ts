@@ -38,7 +38,8 @@ export class ReporteEncargadoComponent implements OnInit {
   numPaginaActual: number = 0
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0
-
+  mostrarModalConfirmacion: boolean = false;
+  mensajeArchivoConfirmacion: string = "";
   velatorio: string = '';
   totalVehiculos: number = 0;
   rangoFecha: string = '';
@@ -213,7 +214,8 @@ export class ReporteEncargadoComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.mostrarModalConfirmacion = true;
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
