@@ -4,7 +4,7 @@ import {HttpRespuesta} from "projects/sivimss-gui/src/app/models/http-respuesta.
 import {MensajeSistema} from "projects/sivimss-gui/src/app/models/mensaje-sistema";
 import {BehaviorSubject, Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import { environment } from "../../environments/environment";
+import {environment} from "../../environments/environment";
 import {AlertaService, TipoAlerta} from "../shared/alerta/services/alerta.service";
 
 @Injectable()
@@ -36,8 +36,13 @@ export class MensajesSistemaService {
     );
   }
 
-  mostrarMensajeError(codigoError: string, defaultError: string = ''): void {
-    const errorMsg: string = this.obtenerMensajeSistemaPorId(parseInt(codigoError));
+  mostrarMensajeError(error: HttpErrorResponse, defaultError: string = ''): void {
+    let errorMsg: string = this.obtenerMensajeSistemaPorId(parseInt(error.message));
+    if (errorMsg !== '') {
+      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
+      return;
+    }
+    errorMsg = this.obtenerMensajeSistemaPorId(parseInt(error.error?.mensaje));
     if (errorMsg !== '') {
       this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       return;

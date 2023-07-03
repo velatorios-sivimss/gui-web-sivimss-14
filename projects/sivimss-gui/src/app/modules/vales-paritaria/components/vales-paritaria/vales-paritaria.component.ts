@@ -3,8 +3,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {OverlayPanel} from "primeng-lts/overlaypanel";
-import { LazyLoadEvent } from "primeng-lts/api";
+import {OverlayPanel} from "primeng/overlaypanel";
+import { LazyLoadEvent } from "primeng/api";
 import { USUARIOS_BREADCRUMB } from '../../../usuarios/constants/breadcrumb';
 import {ValeParitaria} from "../../models/vale-paritaria.interface";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
@@ -72,7 +72,7 @@ export class ValesParitariaComponent implements OnInit {
           nombre: 'Heriberto Angelo Sánchez Maldonado',
           tipoContratacion: 'Base',
           estatus: 'Jubilados'
-         
+
         },
         {
           id: 3,
