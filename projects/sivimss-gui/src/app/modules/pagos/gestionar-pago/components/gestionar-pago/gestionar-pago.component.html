@@ -39,8 +39,8 @@
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" >Limpiar filtros</button>
-        <button type="button" class="btn btn-primary btn-md ml-5" >Buscar</button>
+        <button type="submit" class="btn btn-default btn-md">Limpiar filtros</button>
+        <button type="button" class="btn btn-primary btn-md ml-5">Buscar</button>
       </div>
     </div>
   </form>
@@ -50,5 +50,29 @@
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
            (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
            appActivarUltimaCeldaSticky>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn id="columna_gestionar_pago_fecha">Fecha</th>
+        <th pResizableColumn id="columna_gestionar_pago_folio">Folio</th>
+        <th pResizableColumn id="columna_gestionar_pago_contratante">Nombre Contratante</th>
+        <th pResizableColumn id="columna_gestionar_pago_tipo_pago">Tipo Pago</th>
+        <th pResizableColumn id="columna_gestionar_pago_total">Total</th>
+        <th pResizableColumn id="columna_gestionar_pago_estatus">Estatus</th>
+        <th pResizableColumn id="columna_gestionar_pago_estatus_pago">Estatus de Pago</th>
+        <th pResizableColumn id="columna_gestionar_pago_datos_pago">Datos de Pago</th>
+        <th id="columna_gestionar_pago_datos_botones"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pago>
+      <tr>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="9" class="p-2 text-center font-bold text-xl" id="gestionar_pago_sin_resultados">
+          No se encontro información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
   </p-table>
 </section>
