@@ -18,4 +18,6 @@ export interface ContenidoPaqueteInterface {
   coordDestino?: any[];
   idAsignacion?: number | null;
   utilizarArticulo?: boolean;
+  provinene?: string | null;
+  bloquearRadioButton?: boolean | null;
 }

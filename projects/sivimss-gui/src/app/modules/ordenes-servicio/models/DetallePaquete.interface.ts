@@ -1,14 +1,14 @@
-import { ServicioDetalleTrasladotoInterface } from "./ServicioDetalleTraslado.interface";
+import { ServicioDetalleTrasladotoInterface } from './ServicioDetalleTraslado.interface';
 
-export interface DetallePaqueteInterface{
-    idArticulo:number | null;
-    idServicio:number | null;
-    idTipoServicio:number | null;
-    desmotivo:string | null;
-    activo:number | null;
-    cantidad:number | null;
-    idProveedor:number | null;
-    importeMonto:number | null;
-    totalPaquete:number | null;
-    servicioDetalleTraslado:ServicioDetalleTrasladotoInterface;
+export interface DetallePaqueteInterface {
+  idArticulo: number | null;
+  idServicio: number | null;
+  idTipoServicio: number | null;
+  desmotivo: string | null;
+  activo: number | null;
+  cantidad: number | null;
+  idProveedor: number | null;
+  importeMonto: number | null;
+  totalPaquete: number | null;
+  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface | null;
 }

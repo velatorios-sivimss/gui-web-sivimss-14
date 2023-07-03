@@ -42,6 +42,7 @@ import { GenerarOrdenServicioService } from '../../services/generar-orden-servic
 
 import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { Dropdown } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-caracteristicas-presupuesto',
@@ -100,6 +101,14 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   mostrarDonarAtaud: boolean = true;
   fila: number = 0;
   utilizarArticulo: boolean | null = null;
+  datosPresupuesto: any[] = [];
+  mostrarTIpoOtorgamiento: boolean = true;
+  selecionaTipoOtorgamiento: number | null = null;
+  valoresTipoOrtogamiento: any[] = [
+    { value: 1, label: 'Estudio socioeconómico' },
+    { value: 2, label: 'EscritoLlibre' },
+  ];
+  mostrarQuitarPresupuesto: boolean = false;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -186,9 +195,15 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       );
   }
 
-  detallePaqueteFunction(): void {
+  detallePaqueteFunction(dd: Dropdown): void {
+    let nombrePaquete = dd.selectedOption.label;
+    this.mostrarTIpoOtorgamiento = false;
+    if (nombrePaquete.trim() == 'Paquete social') {
+      this.mostrarTIpoOtorgamiento = true;
+    }
     this.loaderService.activar();
     this.buscarTipoAsignacion();
+    this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
     const parametros = { idPaquete: this.paqueteSeleccionado };
     this.gestionarOrdenServicioService
       .consultarDetallePaquete(parametros)
@@ -261,44 +276,57 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   abrirPanel(
     event: MouseEvent,
     paqueteSeleccionado: any,
-    noFila: number
+    noFila: number,
+    proviene: string
   ): void {
     console.log(paqueteSeleccionado);
     paqueteSeleccionado.fila = noFila + 1;
     this.idServicio = Number(paqueteSeleccionado.idServicio);
     this.fila = noFila + 1;
-    this.mostrarKilometrajes = false;
-    this.mostrarTraslado = false;
-    this.mostrarProveedor = false;
-    this.mostrarAtaudes = false;
-    this.mostrarDonarAtaud = false;
+    let validaRadioButton = paqueteSeleccionado.bloquearRadioButton ?? false;
+    if (validaRadioButton) return;
+    if (proviene == 'paquete') {
+      this.mostrarKilometrajes = false;
+      this.mostrarTraslado = false;
+      this.mostrarProveedor = false;
+      this.mostrarAtaudes = false;
+      this.mostrarDonarAtaud = false;
+      this.mostrarQuitarPresupuesto = false;
 
-    if (Number(paqueteSeleccionado.idTipoServicio) == 4) {
-      this.mostrarTraslado = true;
-    }
-    if (
-      Number(paqueteSeleccionado.idProveedor) > 0 &&
-      Number(paqueteSeleccionado.idTipoServicio) == 4
-    ) {
-      this.mostrarKilometrajes = true;
-    }
-    if (
-      Number(paqueteSeleccionado.idTipoServicio) != 4 &&
-      paqueteSeleccionado.idTipoServicio != ''
-    ) {
-      this.mostrarProveedor = true;
-    }
-    if (paqueteSeleccionado.idTipoServicio == '') {
-      this.mostrarAtaudes = true;
-    }
-    if (Number(paqueteSeleccionado.idServicio) > 0) {
-      this.consultarProveeedorServicio();
-    }
-    if (
-      Number(paqueteSeleccionado.idAsignacion) == 1 ||
-      Number(paqueteSeleccionado.idAsignacion) == 5
-    ) {
-      this.mostrarDonarAtaud = true;
+      if (Number(paqueteSeleccionado.idTipoServicio) == 4) {
+        this.mostrarTraslado = true;
+      }
+      if (
+        Number(paqueteSeleccionado.idProveedor) > 0 &&
+        Number(paqueteSeleccionado.idTipoServicio) == 4
+      ) {
+        this.mostrarKilometrajes = true;
+      }
+      if (
+        Number(paqueteSeleccionado.idTipoServicio) != 4 &&
+        paqueteSeleccionado.idTipoServicio != ''
+      ) {
+        this.mostrarProveedor = true;
+      }
+      if (paqueteSeleccionado.idTipoServicio == '') {
+        this.mostrarAtaudes = true;
+      }
+      if (Number(paqueteSeleccionado.idServicio) > 0) {
+        this.consultarProveeedorServicio();
+      }
+      if (
+        Number(paqueteSeleccionado.idAsignacion) == 1 ||
+        Number(paqueteSeleccionado.idAsignacion) == 5
+      ) {
+        this.mostrarDonarAtaud = true;
+      }
+    } else {
+      this.mostrarKilometrajes = false;
+      this.mostrarTraslado = false;
+      this.mostrarProveedor = false;
+      this.mostrarAtaudes = false;
+      this.mostrarDonarAtaud = false;
+      this.mostrarQuitarPresupuesto = true;
     }
 
     this.overlayPanel.toggle(event);
@@ -342,6 +370,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
           datos.idArticulo = respuesta.idArticulo;
           datos.idAsignacion = respuesta.idAsignacion;
           datos.utilizarArticulo = false;
+          datos.bloquearRadioButton = false;
         }
       });
     });
@@ -365,7 +394,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       if (respuesta == null) {
         return;
       }
-
+      console.log(respuesta);
       this.datosPaquetes.forEach((datos: any) => {
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = null;
@@ -374,7 +403,10 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
           datos.kilometraje = respuesta.datosFormulario.kilometraje;
           datos.coordOrigen = respuesta.coordOrigen;
           datos.coordDestino = respuesta.coordDestino;
+          datos.destino = respuesta.datosFormulario.destino;
+          datos.origen = respuesta.datosFormulario.origen;
           datos.utilizarArticulo = false;
+          datos.bloquearRadioButton = false;
         }
       });
     });
@@ -409,6 +441,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
           datos.coordOrigen = null;
           datos.coordDestino = null;
           datos.utilizarArticulo = false;
+          datos.bloquearRadioButton = false;
         }
       });
     });
@@ -497,7 +530,35 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   }
 
   agregarArticulo(datos: any): void {
-    console.log(datos);
+    console.log('datos agregar', datos);
+
+    datos.proviene = 'paquete';
+    this.paquete.activo = 1;
+    this.paquete.cantidad = datos.cantidad ?? null;
+    this.paquete.desmotivo = datos.desmotivo ?? null;
+    this.paquete.idArticulo = datos.idArticulo ?? null;
+    this.paquete.idProveedor = datos.idProveedor;
+    this.paquete.idServicio = datos.idServicio ?? null;
+    this.paquete.idTipoServicio = datos.idTipoServicio ?? null;
+    this.paquete.importeMonto = datos.importeMonto ?? null;
+    this.paquete.totalPaquete = datos.totalPaquete;
+    this.servicioDetalleTraslado = {} as ServicioDetalleTrasladotoInterface;
+    this.paquete.servicioDetalleTraslado = null;
+    if (Number(datos.idTipoServicio) == 4) {
+      this.servicioDetalleTraslado.destino = datos.destino ?? null;
+      this.servicioDetalleTraslado.latitudInicial =
+        datos.coordOrigen[0] ?? null;
+      this.servicioDetalleTraslado.latitudFinal = datos.coordOrigen[1] ?? null;
+      this.servicioDetalleTraslado.longitudInicial =
+        datos.coordDestino[0] ?? null;
+      this.servicioDetalleTraslado.longitudFinal =
+        datos.coordDestino[1] ?? null;
+      this.servicioDetalleTraslado.origen = datos.origen ?? null;
+      this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
+    }
+    datos.bloquearRadioButton = true;
+    this.datosPresupuesto.push(datos);
+    console.log('datos presupusto', this.datosPresupuesto);
   }
 
   quitarArticulo(datos: any): void {
