@@ -1,26 +1,29 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { LatLng } from "leaflet";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { LatLng } from 'leaflet';
 //import { MarkGeocodeEvent } from "leaflet-control-geocoder/dist/control";
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import 'leaflet';
 import 'leaflet-control-geocoder';
-import { OverlayPanel } from "primeng/overlaypanel";
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 declare var L: any;
 
 @Component({
   selector: 'app-modal-agregar-servicio',
   templateUrl: './modal-agregar-servicio.component.html',
-  styleUrls: ['./modal-agregar-servicio.component.scss']
+  styleUrls: ['./modal-agregar-servicio.component.scss'],
 })
 export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
-
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
-
+  listaproveedor: any[] = [];
   form!: FormGroup;
-  dummy!: string;
 
   map: any = null;
 
@@ -34,29 +37,37 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
   marcadorOrigen: any;
   marcadorDestino: any;
   polyline: any;
-
+  ocultarServicios: boolean = false;
+  ocultarMapa: boolean = false;
   resultadosBusquedaMapa: any[] = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
     private readonly config: DynamicDialogConfig
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     //Obtener la info que le pasa el componente que abre el modal
-    this.dummy = this.config.data.dummy;
-    this.inicializarForm();
+    this.listaproveedor = this.config.data.proveedor;
+
+    this.inicializarForm(this.config.data.proveedor.traslado);
   }
 
-  inicializarForm(): void {
+  inicializarForm(traslado: boolean): void {
+    let validacion = [Validators.required];
+    this.ocultarMapa = false;
+    if (traslado) {
+      this.ocultarServicios = true;
+      validacion = [];
+      this.ocultarMapa = true;
+    }
     this.form = this.formBuilder.group({
-      servicio: [{value: null, disabled: false}, [Validators.required]],
-      proveedor: [{value: null, disabled: false}, [Validators.required]],
-      origen: [{value: null, disabled: false}, [Validators.required]],
-      destino: [{value: null, disabled: false}, [Validators.required]],
-      kilometraje: [{value: null, disabled: false}, [Validators.required]] //Se coloca automaticamente
+      servicio: [{ value: null, disabled: false }, validacion],
+      proveedor: [{ value: null, disabled: false }, [Validators.required]],
+      origen: [{ value: null, disabled: false }, [Validators.required]],
+      destino: [{ value: null, disabled: false }, [Validators.required]],
+      kilometraje: [{ value: null, disabled: false }, [Validators.required]], //Se coloca automaticamente
     });
   }
 
@@ -70,12 +81,12 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
   }
 
   inicializarMapa(): void {
-    L.Icon.Default.imagePath = "assets/images/leaflet/"
+    L.Icon.Default.imagePath = 'assets/images/leaflet/';
 
     this.map = L.map('map').setView([19.4326296, -99.1331785], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap'
+      attribution: '© OpenStreetMap',
     }).addTo(this.map);
 
     let geoCoderOptions = {
@@ -83,29 +94,31 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
       placeholder: 'Buscar dirección',
       geocoder: L.Control.Geocoder.nominatim({
         geocodingQueryParams: {
-          countrycodes: 'mx'
-        }
-      })
-    }
+          countrycodes: 'mx',
+        },
+      }),
+    };
   }
 
   buscar(event: Event, direccion: any, nombreInput: string) {
-
     this.activarLoaderBusqueda(nombreInput);
 
     let geocoder = new L.Control.Geocoder.Nominatim({
       geocodingQueryParams: {
         limit: 10,
-        countrycodes: 'mx'
-      }
+        countrycodes: 'mx',
+      },
     });
 
     geocoder.geocode(direccion, (respuesta: any) => {
       this.overlayPanel.toggle(event);
-      this.resultadosBusquedaMapa = respuesta.length > 0 ? respuesta.map((r: any) => ({
-        ...r,
-        inputBusqueda: nombreInput
-      })) : [];
+      this.resultadosBusquedaMapa =
+        respuesta.length > 0
+          ? respuesta.map((r: any) => ({
+              ...r,
+              inputBusqueda: nombreInput,
+            }))
+          : [];
       console.log(this.resultadosBusquedaMapa);
       this.desactivarLoaderBusqueda(nombreInput);
     });
@@ -127,13 +140,12 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   limpiarInput(formControlName: string) {
     (this.form.controls[formControlName] as FormControl).reset();
   }
 
   pintarMarcador(resultado: any) {
-    let {lat, lng} = resultado.center;
+    let { lat, lng } = resultado.center;
 
     if (resultado.inputBusqueda === 'origen') {
       if (this.marcadorOrigen) {
@@ -153,7 +165,9 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
       if (this.polyline) {
         this.map.removeLayer(this.polyline);
       }
-      this.polyline = L.polyline([this.coordOrigen, this.coordDestino], {color: 'black'}).addTo(this.map);
+      this.polyline = L.polyline([this.coordOrigen, this.coordDestino], {
+        color: 'black',
+      }).addTo(this.map);
       this.map.fitBounds(this.polyline.getBounds());
       this.calcularDistancia(this.coordOrigen, this.coordDestino);
     } else {

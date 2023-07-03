@@ -42,7 +42,7 @@
               <div class="flex ">
                 <p-checkbox styleClass="mr-3" [(ngModel)]="paquete.deseaUtilizarArtServ"
                             [binary]="true"></p-checkbox>
-                <a class="barras" (click)="abrirPanel($event,paquete)">
+                <a class="barras" (click)="abrirPanel($event,paquete,rowIndex)">
                   <i class="fs fs-barras-horizontales"></i>
                 </a>
               </div>
@@ -89,7 +89,7 @@
             <td>{{paquete.totalPaquete}}</td>
             <td style="width:200px">
               <div class="flex ">
-                <a class="barras" (click)="abrirPanel($event,paquete)">
+                <a class="barras" (click)="abrirPanel($event,paquete,1)">
                   <i class="fs fs-barras-horizontales"></i>
                 </a>
               </div>
@@ -106,7 +106,7 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion *ngIf="mostrarProveedor" titulo="Seleccionar Proveedor" (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="mostrarAtaudes"  titulo="Seleccionar Ataúd"  (click)="abrirModalAgregarAtaud($event)" ></app-overlay-panel-opcion> 
-     <app-overlay-panel-opcion *ngIf="mostrarTraslado" titulo="Seleccionar Proveedor"  (click)="abrirModalAgregarServicioTraslado()"></app-overlay-panel-opcion>
+     <app-overlay-panel-opcion *ngIf="mostrarTraslado" titulo="Seleccionar Proveedor"  (click)="abrirModalAgregarProveedorTraslado($event)"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion  *ngIf="mostrarKilometrajes" titulo="Ver Kilometraje" (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
    
     </app-overlay-panel-opciones>

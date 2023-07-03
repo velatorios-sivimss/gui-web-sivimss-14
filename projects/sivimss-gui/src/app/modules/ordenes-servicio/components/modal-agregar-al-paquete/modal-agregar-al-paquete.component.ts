@@ -12,6 +12,7 @@ import { finalize } from 'rxjs/operators';
 import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
 import { ActivatedRoute } from '@angular/router';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { Dropdown } from 'primeng/dropdown';
 @Component({
   selector: 'app-modal-agregar-al-paquete',
   templateUrl: './modal-agregar-al-paquete.component.html',
@@ -20,7 +21,7 @@ import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/fu
 export class ModalAgregarAlPaqueteComponent implements OnInit {
   tipoAsignacion: any[] = [];
   listaAtaudes: any[] = [];
-  selectIdAsignacion: string | null = null;
+  selectIdAsignacion: number | null = null;
   ataudSeleccionado: number | null = null;
   proveedorSeleccionado: number | null = null;
   listaProveedores: any[] = [];
@@ -28,6 +29,8 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
   selectAtaudInventario: number | null = null;
   listaAtaudesInventario: any[] = [];
   salida: any = {};
+  nombreProveedor: string = '';
+  fila: number = 0;
   constructor(
     private readonly ref: DynamicDialogRef,
     private readonly config: DynamicDialogConfig,
@@ -39,27 +42,34 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
 
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
-    this.tipoAsignacion = this.config.data.tipoAsignacion;
+
     this.idVelatorio = this.config.data.idVelatorio;
-    if (this.tipoAsignacion.length > 0) {
-      this.selectIdAsignacion = this.tipoAsignacion[0];
-      this.buscarAtaudes();
+    this.fila = this.config.data.fila;
+    this.incializarAsignacion(this.config.data.tipoAsignacion);
+  }
+
+  incializarAsignacion(asignacion: any): void {
+    this.tipoAsignacion = asignacion;
+    if (asignacion.length > 0) {
+      this.selectIdAsignacion = asignacion[0];
+      this.buscarAtaudes(
+        Number(this.config.data.idVelatorio),
+        Number(asignacion[0])
+      );
     }
   }
 
-  buscarAtaudes(): void {
+  buscarAtaudes(idVelatorio: number, idAsignacion: number): void {
     this.loaderService.activar();
     const parametros = {
-      idVelatorio: this.idVelatorio,
-      idAsignacion: this.selectIdAsignacion,
+      idVelatorio: idVelatorio,
+      idAsignacion: idAsignacion,
     };
-    console.log(parametros);
     this.gestionarOrdenServicioService
       .consultarAtaudes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaAtaudes = [];
@@ -146,10 +156,15 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
   limpiarSelects(): void {
     this.listaAtaudes = [];
     this.listaProveedores = [];
-    this.buscarAtaudes();
+
+    this.buscarAtaudes(
+      Number(this.idVelatorio),
+      Number(this.selectIdAsignacion)
+    );
   }
 
-  buscarAtaudInventario() {
+  buscarAtaudInventario(dd: Dropdown) {
+    this.nombreProveedor = dd.selectedOption.label;
     this.loaderService.activar();
     const parametros = {
       idArticulo: this.ataudSeleccionado,
@@ -212,6 +227,8 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
       idArticulo: this.ataudSeleccionado,
       idProveedor: this.proveedorSeleccionado,
       idInventario: this.selectAtaudInventario,
+      nombreProveedor: this.nombreProveedor,
+      fila: this.fila,
     };
     this.ref.close(this.salida);
   }

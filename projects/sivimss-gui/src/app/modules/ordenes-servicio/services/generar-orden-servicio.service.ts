@@ -139,4 +139,12 @@ export class GenerarOrdenServicioService extends BaseService<
       parametros
     );
   }
+
+  consultarProveeedorServicio(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-servicios-proveedor-consultar`,
+      parametros
+    );
+  }
 }

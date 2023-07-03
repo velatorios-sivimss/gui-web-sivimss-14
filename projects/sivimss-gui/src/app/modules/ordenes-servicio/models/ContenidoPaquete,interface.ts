@@ -10,4 +10,7 @@ export interface ContenidoPaqueteInterface {
   utilizarServicio?: number;
   idProveedor: number | null;
   proveedor?: string | null;
+  fila?: number;
+  idArticulo?: number;
+  idInventario?: number;
 }

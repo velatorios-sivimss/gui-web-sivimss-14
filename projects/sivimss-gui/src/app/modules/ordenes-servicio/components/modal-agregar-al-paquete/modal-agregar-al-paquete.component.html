@@ -20,8 +20,8 @@
     </div>
     <div class="col-md-4">
       <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
-      <p-dropdown id="proveedor" class="form-control" [(ngModel)]="proveedorSeleccionado" placeholder="Selecciona un proveedor"
-                  [options]="listaProveedores" (onChange)="buscarAtaudInventario()"></p-dropdown>
+      <p-dropdown  #dd id="proveedor" class="form-control" [(ngModel)]="proveedorSeleccionado" placeholder="Selecciona un proveedor"
+                  [options]="listaProveedores" (onChange)="buscarAtaudInventario(dd)"></p-dropdown>
     </div>
     <div class="col-md-4">
       <label class="control-label" for="ataudesInentario">Ataudes Inventario<span class="req">*</span>:</label>

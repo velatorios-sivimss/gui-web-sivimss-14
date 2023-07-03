@@ -94,8 +94,11 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   mostrarProveedor: boolean = false;
   mostrarAtaudes: boolean = false;
   tipoAsignacion: any[] = [];
-
+  idServicio: number | null = null;
+  listaproveedor: any[] = [];
   idVelatorio: number = 1; /// falta agregarlo del front
+
+  fila: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -139,7 +142,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
 
   buscarPaquetes(): void {
     this.loaderService.activar();
-    const parametros = { idVelatorio: 1 };
+    const parametros = { idVelatorio: this.idVelatorio };
     this.gestionarOrdenServicioService
       .consultarPaquetes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -254,8 +257,15 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       );
   }
 
-  abrirPanel(event: MouseEvent, paqueteSeleccionado: any): void {
+  abrirPanel(
+    event: MouseEvent,
+    paqueteSeleccionado: any,
+    noFila: number
+  ): void {
     console.log(paqueteSeleccionado);
+    paqueteSeleccionado.fila = noFila + 1;
+    this.idServicio = Number(paqueteSeleccionado.idServicio);
+    this.fila = noFila + 1;
     this.mostrarKilometrajes = false;
     this.mostrarTraslado = false;
     this.mostrarProveedor = false;
@@ -278,6 +288,9 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     }
     if (paqueteSeleccionado.idTipoServicio == '') {
       this.mostrarAtaudes = true;
+    }
+    if (Number(paqueteSeleccionado.idServicio) > 0) {
+      this.consultarProveeedorServicio();
     }
 
     this.overlayPanel.toggle(event);
@@ -306,19 +319,32 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       data: {
         tipoAsignacion: this.tipoAsignacion,
         idVelatorio: this.idVelatorio,
+        fila: this.fila,
       },
     });
-    ref.onClose.subscribe((val: any) => {
-      console.log(val);
+    ref.onClose.subscribe((respuesta: any) => {
+      this.datosPaquetes.forEach((datos: any) => {
+        console.log(datos);
+        if (Number(datos.fila) == Number(respuesta.fila)) {
+          datos.idInventario = respuesta.idInventario;
+          datos.proveedor = respuesta.nombreProveedor;
+          datos.idProveedor = respuesta.idProveedor;
+          datos.idArticulo = respuesta.idArticulo;
+        }
+      });
+      console.log(respuesta);
     });
   }
 
-  abrirModalAgregarServicioTraslado() {
+  abrirModalAgregarProveedorTraslado(event: MouseEvent): void {
+    event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarServicioComponent, {
-      header: 'Agregar servicio traslado',
+      header: 'Agregar proveedor traslado',
       style: { maxWidth: '876px', width: '100%' },
       data: {
-        dummy: '', //Pasa info a ModalVerTarjetaIdentificacionComponent
+        proveedor: this.listaproveedor,
+        traslado: true,
+        //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });
     ref.onClose.subscribe((val: boolean) => {
@@ -364,6 +390,50 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         //Obtener info cuando se cierre el modal en ModalVerKilometrajeComponent
       }
     });
+  }
+
+  consultarProveeedorServicio(): void {
+    const parametros = { idServicio: this.idServicio };
+    this.gestionarOrdenServicioService
+      .consultarProveeedorServicio(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          const datos = respuesta.datos;
+          console.log('datos', datos);
+          if (respuesta.error) {
+            this.listaproveedor = [];
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(respuesta.datos)
+              )
+            );
+            return;
+          }
+          this.listaproveedor = mapearArregloTipoDropdown(
+            datos,
+            'nombreProveedor',
+            'idProveedor'
+          );
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          try {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
+                Number(error.error.datos)
+              )
+            );
+          } catch (error) {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+            );
+          }
+        }
+      );
   }
 
   regresar() {

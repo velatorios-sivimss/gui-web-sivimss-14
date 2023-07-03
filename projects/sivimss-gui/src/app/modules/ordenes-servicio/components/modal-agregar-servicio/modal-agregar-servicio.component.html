@@ -3,7 +3,7 @@
 <ng-template #templateCreacion>
   <form [formGroup]="form">
     <div class="row mb-3">
-      <div class="col-md-6">
+      <div class="col-md-6" *ngif="ocultarServicios" >
         <label class="control-label" for="servicio">Servicio<span class="req">*</span>:</label>
         <p-dropdown id="servicio" class="form-control" formControlName="servicio" placeholder="Selecciona servicio"
                     appendTo="body"
@@ -15,12 +15,12 @@
         <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
         <p-dropdown id="proveedor" class="form-control" formControlName="proveedor" appendTo="body"
                     placeholder="Selecciona proveedor"
-                    [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+                    [options]="listaproveedor"></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Campo obligatorio</span>
       </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3" *ngif="ocultarMapa">
       <div class="col-md-12">
         <label class="control-label" for="origen">Origen<span class="req">*</span>:</label>
         <div class="input-busqueda">
@@ -33,7 +33,7 @@
               *ngIf="f.origen?.errors?.required && (f.origen?.dirty || f.origen?.touched)">Campo obligatorio</span>
       </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3" *ngif="ocultarMapa">
       <div class="col-md-12">
         <label class="control-label" for="destino">Destino<span class="req">*</span>:</label>
         <div class="input-busqueda">
@@ -46,7 +46,7 @@
               *ngIf="f.destino?.errors?.required && (f.destino?.dirty || f.destino?.touched)">Campo obligatorio</span>
       </div>
     </div>
-    <div class="row mb-3 flex align-items-end">
+    <div class="row mb-3 flex align-items-end" *ngif="ocultarMapa">
       <div class="col-md-6">
         <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
 
@@ -64,8 +64,8 @@
     </div>
   </form>
 </ng-template>
-<div id="map"></div>
-
+<div id="map" *ngif="ocultarMapa"></div>
+ 
 <p-overlayPanel #opResultadosBusquedas [dismissable]="true" [showCloseIcon]="true">
   <ng-template pTemplate>
     <div *ngIf="resultadosBusquedaMapa.length == 0" class="p-3 w-30rem">
