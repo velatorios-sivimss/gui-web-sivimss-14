@@ -181,6 +181,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'pagos/gestionar-pago',
+    loadChildren: () => import('./modules/pagos/gestionar-pago/gestionar-pago.module').then(m => m.GestionarPagoModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: 'reservar-salas',
     loadChildren: () => import('./modules/reservar-salas/reservar-salas.module').then(m => m.ReservarSalasModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
