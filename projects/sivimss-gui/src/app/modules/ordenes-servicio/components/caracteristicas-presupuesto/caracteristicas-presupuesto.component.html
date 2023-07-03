@@ -38,10 +38,18 @@
             <td>{{paquete.importe}}</td>
             <td>{{paquete.proveedor}}</td>
             <td>{{paquete.totalPaquete}}</td>
-            <td style="width:200px">
-              <div class="flex ">
-                <p-checkbox styleClass="mr-3" [(ngModel)]="paquete.deseaUtilizarArtServ"
-                            [binary]="true"></p-checkbox>
+            <td style="width:200px"> 
+              <div class="flex " >
+                <div class="flex align-items- mr-2" *ngIf="paquete.proveedor">
+                  <p-radioButton [name]="rowIndex+1" value="true"  [(ngModel)]="paquete.utilizarArticulo" [disabled]="paquete.proveedor==null "  [inputId]="'utilizarArticulo'+(rowIndex+1)"  (onClick)="agregarArticulo(paquete)"></p-radioButton>
+                  <label [for]="'utilizarArticulo'+(rowIndex+1)" class="ml-2">SI</label>
+              </div>
+              
+              <div class="flex align-items-center mr-2" *ngIf="paquete.proveedor">
+                  <p-radioButton [name]="rowIndex+1" value="false"  [(ngModel)]="paquete.utilizarArticulo"  [inputId]="'utilizarArticulo'+(rowIndex+1)" (onClick)="quitarArticulo(paquete)"></p-radioButton>
+                  <label [for]="'utilizarArticulo'+(rowIndex+1)" class="ml-2">NO</label>
+              </div>
+                
                 <a class="barras" (click)="abrirPanel($event,paquete,rowIndex)">
                   <i class="fs fs-barras-horizontales"></i>
                 </a>
@@ -104,10 +112,11 @@
 <p-overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion *ngIf="mostrarProveedor" titulo="Seleccionar Proveedor" (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="mostrarProveedor" titulo="Seleccionar Proveedor" (click)="abrirModalAgregarProveedor($event)"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="mostrarAtaudes"  titulo="Seleccionar Ataúd"  (click)="abrirModalAgregarAtaud($event)" ></app-overlay-panel-opcion> 
      <app-overlay-panel-opcion *ngIf="mostrarTraslado" titulo="Seleccionar Proveedor"  (click)="abrirModalAgregarProveedorTraslado($event)"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion  *ngIf="mostrarKilometrajes" titulo="Ver Kilometraje" (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion  *ngIf="mostrarDonarAtaud" titulo="Donar Ataúd" (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
    
     </app-overlay-panel-opciones>
   </ng-template>

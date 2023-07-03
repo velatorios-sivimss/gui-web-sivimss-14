@@ -13,4 +13,9 @@ export interface ContenidoPaqueteInterface {
   fila?: number;
   idArticulo?: number;
   idInventario?: number;
+  kilometraje?: number;
+  coordOrigen?: any[];
+  coordDestino?: any[];
+  idAsignacion?: number | null;
+  utilizarArticulo?: boolean;
 }

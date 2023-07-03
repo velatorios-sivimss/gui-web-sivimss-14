@@ -3,7 +3,7 @@
 <ng-template #templateCreacion>
   <form [formGroup]="form">
     <div class="row mb-3">
-      <div class="col-md-6" *ngif="ocultarServicios" >
+      <div class="col-md-6" *ngIf="ocultarServicios" >
         <label class="control-label" for="servicio">Servicio<span class="req">*</span>:</label>
         <p-dropdown id="servicio" class="form-control" formControlName="servicio" placeholder="Selecciona servicio"
                     appendTo="body"
@@ -13,14 +13,14 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
-        <p-dropdown id="proveedor" class="form-control" formControlName="proveedor" appendTo="body"
+        <p-dropdown #dd id="proveedor" class="form-control" formControlName="proveedor" appendTo="body"
                     placeholder="Selecciona proveedor"
-                    [options]="listaproveedor"></p-dropdown>
+                    [options]="listaproveedor" (onChange)="seleccionaProveedor(dd)"></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Campo obligatorio</span>
       </div>
     </div>
-    <div class="row mb-3" *ngif="ocultarMapa">
+    <div class="row mb-3" *ngIf="ocultarMapa">
       <div class="col-md-12">
         <label class="control-label" for="origen">Origen<span class="req">*</span>:</label>
         <div class="input-busqueda">
@@ -33,7 +33,7 @@
               *ngIf="f.origen?.errors?.required && (f.origen?.dirty || f.origen?.touched)">Campo obligatorio</span>
       </div>
     </div>
-    <div class="row mb-3" *ngif="ocultarMapa">
+    <div class="row mb-3" *ngIf="ocultarMapa">
       <div class="col-md-12">
         <label class="control-label" for="destino">Destino<span class="req">*</span>:</label>
         <div class="input-busqueda">
@@ -46,7 +46,7 @@
               *ngIf="f.destino?.errors?.required && (f.destino?.dirty || f.destino?.touched)">Campo obligatorio</span>
       </div>
     </div>
-    <div class="row mb-3 flex align-items-end" *ngif="ocultarMapa">
+    <div class="row mb-3 flex align-items-end" *ngIf="ocultarMapa">
       <div class="col-md-6">
         <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
 
@@ -62,9 +62,14 @@
         </button>
       </div>
     </div>
+    <div class="row mb-3 flex align-items-end" *ngIf="ocultarProveedor">
+      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar
+      </button>
+      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+    </div>
   </form>
 </ng-template>
-<div id="map" *ngif="ocultarMapa"></div>
+<div id="map" *ngIf="ocultarMapa"></div>
  
 <p-overlayPanel #opResultadosBusquedas [dismissable]="true" [showCloseIcon]="true">
   <ng-template pTemplate>
@@ -122,6 +127,6 @@
   </div>
   <div class="flex justify-content-end">
     <button type="button" class="btn btn-gold btn-md" (click)="mostrarSeccionCreacion = true">Cancelar</button>
-    <button type="button" class="ml-5 btn btn-primary btn-md" (click)="cerrarModal()">Aceptar</button>
+    <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar</button>
   </div>
 </ng-template>

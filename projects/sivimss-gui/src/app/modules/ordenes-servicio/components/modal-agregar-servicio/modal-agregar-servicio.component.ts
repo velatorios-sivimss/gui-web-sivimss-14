@@ -11,6 +11,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import 'leaflet';
 import 'leaflet-control-geocoder';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { Dropdown } from 'primeng/dropdown';
 
 declare var L: any;
 
@@ -24,7 +25,9 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
   overlayPanel!: OverlayPanel;
   listaproveedor: any[] = [];
   form!: FormGroup;
-
+  fila: number = 0;
+  proveedor: string = '';
+  idProveedor: number = 0;
   map: any = null;
 
   mostrarLoaderOrigen: boolean = false;
@@ -38,8 +41,11 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
   marcadorDestino: any;
   polyline: any;
   ocultarServicios: boolean = false;
-  ocultarMapa: boolean = false;
+  ocultarMapa: boolean = true;
   resultadosBusquedaMapa: any[] = [];
+  proviene: string = '';
+  idServicio: number = 0;
+  ocultarProveedor: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -50,17 +56,25 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     //Obtener la info que le pasa el componente que abre el modal
     this.listaproveedor = this.config.data.proveedor;
-
+    this.fila = this.config.data.fila;
+    this.proviene = this.config.data.proviene;
+    this.idServicio = this.config.data.idServicio;
     this.inicializarForm(this.config.data.proveedor.traslado);
   }
 
   inicializarForm(traslado: boolean): void {
     let validacion = [Validators.required];
-    this.ocultarMapa = false;
-    if (traslado) {
-      this.ocultarServicios = true;
+
+    console.log(this.proviene);
+    if (this.proviene == 'traslados') {
+      this.ocultarServicios = false;
       validacion = [];
       this.ocultarMapa = true;
+      this.ocultarProveedor = true;
+    } else if (this.proviene == 'proveedor') {
+      this.ocultarMapa = false;
+      this.ocultarServicios = false;
+      this.ocultarProveedor = true;
     }
     this.form = this.formBuilder.group({
       servicio: [{ value: null, disabled: false }, validacion],
@@ -71,9 +85,34 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
     });
   }
 
-  cerrarModal() {
+  seleccionaProveedor(dd: Dropdown): void {
+    this.proveedor = dd.selectedOption.label;
+  }
+  cerrarModal(): void {
+    this.ref.close(null);
+  }
+
+  aceptarModal(): void {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
-    this.ref.close(true);
+    let salida = null;
+    if (this.proviene == 'traslados') {
+      salida = {
+        fila: this.fila,
+        proveedor: this.proveedor,
+        datosFormulario: this.form.value,
+        coordOrigen: this.coordOrigen,
+        coordDestino: this.coordDestino,
+      };
+    } else if (this.proviene == 'proveedor') {
+      salida = {
+        fila: this.fila,
+        proveedor: this.proveedor,
+        datosFormulario: this.form.value,
+        coordOrigen: this.coordOrigen,
+        coordDestino: this.coordDestino,
+      };
+    }
+    this.ref.close(salida);
   }
 
   get f() {
@@ -81,23 +120,27 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
   }
 
   inicializarMapa(): void {
-    L.Icon.Default.imagePath = 'assets/images/leaflet/';
+    try {
+      L.Icon.Default.imagePath = 'assets/images/leaflet/';
 
-    this.map = L.map('map').setView([19.4326296, -99.1331785], 13);
+      this.map = L.map('map').setView([19.4326296, -99.1331785], 13);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap',
-    }).addTo(this.map);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+      }).addTo(this.map);
 
-    let geoCoderOptions = {
-      collapsed: false,
-      placeholder: 'Buscar dirección',
-      geocoder: L.Control.Geocoder.nominatim({
-        geocodingQueryParams: {
-          countrycodes: 'mx',
-        },
-      }),
-    };
+      let geoCoderOptions = {
+        collapsed: false,
+        placeholder: 'Buscar dirección',
+        geocoder: L.Control.Geocoder.nominatim({
+          geocodingQueryParams: {
+            countrycodes: 'mx',
+          },
+        }),
+      };
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   buscar(event: Event, direccion: any, nombreInput: string) {

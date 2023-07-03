@@ -97,8 +97,9 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   idServicio: number | null = null;
   listaproveedor: any[] = [];
   idVelatorio: number = 1; /// falta agregarlo del front
-
+  mostrarDonarAtaud: boolean = true;
   fila: number = 0;
+  utilizarArticulo: boolean | null = null;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -270,6 +271,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     this.mostrarTraslado = false;
     this.mostrarProveedor = false;
     this.mostrarAtaudes = false;
+    this.mostrarDonarAtaud = false;
 
     if (Number(paqueteSeleccionado.idTipoServicio) == 4) {
       this.mostrarTraslado = true;
@@ -291,6 +293,12 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     }
     if (Number(paqueteSeleccionado.idServicio) > 0) {
       this.consultarProveeedorServicio();
+    }
+    if (
+      Number(paqueteSeleccionado.idAsignacion) == 1 ||
+      Number(paqueteSeleccionado.idAsignacion) == 5
+    ) {
+      this.mostrarDonarAtaud = true;
     }
 
     this.overlayPanel.toggle(event);
@@ -323,16 +331,19 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       },
     });
     ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta == null) {
+        return;
+      }
       this.datosPaquetes.forEach((datos: any) => {
-        console.log(datos);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;
           datos.proveedor = respuesta.nombreProveedor;
           datos.idProveedor = respuesta.idProveedor;
           datos.idArticulo = respuesta.idArticulo;
+          datos.idAsignacion = respuesta.idAsignacion;
+          datos.utilizarArticulo = false;
         }
       });
-      console.log(respuesta);
     });
   }
 
@@ -344,13 +355,62 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       data: {
         proveedor: this.listaproveedor,
         traslado: true,
+        fila: this.fila,
+        proviene: 'traslados',
+        idServicio: this.idServicio,
         //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });
-    ref.onClose.subscribe((val: boolean) => {
-      if (val) {
-        //Obtener info cuando se cierre el modal en ModalVerTarjetaIdentificacionComponent
+    ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta == null) {
+        return;
       }
+
+      this.datosPaquetes.forEach((datos: any) => {
+        if (Number(datos.fila) == Number(respuesta.fila)) {
+          datos.idInventario = null;
+          datos.proveedor = respuesta.proveedor;
+          datos.idProveedor = respuesta.datosFormulario.proveedor;
+          datos.kilometraje = respuesta.datosFormulario.kilometraje;
+          datos.coordOrigen = respuesta.coordOrigen;
+          datos.coordDestino = respuesta.coordDestino;
+          datos.utilizarArticulo = false;
+        }
+      });
+    });
+  }
+
+  abrirModalAgregarProveedor(event: MouseEvent): void {
+    console.log('tipo proveerdor');
+    event.stopPropagation();
+    const ref = this.dialogService.open(ModalAgregarServicioComponent, {
+      header: 'Agregar proveedor',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        proveedor: this.listaproveedor,
+        traslado: false,
+        fila: this.fila,
+        proviene: 'proveedor',
+        idServicio: this.idServicio,
+        //Pasa info a ModalVerTarjetaIdentificacionComponent
+      },
+    });
+    ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta == null) {
+        return;
+      }
+      console.log(respuesta);
+      this.datosPaquetes.forEach((datos: any) => {
+        if (Number(datos.fila) == Number(respuesta.fila)) {
+          datos.idInventario = null;
+          datos.proveedor = respuesta.proveedor;
+          datos.idProveedor = respuesta.datosFormulario.proveedor;
+          datos.kilometraje = null;
+          datos.coordOrigen = null;
+          datos.coordDestino = null;
+          datos.utilizarArticulo = false;
+        }
+      });
     });
   }
 
@@ -436,6 +496,13 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       );
   }
 
+  agregarArticulo(datos: any): void {
+    console.log(datos);
+  }
+
+  quitarArticulo(datos: any): void {
+    console.log(datos);
+  }
   regresar() {
     let etapas: Etapa[] = [
       {
