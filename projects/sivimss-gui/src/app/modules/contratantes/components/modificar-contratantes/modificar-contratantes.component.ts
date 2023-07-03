@@ -62,7 +62,7 @@ export class ModificarContratantesComponent implements OnInit {
     }
   }
 
-  mdoalRegistroDuplicado() {
+  modalRegistroDuplicado() {
     this.confirmationService.confirm({
       message: this.mensajeRegistroDuplicado,
       accept: () => { },
@@ -229,6 +229,7 @@ export class ModificarContratantesComponent implements OnInit {
       ...this.datosGeneralesForm.getRawValue(),
       ...this.domicilioForm.getRawValue(),
       nacionalidad: this.contratante.nacionalidad,
+      lugarNacimiento: this.catalogoEstados.find(item => item.value === this.dgf.idEstado.value)?.label ?? "",
     };
   }
 
@@ -264,8 +265,9 @@ export class ModificarContratantesComponent implements OnInit {
           this.vistaConfirmarCambio = false;
           this.ref.close({ estatus: true });
         } else {
-          this.mensajeRegistroDuplicado = 'El contratante que deseas ingresar ya se encuentra registrado en el sistema.'; //this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-          this.mdoalRegistroDuplicado();
+          // this.mensajeRegistroDuplicado = 'El contratante que deseas ingresar ya se encuentra registrado en el sistema.'; 
+          this.mensajeRegistroDuplicado = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
+          this.modalRegistroDuplicado();
         }
       },
       error: (error: HttpErrorResponse) => {
