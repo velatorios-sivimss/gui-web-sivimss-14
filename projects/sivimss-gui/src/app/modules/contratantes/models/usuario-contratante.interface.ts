@@ -24,6 +24,7 @@ export interface UsuarioContratante {
   municipio?: string;
   estado?: string;
   estatus?: boolean;
+  idDomicilio?: number;
 }
 
 export interface ConfirmarContratante {

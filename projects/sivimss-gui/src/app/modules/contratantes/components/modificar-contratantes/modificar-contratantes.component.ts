@@ -184,7 +184,7 @@ export class ModificarContratantesComponent implements OnInit {
     this.df.municipio.patchValue("");
     this.df.estado.patchValue("");
     this.df.colonia.patchValue("");
-    this.df.colonia.disable();
+    // this.df.colonia.disable();
     this.colonias = [];
   }
 
@@ -229,7 +229,7 @@ export class ModificarContratantesComponent implements OnInit {
       ...this.datosGeneralesForm.getRawValue(),
       ...this.domicilioForm.getRawValue(),
       nacionalidad: this.contratante.nacionalidad,
-    }
+    };
   }
 
   datosActualizar() {
@@ -251,16 +251,11 @@ export class ModificarContratantesComponent implements OnInit {
       numExt: this.contratanteModificado.numExt,
       cp: this.contratanteModificado.cp,
       desColonia: this.contratanteModificado.colonia,
-      desMunicipio: this.contratanteModificado.municipio,
-      desEstado: this.contratanteModificado.estado,
-      idDomicilio: 2,
+      idDomicilio: this.contratanteModificado.idDomicilio,
     }
   }
 
   actualizarContratante() {
-    // console.log(this.contratanteModificado);
-    // console.log(this.datosActualizar());
-
     this.contratantesService.actualizar(this.datosActualizar()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {

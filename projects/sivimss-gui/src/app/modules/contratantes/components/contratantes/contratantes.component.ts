@@ -21,6 +21,7 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { finalize } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { ReporteTabla } from '../../../velacion-domicilio/models/velacion-domicilio.interface';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 @Component({
   selector: 'app-contratantes',
@@ -183,9 +184,15 @@ export class ContratantesComponent implements OnInit {
   // }
 
   descargarReporteTabla(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Disponibilidad de capillas"};
+    if(tipoReporte == "xls"){
+      configuracionArchivo.ext = "xlsx"
+    }
+    
     this.loaderService.activar();
     this.descargaArchivosService.descargarArchivo(
-      this.contratantesService.descargarReporteTabla(this.reporteTabla(tipoReporte))
+      this.contratantesService.descargarReporteTabla(this.reporteTabla(tipoReporte)),
+      configuracionArchivo
     ).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
