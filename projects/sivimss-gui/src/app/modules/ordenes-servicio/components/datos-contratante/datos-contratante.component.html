@@ -36,14 +36,14 @@
       <div class="col-md-4">
         <label class="control-label" for="nombre">Nombre (s)<span class="req">*</span>:</label>
         <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre (s)"
-          readonly="true" maxlength="30" lettersOnly (keyup.space)="noEspaciosAlPrincipio(0)">
+          maxlength="30" lettersOnly (keyup.space)="noEspaciosAlPrincipio(0)">
         <span class="campo-obligatorio"
           *ngIf="datosContratante.nombre?.errors?.required && (datosContratante.nombre?.dirty || datosContratante.nombre?.touched)">Campo
           obligatorio</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
-        <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido" readonly="true"
+        <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
           placeholder="Ingresa primer apellido" maxlength="20" lettersOnly (keyup.space)="noEspaciosAlPrincipio(1)">
         <span class="campo-obligatorio"
           *ngIf="datosContratante.primerApellido?.errors?.required && (datosContratante.primerApellido?.dirty || datosContratante.primerApellido?.touched)">Campo
@@ -52,8 +52,7 @@
       <div class="col-md-4">
         <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
         <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
-          placeholder="Ingresa segundo apellido" maxlength="20" lettersOnly (keyup.space)="noEspaciosAlPrincipio(2)"
-          readonly="true">
+          placeholder="Ingresa segundo apellido" maxlength="20" lettersOnly (keyup.space)="noEspaciosAlPrincipio(2)">
         <span class="campo-obligatorio"
           *ngIf="datosContratante.segundoApellido?.errors?.required && (datosContratante.segundoApellido?.dirty || datosContratante.segundoApellido?.touched)">Campo
           obligatorio</span>

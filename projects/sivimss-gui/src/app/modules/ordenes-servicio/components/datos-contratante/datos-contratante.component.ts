@@ -134,11 +134,14 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   llenarAlta(datosPrevios: AltaODSInterface): void {
-    console.log(datosPrevios);
-
     this.altaODS = datosPrevios;
-    console.log('incicio', this.altaODS);
+    this.datosContratante.nombre.disable();
+    this.datosContratante.primerApellido.disable();
+    this.datosContratante.segundoApellido.disable();
+    this.direccion.municipio.disable();
+    this.direccion.estado.disable();
   }
+
   inicializarForm(datosEtapaContratante: any): void {
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
@@ -503,7 +506,7 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   continuar(): void {
-    if (!this.form.valid) return;
+    // if (!this.form.valid) return;
     let etapas: Etapa[] = [
       {
         idEtapa: 0,
