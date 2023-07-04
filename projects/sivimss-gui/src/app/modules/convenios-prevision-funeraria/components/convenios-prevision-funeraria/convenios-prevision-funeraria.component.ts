@@ -23,9 +23,12 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { DetalleConvenioPrevisionFunerariaComponent } from "../detalle-convenio-prevision-funeraria/detalle-convenio-prevision-funeraria.component";
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {
+  EstatusConvenioPrevisionFunerariaComponent
+} from "../estatus-convenio-prevision-funeraria/estatus-convenio-prevision-funeraria.component";
 
 @Component({
   selector: 'app-convenios-prevision-funeraria',
@@ -41,6 +44,7 @@ export class ConsultaConveniosComponent implements OnInit {
   filtroForm!: FormGroup;
   filtroSubForm!: FormGroup;
   archivoRef!: DynamicDialogRef;
+  estatusRef!: DynamicDialogRef;
 
   numPaginaActual = {
     tablaConvenios: 0,
@@ -97,6 +101,7 @@ export class ConsultaConveniosComponent implements OnInit {
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
     private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -465,4 +470,23 @@ export class ConsultaConveniosComponent implements OnInit {
     );
   }
 
+  modificarConvenio(): void {
+    localStorage.setItem('datosConvenio', JSON.stringify({convenio:this.convenioSeleccionado}));
+    this.router.navigate(['./modificar-nuevo-convenio'],{
+      relativeTo: this.activatedRoute});
+  }
+
+  cambiarEstatusConvenio(): void{
+    this.estatusRef = this.dialogService.open(EstatusConvenioPrevisionFunerariaComponent, {
+      header: this.convenioSeleccionado.estatusConvenio?.includes('3') ? 'Activar' : 'Desactivar',
+      width: "920px",
+      data: this.convenioSeleccionado,
+    })
+
+    this.estatusRef.onClose.subscribe((estatus:boolean) => {
+      if(estatus){
+        this.paginar_()
+      }
+    });
+  }
 }

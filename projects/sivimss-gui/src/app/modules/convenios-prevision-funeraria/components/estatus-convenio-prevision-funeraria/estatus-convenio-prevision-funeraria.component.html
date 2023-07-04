@@ -1,0 +1,9 @@
+<div class="row">
+  <div class="col-md-12">
+    <p class="text-center">¿Estás seguro de {{convenioSeleccionado.estatusConvenio?.includes('3') ? 'activar':'desactivar'}} el registro seleccionado del convenio con folio {{convenioSeleccionado.folioConvenio}}?</p>
+  </div>
+</div>
+<div class="flex justify-content-center">
+  <button class="btn btn-primary btn-md" (click)="aceptar()">Aceptar</button>
+  <button class="ml-4 btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+</div>
