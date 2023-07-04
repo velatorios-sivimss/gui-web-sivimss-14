@@ -2,11 +2,12 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {PermiteUsuarioLogueadoGuard} from "../../guards/permite-usuario-logueado.guard";
 
-const routes: Routes = [{
-  path: 'generar-recibo-pago',
-  loadChildren: () => import('./generar-recibo-pago/generar-recibo-pago.module').then(m => m.GenerarReciboModule),
-  canActivate: [PermiteUsuarioLogueadoGuard]
-},
+const routes: Routes = [
+  {
+    path: 'generar-recibo-pago',
+    loadChildren: () => import('./generar-recibo-pago/generar-recibo-pago.module').then(m => m.GenerarReciboModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
   {
     path: 'generar-formato-pagare',
     loadChildren: () => import('./generar-formato-pagare/generar-formato-pagare.module').then(m => m.GenerarFormatoPagareModule),
