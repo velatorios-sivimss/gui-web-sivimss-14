@@ -19,6 +19,7 @@ import { RespuestaRegistroMantenimiento } from "../../models/respuestaRegistroMa
 import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
+import { ERROR_GUARDAR_INFORMACION } from '../../constants/catalogos-filtros';
 
 type VehiculoRegistro = Omit<VehiculoMantenimiento, "ID_MTTOVERIFINICIO" | "ID_MTTO_SOLICITUD">
 
@@ -230,16 +231,24 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.mantenimientoVehicularService.guardar(verificacion).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
-          if (respuesta.datos.length > 0) {
-            this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+          if (respuesta.error && !respuesta.datos) {
+            this.alertaService.mostrar(TipoAlerta.Precaucion, respuesta.mensaje);
           } else {
-            this.abrirRegistroSolicitud(respuesta.datos);
+            this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
+            if (respuesta.datos.length > 0) {
+              this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+            } else {
+              this.abrirRegistroSolicitud(respuesta.datos);
+            }
           }
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
+          if (error.statusText === 'Unknown Error') {
+            this.alertaService.mostrar(TipoAlerta.Error, ERROR_GUARDAR_INFORMACION);
+          } else {
+            this.mensajesSistemaService.mostrarMensajeError(error);
+          }
         }
       });
   }

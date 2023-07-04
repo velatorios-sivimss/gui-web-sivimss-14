@@ -1,13 +1,13 @@
-<div class="row mb-3 flex justify-content-center">
+<div class="row mb-3 flex justify-content-center" *ngIf="indice < menuStep.length">
   <div class="col-md-6">
     <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps>
   </div>
 </div>
-<ng-container *ngIf="indice == 0">
+<ng-container *ngIf="indice == 0 && datosGeneralesForm">
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
       <div class="table-panel-header-column">
-        <span class="font-bold">ID {{contratante.id}}</span>
+        <span class="font-bold">ID {{contratante.idContratante}}</span>
       </div>
     </ng-template>
     <ng-template appCustomTemplate="right-header">
@@ -25,98 +25,121 @@
   <form class="mt-5" [formGroup]="datosGeneralesForm">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="curp">CURP <span class="req">*</span>:</label>
+        <label class="control-label" for="curp">CURP:</label>
         <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP">
-        <span class="campo-obligatorio"
-              *ngIf="dgf.curp?.errors?.required && (dgf.curp?.dirty || dgf.curp?.touched)">
-                            Campo obligatorio</span>
+        <span class="campo-obligatorio" *ngIf="dgf.curp?.errors?.required && (dgf.curp?.dirty || dgf.curp?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="rfc">RFC <span class="req">*</span>:</label>
-        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC">
-        <span class="campo-obligatorio"
-              *ngIf="dgf.rfc?.errors?.required && (dgf.rfc?.dirty || dgf.rfc?.touched)">
-                            Campo obligatorio</span>
+        <label class="control-label" for="rfc">RFC:</label>
+        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC" maxlength="13" trimmer
+          folioOdsAlphanumeric (blur)="validarRfc()">
+        <span class="campo-obligatorio" *ngIf="dgf.rfc?.errors?.required && (dgf.rfc?.dirty || dgf.rfc?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nss">NSS <span class="req">*</span>:</label>
+        <label class="control-label" for="nss">NSS:</label>
         <input id="nss" class="form-control" formControlName="nss" placeholder="Ingresa el NSS">
-        <span class="campo-obligatorio"
-              *ngIf="dgf.nss?.errors?.required && (dgf.nss?.dirty || dgf.nss?.touched)">
-                            Campo obligatorio</span>
+        <span class="campo-obligatorio" *ngIf="dgf.nss?.errors?.required && (dgf.nss?.dirty || dgf.nss?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="nombre">Nombre(s) <span class="req">*</span>:</label>
-        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre">
+        <label class="control-label" for="nombre">Nombre(s):</label>
+        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre" maxlength="30"
+          trimmer textOnly>
         <span class="campo-obligatorio"
-              *ngIf="dgf.nombre?.errors?.required && (dgf.nombre?.dirty || dgf.nombre?.touched)">
-                            Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="primerApellido">Primer apellido <span class="req">*</span>:</label>
-        <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa el primer apellido">
-        <span class="campo-obligatorio"
-              *ngIf="dgf.primerApellido?.errors?.required && (dgf.primerApellido?.dirty || dgf.primerApellido?.touched)">
-                            Campo obligatorio</span>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="segundoApellido">Segundo apellido <span class="req">*</span>:</label>
-        <input id="segundoApellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa el segundo apellido">
-        <span class="campo-obligatorio"
-              *ngIf="dgf.segundoApellido?.errors?.required && (dgf.segundoApellido?.dirty || dgf.segundoApellido?.touched)">
-                            Campo obligatorio</span>
+          *ngIf="dgf.nombre?.errors?.required && (dgf.nombre?.dirty || dgf.nombre?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="sexo">Sexo <span class="req">*</span>:</label>
-        <p-dropdown id="sexo" class="form-control" formControlName="sexo"
-                    placeholder="Selecciona sexo" [options]="sexo"></p-dropdown>
+        <label class="control-label" for="paterno">Primer apellido:</label>
+        <input id="paterno" class="form-control" formControlName="paterno" placeholder="Ingresa el primer apellido"
+          maxlength="20" trimmer textOnly>
         <span class="campo-obligatorio"
-              *ngIf="dgf.sexo?.errors?.required && (dgf.sexo?.dirty || dgf.sexo?.touched)">Campo obligatorio</span>
+          *ngIf="dgf.paterno?.errors?.required && (dgf.paterno?.dirty || dgf.paterno?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="fechaNacimiento">Fecha<span class="req">*</span>:</label>
-        <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha"></p-calendar>
+        <label class="control-label" for="materno">Segundo apellido:</label>
+        <input id="materno" class="form-control" formControlName="materno" placeholder="Ingresa el segundo apellido"
+          maxlength="20" trimmer textOnly>
         <span class="campo-obligatorio"
-              *ngIf="dgf.fechaNacimiento?.errors?.required && (dgf.fechaNacimiento?.dirty || dgf.fechaNacimiento?.touched)">Campo obligatorio</span>
+          *ngIf="dgf.materno?.errors?.required && (dgf.materno?.dirty || dgf.materno?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nacionalidad">Nacionalidad <span class="req">*</span>:</label>
+        <label class="control-label" for="numSexo">Sexo:</label>
+        <p-dropdown id="numSexo" class="form-control" formControlName="numSexo" placeholder="Selecciona sexo"
+          (onChange)="cambioTipoSexo()" [options]="tipoSexo"></p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="dgf.numSexo?.errors?.required && (dgf.numSexo?.dirty || dgf.numSexo?.touched)">Campo obligatorio</span>
+      </div>
+      <div class="col-md-3" *ngIf="dgf.numSexo.value === 3">
+        <label class="control-label" for="otroSexo">Otro:</label>
+        <input id="otroSexo" class="form-control" formControlName="otroSexo" placeholder="Ingresa sexo">
+        <span class="campo-obligatorio"
+          *ngIf="dgf.otroSexo?.errors?.required && (dgf.otroSexo?.dirty || dgf.otroSexo?.touched)">
+          Campo obligatorio</span>
+      </div>
+      <div [ngClass]="dgf.numSexo.value === 3 ? 'col-md-3' : 'col-md-6'">
+        <label class="control-label" for="fecNacimiento">Fecha de nacimiento:</label>
+        <p-calendar id="fecNacimiento" styleClass="form-control" formControlName="fecNacimiento" [showIcon]="true"
+          dateFormat="dd/mm/yy" placeholder="Ingresa fecha"></p-calendar>
+        <span class="campo-obligatorio"
+          *ngIf="dgf.fecNacimiento?.errors?.required && (dgf.fecNacimiento?.dirty || dgf.fecNacimiento?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nacionalidad">Nacionalidad:</label>
         <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
-                    placeholder="Selecciona nacionalidad" [options]="nacionalidad"></p-dropdown>
+          (onChange)="obtenerEstadosPaises(dgf.nacionalidad.value === 2 ? ID_CATALOGO_PAISES : ID_CATALOGO_ESTADOS)"
+          placeholder="Selecciona nacionalidad" [options]="nacionalidad"></p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="dgf.nacionalidad?.errors?.required && (dgf.nacionalidad?.dirty || dgf.nacionalidad?.touched)">Campo obligatorio</span>
+          *ngIf="dgf.nacionalidad?.errors?.required && (dgf.nacionalidad?.dirty || dgf.nacionalidad?.touched)">Campo
+          obligatorio</span>
       </div>
-      <div class="col-md-6">
-        <label class="control-label" for="lugarNacimiento">Lugar de nacimiento <span class="req">*</span>:</label>
-        <input id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento" placeholder="Ingresa el lugar de nacimiento">
+
+      <div class="col-md-6" *ngIf="dgf.nacionalidad.value === 1">
+        <label class="control-label" for="idEstado">Lugar de nacimiento:</label>
+        <p-dropdown id="idEstado" class="form-control" formControlName="idEstado"
+          placeholder="Selecciona lugar de nacimiento" [options]="catalogoEstados"></p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="dgf.lugarNacimiento?.errors?.required && (dgf.lugarNacimiento?.dirty || dgf.lugarNacimiento?.touched)">
-                            Campo obligatorio</span>
+          *ngIf="dgf.idEstado?.errors?.required && (dgf.idEstado?.dirty || dgf.idEstado?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6" *ngIf="dgf.nacionalidad.value === 2">
+        <label class="control-label" for="idPais">País:</label>
+        <p-dropdown id="idPais" class="form-control" formControlName="idPais" placeholder="Selecciona país"
+          [options]="catalogoPaises"></p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="dgf.idPais?.errors?.required && (dgf.idPais?.dirty || dgf.idPais?.touched)">Campo
+          obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="telefono">Teléfono <span class="req">*</span>:</label>
-        <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono">
+        <label class="control-label" for="telefono">Teléfono:</label>
+        <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono" trimmer
+          numbersOnly maxlength="10">
         <span class="campo-obligatorio"
-              *ngIf="dgf.telefono?.errors?.required && (dgf.telefono?.dirty || dgf.telefono?.touched)">
-                            Campo obligatorio</span>
+          *ngIf="dgf.telefono?.errors?.required && (dgf.telefono?.dirty || dgf.telefono?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="correoElectronico">Correo electrónico <span class="req">*</span>:</label>
-        <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa el correo electrónico">
+        <label class="control-label" for="correo">Correo electrónico:</label>
+        <input id="correo" class="form-control" formControlName="correo" (blur)="validarEmail()"
+          placeholder="Ingresa el correo electrónico" maxlength="30" trimmer>
         <span class="campo-obligatorio"
-              *ngIf="dgf.correoElectronico?.errors?.required && (dgf.correoElectronico?.dirty || dgf.correoElectronico?.touched)">
-                            Campo obligatorio</span>
+          *ngIf="dgf.correo?.errors?.required && (dgf.correo?.dirty || dgf.correo?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-4">
@@ -127,71 +150,61 @@
   </form>
 </ng-container>
 
-<ng-container *ngIf="indice == 1">
+<ng-container *ngIf="indice == 1 && domicilioForm">
   <form class="mt-5" [formGroup]="domicilioForm">
     <div class="row mb-3">
       <div class="col-md-4">
-        <label class="control-label" for="cp">Código postal <span class="req">*</span>:</label>
-        <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa el código postal">
-        <span class="campo-obligatorio"
-              *ngIf="df.cp?.errors?.required && (df.cp?.dirty || df.cp?.touched)">
-                            Campo obligatorio</span>
+        <label class="control-label" for="cp">Código postal:</label>
+        <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa el código postal" maxlength="5"
+          trimmer numbersOnly (blur)="obtenerCP()">
+        <span class="campo-obligatorio" *ngIf="df.cp?.errors?.required && (df.cp?.dirty || df.cp?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-8">
-        <label class="control-label" for="calle">Calle <span class="req">*</span>:</label>
-        <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle">
-        <span class="campo-obligatorio"
-              *ngIf="df.calle?.errors?.required && (df.calle?.dirty || df.calle?.touched)">
-                            Campo obligatorio</span>
+        <label class="control-label" for="calle">Calle:</label>
+        <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle" maxlength="30"
+          trimmer textOnly>
+        <span class="campo-obligatorio" *ngIf="df.calle?.errors?.required && (df.calle?.dirty || df.calle?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-4">
-        <label class="control-label" for="numeroExterior">No. exterior <span class="req">*</span>:</label>
-        <input id="numeroExterior" class="form-control" formControlName="numeroExterior" placeholder="Ingresa el no. exterior">
-        <span class="campo-obligatorio"
-              *ngIf="df.numeroExterior?.errors?.required && (df.numeroExterior?.dirty || df.numeroExterior?.touched)">
-                            Campo obligatorio</span>
+        <label class="control-label" for="numExt">No. exterior:</label>
+        <input id="numExt" class="form-control" formControlName="numExt" placeholder="Ingresa el no. exterior"
+          maxlength="10" trimmer alphanumericOnly>
+        <span class="campo-obligatorio" *ngIf="df.numExt?.errors?.required && (df.numExt?.dirty || df.numExt?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="numeroInterior">No. interior <span class="req">*</span>:</label>
-        <input id="numeroInterior" class="form-control" formControlName="numeroInterior" placeholder="Ingresa el no. interior">
-        <span class="campo-obligatorio"
-              *ngIf="df.numeroInterior?.errors?.required && (df.numeroInterior?.dirty || df.numeroInterior?.touched)">
-                            Campo obligatorio</span>
+        <label class="control-label" for="numInt">No. interior:</label>
+        <input id="numInt" class="form-control" formControlName="numInt" placeholder="Ingresa el no. interior"
+          maxlength="10" trimmer alphanumericOnly>
+        <span class="campo-obligatorio" *ngIf="df.numInt?.errors?.required && (df.numInt?.dirty || df.numInt?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="colonia">Colonia <span class="req">*</span>:</label>
-        <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia">
+        <label class="control-label" for="colonia">Colonia:</label>
+        <p-dropdown id="colonia" class="form-control" formControlName="colonia" placeholder="Selecciona una colonia"
+          [options]="colonias"></p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="df.colonia?.errors?.required && (df.colonia?.dirty || df.colonia?.touched)">
-                            Campo obligatorio</span>
+          *ngIf="df.colonia?.errors?.required && (df.colonia?.dirty || df.colonia?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-4">
-        <label class="control-label" for="municipio">Municipio <span class="req">*</span>:</label>
+        <label class="control-label" for="municipio">Municipio:</label>
         <input id="municipio" class="form-control" formControlName="municipio" placeholder="Ingresa el municipio">
         <span class="campo-obligatorio"
-              *ngIf="df.municipio?.errors?.required && (df.municipio?.dirty || df.municipio?.touched)">
-                            Campo obligatorio</span>
+          *ngIf="df.municipio?.errors?.required && (df.municipio?.dirty || df.municipio?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-8">
-        <label class="control-label" for="estado">Estado <span class="req">*</span>:</label>
+        <label class="control-label" for="estado">Estado:</label>
         <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
-        <span class="campo-obligatorio"
-              *ngIf="df.estado?.errors?.required && (df.estado?.dirty || df.estado?.touched)">
-                            Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <label class="control-label">Estatus<span class="req">*:</span></label>
-        <div class="contenedor-inputswitch">
-          <p-inputSwitch formControlName="estatus"></p-inputSwitch>
-          <span class="activo" *ngIf="df.estatus?.value">Activo</span>
-          <span class="inactivo" *ngIf="!df.estatus?.value">Inactivo</span>
-        </div>
+        <span class="campo-obligatorio" *ngIf="df.estado?.errors?.required && (df.estado?.dirty || df.estado?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-4">
@@ -202,9 +215,9 @@
   </form>
 </ng-container>
 
-<ng-container *ngIf="indice == menuStep.length">
-  <app-detalle-contratantes [contratante]="contratanteModificado" [origen]="'modificar'">
-
+<ng-container *ngIf="vistaConfirmarCambio">
+  <app-detalle-contratantes [contratante]="contratanteModificado" [origen]="'modificar'"
+    (confirmacionAceptar)="actualizarContratante()" (cancelarConfirmacion)="cancelarConfirmacion()">
   </app-detalle-contratantes>
 </ng-container>
 
@@ -214,3 +227,17 @@
     <button type="submit" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
   </div>
 </div>
+
+<p-confirmDialog #cd [style]="{width: '30vw'}">
+  <ng-template pTemplate="header">
+    <h5></h5>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="cd.accept()">Aceptar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>

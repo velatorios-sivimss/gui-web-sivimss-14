@@ -8,6 +8,7 @@ export interface ConveniosPrevisionFunerariaInterface {
   factura?: string;
   importeConvenio?: number;
   estatus?: number;
+  estatusConvenio?: string;
 
   numeroConvenioAnterior?: number;
   nombre?: string;
