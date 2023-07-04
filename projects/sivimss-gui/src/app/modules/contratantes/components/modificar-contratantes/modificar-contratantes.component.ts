@@ -89,7 +89,6 @@ export class ModificarContratantesComponent implements OnInit {
 
   incializarDatosGeneralesForm(contratante: UsuarioContratante): void {
     let fechaNacimiento = moment(contratante.fecNacimiento, 'DD-MM-YYYY').format('YYYY-MM-DD');
-    let idTipoSexo = this.contratante.otroSexo ? 3 : this.contratante.numSexo;
     this.datosGeneralesForm = this.formBuilder.group({
       curp: [{ value: contratante.curp, disabled: true }, []],
       rfc: [{ value: contratante.rfc, disabled: false }, [Validators.maxLength(13)]],
@@ -97,8 +96,8 @@ export class ModificarContratantesComponent implements OnInit {
       nombre: [{ value: contratante.nombre, disabled: false }, [Validators.maxLength(30)]],
       paterno: [{ value: contratante.paterno, disabled: false }, [Validators.maxLength(30)]],
       materno: [{ value: contratante.materno, disabled: false }, [Validators.maxLength(30)]],
-      numSexo: [{ value: idTipoSexo, disabled: false }, []],
-      otroSexo: [{ value: idTipoSexo, disabled: false }, [Validators.maxLength(15)]],
+      numSexo: [{ value: this.contratante.numSexo, disabled: false }, []],
+      otroSexo: [{ value: this.contratante.sexo, disabled: false }, [Validators.maxLength(15)]],
       fecNacimiento: [{ value: new Date(this.diferenciaUTC(fechaNacimiento)), disabled: false }, []],
       nacionalidad: [{
         value: String(contratante.nacionalidad).toLocaleLowerCase() === 'mexicana' ? 1 : 2,
@@ -184,8 +183,11 @@ export class ModificarContratantesComponent implements OnInit {
     this.df.municipio.patchValue("");
     this.df.estado.patchValue("");
     this.df.colonia.patchValue("");
-    // this.df.colonia.disable();
     this.colonias = [];
+  }
+
+  cambioTipoSexo() {
+    this.dgf.otroSexo.patchValue(null);
   }
 
   validarEmail() {
@@ -234,8 +236,9 @@ export class ModificarContratantesComponent implements OnInit {
   }
 
   datosActualizar() {
+    debugger
     return {
-      idPersona: this.contratanteModificado.idContratante,
+      idPersona: this.contratanteModificado.idPersona,
       nombre: this.contratanteModificado.nombre,
       paterno: this.contratanteModificado.paterno,
       materno: this.contratanteModificado.materno,
@@ -265,7 +268,6 @@ export class ModificarContratantesComponent implements OnInit {
           this.vistaConfirmarCambio = false;
           this.ref.close({ estatus: true });
         } else {
-          // this.mensajeRegistroDuplicado = 'El contratante que deseas ingresar ya se encuentra registrado en el sistema.'; 
           this.mensajeRegistroDuplicado = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
           this.modalRegistroDuplicado();
         }
