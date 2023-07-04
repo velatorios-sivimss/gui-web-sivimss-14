@@ -17,12 +17,11 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
 
 import {CalendarModule} from 'primeng/calendar';
 import {AccordionModule} from 'primeng/accordion';
-import { ComisionesComponent } from './components/comisiones/comisiones.component';
-import { CalculoComisionesService } from './services/balance-caja.service';
+import { BalanceCajaComponent } from './components/balance-caja/balance-caja.component';
+import { BalanceCajaService } from './services/balance-caja.service';
 import { CalculoComisionesoRoutingModule } from './balance-caja.routing.module';
 import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
-import { ModalComisionComponent } from "./components/modal-comision/modal-comision.component";  
 
 @NgModule({
   declarations: [

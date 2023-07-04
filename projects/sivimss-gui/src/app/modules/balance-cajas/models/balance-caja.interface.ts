@@ -1,10 +1,11 @@
 export interface BalanceCaja {
-  id: number;
-  numEmpleado: string;
-  curp: string,
-  nombre: string;
-  primerApellido: string;
-  segundoApellido: string;
+  fecha: number;
+  delegacion: string;
+  velatorio: string,
+  folio: string;
+  tipoIngreso: string;
+  metodo: string;
+  estatus: string;
 }
 
 

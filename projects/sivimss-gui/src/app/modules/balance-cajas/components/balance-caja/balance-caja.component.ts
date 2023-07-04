@@ -91,26 +91,23 @@ export class BalanceCajaComponent implements OnInit {
     this.router.navigate([`comisiones/detalle-comision/${balanceCajaSeleccionado.id}`]).then(() => { }).catch(() => { });
   }
 
+  abrirPanel(event: MouseEvent, balanceCajaSeleccionado: BalanceCaja): void {
+    this.balanceCajaSeleccionado = balanceCajaSeleccionado;
+    this.overlayPanel.toggle(event);
+  }
+
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormBalanceCaja = this.formBuilder.group({
       nivel: [{value: +usuario.idOficina, disabled: true}],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
       velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
-      promotores: [{value: null, disabled: false}],
-      fechaInicial: [{value: null, disabled: false}],
-      fechaFinal: [{value: null, disabled: false}],
+      folioODS: [{value: null, disabled: false}],
+      folioNuevo: [{value: null, disabled: false}],
+      folioRenovacion: [{value: null, disabled: false}],
+      fecha: [{value: null, disabled: false}],
+      metodo: [{value: null, disabled: false}],
     });
-  }
-
-  validarMismaFechaInicioFin(): void {
-    const fechaInicial = this.filtroFormBalanceCaja.get('fechaInicial')?.value;
-    const fechaFinal = this.filtroFormBalanceCaja.get('fechaFinal')?.value;
-    if ([fechaInicial, fechaFinal].some(f => f === null)) return;
-    if (moment(fechaInicial).format('YYYY-MM-DD') !== moment(fechaFinal).format('YYYY-MM-DD')) return;
-    this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
-    this.filtroFormBalanceCaja.get('fechaInicial')?.patchValue(null);
-    this.filtroFormBalanceCaja.get('fechaFinal')?.patchValue(null);
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -133,28 +130,31 @@ export class BalanceCajaComponent implements OnInit {
     }
     this.balanceCaja = [ 
       {
-        id: 1,
-        numEmpleado: '000001',
-        curp: 'TASASL12107034Y',
-        nombre: 'Jorge',
-        primerApellido: 'Sanchez',
-        segundoApellido: 'Prado',
+        fecha: 1,
+        delegacion: '000001',
+        velatorio: 'TASASL12107034Y',
+        folio: 'Jorge',
+        tipoIngreso: 'Sanchez',
+        metodo: 'Prado',
+        estatus: 'Abierto',
       },
       {
-        id: 2,
-        numEmpleado: '000002',
-        curp: 'TASASL12107034Y',
-        nombre: 'Edwin',
-        primerApellido: 'Ruiz',
-        segundoApellido: 'Cardenas',
+        fecha: 2,
+        delegacion: '000002',
+        velatorio: 'TASASL12107034Y',
+        folio: 'Edwin',
+        tipoIngreso: 'Ruiz',
+        metodo: 'Cardenas',
+        estatus: 'Abierto',
       },
       {
-        id: 3,
-        numEmpleado: '000003',
-        curp: 'TASASL12107034Y',
-        nombre: 'Nataly',
-        primerApellido: 'Sanchez',
-        segundoApellido: 'Hernandez',
+        fecha: 3,
+        delegacion: '000003',
+        velatorio: 'TASASL12107034Y',
+        folio: 'Nataly',
+        tipoIngreso: 'Sanchez',
+        metodo: 'Hernandez',
+        estatus: 'Abierto',
       },
     ];
     this.totalElementos=10;
@@ -187,9 +187,11 @@ export class BalanceCajaComponent implements OnInit {
       idNivel: this.filtroFormBalanceCaja.get("nivel")?.value,
       idDelegacion: this.filtroFormBalanceCaja.get("delegacion")?.value,
       idVelatorio: this.filtroFormBalanceCaja.get("velatorio")?.value,
-      promotores: this.filtroFormBalanceCaja.get("promotores")?.value,
-      fecIniODS: this.filtroFormBalanceCaja.get("fechaInicial")?.value,
-      fecFinODS: this.filtroFormBalanceCaja.get("fechaFinal")?.value,
+      folioODS: this.filtroFormBalanceCaja.get("promotores")?.value,
+      folioNuevo: this.filtroFormBalanceCaja.get("fechaInicial")?.value,
+      folioRenovacion: this.filtroFormBalanceCaja.get("fechaFinal")?.value,
+      fecha: this.filtroFormBalanceCaja.get("fechaFinal")?.value,
+      metodo: this.filtroFormBalanceCaja.get("fechaFinal")?.value,
       rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
       tipoReporte: "pdf"
     }
@@ -216,6 +218,23 @@ export class BalanceCajaComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
+  }
+
+  abrirModalModificarPago(): void {
+    /*
+    this.creacionRef = this.dialogService.open(ModificarCapillaComponent, {
+      header: "Modificar capilla",
+      width: "920px",
+      data: {capilla: this.balanceCajaSeleccionado, origen: "modificar"},
+    });
+
+    this.creacionRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Capilla modificada correctamente');
+        this.paginarPorFiltros();
+      }
+    })
+    */
   }
 
   get f() {

@@ -3,10 +3,10 @@ import {ElementoBreadcrumb} from "projects/sivimss-gui/src/app/shared/breadcrumb
 export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   {
     icono: 'imagen-icono-operacion-sivimss.svg',
-    titulo: 'Trámites'
+    titulo: 'Operación SIVIMSS '
   },
   {
     icono: '',
-    titulo: 'Administración de comisiones'
+    titulo: 'Realizar balance de caja'
   }
 ]

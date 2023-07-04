@@ -21,30 +21,29 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label class="control-label" for="folioODS">Folio de la orden de servicio (ODS)*:</label>
-                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="opciones" placeholder="Selecciona el promotor" [filter]="true">
+                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="opciones" placeholder="Ingresa folio" [filter]="true">
                 </p-dropdown>
             </div>
             <div class="col-md-6">
-                <label class="control-label" for="promotores">Folio nuevo convenio prevision funeraria</label>
-                <p-dropdown id="promotores" class="form-control" formControlName="promotores" [options]="opciones" placeholder="Selecciona el promotor" [filter]="true">
+                <label class="control-label" for="folioNuevo">Folio nuevo convenio prevision funeraria</label>
+                <p-dropdown id="folioNuevo" class="form-control" formControlName="folioNuevo" [options]="opciones" placeholder="Ingresa folio" [filter]="true">
                 </p-dropdown>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
-                <label class="control-label" for="promotores">Folio renovación de convenios prevision funeraria (PRCPF):</label>
-                <p-dropdown id="promotores" class="form-control" formControlName="promotores" [options]="opciones" placeholder="Selecciona el promotor" [filter]="true">
+                <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria (PRCPF):</label>
+                <p-dropdown id="folioRenovacion" class="form-control" formControlName="folioRenovacion" [options]="opciones" placeholder="Ingresa folio" [filter]="true">
                 </p-dropdown>
             </div>
             <div class="col-md-3">
-                <label class="control-label" for="fechaInicial">Fecha inicial:</label>
-                <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true" placeholder="Fecha inicial" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()" [maxDate]="filtroFormComisiones.get('fechaFinal')?.value || fechaAnterior">
-                </p-calendar>
+                <label class="control-label" for="fecha">Fecha</label>
+                <p-dropdown id="fecha" class="form-control" formControlName="fecha" [options]="opciones" placeholder="Ingresa método de pago" [filter]="true">
+                </p-dropdown>
             </div>
             <div class="col-md-3">
-                <label class="control-label" for="fechaInicial">Fecha final:</label>
-                <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()" [minDate]="filtroFormComisiones.get('fechaInicial')?.value"
-                    [maxDate]="fechaActual">
+                <label class="control-label" for="metodo">Fecha:</label>
+                <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy" [minDate]="filtroFormBalanceCaja.get('metodo')?.value" [maxDate]="fechaActual">
                 </p-calendar>
             </div>
 
@@ -63,7 +62,7 @@
         <h2 class="subtitulo">Pagos</h2>
     </div>
 
-    <p-table styleClass="mt-5 mb-8" [value]="comisiones" [paginator]="comisiones.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
+    <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
 
         <ng-template pTemplate="header">
             <tr>
@@ -76,18 +75,22 @@
                 <th id="columna_generar_recibo_botones">Estatus caja</th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-comision>
+        <ng-template pTemplate="body" let-balance>
             <tr>
-                <td>{{comision.id}}</td>
-                <td>{{comision.numEmpleado}} </td>
-                <td>{{comision.curp}} </td>
-                <td>{{comision.nombre}}</td>
-                <td>{{comision.primerApellido}}</td>
-                <td>{{comision.segundoApellido}}</td>
+                <td>{{balance.fecha}}</td>
+                <td>{{balance.delegacion}} </td>
+                <td>{{balance.velatorio}} </td>
+                <td>{{balance.folio}}</td>
+                <td>{{balance.tipoIngreso}}</td>
+                <td>{{balance.metodo}}</td>
+                <td>{{balance.estatus}}</td>
                 <td>
                     <div class="contenedor-celda-iconos">
-                        <a (click)="abrirDetalleComision(comision)">
+                        <a (click)="abrirDetalleComision(balance)">
                             <img src="assets/images/imagen-icono-ver.svg" alt="Ver">
+                        </a>
+                        <a (click)="abrirPanel($event,balance)">
+                            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
                         </a>
                     </div>
                 </td>
@@ -102,10 +105,18 @@
         </ng-template>
         <ng-template pTemplate="paginatorleft">
             <div class="paginator-template">
-                <span class="total-elements"> {{comisiones.length}} de {{totalElementos}} </span>
+                <span class="total-elements"> {{balanceCaja.length}} de {{totalElementos}} </span>
             </div>
         </ng-template>
         <ng-template pTemplate="paginatorright">
         </ng-template>
     </p-table>
 </section>
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Modificar pago" (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>
