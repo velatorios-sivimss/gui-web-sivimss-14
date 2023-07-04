@@ -231,11 +231,15 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.mantenimientoVehicularService.guardar(verificacion).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
-          if (respuesta.datos.length > 0) {
-            this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+          if (respuesta.error && !respuesta.datos) {
+            this.alertaService.mostrar(TipoAlerta.Precaucion, respuesta.mensaje);
           } else {
-            this.abrirRegistroSolicitud(respuesta.datos);
+            this.alertaService.mostrar(TipoAlerta.Exito, 'Registro agregado correctamente');
+            if (respuesta.datos.length > 0) {
+              this.abrirRegistroSolicitud(respuesta.datos[0]?.ID_MTTOVEHICULAR);
+            } else {
+              this.abrirRegistroSolicitud(respuesta.datos);
+            }
           }
         },
         error: (error: HttpErrorResponse): void => {
