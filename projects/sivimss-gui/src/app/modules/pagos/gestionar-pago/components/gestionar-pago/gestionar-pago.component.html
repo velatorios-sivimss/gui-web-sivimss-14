@@ -36,6 +36,30 @@
         <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
                placeholder="Ingresa nombre del contratante">
       </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <label class="control-label">
+              Rango de fechas de elaboración:
+            </label>
+          </div>
+          <div class="col-md-6">
+            <p-calendar id="elaboracionInicio" formControlName="elaboracionInicio" styleClass="form-control"
+                        [showIcon]="true"
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
+                        (onSelect)="validarMismaFechaInicioFin()"
+                        [maxDate]="filtroGestionarPagoForm.get('elaboracionFin')?.value || fechaAnterior">
+            </p-calendar>
+          </div>
+          <div class="col-md-6">
+            <p-calendar id="elaboracionFin" formControlName="elaboracionFin" styleClass="form-control" [showIcon]="true"
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
+                        (onSelect)="validarMismaFechaInicioFin()"
+                        [minDate]="filtroGestionarPagoForm.get('elaboracionInicio')?.value" [maxDate]="fechaActual">
+            </p-calendar>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">

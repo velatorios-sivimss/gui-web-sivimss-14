@@ -11,6 +11,7 @@ import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.modul
 import {TableModule} from "primeng/table";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {OverlayPanelOpcionesModule} from "../../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
+import {CalendarModule} from "primeng/calendar";
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import {OverlayPanelOpcionesModule} from "../../../shared/overlay-panel-opciones
     TableModule,
     OverlayPanelModule,
     OverlayPanelOpcionesModule,
+    CalendarModule,
   ],
   providers: [GestionarPagoService]
 })

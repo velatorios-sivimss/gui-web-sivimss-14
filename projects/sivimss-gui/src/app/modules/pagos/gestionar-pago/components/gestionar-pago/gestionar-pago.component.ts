@@ -16,6 +16,8 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {ActivatedRoute, Router} from "@angular/router";
 import {PagoGestion} from "../../models/pagoGestion.interface";
 import {OverlayPanel} from "primeng/overlaypanel";
+import * as moment from "moment/moment";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-gestionar-pago',
@@ -38,6 +40,9 @@ export class GestionarPagoComponent implements OnInit {
   readonly POSICION_FOLIO_PREV_FUN: number = 1;
   readonly POSICION_FOLIO_REN_PREV_FUN: number = 2;
 
+  fechaActual: Date = new Date();
+  fechaAnterior: Date = new Date();
+
   pagos: PagoGestion[] = [];
   tipoFolio: null | 1 | 2 | 3 = null;
 
@@ -53,7 +58,9 @@ export class GestionarPagoComponent implements OnInit {
               private mensajesSistemaService: MensajesSistemaService,
               private router: Router,
               private readonly activatedRoute: ActivatedRoute,
+              private alertaService: AlertaService,
   ) {
+    this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
   ngOnInit(): void {
@@ -150,6 +157,16 @@ export class GestionarPagoComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, pago: PagoGestion): void {
     this.overlayPanel.toggle(event);
+  }
+
+  validarMismaFechaInicioFin(): void {
+    const fechaInicial = this.filtroGestionarPagoForm.get('elaboracionInicio')?.value;
+    const fechaFinal = this.filtroGestionarPagoForm.get('elaboracionFin')?.value;
+    if ([fechaInicial, fechaFinal].some(f => f === null)) return;
+    if (moment(fechaInicial).format('YYYY-MM-DD') !== moment(fechaFinal).format('YYYY-MM-DD')) return;
+    this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+    this.filtroGestionarPagoForm.get('elaboracionInicio')?.patchValue(null);
+    this.filtroGestionarPagoForm.get('elaboracionFin')?.patchValue(null);
   }
 
 
