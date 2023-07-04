@@ -180,7 +180,7 @@ export class GestionarEtapasService {
       estado: null,
     },
   };
-
+  datosEtapaCaracteristicas = {};
   etapas$: BehaviorSubject<Etapa[]> = new BehaviorSubject<Etapa[]>(this.etapas);
   idEtapaSeleccionada$: BehaviorSubject<number> = new BehaviorSubject<number>(
     0
@@ -188,13 +188,16 @@ export class GestionarEtapasService {
   datosEtapaContratante$: BehaviorSubject<any> = new BehaviorSubject<any>(
     this.datosEtapaContratante
   );
+
+  datosEtapaCaracteristicas$: BehaviorSubject<any> = new BehaviorSubject<any>(
+    this.datosEtapaCaracteristicas
+  );
   datosEtapaFinado$: BehaviorSubject<any> = new BehaviorSubject<any>(
     this.datosEtapaFinado
   );
   altaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.altaODS);
 
-  constructor() // private authService: AutenticacionService // _http:HttpClient,
-  {
+  constructor() { // private authService: AutenticacionService // _http:HttpClient,
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
     this.altaODS.finado = this.finado;

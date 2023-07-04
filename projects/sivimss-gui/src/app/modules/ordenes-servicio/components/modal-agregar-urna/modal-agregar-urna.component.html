@@ -1,10 +1,10 @@
 <form [formGroup]="form">
   <div class="row">
     <div class="col-md-6">
-      <label class="control-label" for="ataud">Ataúd<span class="req">*</span>:</label>
-      <p-dropdown #dd id="ataud" class="form-control" formControlName="ataud" placeholder="Selecciona ataúd"
-        appendTo="body" [options]="ataudes" (onChange)="selecionarAtaud(dd)"></p-dropdown>
-      <span class="campo-obligatorio" *ngIf="f.ataud?.errors?.required && (f.ataud?.dirty || f.ataud?.touched)">Campo
+      <label class="control-label" for="urna">Urnas<span class="req">*</span>:</label>
+      <p-dropdown #dd id="urna" class="form-control" formControlName="urna" placeholder="Selecciona una urna"
+        appendTo="body" [options]="urnas" (onChange)="selecionarUrna(dd)"></p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.urna?.errors?.required && (f.urna?.dirty || f.urna?.touched)">Campo
         obligatorio</span>
     </div>
 

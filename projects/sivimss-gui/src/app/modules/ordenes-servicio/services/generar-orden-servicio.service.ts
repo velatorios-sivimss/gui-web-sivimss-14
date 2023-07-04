@@ -64,6 +64,7 @@ export class GenerarOrdenServicioService extends BaseService<
       ?.find(
         (mensajeSistema: MensajeSistema) => mensajeSistema.idMensaje === id
       );
+    console.log(mensajeSistema);
     return mensajeSistema ? mensajeSistema.desMensaje : '';
   }
 
@@ -124,6 +125,47 @@ export class GenerarOrdenServicioService extends BaseService<
     );
   }
 
+  consultarTodoslosAtaudes(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-ataudes`,
+      parametros
+    );
+  }
+
+  consultarTodaslasUrnas(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-urnas`,
+      parametros
+    );
+  }
+
+  consultarEmpaques(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-empaques`,
+      parametros
+    );
+  }
+  consultarArticulosComplementarios(
+    parametros: any
+  ): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-articulos-complementarios-consultar`,
+      parametros
+    );
+  }
+
+  consultarTodoslosEmpaques(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-empaques`,
+      parametros
+    );
+  }
+
   consultarProveedorAtaudes(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
@@ -145,6 +187,13 @@ export class GenerarOrdenServicioService extends BaseService<
       this._base +
         `${this._funcionalidad}/buscar-filtros/orden-servicios-proveedor-consultar`,
       parametros
+    );
+  }
+
+  consultarServiciosVigentes(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/catalogo/orden-servicios-vigentes-consultar`
     );
   }
 }

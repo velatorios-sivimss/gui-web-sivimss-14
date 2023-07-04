@@ -11,8 +11,8 @@ export interface ContenidoPaqueteInterface {
   idProveedor: number | null;
   proveedor?: string | null;
   fila?: number;
-  idArticulo?: number;
-  idInventario?: number;
+  idArticulo?: number | null;
+  idInventario?: number | null;
   kilometraje?: number;
   coordOrigen?: any[];
   coordDestino?: any[];

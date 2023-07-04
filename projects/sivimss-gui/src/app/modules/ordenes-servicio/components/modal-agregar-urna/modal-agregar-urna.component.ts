@@ -14,20 +14,19 @@ import {
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { Dropdown } from 'primeng/dropdown';
 @Component({
-  selector: 'app-modal-agregar-ataud',
-  templateUrl: './modal-agregar-ataud.component.html',
-  styleUrls: ['./modal-agregar-ataud.component.scss'],
+  selector: 'app-modal-agregar-urna',
+  templateUrl: './modal-agregar-urna.component.html',
+  styleUrls: ['./modal-agregar-urna.component.scss'],
 })
-export class ModalAgregarAtaudComponent implements OnInit {
+export class ModalAgregarUrnaComponent implements OnInit {
   form!: FormGroup;
   concepto: string = '';
   grupo: string = '';
   idCategoria: string = '';
   costo: number = 0;
-  ataudesCompletos: any[] = [];
-  ataudes: any[] = [];
+  urnasCompletos: any[] = [];
+  urnas: any[] = [];
   idVelatorio: number = 0;
-  idProveedor: number = 0;
   idArticulo: number = 0;
   idInventario: number = 0;
   constructor(
@@ -43,19 +42,19 @@ export class ModalAgregarAtaudComponent implements OnInit {
   ngOnInit(): void {
     this.idVelatorio = this.config.data.idVelatorio;
     this.inicializarForm();
-    this.consultarAtaudes(this.config.data.idVelatorio);
+    this.consultarUrna(this.config.data.idVelatorio);
   }
 
-  consultarAtaudes(idVelatorio: number): void {
+  consultarUrna(idVelatorio: number): void {
     const parametros = { idVelatorio: idVelatorio };
     this.gestionarOrdenServicioService
-      .consultarTodoslosAtaudes(parametros)
+      .consultarTodoslosEmpaques(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
-            this.ataudes = [];
-            this.ataudesCompletos = [];
+            this.urnas = [];
+            this.urnasCompletos = [];
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
                 parseInt(respuesta.mensaje)
@@ -80,8 +79,8 @@ export class ModalAgregarAtaudComponent implements OnInit {
             return;
           }
 
-          this.ataudesCompletos = datos;
-          this.ataudes = mapearArregloTipoDropdown(
+          this.urnasCompletos = datos;
+          this.urnas = mapearArregloTipoDropdown(
             datos,
             'nombreArticulo',
             'idInventario'
@@ -110,9 +109,9 @@ export class ModalAgregarAtaudComponent implements OnInit {
       );
   }
 
-  selecionarAtaud(dd: Dropdown): void {
+  selecionarUrna(dd: Dropdown): void {
     this.concepto = dd.selectedOption.label;
-    this.ataudesCompletos.forEach((datos: any) => {
+    this.urnasCompletos.forEach((datos: any) => {
       if (Number(datos.idInventario) == Number(dd.selectedOption.value)) {
         this.grupo = datos.grupo;
         this.costo = datos.precio;
@@ -125,7 +124,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
 
   inicializarForm(): void {
     this.form = this.formBuilder.group({
-      ataud: [{ value: null, disabled: false }, [Validators.required]],
+      urna: [{ value: null, disabled: false }, [Validators.required]],
     });
   }
 
@@ -148,7 +147,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
       idInventario: null,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
-      idProveedor: this.idProveedor,
+      idProveedor: null,
       totalPaquete: this.costo,
       importe: this.costo,
       esDonado: false,

@@ -1,4 +1,6 @@
 import {
+  AfterContentChecked,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   OnInit,
@@ -43,13 +45,16 @@ import { GenerarOrdenServicioService } from '../../services/generar-orden-servic
 import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Dropdown } from 'primeng/dropdown';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-caracteristicas-presupuesto',
   templateUrl: './caracteristicas-presupuesto.component.html',
   styleUrls: ['./caracteristicas-presupuesto.component.scss'],
 })
-export class CaracteristicasPresupuestoComponent implements OnInit {
+export class CaracteristicasPresupuestoComponent
+  implements OnInit, AfterContentChecked
+{
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @ViewChild(OverlayPanel)
@@ -102,20 +107,24 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
   fila: number = 0;
   utilizarArticulo: boolean | null = null;
   datosPresupuesto: any[] = [];
-  mostrarTIpoOtorgamiento: boolean = true;
+  mostrarTIpoOtorgamiento: boolean = false;
   selecionaTipoOtorgamiento: number | null = null;
   valoresTipoOrtogamiento: any[] = [
     { value: 1, label: 'Estudio socioeconómico' },
     { value: 2, label: 'EscritoLlibre' },
   ];
   mostrarQuitarPresupuesto: boolean = false;
+  total: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
     private loaderService: LoaderService,
+
     private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasService
+    private gestionarEtapasService: GestionarEtapasService,
+    private changeDetector: ChangeDetectorRef
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -162,12 +171,15 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
-                Number(respuesta.datos)
-              )
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
+
             return;
           }
           this.paquetes = mapearArregloTipoDropdown(
@@ -177,18 +189,21 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
           );
         },
         (error: HttpErrorResponse) => {
-          console.log(error);
           try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
-                Number(error.error.datos)
-              )
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
           } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
           }
         }
@@ -201,6 +216,7 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     if (nombrePaquete.trim() == 'Paquete social') {
       this.mostrarTIpoOtorgamiento = true;
     }
+    this.datosPresupuesto = [];
     this.loaderService.activar();
     this.buscarTipoAsignacion();
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
@@ -214,11 +230,13 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
-                Number(respuesta.datos)
-              )
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
             return;
           }
@@ -226,17 +244,22 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           console.log(error);
+
           try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
-                Number(error.error.datos)
-              )
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
           } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
           }
         }
@@ -330,21 +353,6 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     }
 
     this.overlayPanel.toggle(event);
-  }
-
-  abrirModalAgregarAlPrespuesto(event: MouseEvent) {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalAgregarAlPresupuestoComponent, {
-      header: 'Agregar a presupuesto',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        dummy: '',
-      },
-    });
-    ref.onClose.subscribe((val: boolean) => {
-      if (val) {
-      }
-    });
   }
 
   abrirModalAgregarAtaud(event: MouseEvent) {
@@ -496,11 +504,13 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
           console.log('datos', datos);
           if (respuesta.error) {
             this.listaproveedor = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
-                Number(respuesta.datos)
-              )
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
             return;
           }
@@ -513,16 +523,20 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
         (error: HttpErrorResponse) => {
           console.log(error);
           try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
-                Number(error.error.datos)
-              )
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
           } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
             this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(187)
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
             );
           }
         }
@@ -556,14 +570,20 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
       this.servicioDetalleTraslado.origen = datos.origen ?? null;
       this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
     }
+    console.log(datos.bloquearRadioButton);
     datos.bloquearRadioButton = true;
     this.datosPresupuesto.push(datos);
     console.log('datos presupusto', this.datosPresupuesto);
   }
 
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
+  }
+
   quitarArticulo(datos: any): void {
     console.log(datos);
   }
+
   regresar() {
     let etapas: Etapa[] = [
       {
@@ -691,9 +711,130 @@ export class CaracteristicasPresupuestoComponent implements OnInit {
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(3);
     console.log('INFO A GUARDAR STEP 3: ', this.form.value);
+    this.datosAlta();
+  }
+
+  datosAlta(): void {
+    let datosEtapaCaracteristicas = {
+      observaciones: this.f.observaciones.value,
+      notasServicio: this.f.notasServicio.value,
+      paqueteSeleccionado: this.paqueteSeleccionado,
+      mostrarTIpoOtorgamiento: this.mostrarTIpoOtorgamiento,
+      selecionaTipoOtorgamiento: this.selecionaTipoOtorgamiento,
+      datosPaquetes: this.datosPaquetes,
+      datosPresupuesto: this.datosPresupuesto,
+    };
+
+    this.gestionarEtapasService.datosEtapaContratante$.next(
+      datosEtapaCaracteristicas
+    );
+
+    this.datosPaquetes.forEach((datos: any) => {
+      console.log('paquete', datos);
+      let detalle: DetallePaqueteInterface = {} as DetallePaqueteInterface;
+
+      detalle.cantidad = datos.cantidad;
+      detalle.idArticulo = datos.idArticulo ?? null;
+      detalle.desmotivo = datos.desmotivo ?? null;
+      detalle.activo = datos.activo ?? 0;
+      detalle.idProveedor = datos.idProveedor ?? null;
+      detalle.idServicio = datos.idServicio ?? null;
+      detalle.idTipoServicio = datos.idTipoServicio ?? null;
+      detalle.servicioDetalleTraslado = null;
+
+      if (Number(datos.idTipoServicio) == 4) {
+        let traslado: ServicioDetalleTrasladotoInterface =
+          {} as ServicioDetalleTrasladotoInterface;
+        detalle.activo = datos.activo ?? 0;
+        let cordenadas = datos.coordOrigen ?? null;
+        traslado.longitudInicial = null;
+        traslado.latitudInicial = null;
+        traslado.longitudFinal = null;
+        traslado.latitudFinal = null;
+        if (cordenadas != null) {
+          traslado.longitudInicial = datos.coordOrigen[0];
+          traslado.latitudInicial = datos.coordOrigen[1];
+          traslado.longitudFinal = datos.coordDestino[0];
+          traslado.latitudFinal = datos.coordDestino[1];
+        }
+        traslado.destino = datos.destino ?? null;
+        traslado.origen = datos.origen ?? null;
+        traslado.totalKilometros = datos.kilometraje ?? null;
+        detalle.servicioDetalleTraslado = traslado ?? null;
+      }
+      detalle.importeMonto = datos.totalPaquete;
+      detalle.importeMonto = datos.importeMonto;
+      this.detallePaquete.push(detalle);
+    });
+
+    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto =
+      this.caracteristicasDelPresupuesto;
+
+    this.caracteristicasDelPresupuesto.idPaquete = this.paqueteSeleccionado;
+    this.caracteristicasDelPresupuesto.notasServicio =
+      this.f.observaciones.value;
+    this.caracteristicasDelPresupuesto.observaciones =
+      this.f.observaciones.value;
+    this.caracteristicasDelPresupuesto.totalPresupuesto = '' + this.total;
+    this.caracteristicasDelPresupuesto.detallePresupuesto =
+      this.detallePresupuesto;
+    this.caracteristicasPresupuesto.caracteristicasPaquete =
+      this.caracteristicasPaquete;
+    this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
+    this.caracteristicasPaquete.otorgamiento =
+      this.selecionaTipoOtorgamiento ?? null;
+    this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
+
+    this.datosPresupuesto.forEach((datos: any) => {
+      let detalle: DetallePresupuestoInterface =
+        {} as DetallePresupuestoInterface;
+
+      detalle.cantidad = datos.cantidad;
+      detalle.esDonado = datos.esDonado ?? null;
+      detalle.idArticulo = datos.idArticulo ?? null;
+      detalle.idCategoria = datos.idCategoria ?? null;
+      detalle.idInventario = datos.idInventario ?? null;
+      detalle.idProveedor = datos.idProveedor ?? null;
+      detalle.idServicio = datos.idServicio ?? null;
+      detalle.idTipoServicio = datos.idTipoServicio ?? null;
+      detalle.servicioDetalleTraslado = null;
+      if (Number(datos.idTipoServicio) == 4) {
+        let traslado: ServicioDetalleTrasladotoInterface =
+          {} as ServicioDetalleTrasladotoInterface;
+        traslado.destino = datos.destino;
+        traslado.longitudInicial = datos.coordOrigen[0];
+        traslado.latitudInicial = datos.coordOrigen[1];
+        traslado.longitudFinal = datos.coordDestino[0];
+        traslado.latitudFinal = datos.coordDestino[1];
+        traslado.origen = datos.origen;
+        traslado.totalKilometros = datos.kilometraje;
+        detalle.servicioDetalleTraslado = traslado;
+      }
+      detalle.importeMonto = datos.totalPaquete;
+      this.detallePresupuesto.push(detalle);
+    });
+
+    // this.detallePresupuesto = arrayDatosPresupuesto;
+    console.log('alta od', this.altaODS);
+
+    //  this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
   get f() {
     return this.form.controls;
+  }
+
+  abrirModalAgregarAlPrespuesto(event: MouseEvent) {
+    event.stopPropagation();
+    const ref = this.dialogService.open(ModalAgregarAlPresupuestoComponent, {
+      header: 'Agregar a presupuesto',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        idVelatorio: this.idVelatorio,
+      },
+    });
+    ref.onClose.subscribe((salida: any) => {
+      this.datosPresupuesto.push(salida);
+    });
   }
 }

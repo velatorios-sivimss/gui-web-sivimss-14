@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -13,6 +20,19 @@ import 'leaflet-control-geocoder';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Dropdown } from 'primeng/dropdown';
 
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { LoaderService } from '../../../../shared/loader/services/loader.service';
+import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
+import { finalize } from 'rxjs';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import {
+  AlertaService,
+  TipoAlerta,
+} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { ContenidoPaqueteInterface } from '../../models/ContenidoPaquete,interface';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+
 declare var L: any;
 
 @Component({
@@ -20,7 +40,9 @@ declare var L: any;
   templateUrl: './modal-agregar-servicio.component.html',
   styleUrls: ['./modal-agregar-servicio.component.scss'],
 })
-export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
+export class ModalAgregarServicioComponent
+  implements OnInit, AfterContentChecked, AfterViewInit
+{
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
   listaproveedor: any[] = [];
@@ -46,11 +68,26 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
   proviene: string = '';
   idServicio: number = 0;
   ocultarProveedor: boolean = false;
-
+  servicios: any[] = [];
+  nombreServicio: string = '';
+  concepto: string = '';
+  costo: string = '0';
+  grupo: string = '';
+  idCategoria: number = 0;
+  idTipoServicio: number = 0;
+  serviciosCompletos: any[] = [];
+  proveedorCompletos: any[] = [];
+  disableddMapa: boolean = false;
+  ocultarBtn: boolean = false;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
-    private readonly config: DynamicDialogConfig
+    private readonly config: DynamicDialogConfig,
+    private loaderService: LoaderService,
+    private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private changeDetector: ChangeDetectorRef,
+    private gestionarOrdenServicioService: GenerarOrdenServicioService
   ) {}
 
   ngOnInit(): void {
@@ -59,35 +96,183 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
     this.fila = this.config.data.fila;
     this.proviene = this.config.data.proviene;
     this.idServicio = this.config.data.idServicio;
-    this.inicializarForm(this.config.data.proveedor.traslado);
+    this.inicializarForm();
   }
 
-  inicializarForm(traslado: boolean): void {
-    let validacion = [Validators.required];
+  inicializarForm(): void {
+    let validacionServicio = [Validators.required];
+    let validacionMapa = [Validators.required];
 
     console.log(this.proviene);
     if (this.proviene == 'traslados') {
+      this.disableddMapa = false;
       this.ocultarServicios = false;
-      validacion = [];
+      validacionServicio = [];
       this.ocultarMapa = true;
-      this.ocultarProveedor = true;
+      this.ocultarProveedor = false;
+      this.ocultarBtn = false;
     } else if (this.proviene == 'proveedor') {
+      this.disableddMapa = true;
       this.ocultarMapa = false;
       this.ocultarServicios = false;
+      validacionServicio = [];
       this.ocultarProveedor = true;
+      this.ocultarBtn = true;
+    } else if (this.proviene == 'servicios') {
+      this.disableddMapa = true;
+      this.ocultarMapa = true;
+      this.ocultarServicios = true;
+      this.ocultarBtn = false;
+      this.ocultarProveedor = true;
+      validacionMapa = [];
+      this.buscarServicios();
     }
     this.form = this.formBuilder.group({
-      servicio: [{ value: null, disabled: false }, validacion],
+      servicio: [{ value: null, disabled: false }, validacionServicio],
       proveedor: [{ value: null, disabled: false }, [Validators.required]],
-      origen: [{ value: null, disabled: false }, [Validators.required]],
-      destino: [{ value: null, disabled: false }, [Validators.required]],
-      kilometraje: [{ value: null, disabled: false }, [Validators.required]], //Se coloca automaticamente
+      origen: [{ value: null, disabled: false }, validacionMapa],
+      destino: [{ value: null, disabled: false }, validacionMapa],
+      kilometraje: [{ value: null, disabled: false }, validacionMapa], //Se coloca automaticamente
     });
+  }
+
+  buscarServicios(): void {
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService
+      .consultarServiciosVigentes()
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+
+          if (respuesta.error) {
+            this.servicios = [];
+            this.serviciosCompletos = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+            return;
+          }
+          console.log(
+            this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(15)
+          );
+          const datos = respuesta.datos;
+          this.serviciosCompletos = datos;
+          this.servicios = mapearArregloTipoDropdown(
+            datos,
+            'nombreServicio',
+            'idServicio'
+          );
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+
+          try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          }
+        }
+      );
+  }
+
+  seleccionaServicio(dd: Dropdown): void {
+    this.nombreServicio = dd.selectedOption.label;
+    this.idServicio = dd.selectedOption.value;
+    this.serviciosCompletos.forEach((datos: any) => {
+      if (Number(datos.idServicio) == Number(dd.selectedOption.value)) {
+        this.concepto = datos.nombreServicio;
+        this.idServicio = datos.idServicio;
+        this.grupo = datos.grupo;
+        this.idProveedor = datos.idTipoServicio;
+        if (Number(datos.idServicio) == 4) {
+          this.disableddMapa = false;
+        }
+      }
+    });
+
+    this.consultarProveeedorServicio();
   }
 
   seleccionaProveedor(dd: Dropdown): void {
     this.proveedor = dd.selectedOption.label;
+    this.proveedorCompletos.forEach((datos: any) => {
+      if (Number(datos.idProveedor) == Number(dd.selectedOption.value)) {
+        this.idProveedor = datos.nombreServicio;
+        this.costo = datos.importe;
+      }
+    });
   }
+
+  consultarProveeedorServicio(): void {
+    const parametros = { idServicio: this.idServicio };
+    this.gestionarOrdenServicioService
+      .consultarProveeedorServicio(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.error) {
+            this.listaproveedor = [];
+            this.proveedorCompletos = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+            return;
+          }
+          const datos = respuesta.datos;
+          console.log('datos', datos);
+          this.proveedorCompletos = datos;
+          this.listaproveedor = mapearArregloTipoDropdown(
+            datos,
+            'nombreProveedor',
+            'idProveedor'
+          );
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          }
+        }
+      );
+  }
+
   cerrarModal(): void {
     this.ref.close(null);
   }
@@ -95,7 +280,7 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
   aceptarModal(): void {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
     let salida = null;
-    if (this.proviene == 'traslados') {
+    if (this.proviene == 'traslados' || this.proviene == 'proveedor') {
       salida = {
         fila: this.fila,
         proveedor: this.proveedor,
@@ -103,15 +288,27 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
         coordOrigen: this.coordOrigen,
         coordDestino: this.coordDestino,
       };
-    } else if (this.proviene == 'proveedor') {
+    } else if (this.proviene == 'servicios') {
       salida = {
-        fila: this.fila,
-        proveedor: this.proveedor,
-        datosFormulario: this.form.value,
+        cantidad: '1',
+        concepto: this.concepto,
         coordOrigen: this.coordOrigen,
         coordDestino: this.coordDestino,
+        proveedor: this.proveedor,
+        fila: -1,
+        grupo: this.grupo,
+        idCategoria: this.idCategoria,
+        idInventario: null,
+        idArticulo: null,
+        idTipoServicio: this.idTipoServicio,
+        idProveedor: this.proveedor,
+        totalPaquete: this.costo,
+        importe: this.costo,
+        esDonado: false,
+        proviene: 'presupuesto',
       };
     }
+    console.log(salida);
     this.ref.close(salida);
   }
 
@@ -232,5 +429,9 @@ export class ModalAgregarServicioComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.inicializarMapa();
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 }
