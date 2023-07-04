@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {BreadcrumbService} from "../../../../../shared/breadcrumb/services/breadcrumb.service";
 import {GESTIONAR_PAGO_BREADCRUMB} from "../../constants/breadcrumb";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -14,6 +14,9 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {ActivatedRoute, Router} from "@angular/router";
+import {PagoGestion} from "../../models/pagoGestion.interface";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {Pago} from "../../../realizar-pago/modelos/pago.interface";
 
 @Component({
   selector: 'app-gestionar-pago',
@@ -21,6 +24,10 @@ import {ActivatedRoute, Router} from "@angular/router";
   styleUrls: ['./gestionar-pago.component.scss']
 })
 export class GestionarPagoComponent implements OnInit {
+
+  @ViewChild(OverlayPanel)
+  overlayPanel!: OverlayPanel;
+
   filtroGestionarPagoForm!: FormGroup;
 
   catalogoVelatorios: TipoDropdown[] = [];
@@ -32,7 +39,7 @@ export class GestionarPagoComponent implements OnInit {
   readonly POSICION_FOLIO_PREV_FUN: number = 1;
   readonly POSICION_FOLIO_REN_PREV_FUN: number = 2;
 
-  pagos: any[] = [];
+  pagos: PagoGestion[] = [];
   tipoFolio: null | 1 | 2 | 3 = null;
 
   numPaginaActual: number = 0;
@@ -140,5 +147,10 @@ export class GestionarPagoComponent implements OnInit {
       },
     });
   }
+
+  abrirPanel(event: MouseEvent, pago: PagoGestion): void {
+    this.overlayPanel.toggle(event);
+  }
+
 
 }

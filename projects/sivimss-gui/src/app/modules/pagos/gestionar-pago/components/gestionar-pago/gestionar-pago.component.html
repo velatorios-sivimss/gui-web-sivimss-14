@@ -65,6 +65,24 @@
     </ng-template>
     <ng-template pTemplate="body" let-pago>
       <tr>
+        <td>{{pago.fecha}}</td>
+        <td>{{pago.folio}}</td>
+        <td>{{pago.nomContratante}}</td>
+        <td>{{pago.desFlujo}}</td>
+        <td>{{pago.total | currency}}</td>
+        <td>{{pago.desEstatus}}</td>
+        <td>{{pago.desEstatusPago}}</td>
+        <td>{{pago.desMetodoPago | titlecase}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a>
+              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+            </a>
+            <a (click)="abrirPanel($event,pago)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
@@ -76,3 +94,12 @@
     </ng-template>
   </p-table>
 </section>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Ir a Pago">
+      </app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

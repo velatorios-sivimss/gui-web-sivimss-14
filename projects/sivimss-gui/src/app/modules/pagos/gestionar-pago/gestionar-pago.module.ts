@@ -9,6 +9,8 @@ import {PaginatorModule} from "primeng/paginator";
 import {ReactiveFormsModule} from "@angular/forms";
 import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 import {TableModule} from "primeng/table";
+import {OverlayPanelModule} from "primeng/overlaypanel";
+import {OverlayPanelOpcionesModule} from "../../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
 
 
 @NgModule({
@@ -23,6 +25,8 @@ import {TableModule} from "primeng/table";
     ReactiveFormsModule,
     CeldaStickyModule,
     TableModule,
+    OverlayPanelModule,
+    OverlayPanelOpcionesModule,
   ],
   providers: [GestionarPagoService]
 })

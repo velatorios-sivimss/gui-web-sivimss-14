@@ -17,7 +17,7 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, '', '', 66,
-      'genpago-buscar', '', '');
+      'genpago-consulta', '', '');
   }
 
   consultarFoliosODS(): Observable<HttpRespuesta<any>> {
