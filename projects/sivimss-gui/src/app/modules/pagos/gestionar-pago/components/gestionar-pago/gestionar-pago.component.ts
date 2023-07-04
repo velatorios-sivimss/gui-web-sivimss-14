@@ -16,7 +16,6 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {ActivatedRoute, Router} from "@angular/router";
 import {PagoGestion} from "../../models/pagoGestion.interface";
 import {OverlayPanel} from "primeng/overlaypanel";
-import {Pago} from "../../../realizar-pago/modelos/pago.interface";
 
 @Component({
   selector: 'app-gestionar-pago',
@@ -60,6 +59,7 @@ export class GestionarPagoComponent implements OnInit {
   ngOnInit(): void {
     this.breadcrumbService.actualizar(GESTIONAR_PAGO_BREADCRUMB);
     this.inicializarForm();
+    this.cargarCatalogos();
   }
 
   cargarCatalogos(): void {
