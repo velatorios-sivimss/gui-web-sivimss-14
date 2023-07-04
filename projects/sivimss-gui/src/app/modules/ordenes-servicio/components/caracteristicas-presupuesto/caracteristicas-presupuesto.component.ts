@@ -815,9 +815,6 @@ export class CaracteristicasPresupuestoComponent
       this.detallePresupuesto.push(detalle);
     });
 
-    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto =
-      this.caracteristicasDelPresupuesto;
-
     //paquetes
 
     this.datosPaquetes.forEach((datos: any) => {
@@ -895,6 +892,9 @@ export class CaracteristicasPresupuestoComponent
       detalle.importeMonto = datos.importeMonto;
       this.detallePaquete.push(detalle);
     });
+
+    //presupuesto
+
     this.caracteristicasDelPresupuesto.idPaquete = this.paqueteSeleccionado;
     this.caracteristicasDelPresupuesto.notasServicio =
       this.f.observaciones.value;
@@ -903,11 +903,19 @@ export class CaracteristicasPresupuestoComponent
     this.caracteristicasDelPresupuesto.totalPresupuesto = '' + this.total;
     this.caracteristicasDelPresupuesto.detallePresupuesto =
       this.detallePresupuesto;
-    this.caracteristicasPresupuesto.caracteristicasPaquete =
-      this.caracteristicasPaquete;
+
+    this.altaODS.caracteristicasPresupuesto = this.caracteristicasPresupuesto;
+    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto =
+      this.caracteristicasDelPresupuesto;
+    this.caracteristicasDelPresupuesto.detallePresupuesto =
+      this.detallePresupuesto;
+
+    //paquete
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
     this.caracteristicasPaquete.otorgamiento =
       this.selecionaTipoOtorgamiento ?? null;
+    this.caracteristicasPresupuesto.caracteristicasPaquete =
+      this.caracteristicasPaquete;
     this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
 
     // this.detallePresupuesto = arrayDatosPresupuesto;

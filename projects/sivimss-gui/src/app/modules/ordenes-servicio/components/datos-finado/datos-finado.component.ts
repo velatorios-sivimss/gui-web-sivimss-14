@@ -542,7 +542,7 @@ export class DatosFinadoComponent implements OnInit {
   }
 
   continuar(): void {
-    if (!this.form.valid) return;
+    //  if (!this.form.valid) return;
     let etapas: Etapa[] = [
       {
         idEtapa: 0,

@@ -600,4 +600,8 @@ export class InformacionServicioComponent implements OnInit {
   get cortejo() {
     return (this.form.controls['cortejo'] as FormGroup).controls;
   }
+
+  preorden(): void {
+    console.log(this.altaODS);
+  }
 }
