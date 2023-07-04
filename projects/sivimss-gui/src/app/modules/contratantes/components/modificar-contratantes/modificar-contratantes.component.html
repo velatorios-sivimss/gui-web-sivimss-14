@@ -76,7 +76,7 @@
       <div class="col-md-6">
         <label class="control-label" for="numSexo">Sexo:</label>
         <p-dropdown id="numSexo" class="form-control" formControlName="numSexo" placeholder="Selecciona sexo"
-          [options]="tipoSexo"></p-dropdown>
+          (onChange)="cambioTipoSexo()" [options]="tipoSexo"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="dgf.numSexo?.errors?.required && (dgf.numSexo?.dirty || dgf.numSexo?.touched)">Campo obligatorio</span>
       </div>

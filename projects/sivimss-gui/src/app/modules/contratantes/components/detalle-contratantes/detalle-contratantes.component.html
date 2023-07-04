@@ -70,9 +70,13 @@
       </div>
     </div>
     <div class="col-md-3">
-      <div class="table-panel-column">
+      <div class="table-panel-column" *ngIf="tipoSexoDesc !== 'Otro'">
         <label>Sexo</label>
         <span> {{tipoSexoDesc}} </span>
+      </div>
+      <div class="table-panel-column" *ngIf="tipoSexoDesc === 'Otro'">
+        <label>Sexo</label>
+        <span> {{contratante.otroSexo || contratante.sexo}} </span>
       </div>
     </div>
   </div>

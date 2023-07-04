@@ -148,21 +148,13 @@ export class ContratantesComponent implements OnInit {
       width: "920px",
       data: { contratante: contratante, origen: "detalle" },
     });
+
+    this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
+      if (respuesta?.estatus) {
+        this.paginar();
+      }
+    });
   }
-
-  // abrirModalModificarContratante(): void {
-  //   this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
-  //     header: "Modificar contratante",
-  //     width: "920px",
-  //     data: { contratante: this.contratanteSeleccionado, origen: "modificar" },
-  //   });
-
-  //   this.modificarRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
-  //     if (respuesta?.estatus) {
-  //       this.paginar();
-  //     }
-  //   });
-  // }
 
   abrirModalCambiarEstatus(contratante: UsuarioContratante): void {
     this.detalleRef = this.dialogService.open(DetalleContratantesComponent, {
@@ -178,17 +170,12 @@ export class ContratantesComponent implements OnInit {
     });
   }
 
-  // abrirPanel(event: MouseEvent, contratante: BusquedaContratante): void {
-  //   this.contratanteSeleccionado = contratante;
-  //   this.overlayPanel.toggle(event);
-  // }
-
   descargarReporteTabla(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "Disponibilidad de capillas"};
-    if(tipoReporte == "xls"){
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Disponibilidad de capillas" };
+    if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
-    
+
     this.loaderService.activar();
     this.descargaArchivosService.descargarArchivo(
       this.contratantesService.descargarReporteTabla(this.reporteTabla(tipoReporte)),

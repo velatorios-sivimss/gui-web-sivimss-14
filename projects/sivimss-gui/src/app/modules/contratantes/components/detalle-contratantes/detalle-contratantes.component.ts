@@ -61,6 +61,7 @@ export class DetalleContratantesComponent implements OnInit {
     }
     if (this.origen == "modificar") {
       this.mensaje = this.tipoMensaje[2];
+      this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo || 1];
     }
   }
 
@@ -70,8 +71,7 @@ export class DetalleContratantesComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.codigo === 200) {
             this.contratante = respuesta?.datos[0] || [];
-            let idTipoSexo = this.contratante.otroSexo ? 3 : this.contratante.numSexo;
-            this.tipoSexoDesc = TIPO_SEXO[idTipoSexo || 1];
+            this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo || 1];
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -124,7 +124,7 @@ export class DetalleContratantesComponent implements OnInit {
   }
 
   abrirModalModificarContratante(): void {
-    this.ref.close({ estatus: true });
+    this.ref.close({ estatus: false });
     this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
       header: "Modificar contratante",
       width: "920px",
@@ -134,6 +134,7 @@ export class DetalleContratantesComponent implements OnInit {
     this.modificarRef.onClose.subscribe((resultado: ConfirmarContratante) => {
       if (resultado.estatus) {
         this.alertaService.mostrar(TipoAlerta.Exito, this.alertaEstatus[2]);
+        this.ref.close({ estatus: true });
       }
     });
   }

@@ -1,5 +1,6 @@
 export interface UsuarioContratante {
   idContratante?: number;
+  idPersona?: number;
   curp?: string;
   nss?: number;
   nombre?: string;
@@ -8,6 +9,7 @@ export interface UsuarioContratante {
   rfc?: string;
   numSexo?: number;
   otroSexo?: string;
+  sexo?: string;
   fecNacimiento?: string;
   nacionalidad?: string;
   pais?: number;
