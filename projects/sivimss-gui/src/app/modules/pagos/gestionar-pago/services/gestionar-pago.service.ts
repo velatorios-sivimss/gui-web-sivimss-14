@@ -13,20 +13,22 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _prevFunFolios: string = 'genpago-pf';
   private readonly _renPrevFunFolios: string = 'genpago-rpf';
 
+  body = {velatorio: null}
+
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, '', '', 66,
       'genpago-buscar', '', '');
   }
 
   consultarFoliosODS(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._odsFolios}`);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._odsFolios}`, this.body);
   }
 
   consultarFoliosPrevFun(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._prevFunFolios}`);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._prevFunFolios}`, this.body);
   }
 
   consultarFoliosRenPrevFun(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._renPrevFunFolios}`);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._renPrevFunFolios}`, this.body);
   }
 }

@@ -5,7 +5,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
-import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {GestionarPagoService} from "../../services/gestionar-pago.service";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {finalize} from "rxjs/operators";
@@ -13,6 +13,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-gestionar-pago',
@@ -27,6 +28,10 @@ export class GestionarPagoComponent implements OnInit {
   foliosPNCPF: TipoDropdown[] = [];
   foliosPRCPF: TipoDropdown[] = [];
 
+  readonly POSICION_FOLIO_ODS: number = 0;
+  readonly POSICION_FOLIO_PREV_FUN: number = 1;
+  readonly POSICION_FOLIO_REN_PREV_FUN: number = 2;
+
   pagos: any[] = [];
   tipoFolio: null | 1 | 2 | 3 = null;
 
@@ -40,12 +45,24 @@ export class GestionarPagoComponent implements OnInit {
               private gestionarPagoService: GestionarPagoService,
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService,
+              private router: Router,
+              private readonly activatedRoute: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(GESTIONAR_PAGO_BREADCRUMB);
     this.inicializarForm();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    const foliosODS = respuesta[this.POSICION_FOLIO_ODS].datos;
+    this.foliosODS = mapearArregloTipoDropdown(foliosODS, "folio", "folio");
+    const foliosPrevFun = respuesta[this.POSICION_FOLIO_PREV_FUN].datos;
+    this.foliosPNCPF = mapearArregloTipoDropdown(foliosPrevFun, "folio", "folio");
+    const foliosRevPrevFun = respuesta[this.POSICION_FOLIO_REN_PREV_FUN].datos;
+    this.foliosPRCPF = mapearArregloTipoDropdown(foliosRevPrevFun, "folio", "folio");
   }
 
   inicializarForm(): void {
