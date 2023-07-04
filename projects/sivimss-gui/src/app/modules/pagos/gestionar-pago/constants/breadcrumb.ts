@@ -2,6 +2,10 @@ import {ElementoBreadcrumb} from "projects/sivimss-gui/src/app/shared/breadcrumb
 
 export const GESTIONAR_PAGO_BREADCRUMB: ElementoBreadcrumb[] = [
   {
+    icono: 'imagen-icono-operacion-sivimss.svg',
+    titulo: 'Operación SIVIMSS'
+  },
+  {
     icono: '',
     titulo: 'Pagos'
   },

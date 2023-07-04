@@ -6,6 +6,13 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {GestionarPagoService} from "../../services/gestionar-pago.service";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-gestionar-pago',
@@ -29,7 +36,11 @@ export class GestionarPagoComponent implements OnInit {
   paginacionConFiltrado: boolean = false;
 
   constructor(private breadcrumbService: BreadcrumbService,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private gestionarPagoService: GestionarPagoService,
+              private cargadorService: LoaderService,
+              private mensajesSistemaService: MensajesSistemaService,
+  ) {
   }
 
   ngOnInit(): void {
@@ -47,6 +58,24 @@ export class GestionarPagoComponent implements OnInit {
       elaboracionFin: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
     });
+  }
+
+  buscar(): void {
+    this.numPaginaActual = 0;
+    this.paginacionConFiltrado = true;
+    this.paginarConFiltros();
+  }
+
+  limpiar(): void {
+    this.paginacionConFiltrado = false;
+    if (this.filtroGestionarPagoForm) {
+      this.filtroGestionarPagoForm.reset();
+      this.tipoFolio = null;
+      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+      this.filtroGestionarPagoForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    }
+    this.numPaginaActual = 0;
+    this.paginar();
   }
 
   limpiarFolios(folio: 1 | 2 | 3): void {
@@ -70,6 +99,29 @@ export class GestionarPagoComponent implements OnInit {
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
+    if (this.paginacionConFiltrado) {
+      this.paginarConFiltros();
+    } else {
+      this.paginar();
+    }
+  }
+
+  paginarConFiltros(): void {
+  }
+
+  paginar(): void {
+    this.cargadorService.activar();
+    this.gestionarPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.pagos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      },
+    });
   }
 
 }
