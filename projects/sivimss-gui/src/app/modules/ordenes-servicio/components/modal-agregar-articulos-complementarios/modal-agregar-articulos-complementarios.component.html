@@ -10,6 +10,16 @@
         obligatorio</span>
     </div>
 
+    <div class="col-md-4">
+      <label class="control-label" for="cantidad">Cantidad<span class="req">*</span>:</label>
+      <input id="cantidad" type="text" class="form-control" formControlName="cantidad" placeholder="Ingresa la cantidad"
+        maxlength="3" lettersOnly>
+      <span class="campo-obligatorio"
+        *ngIf="f.cantidad?.errors?.required && (f.cantidad?.dirty || f.cantidad?.touched)">Campo
+        obligatorio</span>
+    </div>
+
+
   </div>
   <div class="row">
     <div class="row mb-3 flex align-items-end">

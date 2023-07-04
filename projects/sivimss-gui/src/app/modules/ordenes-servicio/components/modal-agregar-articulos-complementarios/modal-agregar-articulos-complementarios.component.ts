@@ -121,6 +121,7 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
   inicializarForm(): void {
     this.form = this.formBuilder.group({
       articulos: [{ value: null, disabled: false }, [Validators.required]],
+      cantidad: [{ value: 1, disabled: false }, [Validators.required]],
     });
   }
 
@@ -132,7 +133,7 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
   aceptarModal(): void {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
     let salida = {
-      cantidad: '1',
+      cantidad: this.f.cantidad.value,
       concepto: this.concepto,
       coordOrigen: [],
       coordDestino: [],

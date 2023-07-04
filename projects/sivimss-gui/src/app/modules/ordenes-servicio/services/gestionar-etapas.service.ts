@@ -180,7 +180,44 @@ export class GestionarEtapasService {
       estado: null,
     },
   };
-  datosEtapaCaracteristicas = {};
+
+  datosEtapaCaracteristicas = {
+    observaciones: null,
+    notasServicio: null,
+    paqueteSeleccionado: null,
+    mostrarTIpoOtorgamiento: false,
+    selecionaTipoOtorgamiento: null,
+    datosPaquetes: [],
+    datosPresupuesto: [],
+    elementosEliminadosPaquete: [],
+  };
+
+  datosEtapaInformacionServicio = {
+    fechaCortejo: null,
+    fechaCremacion: null,
+    fechaRecoger: null,
+    horaRecoger: null,
+    horaCortejo: null,
+    horaCremacion: null,
+    idPanteon: null,
+    idPromotor: null,
+    idSala: null,
+    cp: null,
+    fechaInstalacion: null,
+    fechaVelacion: null,
+    horaInstalacion: null,
+    horaVelacion: null,
+    idCapilla: null,
+    calle: null,
+    interior: null,
+    exterior: null,
+    colonia: null,
+    municipio: null,
+    estado: null,
+    gestionadoPorPromotor: null,
+    promotor: null,
+  };
+
   etapas$: BehaviorSubject<Etapa[]> = new BehaviorSubject<Etapa[]>(this.etapas);
   idEtapaSeleccionada$: BehaviorSubject<number> = new BehaviorSubject<number>(
     0
@@ -192,12 +229,18 @@ export class GestionarEtapasService {
   datosEtapaCaracteristicas$: BehaviorSubject<any> = new BehaviorSubject<any>(
     this.datosEtapaCaracteristicas
   );
+
   datosEtapaFinado$: BehaviorSubject<any> = new BehaviorSubject<any>(
     this.datosEtapaFinado
   );
+
+  datosEtapaInformacionServicio$: BehaviorSubject<any> =
+    new BehaviorSubject<any>(this.datosEtapaInformacionServicio);
+
   altaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.altaODS);
 
-  constructor() { // private authService: AutenticacionService // _http:HttpClient,
+  constructor() {
+    // private authService: AutenticacionService // _http:HttpClient,
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
     this.altaODS.finado = this.finado;

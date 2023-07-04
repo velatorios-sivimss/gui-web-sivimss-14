@@ -46,6 +46,7 @@ import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Dropdown } from 'primeng/dropdown';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { ModalEliminarArticuloComponent } from '../modal-eliminar-articulo/modal-eliminar-articulo.component';
 
 @Component({
   selector: 'app-caracteristicas-presupuesto',
@@ -115,6 +116,9 @@ export class CaracteristicasPresupuestoComponent
   ];
   mostrarQuitarPresupuesto: boolean = false;
   total: number = 0;
+  valorFila: any = {};
+  elementosEliminadosPaquete: any[] = [];
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -148,14 +152,37 @@ export class CaracteristicasPresupuestoComponent
   }
 
   ngOnInit(): void {
-    this.inicializarForm();
     this.buscarPaquetes();
+    this.gestionarEtapasService.altaODS$
+      .asObservable()
+      .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
+
+    this.gestionarEtapasService.datosEtapaCaracteristicas$
+      .asObservable()
+      .subscribe((datosEtapaCaracteristicas) =>
+        this.inicializarForm(datosEtapaCaracteristicas)
+      );
   }
 
-  inicializarForm(): void {
+  llenarAlta(datodPrevios: AltaODSInterface): void {
+    this.altaODS = datodPrevios;
+  }
+
+  inicializarForm(datos: any): void {
+    this.paqueteSeleccionado = datos.paqueteSeleccionado;
+    this.mostrarTIpoOtorgamiento = datos.mostrarTIpoOtorgamiento;
+    this.datosPaquetes = datos.datosPaquetes;
+    this.datosPresupuesto = datos.datosPresupuesto;
+    this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
     this.form = this.formBuilder.group({
-      observaciones: [{ value: null, disabled: false }, [Validators.required]],
-      notasServicio: [{ value: null, disabled: false }, [Validators.required]],
+      observaciones: [
+        { value: datos.observaciones, disabled: false },
+        [Validators.required],
+      ],
+      notasServicio: [
+        { value: datos.notasServicio, disabled: false },
+        [Validators.required],
+      ],
     });
   }
 
@@ -217,6 +244,7 @@ export class CaracteristicasPresupuestoComponent
       this.mostrarTIpoOtorgamiento = true;
     }
     this.datosPresupuesto = [];
+    this.elementosEliminadosPaquete = [];
     this.loaderService.activar();
     this.buscarTipoAsignacion();
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
@@ -307,7 +335,9 @@ export class CaracteristicasPresupuestoComponent
     this.idServicio = Number(paqueteSeleccionado.idServicio);
     this.fila = noFila + 1;
     let validaRadioButton = paqueteSeleccionado.bloquearRadioButton ?? false;
-    if (validaRadioButton) return;
+    if (validaRadioButton && proviene != 'presupuesto') return;
+
+    this.valorFila = paqueteSeleccionado;
     if (proviene == 'paquete') {
       this.mostrarKilometrajes = false;
       this.mostrarTraslado = false;
@@ -581,7 +611,33 @@ export class CaracteristicasPresupuestoComponent
   }
 
   quitarArticulo(datos: any): void {
-    console.log(datos);
+    const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
+      header: '',
+      style: { maxWidth: '600px', width: '100%' },
+      data: {},
+    });
+    ref.onClose.subscribe((salida: any) => {
+      if (salida != null) {
+        datos.desmotivo = salida;
+        this.elementosEliminadosPaquete.push(datos);
+        this.quitarPaquete(datos);
+      }
+    });
+  }
+  quitarPaquete(datos: any) {
+    let nuevoArray = this.datosPaquetes.filter(
+      (item) => datos.fila !== item.fila
+    );
+    this.datosPaquetes = nuevoArray;
+  }
+
+  quitarPresupuesto(): void {
+    let nuevoArray = this.datosPresupuesto.filter(
+      (item) => this.valorFila.fila !== item.fila
+    );
+
+    this.datosPresupuesto = nuevoArray;
+    //se agregara mensaje de que se elimino??
   }
 
   regresar() {
@@ -723,11 +779,46 @@ export class CaracteristicasPresupuestoComponent
       selecionaTipoOtorgamiento: this.selecionaTipoOtorgamiento,
       datosPaquetes: this.datosPaquetes,
       datosPresupuesto: this.datosPresupuesto,
+      elementosEliminadosPaquete: this.elementosEliminadosPaquete,
     };
 
-    this.gestionarEtapasService.datosEtapaContratante$.next(
+    this.gestionarEtapasService.datosEtapaCaracteristicas$.next(
       datosEtapaCaracteristicas
     );
+
+    this.datosPresupuesto.forEach((datos: any) => {
+      let detalle: DetallePresupuestoInterface =
+        {} as DetallePresupuestoInterface;
+
+      detalle.cantidad = datos.cantidad;
+      detalle.esDonado = datos.esDonado ?? null;
+      detalle.idArticulo = datos.idArticulo ?? null;
+      detalle.idCategoria = datos.idCategoria ?? null;
+      detalle.idInventario = datos.idInventario ?? null;
+      detalle.idProveedor = datos.idProveedor ?? null;
+      detalle.idServicio = datos.idServicio ?? null;
+      detalle.idTipoServicio = datos.idTipoServicio ?? null;
+      detalle.servicioDetalleTraslado = null;
+      if (Number(datos.idTipoServicio) == 4) {
+        let traslado: ServicioDetalleTrasladotoInterface =
+          {} as ServicioDetalleTrasladotoInterface;
+        traslado.destino = datos.destino;
+        traslado.longitudInicial = datos.coordOrigen[0];
+        traslado.latitudInicial = datos.coordOrigen[1];
+        traslado.longitudFinal = datos.coordDestino[0];
+        traslado.latitudFinal = datos.coordDestino[1];
+        traslado.origen = datos.origen;
+        traslado.totalKilometros = datos.kilometraje;
+        detalle.servicioDetalleTraslado = traslado;
+      }
+      detalle.importeMonto = datos.totalPaquete ?? null;
+      this.detallePresupuesto.push(detalle);
+    });
+
+    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto =
+      this.caracteristicasDelPresupuesto;
+
+    //paquetes
 
     this.datosPaquetes.forEach((datos: any) => {
       console.log('paquete', datos);
@@ -767,9 +858,43 @@ export class CaracteristicasPresupuestoComponent
       this.detallePaquete.push(detalle);
     });
 
-    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto =
-      this.caracteristicasDelPresupuesto;
+    this.elementosEliminadosPaquete.forEach((datos: any) => {
+      console.log('paquete', datos);
+      let detalle: DetallePaqueteInterface = {} as DetallePaqueteInterface;
 
+      detalle.cantidad = datos.cantidad;
+      detalle.idArticulo = datos.idArticulo ?? null;
+      detalle.desmotivo = datos.desmotivo ?? null;
+      detalle.activo = datos.activo ?? 0;
+      detalle.idProveedor = datos.idProveedor ?? null;
+      detalle.idServicio = datos.idServicio ?? null;
+      detalle.idTipoServicio = datos.idTipoServicio ?? null;
+      detalle.servicioDetalleTraslado = null;
+
+      if (Number(datos.idTipoServicio) == 4) {
+        let traslado: ServicioDetalleTrasladotoInterface =
+          {} as ServicioDetalleTrasladotoInterface;
+        detalle.activo = datos.activo ?? 0;
+        let cordenadas = datos.coordOrigen ?? null;
+        traslado.longitudInicial = null;
+        traslado.latitudInicial = null;
+        traslado.longitudFinal = null;
+        traslado.latitudFinal = null;
+        if (cordenadas != null) {
+          traslado.longitudInicial = datos.coordOrigen[0];
+          traslado.latitudInicial = datos.coordOrigen[1];
+          traslado.longitudFinal = datos.coordDestino[0];
+          traslado.latitudFinal = datos.coordDestino[1];
+        }
+        traslado.destino = datos.destino ?? null;
+        traslado.origen = datos.origen ?? null;
+        traslado.totalKilometros = datos.kilometraje ?? null;
+        detalle.servicioDetalleTraslado = traslado ?? null;
+      }
+      detalle.importeMonto = datos.totalPaquete;
+      detalle.importeMonto = datos.importeMonto;
+      this.detallePaquete.push(detalle);
+    });
     this.caracteristicasDelPresupuesto.idPaquete = this.paqueteSeleccionado;
     this.caracteristicasDelPresupuesto.notasServicio =
       this.f.observaciones.value;
@@ -785,39 +910,10 @@ export class CaracteristicasPresupuestoComponent
       this.selecionaTipoOtorgamiento ?? null;
     this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
 
-    this.datosPresupuesto.forEach((datos: any) => {
-      let detalle: DetallePresupuestoInterface =
-        {} as DetallePresupuestoInterface;
-
-      detalle.cantidad = datos.cantidad;
-      detalle.esDonado = datos.esDonado ?? null;
-      detalle.idArticulo = datos.idArticulo ?? null;
-      detalle.idCategoria = datos.idCategoria ?? null;
-      detalle.idInventario = datos.idInventario ?? null;
-      detalle.idProveedor = datos.idProveedor ?? null;
-      detalle.idServicio = datos.idServicio ?? null;
-      detalle.idTipoServicio = datos.idTipoServicio ?? null;
-      detalle.servicioDetalleTraslado = null;
-      if (Number(datos.idTipoServicio) == 4) {
-        let traslado: ServicioDetalleTrasladotoInterface =
-          {} as ServicioDetalleTrasladotoInterface;
-        traslado.destino = datos.destino;
-        traslado.longitudInicial = datos.coordOrigen[0];
-        traslado.latitudInicial = datos.coordOrigen[1];
-        traslado.longitudFinal = datos.coordDestino[0];
-        traslado.latitudFinal = datos.coordDestino[1];
-        traslado.origen = datos.origen;
-        traslado.totalKilometros = datos.kilometraje;
-        detalle.servicioDetalleTraslado = traslado;
-      }
-      detalle.importeMonto = datos.totalPaquete;
-      this.detallePresupuesto.push(detalle);
-    });
-
     // this.detallePresupuesto = arrayDatosPresupuesto;
     console.log('alta od', this.altaODS);
 
-    //  this.gestionarEtapasService.altaODS$.next(this.altaODS);
+    this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
   get f() {

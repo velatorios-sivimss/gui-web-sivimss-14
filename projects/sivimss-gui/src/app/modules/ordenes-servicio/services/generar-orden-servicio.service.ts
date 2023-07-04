@@ -102,6 +102,20 @@ export class GenerarOrdenServicioService extends BaseService<
     );
   }
 
+  buscarCapillas(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+        `${this._funcionalidad}/buscar-filtros/orden-consultar-capillas`,
+      parametros
+    );
+  }
+
+  buscarPromotor(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base + `${this._funcionalidad}/catalogo/orden-consultar-promotores`
+    );
+  }
+
   consultarDetallePaquete(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
