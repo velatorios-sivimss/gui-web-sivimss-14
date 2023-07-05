@@ -750,6 +750,9 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.matriculaCheck.setValue(true);
       this.datosFinado.nssCheck.setValue(true);
       this.radonlyEstremidad = false;
+      this.datosFinado.nombre.disable();
+      this.datosFinado.primerApellido.disable();
+      this.datosFinado.segundoApellido.disable();
       this.datosFinado.noContrato.disable();
       this.datosFinado.velatorioPrevision.disable();
       this.radonlyNoContrato = true;
@@ -760,6 +763,9 @@ export class DatosFinadoComponent implements OnInit {
       this.radonlyEstremidad = false;
       this.radonlyNoContrato = false;
       this.datosFinado.velatorioPrevision.disable();
+      this.datosFinado.nombre.disable();
+      this.datosFinado.primerApellido.disable();
+      this.datosFinado.segundoApellido.disable();
       this.datosFinado.matriculaCheck.setValue(true);
       this.datosFinado.nssCheck.setValue(true);
       this.agregarValidaciones();

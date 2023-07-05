@@ -591,7 +591,7 @@ export class InformacionServicioComponent implements OnInit {
       formulario.lugarVelacion.cp == '' ||
       formulario.lugarVelacion.cp == null
     ) {
-      formulario.informacionServicioVelacion.cp = null;
+      this.informacionServicioVelacion.cp = null;
     }
 
     this.informacionServicioVelacion.fechaInstalacion =
@@ -650,11 +650,8 @@ export class InformacionServicioComponent implements OnInit {
     return (this.form.controls['cortejo'] as FormGroup).controls;
   }
 
-  preorden(): void {
-    this.altaODS.idEstatus = 1;
-    this.llenarDatos();
+  guardarODS(): void {
     this.loaderService.activar();
-
     this.gestionarOrdenServicioService
       .generarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -697,6 +694,18 @@ export class InformacionServicioComponent implements OnInit {
           }
         }
       );
+  }
+
+  preorden(): void {
+    this.altaODS.idEstatus = 1;
+    this.llenarDatos();
+    this.guardarODS();
+  }
+
+  generada(): void {
+    this.altaODS.idEstatus = 2;
+    this.llenarDatos();
+    this.guardarODS();
   }
 
   consultaCP(): void {

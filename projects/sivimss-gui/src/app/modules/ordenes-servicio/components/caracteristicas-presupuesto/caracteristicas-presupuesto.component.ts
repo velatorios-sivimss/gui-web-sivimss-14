@@ -802,7 +802,7 @@ export class CaracteristicasPresupuestoComponent
       if (datosDonados) {
         detalle.esDonado = 1;
       }
-      detalle.esDonado = datos.esDonado;
+
       detalle.idArticulo = parseInt(datos.idArticulo);
       detalle.idCategoria = parseInt(datos.idCategoria);
       detalle.idInventario = parseInt(datos.idInventario);
@@ -835,7 +835,7 @@ export class CaracteristicasPresupuestoComponent
       detalle.cantidad = Number(datos.cantidad);
       detalle.idArticulo = parseInt(datos.idArticulo);
       detalle.desmotivo = datos.desmotivo;
-      detalle.activo = parseInt(datos.activo) ?? 0;
+      detalle.activo = 1;
       detalle.idProveedor = parseInt(datos.idProveedor) ?? null;
       detalle.idServicio = parseInt(datos.idServicio) ?? null;
       detalle.idTipoServicio = parseInt(datos.idTipoServicio) ?? null;
@@ -872,7 +872,7 @@ export class CaracteristicasPresupuestoComponent
       detalle.cantidad = parseInt(datos.cantidad);
       detalle.idArticulo = parseInt(datos.idArticulo) ?? null;
       detalle.desmotivo = datos.desmotivo ?? null;
-      detalle.activo = parseInt(datos.activo) ?? 0;
+      detalle.activo = 0;
       detalle.idProveedor = parseInt(datos.idProveedor) ?? null;
       detalle.idServicio = parseInt(datos.idServicio) ?? null;
       detalle.idTipoServicio = parseInt(datos.idTipoServicio) ?? null;
@@ -907,7 +907,7 @@ export class CaracteristicasPresupuestoComponent
 
     this.caracteristicasDelPresupuesto.idPaquete = this.paqueteSeleccionado;
     this.caracteristicasDelPresupuesto.notasServicio =
-      this.f.observaciones.value;
+      this.f.notasServicio.value;
     this.caracteristicasDelPresupuesto.observaciones =
       this.f.observaciones.value;
     this.caracteristicasDelPresupuesto.totalPresupuesto = Number(this.total);
