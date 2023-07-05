@@ -444,18 +444,38 @@ export class OrdenesServicioComponent implements OnInit {
           link.setAttribute('href', url);
           link.click();
           link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
+  }
 
-        // this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-        //   finalize(() => this.loaderService.desactivar())
-        // ).subscribe(
-        //   (repuesta) => {
-        //     this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        //     this.mostrarModalConfirmacion = true;
-        //   },
-        //   (error) => {
-        //     this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-        //   }
-        // )
+  descargarOrdenServicio(): void {
+    this.loaderService.activar()
+    let filtros = this.obtenerObjetoParaFiltrado();
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    let estatusODS:number = 1;
+    this.ordenServicioSeleccionada.estatus?.includes("Generado") ? estatusODS = 2 : estatusODS= 1;
+    this.consultarOrdenServicioService.generarArchivoOrdenServicio(
+      this.ordenServicioSeleccionada.idOrdenServicio,estatusODS
+    ).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
       },
       (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));

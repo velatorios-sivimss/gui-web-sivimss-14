@@ -106,4 +106,10 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
   return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato`,
     {idOrdenServicio:idOrdenServicio,tipoReporte:'pdf'});
   }
+
+  generarArchivoOrdenServicio(idOrdenServicio:number,estatus:number):Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-orden-servicio`,
+      {idOrdenServicio:idOrdenServicio,estatus:estatus,tipoReporte:'pdf'});
+  }
+
 }
