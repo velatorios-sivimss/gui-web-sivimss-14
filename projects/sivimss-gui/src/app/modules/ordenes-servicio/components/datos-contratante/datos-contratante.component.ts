@@ -92,7 +92,8 @@ export class DatosContratanteComponent implements OnInit {
   informacionServicioVelacion: InformacionServicioVelacionInterface =
     {} as InformacionServicioVelacionInterface;
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
-
+  idPersona: number | null = null;
+  idContratante: number | null = null;
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -284,7 +285,7 @@ export class DatosContratanteComponent implements OnInit {
         colonia: [
           {
             value: datosEtapaContratante.datosContratante.colonia,
-            disabled: true,
+            disabled: false,
           },
           [Validators.required],
         ],
@@ -304,6 +305,9 @@ export class DatosContratanteComponent implements OnInit {
         ],
       }),
     });
+
+    this.idContratante = datosEtapaContratante.datosContratante.idContratante;
+    this.idPersona = datosEtapaContratante.datosContratante.idPersona;
   }
 
   noEspaciosAlPrincipio(posicion: number) {
@@ -326,7 +330,10 @@ export class DatosContratanteComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
+            console.log(respuesta);
             if (respuesta.mensaje.includes('Externo')) {
+              this.idPersona = null;
+              this.idContratante = null;
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
               this.datosContratante.nombre.setValue(respuesta.datos.nombre);
@@ -352,6 +359,8 @@ export class DatosContratanteComponent implements OnInit {
                 this.datosContratante.nacionalidad.setValue(2);
               }
             } else {
+              this.idPersona = respuesta.datos[0].idPersona;
+              this.idContratante = respuesta.datos[0].idContratante;
               let [anio, mes, dia] = respuesta.datos[0].fechaNac.split('-');
               dia = dia.substr(0, 2);
               const fecha = new Date(anio + '/' + mes + '/' + dia);
@@ -569,46 +578,53 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(1);
 
+    this.datosAlta();
+  }
+
+  datosAlta(): void {
+    let formulario = this.form.getRawValue();
+    console.log(formulario);
     let datosEtapaContratante = {
       datosContratante: {
-        matricula: this.form.value.datosContratante.matricula,
-        matriculaCheck: this.form.value.datosContratante.matriculaCheck,
-        rfc: this.form.value.datosContratante.rfc,
-        curp: this.form.value.datosContratante.curp,
-        nombre: this.form.value.datosContratante.nombre,
-        primerApellido: this.form.value.datosContratante.primerApellido,
-        segundoApellido: this.form.value.datosContratante.segundoApellido,
-        fechaNacimiento: this.form.value.datosContratante.fechaNacimiento,
-        sexo: this.form.value.datosContratante.sexo,
-        otroTipoSexo: this.form.value.datosContratante.otroTipoSexo,
-        nacionalidad: this.form.value.datosContratante.nacionalidad,
-        lugarNacimiento: this.form.value.datosContratante.lugarNacimiento,
-        paisNacimiento: this.form.value.datosContratante.paisNacimiento,
-        telefono: this.form.value.datosContratante.telefono,
-        correoElectronico: this.form.value.datosContratante.correoElectronico,
-        parentesco: this.form.value.datosContratante.parentesco,
+        idPersona: this.idPersona,
+        idContratante: this.idContratante,
+        matricula: formulario.datosContratante.matricula,
+        matriculaCheck: formulario.datosContratante.matriculaCheck,
+        rfc: formulario.datosContratante.rfc,
+        curp: formulario.datosContratante.curp,
+        nombre: formulario.datosContratante.nombre,
+        primerApellido: formulario.datosContratante.primerApellido,
+        segundoApellido: formulario.datosContratante.segundoApellido,
+        fechaNacimiento: formulario.datosContratante.fechaNacimiento,
+        sexo: formulario.datosContratante.sexo,
+        otroTipoSexo: formulario.datosContratante.otroTipoSexo,
+        nacionalidad: formulario.datosContratante.nacionalidad,
+        lugarNacimiento: formulario.datosContratante.lugarNacimiento,
+        paisNacimiento: formulario.datosContratante.paisNacimiento,
+        telefono: formulario.datosContratante.telefono,
+        correoElectronico: formulario.datosContratante.correoElectronico,
+        parentesco: formulario.datosContratante.parentesco,
       },
       direccion: {
-        calle: this.form.value.direccion.calle,
-        noExterior: this.form.value.direccion.noExterior,
-        noInterior: this.form.value.direccion.noInterior,
-        cp: this.form.value.direccion.cp,
-        colonia: this.form.value.direccion.colonia,
-        municipio: this.form.value.direccion.municipio,
-        estado: this.form.value.direccion.estado,
+        calle: formulario.direccion.calle,
+        noExterior: formulario.direccion.noExterior,
+        noInterior: formulario.direccion.noInterior,
+        cp: formulario.direccion.cp,
+        colonia: formulario.direccion.colonia,
+        municipio: formulario.direccion.municipio,
+        estado: formulario.direccion.estado,
       },
     };
 
-    this.datosAlta(datosEtapaContratante);
-  }
-
-  datosAlta(datosEtapaContratante: any): void {
+    console.log('datos contratanete', datosEtapaContratante);
     this.altaODS.idEstatus = null;
     this.altaODS.idOperador = null;
     this.altaODS.idParentesco =
       datosEtapaContratante.datosContratante.parentesco;
     this.contratante.matricula =
-      datosEtapaContratante.datosContratante.matricula;
+      datosEtapaContratante.datosContratante.matricula ?? null;
+    this.contratante.idPersona = this.idPersona;
+    this.contratante.idContratante = this.idContratante;
     this.contratante.rfc = datosEtapaContratante.datosContratante.rfc;
     this.contratante.curp = datosEtapaContratante.datosContratante.curp;
     this.contratante.nomPersona = datosEtapaContratante.datosContratante.nombre;
@@ -621,7 +637,7 @@ export class DatosContratanteComponent implements OnInit {
       datosEtapaContratante.datosContratante.otroTipoSexo;
     this.contratante.fechaNac = moment(
       datosEtapaContratante.datosContratante.fechaNacimiento
-    ).format('DD/MM/yyyy');
+    ).format('yyyy-MM-DD');
     this.contratante.idPais =
       datosEtapaContratante.datosContratante.paisNacimiento;
     this.contratante.idEstado =
@@ -629,20 +645,26 @@ export class DatosContratanteComponent implements OnInit {
     this.contratante.telefono = datosEtapaContratante.datosContratante.telefono;
     this.contratante.correo =
       datosEtapaContratante.datosContratante.correoElectronico;
+
+    //datos cp
     this.cp.desCalle = datosEtapaContratante.direccion.calle;
     this.cp.numExterior = datosEtapaContratante.direccion.noExterior;
     this.cp.numInterior = datosEtapaContratante.direccion.noInterior;
     this.cp.codigoPostal = datosEtapaContratante.direccion.cp;
     this.cp.desColonia = datosEtapaContratante.direccion.colonia;
-    this.cp.desMunicipio = datosEtapaContratante.direccion.municipio;
-    this.cp.desEstado = datosEtapaContratante.direccion.estado;
+    this.cp.desMunicipio = datosEtapaContratante.direccion.municipio ?? null;
+    this.cp.desEstado = datosEtapaContratante.direccion.estado ?? null;
+
     this.altaODS.contratante = this.contratante;
+    this.contratante.cp = this.cp;
+
     this.contratante.cp = this.cp;
 
     this.gestionarEtapasService.datosEtapaContratante$.next(
       datosEtapaContratante
     );
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
+
     console.log(
       'se asignaron los calle',
       datosEtapaContratante.direccion.calle

@@ -111,6 +111,8 @@ export class GestionarEtapasService {
 
   datosEtapaContratante = {
     datosContratante: {
+      idPersona: null,
+      idContratante: null,
       matricula: null,
       matriculaCheck: true,
       rfc: null,
