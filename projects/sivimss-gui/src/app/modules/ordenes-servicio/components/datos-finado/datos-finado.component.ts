@@ -92,8 +92,6 @@ export class DatosFinadoComponent implements OnInit {
   informacionServicioVelacion: InformacionServicioVelacionInterface =
     {} as InformacionServicioVelacionInterface;
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
-  radonlyMatricula: boolean = false;
-  radonlyNSS: boolean = false;
   radonlyNoContrato: boolean = true;
   radonlyEstremidad: boolean = false;
   radonlyCurp: boolean = false;
@@ -131,7 +129,6 @@ export class DatosFinadoComponent implements OnInit {
 
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
-    //  this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.pais = respuesta[this.POSICION_PAIS]!;
     this.estado = respuesta[this.POSICION_ESTADO];
     this.unidadesMedicas = respuesta[this.POSICION_UNIDADES_MEDICAS];
@@ -334,6 +331,9 @@ export class DatosFinadoComponent implements OnInit {
         ],
       }),
     });
+
+    this.esEstremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
+    this.esObito(datosEtapaFinado.datosFinado.esObito);
   }
 
   consultarCURP(): void {
@@ -418,9 +418,9 @@ export class DatosFinadoComponent implements OnInit {
 
   cambiarValidacion(validacion: string): void {
     if (validacion == 'matricula') {
-      this.radonlyMatricula = false;
+      this.datosFinado.matricula.enable();
       if (!this.datosFinado.matriculaCheck.value) {
-        this.radonlyMatricula = true;
+        this.datosFinado.matricula.disable();
         this.datosFinado.matricula.clearValidators();
         this.datosFinado.matricula.patchValue(null);
         return;
@@ -428,9 +428,9 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.matricula.setValidators(Validators.required);
       this.datosFinado.matricula.patchValue(this.datosFinado.matricula.value);
     } else {
-      this.radonlyNSS = false;
+      this.datosFinado.nss.enable();
       if (!this.datosFinado.nssCheck.value) {
-        this.radonlyNSS = true;
+        this.datosFinado.nss.disable();
         this.datosFinado.nss.clearValidators();
         this.datosFinado.nss.patchValue(null);
         return;
@@ -608,87 +608,125 @@ export class DatosFinadoComponent implements OnInit {
   }
 
   datosAlta(): void {
+    let formulario = this.form.getRawValue();
+    console.log(formulario);
     let datosEtapaFinado = {
       datosFinado: {
-        tipoOrden: this.form.value.datosFinado.tipoOrden,
-        noContrato: this.form.value.datosFinado.noContrato,
-        velatorioPrevision: this.form.value.datosFinado.velatorioPrevision,
-        esObito: this.form.value.datosFinado.esObito,
-        esParaExtremidad: this.form.value.datosFinado.esParaExtremidad,
-        matricula: this.form.value.datosFinado.matricula,
-        matriculaCheck: this.form.value.datosFinado.matriculaCheck,
-        curp: this.form.value.datosFinado.curp,
-        nss: this.form.value.datosFinado.nss,
-        nssCheck: this.form.value.datosFinado.nssCheck,
-        nombre: this.form.value.datosFinado.nombre,
-        primerApellido: this.form.value.datosFinado.primerApellido,
-        segundoApellido: this.form.value.datosFinado.segundoApellido,
-        fechaNacimiento: this.form.value.datosFinado.fechaNacimiento,
-        edad: this.form.value.datosFinado.edad,
-        sexo: this.form.value.datosFinado.sexo,
-        otroTipoSexo: this.form.value.datosFinado.otroTipoSexo,
-        nacionalidad: this.form.value.datosFinado.nacionalidad,
-        lugarNacimiento: this.form.value.datosFinado.lugarNacimiento,
-        paisNacimiento: this.form.value.datosFinado.paisNacimiento,
-        fechaDefuncion: this.form.value.datosFinado.fechaDefuncion,
-        causaDeceso: this.form.value.datosFinado.causaDeceso,
-        lugarDeceso: this.form.value.datosFinado.lugarDeceso,
-        horaDeceso: this.form.value.datosFinado.horaDeceso,
-        clinicaAdscripcion: this.form.value.datosFinado.clinicaAdscripcion,
-        unidadProcedencia: this.form.value.datosFinado.unidadProcedencia,
-        procedenciaFinado: this.form.value.datosFinado.procedenciaFinado,
-        tipoPension: this.form.value.datosFinado.tipoPension,
+        tipoOrden: formulario.datosFinado.tipoOrden,
+        noContrato: formulario.datosFinado.noContrato,
+        velatorioPrevision: formulario.datosFinado.velatorioPrevision,
+        esObito: formulario.datosFinado.esObito,
+        esParaExtremidad: formulario.datosFinado.esParaExtremidad,
+        matricula: formulario.datosFinado.matricula,
+        matriculaCheck: formulario.datosFinado.matriculaCheck,
+        curp: formulario.datosFinado.curp,
+        nss: formulario.datosFinado.nss,
+        nssCheck: formulario.datosFinado.nssCheck,
+        nombre: formulario.datosFinado.nombre,
+        primerApellido: formulario.datosFinado.primerApellido,
+        segundoApellido: formulario.datosFinado.segundoApellido,
+        fechaNacimiento: formulario.datosFinado.fechaNacimiento,
+        edad: formulario.datosFinado.edad,
+        sexo: formulario.datosFinado.sexo,
+        otroTipoSexo: formulario.datosFinado.otroTipoSexo,
+        nacionalidad: formulario.datosFinado.nacionalidad,
+        lugarNacimiento: formulario.datosFinado.lugarNacimiento,
+        paisNacimiento: formulario.datosFinado.paisNacimiento,
+        fechaDefuncion: formulario.datosFinado.fechaDefuncion,
+        causaDeceso: formulario.datosFinado.causaDeceso,
+        lugarDeceso: formulario.datosFinado.lugarDeceso,
+        horaDeceso: formulario.datosFinado.horaDeceso,
+        clinicaAdscripcion: formulario.datosFinado.clinicaAdscripcion,
+        unidadProcedencia: formulario.datosFinado.unidadProcedencia,
+        procedenciaFinado: formulario.datosFinado.procedenciaFinado,
+        tipoPension: formulario.datosFinado.tipoPension,
       },
       direccion: {
-        calle: this.form.value.direccion.calle,
-        noExterior: this.form.value.direccion.noExterior,
-        noInterior: this.form.value.direccion.noInterior,
-        cp: this.form.value.direccion.cp,
-        colonia: this.form.value.direccion.colonia,
-        municipio: this.form.value.direccion.municipio,
-        estado: this.form.value.direccion.estado,
+        calle: formulario.direccion.calle,
+        noExterior: formulario.direccion.noExterior,
+        noInterior: formulario.direccion.noInterior,
+        cp: formulario.direccion.cp,
+        colonia: formulario.direccion.colonia,
+        municipio: formulario.direccion.municipio,
+        estado: formulario.direccion.estado,
       },
     };
 
+    //direcccion
+    this.finado.cp = null;
     this.finado.idTipoOrden = datosEtapaFinado.datosFinado.tipoOrden;
     this.finado.extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
     this.finado.esobito = datosEtapaFinado.datosFinado.esObito;
     this.finado.rfc = null;
-    this.finado.curp = datosEtapaFinado.datosFinado.curp;
-    this.finado.nss = datosEtapaFinado.datosFinado.nss;
-    this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
-    this.finado.primerApellido = datosEtapaFinado.datosFinado.primerApellido;
-    this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
-    this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
-    this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-    this.finado.fechaNac = datosEtapaFinado.datosFinado.tipoOrden;
-    this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-    this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
-    this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion;
-    this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
-    this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
-    this.finado.hora = datosEtapaFinado.datosFinado.horaDeceso;
-    this.finado.idClinicaAdscripcion =
-      datosEtapaFinado.datosFinado.clinicaAdscripcion;
-    this.finado.idUnidadProcedencia =
-      datosEtapaFinado.datosFinado.unidadProcedencia;
-    this.finado.procedenciaFinado =
-      datosEtapaFinado.datosFinado.procedenciaFinado;
-    this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
+    this.finado.curp = null;
+    this.finado.nss = null;
+    this.finado.nomPersona = null;
+    this.finado.primerApellido = null;
+    this.finado.segundoApellido = null;
+    this.finado.sexo = null;
+    this.finado.otroSexo = null;
+    this.finado.fechaNac = null;
+    this.finado.idPais = null;
+    this.finado.idEstado = null;
+    this.finado.fechaDeceso = null;
+    this.finado.causaDeceso = null;
+    this.finado.lugarDeceso = null;
+    this.finado.hora = null;
+    this.finado.idClinicaAdscripcion = null;
+    this.finado.idUnidadProcedencia = null;
+    this.finado.procedenciaFinado = null;
+    this.finado.idTipoPension = null;
     this.finado.idContratoPrevision = this.idContratoPrevision;
-    this.finado.idVelatorioContratoPrevision =
-      this.idVelatorioContratoPrevision;
+    this.finado.idVelatorioContratoPrevision = null;
+    this.finado.cp = null;
+    this.finado.idPersona = null;
+    if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
+      this.finado.rfc = null;
+      this.finado.curp = datosEtapaFinado.datosFinado.curp;
+      this.finado.nss = datosEtapaFinado.datosFinado.nss;
+      this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
+      this.finado.primerApellido = datosEtapaFinado.datosFinado.primerApellido;
+      this.finado.segundoApellido =
+        datosEtapaFinado.datosFinado.segundoApellido;
+      this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
+      this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
+      this.finado.fechaNac = moment(
+        datosEtapaFinado.datosFinado.tipoOrden
+      ).format('yyyy-MM-DD');
+      this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
+      this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+      this.finado.fechaDeceso = moment(
+        datosEtapaFinado.datosFinado.fechaDefuncion
+      ).format('yyyy-MM-DD');
+      this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
+      this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
+      this.finado.hora = moment(datosEtapaFinado.datosFinado.horaDeceso).format(
+        'HH:mm'
+      );
+      this.finado.idClinicaAdscripcion =
+        datosEtapaFinado.datosFinado.clinicaAdscripcion;
+      this.finado.idUnidadProcedencia =
+        datosEtapaFinado.datosFinado.unidadProcedencia;
+      this.finado.procedenciaFinado =
+        datosEtapaFinado.datosFinado.procedenciaFinado;
+      this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
+      this.finado.idContratoPrevision = this.idContratoPrevision;
+      this.finado.idVelatorioContratoPrevision =
+        this.idVelatorioContratoPrevision;
+      this.cpFinado.desCalle = datosEtapaFinado.direccion.calle;
+      this.cpFinado.numExterior = datosEtapaFinado.direccion.noExterior;
+      this.cpFinado.numInterior = datosEtapaFinado.direccion.noInterior;
+      this.cpFinado.codigoPostal = datosEtapaFinado.direccion.cp;
+      this.cpFinado.desColonia = datosEtapaFinado.direccion.colonia;
+      this.cpFinado.desMunicipio = datosEtapaFinado.direccion.municipio;
+      this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
+      this.finado.cp = this.cpFinado;
+      this.finado.idPersona = null;
+    }
+
     this.altaODS.finado = this.finado;
-    //direcccion
-    this.cpFinado.desCalle = datosEtapaFinado.direccion.calle;
-    this.cpFinado.numExterior = datosEtapaFinado.direccion.noExterior;
-    this.cpFinado.numInterior = datosEtapaFinado.direccion.noInterior;
-    this.cpFinado.codigoPostal = datosEtapaFinado.direccion.cp;
-    this.cpFinado.desColonia = datosEtapaFinado.direccion.colonia;
-    this.cpFinado.desMunicipio = datosEtapaFinado.direccion.municipio;
-    this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
-    this.finado.cp = this.cpFinado;
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
+    console.log('ods segunda fase', this.altaODS);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
@@ -702,61 +740,81 @@ export class DatosFinadoComponent implements OnInit {
 
   changeTipoOrden(): void {
     const idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
-    console.log(idTipoOden);
     this.form.reset();
     if (idTipoOden == 1) {
+      this.habilitarTodo();
       this.datosFinado.tipoOrden.setValue(1);
-      this.radonlyMatricula = false;
+      this.datosFinado.matriculaCheck.setValue(true);
+      this.datosFinado.nssCheck.setValue(true);
       this.radonlyEstremidad = false;
-      this.radonlyNSS = false;
+      this.datosFinado.noContrato.disable();
+      this.datosFinado.velatorioPrevision.disable();
       this.radonlyNoContrato = true;
-      this.radonlyCurp = false;
       this.agregarValidaciones();
     } else if (idTipoOden == 2) {
+      this.habilitarTodo();
       this.datosFinado.tipoOrden.setValue(2);
-      this.radonlyMatricula = false;
       this.radonlyEstremidad = false;
-      this.radonlyNSS = false;
       this.radonlyNoContrato = false;
-      this.radonlyCurp = false;
+      this.datosFinado.velatorioPrevision.disable();
+      this.datosFinado.matriculaCheck.setValue(true);
+      this.datosFinado.nssCheck.setValue(true);
       this.agregarValidaciones();
     } else {
+      this.desabilitarTodo();
       this.datosFinado.tipoOrden.setValue(3);
-      this.radonlyMatricula = true;
+      this.datosFinado.matricula.disable();
       this.radonlyEstremidad = true;
-      this.radonlyNSS = true;
+      this.datosFinado.nss.disable();
+      this.datosFinado.nssCheck.disable();
+      this.datosFinado.matriculaCheck.disable();
       this.radonlyNoContrato = true;
-      this.radonlyCurp = true;
+
       this.removerValidaciones();
     }
   }
 
+  changeClinica(): void {
+    this.datosFinado.unidadProcedencia.setValue(null);
+    this.datosFinado.unidadProcedencia.clearValidators();
+    this.datosFinado.unidadProcedencia.updateValueAndValidity();
+  }
+
+  changeUnidad(): void {
+    this.datosFinado.clinicaAdscripcion.setValue(null);
+    this.datosFinado.clinicaAdscripcion.clearValidators();
+    this.datosFinado.clinicaAdscripcion.updateValueAndValidity();
+  }
   esEstremidad(validacion: boolean): void {
     const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
 
-    if (validacion && idTipoOrden > 0) {
-      this.activaDesactivaTodo('activa');
-    } else if (!validacion && idTipoOrden == 3) {
-      this.activaDesactivaTodo('activa');
-    } else if (validacion) {
-      this.activaDesactivaTodo('activa');
+    if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
+      this.datosFinado.velatorioPrevision.disable();
+      this.desabilitarTodo();
+      this.datosFinado.esObito.disable();
+
+      this.datosFinado.velatorioPrevision.disable();
+    } else if ((validacion || !validacion) && idTipoOrden == 3) {
+      this.desabilitarTodo();
+      this.datosFinado.esObito.disable();
     } else {
-      this.activaDesactivaTodo('desactiva');
+      this.habilitarTodo();
+      this.datosFinado.velatorioPrevision.disable();
     }
   }
 
   activaDesactivaTodo(valida: string): void {
     if (valida == 'activa') {
-      this.radonlyMatricula = true;
+      this.datosFinado.nss.disable();
+      this.datosFinado.matricula.disable();
       this.radonlyEstremidad = true;
-      this.radonlyNSS = true;
       this.radonlyNoContrato = true;
       this.radonlyCurp = true;
       this.removerValidaciones();
     } else {
-      this.radonlyMatricula = false;
+      this.datosFinado.nss.enable();
       this.radonlyEstremidad = false;
-      this.radonlyNSS = false;
+      this.datosFinado.matricula.enable();
       this.radonlyNoContrato = false;
       this.radonlyCurp = false;
       this.agregarValidaciones();
@@ -765,15 +823,16 @@ export class DatosFinadoComponent implements OnInit {
 
   esObito(validacion: boolean): void {
     //curp nss matricula se bloquean
-
+    let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
+    let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
     if (validacion) {
-      this.radonlyMatricula = true;
-      this.radonlyNSS = true;
-      this.radonlyCurp = true;
-    } else {
-      this.radonlyMatricula = false;
-      this.radonlyNSS = false;
-      this.radonlyCurp = false;
+      this.datosFinado.matricula.disable();
+      this.datosFinado.nss.disable();
+      this.datosFinado.curp.disable();
+    } else if (!validacion && idTipoOden != 3 && !esEstremidad) {
+      this.datosFinado.matricula.enable();
+      this.datosFinado.nss.enable();
+      this.datosFinado.curp.enable();
     }
   }
 
@@ -812,33 +871,86 @@ export class DatosFinadoComponent implements OnInit {
 
   removerValidaciones(): void {
     Object.keys(this.datosFinado).forEach((key) => {
-      console.log(key);
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].clearValidators();
       form.controls[key].updateValueAndValidity();
     });
 
     Object.keys(this.direccion).forEach((key) => {
-      console.log(key);
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].clearValidators();
       form.controls[key].updateValueAndValidity();
     });
   }
 
+  desabilitarTodo(): void {
+    Object.keys(this.datosFinado).forEach((key) => {
+      const form = this.form.controls['datosFinado'] as FormGroup;
+      if (key == 'tipoOrden' || key == 'esObito' || key == 'esParaExtremidad') {
+        form.controls[key].enable();
+      } else {
+        form.controls[key].disable();
+      }
+    });
+
+    Object.keys(this.direccion).forEach((key) => {
+      const form = this.form.controls['direccion'] as FormGroup;
+      form.controls[key].disable();
+    });
+  }
+
+  habilitarTodo(): any {
+    Object.keys(this.datosFinado).forEach((key) => {
+      const form = this.form.controls['datosFinado'] as FormGroup;
+      form.controls[key].enable();
+    });
+
+    Object.keys(this.direccion).forEach((key) => {
+      const form = this.form.controls['direccion'] as FormGroup;
+      form.controls[key].enable();
+    });
+  }
   agregarValidaciones(): void {
     Object.keys(this.datosFinado).forEach((key) => {
-      console.log(key);
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
     });
 
     Object.keys(this.direccion).forEach((key) => {
-      console.log(key);
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
     });
+  }
+
+  consultaCP(): void {
+    this.loaderService.activar();
+    if (!this.direccion.cp.value) {
+      return;
+    }
+    this.gestionarOrdenServicioService
+      .consutaCP(this.direccion.cp.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          if (respuesta) {
+            this.direccion.colonia.setValue(respuesta.datos[0].nombre);
+            this.direccion.municipio.setValue(
+              respuesta.datos[0].localidad.municipio.nombre
+            );
+            this.direccion.estado.setValue(
+              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+            );
+            return;
+          }
+          this.direccion.colonia.patchValue(null);
+          this.direccion.municipio.patchValue(null);
+          this.direccion.estado.patchValue(null);
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      );
   }
 }
