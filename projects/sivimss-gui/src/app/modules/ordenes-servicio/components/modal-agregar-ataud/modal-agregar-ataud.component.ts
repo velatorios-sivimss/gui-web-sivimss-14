@@ -119,6 +119,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
         this.idArticulo = datos.idArticulo;
         this.idInventario = datos.idInventario;
         this.idCategoria = datos.idCategoria;
+        this.idProveedor = datos.idProveedor;
       }
     });
   }

@@ -29,6 +29,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
   idVelatorio: number = 0;
   idArticulo: number = 0;
   idInventario: number = 0;
+  idProveedor: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -118,6 +119,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
         this.idArticulo = datos.idArticulo;
         this.idInventario = datos.idInventario;
         this.idCategoria = datos.idCategoria;
+        this.idProveedor = datos.idProveedor;
       }
     });
   }
@@ -144,10 +146,10 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,
-      idInventario: null,
+      idInventario: this.idInventario,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
-      idProveedor: null,
+      idProveedor: this.idProveedor,
       totalPaquete: this.costo,
       importe: this.costo,
       esDonado: false,

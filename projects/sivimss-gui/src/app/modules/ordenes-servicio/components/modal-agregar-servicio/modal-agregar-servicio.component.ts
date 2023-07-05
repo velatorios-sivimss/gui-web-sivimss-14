@@ -103,7 +103,6 @@ export class ModalAgregarServicioComponent
     let validacionServicio = [Validators.required];
     let validacionMapa = [Validators.required];
 
-    console.log(this.proviene);
     if (this.proviene == 'traslados') {
       this.disableddMapa = false;
       this.ocultarServicios = false;
@@ -143,8 +142,6 @@ export class ModalAgregarServicioComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
-
           if (respuesta.error) {
             this.servicios = [];
             this.serviciosCompletos = [];
@@ -158,9 +155,7 @@ export class ModalAgregarServicioComponent
             );
             return;
           }
-          console.log(
-            this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(15)
-          );
+
           const datos = respuesta.datos;
           this.serviciosCompletos = datos;
           this.servicios = mapearArregloTipoDropdown(
@@ -199,11 +194,13 @@ export class ModalAgregarServicioComponent
     this.serviciosCompletos.forEach((datos: any) => {
       if (Number(datos.idServicio) == Number(dd.selectedOption.value)) {
         this.concepto = datos.nombreServicio;
-        this.idServicio = datos.idServicio;
         this.grupo = datos.grupo;
-        this.idProveedor = datos.idTipoServicio;
+        this.idProveedor = datos.idProveedor;
+        this.idTipoServicio = datos.idTipoServicio;
         if (Number(datos.idServicio) == 4) {
           this.disableddMapa = false;
+        } else {
+          this.disableddMapa = true;
         }
       }
     });
@@ -213,9 +210,9 @@ export class ModalAgregarServicioComponent
 
   seleccionaProveedor(dd: Dropdown): void {
     this.proveedor = dd.selectedOption.label;
+    this.idProveedor = Number(dd.selectedOption.value);
     this.proveedorCompletos.forEach((datos: any) => {
       if (Number(datos.idProveedor) == Number(dd.selectedOption.value)) {
-        this.idProveedor = datos.nombreServicio;
         this.costo = datos.importe;
       }
     });
@@ -242,8 +239,6 @@ export class ModalAgregarServicioComponent
             return;
           }
           const datos = respuesta.datos;
-          console.log('datos', datos);
-          this.proveedorCompletos = datos;
           this.listaproveedor = mapearArregloTipoDropdown(
             datos,
             'nombreProveedor',
@@ -297,18 +292,18 @@ export class ModalAgregarServicioComponent
         proveedor: this.proveedor,
         fila: -1,
         grupo: this.grupo,
-        idCategoria: this.idCategoria,
+        idCategoria: null,
         idInventario: null,
         idArticulo: null,
         idTipoServicio: this.idTipoServicio,
-        idProveedor: this.proveedor,
+        idServicio: this.idServicio,
+        idProveedor: this.idProveedor,
         totalPaquete: this.costo,
         importe: this.costo,
         esDonado: false,
         proviene: 'presupuesto',
       };
     }
-    console.log(salida);
     this.ref.close(salida);
   }
 

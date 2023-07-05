@@ -118,7 +118,9 @@ export class CaracteristicasPresupuestoComponent
   total: number = 0;
   valorFila: any = {};
   elementosEliminadosPaquete: any[] = [];
-
+  tipoOrden: number = 0;
+  esExtremidad: number = 0;
+  esObito: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -166,6 +168,9 @@ export class CaracteristicasPresupuestoComponent
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
+    this.esExtremidad = Number(this.altaODS.finado.extremidad);
+    this.esObito = Number(this.altaODS.finado.esobito);
   }
 
   inicializarForm(datos: any): void {
@@ -803,11 +808,20 @@ export class CaracteristicasPresupuestoComponent
         detalle.esDonado = 1;
       }
 
-      detalle.idArticulo = parseInt(datos.idArticulo);
+      detalle.idArticulo =
+        datos.idArticulo == '' || datos.idArticulo == null
+          ? null
+          : Number(datos.idArticulo);
       detalle.idCategoria = parseInt(datos.idCategoria);
-      detalle.idInventario = parseInt(datos.idInventario);
+      detalle.idInventario =
+        datos.idInventario == '' || datos.idInventario == null
+          ? null
+          : Number(datos.idInventario);
       detalle.idProveedor = parseInt(datos.idProveedor);
-      detalle.idServicio = parseInt(datos.idServicio);
+      detalle.idServicio =
+        datos.idServicio == '' || datos.idServicio == null
+          ? null
+          : Number(datos.idServicio);
       detalle.idTipoServicio = parseInt(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
 
@@ -836,9 +850,11 @@ export class CaracteristicasPresupuestoComponent
       detalle.idArticulo = parseInt(datos.idArticulo);
       detalle.desmotivo = datos.desmotivo;
       detalle.activo = 1;
-      detalle.idProveedor = parseInt(datos.idProveedor) ?? null;
-      detalle.idServicio = parseInt(datos.idServicio) ?? null;
-      detalle.idTipoServicio = parseInt(datos.idTipoServicio) ?? null;
+      detalle.idProveedor = datos.idProveedor ?? null;
+      detalle.idServicio =
+        datos.idServicio == '' ? null : Number(datos.idServicio);
+      detalle.idTipoServicio =
+        datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe);
       detalle.totalPaquete = Number(datos.totalPaquete);
@@ -873,9 +889,12 @@ export class CaracteristicasPresupuestoComponent
       detalle.idArticulo = parseInt(datos.idArticulo) ?? null;
       detalle.desmotivo = datos.desmotivo ?? null;
       detalle.activo = 0;
-      detalle.idProveedor = parseInt(datos.idProveedor) ?? null;
-      detalle.idServicio = parseInt(datos.idServicio) ?? null;
-      detalle.idTipoServicio = parseInt(datos.idTipoServicio) ?? null;
+      detalle.idProveedor =
+        datos.idProveedor == '' ? null : Number(datos.idProveedor);
+      detalle.idServicio =
+        datos.idServicio == '' ? null : Number(datos.idServicio);
+      detalle.idTipoServicio =
+        datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe) ?? null;
       detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
@@ -924,9 +943,14 @@ export class CaracteristicasPresupuestoComponent
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
     this.caracteristicasPaquete.otorgamiento =
       this.selecionaTipoOtorgamiento ?? null;
-    this.caracteristicasPresupuesto.caracteristicasPaquete =
-      this.caracteristicasPaquete;
-    this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
+
+    this.caracteristicasPaquete.detallePaquete = null;
+    this.caracteristicasPresupuesto.caracteristicasPaquete = null;
+    if (this.detallePaquete.length > 0) {
+      this.caracteristicasPresupuesto.caracteristicasPaquete =
+        this.caracteristicasPaquete;
+      this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
+    }
 
     // this.detallePresupuesto = arrayDatosPresupuesto;
     console.log('alta od 3', this.altaODS);

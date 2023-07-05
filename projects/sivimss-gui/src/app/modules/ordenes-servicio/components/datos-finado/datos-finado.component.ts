@@ -723,6 +723,7 @@ export class DatosFinadoComponent implements OnInit {
       this.cpFinado.desColonia = datosEtapaFinado.direccion.colonia;
       this.cpFinado.desMunicipio = datosEtapaFinado.direccion.municipio;
       this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
+      this.cpFinado.idDomicilio = null;
       this.finado.cp = this.cpFinado;
       this.finado.idPersona = null;
     }
@@ -755,6 +756,7 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.segundoApellido.disable();
       this.datosFinado.noContrato.disable();
       this.datosFinado.velatorioPrevision.disable();
+      this.datosFinado.fechaNacimiento.disable();
       this.radonlyNoContrato = true;
       this.agregarValidaciones();
     } else if (idTipoOden == 2) {
@@ -766,6 +768,7 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.nombre.disable();
       this.datosFinado.primerApellido.disable();
       this.datosFinado.segundoApellido.disable();
+      this.datosFinado.fechaNacimiento.disable();
       this.datosFinado.matriculaCheck.setValue(true);
       this.datosFinado.nssCheck.setValue(true);
       this.agregarValidaciones();

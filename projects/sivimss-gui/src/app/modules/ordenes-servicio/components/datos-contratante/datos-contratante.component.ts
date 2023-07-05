@@ -94,6 +94,7 @@ export class DatosContratanteComponent implements OnInit {
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
   idPersona: number | null = null;
   idContratante: number | null = null;
+  idDomicilio: number | null = null;
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -226,7 +227,7 @@ export class DatosContratanteComponent implements OnInit {
             value: datosEtapaContratante.datosContratante.lugarNacimiento,
             disabled: false,
           },
-          [Validators.required],
+          [],
         ],
         paisNacimiento: [
           {
@@ -330,7 +331,7 @@ export class DatosContratanteComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
-            console.log(respuesta);
+            console.log('curp', respuesta);
             if (respuesta.mensaje.includes('Externo')) {
               this.idPersona = null;
               this.idContratante = null;
@@ -359,25 +360,50 @@ export class DatosContratanteComponent implements OnInit {
                 this.datosContratante.nacionalidad.setValue(2);
               }
             } else {
-              this.idPersona = respuesta.datos[0].idPersona;
-              this.idContratante = respuesta.datos[0].idContratante;
-              let [anio, mes, dia] = respuesta.datos[0].fechaNac.split('-');
+              let datos = respuesta.datos[0];
+              this.idPersona = datos.idPersona;
+              this.idContratante = datos.idContratante;
+              let [anio, mes, dia] = datos.fechaNac.split('-');
               dia = dia.substr(0, 2);
               const fecha = new Date(anio + '/' + mes + '/' + dia);
-              this.datosContratante.nombre.setValue(respuesta.datos[0].nombre);
+              this.datosContratante.nombre.setValue(datos.nombre);
               this.datosContratante.primerApellido.setValue(
-                respuesta.datos[0].primerApellido
+                respuesta.primerApellido
               );
               this.datosContratante.segundoApellido.setValue(
-                respuesta.datos[0].segundoApellido
+                datos.segundoApellido
               );
               this.datosContratante.fechaNacimiento.setValue(fecha);
+
               this.datosContratante.sexo.setValue(+respuesta.datos[0].sexo);
-              if (+respuesta.datos[0].idPais == 119) {
+              if (datos.idPais == 119) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
                 this.datosContratante.nacionalidad.setValue(2);
               }
+
+              this.datosContratante.rfc.setValue(datos.rfc);
+              console.log(datos);
+              this.datosContratante.paisNacimiento.setValue(
+                Number(datos.idPais)
+              );
+              this.datosContratante.lugarNacimiento.setValue(
+                Number(datos.idEstado)
+              );
+
+              this.datosContratante.telefono.setValue(datos.telefono);
+              this.datosContratante.correoElectronico.setValue(datos.correo);
+
+              this.direccion.colonia.setValue(datos.colonia);
+              this.direccion.municipio.setValue(datos.municipio);
+              this.direccion.estado.setValue(datos.estado);
+              this.direccion.cp.setValue(datos.cp);
+              this.direccion.colonia.setValue(datos.colonia);
+              this.direccion.calle.setValue(datos.calle);
+
+              this.direccion.noInterior.setValue(datos.numExterior);
+              this.direccion.noExterior.setValue(datos.numInterior);
+              this.idDomicilio = datos.idDomicilio;
             }
             return;
           }
@@ -405,24 +431,50 @@ export class DatosContratanteComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
           if (respuesta.datos.length > 0) {
-            let [anio, mes, dia] = respuesta.datos[0].fechaNac.split('-');
+            let datos = respuesta.datos[0];
+            this.idPersona = datos.idPersona;
+            this.idContratante = datos.idContratante;
+            let [anio, mes, dia] = datos.fechaNac.split('-');
             dia = dia.substr(0, 2);
             const fecha = new Date(anio + '/' + mes + '/' + dia);
-            this.datosContratante.nombre.setValue(respuesta.datos[0].nombre);
-            this.datosContratante.primerApellido.setValue(
-              respuesta.datos[0].primerApellido
-            );
+            this.datosContratante.nombre.setValue(datos.nombre);
+            this.datosContratante.primerApellido.setValue(datos.primerApellido);
+
             this.datosContratante.segundoApellido.setValue(
-              respuesta.datos[0].segundoApellido
+              datos.segundoApellido
             );
             this.datosContratante.fechaNacimiento.setValue(fecha);
+
             this.datosContratante.sexo.setValue(+respuesta.datos[0].sexo);
-            if (+respuesta.datos[0].idPais == 119) {
+            if (datos.idPais == 119) {
               this.datosContratante.nacionalidad.setValue(1);
             } else {
               this.datosContratante.nacionalidad.setValue(2);
             }
+
+            this.datosContratante.rfc.setValue(datos.rfc);
+
+            this.datosContratante.paisNacimiento.setValue(Number(datos.idPais));
+            this.datosContratante.lugarNacimiento.setValue(
+              Number(datos.idEstado)
+            );
+
+            this.datosContratante.telefono.setValue(datos.telefono);
+            this.datosContratante.correoElectronico.setValue(datos.correo);
+            this.datosContratante.curp.setValue(datos.curp);
+            this.direccion.colonia.setValue(datos.colonia);
+            this.direccion.municipio.setValue(datos.municipio);
+            this.direccion.estado.setValue(datos.estado);
+            this.direccion.cp.setValue(datos.cp);
+            this.direccion.colonia.setValue(datos.colonia);
+            this.direccion.calle.setValue(datos.calle);
+
+            this.direccion.noInterior.setValue(datos.numExterior);
+            this.direccion.noExterior.setValue(datos.numInterior);
+            this.idDomicilio = datos.idDomicilio;
+
             return;
           }
           this.limpiarConsultaDatosPersonales();
@@ -516,6 +568,7 @@ export class DatosContratanteComponent implements OnInit {
 
   continuar(): void {
     // if (!this.form.valid) return;
+    console.log(this.form.valid);
     let etapas: Etapa[] = [
       {
         idEtapa: 0,
@@ -649,6 +702,7 @@ export class DatosContratanteComponent implements OnInit {
 
     //datos cp
     this.cp.desCalle = datosEtapaContratante.direccion.calle;
+    this.cp.idDomicilio = this.idDomicilio;
     this.cp.numExterior = datosEtapaContratante.direccion.noExterior;
     this.cp.numInterior = datosEtapaContratante.direccion.noInterior;
     this.cp.codigoPostal = datosEtapaContratante.direccion.cp;

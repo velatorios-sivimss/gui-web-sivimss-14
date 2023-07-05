@@ -49,6 +49,7 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
       },
     });
     ref.onClose.subscribe((salida: any) => {
+      console.log(salida);
       if (salida != null) this.cerrarmodal(salida);
     });
   }

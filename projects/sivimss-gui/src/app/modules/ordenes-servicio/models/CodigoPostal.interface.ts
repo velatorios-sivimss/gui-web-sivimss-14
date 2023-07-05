@@ -1,4 +1,5 @@
 export interface CodigoPostalIterface {
+    idDomicilio:number | null;
     desCalle: string | null;
     numExterior: string | null;
     numInterior: string | null;
