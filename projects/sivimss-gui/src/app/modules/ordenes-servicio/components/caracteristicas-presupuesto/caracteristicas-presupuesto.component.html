@@ -142,7 +142,7 @@
   <div class="col-md-12 flex justify-content-end">
     <div class="flex flex-column align-items-end">
       <span class="texto-orden-servicio">Total órden de servicio</span>
-      <span class="cantidad-orden-servicio">$0.00</span>
+      <span class="cantidad-orden-servicio">{{total | currency: 'USD' | lowercase}}</span>
     </div>
   </div>
 </div>

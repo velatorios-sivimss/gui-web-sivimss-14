@@ -17,7 +17,6 @@ import { ModalAgregarArticulosComplementariosComponent } from '../modal-agregar-
 })
 export class ModalAgregarAlPresupuestoComponent implements OnInit {
   idVelatorio: number = 0;
-  regresoDatos: any;
 
   constructor(
     private readonly ref: DynamicDialogRef,
@@ -32,7 +31,7 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
 
   cerrarModal() {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
-    this.ref.close(this.regresoDatos);
+    this.ref.close(null);
   }
 
   abrirModalAgregarServicio(event: MouseEvent) {
@@ -50,8 +49,7 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
       },
     });
     ref.onClose.subscribe((salida: any) => {
-      console.log('ventana agragar', salida);
-      this.cerrarmodal(salida);
+      if (salida != null) this.cerrarmodal(salida);
     });
   }
 

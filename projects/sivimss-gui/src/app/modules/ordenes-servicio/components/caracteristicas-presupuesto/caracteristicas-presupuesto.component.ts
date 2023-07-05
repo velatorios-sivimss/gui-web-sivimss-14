@@ -194,7 +194,6 @@ export class CaracteristicasPresupuestoComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -254,7 +253,6 @@ export class CaracteristicasPresupuestoComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log('detalle paquete', respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -302,11 +300,8 @@ export class CaracteristicasPresupuestoComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log('tipo asignacion', respuesta);
-
           if (respuesta.error) {
             this.tipoAsignacion = [];
-
             return;
           }
           const datos = respuesta.datos[0]['idAsignacion'];
@@ -315,8 +310,6 @@ export class CaracteristicasPresupuestoComponent
             return;
           }
           this.tipoAsignacion = datos.split(',');
-
-          console.log(this.tipoAsignacion);
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -330,7 +323,6 @@ export class CaracteristicasPresupuestoComponent
     noFila: number,
     proviene: string
   ): void {
-    console.log(paqueteSeleccionado);
     paqueteSeleccionado.fila = noFila + 1;
     this.idServicio = Number(paqueteSeleccionado.idServicio);
     this.fila = noFila + 1;
@@ -432,7 +424,6 @@ export class CaracteristicasPresupuestoComponent
       if (respuesta == null) {
         return;
       }
-      console.log(respuesta);
       this.datosPaquetes.forEach((datos: any) => {
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = null;
@@ -451,7 +442,6 @@ export class CaracteristicasPresupuestoComponent
   }
 
   abrirModalAgregarProveedor(event: MouseEvent): void {
-    console.log('tipo proveerdor');
     event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarServicioComponent, {
       header: 'Agregar proveedor',
@@ -469,7 +459,7 @@ export class CaracteristicasPresupuestoComponent
       if (respuesta == null) {
         return;
       }
-      console.log(respuesta);
+
       this.datosPaquetes.forEach((datos: any) => {
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = null;
@@ -531,7 +521,6 @@ export class CaracteristicasPresupuestoComponent
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
-          console.log('datos', datos);
           if (respuesta.error) {
             this.listaproveedor = [];
             const errorMsg: string =
@@ -574,8 +563,6 @@ export class CaracteristicasPresupuestoComponent
   }
 
   agregarArticulo(datos: any): void {
-    console.log('datos agregar', datos);
-
     datos.proviene = 'paquete';
     this.paquete.activo = 1;
     this.paquete.cantidad = datos.cantidad ?? null;
@@ -584,7 +571,7 @@ export class CaracteristicasPresupuestoComponent
     this.paquete.idProveedor = datos.idProveedor;
     this.paquete.idServicio = datos.idServicio ?? null;
     this.paquete.idTipoServicio = datos.idTipoServicio ?? null;
-    this.paquete.importeMonto = datos.importeMonto ?? null;
+    this.paquete.importeMonto = datos.importe ?? null;
     this.paquete.totalPaquete = datos.totalPaquete;
     this.servicioDetalleTraslado = {} as ServicioDetalleTrasladotoInterface;
     this.paquete.servicioDetalleTraslado = null;
@@ -600,16 +587,31 @@ export class CaracteristicasPresupuestoComponent
       this.servicioDetalleTraslado.origen = datos.origen ?? null;
       this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
     }
-    console.log(datos.bloquearRadioButton);
+
     datos.bloquearRadioButton = true;
     this.datosPresupuesto.push(datos);
-    console.log('datos presupusto', this.datosPresupuesto);
+    this.totalpresupuesto();
   }
 
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
   }
 
+  totalpresupuesto(): void {
+    let datosPresupuesto = this.datosPresupuesto;
+    let totalPaquete = 0;
+    let totalArticulos = 0;
+
+    datosPresupuesto.forEach(function (datos) {
+      if (datos.proviene == 'paquete') {
+        totalPaquete = datos.totalPaquete;
+      } else {
+        totalArticulos += datos.importe;
+      }
+    });
+    let pretotal = Number(totalPaquete) + Number(totalArticulos);
+    this.total = pretotal;
+  }
   quitarArticulo(datos: any): void {
     const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
       header: '',
@@ -638,6 +640,7 @@ export class CaracteristicasPresupuestoComponent
 
     this.datosPresupuesto = nuevoArray;
     //se agregara mensaje de que se elimino??
+    this.totalpresupuesto();
   }
 
   regresar() {
@@ -766,7 +769,6 @@ export class CaracteristicasPresupuestoComponent
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(3);
-    console.log('INFO A GUARDAR STEP 3: ', this.form.value);
     this.datosAlta();
   }
 
@@ -818,7 +820,6 @@ export class CaracteristicasPresupuestoComponent
     //paquetes
 
     this.datosPaquetes.forEach((datos: any) => {
-      console.log('paquete', datos);
       let detalle: DetallePaqueteInterface = {} as DetallePaqueteInterface;
 
       detalle.cantidad = datos.cantidad;
@@ -856,7 +857,6 @@ export class CaracteristicasPresupuestoComponent
     });
 
     this.elementosEliminadosPaquete.forEach((datos: any) => {
-      console.log('paquete', datos);
       let detalle: DetallePaqueteInterface = {} as DetallePaqueteInterface;
 
       detalle.cantidad = datos.cantidad;
@@ -919,7 +919,7 @@ export class CaracteristicasPresupuestoComponent
     this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
 
     // this.detallePresupuesto = arrayDatosPresupuesto;
-    console.log('alta od', this.altaODS);
+    console.log('alta od 3', this.altaODS);
 
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -938,7 +938,10 @@ export class CaracteristicasPresupuestoComponent
       },
     });
     ref.onClose.subscribe((salida: any) => {
-      this.datosPresupuesto.push(salida);
+      if (salida != null) {
+        this.datosPresupuesto.push(salida);
+        this.totalpresupuesto();
+      }
     });
   }
 }
