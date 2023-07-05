@@ -518,61 +518,91 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   llenarDatos(): void {
+    let formulario = this.form.getRawValue();
     let datos = {
-      fechaCortejo: this.cortejo.fecha.value ?? null,
-      fechaCremacion: this.lugarCremacion.fecha.value ?? null,
-      fechaRecoger: this.recoger.fecha.value ?? null,
-      horaRecoger: this.recoger.hora.value ?? null,
-      horaCortejo: this.cortejo.hora.value ?? null,
-      horaCremacion: this.lugarCremacion.hora.value ?? null,
+      fechaCortejo: formulario.cortejo.fecha,
+      fechaCremacion: formulario.lugarCremacion.fecha,
+      fechaRecoger: formulario.recoger.fecha,
+      horaRecoger: formulario.recoger.hora,
+      horaCortejo: formulario.cortejo.hora,
+      horaCremacion: formulario.lugarCremacion.hora,
       idPanteon: this.idPanteon,
-      idPromotor: this.cortejo.promotor.value ?? null,
-      idSala: this.lugarCremacion.sala.value,
-      cp: this.lugarVelacion.cp.value ?? null,
-      fechaInstalacion: this.instalacionServicio.fecha.value ?? null,
-      fechaVelacion: this.lugarVelacion.fecha.value ?? null,
-      horaInstalacion: this.instalacionServicio.hora.value ?? null,
-      horaVelacion: this.lugarVelacion.hora.value ?? null,
-      idCapilla: this.lugarVelacion.capilla.value ?? null,
-      calle: this.lugarVelacion.capilla.value ?? null,
-      interior: this.lugarVelacion.interior.value ?? null,
-      exterior: this.lugarVelacion.exterior.value ?? null,
-      colonia: this.lugarVelacion.colonia.value ?? null,
-      municipio: this.lugarVelacion.municipio.value ?? null,
-      estado: this.lugarVelacion.estado.value ?? null,
-      gestionadoPorPromotor: this.cortejo.gestionadoPorPromotor.value ?? null,
-      promotor: this.cortejo.promotor.value ?? null,
+      idPromotor: formulario.cortejo.promotor,
+      idSala: formulario.lugarCremacion.sala,
+      cp: formulario.lugarVelacion.cp,
+      fechaInstalacion: formulario.instalacionServicio.fecha,
+      fechaVelacion: formulario.lugarVelacion.fecha,
+      horaInstalacion: formulario.instalacionServicio.hora,
+      horaVelacion: formulario.lugarVelacion.hora,
+      idCapilla: formulario.lugarVelacion.capilla,
+      calle: formulario.lugarVelacion.capilla,
+      interior: formulario.lugarVelacion.interior,
+      exterior: formulario.lugarVelacion.exterior,
+      colonia: formulario.lugarVelacion.colonia,
+      municipio: formulario.lugarVelacion.municipio,
+      estado: formulario.lugarVelacion.estado,
+      gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
+      promotor: formulario.cortejo.promotor,
     };
 
     this.informacionServicio.fechaCortejo =
-      moment(this.cortejo.fecha.value).format('yyyy-MM-DD') ?? null;
+      formulario.cortejo.fecha == null
+        ? null
+        : moment(formulario.cortejo.fecha).format('yyyy-MM-DD');
+
     this.informacionServicio.fechaCremacion =
-      moment(this.lugarCremacion.fecha.value).format('yyyy-MM-DD') ?? null;
+      formulario.lugarCremacion.fecha == null
+        ? null
+        : moment(formulario.lugarCremacion.fecha).format('yyyy-MM-DD');
+
     this.informacionServicio.fechaRecoger =
-      moment(this.recoger.fecha.value).format('yyyy-MM-DD') ?? null;
+      formulario.recoger.fecha == null
+        ? null
+        : moment(formulario.recoger.fecha).format('yyyy-MM-DD');
+
     this.informacionServicio.horaCortejo =
-      moment(this.cortejo.hora.value).format('HH:mm') ?? null;
+      formulario.cortejo.hora == null
+        ? null
+        : moment(formulario.cortejo.hora).format('HH:mm');
+
     this.informacionServicio.horaCremacion =
-      moment(this.lugarCremacion.hora.value).format('HH:mm') ?? null;
+      formulario.lugarCremacion.hora == null
+        ? null
+        : moment(formulario.lugarCremacion.hora).format('HH:mm');
+
     this.informacionServicio.idPanteon = this.idPanteon;
-    this.informacionServicio.idPromotor = this.cortejo.promotor.value ?? null;
-    this.informacionServicio.idSala = this.lugarCremacion.sala.value ?? null;
+    this.informacionServicio.idPromotor = formulario.cortejo.promotor;
+    this.informacionServicio.idSala = formulario.lugarCremacion.sala;
     //información servicio velación
-    this.informacionServicioVelacion.cp = this.lugarVelacion.cp.value ?? null;
+    this.informacionServicioVelacion.cp = formulario.lugarVelacion.cp;
     this.informacionServicioVelacion.fechaInstalacion =
-      moment(this.instalacionServicio.fecha.value).format('yyyy-MM-DD') ?? null;
+      formulario.instalacionServicio.fecha == null
+        ? null
+        : moment(formulario.instalacionServicio.fecha).format('yyyy-MM-DD');
+
     this.informacionServicioVelacion.fechaVelacion =
-      moment(this.lugarVelacion.fecha.value).format('yyyy-MM-DD') ?? null;
+      formulario.lugarVelacion.fecha == null
+        ? null
+        : moment(formulario.lugarVelacion.fecha).format('yyyy-MM-DD');
+
     this.informacionServicioVelacion.horaInstalacion =
-      moment(this.instalacionServicio.hora.value).format('HH:mm') ?? null;
+      formulario.instalacionServicio.hora == null
+        ? null
+        : moment(formulario.instalacionServicio.hora).format('HH:mm');
+
     this.informacionServicioVelacion.horaVelacion =
-      moment(this.lugarVelacion.hora.value).format('HH:mm') ?? null;
+      formulario.lugarVelacion.hora == null
+        ? null
+        : moment(formulario.lugarVelacion.hora).format('HH:mm');
+
     this.informacionServicioVelacion.idCapilla =
-      this.lugarVelacion.capilla.value ?? null;
+      formulario.lugarVelacion.capilla;
 
     this.altaODS.informacionServicio = this.informacionServicio;
+
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
+    console.log('ods final', this.altaODS);
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -602,6 +632,7 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   preorden(): void {
+    this.llenarDatos();
     console.log(this.altaODS);
   }
 }

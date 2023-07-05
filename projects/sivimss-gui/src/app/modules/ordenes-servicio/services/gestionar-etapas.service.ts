@@ -192,6 +192,7 @@ export class GestionarEtapasService {
     datosPaquetes: [],
     datosPresupuesto: [],
     elementosEliminadosPaquete: [],
+    total: 0,
   };
 
   datosEtapaInformacionServicio = {

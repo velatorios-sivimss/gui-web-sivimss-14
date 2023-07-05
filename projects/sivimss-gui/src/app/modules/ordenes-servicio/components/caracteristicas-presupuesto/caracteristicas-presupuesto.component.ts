@@ -174,6 +174,7 @@ export class CaracteristicasPresupuestoComponent
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
+    this.total = datos.total;
     this.form = this.formBuilder.group({
       observaciones: [
         { value: datos.observaciones, disabled: false },
@@ -782,6 +783,7 @@ export class CaracteristicasPresupuestoComponent
       datosPaquetes: this.datosPaquetes,
       datosPresupuesto: this.datosPresupuesto,
       elementosEliminadosPaquete: this.elementosEliminadosPaquete,
+      total: this.total,
     };
 
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(
