@@ -291,7 +291,6 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("noContrato")?.setValue(null);
     this.solicitudMantenimientoForm.get("modalidad")?.clearValidators();
     this.solicitudMantenimientoForm.get("matPreventivo")?.clearValidators();
-    this.solicitudMantenimientoForm.get("fechaMantenimiento")?.clearValidators();
     if (tipoMtto.toString() === '1') {
       this.solicitudMantenimientoForm.get("costoMantenimiento")?.clearValidators()
       this.solicitudMantenimientoForm.get("taller")?.clearValidators();
@@ -300,8 +299,6 @@ export class RegistroMantenimientoComponent implements OnInit {
       this.solicitudMantenimientoForm.get("modalidad")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("matPreventivo")?.setValue(null);
       this.solicitudMantenimientoForm.get("matPreventivo")?.addValidators([Validators.required]);
-      this.solicitudMantenimientoForm.get("fechaMantenimiento")?.setValue(null);
-      this.solicitudMantenimientoForm.get("fechaMantenimiento")?.addValidators([Validators.required]);
       const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
       if ([1, 2, 3].includes(modalidad)) {
         this.obtenerCatalogoMtto(modalidad);
@@ -322,7 +319,6 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("taller")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("modalidad")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("matPreventivo")?.updateValueAndValidity();
-    this.solicitudMantenimientoForm.get("fechaMantenimiento")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("noContrato")?.updateValueAndValidity();
 
     this.solicitudMantenimientoForm.markAllAsTouched();

@@ -61,6 +61,8 @@ export class ReporteEncargadoComponent implements OnInit {
   fechaValida: boolean = false;
   tipoBusqueda: number = 0;
 
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
@@ -218,7 +220,15 @@ export class ReporteEncargadoComponent implements OnInit {
         this.mostrarModalConfirmacion = true;
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        if (mensaje) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+        }
       },
     });
   }

@@ -193,7 +193,9 @@ export class ContratantesComponent implements OnInit {
           return msj.idMensaje == error?.error?.mensaje;
         })
         if (mensaje) {
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje || "Error en la descarga del documento. Intenta nuevamente.");
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
         }
       },
     });
