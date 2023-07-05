@@ -10,12 +10,14 @@ import {OnCloseOnNavigationDirective} from "./directives/close-on-navigation.dir
 import {PopoverDirective} from "./directives/popover.directive";
 import {TextColorDirective} from "./directives/text-color.directive";
 import { FolioODSAlphanumericDirective } from './directives/folio-ods-alphanumeric.directive';
+import {LettersDirectiveTextArea} from "./directives/only-letters-text-area.directive";
 
 @NgModule({
   declarations: [
     NumberDirective,
     TwoDigitDecimaNumbersDirective,
     LettersDirective,
+    LettersDirectiveTextArea,
     AlphanumericDirective,
     TrimmerDirective,
     TextDirective,
@@ -31,6 +33,7 @@ import { FolioODSAlphanumericDirective } from './directives/folio-ods-alphanumer
     NumberDirective,
     TwoDigitDecimaNumbersDirective,
     LettersDirective,
+    LettersDirectiveTextArea,
     AlphanumericDirective,
     TrimmerDirective,
     TextDirective,
