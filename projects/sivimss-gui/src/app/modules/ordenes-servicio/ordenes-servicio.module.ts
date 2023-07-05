@@ -45,6 +45,10 @@ import { ModificarInformacionServicioComponent } from './components/modificar-in
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {GenerarOrdenServicioService} from "./services/generar-orden-servicio.service";
 import { GestionarEtapasService } from './services/gestionar-etapas.service';
+import {ConsultarOrdenServicioService} from "./services/consultar-orden-servicio.service";
+import {AutoCompleteModule} from "primeng/autocomplete";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
+import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 
 @NgModule({
   declarations: [
@@ -94,12 +98,16 @@ import { GestionarEtapasService } from './services/gestionar-etapas.service';
     AccordionModule,
     DynamicDialogModule,
     EtapasModule,
-    UtileriaModule
+    UtileriaModule,
+    AutoCompleteModule,
+    BtnRegresarModule,
+    CeldaStickyModule,
   ],
   providers: [
     GenerarOrdenServicioService,
     DialogService,
-    GestionarEtapasService
+    GestionarEtapasService,
+    ConsultarOrdenServicioService
   ]
 })
 export class OrdenesServicioModule {

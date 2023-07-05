@@ -18,11 +18,15 @@ import {
   VerOrdenServicioComponent
 } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/ver-orden-de-servicio/ver-orden-servicio.component";
 import {GenerarOrdenServicioResolver} from "./services/generar-orden-servicio.resolver";
+import {ConsultarOrdenServicioResolver} from "./services/consultar-orden-servicio.resolver";
 
 const routes: Routes = [
   {
     path: '',
-    component: OrdenesServicioComponent
+    component: OrdenesServicioComponent,
+    resolve: {
+      respuesta: ConsultarOrdenServicioResolver
+    }
   },
   {
     path: 'generar-orden-de-servicio',
@@ -65,7 +69,8 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: [
-    GenerarOrdenServicioResolver
+    GenerarOrdenServicioResolver,
+    ConsultarOrdenServicioResolver
   ]
 })
 export class OrdenesServicioRoutingModule {
