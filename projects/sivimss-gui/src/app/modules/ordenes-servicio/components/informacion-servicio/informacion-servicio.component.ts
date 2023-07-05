@@ -147,13 +147,13 @@ export class InformacionServicioComponent implements OnInit {
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
     datosPresupuesto.forEach((datos: any) => {
-      if (datos.concepto == 'Velación en capilla') {
+      if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
       }
 
-      if (datos.concepto == 'Velación en domicilio') {
+      if (datos.concepto.trim() == 'Velación en domicilio') {
         this.validaDomicilio = true;
         this.lugarVelacion.calle.enable();
         this.lugarVelacion.exterior.enable();
@@ -161,13 +161,13 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.exterior.enable();
         this.lugarVelacion.cp.enable();
         this.lugarVelacion.colonia.enable();
-        this.lugarVelacion.municipio.enable();
-        this.lugarVelacion.estado.enable();
+        this.lugarVelacion.municipio.disable();
+        this.lugarVelacion.estado.disable();
       }
 
       if (
-        datos.concepto.toUpperCase().includes('CREMACIÓN') ||
-        datos.concepto.toUpperCase().includes('CREMACION')
+        datos.concepto.toUpperCase().trim().includes('CREMACIÓN') ||
+        datos.concepto.toUpperCase().trim().includes('CREMACION')
       ) {
         this.lugarCremacion.sala.enable();
         this.lugarCremacion.fecha.enable();
@@ -535,7 +535,7 @@ export class InformacionServicioComponent implements OnInit {
       horaInstalacion: formulario.instalacionServicio.hora,
       horaVelacion: formulario.lugarVelacion.hora,
       idCapilla: formulario.lugarVelacion.capilla,
-      calle: formulario.lugarVelacion.capilla,
+      calle: formulario.lugarVelacion.calle,
       interior: formulario.lugarVelacion.interior,
       exterior: formulario.lugarVelacion.exterior,
       colonia: formulario.lugarVelacion.colonia,
@@ -544,7 +544,7 @@ export class InformacionServicioComponent implements OnInit {
       gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
       promotor: formulario.cortejo.promotor,
     };
-
+    console.log(datos);
     this.informacionServicio.fechaCortejo =
       formulario.cortejo.fecha == null
         ? null
@@ -560,6 +560,11 @@ export class InformacionServicioComponent implements OnInit {
         ? null
         : moment(formulario.recoger.fecha).format('yyyy-MM-DD');
 
+    this.informacionServicio.horaRecoger =
+      formulario.recoger.horaRecoger == null
+        ? null
+        : moment(formulario.recoger.hora).format('HH:mm');
+
     this.informacionServicio.horaCortejo =
       formulario.cortejo.hora == null
         ? null
@@ -574,7 +579,21 @@ export class InformacionServicioComponent implements OnInit {
     this.informacionServicio.idPromotor = formulario.cortejo.promotor;
     this.informacionServicio.idSala = formulario.lugarCremacion.sala;
     //información servicio velación
-    this.informacionServicioVelacion.cp = formulario.lugarVelacion.cp;
+    this.cpVelacion.codigoPostal = formulario.lugarVelacion.cp;
+    this.cpVelacion.desCalle = formulario.lugarVelacion.calle;
+    this.cpVelacion.desColonia = formulario.lugarVelacion.colonia;
+    this.cpVelacion.desEstado = formulario.lugarVelacion.estado;
+    this.cpVelacion.desMunicipio = formulario.lugarVelacion.municipio;
+    this.cpVelacion.numExterior = formulario.lugarVelacion.exterior;
+    this.cpVelacion.numInterior = formulario.lugarVelacion.interior;
+    this.informacionServicioVelacion.cp = this.cpVelacion;
+    if (
+      formulario.lugarVelacion.cp == '' ||
+      formulario.lugarVelacion.cp == null
+    ) {
+      formulario.informacionServicioVelacion.cp = null;
+    }
+
     this.informacionServicioVelacion.fechaInstalacion =
       formulario.instalacionServicio.fecha == null
         ? null
@@ -632,7 +651,81 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   preorden(): void {
+    this.altaODS.idEstatus = 1;
     this.llenarDatos();
-    console.log(this.altaODS);
+    this.loaderService.activar();
+
+    this.gestionarOrdenServicioService
+      .generarODS(this.altaODS)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.salas = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+
+            return;
+          }
+          alert('se guardo');
+        },
+        (error: HttpErrorResponse) => {
+          try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          }
+        }
+      );
+  }
+
+  consultaCP(): void {
+    this.loaderService.activar();
+    if (!this.lugarVelacion.cp.value) {
+      return;
+    }
+    this.gestionarOrdenServicioService
+      .consutaCP(this.lugarVelacion.cp.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          if (respuesta) {
+            this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
+            this.lugarVelacion.municipio.setValue(
+              respuesta.datos[0].localidad.municipio.nombre
+            );
+            this.lugarVelacion.estado.setValue(
+              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+            );
+            return;
+          }
+          this.lugarVelacion.colonia.patchValue(null);
+          this.lugarVelacion.municipio.patchValue(null);
+          this.lugarVelacion.estado.patchValue(null);
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      );
   }
 }

@@ -110,6 +110,13 @@ export class GenerarOrdenServicioService extends BaseService<
     );
   }
 
+  generarODS(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `${this._funcionalidad}/orden-guardar`,
+      parametros
+    );
+  }
+
   buscarPromotor(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/catalogo/orden-consultar-promotores`

@@ -74,7 +74,7 @@
         <input id="matricula" type="text" class="form-control" formControlName="matricula"
           placeholder="Ingresa matrícula" numbersOnly maxlength="10">
         <p-checkbox inputId="otorgamiento" formControlName="matriculaCheck" styleClass="mr-3"
-          (click)="cambiarValidacion('matricula')" [binary]="true"></p-checkbox>
+          (click)="cambiarValidacionMatricula()" [binary]="true"></p-checkbox>
         <ng-container *ngIf="datosFinado.matriculaCheck.value">
           <span class="campo-obligatorio"
             *ngIf="datosFinado.matricula?.errors?.required && (datosFinado.matricula?.dirty || datosFinado.matricula?.touched)">Campo
@@ -94,10 +94,10 @@
       </div>
       <div class="col-md-4">
         <label class="control-label" for="nss">NSS<span class="req" *ngIf="datosFinado.nssCheck.value">*</span>:</label>
-        <input id="nss" type="text" class="form-control" (change)="consultarNSS()" formControlName="nss"
+        <input id="nss" type="text" class="form-control" (change)="cambiarValidacionNSS()" formControlName="nss"
           placeholder="Ingresa nss" maxlength="11">
         <p-checkbox inputId="nssotorgamiento" formControlName="nssCheck" styleClass="mr-3"
-          (click)="cambiarValidacion('nss')" [binary]="true"></p-checkbox>
+          (click)="cambiarValidacionNSS()" [binary]="true"></p-checkbox>
         <ng-container *ngIf="datosFinado.nssCheck.value">
           <span class="campo-obligatorio"
             *ngIf="datosFinado.nss?.errors?.required && (datosFinado.nss?.dirty || datosFinado.nss?.touched)">Campo

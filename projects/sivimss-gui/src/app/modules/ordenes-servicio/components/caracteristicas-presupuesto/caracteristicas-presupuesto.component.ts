@@ -564,6 +564,7 @@ export class CaracteristicasPresupuestoComponent
   }
 
   agregarArticulo(datos: any): void {
+    console.log(datos);
     datos.proviene = 'paquete';
     this.paquete.activo = 1;
     this.paquete.cantidad = datos.cantidad ?? null;
@@ -794,23 +795,30 @@ export class CaracteristicasPresupuestoComponent
       let detalle: DetallePresupuestoInterface =
         {} as DetallePresupuestoInterface;
 
-      detalle.cantidad = datos.cantidad;
-      detalle.esDonado = datos.esDonado ?? null;
-      detalle.idArticulo = datos.idArticulo ?? null;
-      detalle.idCategoria = datos.idCategoria ?? null;
-      detalle.idInventario = datos.idInventario ?? null;
-      detalle.idProveedor = datos.idProveedor ?? null;
-      detalle.idServicio = datos.idServicio ?? null;
-      detalle.idTipoServicio = datos.idTipoServicio ?? null;
+      detalle.cantidad = Number(datos.cantidad);
+      let datosDonados = datos.esDonado ?? false;
+      detalle.esDonado = 0;
+
+      if (datosDonados) {
+        detalle.esDonado = 1;
+      }
+      detalle.esDonado = datos.esDonado;
+      detalle.idArticulo = parseInt(datos.idArticulo);
+      detalle.idCategoria = parseInt(datos.idCategoria);
+      detalle.idInventario = parseInt(datos.idInventario);
+      detalle.idProveedor = parseInt(datos.idProveedor);
+      detalle.idServicio = parseInt(datos.idServicio);
+      detalle.idTipoServicio = parseInt(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
+
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
         traslado.destino = datos.destino;
-        traslado.longitudInicial = datos.coordOrigen[0];
-        traslado.latitudInicial = datos.coordOrigen[1];
-        traslado.longitudFinal = datos.coordDestino[0];
-        traslado.latitudFinal = datos.coordDestino[1];
+        traslado.longitudInicial = Number(datos.coordOrigen[0]);
+        traslado.latitudInicial = Number(datos.coordOrigen[1]);
+        traslado.longitudFinal = Number(datos.coordDestino[0]);
+        traslado.latitudFinal = Number(datos.coordDestino[1]);
         traslado.origen = datos.origen;
         traslado.totalKilometros = datos.kilometraje;
         detalle.servicioDetalleTraslado = traslado;
@@ -824,14 +832,16 @@ export class CaracteristicasPresupuestoComponent
     this.datosPaquetes.forEach((datos: any) => {
       let detalle: DetallePaqueteInterface = {} as DetallePaqueteInterface;
 
-      detalle.cantidad = datos.cantidad;
-      detalle.idArticulo = datos.idArticulo ?? null;
-      detalle.desmotivo = datos.desmotivo ?? null;
-      detalle.activo = datos.activo ?? 0;
-      detalle.idProveedor = datos.idProveedor ?? null;
-      detalle.idServicio = datos.idServicio ?? null;
-      detalle.idTipoServicio = datos.idTipoServicio ?? null;
+      detalle.cantidad = Number(datos.cantidad);
+      detalle.idArticulo = parseInt(datos.idArticulo);
+      detalle.desmotivo = datos.desmotivo;
+      detalle.activo = parseInt(datos.activo) ?? 0;
+      detalle.idProveedor = parseInt(datos.idProveedor) ?? null;
+      detalle.idServicio = parseInt(datos.idServicio) ?? null;
+      detalle.idTipoServicio = parseInt(datos.idTipoServicio) ?? null;
       detalle.servicioDetalleTraslado = null;
+      detalle.importeMonto = Number(datos.importe);
+      detalle.totalPaquete = Number(datos.totalPaquete);
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
@@ -843,55 +853,53 @@ export class CaracteristicasPresupuestoComponent
         traslado.longitudFinal = null;
         traslado.latitudFinal = null;
         if (cordenadas != null) {
-          traslado.longitudInicial = datos.coordOrigen[0];
-          traslado.latitudInicial = datos.coordOrigen[1];
-          traslado.longitudFinal = datos.coordDestino[0];
-          traslado.latitudFinal = datos.coordDestino[1];
+          traslado.longitudInicial = Number(datos.coordOrigen[0]);
+          traslado.latitudInicial = Number(datos.coordOrigen[1]);
+          traslado.longitudFinal = Number(datos.coordDestino[0]);
+          traslado.latitudFinal = Number(datos.coordDestino[1]);
         }
         traslado.destino = datos.destino ?? null;
         traslado.origen = datos.origen ?? null;
         traslado.totalKilometros = datos.kilometraje ?? null;
         detalle.servicioDetalleTraslado = traslado ?? null;
       }
-      detalle.importeMonto = datos.totalPaquete;
-      detalle.importeMonto = datos.importeMonto;
       this.detallePaquete.push(detalle);
     });
 
     this.elementosEliminadosPaquete.forEach((datos: any) => {
       let detalle: DetallePaqueteInterface = {} as DetallePaqueteInterface;
 
-      detalle.cantidad = datos.cantidad;
-      detalle.idArticulo = datos.idArticulo ?? null;
+      detalle.cantidad = parseInt(datos.cantidad);
+      detalle.idArticulo = parseInt(datos.idArticulo) ?? null;
       detalle.desmotivo = datos.desmotivo ?? null;
-      detalle.activo = datos.activo ?? 0;
-      detalle.idProveedor = datos.idProveedor ?? null;
-      detalle.idServicio = datos.idServicio ?? null;
-      detalle.idTipoServicio = datos.idTipoServicio ?? null;
+      detalle.activo = parseInt(datos.activo) ?? 0;
+      detalle.idProveedor = parseInt(datos.idProveedor) ?? null;
+      detalle.idServicio = parseInt(datos.idServicio) ?? null;
+      detalle.idTipoServicio = parseInt(datos.idTipoServicio) ?? null;
       detalle.servicioDetalleTraslado = null;
+      detalle.importeMonto = Number(datos.importe) ?? null;
+      detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
-        detalle.activo = datos.activo ?? 0;
-        let cordenadas = datos.coordOrigen ?? null;
+        detalle.activo = parseInt(datos.activo) ?? 0;
+        let cordenadas = parseInt(datos.coordOrigen) ?? null;
         traslado.longitudInicial = null;
         traslado.latitudInicial = null;
         traslado.longitudFinal = null;
         traslado.latitudFinal = null;
         if (cordenadas != null) {
-          traslado.longitudInicial = datos.coordOrigen[0];
-          traslado.latitudInicial = datos.coordOrigen[1];
-          traslado.longitudFinal = datos.coordDestino[0];
-          traslado.latitudFinal = datos.coordDestino[1];
+          traslado.longitudInicial = Number(datos.coordOrigen[0]);
+          traslado.latitudInicial = Number(datos.coordOrigen[1]);
+          traslado.longitudFinal = Number(datos.coordDestino[0]);
+          traslado.latitudFinal = Number(datos.coordDestino[1]);
         }
         traslado.destino = datos.destino ?? null;
         traslado.origen = datos.origen ?? null;
         traslado.totalKilometros = datos.kilometraje ?? null;
         detalle.servicioDetalleTraslado = traslado ?? null;
       }
-      detalle.importeMonto = datos.totalPaquete;
-      detalle.importeMonto = datos.importeMonto;
       this.detallePaquete.push(detalle);
     });
 
@@ -902,7 +910,7 @@ export class CaracteristicasPresupuestoComponent
       this.f.observaciones.value;
     this.caracteristicasDelPresupuesto.observaciones =
       this.f.observaciones.value;
-    this.caracteristicasDelPresupuesto.totalPresupuesto = '' + this.total;
+    this.caracteristicasDelPresupuesto.totalPresupuesto = Number(this.total);
     this.caracteristicasDelPresupuesto.detallePresupuesto =
       this.detallePresupuesto;
 

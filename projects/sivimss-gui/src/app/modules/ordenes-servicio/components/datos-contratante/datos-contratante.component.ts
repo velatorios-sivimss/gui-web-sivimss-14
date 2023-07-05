@@ -259,53 +259,53 @@ export class DatosContratanteComponent implements OnInit {
       direccion: this.formBuilder.group({
         calle: [
           {
-            value: datosEtapaContratante.datosContratante.calle,
+            value: datosEtapaContratante.direccion.calle,
             disabled: false,
           },
           [Validators.required],
         ],
         noExterior: [
           {
-            value: datosEtapaContratante.datosContratante.noExterior,
+            value: datosEtapaContratante.direccion.noExterior,
             disabled: false,
           },
           [Validators.required],
         ],
         noInterior: [
           {
-            value: datosEtapaContratante.datosContratante.noInterior,
+            value: datosEtapaContratante.direccion.noInterior,
             disabled: false,
           },
           [],
         ],
         cp: [
-          { value: datosEtapaContratante.datosContratante.cp, disabled: false },
+          { value: datosEtapaContratante.direccion.cp, disabled: false },
           [Validators.required],
         ],
         colonia: [
           {
-            value: datosEtapaContratante.datosContratante.colonia,
+            value: datosEtapaContratante.direccion.colonia,
             disabled: false,
           },
           [Validators.required],
         ],
         municipio: [
           {
-            value: datosEtapaContratante.datosContratante.municipio,
+            value: datosEtapaContratante.direccion.municipio,
             disabled: true,
           },
           [Validators.required],
         ],
         estado: [
           {
-            value: datosEtapaContratante.datosContratante.estado,
+            value: datosEtapaContratante.direccion.estado,
             disabled: true,
           },
           [Validators.required],
         ],
       }),
     });
-
+    this.cambiarValidacion();
     this.idContratante = datosEtapaContratante.datosContratante.idContratante;
     this.idPersona = datosEtapaContratante.datosContratante.idPersona;
   }
@@ -615,6 +615,7 @@ export class DatosContratanteComponent implements OnInit {
         estado: formulario.direccion.estado,
       },
     };
+    console.log(datosEtapaContratante);
 
     console.log('datos contratanete', datosEtapaContratante);
     this.altaODS.idEstatus = null;
@@ -656,6 +657,9 @@ export class DatosContratanteComponent implements OnInit {
     this.cp.desEstado = datosEtapaContratante.direccion.estado ?? null;
 
     this.altaODS.contratante = this.contratante;
+    this.altaODS.idVelatorio = null;
+    this.altaODS.idOperador = null;
+
     this.contratante.cp = this.cp;
 
     this.contratante.cp = this.cp;

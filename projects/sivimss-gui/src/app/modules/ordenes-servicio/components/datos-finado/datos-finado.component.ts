@@ -95,6 +95,7 @@ export class DatosFinadoComponent implements OnInit {
   radonlyNoContrato: boolean = true;
   radonlyEstremidad: boolean = false;
   radonlyCurp: boolean = false;
+  idContratante: number | null = null;
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -331,7 +332,8 @@ export class DatosFinadoComponent implements OnInit {
         ],
       }),
     });
-
+    this.cambiarValidacionNSS();
+    this.cambiarValidacionMatricula();
     this.esEstremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
     this.esObito(datosEtapaFinado.datosFinado.esObito);
   }
@@ -416,28 +418,28 @@ export class DatosFinadoComponent implements OnInit {
     });
   }
 
-  cambiarValidacion(validacion: string): void {
-    if (validacion == 'matricula') {
-      this.datosFinado.matricula.enable();
-      if (!this.datosFinado.matriculaCheck.value) {
-        this.datosFinado.matricula.disable();
-        this.datosFinado.matricula.clearValidators();
-        this.datosFinado.matricula.patchValue(null);
-        return;
-      }
-      this.datosFinado.matricula.setValidators(Validators.required);
-      this.datosFinado.matricula.patchValue(this.datosFinado.matricula.value);
-    } else {
-      this.datosFinado.nss.enable();
-      if (!this.datosFinado.nssCheck.value) {
-        this.datosFinado.nss.disable();
-        this.datosFinado.nss.clearValidators();
-        this.datosFinado.nss.patchValue(null);
-        return;
-      }
-      this.datosFinado.nss.setValidators(Validators.required);
-      this.datosFinado.nss.patchValue(this.datosFinado.nss.value);
+  cambiarValidacionMatricula(): void {
+    this.datosFinado.matricula.enable();
+    if (!this.datosFinado.matriculaCheck.value) {
+      this.datosFinado.matricula.disable();
+      this.datosFinado.matricula.clearValidators();
+      this.datosFinado.matricula.patchValue(null);
+      return;
     }
+    this.datosFinado.matricula.setValidators(Validators.required);
+    this.datosFinado.matricula.patchValue(this.datosFinado.matricula.value);
+  }
+
+  cambiarValidacionNSS(): void {
+    this.datosFinado.nss.enable();
+    if (!this.datosFinado.nssCheck.value) {
+      this.datosFinado.nss.disable();
+      this.datosFinado.nss.clearValidators();
+      this.datosFinado.nss.patchValue(null);
+      return;
+    }
+    this.datosFinado.nss.setValidators(Validators.required);
+    this.datosFinado.nss.patchValue(this.datosFinado.nss.value);
   }
 
   cambiarTipoSexo(): void {
@@ -680,6 +682,7 @@ export class DatosFinadoComponent implements OnInit {
     this.finado.idVelatorioContratoPrevision = null;
     this.finado.cp = null;
     this.finado.idPersona = null;
+    this.altaODS.idContratantePf = this.idContratante;
     if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
       this.finado.rfc = null;
       this.finado.curp = datosEtapaFinado.datosFinado.curp;
