@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
+import { ActivatedRoute } from '@angular/router';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
 
 @Component({
   selector: 'app-actualizar-orden-servicio',
@@ -13,6 +17,8 @@ export class ActualizarOrdenServicioComponent implements OnInit {
   readonly DATOS_DEL_FINADO = 1;
   readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
   readonly INFORMACION_DEL_SERVICIO = 3;
+
+  titulo: string = '';
 
   // etapas: Etapa[] = [
   //   {
@@ -75,10 +81,24 @@ export class ActualizarOrdenServicioComponent implements OnInit {
 
   idEtapaSeleccionada: number = 0;
 
-  constructor(private gestionarEtapasService: GestionarEtapasService) {}
+  constructor(
+    private gestionarEtapasService: GestionarEtapasService,
+    private rutaActiva: ActivatedRoute,
+    private loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private gestionarOrdenServicioService: GenerarOrdenServicioService,
+    private changeDetector: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     // this.gestionarEtapasService.etapas$.next(this.etapas);
+    let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    console.log(estatus);
+    if (Number(estatus) == 1) {
+      this.titulo = 'ACTUALIZAR ORDEN DE SERVICIO';
+    } else {
+      this.titulo = 'GENERAR ORDEN COMPLEMENTARIA';
+    }
   }
 
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {

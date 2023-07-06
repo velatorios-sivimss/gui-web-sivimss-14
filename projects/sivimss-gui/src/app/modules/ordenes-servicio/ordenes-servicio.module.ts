@@ -54,6 +54,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
 import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module';
 import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-servicio/actualizar-orden-servicio.component';
+import { ModificarDatosCaracteristicasContratanteComponent } from './components/modificar-datos-caracteristicas-contratante/modificar-datos-caracteristicas-contratante.component';
 @NgModule({
   declarations: [
     OrdenesServicioComponent,
@@ -86,6 +87,7 @@ import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-
     ModalAgregarEmpaqueComponent,
     ModalAgregarArticulosComplementariosComponent,
     ActualizarOrdenServicioComponent,
+    ModificarDatosCaracteristicasContratanteComponent,
   ],
   imports: [
     CommonModule,

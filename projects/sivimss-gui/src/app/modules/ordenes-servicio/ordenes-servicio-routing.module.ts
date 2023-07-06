@@ -32,7 +32,7 @@ const routes: Routes = [
     path: 'modificar-orden-de-servicio/:idODS/:idEstatus',
     component: ActualizarOrdenServicioComponent,
     resolve: {
-      respuesta: ActualizarOrdenServicioComponent,
+      respuesta: GenerarOrdenServicioResolver,
     },
   },
   {
