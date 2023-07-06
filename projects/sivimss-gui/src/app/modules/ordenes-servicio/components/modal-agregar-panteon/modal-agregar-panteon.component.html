@@ -2,8 +2,16 @@
   <div class="row mb-2">
     <div class="col-md-12">
       <label class="control-label" for="nombrePanteon">Nombre del panteón<span class="req">*</span>:</label>
-      <input id="nombrePanteon" type="text" class="form-control" formControlName="nombrePanteon"
-             placeholder="Ingresa nombre del panteón">
+<!--      <input id="nombrePanteon" type="text" class="form-control" formControlName="nombrePanteon"-->
+<!--             placeholder="Ingresa nombre del panteón">-->
+<!--      <span class="campo-obligatorio"-->
+<!--            *ngIf="f.nombrePanteon?.errors?.required && (f.nombrePanteon?.dirty || f.nombrePanteon?.touched)">Campo obligatorio</span>-->
+
+      <p-autoComplete id="nombrePanteon"  class="form-control" formControlName="nombrePanteon"
+                      (keyup.space)="sinEspacioInicial()"  (onSelect)="seleccionaPanteon($event)" autocomplete="panteon" [suggestions]="panteonServicioFiltrados"
+                      (completeMethod)="filtrarPateon($event)"
+                      [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa nombre del panteón"
+                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"></p-autoComplete>
       <span class="campo-obligatorio"
             *ngIf="f.nombrePanteon?.errors?.required && (f.nombrePanteon?.dirty || f.nombrePanteon?.touched)">Campo obligatorio</span>
     </div>
@@ -71,8 +79,8 @@
   </div>
   <div class="row">
     <div class="col-md-12 flex justify-content-end align-items-center">
-      <button class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-      <button class="ml-6 btn btn-primary btn-md" (click)="cerrarModal()">Aceptar</button>
+      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+      <button type="button" class="ml-6 btn btn-primary btn-md" (click)="guardarPanteon()">Aceptar</button>
     </div>
   </div>
 </form>

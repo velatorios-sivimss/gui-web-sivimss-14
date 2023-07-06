@@ -112,8 +112,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
   }
 
   asignarOpcionesMantenimiento(): void {
-    if (+this.smf.tipoMantenimiento.value === 1) {
-      const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
+    const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
+    if (+this.smf.tipoMantenimiento.value === 1 && [1, 2, 3].includes(modalidad)) {
       this.obtenerCatalogoMtto(modalidad);
     }
   }
@@ -178,8 +178,8 @@ export class SolicitudMantenimientoComponent implements OnInit {
   }
 
   handleChangeTipoMtto() {
-    if (this.smf.tipoMantenimiento.value == 1) {
-      const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
+    const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
+    if (this.smf.tipoMantenimiento.value == 1 && [1, 2, 3].includes(modalidad)) {
       this.obtenerCatalogoMtto(modalidad);
       this.smf.matPreventivo.setValidators(Validators.required);
     } else {
@@ -216,7 +216,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message, 'Error al guardar la información. Intenta nuevamente.');
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
@@ -239,7 +239,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -287,7 +287,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }
@@ -323,6 +323,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   llenarFormulario(respuesta: RespuestaSolicitudMantenimiento): void {
     const fecha = moment(respuesta.FEC_REGISTRO, 'DD-MM-yyyy').format('yyyy-MM-DD');
+    const fecha2 = moment(respuesta.FEC_REGISTRO_FIN, 'DD-MM-yyyy').format('yyyy-MM-DD');
     this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS);
     this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA);
     this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO);
@@ -331,7 +332,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.ID_MTTO_MODALIDAD);
     this.solicitudMantenimientoForm.get('opcionesSemestrales')?.patchValue(respuesta.ID_MTTO_MODALIDAD_DET);
     this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD);
-    this.solicitudMantenimientoForm.get('fechaRegistro2')?.patchValue(new Date(this.diferenciaUTC(fecha)));
+    this.solicitudMantenimientoForm.get('fechaRegistro2')?.patchValue(new Date(this.diferenciaUTC(fecha2)));
     this.solicitudMantenimientoForm.get('fechaRegistro')?.patchValue(new Date(this.diferenciaUTC(fecha)));
     this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
     this.idSolicitudMtto = respuesta.ID_MTTO_SOLICITUD;

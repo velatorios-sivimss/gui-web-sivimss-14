@@ -113,7 +113,7 @@
 <p-overlayPanel #overlayPanel>
     <ng-template pTemplate="content">
         <app-overlay-panel-opciones>
-            <app-overlay-panel-opcion titulo="Generar pagaré" (click)="abrirModalformatoPagareTramites()"></app-overlay-panel-opcion>
+            <app-overlay-panel-opcion titulo="Generar pagaré" [routerLink]="['./formato-pagare', formatoPagareSeleccionado.id]" routerLinkActive></app-overlay-panel-opcion>
         </app-overlay-panel-opciones>
     </ng-template>
 </p-overlayPanel>

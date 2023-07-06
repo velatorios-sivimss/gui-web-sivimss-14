@@ -9,7 +9,7 @@
   <app-titulo-principal style="width: 100%" titulo="Administrar usuarios contratantes"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (ngSubmit)="buscarContratante()">
+  <form [formGroup]="filtroForm" (ngSubmit)="paginar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="curp">CURP:</label>
@@ -56,7 +56,7 @@
         <th scope="col">CURP</th>
         <th scope="col">NSS</th>
         <th scope="col">Nombre completo</th>
-        <th scope="col">RFC</th>
+        <th scope="col">R.F.C</th>
         <th scope="col">Fecha de nacimiento</th>
         <th scope="col">Teléfono</th>
         <th scope="col">Estatus</th>
@@ -66,28 +66,37 @@
       <tr>
         <td> {{contratante.curp}}</td>
         <td> {{contratante.nss}}</td>
-        <td> {{contratante.nombre}} {{contratante.primerApellido}} {{contratante.segundoApellido}}</td>
+        <td> {{contratante.nomContratante}}</td>
         <td> {{contratante.rfc}}</td>
-        <td> {{contratante.fechaNacimiento}}</td>
-        <td> {{contratante.telefono}}</td>
+        <td> {{contratante.fecNacimiento}}</td>
+        <td> {{contratante.tel}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-inputswitch">
-              <p-inputSwitch (onChange)="abrirModalCambiarEstatus(contratante)"
-                [(ngModel)]="contratante.estatus"></p-inputSwitch>
+              <p-inputSwitch [(ngModel)]="contratante.estatus"
+                (click)="contratante.estatus = !contratante.estatus; abrirModalCambiarEstatus(contratante)">
+              </p-inputSwitch>
               <span class="activo" *ngIf="contratante.estatus">Activo</span>
               <span class="inactivo" *ngIf="!contratante.estatus">Inactivo</span>
             </div>
+
             <div class="contenedor-celda-iconos">
               <a (click)="abrirModalDetalleContratante(contratante)">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
               </a>
-              <a (click)="abrirPanel($event,contratante)">
+              <!-- <a (click)="abrirPanel($event,contratante)">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-              </a>
+              </a> -->
             </div>
           </div>
         </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="paginatorleft">
@@ -100,8 +109,10 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="descargarReporteTabla('pdf')">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="descargarReporteTabla('xls')">
           </div>
         </div>
       </div>
@@ -109,11 +120,25 @@
   </p-table>
 </section>
 
-<p-overlayPanel #overlayPanel>
+<!-- <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Modificar"
         (click)="abrirModalModificarContratante()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
-</p-overlayPanel>
+</p-overlayPanel> -->
+
+<p-confirmDialog #cd [style]="{width: '30vw'}">
+  <ng-template pTemplate="header">
+    <h5></h5>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="cd.accept()">Aceptar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>
