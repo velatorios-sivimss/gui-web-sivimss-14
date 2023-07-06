@@ -1,7 +1,7 @@
 <div class="row mb-4">
   <div class="col-md-4">
     <label class="control-label" for="paquete">Paquete<span class="req">*</span>:</label>
-    <p-dropdown #dd id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado"
+    <p-dropdown #dd id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado" [disabled]="bloquearPaquete"
       placeholder="Selecciona el paquete" [options]="paquetes" (onChange)="detallePaqueteFunction(dd)"></p-dropdown>
   </div>
   <div class="col-md-6" *ngIf="mostrarTIpoOtorgamiento">
@@ -130,7 +130,7 @@
       <app-overlay-panel-opcion *ngIf="mostrarKilometrajes" titulo="Ver Kilometraje"
         (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="mostrarDonarAtaud" titulo="Donar Ataúd"
-        (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
+        (click)="abrirModalDonarAtaud($event)"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="mostrarQuitarPresupuesto" titulo="Quitar"
         (click)="quitarPresupuesto()"></app-overlay-panel-opcion>
 

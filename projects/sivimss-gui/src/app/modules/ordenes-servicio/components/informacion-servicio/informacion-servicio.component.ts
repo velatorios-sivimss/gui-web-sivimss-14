@@ -72,8 +72,9 @@ export class InformacionServicioComponent implements OnInit {
   capillas: any[] = [];
   salas: any[] = [];
   promotores: any[] = [];
-  idPanteon: number = 1;
+  idPanteon: number | null = null;
   validaDomicilio: boolean = false;
+  tipoOrden: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -110,15 +111,17 @@ export class InformacionServicioComponent implements OnInit {
       .subscribe((datosEtapaInformacionServicio) =>
         this.inicializarForm(datosEtapaInformacionServicio)
       );
-    this.gestionarEtapasService.altaODS$
-      .asObservable()
-      .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
 
     this.gestionarEtapasService.datosEtapaCaracteristicas$
       .asObservable()
       .subscribe((datosEtapaCaracteristicas) =>
         this.datosEtapaCaracteristicas(datosEtapaCaracteristicas)
       );
+
+    this.gestionarEtapasService.altaODS$
+      .asObservable()
+      .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
+
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
@@ -126,26 +129,13 @@ export class InformacionServicioComponent implements OnInit {
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
+    if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
   }
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
-    console.log(datosPresupuesto);
-    this.lugarVelacion.capilla.disable();
-    this.lugarVelacion.fecha.disable();
-    this.lugarVelacion.hora.disable();
-    this.lugarVelacion.calle.disable();
-    this.lugarVelacion.exterior.disable();
-    this.lugarVelacion.interior.disable();
-    this.lugarVelacion.exterior.disable();
-    this.lugarVelacion.cp.disable();
-    this.lugarVelacion.colonia.disable();
-    this.lugarVelacion.municipio.disable();
-    this.lugarVelacion.estado.disable();
-    this.lugarCremacion.sala.disable();
-    this.lugarCremacion.fecha.disable();
-    this.lugarCremacion.hora.disable();
-    this.cortejo.promotor.disable();
+    this.desabilitarTodo();
     datosPresupuesto.forEach((datos: any) => {
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
@@ -274,7 +264,8 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   changePromotor(validacion: string): void {
-    if (validacion == 'si') this.cortejo.promotor.enable();
+    if (validacion == 'si' && Number(this.tipoOrden) < 3)
+      this.cortejo.promotor.enable();
     else {
       this.cortejo.promotor.disable();
       this.cortejo.promotor.setValue(null);
@@ -694,6 +685,32 @@ export class InformacionServicioComponent implements OnInit {
           }
         }
       );
+  }
+
+  desabilitarTodo(): void {
+    this.lugarVelacion.capilla.disable();
+    this.lugarVelacion.fecha.disable();
+    this.lugarVelacion.hora.disable();
+    this.lugarVelacion.calle.disable();
+    this.lugarVelacion.exterior.disable();
+    this.lugarVelacion.interior.disable();
+    this.lugarVelacion.exterior.disable();
+    this.lugarVelacion.cp.disable();
+    this.lugarVelacion.colonia.disable();
+    this.lugarVelacion.municipio.disable();
+    this.lugarVelacion.estado.disable();
+    this.lugarCremacion.sala.disable();
+    this.lugarCremacion.fecha.disable();
+    this.lugarCremacion.hora.disable();
+    this.cortejo.promotor.disable();
+    this.inhumacion.agregarPanteon.disable();
+    this.cortejo.gestionadoPorPromotor.disable();
+    this.cortejo.fecha.disable();
+    this.cortejo.hora.disable();
+    this.instalacionServicio.hora.disable();
+    this.instalacionServicio.fecha.disable();
+    this.recoger.hora.disable();
+    this.recoger.fecha.disable();
   }
 
   preorden(): void {

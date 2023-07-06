@@ -17,6 +17,7 @@ import { ModalAgregarArticulosComplementariosComponent } from '../modal-agregar-
 })
 export class ModalAgregarAlPresupuestoComponent implements OnInit {
   idVelatorio: number = 0;
+  muestraServicio: boolean = true;
 
   constructor(
     private readonly ref: DynamicDialogRef,
@@ -27,6 +28,11 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
   ngOnInit(): void {
     //Obtener la info que le pasa el componente que abre el modal
     this.idVelatorio = this.config.data.idVelatorio;
+    this.mostrarOpciones(this.config.data.tipoOrden);
+  }
+
+  mostrarOpciones(tipoOrden: number): void {
+    if (tipoOrden == 3) this.muestraServicio = false;
   }
 
   cerrarModal() {

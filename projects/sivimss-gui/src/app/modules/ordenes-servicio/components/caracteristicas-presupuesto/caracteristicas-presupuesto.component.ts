@@ -47,6 +47,7 @@ import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/fu
 import { Dropdown } from 'primeng/dropdown';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { ModalEliminarArticuloComponent } from '../modal-eliminar-articulo/modal-eliminar-articulo.component';
+import { ModalDonarArticuloComponent } from '../modal-donar-articulo/modal-donar-articulo.component';
 
 @Component({
   selector: 'app-caracteristicas-presupuesto',
@@ -121,6 +122,7 @@ export class CaracteristicasPresupuestoComponent
   tipoOrden: number = 0;
   esExtremidad: number = 0;
   esObito: number = 0;
+  bloquearPaquete: boolean = false;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -168,6 +170,9 @@ export class CaracteristicasPresupuestoComponent
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    if (Number(this.altaODS.finado.idTipoOrden) == 3) {
+      this.bloquearPaquete = true;
+    }
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     this.esExtremidad = Number(this.altaODS.finado.extremidad);
     this.esObito = Number(this.altaODS.finado.esobito);
@@ -399,6 +404,7 @@ export class CaracteristicasPresupuestoComponent
         return;
       }
       this.datosPaquetes.forEach((datos: any) => {
+        console.log(datos);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;
           datos.proveedor = respuesta.nombreProveedor;
@@ -407,6 +413,7 @@ export class CaracteristicasPresupuestoComponent
           datos.idAsignacion = respuesta.idAsignacion;
           datos.utilizarArticulo = false;
           datos.bloquearRadioButton = false;
+          datos.concepto = respuesta.concepto;
         }
       });
     });
@@ -969,10 +976,31 @@ export class CaracteristicasPresupuestoComponent
       style: { maxWidth: '876px', width: '100%' },
       data: {
         idVelatorio: this.idVelatorio,
+        tipoOrden: this.tipoOrden,
       },
     });
     ref.onClose.subscribe((salida: any) => {
       if (salida != null) {
+        this.datosPresupuesto.push(salida);
+        this.totalpresupuesto();
+      }
+    });
+  }
+
+  abrirModalDonarAtaud(event: MouseEvent): void {
+    event.stopPropagation();
+    console.log(this.valorFila);
+    const ref = this.dialogService.open(ModalDonarArticuloComponent, {
+      header: 'Donar ataúd',
+      style: { maxWidth: '353px', width: '100%' },
+      data: {
+        datos: this.valorFila,
+      },
+    });
+    ref.onClose.subscribe((salida: any) => {
+      console.log(salida);
+      if (salida != null) {
+        this.quitarPaquete(salida);
         this.datosPresupuesto.push(salida);
         this.totalpresupuesto();
       }

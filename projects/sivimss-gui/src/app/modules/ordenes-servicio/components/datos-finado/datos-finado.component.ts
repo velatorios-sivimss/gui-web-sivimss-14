@@ -776,12 +776,9 @@ export class DatosFinadoComponent implements OnInit {
       this.desabilitarTodo();
       this.datosFinado.tipoOrden.setValue(3);
       this.datosFinado.matricula.disable();
-      this.radonlyEstremidad = true;
       this.datosFinado.nss.disable();
       this.datosFinado.nssCheck.disable();
       this.datosFinado.matriculaCheck.disable();
-      this.radonlyNoContrato = true;
-
       this.removerValidaciones();
     }
   }
@@ -841,6 +838,9 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.matricula.disable();
       this.datosFinado.nss.disable();
       this.datosFinado.curp.disable();
+      this.datosFinado.matricula.setValue(null);
+      this.datosFinado.nss.setValue(null);
+      this.datosFinado.curp.setValue(null);
     } else if (!validacion && idTipoOden != 3 && !esEstremidad) {
       this.datosFinado.matricula.enable();
       this.datosFinado.nss.enable();
@@ -881,6 +881,28 @@ export class DatosFinadoComponent implements OnInit {
       );
   }
 
+  consultarMatriculaSiap(): void {
+    this.loaderService.activar();
+
+    this.gestionarOrdenServicioService
+      .consultarMatriculaSiap(this.datosFinado.matricula.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          if (!respuesta.datos) {
+            this.alertaService.mostrar(
+              TipoAlerta.Precaucion,
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(70)
+            );
+            this.datosFinado.matricula.setValue(null);
+          }
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      );
+  }
+
   removerValidaciones(): void {
     Object.keys(this.datosFinado).forEach((key) => {
       const form = this.form.controls['datosFinado'] as FormGroup;
@@ -898,7 +920,7 @@ export class DatosFinadoComponent implements OnInit {
   desabilitarTodo(): void {
     Object.keys(this.datosFinado).forEach((key) => {
       const form = this.form.controls['datosFinado'] as FormGroup;
-      if (key == 'tipoOrden' || key == 'esObito' || key == 'esParaExtremidad') {
+      if (key == 'tipoOrden') {
         form.controls[key].enable();
       } else {
         form.controls[key].disable();

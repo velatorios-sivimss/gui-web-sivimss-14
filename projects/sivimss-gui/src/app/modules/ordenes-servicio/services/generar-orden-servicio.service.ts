@@ -217,4 +217,10 @@ export class GenerarOrdenServicioService extends BaseService<
         `${this._funcionalidad}/catalogo/orden-servicios-vigentes-consultar`
     );
   }
+
+  consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      `${environment.api.servicios_externos}consultar/siap/${matricula}`
+    );
+  }
 }

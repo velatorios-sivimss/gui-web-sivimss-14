@@ -31,6 +31,7 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
   salida: any = {};
   nombreProveedor: string = '';
   fila: number = 0;
+  concepto: string = '';
   constructor(
     private readonly ref: DynamicDialogRef,
     private readonly config: DynamicDialogConfig,
@@ -163,6 +164,9 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
     );
   }
 
+  onchangeInventario(dd: Dropdown): void {
+    this.concepto = dd.selectedOption.label;
+  }
   buscarAtaudInventario(dd: Dropdown) {
     this.nombreProveedor = dd.selectedOption.label;
     this.loaderService.activar();
@@ -228,6 +232,7 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
       idProveedor: this.proveedorSeleccionado,
       idInventario: this.selectAtaudInventario,
       nombreProveedor: this.nombreProveedor,
+      concepto: this.concepto,
       fila: this.fila,
     };
     this.ref.close(this.salida);

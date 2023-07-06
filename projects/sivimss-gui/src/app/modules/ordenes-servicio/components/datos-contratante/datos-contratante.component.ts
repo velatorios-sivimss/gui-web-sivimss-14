@@ -198,7 +198,7 @@ export class DatosContratanteComponent implements OnInit {
         fechaNacimiento: [
           {
             value: datosEtapaContratante.datosContratante.fechaNacimiento,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
@@ -736,5 +736,27 @@ export class DatosContratanteComponent implements OnInit {
 
   get direccion() {
     return (this.form.controls['direccion'] as FormGroup).controls;
+  }
+
+  consultarMatriculaSiap(): void {
+    this.loaderService.activar();
+
+    this.gestionarOrdenServicioService
+      .consultarMatriculaSiap(this.datosContratante.matricula.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          if (!respuesta.datos) {
+            this.alertaService.mostrar(
+              TipoAlerta.Precaucion,
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(70)
+            );
+            this.datosContratante.matricula.setValue(null);
+          }
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      );
   }
 }

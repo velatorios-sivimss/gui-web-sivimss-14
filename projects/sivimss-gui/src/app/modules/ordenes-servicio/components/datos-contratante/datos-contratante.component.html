@@ -6,7 +6,7 @@
         <label class="control-label" for="matricula">Matrícula<span class="req"
             *ngIf="datosContratante.matriculaCheck.value">*</span>:</label>
         <input id="matricula" type="text" class="form-control" formControlName="matricula" [readonly]="radonlyMatricula"
-          placeholder="Ingresa matrícula" maxlength="10">
+          (change)="consultarMatriculaSiap()" placeholder="Ingresa matrícula" maxlength="10">
         <p-checkbox inputId="otorgamiento" formControlName="matriculaCheck" styleClass="mr-3"
           (click)="cambiarValidacion()" [binary]="true"></p-checkbox>
         <ng-container *ngIf="datosContratante.matriculaCheck.value">
