@@ -53,7 +53,7 @@ import { ConsultarOrdenServicioService } from './services/consultar-orden-servic
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
 import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module';
-
+import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-servicio/actualizar-orden-servicio.component';
 @NgModule({
   declarations: [
     OrdenesServicioComponent,
@@ -85,6 +85,7 @@ import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module
     ModalAgregarUrnaComponent,
     ModalAgregarEmpaqueComponent,
     ModalAgregarArticulosComplementariosComponent,
+    ActualizarOrdenServicioComponent,
   ],
   imports: [
     CommonModule,

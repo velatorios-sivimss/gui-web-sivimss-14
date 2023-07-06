@@ -1,19 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-modificar-datos-finado',
   templateUrl: './modificar-datos-finado.component.html',
-  styleUrls: ['./modificar-datos-finado.component.scss']
+  styleUrls: ['./modificar-datos-finado.component.scss'],
 })
 export class ModificarDatosFinadoComponent implements OnInit {
-
+  @Output()
+  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   form!: FormGroup;
 
-  constructor(
-    private readonly formBuilder: FormBuilder
-  ) {
-  }
+  constructor(private readonly formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     this.inicializarForm();
@@ -25,294 +23,231 @@ export class ModificarDatosFinadoComponent implements OnInit {
         tipoOrden: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         noContrato: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         velatorioPrevision: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         esObito: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         esParaExtremidad: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         matricula: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         curp: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         nss: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         nombre: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         primerApellido: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         segundoApellido: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         fechaNacimiento: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         edad: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         sexo: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         nacionalidad: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         lugarNacimiento: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         fechaDefuncion: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         causaDeceso: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         lugarDeceso: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         horaDeceso: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         clinicaAdscripcion: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         unidadProcedencia: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         procedenciaFinado: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         tipoPension: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
-        ]
+          [Validators.required],
+        ],
       }),
       direccion: this.formBuilder.group({
         cp: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         calle: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         noExterior: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         noInterior: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         colonia: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         municipio: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
+          [Validators.required],
         ],
         estado: [
           {
             value: null,
-            disabled: false
+            disabled: false,
           },
-          [
-            Validators.required
-          ]
-        ]
-      })
+          [Validators.required],
+        ],
+      }),
     });
   }
 
   get datosFinado() {
-    return (this.form.controls["datosFinado"] as FormGroup).controls;
+    return (this.form.controls['datosFinado'] as FormGroup).controls;
   }
 
   get direccion() {
-    return (this.form.controls["direccion"] as FormGroup).controls;
+    return (this.form.controls['direccion'] as FormGroup).controls;
   }
-
 }
