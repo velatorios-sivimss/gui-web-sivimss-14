@@ -14,22 +14,20 @@ import {
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { Dropdown } from 'primeng/dropdown';
 @Component({
-  selector: 'app-modal-agregar-ataud',
-  templateUrl: './modal-agregar-ataud.component.html',
-  styleUrls: ['./modal-agregar-ataud.component.scss'],
+  selector: 'app-modal-agregar-articulos-complementarios',
+  templateUrl: './modal-agregar-articulos-complementarios.component.html',
+  styleUrls: ['./modal-agregar-articulos-complementarios.component.scss'],
 })
-export class ModalAgregarAtaudComponent implements OnInit {
+export class ModalAgregarArticulosComplementariosComponent implements OnInit {
   form!: FormGroup;
   concepto: string = '';
   grupo: string = '';
   idCategoria: string = '';
   costo: number = 0;
-  ataudesCompletos: any[] = [];
-  ataudes: any[] = [];
+  articulosCompletos: any[] = [];
+  articulos: any[] = [];
   idVelatorio: number = 0;
-  idProveedor: number = 0;
   idArticulo: number = 0;
-  idInventario: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -43,19 +41,19 @@ export class ModalAgregarAtaudComponent implements OnInit {
   ngOnInit(): void {
     this.idVelatorio = this.config.data.idVelatorio;
     this.inicializarForm();
-    this.consultarAtaudes(this.config.data.idVelatorio);
+    this.consultarArticulos(this.config.data.idVelatorio);
   }
 
-  consultarAtaudes(idVelatorio: number): void {
+  consultarArticulos(idVelatorio: number): void {
     const parametros = { idVelatorio: idVelatorio };
     this.gestionarOrdenServicioService
-      .consultarTodoslosAtaudes(parametros)
+      .consultarArticulosComplementarios(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
-            this.ataudes = [];
-            this.ataudesCompletos = [];
+            this.articulos = [];
+            this.articulosCompletos = [];
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
                 parseInt(respuesta.mensaje)
@@ -80,8 +78,8 @@ export class ModalAgregarAtaudComponent implements OnInit {
             return;
           }
 
-          this.ataudesCompletos = datos;
-          this.ataudes = mapearArregloTipoDropdown(
+          this.articulosCompletos = datos;
+          this.articulos = mapearArregloTipoDropdown(
             datos,
             'nombreArticulo',
             'idInventario'
@@ -110,23 +108,20 @@ export class ModalAgregarAtaudComponent implements OnInit {
       );
   }
 
-  selecionarAtaud(dd: Dropdown): void {
+  selecionararticulos(dd: Dropdown): void {
     this.concepto = dd.selectedOption.label;
-    this.ataudesCompletos.forEach((datos: any) => {
+    this.articulosCompletos.forEach((datos: any) => {
       if (Number(datos.idInventario) == Number(dd.selectedOption.value)) {
-        this.grupo = datos.grupo;
         this.costo = datos.precio;
         this.idArticulo = datos.idArticulo;
-        this.idInventario = datos.idInventario;
-        this.idCategoria = datos.idCategoria;
-        this.idProveedor = datos.idProveedor;
       }
     });
   }
 
   inicializarForm(): void {
     this.form = this.formBuilder.group({
-      ataud: [{ value: null, disabled: false }, [Validators.required]],
+      articulos: [{ value: null, disabled: false }, [Validators.required]],
+      cantidad: [{ value: 1, disabled: false }, [Validators.required]],
     });
   }
 
@@ -138,18 +133,18 @@ export class ModalAgregarAtaudComponent implements OnInit {
   aceptarModal(): void {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
     let salida = {
-      cantidad: '1',
+      cantidad: this.f.cantidad.value,
       concepto: this.concepto,
       coordOrigen: [],
       coordDestino: [],
       proveedor: null,
       fila: -1,
-      grupo: this.grupo,
-      idCategoria: this.idCategoria,
+      grupo: 'Artículos complentarios',
+      idCategoria: null,
       idInventario: null,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
-      idProveedor: this.idProveedor,
+      idProveedor: null,
       totalPaquete: this.costo,
       importe: this.costo,
       esDonado: false,

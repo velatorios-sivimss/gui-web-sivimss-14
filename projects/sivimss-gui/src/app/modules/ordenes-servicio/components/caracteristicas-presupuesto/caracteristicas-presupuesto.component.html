@@ -1,8 +1,14 @@
 <div class="row mb-4">
   <div class="col-md-4">
     <label class="control-label" for="paquete">Paquete<span class="req">*</span>:</label>
-    <p-dropdown id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado" placeholder="Selecciona el paquete"
-                [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+    <p-dropdown #dd id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado" [disabled]="bloquearPaquete"
+      placeholder="Selecciona el paquete" [options]="paquetes" (onChange)="detallePaqueteFunction(dd)"></p-dropdown>
+  </div>
+  <div class="col-md-6" *ngIf="mostrarTIpoOtorgamiento">
+    <label class="control-label" for="paquete">Para el otorgamiento de este paquete fue presentado un:<span
+        class="req"></span>:</label>
+    <p-dropdown id="paquete" class="form-control" [(ngModel)]="selecionaTipoOtorgamiento"
+      placeholder="Selecciona una opción" [options]="valoresTipoOrtogamiento"></p-dropdown>
   </div>
 </div>
 
@@ -11,13 +17,11 @@
     <ng-template pTemplate="header">
       <div class="flex justify-content-between align-items-center w-full">
         <span>Paquete</span>
-        <button class="btn btn-primary btn-lg" (click)="abrirModalAgregarAlPaquete($event)" >Agregar artículos y
-          servicios
-        </button>
+
       </div>
     </ng-template>
     <ng-template pTemplate="content">
-      <p-table styleClass="mt-5 mb-8 " [value]="paquetes">
+      <p-table styleClass="mt-5 mb-8 " [value]="datosPaquetes">
         <ng-template pTemplate="header">
           <tr>
             <th>No. consecutivo</th>
@@ -30,9 +34,9 @@
             <th>¿Deseas utilizar este artículo/servicio?</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-paquete>
+        <ng-template pTemplate="body" let-paquete let-rowIndex="rowIndex">
           <tr>
-            <td>{{paquete.noConsecutivo}}</td>
+            <td>{{rowIndex+1}}</td>
             <td>{{paquete.grupo}}</td>
             <td>{{paquete.concepto}}</td>
             <td>{{paquete.cantidad}}</td>
@@ -41,9 +45,21 @@
             <td>{{paquete.totalPaquete}}</td>
             <td style="width:200px">
               <div class="flex ">
-                <p-checkbox styleClass="mr-3" [(ngModel)]="paquete.deseaUtilizarArtServ"
-                            [binary]="true"></p-checkbox>
-                <a class="barras" (click)="abrirPanel($event,paquete)">
+                <div class="flex align-items- mr-2" *ngIf="paquete.proveedor">
+                  <p-radioButton [name]="rowIndex+1" value="true" [(ngModel)]="paquete.utilizarArticulo"
+                    [inputId]="'utilizarArticulo'+(rowIndex+1)" [disabled]="paquete.bloquearRadioButton"
+                    (onClick)="agregarArticulo(paquete)"></p-radioButton>
+                  <label [for]="'utilizarArticulo'+(rowIndex+1)" class="ml-2">SI</label>
+                </div>
+
+                <div class="flex align-items-center mr-2" *ngIf="paquete.proveedor">
+                  <p-radioButton [name]="rowIndex+1" value="false" [(ngModel)]="paquete.utilizarArticulo"
+                    [inputId]="'utilizarArticulo'+(rowIndex+1)" [disabled]="paquete.bloquearRadioButton"
+                    (onClick)="quitarArticulo(paquete)"></p-radioButton>
+                  <label [for]="'utilizarArticulo'+(rowIndex+1)" class="ml-2">NO</label>
+                </div>
+
+                <a class="barras" (click)="abrirPanel($event,paquete,rowIndex,'paquete')">
                   <i class="fs fs-barras-horizontales"></i>
                 </a>
               </div>
@@ -51,6 +67,9 @@
           </tr>
         </ng-template>
       </p-table>
+
+
+
     </ng-template>
   </p-accordionTab>
   <p-accordionTab>
@@ -63,7 +82,7 @@
       </div>
     </ng-template>
     <ng-template pTemplate="content">
-      <p-table styleClass="mt-5 mb-8 " [value]="paquetes">
+      <p-table styleClass="mt-5 mb-8 " [value]="datosPresupuesto">
         <ng-template pTemplate="header">
           <tr>
             <th>No. consecutivo</th>
@@ -76,9 +95,9 @@
             <th></th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-paquete>
+        <ng-template pTemplate="body" let-paquete let-rowIndex="rowIndex">
           <tr>
-            <td>{{paquete.noConsecutivo}}</td>
+            <td>{{rowIndex+1}}</td>
             <td>{{paquete.grupo}}</td>
             <td>{{paquete.concepto}}</td>
             <td>{{paquete.cantidad}}</td>
@@ -86,8 +105,8 @@
             <td>{{paquete.proveedor}}</td>
             <td>{{paquete.totalPaquete}}</td>
             <td style="width:200px">
-              <div class="flex ">
-                <a class="barras" (click)="abrirPanel($event,paquete)">
+              <div class="flex " *ngIf="paquete.proviene!='paquete'">
+                <a class="barras" (click)="abrirPanel($event,paquete,rowIndex+1,'presupuesto')">
                   <i class="fs fs-barras-horizontales"></i>
                 </a>
               </div>
@@ -102,7 +121,19 @@
 <p-overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Ver kilometraje" (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="mostrarProveedor" titulo="Seleccionar Proveedor"
+        (click)="abrirModalAgregarProveedor($event)"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="mostrarAtaudes" titulo="Seleccionar Ataúd"
+        (click)="abrirModalAgregarAtaud($event)"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="mostrarTraslado" titulo="Seleccionar Proveedor"
+        (click)="abrirModalAgregarProveedorTraslado($event)"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="mostrarKilometrajes" titulo="Ver Kilometraje"
+        (click)="abrirModalVerKm()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="mostrarDonarAtaud" titulo="Donar Ataúd"
+        (click)="abrirModalDonarAtaud($event)"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="mostrarQuitarPresupuesto" titulo="Quitar"
+        (click)="quitarPresupuesto()"></app-overlay-panel-opcion>
+
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
@@ -111,7 +142,7 @@
   <div class="col-md-12 flex justify-content-end">
     <div class="flex flex-column align-items-end">
       <span class="texto-orden-servicio">Total órden de servicio</span>
-      <span class="cantidad-orden-servicio">$0.00</span>
+      <span class="cantidad-orden-servicio">{{total | currency: 'USD' | lowercase}}</span>
     </div>
   </div>
 </div>
@@ -122,17 +153,19 @@
   <div class="row mb-2">
     <div class="col-md-6">
       <label class="control-label" for="observaciones">Observaciones<span class="req">*</span>:</label>
-      <input id="observaciones" type="text" class="form-control" formControlName="observaciones"
-             placeholder="Ingresa observaciones">
+      <input id="observaciones" type="text" class="form-control" formControlName="observaciones" maxlength="100"
+        placeholder="Ingresa observaciones">
       <span class="campo-obligatorio"
-            *ngIf="f.observaciones?.errors?.required && (f.observaciones?.dirty || f.observaciones?.touched)">Campo obligatorio</span>
+        *ngIf="f.observaciones?.errors?.required && (f.observaciones?.dirty || f.observaciones?.touched)">Campo
+        obligatorio</span>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="notasServicio">Notas del servicio<span class="req">*</span>:</label>
-      <input id="notasServicio" type="text" class="form-control" formControlName="notasServicio"
-             placeholder="Ingresa notas de servicio">
+      <input id="notasServicio" type="text" class="form-control" formControlName="notasServicio" maxlength="80"
+        placeholder="Ingresa notas de servicio">
       <span class="campo-obligatorio"
-            *ngIf="f.notasServicio?.errors?.required && (f.notasServicio?.dirty || f.notasServicio?.touched)">Campo obligatorio</span>
+        *ngIf="f.notasServicio?.errors?.required && (f.notasServicio?.dirty || f.notasServicio?.touched)">Campo
+        obligatorio</span>
     </div>
   </div>
   <div class="row mt-4">
