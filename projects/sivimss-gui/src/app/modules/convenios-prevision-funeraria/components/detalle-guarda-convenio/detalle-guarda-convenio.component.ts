@@ -28,6 +28,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
   @Input() objetoDetallePersona!: any;
   @Input() confirmarGuardarPersona!: boolean;
   @Input() confirmarGuardarEmpresa!: boolean;
+  @Input() escenario!: string;
 
   readonly POSICION_PAIES:number = 0;
   readonly POSICION_ESTADOS:number = 1;
@@ -101,6 +102,11 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if(this.escenario.includes("modificar")){
+      if(this.confirmarGuardarEmpresa)this.modificarEmpresa();
+      if(this.confirmarGuardarPersona)this.modificarPersona();
+      return
+    }
     if(this.confirmarGuardarEmpresa)this.guardarEmpresa();
     if(this.confirmarGuardarPersona)this.guardarPersona();
   }
@@ -113,7 +119,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
     ).subscribe(
       (respuesta: HttpRespuesta<any>)=> {
         this.generarArchivo(respuesta.datos.idConvenio);
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(30);
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.router.navigate(["convenios-prevision-funeraria"]);
       },
@@ -132,7 +138,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
     ).subscribe(
       (respuesta: HttpRespuesta<any>)=> {
         this.generarArchivo(respuesta.datos.idConvenio);
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(30);
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.router.navigate(["convenios-prevision-funeraria"]);
       },
@@ -142,6 +148,60 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       }
     )
   }
+
+  modificarEmpresa(): void {
+    this.loaderService.activar();
+    this.agregarConvenioPFService.modificarConvenioPorGrupoEmpresa(this.objetoDetalleEmpresa).pipe
+    (
+      finalize(()=>  this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>)=> {
+        // this.generarArchivo(respuesta.datos.idConvenio);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(18);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        this.router.navigate(["convenios-prevision-funeraria"]);
+      },
+      (error:HttpErrorResponse) => {
+        console.log(error);
+        this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+      }
+    )
+  }
+
+  modificarPersona(): void {
+    this.loaderService.activar();
+    this.agregarConvenioPFService.modificarConvenioPorPersona(this.objetoDetallePersona).pipe
+    (
+      finalize(()=>  this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>)=> {
+        // this.generarArchivo(respuesta.datos.idConvenio);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(18);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        this.router.navigate(["convenios-prevision-funeraria"]);
+      },
+      (error:HttpErrorResponse) => {
+        console.log(error);
+        this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+      }
+    )
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   generarArchivo(idConvenio:string): void {
     this.loaderService.activar();

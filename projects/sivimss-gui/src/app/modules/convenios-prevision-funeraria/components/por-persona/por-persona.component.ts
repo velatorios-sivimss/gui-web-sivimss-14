@@ -39,6 +39,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
   @Input() folioConvenio!: string;
   @Input() consultarFormularioValido!: boolean;
   @Input() confirmacionGuardado!: boolean;
+  @Input() escenario!: string;
   @Output() formularioValido = new EventEmitter<{ origen:string,valido:boolean }>();
   @Output() formularioPersona = new EventEmitter<any>();
 
@@ -269,6 +270,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
   }
 
   consultarFolioPersona(): void {
+    this.beneficiarios=[]
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarFolioPersona(this.folioConvenio).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -282,6 +284,23 @@ export class PorPersonaComponent implements OnInit,OnChanges {
           this.fp.segundoApellido.setValue(respuesta.datos.datosContratante.segundoApellido);
           this.fp.correoElectronico.setValue(respuesta.datos.datosContratante.correo);
           this.fp.telefono.setValue(respuesta.datos.datosContratante.telefono);
+        if(this.escenario.includes('modificar')){
+          respuesta.datos.beneficiarios.forEach((beneficiario:any) => {
+            const [anio, mes, dia]: string[] = beneficiario.fechaNacimiento.split("-");
+            const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
+            this.beneficiarios.push({
+              fechaNacimiento: objetoFecha,
+              nombre: beneficiario.nombreBeneficiario,
+              primerApellido: beneficiario.primerApellido,
+              segundoApellido: beneficiario.segundoApellido,
+              curp: beneficiario.curp,
+              rfc: beneficiario.rfc,
+              correoElectronico: beneficiario.correo,
+              telefono: beneficiario.telefono
+            }
+            )
+          });
+        }
 
 
           // this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
@@ -347,8 +366,8 @@ export class PorPersonaComponent implements OnInit,OnChanges {
     if(this.confirmacionGuardado){
       this.formularioPersona.emit(
         {
-          idPersona: this.fp.idPersona?.value.toString() ?? "",
-          matricula: this.fp.matricula?.value?.toString() ?? "",
+          idPersona: this.fp.idPersona.value ? this.fp.idPersona?.value.toString() : null,
+          matricula: this.fp.matricula.value ? this.fp.matricula.toString() : "",
           rfc:this.fp.rfc?.value?.toString() ?? "",
           curp:this.fp.curp.value.toString(),
           nss:"",

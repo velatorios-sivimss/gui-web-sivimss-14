@@ -33,6 +33,13 @@ const routes: Routes = [
     }
   },
   {
+    path: 'modificar-nuevo-convenio/agregar-persona',
+    component: AgregarPersonaConveniosPrevisionFunerariaComponent,
+    resolve: {
+      respuesta: AgregarConvenioPfResolver
+    }
+  },
+  {
     path: 'modificar-nuevo-convenio',
     component: ConveniosPfModificarComponent,
     resolve: {
