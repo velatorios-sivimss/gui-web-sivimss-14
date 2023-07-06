@@ -7,8 +7,7 @@ import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { BusquedaContratante, ConfirmarContratante, UsuarioContratante } from "../../models/usuario-contratante.interface";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { CATALOGOS_DUMMIES } from "../../constants/dummies";
-import { LazyLoadEvent } from "primeng/api";
+import { ConfirmationService, LazyLoadEvent } from "primeng/api";
 import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
 import { ModificarContratantesComponent } from "../modificar-contratantes/modificar-contratantes.component";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
@@ -17,12 +16,18 @@ import { ContratantesService } from '../../services/contratantes.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { finalize } from 'rxjs';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { ReporteTabla } from '../../../velacion-domicilio/models/velacion-domicilio.interface';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 @Component({
   selector: 'app-contratantes',
   templateUrl: './contratantes.component.html',
   styleUrls: ['./contratantes.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService, ConfirmationService]
 })
 export class ContratantesComponent implements OnInit {
 
@@ -43,7 +48,7 @@ export class ContratantesComponent implements OnInit {
   modificarRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
   retorno: ConfirmarContratante = {};
-
+  mensajeArchivoConfirmacion: string | undefined;
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
   estatus: TipoDropdown[] = [
@@ -63,6 +68,10 @@ export class ContratantesComponent implements OnInit {
     public dialogService: DialogService,
     private formBuilder: FormBuilder,
     private contratantesService: ContratantesService,
+    private loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
@@ -83,58 +92,12 @@ export class ContratantesComponent implements OnInit {
     });
   }
 
-  // paginar(event: LazyLoadEvent): void {
-  //   setTimeout(() => {
-  //     this.contratante = [
-  //       {
-  //         curp: "FEMB121070HDFNCD00",
-  //         nss: 727956804078700,
-  //         nombre: "Federico Miguel",
-  //         primerApellido: "Alameda",
-  //         segundoApellido: "Barcenas",
-  //         rfc: "FEMAL12107034Y",
-  //         fechaNacimiento: "12/10/1970",
-  //         telefono: 5514236758,
-  //         nacionalidad: 1,
-  //         lugarNacimiento: "CDMX",
-  //         cp: 12345,
-  //         calle: "Miguel Alemán Barcenas",
-  //         numeroExterior: "121",
-  //         numeroInterior: "2b",
-  //         colonia: "Miguel Hidalgo",
-  //         pais: 1,
-  //         correoElectronico: "hildalore1234@gmail.com",
-  //         estado: "CDMX",
-  //         municipio: "Azcapotzalco",
-  //         estatus: true
-  //       },
-  //       {
-  //         curp: "FEMB121070HDFNCD00",
-  //         nss: 727956804078700,
-  //         nombre: "Federico Miguel",
-  //         primerApellido: "Alameda",
-  //         segundoApellido: "Barcenas",
-  //         rfc: "FEMAL12107034Y",
-  //         fechaNacimiento: "12/10/1970",
-  //         telefono: 5645768950,
-  //         estatus: true
-  //       },
-  //       {
-  //         curp: "FEMB121070HDFNCD00",
-  //         nss: 727956804078700,
-  //         nombre: "Federico Miguel",
-  //         primerApellido: "Alameda",
-  //         segundoApellido: "Barcenas",
-  //         rfc: "FEMAL12107034Y",
-  //         fechaNacimiento: "12/10/1970",
-  //         telefono: 5645768950,
-  //         estatus: false
-  //       }
-  //     ];
-  //     this.totalElementos = this.contratante.length;
-  //   }, 0)
-
-  // }
+  modalConfirmacion() {
+    this.confirmationService.confirm({
+      message: this.mensajeArchivoConfirmacion,
+      accept: () => { },
+    });
+  }
 
   paginar(event?: LazyLoadEvent): void {
     if (event?.first !== undefined && event.rows !== undefined) {
@@ -148,37 +111,18 @@ export class ContratantesComponent implements OnInit {
   buscarPorFiltros(): void {
     this.contratantesService.buscarPorFiltros(this.filtroForm.getRawValue(), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.contratantes = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
+        if (respuesta.datos) {
+          this.contratantes = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        } else {
+          this.contratantes = [];
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     });
-  }
-
-  buscarContratante() {
-    this.clearValidatorsFiltroForm();
-    if (validarAlMenosUnCampoConValor(this.filtroForm.getRawValue())) {
-      this.paginar();
-    } else {
-      const mensaje = this.alertas?.filter((msj: any) => {
-        return msj.idMensaje == 22;
-      })
-      if (mensaje) {
-        this.alertaService.mostrar(TipoAlerta.Precaucion, mensaje[0].desMensaje);
-      }
-      this.ff.curp.setValidators(Validators.required);
-      this.ff.curp.updateValueAndValidity();
-      this.ff.nss.setValidators(Validators.required);
-      this.ff.nss.updateValueAndValidity();
-      this.ff.nombre.setValidators(Validators.required);
-      this.ff.nombre.updateValueAndValidity();
-      this.ff.estatus.setValidators(Validators.required);
-      this.ff.estatus.updateValueAndValidity();
-      this.filtroForm.markAllAsTouched();
-    }
   }
 
   limpiar(): void {
@@ -204,40 +148,68 @@ export class ContratantesComponent implements OnInit {
       width: "920px",
       data: { contratante: contratante, origen: "detalle" },
     });
-  }
 
-  abrirModalModificarContratante(): void {
-    this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
-      header: "Modificar contratante",
-      width: "920px",
-      data: { contratante: this.contratanteSeleccionado, origen: "modificar" },
-    });
-
-    this.modificarRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
-      if (respuesta.estatus) {
-        this.alertaService.mostrar(TipoAlerta.Exito, this.alertaEstatus[2]);
+    this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
+      if (respuesta?.estatus) {
+        this.paginar();
       }
     });
   }
 
   abrirModalCambiarEstatus(contratante: UsuarioContratante): void {
     this.detalleRef = this.dialogService.open(DetalleContratantesComponent, {
-      header: contratante.estatus ? "Activar contratante" : "Desactivar contratante",
+      header: contratante.estatus ? "Desactivar contratante" : "Activar contratante",
       width: "920px",
       data: { contratante: contratante, origen: "estatus" },
     });
 
     this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
-      if (respuesta.estatus) {
-        this.alertaService.mostrar(TipoAlerta.Exito,
-          respuesta.usuarioContratante?.estatus ? this.alertaEstatus[0] : this.alertaEstatus[1]);
+      if (respuesta?.estatus) {
+        this.paginar();
       }
     });
   }
 
-  abrirPanel(event: MouseEvent, contratante: BusquedaContratante): void {
-    this.contratanteSeleccionado = contratante;
-    this.overlayPanel.toggle(event);
+  descargarReporteTabla(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Disponibilidad de capillas" };
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
+    }
+
+    this.loaderService.activar();
+    this.descargaArchivosService.descargarArchivo(
+      this.contratantesService.descargarReporteTabla(this.reporteTabla(tipoReporte)),
+      configuracionArchivo
+    ).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.modalConfirmacion();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        if (mensaje) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+        }
+      },
+    });
+  }
+
+  reporteTabla(tipoReporte: string): ReporteTabla {
+    return {
+      curp: this.ff.curp.value,
+      nss: this.ff.nss.value,
+      nomContratante: this.ff.nombre.value,
+      estatus: this.ff.estatus.value,
+      rutaNombreReporte: 'reportes/generales/ReporteCatUsrContra.jrxml',
+      tipoReporte,
+    }
   }
 
   get ff() {

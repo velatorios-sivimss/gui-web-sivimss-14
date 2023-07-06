@@ -1,13 +1,13 @@
 <ng-container
   *ngIf="pasoForm === FormTarjetaIdentificacion.Seleccionar; then templateSeleccionar else templateConfirmacion"></ng-container>
 <ng-template #templateSeleccionar>
-  <form [formGroup]="form" (ngSubmit)="mostrarConfirmacion()">
+  <form [formGroup]="form">
     <div class="row mb-3">
       <div class="col-md-12">
         <label for="nombreOperador" class="control-label">Nombre del operador<span class="req">*</span>:</label>
-        <p-dropdown id="nombreOperador" class="form-control" formControlName="nombreOperador"
-                    placeholder="Selecciona el operador"
-                    [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+        <p-dropdown id="nombreOperador" class="form-control" formControlName="nombreOperador" appendTo="body"
+                    placeholder="Selecciona el operador" [filter]="true" filterBy="label"
+                    [options]="operadores"></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="f.nombreOperador?.errors?.required && (f.nombreOperador?.dirty || f.nombreOperador?.touched)">Campo obligatorio</span>
       </div>
@@ -22,7 +22,7 @@
     <div class="row">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-md btn-gold" (click)="cerrarModal()">Cancelar</button>
-        <button class="ml-6 btn btn-md btn-primary" [disabled]="form.invalid">Aceptar</button>
+        <button class="ml-6 btn btn-md btn-primary" [disabled]="form.invalid" (click)="guardar()">Agregar operador</button>
       </div>
     </div>
   </form>

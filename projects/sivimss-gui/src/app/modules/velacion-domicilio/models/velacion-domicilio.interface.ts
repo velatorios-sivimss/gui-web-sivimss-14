@@ -89,3 +89,13 @@ export interface BuscarFoliosOds {
   idDelegacion?: number | null;
   idVelatorio?: number | null;
 }
+
+export interface ReporteTabla {
+  curp?: number | null;
+  nss?: string | null;
+  nomContratante?: string | null;
+  estatus?: string | null;
+  rutaNombreReporte?: string;
+  tipoReporte?: string;
+
+}

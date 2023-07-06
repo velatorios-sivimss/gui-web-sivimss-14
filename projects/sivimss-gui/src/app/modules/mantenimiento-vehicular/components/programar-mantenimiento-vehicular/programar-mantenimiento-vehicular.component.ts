@@ -53,7 +53,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   once: boolean = true;
   filtroFormProgramarMantenimiento!: FormGroup;
   cicloCompleto: boolean = false;
-
+  mostrarModalConfirmacion: boolean = false;
+  mensajeArchivoConfirmacion: string = "";
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
   registroMttoRef!: DynamicDialogRef;
@@ -68,6 +69,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   readonly POSICION_CATALOGOS_PLACAS: number = 3;
 
   usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -332,10 +334,19 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.mostrarModalConfirmacion = true;
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        if (mensaje) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+        }
       },
     });
   }

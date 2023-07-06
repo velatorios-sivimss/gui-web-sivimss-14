@@ -11,7 +11,8 @@
       <app-datos-finado (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-datos-finado>
     </ng-container>
     <ng-container *ngSwitchCase="CARACTERISTICAS_DEL_PRESUPUESTO">
-      <app-caracteristicas-presupuesto (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-caracteristicas-presupuesto>
+      <app-caracteristicas-presupuesto
+        (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-caracteristicas-presupuesto>
     </ng-container>
     <ng-container *ngSwitchCase="INFORMACION_DEL_SERVICIO">
       <app-informacion-servicio (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-informacion-servicio>

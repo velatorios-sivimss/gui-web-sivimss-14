@@ -1,0 +1,31 @@
+<form [formGroup]="form">
+  <div class="row">
+    <div class="col-md-6">
+      <label class="control-label" for="articulos">Artículos complementarios<span class="req">*</span>:</label>
+      <p-dropdown #dd id="articulos" class="form-control" formControlName="articulos"
+        placeholder="Selecciona un articulos" appendTo="body" [options]="articulos"
+        (onChange)="selecionararticulos(dd)"></p-dropdown>
+      <span class="campo-obligatorio"
+        *ngIf="f.articulos?.errors?.required && (f.articulos?.dirty || f.articulos?.touched)">Campo
+        obligatorio</span>
+    </div>
+
+    <div class="col-md-4">
+      <label class="control-label" for="cantidad">Cantidad<span class="req">*</span>:</label>
+      <input id="cantidad" type="text" class="form-control" formControlName="cantidad" placeholder="Ingresa la cantidad"
+        maxlength="3" lettersOnly>
+      <span class="campo-obligatorio"
+        *ngIf="f.cantidad?.errors?.required && (f.cantidad?.dirty || f.cantidad?.touched)">Campo
+        obligatorio</span>
+    </div>
+
+
+  </div>
+  <div class="row">
+    <div class="row mb-3 flex align-items-end">
+      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Agregar
+      </button>
+      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</form>

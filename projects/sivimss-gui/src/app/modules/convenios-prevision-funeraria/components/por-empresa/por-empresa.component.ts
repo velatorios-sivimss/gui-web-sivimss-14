@@ -25,7 +25,8 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   @Input() existePersona: boolean = false;
   @Input() folioEmpresa!: any;
   @Input() confirmacionGuardado!: boolean;
-  @Input() @Input() consultarFormularioValido!: boolean;
+  @Input() escenario!: string;
+  @Input()  consultarFormularioValido!: boolean;
   @Output() guardarFormularioPrincipal = new EventEmitter<boolean>();
   @Output() formularioValido = new EventEmitter<boolean>();
   @Output() formularioEmpresa = new EventEmitter<any>();
@@ -146,6 +147,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
       personas: this.personasConvenio
     }
     localStorage.setItem('empresaForm',JSON.stringify(this.empresaFormTempora));
+    localStorage.setItem('flujo',this.escenario)
 
     // localStorage.setItem('personasAgregadas',JSON.stringify(this.personasConvenio));
     this.guardarFormularioPrincipal.emit(true);
@@ -198,19 +200,6 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
 
   validarFormularioVacio(formularioPrincipalValido?: boolean, origen?: string): void {
     this.empresaForm.valid ? this.formularioValido.emit(true):this.formularioValido.emit(false)
-    // if(this.empresaForm.valid && formularioPrincipalValido && origen?.includes('externo')){
-    //   this.formularioValido.emit({origen:origen,valido:true})
-    //   return;
-    // }
-    //
-    // if(this.empresaForm.valid && formularioPrincipalValido == false && origen?.includes('local')){
-    //   this.formularioValido.emit({origen:origen,valido:true})
-    //   return;
-    // }
-    //
-    // this.formularioValido.emit({origen:'',valido:false})
-
-
   }
 
   get fe() {

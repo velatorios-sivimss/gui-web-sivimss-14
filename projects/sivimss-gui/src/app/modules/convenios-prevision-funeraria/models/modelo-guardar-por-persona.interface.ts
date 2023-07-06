@@ -3,6 +3,7 @@ import {PersonaInterface} from "./persona.interface";
 
 export interface ModeloGuardarPorPersona
 {
+  folioConvenio?: string,
   idVelatorio?:string,
   nombreVelatorio?:string,
   indTipoContratacion?:string,
