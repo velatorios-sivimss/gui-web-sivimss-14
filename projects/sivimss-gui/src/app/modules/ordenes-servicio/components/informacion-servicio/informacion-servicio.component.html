@@ -13,7 +13,7 @@
       <div class="col-md-3">
         <label class="control-label">Fecha<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
-          placeholder="Selecciona fecha"></p-calendar>
+          placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="lugarVelacion.fecha?.errors?.required && (lugarVelacion.fecha?.dirty || lugarVelacion.fecha?.touched)">Campo
           obligatorio</span>
@@ -68,7 +68,7 @@
       </div>
       <div class="col-md-3">
         <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
-        <input class="form-control" formControlName="municipio" placeholder="Ingresa municipio" />
+        <input class="form-control" id="municipio" formControlName="municipio" placeholder="Ingresa municipio" />
         <span class="campo-obligatorio"
           *ngIf="lugarVelacion.municipio?.errors?.required && (lugarVelacion.municipio?.dirty || lugarVelacion.municipio?.touched)">Campo
           obligatorio</span>
@@ -96,7 +96,7 @@
       <div class="col-md-3">
         <label class="control-label">Fecha<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
-          placeholder="Selecciona fecha"></p-calendar>
+          placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="lugarCremacion.fecha?.errors?.required && (lugarCremacion.fecha?.dirty || lugarCremacion.fecha?.touched)">Campo
           obligatorio</span>
@@ -116,7 +116,7 @@
     <div class="row mb-2">
       <div class="col-md-6">
         <div class="flex align-items-center">
-          <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon"
+          <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon" (onChange)="abrirModalAgregarPanteon()"
             [binary]="true"></p-checkbox>
           <label class="control-label" [for]="'agregarPanteon'">Agregar panteón</label>
         </div>
@@ -140,7 +140,7 @@
       <div class="col-md-3">
         <label class="control-label">Fecha<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
-          placeholder="Selecciona fecha"></p-calendar>
+          placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="recoger.fecha?.errors?.required && (recoger.fecha?.dirty || recoger.fecha?.touched)">Campo
           obligatorio</span>
@@ -158,7 +158,7 @@
       <div class="col-md-3">
         <label class="control-label">Fecha<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
-          placeholder="Selecciona fecha"></p-calendar>
+          placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="instalacionServicio.fecha?.errors?.required && (instalacionServicio.fecha?.dirty || instalacionServicio.fecha?.touched)">Campo
           obligatorio</span>
@@ -180,7 +180,7 @@
       <div class="col-md-3">
         <label class="control-label">Fecha<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
-          placeholder="Selecciona fecha"></p-calendar>
+          placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="cortejo.fecha?.errors?.required && (cortejo.fecha?.dirty || cortejo.fecha?.touched)">Campo
           obligatorio</span>
