@@ -38,7 +38,8 @@ export class ReporteEncargadoComponent implements OnInit {
   numPaginaActual: number = 0
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0
-
+  mostrarModalConfirmacion: boolean = false;
+  mensajeArchivoConfirmacion: string = "";
   velatorio: string = '';
   totalVehiculos: number = 0;
   rangoFecha: string = '';
@@ -59,6 +60,8 @@ export class ReporteEncargadoComponent implements OnInit {
   fechaActual: Date = new Date();
   fechaValida: boolean = false;
   tipoBusqueda: number = 0;
+
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -213,10 +216,19 @@ export class ReporteEncargadoComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.mostrarModalConfirmacion = true;
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        if (mensaje) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+        }
       },
     });
   }
@@ -244,7 +256,7 @@ export class ReporteEncargadoComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }

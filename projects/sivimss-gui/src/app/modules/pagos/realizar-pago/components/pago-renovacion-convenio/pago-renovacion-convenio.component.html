@@ -4,21 +4,21 @@
          (onLazyLoad)="seleccionarPaginacion($event)">
   <ng-template pTemplate="header">
     <tr>
-      <th>Fecha de pago</th>
-      <th>Folio ODS</th>
-      <th>Tipo de pago</th>
-      <th>Total a pagar</th>
-      <th>Total pagado</th>
-      <th>Diferencias Totales</th>
-      <th></th>
+      <th id="columna_pagos_renovacion_convenio_fecha_pago">Fecha de pago</th>
+      <th id="columna_pagos_renovacion_convenio_folio">Folio PRCPF</th>
+      <th id="columna_pagos_renovacion_convenio_tipo_pago">Tipo de pago</th>
+      <th id="columna_pagos_renovacion_convenio_total_pagar">Total a pagar</th>
+      <th id="columna_pagos_renovacion_convenio_total_pagado">Total pagado</th>
+      <th id="columna_pagos_renovacion_convenio_diferencias_totales">Diferencias Totales</th>
+      <th id="columna_pagos_renovacion_convenio_botones"></th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-pago>
     <tr>
       <td>{{pago.fechaPago}}</td>
-      <td>{{pago.folioODS}}</td>
+      <td>{{pago.folio}}</td>
       <td>{{pago.tipoPago}}</td>
-      <td>{{pago.totalPagar}}</td>
+      <td>{{pago.total}}</td>
       <td>{{pago.totalPagado}}</td>
       <td>{{pago.diferenciasTotales}}</td>
       <td>
@@ -32,7 +32,7 @@
   </ng-template>
   <ng-template pTemplate="emptymessage">
     <tr>
-      <th colspan="8" class="p-2 text-center font-bold text-xl">
+      <th colspan="7" class="p-2 text-center font-bold text-xl" id="pagos_renovar_convenio_sin_resultados">
         No se encontro información relacionada a tu búsqueda
       </th>
     </tr>
@@ -55,7 +55,7 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Registrar" (click)="registrarPago()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
+<!--      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>-->
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
@@ -76,7 +76,8 @@
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md" (click)="pagoConvenioModal = !pagoConvenioModal">Cancelar</button>
+      <button type="submit" class="btn btn-default btn-md" (click)="pagoConvenioModal = !pagoConvenioModal">Cancelar
+      </button>
       <button type="submit" class="btn btn-primary btn-md ml-5" (click)="abrirModalPago()"
               [disabled]="pagoForm.invalid">Aceptar
       </button>

@@ -4,7 +4,7 @@ export interface RegistroVerificacionInterface {
   idDelegacion: number,
   idEstatus: number,
   idMttoVehicular: number | null,
-  idMttoestado: number,
+  idMttoestado: number | null,
   idVehiculo: number,
   idVelatorio: number,
   registro: null,

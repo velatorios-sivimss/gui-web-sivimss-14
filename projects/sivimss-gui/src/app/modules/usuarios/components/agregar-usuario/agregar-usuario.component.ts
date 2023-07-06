@@ -4,7 +4,7 @@ import {PATRON_CORREO, PATRON_CURP} from "../../../../utils/constantes";
 import {Usuario} from "../../models/usuario.interface";
 import * as moment from "moment/moment";
 import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
-import {HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse, HttpEventType, HttpHeaders} from "@angular/common/http";
 import {UsuarioService} from "../../services/usuario.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {RespuestaModalUsuario} from "../../models/respuestaModal.interface";
@@ -31,6 +31,7 @@ export class AgregarUsuarioComponent implements OnInit {
 
   readonly CAPTURA_DE_USUARIO: number = 1;
   readonly RESUMEN_DE_USUARIO: number = 2;
+  readonly HREF_RENAPO: string = "https://www.gob.mx/curp/";
 
   agregarUsuarioForm!: FormGroup;
 
@@ -121,7 +122,7 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -139,7 +140,7 @@ export class AgregarUsuarioComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
-          this.mensajesSistemaService.mostrarMensajeError(error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
   }
@@ -200,7 +201,7 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -214,7 +215,8 @@ export class AgregarUsuarioComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) return;
         if (respuesta.datos.message !== '') {
-          this.mensajesSistemaService.mostrarMensajeError(respuesta.mensaje, this.NOT_FOUND_ERROR_RENAPO);
+          const error: HttpErrorResponse = this.generarError(respuesta.mensaje)
+          this.mensajesSistemaService.mostrarMensajeError(error, this.NOT_FOUND_ERROR_RENAPO);
           this.curpValida = !this.curpValida;
           return;
         }
@@ -225,7 +227,7 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -251,7 +253,7 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -265,7 +267,8 @@ export class AgregarUsuarioComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.error) {
           const mensaje: string = respuesta.mensaje === '79' ? '70' : respuesta.mensaje;
-          this.mensajesSistemaService.mostrarMensajeError(mensaje);
+          const error: HttpErrorResponse = this.generarError(mensaje)
+          this.mensajesSistemaService.mostrarMensajeError(error);
           this.matriculaValida = !this.matriculaValida;
         }
         if (respuesta.datos.status === 'INACTIVO') {
@@ -275,9 +278,23 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+
+  generarError(message: string): HttpErrorResponse {
+    return {
+      error: undefined,
+      headers: new HttpHeaders(),
+      message,
+      name: "HttpErrorResponse",
+      ok: false,
+      status: 0,
+      statusText: "",
+      type: HttpEventType.Response,
+      url: null
+    }
   }
 
   agregarUsuario(): void {
@@ -293,7 +310,7 @@ export class AgregarUsuarioComponent implements OnInit {
         error: (error: HttpErrorResponse): void => {
           console.error("ERROR: ", error);
           const ERROR_MENSAJE: string = `${this.ERROR_ALTA_USUARIO} ${this.nombreUsuario}`;
-          this.mensajesSistemaService.mostrarMensajeError(error.message, ERROR_MENSAJE);
+          this.mensajesSistemaService.mostrarMensajeError(error, ERROR_MENSAJE);
         }
       });
   }

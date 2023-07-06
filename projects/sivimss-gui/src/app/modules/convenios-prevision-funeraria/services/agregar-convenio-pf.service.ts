@@ -10,6 +10,9 @@ import {environment} from "../../../../environments/environment";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
+import {ModeloGuardarPorEmpresa} from "../models/modelo-guardar-por-empresa.interface";
+import {ModeloGuardarPorPersona} from "../models/modelo-guardar-por-persona.interface";
+import {PlantillaControlSalida} from "../../consulta-donaciones/models/generar-plantilla-interface";
 
 @Injectable()
 export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any> {
@@ -27,18 +30,17 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
     return of(mapearArregloTipoDropdown(estados, "desc", "id"));
   }
 
-  consultaCURP(curp: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-contratante-curp`,
-      {curp: curp});
+  consultaCURPRFC(rfc?:string, curp?: string): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-validaCurpRfc`,
+      {curp: curp, rfc:rfc})
   }
 
-  consultaRFC(rfc: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-contratante-rfc`,
-      {rfc: rfc});
+  consultarMatriculaSiap(matricula: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/siap/${matricula}`);
   }
 
-  consutaCP(cp:String): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/codigo-postal/`+ cp )
+  consutaCP(cp:number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-consultar-cp`, {cp:cp} )
   }
 
   obtenerCatalogoParentesco(): Observable<TipoDropdown[]> {
@@ -46,5 +48,52 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
     return of(mapearArregloTipoDropdown(catalogo_parentesco, "desc", "id"));
   }
 
+  consultarPaquetes(idVelatorio:number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/convenio-pf-paquetes`,{idVelatorio:idVelatorio});
+  }
+
+  obtenerCatalogoVelatoriosPorDelegacion(delegacion:number): Observable<HttpRespuesta<any>>{
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/velatorios/${delegacion}`);
+  }
+
+  consultaPromotores(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/catalogo/convenio-pf-promotores`);
+  }
+
+  consultarFolioConvenioEmpresa(folioConvenio:string):  Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-buscar-folio-empresa`,{folioConvenio:folioConvenio});
+  }
+
+  consultarFolioPersona(folioConvenio:string):  Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-buscar-folio-persona`,{folioConvenio:folioConvenio});
+  }
+
+  guardarConvenioPorGrupoEmpresa(objetoEmpresa: ModeloGuardarPorEmpresa): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-agregar-convenio-empresa`,objetoEmpresa);
+  }
+
+  guardarConvenioPorPersona(objetoPersona: ModeloGuardarPorPersona): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-agregar-convenio-persona`,objetoPersona);
+  }
+
+  modificarConvenioPorGrupoEmpresa(objetoEmpresa: ModeloGuardarPorEmpresa): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-modificar-convenio-empresa`,objetoEmpresa);
+  }
+
+  modificarConvenioPorPersona(objetoPersona: ModeloGuardarPorPersona): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-modificar-convenio`,objetoPersona);
+  }
+
+
+
+  cambiarEstatusConvenio(datosConvenio:{folioConvenio:any,banderaActivo: any}) :Observable<HttpRespuesta<any>>{
+    return this._http.put<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-activar-desactivar`,datosConvenio);
+  }
+
+  generarPlantilla(plantailla:PlantillaControlSalida): Observable<Blob> {
+    return this._http.post<any>(
+      this._base + `${this._funcionalidad}/convenio-pf-generar-pdf/generarDocumento/pdf`, plantailla,
+      {responseType: 'blob' as any});
+  }
 
 }

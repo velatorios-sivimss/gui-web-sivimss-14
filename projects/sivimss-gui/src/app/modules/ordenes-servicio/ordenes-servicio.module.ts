@@ -49,6 +49,11 @@ import { ModalAgregarUrnaComponent } from './components/modal-agregar-urna/modal
 import { ModalAgregarEmpaqueComponent } from './components/modal-agregar-empaque/modal-agregar-empaque.component';
 import { ModalAgregarArticulosComplementariosComponent } from './components/modal-agregar-articulos-complementarios/modal-agregar-articulos-complementarios.component';
 
+import { ConsultarOrdenServicioService } from './services/consultar-orden-servicio.service';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
+import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module';
+
 @NgModule({
   declarations: [
     OrdenesServicioComponent,
@@ -101,11 +106,15 @@ import { ModalAgregarArticulosComplementariosComponent } from './components/moda
     DynamicDialogModule,
     EtapasModule,
     UtileriaModule,
+    AutoCompleteModule,
+    BtnRegresarModule,
+    CeldaStickyModule,
   ],
   providers: [
     GenerarOrdenServicioService,
     DialogService,
     GestionarEtapasService,
+    ConsultarOrdenServicioService,
   ],
 })
 export class OrdenesServicioModule {}

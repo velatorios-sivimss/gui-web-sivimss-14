@@ -3,7 +3,6 @@
 <div class="border-panel mb-3">
   <div class="row mb-3 flex justify-content-center">
     <div class="col-md-6">
-<!--      Cambiar los iconos-->
       <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps>
     </div>
   </div>
@@ -13,25 +12,22 @@
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-            <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18" alphanumericOnly>
+            <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18" alphanumericOnly
+                   (blur)="consultaCURP()">
             <span class="campo-obligatorio"
                   *ngIf="fp.curp?.errors?.required && (fp.curp?.dirty || fp.curp?.touched)">Este campo es obligatorio *.</span>
             <span class="campo-obligatorio"
                   *ngIf="fp.curp?.errors?.pattern && (fp.curp?.dirty || fp.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="rfc">R.F.C.<span class="req">*</span>:</label>
-            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa RFC" maxlength="13" alphanumericOnly>
-            <span class="campo-obligatorio"
-                  *ngIf="fp.rfc?.errors?.required && (fp.rfc?.dirty || fp.rfc?.touched)">Este campo es obligatorio *.</span>
-            <span class="campo-obligatorio"
-                  *ngIf="fp.rfc?.errors?.pattern && (fp.rfc?.dirty || fp.rfc?.touched)">Este campo es obligatorio *.</span>
+            <label class="control-label" for="rfc">R.F.C:</label>
+            <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C." maxlength="13" alphanumericOnly
+                   (blur)="consultaRFC()">
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="matricula">Matrícula <span class="req">*</span>:</label>
-            <input id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa matrícula">
-            <span class="campo-obligatorio"
-                  *ngIf="fp.matricula?.errors?.required && (fp.matricula?.dirty || fp.matricula?.touched)">Este campo es obligatorio *.</span>
+            <label class="control-label" for="matricula">Matrícula :</label>
+            <input id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula" numbersOnly
+            maxlength="10" (blur)="consultarMatricula()">
           </div>
         </div>
         <div class="row mb-3">
@@ -55,44 +51,16 @@
           </div>
         </div>
         <div class="row mb-3">
-          <div class="col-md-3">
-            <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span class="req">*</span>:</label>
-            <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
-                        dateFormat="dd/mm/yy" placeholder="Ingresa fecha de nacimiento"></p-calendar>
-            <span class="campo-obligatorio"
-                  *ngIf="fp.fechaNacimiento?.errors?.required && (fp.fechaNacimiento?.dirty || fp.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
-            <p-dropdown id="sexo" class="form-control" formControlName="sexo"
-                        placeholder="Selecciona sexo" [options]="sexo"></p-dropdown>
-            <span class="campo-obligatorio"
-                  *ngIf="fp.sexo?.errors?.required && (fp.sexo?.dirty || fp.sexo?.touched)">Este campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
-            <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
-                        placeholder="Selecciona nacionalidad" [options]="nacionalidad"></p-dropdown>
-            <span class="campo-obligatorio"
-                  *ngIf="fp.nacionalidad?.errors?.required && (fp.nacionalidad?.dirty || fp.nacionalidad?.touched)">Este campo es obligatorio *.</span>
-          </div>
-          <div class="col-md-3">
-            <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
-            <input id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento" placeholder="Ingresa lugar">
-            <span class="campo-obligatorio"
-                  *ngIf="fp.lugarNacimiento?.errors?.required && (fp.lugarNacimiento?.dirty || fp.lugarNacimiento?.touched)">Este campo es obligatorio *.</span>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-9">
+          <div class="col-md-8">
             <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
-            <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
+            <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
+            maxlength="45" (blur)="validarCorreoElectornico()">
             <span class="campo-obligatorio"
                   *ngIf="fp.correoElectronico?.errors?.required && (fp.correoElectronico?.dirty || fp.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-4">
             <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
-            <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono">
+            <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono" maxlength="10">
             <span class="campo-obligatorio"
                   *ngIf="fp.telefono?.errors?.required && (fp.telefono?.dirty || fp.telefono?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -102,48 +70,59 @@
         <div class="row mb-3">
           <div class="col-md-3">
             <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
-            <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa calle">
+            <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa calle" maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fp.calle?.errors?.required && (fp.calle?.dirty || fp.calle?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="noExterior">No. exterior<span class="req">*</span>:</label>
-            <input id="noExterior" class="form-control" formControlName="noExterior" placeholder="Ingresa no. exterior">
+            <label class="control-label" for="noExterior">Número exterior<span class="req">*</span>:</label>
+            <input id="noExterior" class="form-control" formControlName="noExterior" placeholder="Ingresa número exterior"
+                   alphanumericOnly maxlength="5">
             <span class="campo-obligatorio"
                   *ngIf="fp.noExterior?.errors?.required && (fp.noExterior?.dirty || fp.noExterior?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="noInterior">No. interior<span class="req">*</span>:</label>
-            <input id="noInterior" class="form-control" formControlName="noInterior" placeholder="Ingresa no. interior">
-            <span class="campo-obligatorio"
-                  *ngIf="fp.noInterior?.errors?.required && (fp.noInterior?.dirty || fp.noInterior?.touched)">Este campo es obligatorio *.</span>
+            <label class="control-label" for="noInterior">Número interior:</label>
+            <input id="noInterior" class="form-control" formControlName="noInterior" placeholder="Ingresa número interior"
+            alphanumericOnly maxlength="4">
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="cp">CP<span class="req">*</span>:</label>
-            <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa CP">
+            <label class="control-label" for="cp">C.P.<span class="req">*</span>:</label>
+            <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa CP" numbersOnly maxlength="5"
+                   (blur)="consultarCP()">
             <span class="campo-obligatorio"
                   *ngIf="fp.cp?.errors?.required && (fp.cp?.dirty || fp.cp?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
-          <div class="col-md-4">
-            <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
-            <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa colonia">
+          <div class="col-md-3">
+            <label class="control-label" for="colonia">Asentamiento / Colonia<span class="req">*</span>:</label>
+            <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa el asentamiento / colonia"
+                   maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fp.colonia?.errors?.required && (fp.colonia?.dirty || fp.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
-            <input id="municipio" class="form-control" formControlName="municipio" placeholder="Ingresa municipio">
+            <input id="municipio" class="form-control" formControlName="municipio" placeholder="Ingresa municipio"
+                   maxlength="35">
             <span class="campo-obligatorio"
                   *ngIf="fp.municipio?.errors?.required && (fp.municipio?.dirty || fp.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
-          <div class="col-md-4">
-            <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
-            <p-dropdown id="estado" class="form-control" formControlName="estado"
-                        placeholder="Selecciona estado" [options]="sexo"></p-dropdown>
+          <div class="col-md-3">
+            <label class="control-label" for="estado">Estado <span class="req">*</span>:</label>
+            <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado"
+                   maxlength="35">
             <span class="campo-obligatorio"
                   *ngIf="fp.estado?.errors?.required && (fp.estado?.dirty || fp.estado?.touched)">Este campo es obligatorio *.</span>
+          </div>
+          <div class="col-md-3">
+            <label class="control-label" for="pais">País <span class="req">*</span>:</label>
+            <p-dropdown id="pais" class="form-control" formControlName="pais" [options]="pais"
+                        placeholder="Selecciona el pais" [filter]="true" filterBy="label">
+            </p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.pais?.errors?.required && (fp.pais?.dirty || fp.pais?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <hr class="hr-accordion-content">
@@ -151,16 +130,25 @@
           <div class="col-md-6">
             <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
             <p-dropdown id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
-                        placeholder="Selecciona tipo de paquete" [options]="tipoPaquete"></p-dropdown>
+                        placeholder="Selecciona tipo de paquete" [options]="tipoPaquete"
+                        (onChange)="mostrarModalTipoPaquete()" [filter]="true" filterBy="label"> </p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fp.tipoPaquete?.errors?.required && (fp.tipoPaquete?.dirty || fp.tipoPaquete?.touched)">Este campo es obligatorio *.</span>
           </div>
-          <div class="col-md-6">
-            <label class="control-label" for="enfermedadPrexistente">Enfermedad preexistente<span class="req">*</span>:</label>
+          <div class="col-md-3">
+            <label class="control-label" for="enfermedadPrexistente">Enfermedad prexistente<span class="req">*</span>:</label>
             <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente"
-                        placeholder="Selecciona enfermedad preexistente" [options]="enfermedadPrexistente"></p-dropdown>
+                        placeholder="Selecciona enfermedad prexistente" [options]="enfermedadPrexistente"
+                        (onChange)="cambioEnfermedadPrexistente()" [filter]="true" filterBy="label"></p-dropdown>
             <span class="campo-obligatorio"
                   *ngIf="fp.enfermedadPrexistente?.errors?.required && (fp.enfermedadPrexistente?.dirty || fp.enfermedadPrexistente?.touched)">Este campo es obligatorio *.</span>
+          </div>
+          <div class="col-md-3" *ngIf="otroTipoEnferemdad">
+            <label class="control-label" for="otraEnferdedad">Otro <span class="req">*</span>:</label>
+            <input id="otraEnferdedad" class="form-control" formControlName="otraEnferdedad" placeholder="Otro"
+                   maxlength="35">
+            <span class="campo-obligatorio"
+                  *ngIf="fp.otraEnferdedad?.errors?.required && (fp.otraEnferdedad?.dirty || fp.otraEnferdedad?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row">
@@ -171,6 +159,62 @@
       </form>
   </ng-container>
   <ng-container *ngIf="indice == 1">
+    <form [formGroup]="documentacionForm">
+      <app-table-panel>
+        <div class="row p-3 table-panel-row">
+          <div class="col-md-12">
+            <div class="flex">
+              <p-checkbox inputId="ineAfiliado" formControlName="ineAfiliado" styleClass="mr-3" [binary]="true"></p-checkbox>
+              <label [for]="'ineAfiliado'" class="control-label"><strong>INE del afiliado </strong></label>
+            </div>
+          </div>
+        </div>
+        <div class="row p-3 table-panel-row">
+          <div class="col-md-12">
+            <div class="flex">
+              <p-checkbox inputId="copiaCURP" formControlName="copiaCURP" styleClass="mr-3" [binary]="true"></p-checkbox>
+              <label [for]="'copiaCURP'" class="control-label"><strong>Copia CURP </strong></label>
+            </div>
+          </div>
+        </div>
+        <div class="row p-3 table-panel-row">
+          <div class="col-md-12">
+            <div class="flex">
+              <p-checkbox inputId="copiaRFC" formControlName="copiaRFC" styleClass="mr-3" [binary]="true"></p-checkbox>
+              <label [for]="'copiaRFC'" class="control-label"><strong>Copia RFC </strong></label>
+            </div>
+          </div>
+        </div>
+        <!--        <div class="row p-3 table-panel-row">-->
+        <!--          <div class="col-md-12">-->
+        <!--            <div class="flex">-->
+        <!--              <p-checkbox inputId="copiaActaNacimiento" formControlName="copiaActaNacimiento" styleClass="mr-3" [binary]="true"></p-checkbox>-->
+        <!--              <label [for]="'copiaActaNacimiento'" class="control-label">-->
+        <!--                <strong>Copia acta de nacimiento del beneficiario si es menor de edad </strong>-->
+        <!--              </label>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <!--        <div class="row p-3 table-panel-row">-->
+        <!--          <div class="col-md-12">-->
+        <!--            <div class="flex">-->
+        <!--              <p-checkbox inputId="copiaINE" formControlName="copiaINE" styleClass="mr-3" [binary]="true"></p-checkbox>-->
+        <!--              <label [for]="'copiaINE'" class="control-label"><strong>Copias del INE del beneficiario si es mayor de edad </strong></label>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+      </app-table-panel>
+    </form>
+
+    <div class="row">
+      <div class="col-md-12">
+      <span class="etiqueta-base">
+        *Campos obligatorios
+      </span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="indice == 2">
     <div class="border-panel">
       <div class="flex justify-content-between">
         <div class="col-mb-3">
@@ -179,7 +223,7 @@
         </div>
         <div class="col-md-3 my-auto">
           <div class="flex justify-content-center">
-            <button class="btn btn-primary btn-lg" [disabled]="beneficiario.length > 2" (click)="abrirModalAgregarBeneficiario()">
+            <button class="btn btn-primary btn-lg" [disabled]="beneficiario.length == 3" (click)="abrirModalAgregarBeneficiario()">
               Agregar beneficiario
             </button>
           </div>
@@ -187,9 +231,9 @@
       </div>
       <hr class="hr-accordion-content">
       <div class="flex justify-content-center">
-        <div class="col-md-12">
+        <div class="col-md-11">
           <ng-container *ngIf="beneficiario.length < 1">
-            <h6 class="text-center">Agrega hasta 3 beneficiarios*</h6>
+            <h6 class="text-center">Agrega hasta 3 beneficiarios</h6>
           </ng-container>
           <ng-container *ngIf="beneficiario.length > 0">
 
@@ -202,9 +246,8 @@
                   <a (click)="abrirModalDetalleBeneficiario(beneficiarioElement)">
                     <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
                   </a>
-<!--                  Cambiar imagen por la de editar-->
-                  <a (click)="abrirModalDetalleBeneficiario(beneficiarioElement)">
-                    <img src="assets/images/imagen-icono-eliminar.svg" alt="icono editar">
+                  <a (click)="abrirModalModificarBeneficiario(beneficiarioElement)">
+                    <img src="assets/images/imagen-icono-modificar.svg" alt="icono editar">
                   </a>
                   <a (click)="abrirModalEliminarBeneficiario(beneficiarioElement)">
                     <img src="assets/images/imagen-icono-eliminar.svg" alt="icono eliminar">
@@ -226,99 +269,106 @@
     <app-table-panel>
       <ng-template appCustomTemplate="left-header">
         <div class="table-panel-header-column">
-          <span class="font-bold">{{fp.nombre.value}} {{fp.primerApellido.value}} {{fp.segundoApellido.value}} </span>
-          <span>Contratar convenio de previsión funeraria</span>
+          <span> Contratar convenio de previsión funeraria</span>
         </div>
       </ng-template>
-
       <div class="row m-4 table-panel-row">
+        <h2 class="subtitulo">Datos personales</h2>
         <div class="row mb-3">
-          <div class="col-md-4">
+          <div class="col-md-3">
             <span>CURP:</span><br/>
             <label> {{fp.curp.value}} </label>
           </div>
-          <div class="col-md-4">
-            <span>RFC:</span><br/>
+          <div class="col-md-3" *ngIf="fp.rfc.value">
+            <span>R.F.C:</span><br/>
             <label> {{fp.rfc.value}} </label>
           </div>
-          <div class="col-md-4">
-            <span>NSS:</span><br/>
-            <label> {{fp.nss.value}} </label>
+          <div class="col-md-3" *ngIf="this.fp.matricula.value">
+            <span>Matrícula:</span><br/>
+            <label> {{fp.matricula.value}} </label>
           </div>
         </div>
-        <hr class="hr-accordion-content">
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>Fecha de nacimiento:</span><br/>
-            <label> {{fp.fechaNacimiento.value | date}} </label>
+            <span>Nombre (s):</span><br/>
+            <label> {{fp.nombre.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>Sexo:</span><br/>
-            <label> {{fp.sexo.value}} </label>
+            <span>Primer apellido:</span><br/>
+            <label> {{fp.primerApellido.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>Nacionalidad:</span><br/>
-            <label> {{fp.nacionalidad.value}} </label>
-          </div>
-          <div class="col-md-3">
-            <span>Lugar de nacimiento:</span><br/>
-            <label> {{fp.lugarNacimiento.value}} </label>
+            <span>Segundo apellido:</span><br/>
+            <label> {{fp.segundoApellido.value}} </label>
           </div>
         </div>
-        <hr class="hr-accordion-content">
+
         <div class="row mb-3">
-          <div class="col-md-6">
+          <div class="col-md-3">
             <span>Correo electrónico:</span><br/>
             <label> {{fp.correoElectronico.value}} </label>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-3">
             <span>Teléfono:</span><br/>
             <label> {{fp.telefono.value}} </label>
           </div>
         </div>
-        <hr class="hr-accordion-content">
         <h2 class="subtitulo">Dirección</h2>
         <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-3">
             <span>Calle:</span><br/>
             <label> {{fp.calle.value}} </label>
           </div>
-          <div class="col-md-4">
-            <span>No. exterior:</span><br/>
+          <div class="col-md-3">
+            <span>Número exterior:</span><br/>
             <label> {{fp.noExterior.value}} </label>
           </div>
-          <div class="col-md-4">
-            <span>CP:</span><br/>
+          <div class="col-md-3">
+            <span>Número interior:</span><br/>
+            <label> {{fp.noInterior.value}} </label>
+          </div>
+          <div class="col-md-3">
+            <span>C.P.:</span><br/>
             <label> {{fp.cp.value}} </label>
           </div>
         </div>
-        <hr class="hr-accordion-content">
         <div class="row mb-4">
-          <div class="col-md-4">
-            <span>Colonia:</span><br/>
+          <div class="col-md-3">
+            <span>Asentamiento / Colonia:</span><br/>
             <label> {{fp.colonia.value}} </label>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <span>Municipio:</span><br/>
             <label> {{fp.municipio.value}} </label>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-3">
             <span>Estado:</span><br/>
             <label> {{fp.estado.value}} </label>
+          </div>
+          <div class="col-md-3">
+            <span>País:</span><br/>
+            <label> {{detallePais[0]?.label}} </label>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <span>Tipo de paquete:</span><br/>
+            <label> {{detalleTipoPaquete[0]?.label}} </label>
+          </div>
+          <div class="col-md-3">
+            <span>Enfermedad prexistente:</span><br/>
+            <label> {{detalleEnfermedad[0]?.label}} </label>
+          </div>
+          <div class="col-md-3" *ngIf="fp.enfermedadPrexistente.value == 4">
+            <span>Otro:</span><br/>
+            <label> {{fp.otraEnferdedad.value}} </label>
           </div>
         </div>
       </div>
       <div class="row mx-4 table-panel-row">
-        <div class="flex justify-content-between">
-          <div class="col-mb-3">
-            <h2 class="subtitulo">Beneficiarios</h2>
-            <h6>Agrega, edita y elimina beneficiarios</h6>
-          </div>
-        </div>
-        <hr class="hr-accordion-content">
+        <h2 class="subtitulo">Beneficiarios</h2>
         <div class="flex justify-content-center">
-          <div class="col-md-12">
-
+          <div class="col-md-11">
               <div *ngFor="let beneficiarioElement of beneficiario" class="row mb-3 border-panel">
                 <div class="col-md-9">
                   <span> {{beneficiarioElement.nombre}} {{beneficiarioElement.primerApellido}} {{beneficiarioElement.segundoApellido}} </span>
@@ -327,15 +377,40 @@
           </div>
         </div>
       </div>
-    </app-table-panel>
-    <div class="row mb-3">
-      <div class="col-md-12">
-        <span>*Campos obligatorios</span>
+      <div class="row mx-4 table-panel-row">
+          <h2 class="subtitulo">Documentación</h2>
+          <div class="col-md-12">
+            <div class="row p-3 table-panel-row">
+              <div class="col-md-12">
+                <div class="flex">
+                  <p-checkbox inputId="ineAfiliadoDetalle" [(ngModel)]="this.objectoConfirmacion.ineAfiliado" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
+                  <label [for]="'ineAfiliadoDetalle'" class="control-label"><strong>INE del afiliado </strong></label>
+                </div>
+              </div>
+            </div>
+            <div class="row p-3 table-panel-row">
+              <div class="col-md-12">
+                <div class="flex">
+                  <p-checkbox inputId="copiaCURPDetalle" [(ngModel)]="this.objectoConfirmacion.copiaCURP" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
+                  <label [for]="'copiaCURPDetalle'" class="control-label"><strong>Copia CURP </strong></label>
+                </div>
+              </div>
+            </div>
+            <div class="row p-3 table-panel-row">
+              <div class="col-md-12">
+                <div class="flex">
+                  <p-checkbox inputId="copiaRFCDetalle" [(ngModel)]="this.objectoConfirmacion.copiaRFC" [disabled]="true"  styleClass="mr-3" [binary]="true"></p-checkbox>
+                  <label [for]="'copiaRFCDetalle'" class="control-label"><strong>Copia RFC </strong></label>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
-    </div>
+
+    </app-table-panel>
     <div class="flex mt-4 justify-content-center">
-      <div class="col-md-6">
-        ¿Estás seguro que deseas agregar esta persona al convenio?
+      <div class="col-md-12">
+        <p class="text-center">¿Estás seguro de agregar este nuevo registro?</p>
       </div>
     </div>
   </ng-container>
@@ -343,8 +418,24 @@
     <div class="col-md-12 flex justify-content-end">
       <button type="button" *ngIf="indice > 0" class="btn btn-default btn-md ml-5" (click)="regresar()">Regresar</button>
       <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../" (click)="cancelar()">Cancelar</button>
-      <button type="submit" *ngIf="indice < menuStep.length" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
-      <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+      <button type="submit" *ngIf="indice < 2" [disabled]="personaForm.invalid"  class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
+      <button type="submit" *ngIf="indice == 2"  class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
+      <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="guardar()">Guardar</button>
     </div>
   </div>
 </div>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" [showHeader]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{infoPaqueteSeleccionado}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

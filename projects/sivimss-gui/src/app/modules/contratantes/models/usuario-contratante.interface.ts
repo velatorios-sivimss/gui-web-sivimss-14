@@ -1,27 +1,32 @@
 export interface UsuarioContratante {
-  id?: number;
+  idContratante?: number;
+  idPersona?: number;
   curp?: string;
   nss?: number;
   nombre?: string;
-  primerApellido?: string;
-  segundoApellido?: string;
+  paterno?: string;
+  materno?: string;
   rfc?: string;
-  sexo?: number;
-  sexoOtro?: string;
-  fechaNacimiento?: string;
-  nacionalidad?: number;
+  numSexo?: number;
+  otroSexo?: string;
+  sexo?: string;
+  fecNacimiento?: string;
+  nacionalidad?: string;
   pais?: number;
   lugarNacimiento?: string;
+  idEstado?: number;
+  idPais?: number;
   telefono?: number;
-  correoElectronico?: string;
+  correo?: string;
   calle?: string;
-  numeroExterior?: string;
-  numeroInterior?: string;
+  numExt?: string;
+  numInt?: string;
   cp?: number;
-  colonia?: string;
+  colonia?: string | null;
   municipio?: string;
   estado?: string;
   estatus?: boolean;
+  idDomicilio?: number;
 }
 
 export interface ConfirmarContratante {
@@ -30,7 +35,7 @@ export interface ConfirmarContratante {
 }
 
 export interface BusquedaContratante {
-  NomContratante?: string;
+  nomContratante?: string;
   idContratante?: number;
   estatus?: boolean,
   fecNacimiento?: string;
@@ -40,4 +45,16 @@ export interface BusquedaContratante {
   rfc?: string;
   idDomicilio?: number;
   nss?: string;
+}
+
+export interface ValorCP {
+  idCodigoPostal: number,
+  colonia: string,
+  municipio: string,
+  estado: string
+}
+
+export interface TipoCatalogo {
+  idCatalogo: number,
+  cp?: number
 }

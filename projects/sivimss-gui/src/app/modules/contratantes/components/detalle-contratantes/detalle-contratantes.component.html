@@ -1,28 +1,29 @@
 <app-table-panel>
   <ng-template appCustomTemplate="left-header">
     <div class="table-panel-header-column">
-      <span class="font-bold">ID {{contratante.id}}</span>
+      <span class="font-bold">ID {{contratante.idContratante}}</span>
     </div>
   </ng-template>
-  <ng-template *ngIf="(origen == 'detalle')" appCustomTemplate="right-header">
+  <ng-template appCustomTemplate="right-header">
     <div class="table-panel-header-column">
       <div class="flex flex-column">
         <span>Estatus</span>
-        <div class="contenedor-inputswitch">
-          <p-inputSwitch (onChange)="cambiarEstatus(contratante)" [(ngModel)]="contratante.estatus"></p-inputSwitch>
+        <div>
           <span class="activo" *ngIf="contratante.estatus">Activo</span>
           <span class="inactivo" *ngIf="!contratante.estatus">Inactivo</span>
         </div>
       </div>
-      <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
-        <img
-          src="assets/images/imagen-icono-barras-horizontales.svg"
-          alt="icono barras horizontales">
-      </a>
+      <div class="flex flex-column ml-5" style="cursor: pointer;" *ngIf="origen == 'detalle'">
+        <a (click)="overlayPanel.toggle($event)">
+          <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+        </a>
+      </div>
     </div>
   </ng-template>
   <div class="row table-panel-row">
-    <div class="row ml-6"><h2 class="subtitulo">Datos generales</h2></div>
+    <div class="row ml-6">
+      <h2 class="subtitulo">Datos generales</h2>
+    </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>RFC</label>
@@ -41,6 +42,13 @@
         <span> {{contratante.nss}} </span>
       </div>
     </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Fecha de nacimiento</label>
+        <span *ngIf="origen !== 'modificar'"> {{contratante.fecNacimiento}} </span>
+        <span *ngIf="origen === 'modificar'"> {{contratante.fecNacimiento | date:'dd-MM-YYYY'}} </span>
+      </div>
+    </div>
   </div>
   <div class="row table-panel-row">
     <div class="col-md-3">
@@ -52,19 +60,23 @@
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Primer apellido</label>
-        <span> {{contratante.primerApellido}} </span>
+        <span> {{contratante.paterno}} </span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Segundo apellido</label>
-        <span> {{contratante.segundoApellido}} </span>
+        <span> {{contratante.materno}} </span>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="table-panel-column">
-        <label>Fecha de nacimiento</label>
-        <span> {{contratante.fechaNacimiento}} </span>
+      <div class="table-panel-column" *ngIf="tipoSexoDesc !== 'Otro'">
+        <label>Sexo</label>
+        <span> {{tipoSexoDesc}} </span>
+      </div>
+      <div class="table-panel-column" *ngIf="tipoSexoDesc === 'Otro'">
+        <label>Sexo</label>
+        <span> {{contratante.otroSexo || contratante.sexo}} </span>
       </div>
     </div>
   </div>
@@ -75,10 +87,16 @@
         <span> {{contratante.nacionalidad}} </span>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3" *ngIf="contratante.nacionalidad === 'Mexicana'">
       <div class="table-panel-column">
         <label>Lugar de nacimiento</label>
         <span> {{contratante.lugarNacimiento}} </span>
+      </div>
+    </div>
+    <div class="col-md-3" *ngIf="contratante.nacionalidad !== 'Mexicana'">
+      <div class="table-panel-column">
+        <label>País</label>
+        <span> {{contratante.pais}} </span>
       </div>
     </div>
     <div class="col-md-3">
@@ -89,16 +107,18 @@
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Sexo</label>
-        <span> {{contratante.sexo}} </span>
+        <label>Correo</label>
+        <span> {{contratante.correo}} </span>
       </div>
     </div>
   </div>
   <div class="row table-panel-row">
-    <div class="row ml-6"><h2 class="subtitulo">Domicilio</h2></div>
+    <div class="row ml-6">
+      <h2 class="subtitulo">Domicilio</h2>
+    </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Código postal</label>
+        <label>C.P.</label>
         <span> {{contratante.cp}} </span>
       </div>
     </div>
@@ -110,24 +130,18 @@
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Núm. exterior</label>
-        <span> {{contratante.numeroExterior}} </span>
+        <label>Número exterior</label>
+        <span> {{contratante.numExt}} </span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
-        <label>Núm. interior</label>
-        <span> {{contratante.numeroInterior}} </span>
+        <label>Número interior</label>
+        <span> {{contratante.numInt}} </span>
       </div>
     </div>
   </div>
   <div class="row table-panel-row">
-    <div class="col-md-3">
-      <div class="table-panel-column">
-        <label>País</label>
-        <span> {{contratante.pais}} </span>
-      </div>
-    </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Estado</label>
@@ -140,25 +154,32 @@
         <span> {{contratante.municipio}} </span>
       </div>
     </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Colonia</label>
+        <span> {{contratante.colonia}} </span>
+      </div>
+    </div>
   </div>
 </app-table-panel>
 <section>
-  <ng-container *ngIf="origen == 'detalle'">
+  <ng-container *ngIf="origen === 'detalle'">
     <div class="flex justify-content-end">
-      <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
-        Aceptar
+      <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="aceptar()">
+        Cerrar
       </button>
     </div>
   </ng-container>
-  <ng-container *ngIf="origen != 'detalle'">
+  <ng-container *ngIf="origen !== 'detalle'">
     <div class="row my-6">
       <div class="col-md-12">
-        <p class="etiqueta-base text-center">{{mensaje}}</p>
+        <p class="etiqueta-base text-center">{{mensaje}} {{contratante.nombre}} {{contratante.paterno}}
+          {{contratante.materno}}</p>
       </div>
     </div>
     <div class="flex justify-content-end">
       <button class="ml-4 mt-3 btn btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-      <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+      <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="aceptar()">
         Aceptar
       </button>
     </div>
@@ -167,7 +188,8 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarContratante()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar"
+        (click)="abrirModalModificarContratante()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
