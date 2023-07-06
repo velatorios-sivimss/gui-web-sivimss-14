@@ -96,6 +96,9 @@ export class DatosFinadoComponent implements OnInit {
   radonlyEstremidad: boolean = false;
   radonlyCurp: boolean = false;
   idContratante: number | null = null;
+  fechaActual = new Date();
+
+
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -169,14 +172,12 @@ export class DatosFinadoComponent implements OnInit {
         ],
         esObito: [
           { value: datosEtapaFinado.datosFinado.esObito, disabled: false },
-          [Validators.required],
         ],
         esParaExtremidad: [
           {
             value: datosEtapaFinado.datosFinado.esParaExtremidad,
             disabled: false,
-          },
-          [Validators.required],
+          }
         ],
         matricula: [
           { value: datosEtapaFinado.datosFinado.matricula, disabled: false },
@@ -393,6 +394,9 @@ export class DatosFinadoComponent implements OnInit {
                 this.datosFinado.nacionalidad.setValue(2);
               }
             }
+
+            this.cambiarTipoSexo();
+            this.cambiarNacionalidad();
             return;
           }
           this.limpiarConsultaDatosPersonales();
@@ -787,6 +791,7 @@ export class DatosFinadoComponent implements OnInit {
     this.datosFinado.unidadProcedencia.setValue(null);
     this.datosFinado.unidadProcedencia.clearValidators();
     this.datosFinado.unidadProcedencia.updateValueAndValidity();
+    console.log(this.form)
   }
 
   changeUnidad(): void {

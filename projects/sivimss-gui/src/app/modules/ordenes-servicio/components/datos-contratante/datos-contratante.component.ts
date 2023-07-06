@@ -95,6 +95,9 @@ export class DatosContratanteComponent implements OnInit {
   idPersona: number | null = null;
   idContratante: number | null = null;
   idDomicilio: number | null = null;
+
+  fechaActual = new Date();
+
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -668,9 +671,7 @@ export class DatosContratanteComponent implements OnInit {
         estado: formulario.direccion.estado,
       },
     };
-    console.log(datosEtapaContratante);
 
-    console.log('datos contratanete', datosEtapaContratante);
     this.altaODS.idEstatus = null;
     this.altaODS.idOperador = null;
     this.altaODS.idParentesco =
@@ -723,11 +724,6 @@ export class DatosContratanteComponent implements OnInit {
     );
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
 
-    console.log(
-      'se asignaron los calle',
-      datosEtapaContratante.direccion.calle
-    );
-    console.log('se asignaron los valores ante de mandarlso', this.altaODS);
   }
 
   get datosContratante() {

@@ -32,6 +32,8 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import { finalize } from 'rxjs';
 
 import * as moment from 'moment';
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {Panteon} from "../../models/Panteon.interface";
 @Component({
   selector: 'app-informacion-servicio',
   templateUrl: './informacion-servicio.component.html',
@@ -68,13 +70,15 @@ export class InformacionServicioComponent implements OnInit {
   informacionServicioVelacion: InformacionServicioVelacionInterface =
     {} as InformacionServicioVelacionInterface;
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
-  idVelatorio: number = 1;
+  idVelatorio!: number;
   capillas: any[] = [];
   salas: any[] = [];
   promotores: any[] = [];
   idPanteon: number | null = null;
   validaDomicilio: boolean = false;
   tipoOrden: number = 0;
+  fechaActual= new Date();
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -106,6 +110,8 @@ export class InformacionServicioComponent implements OnInit {
     this.informacionServicioVelacion.cp = this.cpVelacion;
   }
   ngOnInit(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.idVelatorio = +usuario.idVelatorio;
     this.gestionarEtapasService.datosEtapaInformacionServicio$
       .asObservable()
       .subscribe((datosEtapaInformacionServicio) =>
@@ -428,14 +434,14 @@ export class InformacionServicioComponent implements OnInit {
     const ref = this.dialogService.open(ModalAgregarPanteonComponent, {
       header: 'Agregar panteón',
       style: { maxWidth: '876px', width: '100%' },
-      data: {
-        dummy: '', //Pasa info a ModalAgregarPanteonComponent
-      },
     });
-    ref.onClose.subscribe((val: boolean) => {
+    ref.onClose.subscribe((val: number) => {
       if (val) {
-        //Obtener info cuando se cierre el modal en ModalAgregarPanteonComponent
+        this.idPanteon = val
+        this.inhumacion.agregarPanteon.disable();
+        return
       }
+      this.inhumacion.agregarPanteon.setValue(false);
     });
   }
 

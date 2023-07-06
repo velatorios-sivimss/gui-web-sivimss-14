@@ -48,6 +48,7 @@ import { Dropdown } from 'primeng/dropdown';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { ModalEliminarArticuloComponent } from '../modal-eliminar-articulo/modal-eliminar-articulo.component';
 import { ModalDonarArticuloComponent } from '../modal-donar-articulo/modal-donar-articulo.component';
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-caracteristicas-presupuesto',
@@ -104,7 +105,7 @@ export class CaracteristicasPresupuestoComponent
   tipoAsignacion: any[] = [];
   idServicio: number | null = null;
   listaproveedor: any[] = [];
-  idVelatorio: number = 1; /// falta agregarlo del front
+  idVelatorio!: number;
   mostrarDonarAtaud: boolean = true;
   fila: number = 0;
   utilizarArticulo: boolean | null = null;
@@ -156,6 +157,8 @@ export class CaracteristicasPresupuestoComponent
   }
 
   ngOnInit(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.idVelatorio = +usuario.idVelatorio;
     this.buscarPaquetes();
     this.gestionarEtapasService.altaODS$
       .asObservable()

@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
 import { MensajeSistema } from '../../../models/mensaje-sistema';
+import {Panteon} from "../models/Panteon.interface";
 
 @Injectable()
 export class GenerarOrdenServicioService extends BaseService<
@@ -222,5 +223,15 @@ export class GenerarOrdenServicioService extends BaseService<
     return this._http.get<HttpRespuesta<any>>(
       `${environment.api.servicios_externos}consultar/siap/${matricula}`
     );
+  }
+
+  consultarDatosPanteon(nombrePanteon: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-buscar-panteon`,
+      {nombrePanteon: nombrePanteon})
+  }
+
+  guardarPanteon(objetoGuardarPanteon: Panteon): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/orden-guardar-panteon`,
+      objetoGuardarPanteon)
   }
 }
