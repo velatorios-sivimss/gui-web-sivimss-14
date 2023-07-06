@@ -22,10 +22,14 @@ import { BalanceCajaService } from './services/balance-caja.service';
 import { CalculoComisionesoRoutingModule } from './balance-caja.routing.module';
 import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import { ModificarPagoComponent } from './components/modificar-pago/modificar-pago.component';
+import { RealizarCierreComponent } from './components/realizar-cierre/realizar-cierre.component';
 
 @NgModule({
   declarations: [
-    BalanceCajaComponent
+    BalanceCajaComponent,
+    ModificarPagoComponent,
+    RealizarCierreComponent
   ],
   imports: [
     CalendarModule,

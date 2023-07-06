@@ -8,6 +8,6 @@ export interface BalanceCaja {
   estatus: string;
 }
 
-
-
-
+export interface ModificarPagoInterface {
+  modificarPago?: string;
+}

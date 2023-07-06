@@ -22,6 +22,8 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
 import { CATALOGOS_DUMMIES, CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
+import { ModificarPagoComponent } from '../modificar-pago/modificar-pago.component';
+import { RealizarCierreComponent } from '../realizar-cierre/realizar-cierre.component';
 
 type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
 
@@ -43,8 +45,6 @@ export class BalanceCajaComponent implements OnInit {
   balanceCaja: BalanceCaja[] = [];
   balanceCajaSeleccionado!: BalanceCaja;
   filtroFormBalanceCaja!: FormGroup;
-  creacionRef!: DynamicDialogRef;
-  detalleRef!: DynamicDialogRef;
   modificacionRef!: DynamicDialogRef;
 
   catalogoNiveles: TipoDropdown[] = [];
@@ -53,7 +53,7 @@ export class BalanceCajaComponent implements OnInit {
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
-
+  ventanaConfirmacion: boolean = false;
   paginacionConFiltrado: boolean = false;
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
@@ -221,20 +221,35 @@ export class BalanceCajaComponent implements OnInit {
   }
 
   abrirModalModificarPago(): void {
-    /*
-    this.creacionRef = this.dialogService.open(ModificarCapillaComponent, {
-      header: "Modificar capilla",
-      width: "920px",
-      data: {capilla: this.balanceCajaSeleccionado, origen: "modificar"},
+    this.modificacionRef = this.dialogService.open(ModificarPagoComponent, {
+      header: 'Modificar pago',
+      width: '920px',
+      data: { valeSeleccionado: this.balanceCajaSeleccionado },
     });
 
-    this.creacionRef.onClose.subscribe((estatus: boolean) => {
-      if (estatus) {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Capilla modificada correctamente');
-        this.paginarPorFiltros();
-      }
+    this.modificacionRef.onClose.subscribe(() => {
+      this.paginar();
     })
-    */
+  }
+
+  
+  abrirModalCierre(): void {
+    this.modificacionRef = this.dialogService.open(RealizarCierreComponent, {
+      header: 'Cierre',
+      width: '920px',
+      data: { valeSeleccionado: this.balanceCajaSeleccionado },
+    });
+
+    this.modificacionRef.onClose.subscribe(() => {
+      this.paginar();
+    })
+  }
+
+  aceptar(){
+  }
+
+  cerrar(): void {
+    this.modificacionRef.close();
   }
 
   get f() {

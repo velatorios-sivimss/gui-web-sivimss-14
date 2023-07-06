@@ -60,6 +60,7 @@
 <section class="mt-5">
     <div class="flex justify-content-between align-items-center">
         <h2 class="subtitulo">Pagos</h2>
+        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button>
     </div>
 
     <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
@@ -73,6 +74,7 @@
                 <th id="columna_generar_recibo_estatus_ods">Tipo de ingreso</th>
                 <th id="columna_generar_recibo_estatus_pago">Metodo Pago</th>
                 <th id="columna_generar_recibo_botones">Estatus caja</th>
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-balance>
