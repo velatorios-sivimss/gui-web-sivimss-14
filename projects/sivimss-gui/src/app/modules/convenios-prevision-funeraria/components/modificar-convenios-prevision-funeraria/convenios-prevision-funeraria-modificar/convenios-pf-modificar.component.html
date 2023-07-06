@@ -83,8 +83,10 @@
         <app-por-persona [folioConvenio]="folioConvenioPersona"
                          [confirmacionGuardado]="confirmarGuardadoPersona"
                          [consultarFormularioValido]="consultarFormularioValido"
+                         [escenario]="'modificar'"
                          (formularioValido)="validarFormularioPersona($event)"
                          (formularioPersona)="datosFormularioPersona($event)"
+
         ></app-por-persona>
       </ng-container>
       <ng-container *ngIf="ff.tipoContratacion.value== 2" >
@@ -92,6 +94,7 @@
                          [confirmacionGuardado]="confirmacionGuardadoEmpresa"
                          [consultarFormularioValido]="consultarFormularioValido"
                          [existePersona]="existePersona"
+                         [escenario]="'modificar'"
                          (guardarFormularioPrincipal)="guardarFormularioLocalStorage($event)"
                          (formularioValido)="validarFormularioEmpresa($event)"
                          (formularioEmpresa)="datosFormularioEmpresa($event)">
@@ -152,10 +155,12 @@
                                [objetoDetallePersona]="modeloGuardarPersona"
                                [confirmarGuardarPersona]="banderaGuardarPersona"
                                [confirmarGuardarEmpresa]="banderaGuardarEmpresa"
+                               [escenario]="escenario"
+
   ></app-detalle-guarda-convenio>
   <div class="flex mt-4 justify-content-center">
     <div class="col-md-12">
-      <p class="text-center">¿Estás seguro de agregar este nuevo registro?</p>
+      <p class="text-center">¿Estás seguro de modificar el registro?</p>
     </div>
   </div>
 </ng-container>

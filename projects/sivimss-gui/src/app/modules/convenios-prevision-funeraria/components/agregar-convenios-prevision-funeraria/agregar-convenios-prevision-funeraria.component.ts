@@ -291,7 +291,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     const datosUsuario = JSON.parse(localStorage.getItem('usuario') as string);
     return{
       idVelatorio: datosUsuario.idVelatorio,
-      nombreVelatorio: "",
+      nombreVelatorio: this.velatorioDescripcion,
       indTipoContratacion: this.ff.tipoContratacion.value,
       idPromotor: this.ff.listaPromotor.value,
 
@@ -308,8 +308,8 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
        nombreVelatorio: this.velatorioDescripcion,
        indTipoContratacion: this.ff.tipoContratacion.value,
        idPromotor: this.ff.listaPromotor?.value ?? "",
-       numeroConvenio: this.ff.numeroConvenio.value,
-       rfcCurp: this.ff.rfcCurp?.value ?? "",
+       // numeroConvenio: this.ff.numeroConvenio.value,
+       // rfcCurp: this.ff.rfcCurp?.value ?? "",
        empresa:{
          nombreEmpresa: event.nombre,
          razonSocial: event.razonSocial,
@@ -338,7 +338,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       nombreVelatorio: this.velatorioDescripcion,
       indTipoContratacion: this.ff.tipoContratacion.value.toString(),
       idPromotor: this.ff.listaPromotor.value ? this.ff.listaPromotor.value.toString() : "",
-      idPersona :event?.idPersona.toString() ?? null,
+      idPersona :event.idPersona ? event.idPersona.toString() : null,
       idDomicilio :null,
       idContratante :null,
 

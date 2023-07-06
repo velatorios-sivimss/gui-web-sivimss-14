@@ -76,6 +76,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   detalleTipoPaquete!: any;
   infoPaqueteSeleccionado!: any;
   respuesta: any;
+  flujo!: any;
 
 
   constructor(
@@ -91,6 +92,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   }
 
   ngOnInit(): void {
+    this.flujo = localStorage.getItem('flujo');
     this.respuesta = this.route.snapshot.data['respuesta'];
     this.estado = this.respuesta[this.POSICION_ESTADOS]!.map(
       (estado: TipoDropdown) => (
@@ -208,6 +210,10 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     personasAgregadas = this.objectoConfirmacion
     // personasAgregadas.push(this.objectoConfirmacion);
     localStorage.setItem('persona',JSON.stringify(personasAgregadas));
+    if(this.flujo.includes('modificar')){
+      this.router.navigate(['convenios-prevision-funeraria/modificar-nuevo-convenio']);
+      return
+    }
     this.router.navigate(['convenios-prevision-funeraria/ingresar-nuevo-convenio']);
   }
 
