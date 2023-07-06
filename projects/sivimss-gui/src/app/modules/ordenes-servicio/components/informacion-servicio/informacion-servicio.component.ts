@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, Renderer2} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ModalAgregarAtaudComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-ataud/modal-agregar-ataud.component';
@@ -34,10 +34,15 @@ import { finalize } from 'rxjs';
 import * as moment from 'moment';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {Panteon} from "../../models/Panteon.interface";
+import {Router} from "@angular/router";
+import {ConsultarOrdenServicioService} from "../../services/consultar-orden-servicio.service";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 @Component({
   selector: 'app-informacion-servicio',
   templateUrl: './informacion-servicio.component.html',
   styleUrls: ['./informacion-servicio.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class InformacionServicioComponent implements OnInit {
   @Output()
@@ -87,7 +92,11 @@ export class InformacionServicioComponent implements OnInit {
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasService
+    private gestionarEtapasService: GestionarEtapasService,
+    private router: Router,
+    private consultarOrdenServicioService: ConsultarOrdenServicioService,
+    private renderer: Renderer2,
+    private descargaArchivosService: DescargaArchivosService,
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -669,7 +678,17 @@ export class InformacionServicioComponent implements OnInit {
 
             return;
           }
-          alert('se guardo');
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio);
+          this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+          const ExitoMsg: string =
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+              parseInt(respuesta.mensaje)
+            );
+          this.alertaService.mostrar(
+            TipoAlerta.Exito,
+            ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
+          );
+          this.router.navigate(["ordenes-de-servicio"]);
         },
         (error: HttpErrorResponse) => {
           try {
@@ -691,6 +710,62 @@ export class InformacionServicioComponent implements OnInit {
           }
         }
       );
+  }
+
+  descargarContratoServInmediatos(idOrdenServicio:number ): void{
+    this.loaderService.activar()
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(idOrdenServicio).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
+  }
+
+  descargarOrdenServicio(idOrdenServicio:number, idEstatus:number): void {
+    this.loaderService.activar()
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    this.consultarOrdenServicioService.generarArchivoOrdenServicio(
+      idOrdenServicio,idEstatus
+    ).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
   }
 
   desabilitarTodo(): void {

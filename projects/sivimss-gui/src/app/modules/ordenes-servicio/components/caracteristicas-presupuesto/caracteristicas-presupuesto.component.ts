@@ -63,6 +63,8 @@ export class CaracteristicasPresupuestoComponent
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
+  dd!: Dropdown;
+
   paqueteSeleccionado: any;
   form!: FormGroup;
 
@@ -252,6 +254,7 @@ export class CaracteristicasPresupuestoComponent
 
   detallePaqueteFunction(dd: Dropdown): void {
     let nombrePaquete = dd.selectedOption.label;
+    this.dd = dd.selectedOption.value;
     this.mostrarTIpoOtorgamiento = false;
     if (nombrePaquete.trim() == 'Paquete social') {
       this.mostrarTIpoOtorgamiento = true;
@@ -579,7 +582,6 @@ export class CaracteristicasPresupuestoComponent
   }
 
   agregarArticulo(datos: any): void {
-    console.log(datos);
     datos.proviene = 'paquete';
     this.paquete.activo = 1;
     this.paquete.cantidad = datos.cantidad ?? null;
@@ -1008,5 +1010,48 @@ export class CaracteristicasPresupuestoComponent
         this.totalpresupuesto();
       }
     });
+  }
+
+  validacionFormulario(): boolean {
+
+    let banderaPaquete = false;
+    let banderaPresupuesto = false;
+
+    if(this.tipoOrden == 1){
+      this.datosPresupuesto.forEach(function (datos){
+        if(datos.proviene.includes('paquete') && datos.utilizarArticulo.includes('true')){
+          banderaPaquete = true;
+        }
+        if(datos.proviene.includes('presupuesto')){
+          banderaPresupuesto = true;
+        }
+      })
+      if(banderaPaquete && banderaPresupuesto && this.form.valid && this.dd){
+        return false
+      }
+    }
+
+    if(this.tipoOrden == 2){
+      this.datosPresupuesto.forEach(function (datos){
+        if(datos.proviene.includes('paquete') && datos.utilizarArticulo.includes('true')){
+          banderaPaquete = true;
+        }
+      })
+      if(banderaPaquete && this.form.valid && this.dd){
+        return false
+      }
+    }
+
+    if(this.tipoOrden == 3){
+      this.datosPresupuesto.forEach(function (datos){
+        if(datos.proviene.includes('presupuesto')){
+          banderaPresupuesto = true;
+        }
+      })
+      if(banderaPresupuesto && this.form.valid){
+        return false
+      }
+    }
+    return true
   }
 }

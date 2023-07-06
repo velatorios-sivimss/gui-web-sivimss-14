@@ -55,6 +55,7 @@ import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module
 import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module';
 import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-servicio/actualizar-orden-servicio.component';
 import { ModificarDatosCaracteristicasContratanteComponent } from './components/modificar-datos-caracteristicas-contratante/modificar-datos-caracteristicas-contratante.component';
+import { ModalConvenioPfComponent } from './components/modal-convenio-pf/modal-convenio-pf.component';
 @NgModule({
   declarations: [
     OrdenesServicioComponent,
@@ -88,6 +89,7 @@ import { ModificarDatosCaracteristicasContratanteComponent } from './components/
     ModalAgregarArticulosComplementariosComponent,
     ActualizarOrdenServicioComponent,
     ModificarDatosCaracteristicasContratanteComponent,
+    ModalConvenioPfComponent,
   ],
   imports: [
     CommonModule,

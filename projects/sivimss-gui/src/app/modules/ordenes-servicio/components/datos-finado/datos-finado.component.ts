@@ -38,6 +38,8 @@ import { ServicioDetalleTrasladotoInterface } from '../../models/ServicioDetalle
 import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.interface';
 import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
+import {ModalConvenioPfComponent} from "../modal-convenio-pf/modal-convenio-pf.component";
+import {Persona} from "../../models/Persona.interface";
 
 @Component({
   selector: 'app-datos-finado',
@@ -97,6 +99,7 @@ export class DatosFinadoComponent implements OnInit {
   radonlyCurp: boolean = false;
   idContratante: number | null = null;
   fechaActual = new Date();
+  validacionPersonaConvenio: boolean = false;
 
 
   constructor(
@@ -108,7 +111,7 @@ export class DatosFinadoComponent implements OnInit {
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private gestionarEtapasService: GestionarEtapasService
+    private gestionarEtapasService: GestionarEtapasService,
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -230,7 +233,7 @@ export class DatosFinadoComponent implements OnInit {
           [Validators.required],
         ],
         edad: [
-          { value: datosEtapaFinado.datosFinado.edad, disabled: false },
+          { value: datosEtapaFinado.datosFinado.edad, disabled: true },
           [Validators.required],
         ],
         sexo: [
@@ -324,7 +327,7 @@ export class DatosFinadoComponent implements OnInit {
           [Validators.required],
         ],
         municipio: [
-          { value: datosEtapaFinado.direccion.municipio, disabled: false },
+          { value: datosEtapaFinado.direccion.municipio, disabled: true },
           [Validators.required],
         ],
         estado: [
@@ -335,7 +338,7 @@ export class DatosFinadoComponent implements OnInit {
     });
     this.cambiarValidacionNSS();
     this.cambiarValidacionMatricula();
-    this.esEstremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
+    this.esExtremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
     this.esObito(datosEtapaFinado.datosFinado.esObito);
   }
 
@@ -799,7 +802,7 @@ export class DatosFinadoComponent implements OnInit {
     this.datosFinado.clinicaAdscripcion.clearValidators();
     this.datosFinado.clinicaAdscripcion.updateValueAndValidity();
   }
-  esEstremidad(validacion: boolean): void {
+  esExtremidad(validacion: boolean): void {
     const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
 
     if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
@@ -951,6 +954,7 @@ export class DatosFinadoComponent implements OnInit {
   }
   agregarValidaciones(): void {
     Object.keys(this.datosFinado).forEach((key) => {
+      if(key.includes('esObito') || key.includes('esParaExtremidad'))return;
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
@@ -991,5 +995,43 @@ export class DatosFinadoComponent implements OnInit {
           console.log(error);
         }
       );
+  }
+
+  consultarFolioPf(event:any): void {
+
+    const ref = this.dialogService.open(ModalConvenioPfComponent, {
+      header: 'Número de contrato',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {folio:this.datosFinado.noContrato.value},
+    })
+    ref.onClose.subscribe((persona:Persona) => {
+      let [anio, mes, dia]:any = persona.fechaNac?.split('-');
+      this.validacionPersonaConvenio = true;
+      dia = dia.substr(0, 2);
+      const fecha = new Date(anio + '/' + mes + '/' + dia);
+      this.datosFinado.matricula.setValue(persona.matricula);
+      this.datosFinado.curp.setValue(persona.curp);
+      this.datosFinado.nss.setValue(persona.nss);
+      this.datosFinado.nombre.setValue(persona.nomPersona);
+      this.datosFinado.primerApellido.setValue(
+        persona.primerApellido
+      );
+      this.datosFinado.segundoApellido.setValue(
+        persona.segundoApellido
+      );
+      this.datosFinado.fechaNacimiento.setValue(fecha);
+      this.datosFinado.sexo.setValue(persona?.sexo);
+      if (Number(persona.idPais) == 119) {
+        this.datosFinado.nacionalidad.setValue(1);
+        this.datosFinado.lugarNacimiento.setValue(Number(persona.idEstado));
+      } else {
+        this.datosFinado.nacionalidad.setValue(2);
+        this.datosFinado.paisNacimiento.setValue(Number(persona.idPais));
+      }
+      this.datosFinado.sexo.setValue(Number(persona.sexo));
+      this.datosFinado.otroTipoSexo.setValue(persona.otroSexo);
+      this.cambiarTipoSexo();
+      this.cambiarNacionalidad();
+    });
   }
 }

@@ -58,16 +58,16 @@
           *ngIf="f.kilometraje?.errors?.required && (f.kilometraje?.dirty || f.kilometraje?.touched)">Campo
           obligatorio</span>
       </div>
-      <div class="col-md-6 flex justify-content-end">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
         <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar
         </button>
-        <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
       </div>
     </div>
-    <div class="row mb-3 flex align-items-end" *ngIf="ocultarBtn">
+    <div class="col-md-12 flex justify-content-end" *ngIf="ocultarBtn">
+      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
       <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar
       </button>
-      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
     </div>
   </form>
 </ng-template>
@@ -127,9 +127,11 @@
       <span class="etiqueta-base">¿Estás seguro que deseas agregar este servicio?</span>
     </div>
   </div>
-  <div class="flex justify-content-end">
-    <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar</button>
-    <button type="button" class="btn btn-gold btn-md" (click)="mostrarSeccionCreacion = true">Cancelar</button>
+  <div class="row">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-gold btn-md" (click)="mostrarSeccionCreacion = true">Cancelar</button>
+      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar</button>
 
+    </div>
   </div>
 </ng-template>

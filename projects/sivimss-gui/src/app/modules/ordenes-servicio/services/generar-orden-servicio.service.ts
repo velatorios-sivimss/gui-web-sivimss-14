@@ -234,4 +234,24 @@ export class GenerarOrdenServicioService extends BaseService<
     return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/orden-guardar-panteon`,
       objetoGuardarPanteon)
   }
+
+  consultarContratoPf(folio: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-consultar-contratoPf`,
+      folio)
+  }
+
+  consultarContratantesPf(idContrato: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-consultar-contratantes-contratoPf`,
+      {idContrato:idContrato})
+  }
+
+  consultarBeneficiariosPf(idContrato: number,idContratante:number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-consultar-contratantes-benficiarios`,
+      {idContrato:idContrato,idContratante:idContratante})
+  }
+
+  consultarPersona(idPersona: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-persona-consultar`,
+      {idPersona:idPersona})
+  }
 }

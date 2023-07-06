@@ -235,7 +235,7 @@
 
 <div class="row my-4 flex align-items-center">
   <div class="col-md-3">
-    <button type="button" (click)="preorden()" class="btn btn-lg btn-primary">Guardar pre-orden</button>
+    <button type="button" (click)="preorden()" [disabled]="form.invalid"  class="btn btn-lg btn-primary">Guardar pre-orden</button>
   </div>
   <div class="col-md-9">
     <span class="etiqueta-base">En caso de que no termines de generar esta orden de servicio, será guardada con el
@@ -247,6 +247,6 @@
   <div class="col-md-12 flex justify-content-end align-items-center">
     <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
     <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-    <button type="button" class="btn btn-md btn-primary ml-5" (click)="generada()">Generar orden de servicio</button>
+    <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="form.invalid" (click)="generada()">Generar orden de servicio</button>
   </div>
 </div>
