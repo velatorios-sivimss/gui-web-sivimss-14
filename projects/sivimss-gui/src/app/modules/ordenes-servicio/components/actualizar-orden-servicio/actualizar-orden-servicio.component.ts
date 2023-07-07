@@ -121,7 +121,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log('que trajo', respuesta);
+          console.log('que trajo', respuesta.datos);
           this.gestionarEtapasService.datosContratante$.next(respuesta.datos);
           this.gestionarEtapasService.datosConsultaODS$.next(respuesta.datos);
         },

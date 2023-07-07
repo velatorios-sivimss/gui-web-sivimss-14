@@ -104,8 +104,8 @@ export class GestionarEtapasActualizacionService {
     },
   ];
 
-  datosContratante: any[] = [];
-  datosConsultaODS = [];
+  datosContratante = {};
+  datosConsultaODS = {};
   etapas$: BehaviorSubject<Etapa[]> = new BehaviorSubject<Etapa[]>(this.etapas);
   idEtapaSeleccionada$: BehaviorSubject<number> = new BehaviorSubject<number>(
     0

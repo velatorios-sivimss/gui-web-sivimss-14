@@ -179,16 +179,12 @@ export class ModificarDatosContratanteComponent
   }
 
   ngAfterContentInit() {
-    this.cambiarValidacion();
-    this.cambiarTipoSexo();
-    this.cambiarNacionalidad();
+    // this.cambiarValidacion();
+    // this.cambiarTipoSexo();
+    // this.cambiarNacionalidad();
   }
 
-  inicializarForm(datos: any, idODS: number, tipoODS: number) {
-    console.log('llego despues', datos.contratante.matricula);
-    console.log('llego despues', datos);
-    let fehca = '04/08/2015';
-
+  inicializarForm(datos: any, idODS: number, tipoODS: number): void {
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
         matricula: [
@@ -241,7 +237,7 @@ export class ModificarDatosContratanteComponent
         ],
         fechaNacimiento: [
           {
-            value: fehca,
+            value: datos.contratante.fechaNac,
             disabled: true,
           },
           [Validators.required],
@@ -350,13 +346,17 @@ export class ModificarDatosContratanteComponent
         ],
       }),
     });
-    console.log('fecha', datos.contratante.fechaNac);
+
     if (tipoODS == 1) {
       this.idODS = idODS;
       this.altaODS.idOrdenServicio = idODS;
     }
     this.idContratante = Number(datos.contratante.idContratante);
-    this.idPersona = datos.datosContratante.idPersona;
+    this.idPersona = datos.contratante.idPersona;
+
+    if (datos.contratante.matricula == null ? false : true) {
+      this.radonlyMatricula = true;
+    }
   }
 
   async cambiarValidacion() {
@@ -373,6 +373,7 @@ export class ModificarDatosContratanteComponent
       this.datosContratante.matricula.value
     );
   }
+
   consultarMatriculaSiap(): void {
     this.loaderService.activar();
 
@@ -394,6 +395,7 @@ export class ModificarDatosContratanteComponent
         }
       );
   }
+
   consultarCURP(): void {
     if (!this.datosContratante.curp.value) {
       return;
@@ -405,7 +407,6 @@ export class ModificarDatosContratanteComponent
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
-            console.log('curp', respuesta);
             if (respuesta.mensaje.includes('Externo')) {
               this.idPersona = null;
               this.idContratante = null;
@@ -457,7 +458,7 @@ export class ModificarDatosContratanteComponent
               }
 
               this.datosContratante.rfc.setValue(datos.rfc);
-              console.log(datos);
+
               this.datosContratante.paisNacimiento.setValue(
                 Number(datos.idPais)
               );
@@ -514,7 +515,6 @@ export class ModificarDatosContratanteComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           if (respuesta.datos.length > 0) {
             let datos = respuesta.datos[0];
             this.idPersona = datos.idPersona;
@@ -701,47 +701,46 @@ export class ModificarDatosContratanteComponent
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    let datosEtapaContratante = [
-      {
-        idOrdenServicio: this.idODS,
-        idParentesco: 2,
-        contratante: {
-          idPersona: this.idPersona,
-          idContratante: this.idContratante,
-          rfc: formulario.datosContratante.rfc,
-          curp: formulario.datosContratante.curp,
-          nss: null,
-          nomPersona: formulario.datosContratante.nombre,
-          primerApellido: formulario.datosContratante.primerApellido,
-          segundoApellido: formulario.datosContratante.segundoApellido,
-          sexo: formulario.datosContratante.sexo,
-          otroSexo: formulario.datosContratante.otroTipoSexo,
-          fechaNac: formulario.datosContratante.fechaNacimiento,
-          nacionalidad: formulario.datosContratante.nacionalidad,
-          idPais: formulario.datosContratante.paisNacimiento,
-          idEstado: formulario.datosContratante.lugarNacimiento,
-          telefono: formulario.datosContratante.telefono,
-          correo: formulario.datosContratante.correoElectronico,
-          matricula: formulario.datosContratante.matricula,
-          cp: {
-            idDomicilio: this.idDomicilio,
-            desCalle: formulario.direccion.calle,
-            numExterior: formulario.direccion.noExterior,
-            numInterior: formulario.direccion.noInterior,
-            codigoPostal: formulario.direccion.cp,
-            desColonia: formulario.direccion.coloniaentro,
-            desMunicipio: formulario.direccion.municipio,
-            desEstado: formulario.direccion.estado,
-            desCiudad: null,
-          },
+
+    let datosEtapaContratante = {
+      idOrdenServicio: this.idODS,
+      idParentesco: 2,
+      contratante: {
+        idPersona: this.idPersona,
+        idContratante: this.idContratante,
+        rfc: formulario.datosContratante.rfc,
+        curp: formulario.datosContratante.curp,
+        nss: null,
+        nomPersona: formulario.datosContratante.nombre,
+        primerApellido: formulario.datosContratante.primerApellido,
+        segundoApellido: formulario.datosContratante.segundoApellido,
+        sexo: formulario.datosContratante.sexo,
+        otroSexo: formulario.datosContratante.otroTipoSexo,
+        fechaNac: formulario.datosContratante.fechaNacimiento,
+        nacionalidad: formulario.datosContratante.nacionalidad,
+        idPais: formulario.datosContratante.paisNacimiento,
+        idEstado: formulario.datosContratante.lugarNacimiento,
+        telefono: formulario.datosContratante.telefono,
+        correo: formulario.datosContratante.correoElectronico,
+        matricula: formulario.datosContratante.matricula,
+        cp: {
+          idDomicilio: this.idDomicilio,
+          desCalle: formulario.direccion.calle,
+          numExterior: formulario.direccion.noExterior,
+          numInterior: formulario.direccion.noInterior,
+          codigoPostal: formulario.direccion.cp,
+          desColonia: formulario.direccion.colonia,
+          desMunicipio: formulario.direccion.municipio,
+          desEstado: formulario.direccion.estado,
+          desCiudad: null,
         },
       },
-    ];
+    };
 
     this.altaODS.idEstatus = null;
     this.altaODS.idOperador = null;
 
-    let datos = datosEtapaContratante[0];
+    let datos = datosEtapaContratante;
     this.altaODS.idParentesco = datos.idParentesco;
     this.contratante.matricula = datos.contratante.matricula;
     this.contratante.idPersona = this.idPersona;
