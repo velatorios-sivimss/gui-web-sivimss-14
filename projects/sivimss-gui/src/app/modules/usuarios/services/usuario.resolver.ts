@@ -14,6 +14,7 @@ export class UsuarioResolver implements Resolve<HttpRespuesta<any>> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const niveles$: Observable<TipoDropdown[]> = this.usuarioService.obtenerCatalogoNiveles();
     const delegaciones$: Observable<TipoDropdown[]> = this.usuarioService.obtenerCatalogoDelegaciones();
-    return forkJoin([niveles$, delegaciones$])
+    const estados$: Observable<TipoDropdown[]> = this.usuarioService.obtenerCatalogoEstados();
+    return forkJoin([niveles$, delegaciones$, estados$])
   }
 }

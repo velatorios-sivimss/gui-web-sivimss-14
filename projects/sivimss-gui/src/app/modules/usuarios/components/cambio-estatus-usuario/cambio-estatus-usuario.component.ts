@@ -11,7 +11,10 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 type SolicitudEstatus = Pick<Usuario, "id">
-type DetalleUsuario = Required<Usuario> & { oficina: string, rol: string, delegacion: string, velatorio: string };
+type DetalleUsuario = Required<Usuario> & {
+  oficina: string, rol: string, delegacion: string, velatorio: string,
+  contrasenia: string, desEdoNacimiento: string
+};
 
 @Component({
   selector: 'app-cambio-estatus-usuario',
@@ -47,6 +50,7 @@ export class CambioEstatusUsuarioComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.usuarioSeleccionado = respuesta.datos[0];
+          this.usuarioSeleccionado.contrasenia = '*'.repeat(this.usuarioSeleccionado.contrasenia.length);
           this.estatus = !!this.usuarioSeleccionado.estatus;
           this.title = this.usuarioSeleccionado.estatus ? 'Desactivar' : 'Activar';
         },
