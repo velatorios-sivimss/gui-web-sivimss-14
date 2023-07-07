@@ -1,10 +1,41 @@
 <div class="p-4">
   <div class="row">
     <div class="col-md-12 flex justify-content-center align-items-center">
-      <button class="btn btn-primary btn-extra-grande">Ataúd</button>
-      <button class="btn btn-primary btn-extra-grande">Uma</button>
-      <button class="btn btn-primary btn-extra-grande">Empaque</button>
-      <button class="btn btn-primary btn-extra-grande">Artículos <br>complementarios</button>
+      <div class="flex flex-wrap gap-3">
+        <div class="flex align-items-center" *ngFor="let asignacion of tipoAsignacion">
+          <p-radioButton [inputId]="asignacion" name="asignacion" [value]="asignacion" [(ngModel)]="selectIdAsignacion"
+            (onClick)="limpiarSelects()"></p-radioButton>
+          <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='1'"> Consignado </label>
+          <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='3'"> Donado </label>
+          <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='5'"> Económico </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <label class="control-label" for="ataudes">Ataudes<span class="req">*</span>:</label>
+      <p-dropdown id="ataudes" class="form-control" [(ngModel)]="ataudSeleccionado" placeholder="Selecciona un ataúd"
+        [options]="listaAtaudes" (onChange)="buscarProveedor()"></p-dropdown>
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
+      <p-dropdown #dd id="proveedor" class="form-control" [(ngModel)]="proveedorSeleccionado"
+        placeholder="Selecciona un proveedor" [options]="listaProveedores"
+        (onChange)="buscarAtaudInventario(dd)"></p-dropdown>
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="ataudesInentario">Ataudes Inventario<span class="req">*</span>:</label>
+      <p-dropdown #dd id="ataudesInentario" class="form-control" [(ngModel)]="selectAtaudInventario"
+        placeholder="Selecciona un proveedor" [options]="listaAtaudesInventario"
+        (onChange)="onchangeInventario(dd)"></p-dropdown>
+    </div>
+  </div>
+  <div class="row">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" type="button" (click)="aceptarModal()">Aceptar</button>
+      <button class="ml-4 btn btn-default btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
     </div>
   </div>
 </div>

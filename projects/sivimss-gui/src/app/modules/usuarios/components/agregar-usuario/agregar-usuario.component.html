@@ -34,8 +34,6 @@
           <span class="campo-obligatorio"
                 *ngIf="fau?.nombre?.errors?.required && (fau?.nombre?.dirty || fau?.nombre?.touched)">Este campo es obligatorio *.</span>
         </div>
-      </div>
-      <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
           <input id="primerApellido" class="form-control" formControlName="primerApellido"
@@ -43,12 +41,22 @@
           <span class="campo-obligatorio"
                 *ngIf="fau?.primerApellido?.errors?.required && (fau?.primerApellido?.dirty || fau?.primerApellido?.touched)">Este campo es obligatorio *.</span>
         </div>
+      </div>
+      <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
           <input id="segundoApellido" class="form-control" formControlName="segundoApellido"
                  placeholder="Inserta el segundo apellido">
           <span class="campo-obligatorio"
                 *ngIf="fau?.segundoApellido?.errors?.required && (fau?.segundoApellido?.dirty || fau?.segundoApellido?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="idEdoNacimiento">Entidad Federativa de Nacimiento<span class="req">*</span>:</label>
+          <p-dropdown appendTo="body" id="idEdoNacimiento" class="form-control" formControlName="idEdoNacimiento"
+                      [options]="catalogoEstados" placeholder="Seleccionar la Entidad de Nacimiento">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fau?.idEdoNacimiento?.errors?.required && (fau?.idEdoNacimiento?.dirty || fau?.idEdoNacimiento?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -171,6 +179,14 @@
           <div class="table-panel-column">
             <label>Usuario</label>
             <span>{{nombreUsuario}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Entidad Federativa de Nacimiento</label>
+            <span>{{estadoResumen | uppercase}}</span>
           </div>
         </div>
       </div>

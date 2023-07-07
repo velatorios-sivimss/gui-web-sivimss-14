@@ -61,6 +61,7 @@
         <app-por-persona [folioConvenio]="folioConvenioPersona"
                          [confirmacionGuardado]="confirmarGuardadoPersona"
                          [consultarFormularioValido]="consultarFormularioValido"
+                         [escenario]="'agregar'"
                          (formularioValido)="validarFormularioPersona($event)"
                          (formularioPersona)="datosFormularioPersona($event)"
         ></app-por-persona>
@@ -69,6 +70,7 @@
         <app-por-empresa [folioEmpresa]="folioEmpresa"
                          [confirmacionGuardado]="confirmacionGuardadoEmpresa"
                          [consultarFormularioValido]="consultarFormularioValido"
+                         [escenario]="'agregar'"
                          [existePersona]="existePersona"
                          (guardarFormularioPrincipal)="guardarFormularioLocalStorage($event)"
                          (formularioValido)="validarFormularioEmpresa($event)"
@@ -130,6 +132,7 @@
                                  [objetoDetallePersona]="modeloGuardarPersona"
                                  [confirmarGuardarPersona]="banderaGuardarPersona"
                                  [confirmarGuardarEmpresa]="banderaGuardarEmpresa"
+                                 [escenario]="'agregar'"
     ></app-detalle-guarda-convenio>
     <div class="flex mt-4 justify-content-center">
       <div class="col-md-12">

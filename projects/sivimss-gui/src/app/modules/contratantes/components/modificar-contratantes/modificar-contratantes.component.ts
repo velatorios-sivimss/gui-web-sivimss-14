@@ -236,7 +236,6 @@ export class ModificarContratantesComponent implements OnInit {
   }
 
   datosActualizar() {
-    debugger
     return {
       idPersona: this.contratanteModificado.idPersona,
       nombre: this.contratanteModificado.nombre,

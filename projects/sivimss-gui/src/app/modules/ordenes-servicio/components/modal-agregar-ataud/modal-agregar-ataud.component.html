@@ -2,19 +2,18 @@
   <div class="row">
     <div class="col-md-6">
       <label class="control-label" for="ataud">Ataúd<span class="req">*</span>:</label>
-      <p-dropdown id="ataud" class="form-control" formControlName="ataud" placeholder="Selecciona ataúd"
-                  appendTo="body"
-                  [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
-      <span class="campo-obligatorio"
-            *ngIf="f.ataud?.errors?.required && (f.ataud?.dirty || f.ataud?.touched)">Campo obligatorio</span>
+      <p-dropdown #dd id="ataud" class="form-control" formControlName="ataud" placeholder="Selecciona ataúd"
+        appendTo="body" [options]="ataudes" (onChange)="selecionarAtaud(dd)"></p-dropdown>
+      <span class="campo-obligatorio" *ngIf="f.ataud?.errors?.required && (f.ataud?.dirty || f.ataud?.touched)">Campo
+        obligatorio</span>
     </div>
-    <div class="col-md-6">
-      <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
-      <p-dropdown id="proveedor" class="form-control" formControlName="proveedor" appendTo="body"
-                  placeholder="Selecciona proveedor"
-                  [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
-      <span class="campo-obligatorio"
-            *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Campo obligatorio</span>
+
+  </div>
+  <div class="row">
+    <div class="row mb-3 flex align-items-end">
+      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Agregar
+      </button>
+      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
     </div>
   </div>
 </form>

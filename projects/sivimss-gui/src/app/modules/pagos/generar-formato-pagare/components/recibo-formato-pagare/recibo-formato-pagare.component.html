@@ -1,7 +1,7 @@
 <div class="row">
     <h3>Pagaré</h3>
 </div>
-<form [formGroup]="filtroForm" (ngSubmit)="generarPdf()">
+<form [formGroup]="filtroForm">
     <div class="row mb-4">
 
         <div class="col-md-12 border seccion-folio flex justify-content-between">
@@ -61,12 +61,6 @@
                         <span class="col-md-12 etiqueta-formato">al INSTITUTO MEXICANO DEL SEGURO SOCIAL
             <span class="etiqueta-base"> o a su orden el dia </span>
                         <span class="etiqueta-formato-val"> {{formatoPagare.fechaODS}} </span>
-                        <!--
-            <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> Abril </span>
-            <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> 2021 </span>
-            -->
                         </span>
                         <span class="col-md-12 etiqueta-base mt-3">la cantidad de $
                         <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
@@ -86,10 +80,9 @@ final y Artículos correlativos por no ser pagare domiciliado.
                     </span>
 
                         <span class="col-md-12 etiqueta-base mt-7 mb-3">
-                        De no verificarse el pago de la cantidad que este pagare expresa el día de su vencimiento abonar a la
+                        De no verificarse el pago de la cantidad que este pagare expresa el día de su vencimiento abonar a la de
                     </span>
 
-                        <span class="col-md-1 etiqueta-base mt-3">de </span>
                         <span class="etiqueta-formato-val col-md-1">
                             <input id="redito" class="form-control" [(ngModel)]="formatoPagare.redito" formControlName="redito" placeholder="Ingresa redito" size="2"></span>
                         <span class="col-md-10 etiqueta-base">por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen</span>
@@ -99,7 +92,7 @@ final y Artículos correlativos por no ser pagare domiciliado.
                         <div class="grid-item"></div>
                         <div class="grid-item"></div>
 
-                        <div class="row flex justify-content-between mt-7">
+                        <div class="row flex justify-content-between mt-6 mb-3">
                             <div class="card border">
                                 <div class="container-card">
                                     <hr class="solid">
@@ -152,8 +145,8 @@ final y Artículos correlativos por no ser pagare domiciliado.
 
 
     <div class="row flex justify-content-end mb-4">
-        <button class="btn btn-default btn-md" [routerLink]="'../'">Regresar</button>
-        <button class="ml-4 btn btn-primary btn-md">Generar formato pagaré</button>
+        <button class="btn btn-default btn-md" [routerLink]="'../../'">Regresar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato pagaré</button>
     </div>
 </form>
 

@@ -63,6 +63,7 @@ export class ConveniosPfModificarComponent implements OnInit {
   folioUnicoDelConvenio!: string;
   velatorioUsuario!: string;
   fecha!: string;
+  escenario: string = "modificar"
 
   constructor(
     private route: ActivatedRoute,
@@ -79,9 +80,9 @@ export class ConveniosPfModificarComponent implements OnInit {
 
     const datosConvneio = JSON.parse(localStorage.getItem('datosConvenio') as string);
     localStorage.removeItem('datosConvenio');
-    this.folioUnicoDelConvenio = datosConvneio.convenio.folioConvenio;
+    this.folioUnicoDelConvenio = datosConvneio?.convenio.folioConvenio;
     this.velatorioUsuario= "";
-    this.fecha= datosConvneio.convenio.fechaContratacion;
+    this.fecha= datosConvneio?.convenio.fechaContratacion;
 
     this.inicializarModeloGuardarPersona();
     const formularioPrevio = JSON.parse(localStorage.getItem('fomularioPrincipal') as string);
@@ -212,7 +213,7 @@ export class ConveniosPfModificarComponent implements OnInit {
         nombreVelatorio: this.velatorioDescripcion,
         indTipoContratacion: this.ff.tipoContratacion.value,
         idPromotor: this.ff.listaPromotor?.value ?? "",
-        numeroConvenio: this.ff.numeroConvenio.value,
+        folioConvenio: this.ff.numeroConvenio.value,
         rfcCurp: this.ff.rfcCurp?.value ?? "",
         empresa:{
           nombreEmpresa: event.nombre,
@@ -311,6 +312,7 @@ export class ConveniosPfModificarComponent implements OnInit {
     const datosUsuario = JSON.parse(localStorage.getItem('usuario') as string);
     this.indice ++;
     this.modeloGuardarPersona = {
+      folioConvenio: this.ff.numeroConvenio.value,
       idVelatorio: datosUsuario.idVelatorio,
       nombreVelatorio: this.velatorioDescripcion,
       indTipoContratacion: this.ff.tipoContratacion.value.toString(),
@@ -382,6 +384,7 @@ export class ConveniosPfModificarComponent implements OnInit {
 
   inicializarModeloGuardarPersona(): void {
     this.modeloGuardarPersona = {
+      folioConvenio:"",
       idVelatorio: "",
       nombreVelatorio: "",
       indTipoContratacion: "",

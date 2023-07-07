@@ -226,7 +226,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.fechaNacimiento.setValue(fecha);
             if(respuesta.datos.desEstatusCURP.includes('Baja por Defunción')){
               this.curpDesactivado = true;
-              this.alertaService.mostrar(TipoAlerta.Precaucion, "Baja por Defunción");
+              this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
             }
             if(respuesta.datos.sexo.includes("MUJER")){
               this.fds.sexo.setValue(1);
