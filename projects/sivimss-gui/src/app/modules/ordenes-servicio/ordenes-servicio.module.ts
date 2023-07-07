@@ -57,6 +57,7 @@ import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-
 import { ModificarDatosCaracteristicasContratanteComponent } from './components/modificar-datos-caracteristicas-contratante/modificar-datos-caracteristicas-contratante.component';
 import { ModalConvenioPfComponent } from './components/modal-convenio-pf/modal-convenio-pf.component';
 import { ActualizarOrdenServicioService } from './services/actualizar-orden-servicio.service';
+import { GestionarEtapasActualizacionService } from './services/gestionar-etapas-actualizacion.service';
 @NgModule({
   declarations: [
     OrdenesServicioComponent,
@@ -122,6 +123,7 @@ import { ActualizarOrdenServicioService } from './services/actualizar-orden-serv
     GestionarEtapasService,
     ConsultarOrdenServicioService,
     ActualizarOrdenServicioService,
+    GestionarEtapasActualizacionService,
   ],
 })
 export class OrdenesServicioModule {}
