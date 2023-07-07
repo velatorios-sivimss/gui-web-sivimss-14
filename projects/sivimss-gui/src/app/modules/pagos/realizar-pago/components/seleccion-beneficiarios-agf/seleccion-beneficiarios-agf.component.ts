@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {BENEFICIARIOS} from "../../constants/dummies";
+import {BENEFICIARIOS} from "../../constants/catalogos";
 
 @Component({
   selector: 'app-seleccion-beneficiarios-agf',

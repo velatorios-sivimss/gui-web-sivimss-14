@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {OverlayPanel} from "primeng/overlaypanel";
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
-import {TIPO_PAGO_CATALOGOS_ODS} from "../../constants/dummies";
+import {TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {RegistrarTipoPagoComponent} from "../registrar-tipo-pago/registrar-tipo-pago.component";
