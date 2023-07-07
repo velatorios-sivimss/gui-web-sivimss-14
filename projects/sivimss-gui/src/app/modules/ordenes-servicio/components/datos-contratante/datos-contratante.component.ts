@@ -15,14 +15,12 @@ import { nacionalidad, sexo } from '../../constants/catalogos-complementarios';
 import { ActivatedRoute } from '@angular/router';
 import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
 import { LoaderService } from '../../../../shared/loader/services/loader.service';
-import { GestionarDonacionesService } from '../../../consulta-donaciones/services/gestionar-donaciones.service';
 import { finalize } from 'rxjs/operators';
 import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
 import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
 import { ConfirmacionServicio } from '../../../renovacion-extemporanea/models/convenios-prevision.interface';
-import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
@@ -39,6 +37,7 @@ import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.int
 import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
 
 import * as moment from 'moment';
+import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 
 @Component({
   selector: 'app-datos-contratante',
@@ -723,7 +722,6 @@ export class DatosContratanteComponent implements OnInit {
       datosEtapaContratante
     );
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
-
   }
 
   get datosContratante() {

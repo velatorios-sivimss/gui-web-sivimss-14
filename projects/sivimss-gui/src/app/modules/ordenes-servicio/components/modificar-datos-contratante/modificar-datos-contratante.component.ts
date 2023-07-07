@@ -1,13 +1,8 @@
-import {
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+
+import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
-import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 import { AltaODSInterface } from '../../models/AltaODS.interface';
 import { ContratanteInterface } from '../../models/Contratante.interface';
 import { CodigoPostalIterface } from '../../models/CodigoPostal.interface';
@@ -44,6 +39,8 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { ActualizarOrdenServicioService } from '../../services/actualizar-orden-servicio.service';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { GestionarEtapasActualizacionService } from '../../services/gestionar-etapas-actualizacion.service';
+import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 
 @Component({
   selector: 'app-modificar-datos-contratante',
@@ -104,6 +101,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
   idContratante: number | null = null;
   idDomicilio: number | null = null;
   constructor(
+    private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
     private loaderService: LoaderService,
@@ -111,7 +109,8 @@ export class ModificarDatosContratanteComponent implements OnInit {
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasService
+    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private breadcrumbService: BreadcrumbService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -134,6 +133,25 @@ export class ModificarDatosContratanteComponent implements OnInit {
     this.informacionServicioVelacion.cp = this.cpVelacion;
   }
   ngOnInit(): void {
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.pais =
+      respuesta[this.POSICION_PAIS]!.map((pais: any) => ({
+        label: pais.label,
+        value: pais.value,
+      })) || [];
+    this.estado =
+      respuesta[this.POSICION_ESTADO]!.map((estado: any) => ({
+        label: estado.label,
+        value: estado.value,
+      })) || [];
+    this.parentesco =
+      respuesta[this.POSICION_PARENTESCO]!.map((parentesco: any) => ({
+        label: parentesco.label,
+        value: parentesco.value,
+      })) || [];
+
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
+
     let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     else this.ocultarFolioEstatus = false;
@@ -153,7 +171,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
       );
   }
 
-  buscarDetalle(idODS: number, estatus: number) {
+  async buscarDetalle(idODS: number, estatus: number) {
     this.loaderService.activar();
 
     const parametros = { idOrdenServicio: idODS };
@@ -189,8 +207,10 @@ export class ModificarDatosContratanteComponent implements OnInit {
       );
   }
 
-  inicializarForm(datos: any, idODS: number, tipoODS: number) {
+  async inicializarForm(datos: any, idODS: number, tipoODS: number) {
+    console.log('llego despues', datos.contratante.matricula);
     console.log('llego despues', datos);
+    let fehca = '04/08/2015';
 
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
@@ -203,7 +223,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
         ],
         matriculaCheck: [
           {
-            value: datos.contratante.matriculaCheck,
+            value: datos.contratante.matricula == null ? false : true,
             disabled: false,
           },
         ],
@@ -244,41 +264,41 @@ export class ModificarDatosContratanteComponent implements OnInit {
         ],
         fechaNacimiento: [
           {
-            value: datos.contratante.fechaNacimiento,
+            value: fehca,
             disabled: true,
           },
           [Validators.required],
         ],
         sexo: [
           {
-            value: datos.contratante.sexo,
+            value: Number(datos.contratante.sexo),
             disabled: false,
           },
           [Validators.required],
         ],
         otroTipoSexo: [
           {
-            value: datos.contratante.otroTipoSexo,
+            value: datos.contratante.otroSexo,
             disabled: false,
           },
         ],
         nacionalidad: [
           {
-            value: datos.contratante.nacionalidad,
+            value: Number(datos.contratante.nacionalidad),
             disabled: false,
           },
           [Validators.required],
         ],
         lugarNacimiento: [
           {
-            value: datos.contratante.lugarNacimiento,
+            value: Number(datos.contratante.idEstado),
             disabled: false,
           },
           [],
         ],
         paisNacimiento: [
           {
-            value: datos.contratante.paisNacimiento,
+            value: Number(datos.contratante.idPais),
             disabled: false,
           },
         ],
@@ -291,14 +311,14 @@ export class ModificarDatosContratanteComponent implements OnInit {
         ],
         correoElectronico: [
           {
-            value: datos.contratante.correoElectronico,
+            value: datos.contratante.correo,
             disabled: false,
           },
           [Validators.required, Validators.pattern(PATRON_CORREO)],
         ],
         parentesco: [
           {
-            value: datos.contratante.parentesco,
+            value: Number(datos.idParentesco),
             disabled: false,
           },
           [Validators.required],
@@ -307,52 +327,58 @@ export class ModificarDatosContratanteComponent implements OnInit {
       direccion: this.formBuilder.group({
         calle: [
           {
-            value: datos.cp.calle,
+            value: datos.contratante.cp.desCalle,
             disabled: false,
           },
           [Validators.required],
         ],
         noExterior: [
           {
-            value: datos.cp.noExterior,
+            value: datos.contratante.cp.numExterior,
             disabled: false,
           },
           [Validators.required],
         ],
         noInterior: [
           {
-            value: datos.cp.noInterior,
+            value: datos.contratante.cp.numInterior,
             disabled: false,
           },
           [],
         ],
-        cp: [{ value: datos.cp.cp, disabled: false }, [Validators.required]],
+        cp: [
+          { value: datos.contratante.cp.codigoPostal, disabled: false },
+          [Validators.required],
+        ],
         colonia: [
           {
-            value: datos.cp.colonia,
+            value: datos.contratante.cp.desColonia,
             disabled: false,
           },
           [Validators.required],
         ],
         municipio: [
           {
-            value: datos.cp.municipio,
+            value: datos.contratante.cp.desMunicipio,
             disabled: true,
           },
           [Validators.required],
         ],
         estado: [
           {
-            value: datos.cp.estado,
+            value: datos.contratante.cp.desEstado,
             disabled: true,
           },
           [Validators.required],
         ],
       }),
     });
-    // this.cambiarValidacion();
-    //this.idContratante = datosEtapaContratante.datosContratante.idContratante;
-    //this.idPersona = datosEtapaContratante.datosContratante.idPersona;
+    console.log('fecha', datos.contratante.fechaNac);
+    this.idContratante = Number(datos.contratante.idContratante);
+    await this.cambiarValidacion();
+    this.idPersona = datos.datosContratante.idPersona;
+    await this.cambiarTipoSexo();
+    await this.cambiarNacionalidad();
   }
 
   cambiarValidacion(): void {
