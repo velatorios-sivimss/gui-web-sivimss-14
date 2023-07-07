@@ -715,7 +715,7 @@ export class InformacionServicioComponent implements OnInit {
   descargarContratoServInmediatos(idOrdenServicio:number ): void{
     this.loaderService.activar()
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(idOrdenServicio).pipe(
+    this.gestionarOrdenServicioService.generarArchivoServiciosInmediatos(idOrdenServicio).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
@@ -742,7 +742,7 @@ export class InformacionServicioComponent implements OnInit {
   descargarOrdenServicio(idOrdenServicio:number, idEstatus:number): void {
     this.loaderService.activar()
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    this.consultarOrdenServicioService.generarArchivoOrdenServicio(
+    this.gestionarOrdenServicioService.generarArchivoOrdenServicio(
       idOrdenServicio,idEstatus
     ).pipe(
       finalize(()=> this.loaderService.desactivar())
