@@ -44,7 +44,8 @@ import { ModificarBeneficiarioConveniosPrevisionFunerariaComponent } from './com
 import { DetalleGuardaConvenioComponent } from './components/detalle-guarda-convenio/detalle-guarda-convenio.component';
 import { ConveniosPfModificarComponent } from './components/modificar-convenios-prevision-funeraria/convenios-prevision-funeraria-modificar/convenios-pf-modificar.component';
 import { EstatusConvenioPrevisionFunerariaComponent } from './components/estatus-convenio-prevision-funeraria/estatus-convenio-prevision-funeraria.component';
-import { PrevisualizacionArchivoComponent } from './components/previsualizacion-archivo/previsualizacion-archivo.component';
+
+
 import {PdfViewerModule} from "ng2-pdf-viewer";
 
 @NgModule({
@@ -61,7 +62,6 @@ import {PdfViewerModule} from "ng2-pdf-viewer";
     DetalleGuardaConvenioComponent,
     ConveniosPfModificarComponent,
     EstatusConvenioPrevisionFunerariaComponent,
-    PrevisualizacionArchivoComponent,
   ],
   imports: [
     CommonModule,
