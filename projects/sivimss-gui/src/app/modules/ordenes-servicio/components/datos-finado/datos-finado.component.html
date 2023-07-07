@@ -48,7 +48,7 @@
           Campo obligatorio</span>
       </div>
       <div class="col-md-2">
-        <label class="control-label">¿Es obito?</label>
+        <label class="control-label">¿Es obito?:</label>
         <div class="flex">
           <div class="flex align-items-center mx-2">
             <p-radioButton [inputId]="'esObitoSi'" name="esObito" [value]="true" formControlName="esObito"
@@ -83,7 +83,7 @@
       <div class="col-md-4">
         <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
         <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp"
-          maxlength="18" (blur)="consultarCURP()">
+          maxlength="18" (blur)="consultarCURP()" (keyup)="convertirAMayusculas()">
         <span class="campo-obligatorio"
           *ngIf="datosFinado.curp?.errors?.required && (datosFinado.curp?.dirty || datosFinado.curp?.touched)">Campo
           obligatorio</span>

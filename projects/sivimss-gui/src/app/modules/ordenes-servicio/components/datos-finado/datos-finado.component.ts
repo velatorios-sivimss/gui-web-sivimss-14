@@ -346,6 +346,10 @@ export class DatosFinadoComponent implements OnInit {
     if (!this.datosFinado.curp.value) {
       return;
     }
+    if(this.datosFinado.curp?.errors?.pattern){
+      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+      return;
+    }
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosFinado.curp.value)
@@ -1033,5 +1037,10 @@ export class DatosFinadoComponent implements OnInit {
       this.cambiarTipoSexo();
       this.cambiarNacionalidad();
     });
+  }
+  convertirAMayusculas(): void {
+    this.datosFinado.curp.setValue(
+      this.datosFinado.curp.value.toUpperCase()
+    );
   }
 }
