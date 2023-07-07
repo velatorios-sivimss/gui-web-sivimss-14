@@ -125,11 +125,14 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagada'"
+      <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagado'"
                                 (click)="redireccionPago()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Modificar" *ngIf="registroPago.estatusPago === 'Pagada'"
+      <app-overlay-panel-opcion class="text-center" titulo="Modificar" *ngIf="registroPago.estatusPago === 'Pagado'"
                                 [routerLink]="['../../modificar-metodo-de-pago', idPagoBitacora]">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion class="text-center" titulo="Generar pagaré" *ngIf="registroPago.tipoPago === 'Pago de Orden de Servicio'
+       && registroPago.estatusPago === 'Pendiente'">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

@@ -18,6 +18,7 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
   readonly _roles: string = 'catalogo-roles';
   readonly _nivel: string = 'catalogo_nivelOficina';
   readonly _delegacion: string = 'catalogo_delegaciones';
+  readonly _estados: string = 'catalogo_estados';
   readonly _filtros: string = 'buscar-usuarios';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
@@ -62,6 +63,11 @@ export class UsuarioService extends BaseService<HttpRespuesta<any>, any> {
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
     const delegaciones = this.authService.obtenerCatalogoDeLocalStorage((this._delegacion));
+    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+  }
+
+  obtenerCatalogoEstados(): Observable<TipoDropdown[]> {
+    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage((this._estados));
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
