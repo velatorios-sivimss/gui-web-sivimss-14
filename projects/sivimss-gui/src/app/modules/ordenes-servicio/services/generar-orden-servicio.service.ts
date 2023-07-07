@@ -254,4 +254,14 @@ export class GenerarOrdenServicioService extends BaseService<
     return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-persona-consultar`,
       {idPersona:idPersona})
   }
+
+  generarArchivoServiciosInmediatos(idOrdenServicio: number):Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-generada`,
+      {idOrdenServicio:idOrdenServicio,tipoReporte:'pdf'});
+  }
+
+  generarArchivoOrdenServicio(idOrdenServicio:number,estatus:number):Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-orden-servicio-generada`,
+      {idOrdenServicio:idOrdenServicio,estatus:estatus,tipoReporte:'pdf'});
+  }
 }
