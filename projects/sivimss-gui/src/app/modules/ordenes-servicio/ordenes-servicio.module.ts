@@ -56,6 +56,7 @@ import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module
 import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-servicio/actualizar-orden-servicio.component';
 import { ModificarDatosCaracteristicasContratanteComponent } from './components/modificar-datos-caracteristicas-contratante/modificar-datos-caracteristicas-contratante.component';
 import { ModalConvenioPfComponent } from './components/modal-convenio-pf/modal-convenio-pf.component';
+import { ActualizarOrdenServicioService } from './services/actualizar-orden-servicio.service';
 @NgModule({
   declarations: [
     OrdenesServicioComponent,
@@ -120,6 +121,7 @@ import { ModalConvenioPfComponent } from './components/modal-convenio-pf/modal-c
     DialogService,
     GestionarEtapasService,
     ConsultarOrdenServicioService,
+    ActualizarOrdenServicioService,
   ],
 })
 export class OrdenesServicioModule {}
