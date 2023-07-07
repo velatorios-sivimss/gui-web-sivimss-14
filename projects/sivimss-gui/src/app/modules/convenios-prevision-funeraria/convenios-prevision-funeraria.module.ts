@@ -45,6 +45,9 @@ import { DetalleGuardaConvenioComponent } from './components/detalle-guarda-conv
 import { ConveniosPfModificarComponent } from './components/modificar-convenios-prevision-funeraria/convenios-prevision-funeraria-modificar/convenios-pf-modificar.component';
 import { EstatusConvenioPrevisionFunerariaComponent } from './components/estatus-convenio-prevision-funeraria/estatus-convenio-prevision-funeraria.component';
 
+
+import {PdfViewerModule} from "ng2-pdf-viewer";
+
 @NgModule({
   declarations:[
     ConsultaConveniosComponent,
@@ -83,6 +86,7 @@ import { EstatusConvenioPrevisionFunerariaComponent } from './components/estatus
     CheckboxModule,
     RadioButtonModule,
     UtileriaModule,
+    PdfViewerModule
   ],
   providers:[
     AgregarConvenioPFService,
