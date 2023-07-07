@@ -1,11 +1,19 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
+import { ActualizarOrdenServicioService } from '../../services/actualizar-orden-servicio.service';
+import { GestionarEtapasActualizacionService } from '../../services/gestionar-etapas-actualizacion.service';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import {
+  AlertaService,
+  TipoAlerta,
+} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-actualizar-orden-servicio',
@@ -82,12 +90,13 @@ export class ActualizarOrdenServicioComponent implements OnInit {
   idEtapaSeleccionada: number = 0;
 
   constructor(
-    private gestionarEtapasService: GestionarEtapasService,
+    private gestionarEtapasService: GestionarEtapasActualizacionService,
     private rutaActiva: ActivatedRoute,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private gestionarOrdenServicioService: GenerarOrdenServicioService,
-    private changeDetector: ChangeDetectorRef
+    private gestionarOrdenServicioService: ActualizarOrdenServicioService,
+    private changeDetector: ChangeDetectorRef,
+    private alertaService: AlertaService
   ) {}
 
   ngOnInit(): void {
@@ -99,6 +108,44 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     } else {
       this.titulo = 'GENERAR ORDEN COMPLEMENTARIA';
     }
+    this.buscarDetalle(Number(this.rutaActiva.snapshot.paramMap.get('idODS')));
+  }
+
+  buscarDetalle(idODS: number) {
+    this.loaderService.activar();
+
+    const parametros = { idOrdenServicio: idODS };
+    console.log('entro', parametros);
+    this.gestionarOrdenServicioService
+      .consultarDetalleODS(parametros)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          console.log('que trajo', respuesta);
+          this.gestionarEtapasService.datosContratante$.next(respuesta.datos);
+          this.gestionarEtapasService.datosConsultaODS$.next(respuesta.datos);
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          }
+        }
+      );
   }
 
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {

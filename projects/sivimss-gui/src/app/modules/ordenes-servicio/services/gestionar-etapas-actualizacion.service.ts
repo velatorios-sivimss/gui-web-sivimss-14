@@ -104,15 +104,20 @@ export class GestionarEtapasActualizacionService {
     },
   ];
 
-  detalleODS = [];
+  datosContratante: any[] = [];
+  datosConsultaODS = [];
   etapas$: BehaviorSubject<Etapa[]> = new BehaviorSubject<Etapa[]>(this.etapas);
   idEtapaSeleccionada$: BehaviorSubject<number> = new BehaviorSubject<number>(
     0
   );
 
   altaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.altaODS);
-
-  detalleODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.detalleODS);
+  datosContratante$: BehaviorSubject<any> = new BehaviorSubject<any>(
+    this.datosContratante
+  );
+  datosConsultaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(
+    this.datosConsultaODS
+  );
 
   constructor() {
     // private authService: AutenticacionService // _http:HttpClient,

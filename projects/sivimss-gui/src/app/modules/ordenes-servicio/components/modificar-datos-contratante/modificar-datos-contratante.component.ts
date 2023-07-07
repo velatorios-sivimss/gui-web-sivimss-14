@@ -1,4 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  AfterContentChecked,
+  ChangeDetectorRef,
+} from '@angular/core';
 
 import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -16,7 +24,7 @@ import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.int
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
 import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-
+import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import { nacionalidad, sexo } from '../../constants/catalogos-complementarios';
 import { ConfirmacionServicio } from '../../../renovacion-extemporanea/models/convenios-prevision.interface';
 import {
@@ -25,12 +33,10 @@ import {
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { finalize } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 
 import * as moment from 'moment';
-import { UsuarioEnSesion } from '../../../../models/usuario-en-sesion.interface';
 import {
   PATRON_CORREO,
   PATRON_CURP,
@@ -41,13 +47,16 @@ import { ActualizarOrdenServicioService } from '../../services/actualizar-orden-
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { GestionarEtapasActualizacionService } from '../../services/gestionar-etapas-actualizacion.service';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 
 @Component({
   selector: 'app-modificar-datos-contratante',
   templateUrl: './modificar-datos-contratante.component.html',
   styleUrls: ['./modificar-datos-contratante.component.scss'],
 })
-export class ModificarDatosContratanteComponent implements OnInit {
+export class ModificarDatosContratanteComponent
+  implements OnInit, AfterContentInit
+{
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @Output()
@@ -100,6 +109,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
   idPersona: number | null = null;
   idContratante: number | null = null;
   idDomicilio: number | null = null;
+  idODS: number | null = null;
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -110,7 +120,8 @@ export class ModificarDatosContratanteComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
     private gestionarEtapasService: GestionarEtapasActualizacionService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private changeDetector: ChangeDetectorRef
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -156,58 +167,24 @@ export class ModificarDatosContratanteComponent implements OnInit {
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     else this.ocultarFolioEstatus = false;
 
-    this.buscarDetalle(
-      Number(this.rutaActiva.snapshot.paramMap.get('idODS')),
-      Number(this.rutaActiva.snapshot.paramMap.get('idEstatus'))
-    );
-    this.gestionarEtapasService.detalleODS$
+    this.gestionarEtapasService.datosContratante$
       .asObservable()
-      .subscribe((detalleODS) =>
+      .subscribe((datosContratante) =>
         this.inicializarForm(
-          detalleODS,
+          datosContratante,
           Number(this.rutaActiva.snapshot.paramMap.get('idEstatus')),
           Number(this.rutaActiva.snapshot.paramMap.get('idODS'))
         )
       );
   }
 
-  async buscarDetalle(idODS: number, estatus: number) {
-    this.loaderService.activar();
-
-    const parametros = { idOrdenServicio: idODS };
-    console.log('entro', parametros);
-    this.gestionarOrdenServicioService
-      .consultarDetalleODS(parametros)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
-          console.log('que trajo', respuesta);
-          this.gestionarEtapasService.detalleODS$.next(respuesta.datos);
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-          try {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
-              );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
-          } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
-          }
-        }
-      );
+  ngAfterContentInit() {
+    this.cambiarValidacion();
+    this.cambiarTipoSexo();
+    this.cambiarNacionalidad();
   }
 
-  async inicializarForm(datos: any, idODS: number, tipoODS: number) {
+  inicializarForm(datos: any, idODS: number, tipoODS: number) {
     console.log('llego despues', datos.contratante.matricula);
     console.log('llego despues', datos);
     let fehca = '04/08/2015';
@@ -243,22 +220,22 @@ export class ModificarDatosContratanteComponent implements OnInit {
         ],
         nombre: [
           {
-            value: datos.contratante.nombre,
-            disabled: false,
+            value: datos.contratante.nomPersona,
+            disabled: true,
           },
           [Validators.required],
         ],
         primerApellido: [
           {
             value: datos.contratante.primerApellido,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
         segundoApellido: [
           {
             value: datos.contratante.segundoApellido,
-            disabled: false,
+            disabled: true,
           },
           [Validators.required],
         ],
@@ -374,14 +351,15 @@ export class ModificarDatosContratanteComponent implements OnInit {
       }),
     });
     console.log('fecha', datos.contratante.fechaNac);
+    if (tipoODS == 1) {
+      this.idODS = idODS;
+      this.altaODS.idOrdenServicio = idODS;
+    }
     this.idContratante = Number(datos.contratante.idContratante);
-    await this.cambiarValidacion();
     this.idPersona = datos.datosContratante.idPersona;
-    await this.cambiarTipoSexo();
-    await this.cambiarNacionalidad();
   }
 
-  cambiarValidacion(): void {
+  async cambiarValidacion() {
     this.radonlyMatricula = false;
     if (!this.datosContratante.matriculaCheck.value) {
       this.radonlyMatricula = true;
@@ -629,34 +607,180 @@ export class ModificarDatosContratanteComponent implements OnInit {
     formName[posicion].setValue(formName[posicion].value.trimStart());
   }
 
-  cambiarTipoSexo(): void {
+  async cambiarTipoSexo() {
     if (this.datosContratante.sexo.value == 3) {
-      this.datosContratante.otroTipoSexo.enabled;
+      this.datosContratante.otroTipoSexo.enable();
       this.datosContratante.otroTipoSexo.setValidators(Validators.required);
       return;
     }
-    this.datosContratante.otroTipoSexo.disabled;
+    this.datosContratante.otroTipoSexo.disable();
     this.datosContratante.otroTipoSexo.clearValidators();
     this.datosContratante.otroTipoSexo.setValue(null);
   }
 
   cambiarNacionalidad(): void {
     if (this.datosContratante.nacionalidad.value == 1) {
-      this.datosContratante.paisNacimiento.disabled;
+      this.datosContratante.paisNacimiento.disable();
       this.datosContratante.paisNacimiento.clearValidators();
       this.datosContratante.paisNacimiento.reset();
-      this.datosContratante.lugarNacimiento.enabled;
+      this.datosContratante.lugarNacimiento.enable();
       this.datosContratante.lugarNacimiento.setValidators(Validators.required);
       return;
     }
-    this.datosContratante.lugarNacimiento.disabled;
+    this.datosContratante.lugarNacimiento.disable();
     this.datosContratante.lugarNacimiento.clearValidators();
     this.datosContratante.lugarNacimiento.reset();
-    this.datosContratante.paisNacimiento.enabled;
+    this.datosContratante.paisNacimiento.enable();
     this.datosContratante.paisNacimiento.setValidators(Validators.required);
   }
 
-  continuar() {}
+  continuar() {
+    let etapas: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Completado,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'dashed',
+        },
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Activo,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'dashed',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 2,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 3,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: 'solid',
+        },
+      },
+    ];
+    window.scrollTo(0, 0);
+    this.gestionarEtapasService.etapas$.next(etapas);
+    this.seleccionarEtapa.emit(1);
+    this.datosAlta();
+  }
+
+  datosAlta(): void {
+    let formulario = this.form.getRawValue();
+    let datosEtapaContratante = [
+      {
+        idOrdenServicio: this.idODS,
+        idParentesco: 2,
+        contratante: {
+          idPersona: this.idPersona,
+          idContratante: this.idContratante,
+          rfc: formulario.datosContratante.rfc,
+          curp: formulario.datosContratante.curp,
+          nss: null,
+          nomPersona: formulario.datosContratante.nombre,
+          primerApellido: formulario.datosContratante.primerApellido,
+          segundoApellido: formulario.datosContratante.segundoApellido,
+          sexo: formulario.datosContratante.sexo,
+          otroSexo: formulario.datosContratante.otroTipoSexo,
+          fechaNac: formulario.datosContratante.fechaNacimiento,
+          nacionalidad: formulario.datosContratante.nacionalidad,
+          idPais: formulario.datosContratante.paisNacimiento,
+          idEstado: formulario.datosContratante.lugarNacimiento,
+          telefono: formulario.datosContratante.telefono,
+          correo: formulario.datosContratante.correoElectronico,
+          matricula: formulario.datosContratante.matricula,
+          cp: {
+            idDomicilio: this.idDomicilio,
+            desCalle: formulario.direccion.calle,
+            numExterior: formulario.direccion.noExterior,
+            numInterior: formulario.direccion.noInterior,
+            codigoPostal: formulario.direccion.cp,
+            desColonia: formulario.direccion.coloniaentro,
+            desMunicipio: formulario.direccion.municipio,
+            desEstado: formulario.direccion.estado,
+            desCiudad: null,
+          },
+        },
+      },
+    ];
+
+    this.altaODS.idEstatus = null;
+    this.altaODS.idOperador = null;
+
+    let datos = datosEtapaContratante[0];
+    this.altaODS.idParentesco = datos.idParentesco;
+    this.contratante.matricula = datos.contratante.matricula;
+    this.contratante.idPersona = this.idPersona;
+    this.contratante.idContratante = this.idContratante;
+    this.contratante.rfc = datos.contratante.rfc;
+    this.contratante.curp = datos.contratante.curp;
+    this.contratante.nomPersona = datos.contratante.nomPersona;
+    this.contratante.primerApellido = datos.contratante.primerApellido;
+    this.contratante.segundoApellido = datos.contratante.segundoApellido;
+    this.contratante.sexo = datos.contratante.sexo;
+    this.contratante.otroSexo = datos.contratante.primerApellido;
+    this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
+      'yyyy-MM-DD'
+    );
+    this.contratante.idPais = datos.contratante.idPais;
+    this.contratante.idEstado = datos.contratante.idEstado;
+    this.contratante.telefono = datos.contratante.telefono;
+    this.contratante.correo = datos.contratante.correo;
+
+    //datos cp
+    this.cp.desCalle = datos.contratante.cp.desCalle;
+    this.cp.idDomicilio = this.idDomicilio;
+    this.cp.numExterior = datos.contratante.cp.numExterior;
+    this.cp.numInterior = datos.contratante.cp.numInterior;
+    this.cp.codigoPostal = datos.contratante.cp.codigoPostal;
+    this.cp.desColonia = datos.contratante.cp.desColonia;
+    this.cp.desMunicipio = datos.contratante.cp.desMunicipio;
+    this.cp.desEstado = datos.contratante.cp.desEstado;
+
+    this.altaODS.contratante = this.contratante;
+    this.altaODS.idVelatorio = null;
+    this.altaODS.idOperador = null;
+    this.contratante.cp = this.cp;
+
+    this.gestionarEtapasService.datosContratante$.next(datosEtapaContratante);
+
+    this.gestionarEtapasService.altaODS$.next(this.altaODS);
+  }
+
   get datosContratante() {
     return (this.form.controls['datosContratante'] as FormGroup).controls;
   }
