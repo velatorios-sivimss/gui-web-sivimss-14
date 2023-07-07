@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {DynamicDialogConfig} from "primeng/dynamicdialog";
+import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../constants/dummies";
 
 @Component({
   selector: 'app-modificar-tipo-pago',
@@ -18,14 +20,17 @@ export class ModificarTipoPagoComponent implements OnInit {
   pasoModificarPago: number = 1;
 
   tipoPagoForm!: FormGroup;
+  tipoPago: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
+    public config: DynamicDialogConfig,
   ) {
   }
 
   ngOnInit(): void {
     this.inicializarTipoPagoForm();
+    this.llenarCatalogos();
   }
 
   inicializarTipoPagoForm(): void {
@@ -39,8 +44,20 @@ export class ModificarTipoPagoComponent implements OnInit {
     });
   }
 
+  llenarCatalogos(): void {
+    this.tipoPagoForm.get('tipoPagoAnterior')?.patchValue(this.config.data.metodoPago);
+    this.total = this.config.data.importe;
+    if (this.config.data.tipoPago === 'Pago de Orden de Servicio') {
+      this.tipoPago = TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value));
+      console.log(this.tipoPago)
+      return;
+    }
+    this.tipoPago = TIPO_PAGO_CATALOGOS_CONVENIO;
+  }
+
   get pf() {
     return this.tipoPagoForm?.controls
   }
+
 
 }

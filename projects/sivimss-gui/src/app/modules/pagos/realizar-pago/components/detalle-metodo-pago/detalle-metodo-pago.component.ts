@@ -42,11 +42,11 @@ export class DetalleMetodoPagoComponent implements OnInit {
   }
 
   redireccionPago(): void {
-    if (this.registroPago.tipoPago === 'Orden de Servicio') {
+    if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
       void this.router.navigate(["./../../pago-orden-servicio"], {relativeTo: this.activatedRoute});
       return;
     }
-    if (this.registroPago.tipoPago === 'Nuevos Convenios de Previsión Funeraria') {
+    if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
       void this.router.navigate(["./../../pago-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
       return;
     }

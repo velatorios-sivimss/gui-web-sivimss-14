@@ -10,9 +10,10 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span>:</label>
-          <input id="tipoPago" class="form-control" formControlName="tipoPago"
-                 placeholder="Ingresar Tipo de pago">
+          <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span></label>
+          <p-dropdown appendTo="body" id="tipoPago" class="form-control" formControlName="tipoPago"
+                      [options]="tipoPago" placeholder="Seleccionar tipo">
+          </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="pf?.tipoPago?.errors?.required && (pf?.tipoPago?.dirty || pf?.tipoPago?.touched)">Este campo es obligatorio *.</span>
         </div>

@@ -78,7 +78,7 @@ export class PagoConvenioComponent implements OnInit {
     this.paginar();
   }
 
-  private paginar(): void {
+  paginar(): void {
     this.cargadorService.activar();
     this.realizarPagoService.consultarPagosConvenio(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -101,7 +101,7 @@ export class PagoConvenioComponent implements OnInit {
   abrirModalPago(): void {
     this.registrarPago();
     const idPago = this.pagoForm.get('tipoPago')?.value;
-    const tipoPago: string = this.tipoPago.find(tp => tp.value === idPago)?.label || '';
+    const tipoPago: string = this.tipoPago.find(tp => tp.value === idPago)?.label ?? '';
     const data: RegistroModal = {
       tipoPago, idPago,
       total: this.pagoSeleccionado.diferenciasTotales,

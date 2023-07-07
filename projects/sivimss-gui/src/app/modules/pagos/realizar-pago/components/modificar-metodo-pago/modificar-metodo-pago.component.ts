@@ -36,6 +36,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
   overlayPanel!: OverlayPanel;
 
   registroPago!: DetallePago;
+  pagoSeleccionado!: MetodoPago;
 
   constructor(
     private router: Router,
@@ -44,15 +45,22 @@ export class ModificarMetodoPagoComponent implements OnInit {
   ) {
   }
 
-  mostrarOverlay(event: MouseEvent): void {
+  mostrarOverlay(event: MouseEvent, pago: MetodoPago): void {
     event.stopPropagation();
     this.overlayPanel.toggle(event);
+    this.pagoSeleccionado = pago;
+    console.log(this.pagoSeleccionado);
   }
 
   modificarTipoPago(): void {
+    const data = {
+      metodoPago: this.pagoSeleccionado.metodoPago, importe: this.pagoSeleccionado.importe,
+      tipoPago: this.registroPago.tipoPago
+    };
     const MODIFICAR_TIPO_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Modificar pago",
       width: MAX_WIDTH,
+      data
     };
     this.dialogService.open(ModificarTipoPagoComponent, MODIFICAR_TIPO_PAGO_CONFIG)
   }

@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="Realizar pago"></app-titulo-principal>
+<app-titulo-principal titulo="Modificar Método de pago"></app-titulo-principal>
 <app-table-panel>
   <ng-template appCustomTemplate="left-header">
     <div class="table-panel-header-column">
@@ -20,7 +20,7 @@
             <span>Importe</span>
             <b>{{pago.importe | currency}}</b>
           </div>
-          <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event)">
+          <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event, pago)">
             <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
           </a>
         </div>
