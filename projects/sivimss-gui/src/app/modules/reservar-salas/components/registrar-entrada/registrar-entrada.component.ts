@@ -58,8 +58,8 @@ export class RegistrarEntradaComponent implements OnInit {
       nombreFinado: [{ value: null, disabled: true }, []],
       nombreResponsable: [{ value: null, disabled: false }, [Validators.required]],
       nivelGas: [{ value: null, disabled: false }, [Validators.required]],
-      fecha: [{ value: null, disabled: false }, [Validators.required]],
-      hora: [{ value: null, disabled: false }, [Validators.required]],
+      fecha: [{ value: this.fechaActual, disabled: false }, [Validators.required]],
+      hora: [{ value: this.fechaActual, disabled: false }, [Validators.required]],
     });
   }
 
