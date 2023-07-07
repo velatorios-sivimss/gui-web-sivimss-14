@@ -12,6 +12,7 @@ import { VerOrdenServicioComponent } from 'projects/sivimss-gui/src/app/modules/
 import { GenerarOrdenServicioResolver } from './services/generar-orden-servicio.resolver';
 import { ConsultarOrdenServicioResolver } from './services/consultar-orden-servicio.resolver';
 import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-servicio/actualizar-orden-servicio.component';
+import { ActualizarOrdenServicioResolver } from './services/actualizar-orden-servicio.resolver';
 
 const routes: Routes = [
   {
@@ -32,14 +33,14 @@ const routes: Routes = [
     path: 'modificar-orden-de-servicio/:idODS/:idEstatus',
     component: ActualizarOrdenServicioComponent,
     resolve: {
-      respuesta: GenerarOrdenServicioResolver,
+      respuesta: ActualizarOrdenServicioResolver,
     },
   },
   {
     path: 'modificar-orden-de-servicio/:idODS/:idEstatus',
     component: ActualizarOrdenServicioComponent,
     resolve: {
-      respuesta: ActualizarOrdenServicioComponent,
+      respuesta: ActualizarOrdenServicioResolver,
     },
   },
   {
@@ -75,6 +76,10 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [GenerarOrdenServicioResolver, ConsultarOrdenServicioResolver],
+  providers: [
+    GenerarOrdenServicioResolver,
+    ConsultarOrdenServicioResolver,
+    ActualizarOrdenServicioResolver,
+  ],
 })
 export class OrdenesServicioRoutingModule {}
