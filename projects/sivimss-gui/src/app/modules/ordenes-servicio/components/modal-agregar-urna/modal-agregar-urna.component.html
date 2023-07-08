@@ -7,9 +7,8 @@
       <span class="campo-obligatorio" *ngIf="f.urna?.errors?.required && (f.urna?.dirty || f.urna?.touched)">Campo
         obligatorio</span>
     </div>
-
   </div>
-  <div class="row">
+  <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
       <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Agregar

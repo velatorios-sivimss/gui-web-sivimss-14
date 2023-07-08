@@ -6,15 +6,16 @@
       <div class="col-md-6" *ngIf="ocultarServicios">
         <label class="control-label" for="servicio">Servicio<span class="req">*</span>:</label>
         <p-dropdown #dd id="servicio" class="form-control" formControlName="servicio" placeholder="Selecciona servicio"
-          appendTo="body" [options]="servicios" (onChange)="seleccionaServicio(dd)"></p-dropdown>
+          appendTo="body" [options]="servicios" [filter]="true" filterBy="label"
+          (onChange)="seleccionaServicio(dd)"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="f.servicio?.errors?.required && (f.servicio?.dirty || f.servicio?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
         <p-dropdown #dd id="proveedor" class="form-control" formControlName="proveedor" appendTo="body"
-          placeholder="Selecciona proveedor" [options]="listaproveedor"
-          (onChange)="seleccionaProveedor(dd)"></p-dropdown>
+          placeholder="Selecciona proveedor" [options]="listaproveedor" (onChange)="seleccionaProveedor(dd)"
+          [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Campo obligatorio</span>
       </div>
@@ -64,10 +65,13 @@
         </button>
       </div>
     </div>
-    <div class="col-md-12 flex justify-content-end" *ngIf="ocultarBtn">
-      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar
-      </button>
+
+    <div class="row mb-3" *ngIf="ocultarBtn">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar
+        </button>
+      </div>
     </div>
   </form>
 </ng-template>
@@ -131,7 +135,6 @@
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-gold btn-md" (click)="mostrarSeccionCreacion = true">Cancelar</button>
       <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Aceptar</button>
-
     </div>
   </div>
 </ng-template>
