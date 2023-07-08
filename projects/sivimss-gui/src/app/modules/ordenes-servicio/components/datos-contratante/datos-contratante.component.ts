@@ -326,8 +326,11 @@ export class DatosContratanteComponent implements OnInit {
     if (!this.datosContratante.curp.value) {
       return;
     }
-    if(this.datosContratante.curp?.errors?.pattern){
-      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+    if (this.datosContratante.curp?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(34)
+      );
       return;
     }
 
@@ -381,7 +384,7 @@ export class DatosContratanteComponent implements OnInit {
 
               this.datosContratante.nombre.setValue(datos.nombre);
               this.datosContratante.primerApellido.setValue(
-                respuesta.primerApellido
+                datos.primerApellido
               );
               this.datosContratante.segundoApellido.setValue(
                 datos.segundoApellido
@@ -436,8 +439,11 @@ export class DatosContratanteComponent implements OnInit {
     if (!this.datosContratante.rfc.value) {
       return;
     }
-    if(this.datosContratante.rfc?.errors?.pattern){
-      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
+    if (this.datosContratante.rfc?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(33)
+      );
       return;
     }
     this.loaderService.activar();
@@ -761,20 +767,20 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   convertirAMayusculas(posicionFormulario: number): void {
-    const formularios = [this.datosContratante.curp,this.datosContratante.rfc];
+    const formularios = [this.datosContratante.curp, this.datosContratante.rfc];
     formularios[posicionFormulario].setValue(
       formularios[posicionFormulario].value.toUpperCase()
     );
   }
 
-  convertirAMinusculas(): void{
+  convertirAMinusculas(): void {
     this.datosContratante.correoElectronico.setValue(
       this.datosContratante.correoElectronico.value.toLowerCase()
-    )
+    );
   }
 
   validarCorreoElectronico(): void {
-    if(this.datosContratante.correoElectronico?.errors?.pattern){
+    if (this.datosContratante.correoElectronico?.errors?.pattern) {
       this.alertaService.mostrar(
         TipoAlerta.Precaucion,
         this.mensajesSistemaService.obtenerMensajeSistemaPorId(50)
