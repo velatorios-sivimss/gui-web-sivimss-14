@@ -5,7 +5,7 @@
       <div class="col-md-3">
         <label class="control-label" for="tipoOrden">Tipo de orden<span class="req">*</span>:</label>
         <p-dropdown id="tipoOrden" class="form-control" formControlName="tipoOrden"
-          placeholder="Selecciona tipo de orden" [options]="tipoOrden" (onChange)="changeTipoOrden()"></p-dropdown>
+          placeholder="Selecciona tipo de orden" [options]="tipoOrden" (onChange)="changeTipoOrden()" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.tipoOrden?.errors?.required && (datosFinado.tipoOrden?.dirty || datosFinado.tipoOrden?.touched)">Campo
           obligatorio</span>
@@ -151,7 +151,7 @@
       <div class="col-md-3">
         <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
         <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
-          [options]="tipoSexo" (onChange)="cambiarTipoSexo()"></p-dropdown>
+          [options]="tipoSexo" (onChange)="cambiarTipoSexo()" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.sexo?.errors?.required && (datosFinado.sexo?.dirty || datosFinado.sexo?.touched)">Campo
           obligatorio</span>
@@ -167,7 +167,7 @@
       <div class="col-md-3">
         <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
         <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
-          placeholder="Selecciona nacionalidad" [options]="nacionalidad"  (onChange)="cambiarNacionalidad()" ></p-dropdown>
+          placeholder="Selecciona nacionalidad" [options]="nacionalidad"  (onChange)="cambiarNacionalidad()" [filter]="true" filterBy="label" ></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.nacionalidad?.errors?.required && (datosFinado.nacionalidad?.dirty || datosFinado.nacionalidad?.touched)">Campo
           obligatorio</span>
@@ -175,7 +175,7 @@
       <div class="col-md-3" *ngIf="datosFinado.nacionalidad.value == 1">
         <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
         <p-dropdown id="lugarNacimiento" class="form-control" formControlName="lugarNacimiento"
-          placeholder="Ingresa lugar de nacimiento" [options]="estado"></p-dropdown>
+          placeholder="Ingresa lugar de nacimiento" [options]="estado" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.lugarNacimiento?.errors?.required && (datosFinado.lugarNacimiento?.dirty || datosFinado.lugarNacimiento?.touched)">Campo
           obligatorio</span>
@@ -183,7 +183,7 @@
       <div class="col-md-3" *ngIf="datosFinado.nacionalidad.value == 2">
         <label class="control-label" for="paisNacimiento">País de nacimiento<span class="req">*</span>:</label>
         <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
-          placeholder="Ingresa país de nacimiento" [options]="pais"></p-dropdown>
+          placeholder="Ingresa país de nacimiento" [options]="pais" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.paisNacimiento?.errors?.required && (datosFinado.paisNacimiento?.dirty || datosFinado.paisNacimiento?.touched)">Campo
           obligatorio</span>
@@ -228,7 +228,7 @@
         <label class="control-label" for="clinicaAdscripcion">Clínica de adscripción<span class="req">*</span>:</label>
         <p-dropdown id="clinicaAdscripcion" class="form-control" formControlName="clinicaAdscripcion"
           (onChange)="changeClinica()" placeholder="Selecciona clínica de adscripción"
-          [options]="unidadesMedicas"></p-dropdown>
+          [options]="unidadesMedicas" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.clinicaAdscripcion?.errors?.required && (datosFinado.clinicaAdscripcion?.dirty || datosFinado.clinicaAdscripcion?.touched)">Campo
           obligatorio</span>
@@ -237,7 +237,7 @@
         <label class="control-label" for="unidadProcedencia">Unidad de procedencia<span class="req">*</span>:</label>
         <p-dropdown id="unidadProcedencia" class="form-control" formControlName="unidadProcedencia"
           placeholder="Selecciona unidad de procedencia" [options]="unidadesMedicas"
-          (onChange)="changeUnidad()"></p-dropdown>
+          (onChange)="changeUnidad()" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.unidadProcedencia?.errors?.required && (datosFinado.unidadProcedencia?.dirty || datosFinado.unidadProcedencia?.touched)">Campo
           obligatorio</span>
@@ -255,7 +255,7 @@
       <div class="col-md-6">
         <label class="control-label" for="tipoPension">Tipo de pensión<span class="req">*</span>:</label>
         <p-dropdown id="tipoPension" class="form-control" formControlName="tipoPension"
-          placeholder="Selecciona tipo de pensión" [options]="tipoPension"></p-dropdown>
+          placeholder="Selecciona tipo de pensión" [options]="tipoPension" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.tipoPension?.errors?.required && (datosFinado.tipoPension?.dirty || datosFinado.tipoPension?.touched)">Campo
           obligatorio</span>
