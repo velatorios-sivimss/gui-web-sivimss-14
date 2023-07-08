@@ -4,7 +4,7 @@
       <label class="control-label" for="articulos">Artículos complementarios<span class="req">*</span>:</label>
       <p-dropdown #dd id="articulos" class="form-control" formControlName="articulos"
         placeholder="Selecciona un articulos" appendTo="body" [options]="articulos"
-        (onChange)="selecionararticulos(dd)"></p-dropdown>
+        (onChange)="selecionararticulos(dd)" [filter]="true" filterBy="label"></p-dropdown>
       <span class="campo-obligatorio"
         *ngIf="f.articulos?.errors?.required && (f.articulos?.dirty || f.articulos?.touched)">Campo
         obligatorio</span>
@@ -22,10 +22,10 @@
 
   </div>
   <div class="row">
-    <div class="row mb-3 flex align-items-end">
-      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Agregar
-      </button>
-      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-    </div>
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
+        <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Agregar
+        </button>
+      </div>
   </div>
 </form>
