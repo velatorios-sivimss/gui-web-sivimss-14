@@ -54,9 +54,7 @@ import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.i
   templateUrl: './modificar-datos-contratante.component.html',
   styleUrls: ['./modificar-datos-contratante.component.scss'],
 })
-export class ModificarDatosContratanteComponent
-  implements OnInit, AfterContentInit
-{
+export class ModificarDatosContratanteComponent implements OnInit {
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @Output()
@@ -142,6 +140,7 @@ export class ModificarDatosContratanteComponent
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
+    this.inicializarForm();
   }
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
@@ -170,7 +169,7 @@ export class ModificarDatosContratanteComponent
     this.gestionarEtapasService.datosContratante$
       .asObservable()
       .subscribe((datosContratante) =>
-        this.inicializarForm(
+        this.llenarFormmulario(
           datosContratante,
           Number(this.rutaActiva.snapshot.paramMap.get('idEstatus')),
           Number(this.rutaActiva.snapshot.paramMap.get('idODS'))
@@ -178,13 +177,171 @@ export class ModificarDatosContratanteComponent
       );
   }
 
-  ngAfterContentInit() {
-    // this.cambiarValidacion();
-    // this.cambiarTipoSexo();
-    // this.cambiarNacionalidad();
+  inicializarForm(): void {
+    this.form = this.formBuilder.group({
+      datosContratante: this.formBuilder.group({
+        matricula: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        matriculaCheck: [
+          {
+            value: null,
+            disabled: false,
+          },
+        ],
+        rfc: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.pattern(PATRON_RFC)],
+        ],
+        curp: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required, Validators.pattern(PATRON_CURP)],
+        ],
+        nombre: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        primerApellido: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        segundoApellido: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        fechaNacimiento: [
+          {
+            value: null,
+            disabled: true,
+          },
+          [Validators.required],
+        ],
+        sexo: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        otroTipoSexo: [
+          {
+            value: null,
+            disabled: false,
+          },
+        ],
+        nacionalidad: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        lugarNacimiento: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [],
+        ],
+        paisNacimiento: [
+          {
+            value: null,
+            disabled: false,
+          },
+        ],
+        telefono: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        correoElectronico: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required, Validators.pattern(PATRON_CORREO)],
+        ],
+        parentesco: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+      }),
+      direccion: this.formBuilder.group({
+        calle: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        noExterior: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        noInterior: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [],
+        ],
+        cp: [{ value: null, disabled: false }, [Validators.required]],
+        colonia: [
+          {
+            value: null,
+            disabled: false,
+          },
+          [Validators.required],
+        ],
+        municipio: [
+          {
+            value: null,
+            disabled: true,
+          },
+          [Validators.required],
+        ],
+        estado: [
+          {
+            value: null,
+            disabled: true,
+          },
+          [Validators.required],
+        ],
+      }),
+    });
   }
 
-  inicializarForm(datos: any, idODS: number, tipoODS: number): void {
+  llenarFormmulario(datos: any, idODS: number, tipoODS: number): void {
+    if (Object.entries(datos).length === 0) {
+      return;
+    }
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
         matricula: [
@@ -353,10 +510,9 @@ export class ModificarDatosContratanteComponent
     }
     this.idContratante = Number(datos.contratante.idContratante);
     this.idPersona = datos.contratante.idPersona;
-
-    if (datos.contratante.matricula == null ? false : true) {
-      this.radonlyMatricula = true;
-    }
+    this.cambiarValidacion();
+    this.cambiarTipoSexo();
+    this.cambiarNacionalidad();
   }
 
   async cambiarValidacion() {
@@ -701,10 +857,10 @@ export class ModificarDatosContratanteComponent
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-
+    console.log('formulario', formulario);
     let datosEtapaContratante = {
       idOrdenServicio: this.idODS,
-      idParentesco: 2,
+      idParentesco: formulario.datosContratante.parentesco,
       contratante: {
         idPersona: this.idPersona,
         idContratante: this.idContratante,
@@ -774,6 +930,7 @@ export class ModificarDatosContratanteComponent
     this.altaODS.idVelatorio = null;
     this.altaODS.idOperador = null;
     this.contratante.cp = this.cp;
+    console.log('paso a 2', datosEtapaContratante);
 
     this.gestionarEtapasService.datosContratante$.next(datosEtapaContratante);
 

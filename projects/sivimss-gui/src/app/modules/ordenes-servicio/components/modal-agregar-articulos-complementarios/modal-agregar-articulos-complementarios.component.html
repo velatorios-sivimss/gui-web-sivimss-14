@@ -3,8 +3,8 @@
     <div class="col-md-6">
       <label class="control-label" for="articulos">Artículos complementarios<span class="req">*</span>:</label>
       <p-dropdown #dd id="articulos" class="form-control" formControlName="articulos"
-        placeholder="Selecciona un articulos" appendTo="body" [options]="articulos"
-        (onChange)="selecionararticulos(dd)"></p-dropdown>
+        placeholder="Selecciona un articulos" appendTo="body" [options]="articulos" (onChange)="selecionararticulos(dd)"
+        [filter]="true" filterBy="label"></p-dropdown>
       <span class="campo-obligatorio"
         *ngIf="f.articulos?.errors?.required && (f.articulos?.dirty || f.articulos?.touched)">Campo
         obligatorio</span>

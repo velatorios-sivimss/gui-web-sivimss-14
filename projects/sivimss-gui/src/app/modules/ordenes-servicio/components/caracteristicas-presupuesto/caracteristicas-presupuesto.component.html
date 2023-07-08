@@ -2,13 +2,13 @@
   <div class="col-md-4">
     <label class="control-label" for="paquete">Paquete<span class="req">*</span>:</label>
     <p-dropdown #dd id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado" [disabled]="bloquearPaquete"
-      placeholder="Selecciona el paquete" [options]="paquetes" (onChange)="detallePaqueteFunction(dd)"></p-dropdown>
+      placeholder="Selecciona el paquete" [options]="paquetes" (onChange)="detallePaqueteFunction(dd)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
   </div>
   <div class="col-md-6" *ngIf="mostrarTIpoOtorgamiento">
     <label class="control-label" for="paquete">Para el otorgamiento de este paquete fue presentado un:<span
         class="req"></span>:</label>
     <p-dropdown id="paquete" class="form-control" [(ngModel)]="selecionaTipoOtorgamiento"
-      placeholder="Selecciona una opción" [options]="valoresTipoOrtogamiento"></p-dropdown>
+      placeholder="Selecciona una opción" [options]="valoresTipoOrtogamiento" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
   </div>
 </div>
 

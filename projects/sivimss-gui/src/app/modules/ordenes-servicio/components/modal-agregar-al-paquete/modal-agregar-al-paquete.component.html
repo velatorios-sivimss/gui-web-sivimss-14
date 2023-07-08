@@ -16,26 +16,26 @@
   <div class="row">
     <div class="col-md-4">
       <label class="control-label" for="ataudes">Ataudes<span class="req">*</span>:</label>
-      <p-dropdown id="ataudes" class="form-control" [(ngModel)]="ataudSeleccionado" placeholder="Selecciona un ataúd"
-        [options]="listaAtaudes" (onChange)="buscarProveedor()"></p-dropdown>
+      <p-dropdown  id="ataudes" class="form-control" [(ngModel)]="ataudSeleccionado" placeholder="Selecciona un ataúd"
+        [options]="listaAtaudes" (onChange)="buscarProveedor()" [filter]="true" filterBy="label" appendTo="body" ></p-dropdown>
     </div>
     <div class="col-md-4">
       <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
       <p-dropdown #dd id="proveedor" class="form-control" [(ngModel)]="proveedorSeleccionado"
         placeholder="Selecciona un proveedor" [options]="listaProveedores"
-        (onChange)="buscarAtaudInventario(dd)"></p-dropdown>
+        (onChange)="buscarAtaudInventario(dd)" [filter]="true" filterBy="label"appendTo="body" ></p-dropdown>
     </div>
     <div class="col-md-4">
       <label class="control-label" for="ataudesInentario">Ataudes Inventario<span class="req">*</span>:</label>
-      <p-dropdown #dd id="ataudesInentario" class="form-control" [(ngModel)]="selectAtaudInventario"
+      <p-dropdown #dd id="ataudesInentario" class5="form-control" [(ngModel)]="selectAtaudInventario"
         placeholder="Selecciona un proveedor" [options]="listaAtaudesInventario"
-        (onChange)="onchangeInventario(dd)"></p-dropdown>
+        (onChange)="onchangeInventario(dd)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
     </div>
   </div>
-  <div class="row">
-    <div class="flex justify-content-center">
-      <button class="btn btn-primary btn-md" type="button" (click)="aceptarModal()">Aceptar</button>
-      <button class="ml-4 btn btn-default btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button class="btn btn-default btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" type="button" (click)="aceptarModal()">Aceptar</button>
     </div>
   </div>
 </div>
