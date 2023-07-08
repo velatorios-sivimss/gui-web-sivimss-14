@@ -1026,7 +1026,7 @@ export class CaracteristicasPresupuestoComponent
           banderaPresupuesto = true;
         }
       })
-      if(banderaPaquete && banderaPresupuesto && this.form.valid && this.dd){
+      if(banderaPaquete && this.form.valid && this.dd){
         return false
       }
     }

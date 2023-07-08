@@ -8,7 +8,7 @@
     <div class="col-md-6">
       <label class="control-label" for="motivo">Motivo<span class="req">*</span>:</label>
       <input id="motivo" type="text" class="form-control" formControlName="motivo" placeholder="Ingresa el motivo"
-        maxlength="80" lettersOnly (keyup.space)="noEspaciosAlPrincipio(2)">
+        maxlength="80" lettersOnly (keyup.space)="noEspaciosAlPrincipio()">
       <span class="campo-obligatorio" *ngIf="f.motivo?.errors?.required && (f.motivo?.dirty || f.motivo?.touched)">Campo
         obligatorio</span>
     </div>
