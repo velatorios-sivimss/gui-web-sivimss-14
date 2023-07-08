@@ -972,6 +972,13 @@ export class ModificarDatosContratanteComponent
       nssCheck = false;
       nss = null;
     }
+    let matricula = finado.matricula;
+    let matriculaChek = true;
+
+    if (finado.matricula == '' || finado.matricula == null) {
+      matriculaChek = false;
+      matricula = null;
+    }
     console.log('qie trae', finado.cp);
     let datosEtapaFinado = {
       datosFinado: {
@@ -980,8 +987,8 @@ export class ModificarDatosContratanteComponent
         velatorioPrevision: finado.idVelatorioContratoPrevision,
         esObito: finado.esobito,
         esParaExtremidad: finado.extremidad,
-        matricula: null,
-        matriculaCheck: true,
+        matricula: matricula,
+        matriculaCheck: matriculaChek,
         curp: finado.curp,
         nss: nss,
         nssCheck: nssCheck,
@@ -992,7 +999,7 @@ export class ModificarDatosContratanteComponent
         edad: null,
         sexo: Number(finado.sexo),
         otroTipoSexo: finado.otroSexo,
-        nacionalidad: null,
+        nacionalidad: finado.nacionalidad,
         lugarNacimiento:
           finado.idEstado == null ? null : Number(finado.idEstado),
         paisNacimiento: finado.idPais == null ? null : Number(finado.idPais),
