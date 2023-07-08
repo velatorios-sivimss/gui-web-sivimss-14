@@ -54,7 +54,9 @@ import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.i
   templateUrl: './modificar-datos-contratante.component.html',
   styleUrls: ['./modificar-datos-contratante.component.scss'],
 })
-export class ModificarDatosContratanteComponent implements OnInit {
+export class ModificarDatosContratanteComponent
+  implements OnInit, AfterContentChecked
+{
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @Output()
@@ -108,7 +110,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
   idContratante: number | null = null;
   idDomicilio: number | null = null;
   idODS: number | null = null;
-  datosConsulta: any[] = [];
+  datosConsulta: any = {};
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -179,6 +181,10 @@ export class ModificarDatosContratanteComponent implements OnInit {
     this.gestionarEtapasService.datosConsultaODS$
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   inicializarForm(): void {
@@ -341,8 +347,6 @@ export class ModificarDatosContratanteComponent implements OnInit {
       }),
     });
   }
-
-  llenarParametro() {}
 
   llenarFormmulario(datos: any, idODS: number, tipoODS: number): void {
     if (Object.entries(datos).length === 0) {
@@ -798,6 +802,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
       this.datosContratante.paisNacimiento.disable();
       this.datosContratante.paisNacimiento.clearValidators();
       this.datosContratante.paisNacimiento.reset();
+      this.datosContratante.paisNacimiento.setValue(null);
       this.datosContratante.lugarNacimiento.enable();
       this.datosContratante.lugarNacimiento.setValidators(Validators.required);
       return;
@@ -954,6 +959,71 @@ export class ModificarDatosContratanteComponent implements OnInit {
     this.gestionarEtapasService.datosContratante$.next(datosEtapaContratante);
 
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
+    this.llenarDAtosFinado();
+  }
+
+  llenarDAtosFinado(): void {
+    console.log('datos generales', this.datosConsulta);
+
+    let finado = this.datosConsulta.finado;
+    let nss = finado.nss;
+    let nssCheck = true;
+    if (finado.nss == '' || finado.nss == null) {
+      nssCheck = false;
+      nss = null;
+    }
+    console.log('qie trae', finado.cp);
+    let datosEtapaFinado = {
+      datosFinado: {
+        tipoOrden: finado.idTipoOrden,
+        noContrato: finado.idContratoPrevision,
+        velatorioPrevision: finado.idVelatorioContratoPrevision,
+        esObito: finado.esobito,
+        esParaExtremidad: finado.extremidad,
+        matricula: null,
+        matriculaCheck: true,
+        curp: finado.curp,
+        nss: nss,
+        nssCheck: nssCheck,
+        nombre: finado.nomPersona,
+        primerApellido: finado.primerApellido,
+        segundoApellido: finado.segundoApellido,
+        fechaNacimiento: finado.fechaNac,
+        edad: null,
+        sexo: Number(finado.sexo),
+        otroTipoSexo: finado.otroSexo,
+        nacionalidad: null,
+        lugarNacimiento:
+          finado.idEstado == null ? null : Number(finado.idEstado),
+        paisNacimiento: finado.idPais == null ? null : Number(finado.idPais),
+        fechaDefuncion: finado.fechaDeceso,
+        causaDeceso: finado.causaDeceso,
+        lugarDeceso: finado.lugarDeceso,
+        horaDeceso: finado.hora,
+        clinicaAdscripcion:
+          finado.idClinicaAdscripcion == null
+            ? null
+            : Number(finado.idClinicaAdscripcion),
+        unidadProcedencia:
+          finado.idUnidadProcedencia == null
+            ? null
+            : Number(finado.idUnidadProcedencia),
+        procedenciaFinado: finado.procedenciaFinado,
+        tipoPension: finado.idTipoPension,
+      },
+      direccion: {
+        calle: finado.cp.desCalle,
+        noExterior: finado.cp.numExterior,
+        noInterior: finado.cp.numInterior,
+        cp: finado.cp.codigoPostal,
+        colonia: finado.cp.desColonia,
+        municipio: finado.cp.desMunicipio,
+        estado: finado.cp.desEstado,
+        idDomicilio: Number(finado.cp.idDomicilio),
+      },
+    };
+    console.log(datosEtapaFinado);
+    this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
   }
 
   get datosContratante() {

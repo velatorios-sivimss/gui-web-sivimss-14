@@ -111,6 +111,49 @@ export class GestionarEtapasActualizacionService {
     0
   );
 
+  datosEtapaFinado = {
+    datosFinado: {
+      tipoOrden: null,
+      noContrato: null,
+      velatorioPrevision: null,
+      esObito: null,
+      esParaExtremidad: null,
+      matricula: null,
+      matriculaCheck: true,
+      curp: null,
+      nss: null,
+      nssCheck: true,
+      nombre: null,
+      primerApellido: null,
+      segundoApellido: null,
+      fechaNacimiento: null,
+      edad: null,
+      sexo: null,
+      otroTipoSexo: null,
+      nacionalidad: null,
+      lugarNacimiento: null,
+      paisNacimiento: null,
+      fechaDefuncion: null,
+      causaDeceso: null,
+      lugarDeceso: null,
+      horaDeceso: null,
+      clinicaAdscripcion: null,
+      unidadProcedencia: null,
+      procedenciaFinado: null,
+      tipoPension: null,
+    },
+    direccion: {
+      calle: null,
+      noExterior: null,
+      noInterior: null,
+      cp: null,
+      colonia: null,
+      municipio: null,
+      estado: null,
+      idDomicilio: null,
+    },
+  };
+
   altaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.altaODS);
   datosContratante$: BehaviorSubject<any> = new BehaviorSubject<any>(
     this.datosContratante
@@ -118,7 +161,9 @@ export class GestionarEtapasActualizacionService {
   datosConsultaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(
     this.datosConsultaODS
   );
-
+  datosEtapaFinado$: BehaviorSubject<any> = new BehaviorSubject<any>(
+    this.datosEtapaFinado
+  );
   constructor() {
     // private authService: AutenticacionService // _http:HttpClient,
     this.altaODS.contratante = this.contratante;
