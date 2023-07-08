@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +13,7 @@ import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { finalize } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-actualizar-orden-servicio',
@@ -28,6 +28,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
 
   titulo: string = '';
 
+  subscription!: Subscription;
   // etapas: Etapa[] = [
   //   {
   //     idEtapa: 0,
@@ -97,7 +98,9 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
     private changeDetector: ChangeDetectorRef,
     private alertaService: AlertaService
-  ) {}
+  ) {
+    this.buscarDetalle(Number(this.rutaActiva.snapshot.paramMap.get('idODS')));
+  }
 
   ngOnInit(): void {
     // this.gestionarEtapasService.etapas$.next(this.etapas);
@@ -108,7 +111,6 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     } else {
       this.titulo = 'GENERAR ORDEN COMPLEMENTARIA';
     }
-    this.buscarDetalle(Number(this.rutaActiva.snapshot.paramMap.get('idODS')));
   }
 
   buscarDetalle(idODS: number) {
