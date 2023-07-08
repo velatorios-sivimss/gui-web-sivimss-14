@@ -108,6 +108,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
   idContratante: number | null = null;
   idDomicilio: number | null = null;
   idODS: number | null = null;
+  datosConsulta: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -175,6 +176,9 @@ export class ModificarDatosContratanteComponent implements OnInit {
           Number(this.rutaActiva.snapshot.paramMap.get('idODS'))
         )
       );
+    this.gestionarEtapasService.datosConsultaODS$
+      .asObservable()
+      .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
   }
 
   inicializarForm(): void {
@@ -338,9 +342,19 @@ export class ModificarDatosContratanteComponent implements OnInit {
     });
   }
 
+  llenarParametro() {}
+
   llenarFormmulario(datos: any, idODS: number, tipoODS: number): void {
     if (Object.entries(datos).length === 0) {
       return;
+    }
+
+    let nacionalidad = 1;
+    if (
+      datos.contratante.idEstado == null ||
+      datos.contratante.idEstado == ''
+    ) {
+      nacionalidad = 2;
     }
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
@@ -353,7 +367,11 @@ export class ModificarDatosContratanteComponent implements OnInit {
         ],
         matriculaCheck: [
           {
-            value: datos.contratante.matricula == null ? false : true,
+            value:
+              datos.contratante.matricula == null ||
+              datos.contratante.matricula == ''
+                ? false
+                : true,
             disabled: false,
           },
         ],
@@ -414,7 +432,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
         ],
         nacionalidad: [
           {
-            value: Number(datos.contratante.nacionalidad),
+            value: nacionalidad,
             disabled: false,
           },
           [Validators.required],
@@ -510,6 +528,7 @@ export class ModificarDatosContratanteComponent implements OnInit {
     }
     this.idContratante = Number(datos.contratante.idContratante);
     this.idPersona = datos.contratante.idPersona;
+
     this.cambiarValidacion();
     this.cambiarTipoSexo();
     this.cambiarNacionalidad();
