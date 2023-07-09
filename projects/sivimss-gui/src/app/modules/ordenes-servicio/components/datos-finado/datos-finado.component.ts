@@ -38,8 +38,8 @@ import { ServicioDetalleTrasladotoInterface } from '../../models/ServicioDetalle
 import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.interface';
 import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
-import {ModalConvenioPfComponent} from "../modal-convenio-pf/modal-convenio-pf.component";
-import {Persona} from "../../models/Persona.interface";
+import { ModalConvenioPfComponent } from '../modal-convenio-pf/modal-convenio-pf.component';
+import { Persona } from '../../models/Persona.interface';
 
 @Component({
   selector: 'app-datos-finado',
@@ -101,7 +101,6 @@ export class DatosFinadoComponent implements OnInit {
   fechaActual = new Date();
   validacionPersonaConvenio: boolean = false;
 
-
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -111,7 +110,7 @@ export class DatosFinadoComponent implements OnInit {
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private gestionarEtapasService: GestionarEtapasService,
+    private gestionarEtapasService: GestionarEtapasService
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -180,7 +179,7 @@ export class DatosFinadoComponent implements OnInit {
           {
             value: datosEtapaFinado.datosFinado.esParaExtremidad,
             disabled: false,
-          }
+          },
         ],
         matricula: [
           { value: datosEtapaFinado.datosFinado.matricula, disabled: false },
@@ -346,8 +345,11 @@ export class DatosFinadoComponent implements OnInit {
     if (!this.datosFinado.curp.value) {
       return;
     }
-    if(this.datosFinado.curp?.errors?.pattern){
-      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+    if (this.datosFinado.curp?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(34)
+      );
       return;
     }
     this.loaderService.activar();
@@ -555,7 +557,6 @@ export class DatosFinadoComponent implements OnInit {
   }
 
   continuar(): void {
-    //  if (!this.form.valid) return;
     let etapas: Etapa[] = [
       {
         idEtapa: 0,
@@ -798,7 +799,7 @@ export class DatosFinadoComponent implements OnInit {
     this.datosFinado.unidadProcedencia.setValue(null);
     this.datosFinado.unidadProcedencia.clearValidators();
     this.datosFinado.unidadProcedencia.updateValueAndValidity();
-    console.log(this.form)
+    console.log(this.form);
   }
 
   changeUnidad(): void {
@@ -958,7 +959,7 @@ export class DatosFinadoComponent implements OnInit {
   }
   agregarValidaciones(): void {
     Object.keys(this.datosFinado).forEach((key) => {
-      if(key.includes('esObito') || key.includes('esParaExtremidad'))return;
+      if (key.includes('esObito') || key.includes('esParaExtremidad')) return;
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
@@ -1001,15 +1002,14 @@ export class DatosFinadoComponent implements OnInit {
       );
   }
 
-  consultarFolioPf(event:any): void {
-
+  consultarFolioPf(event: any): void {
     const ref = this.dialogService.open(ModalConvenioPfComponent, {
       header: 'Número de contrato',
       style: { maxWidth: '876px', width: '100%' },
-      data: {folio:this.datosFinado.noContrato.value},
-    })
-    ref.onClose.subscribe((persona:Persona) => {
-      let [anio, mes, dia]:any = persona.fechaNac?.split('-');
+      data: { folio: this.datosFinado.noContrato.value },
+    });
+    ref.onClose.subscribe((persona: Persona) => {
+      let [anio, mes, dia]: any = persona.fechaNac?.split('-');
       this.validacionPersonaConvenio = true;
       dia = dia.substr(0, 2);
       const fecha = new Date(anio + '/' + mes + '/' + dia);
@@ -1017,12 +1017,8 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.curp.setValue(persona.curp);
       this.datosFinado.nss.setValue(persona.nss);
       this.datosFinado.nombre.setValue(persona.nomPersona);
-      this.datosFinado.primerApellido.setValue(
-        persona.primerApellido
-      );
-      this.datosFinado.segundoApellido.setValue(
-        persona.segundoApellido
-      );
+      this.datosFinado.primerApellido.setValue(persona.primerApellido);
+      this.datosFinado.segundoApellido.setValue(persona.segundoApellido);
       this.datosFinado.fechaNacimiento.setValue(fecha);
       this.datosFinado.sexo.setValue(persona?.sexo);
       if (Number(persona.idPais) == 119) {
@@ -1039,8 +1035,6 @@ export class DatosFinadoComponent implements OnInit {
     });
   }
   convertirAMayusculas(): void {
-    this.datosFinado.curp.setValue(
-      this.datosFinado.curp.value.toUpperCase()
-    );
+    this.datosFinado.curp.setValue(this.datosFinado.curp.value.toUpperCase());
   }
 }
