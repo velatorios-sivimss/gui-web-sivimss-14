@@ -105,7 +105,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
   ngOnInit(): void {
     // this.gestionarEtapasService.etapas$.next(this.etapas);
     let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
-    console.log(estatus);
+
     if (Number(estatus) == 1) {
       this.titulo = 'ACTUALIZAR ORDEN DE SERVICIO';
     } else {
@@ -117,15 +117,15 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     this.loaderService.activar();
 
     const parametros = { idOrdenServicio: idODS };
-    console.log('entro', parametros);
     this.gestionarOrdenServicioService
       .consultarDetalleODS(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log('que trajo', respuesta.datos);
+          this.caracteristicas(respuesta.datos);
           this.gestionarEtapasService.datosContratante$.next(respuesta.datos);
           this.gestionarEtapasService.datosConsultaODS$.next(respuesta.datos);
+          this.caracteristicas(respuesta.datos);
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -148,6 +148,96 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           }
         }
       );
+  }
+
+  caracteristicas(datos: any): void {
+    let datosPaquete = datos.caracteristicasPresupuesto;
+    let observaciones =
+      datosPaquete.caracteristicasDelPresupuesto.observaciones;
+    let notasServicio =
+      datosPaquete.caracteristicasDelPresupuesto.notasServicio;
+    let idPaquete = datosPaquete.caracteristicasPaqueteResponse.idPaquete;
+    let otorgamiento = null;
+    let mostrarOtorgamiento = false;
+    let salidaPaquete = [];
+    if (datosPaquete != null) {
+      let caracteristicasPaquete = datosPaquete.caracteristicasPaqueteResponse;
+
+      let paquete = caracteristicasPaquete.detallePaquete;
+
+      otorgamiento = Number(caracteristicasPaquete.otorgamiento);
+      if (otorgamiento > 0) {
+        mostrarOtorgamiento = true;
+      }
+      for (let i = 0; i < paquete.length; i++) {
+        let element = paquete[i];
+        let coordOrigen = null;
+        let coordDestino = null;
+        let destino = null;
+        let origen = null;
+        let totalKilometros = null;
+        if (element.servicioDetalleTraslado != null) {
+          coordOrigen = [
+            element.servicioDetalleTraslado.latitudInicial,
+            element.servicioDetalleTraslado.longitudInicial,
+          ];
+          coordDestino = [
+            element.servicioDetalleTraslado.latitudFinal,
+            element.servicioDetalleTraslado.longitudFinal,
+          ];
+          destino = element.servicioDetalleTraslado.destino;
+          origen = element.servicioDetalleTraslado.origen;
+          totalKilometros = element.servicioDetalleTraslado.totalKilometros;
+        }
+
+        let bloquearRadioButton = true;
+        if (element.idProveedor == null || element.idProveedor == '') {
+          bloquearRadioButton = false;
+        }
+        let datos = {
+          idPaqueteDetalle: element.idPaqueteDetalle,
+          grupo: element.grupo,
+          concepto: element.concepto,
+          totalPaquete: element.totalPaquete,
+          idServicio: element.idServicio,
+          cantidad: element.cantidad,
+          idArticulo: element.idArticulo,
+          idCategoria: element.idCategoria,
+          importe: element.importeMonto,
+          idTipoServicio: element.idTipoServicio,
+          fila: i,
+          idInventario: element.idInventario,
+          proveedor: element.nombreProveedor,
+          idProveedor: element.idProveedor,
+          kilometraje: element.kilometraje,
+          coordOrigen: coordOrigen,
+          coordDestino: coordDestino,
+          destino: destino,
+          origen: origen,
+          utilizarArticulo: element.agregado,
+          bloquearRadioButton: bloquearRadioButton,
+          proviene: null,
+          totalKilometros: totalKilometros,
+        };
+        salidaPaquete.push(datos);
+      }
+    }
+
+    let datosEtapaCaracteristicas = {
+      observaciones: observaciones,
+      notasServicio: notasServicio,
+      paqueteSeleccionado: idPaquete,
+      mostrarTIpoOtorgamiento: mostrarOtorgamiento,
+      selecionaTipoOtorgamiento: otorgamiento,
+      datosPaquetes: salidaPaquete,
+      datosPresupuesto: [],
+      elementosEliminadosPaquete: [],
+      total: 0,
+    };
+    console.log(datosEtapaCaracteristicas);
+    this.gestionarEtapasService.datosEtapaCaracteristicas$.next(
+      datosEtapaCaracteristicas
+    );
   }
 
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {

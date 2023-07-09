@@ -48,7 +48,7 @@ import { Dropdown } from 'primeng/dropdown';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { ModalEliminarArticuloComponent } from '../modal-eliminar-articulo/modal-eliminar-articulo.component';
 import { ModalDonarArticuloComponent } from '../modal-donar-articulo/modal-donar-articulo.component';
-import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import { UsuarioEnSesion } from '../../../../models/usuario-en-sesion.interface';
 
 @Component({
   selector: 'app-caracteristicas-presupuesto',
@@ -159,7 +159,9 @@ export class CaracteristicasPresupuestoComponent
   }
 
   ngOnInit(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const usuario: UsuarioEnSesion = JSON.parse(
+      localStorage.getItem('usuario') as string
+    );
     this.idVelatorio = +usuario.idVelatorio;
     this.buscarPaquetes();
     this.gestionarEtapasService.altaODS$
@@ -609,6 +611,7 @@ export class CaracteristicasPresupuestoComponent
 
     datos.bloquearRadioButton = true;
     this.datosPresupuesto.push(datos);
+    console.log(datos);
     this.totalpresupuesto();
   }
 
@@ -874,7 +877,7 @@ export class CaracteristicasPresupuestoComponent
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
-        detalle.activo = datos.activo ?? 0;
+        detalle.activo = datos.activo ?? 1;
         let cordenadas = datos.coordOrigen ?? null;
         traslado.longitudInicial = null;
         traslado.latitudInicial = null;
@@ -1013,45 +1016,50 @@ export class CaracteristicasPresupuestoComponent
   }
 
   validacionFormulario(): boolean {
-
     let banderaPaquete = false;
     let banderaPresupuesto = false;
 
-    if(this.tipoOrden == 1){
-      this.datosPresupuesto.forEach(function (datos){
-        if(datos.proviene.includes('paquete') && datos.utilizarArticulo.includes('true')){
+    if (this.tipoOrden == 1) {
+      this.datosPresupuesto.forEach(function (datos) {
+        if (
+          datos.proviene.includes('paquete') &&
+          datos.utilizarArticulo.includes('true')
+        ) {
           banderaPaquete = true;
         }
-        if(datos.proviene.includes('presupuesto')){
+        if (datos.proviene.includes('presupuesto')) {
           banderaPresupuesto = true;
         }
-      })
-      if(banderaPaquete && this.form.valid && this.dd){
-        return false
+      });
+      if (banderaPaquete && this.form.valid && this.dd) {
+        return false;
       }
     }
 
-    if(this.tipoOrden == 2){
-      this.datosPresupuesto.forEach(function (datos){
-        if(datos.proviene.includes('paquete') && datos.utilizarArticulo.includes('true')){
+    if (this.tipoOrden == 2) {
+      this.datosPresupuesto.forEach(function (datos) {
+        if (
+          datos.proviene.includes('paquete') &&
+          datos.utilizarArticulo.includes('true')
+        ) {
           banderaPaquete = true;
         }
-      })
-      if(banderaPaquete && this.form.valid && this.dd){
-        return false
+      });
+      if (banderaPaquete && this.form.valid && this.dd) {
+        return false;
       }
     }
 
-    if(this.tipoOrden == 3){
-      this.datosPresupuesto.forEach(function (datos){
-        if(datos.proviene.includes('presupuesto')){
+    if (this.tipoOrden == 3) {
+      this.datosPresupuesto.forEach(function (datos) {
+        if (datos.proviene.includes('presupuesto')) {
           banderaPresupuesto = true;
         }
-      })
-      if(banderaPresupuesto && this.form.valid){
-        return false
+      });
+      if (banderaPresupuesto && this.form.valid) {
+        return false;
       }
     }
-    return true
+    return true;
   }
 }

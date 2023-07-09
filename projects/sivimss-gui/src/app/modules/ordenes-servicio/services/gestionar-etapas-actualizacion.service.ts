@@ -154,6 +154,18 @@ export class GestionarEtapasActualizacionService {
     },
   };
 
+  datosEtapaCaracteristicas = {
+    observaciones: null,
+    notasServicio: null,
+    paqueteSeleccionado: null,
+    mostrarTIpoOtorgamiento: false,
+    selecionaTipoOtorgamiento: null,
+    datosPaquetes: [],
+    datosPresupuesto: [],
+    elementosEliminadosPaquete: [],
+    total: 0,
+  };
+
   altaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.altaODS);
   datosContratante$: BehaviorSubject<any> = new BehaviorSubject<any>(
     this.datosContratante
@@ -164,6 +176,11 @@ export class GestionarEtapasActualizacionService {
   datosEtapaFinado$: BehaviorSubject<any> = new BehaviorSubject<any>(
     this.datosEtapaFinado
   );
+
+  datosEtapaCaracteristicas$: BehaviorSubject<any> = new BehaviorSubject<any>(
+    this.datosEtapaCaracteristicas
+  );
+
   constructor() {
     // private authService: AutenticacionService // _http:HttpClient,
     this.altaODS.contratante = this.contratante;
