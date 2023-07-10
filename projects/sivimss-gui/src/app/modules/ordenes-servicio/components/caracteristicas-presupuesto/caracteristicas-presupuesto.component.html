@@ -60,7 +60,7 @@
                   <label [for]="'utilizarArticulo'+(rowIndex+1)" class="ml-2">NO</label>
                 </div>
 
-                <a class="barras" (click)="abrirPanel($event,paquete,rowIndex,'paquete')">
+                <a class="barras" onCloseOnNavigation (click)="abrirPanel($event,paquete,rowIndex,'paquete')">
                   <i class="fs fs-barras-horizontales"></i>
                 </a>
               </div>
