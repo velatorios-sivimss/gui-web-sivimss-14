@@ -12,11 +12,13 @@ import {TableModule} from "primeng/table";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {OverlayPanelOpcionesModule} from "../../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
 import {CalendarModule} from "primeng/calendar";
+import { DetalleGestionPagoComponent } from './components/detalle-gestion-pago/detalle-gestion-pago.component';
 
 
 @NgModule({
   declarations: [
-    GestionarPagoComponent
+    GestionarPagoComponent,
+    DetalleGestionPagoComponent
   ],
   imports: [
     CommonModule,
