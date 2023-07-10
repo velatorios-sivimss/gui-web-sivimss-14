@@ -45,17 +45,18 @@
             <td>{{paquete.totalPaquete}}</td>
             <td style="width:200px">
               <div class="flex ">
-                <div class="flex align-items- mr-2" *ngIf="paquete.proveedor">
+                <div class="flex align-items- mr-2">
+
                   <p-radioButton [name]="rowIndex+1" value="true" [(ngModel)]="paquete.utilizarArticulo"
                     [inputId]="'utilizarArticulo'+(rowIndex+1)" [disabled]="paquete.bloquearRadioButton"
                     (onClick)="agregarArticulo(paquete)"></p-radioButton>
                   <label [for]="'utilizarArticulo'+(rowIndex+1)" class="ml-2">SI</label>
                 </div>
 
-                <div class="flex align-items-center mr-2" *ngIf="paquete.proveedor">
+                <div class="flex align-items-center mr-2">
                   <p-radioButton [name]="rowIndex+1" value="false" [(ngModel)]="paquete.utilizarArticulo"
                     [inputId]="'utilizarArticulo'+(rowIndex+1)" [disabled]="paquete.bloquearRadioButton"
-                    (onClick)="quitarArticulo(paquete)"></p-radioButton>
+                    (onClick)="quitarArticulo(paquete,rowIndex)"></p-radioButton>
                   <label [for]="'utilizarArticulo'+(rowIndex+1)" class="ml-2">NO</label>
                 </div>
 
