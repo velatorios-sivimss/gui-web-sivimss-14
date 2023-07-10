@@ -3,6 +3,7 @@ import { ServicioDetalleTrasladotoInterface } from './ServicioDetalleTraslado.in
 export interface DetallePresupuestoInterface {
   proviene: string | null;
   idCategoria: number | null;
+  proviene: string | null;
   idArticulo: number | null;
   idInventario: number | null;
   idTipoServicio: number | null;

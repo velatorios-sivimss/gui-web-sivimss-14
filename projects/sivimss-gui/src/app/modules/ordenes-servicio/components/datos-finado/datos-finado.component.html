@@ -13,7 +13,7 @@
       <div class="col-md-2">
         <label class="control-label" for="noContrato">Número de contrato<span class="req">*</span>:</label>
         <input id="noContrato" type="text" class="form-control" formControlName="noContrato"
-          placeholder="Ingresa número de contrato" maxlength="10" (blur)="consultarFolioPf($event)">
+          placeholder="Ingresa número de contrato" maxlength="10" (blur)="consultarFolioPf($event)" onCloseOnNavigation>
         <span class="campo-obligatorio"
           *ngIf="datosFinado.noContrato?.errors?.required && (datosFinado.noContrato?.dirty || datosFinado.noContrato?.touched)">Campo
           obligatorio</span>
@@ -331,7 +331,7 @@
     <div class="col-md-12 flex justify-content-end align-items-center">
       <button class="btn btn-md btn-default" (click)="regresar()">Regresar</button>
       <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-      <button type="button" [disabled]="form.invalid && !validacionPersonaConvenio" (click)="continuar()" class="btn btn-md btn-primary ml-5">Aceptar</button>
+      <button type="button" [disabled]="form.invalid || !validacionPersonaConvenio" (click)="continuar()" class="btn btn-md btn-primary ml-5">Aceptar</button>
     </div>
   </div>
 </form>

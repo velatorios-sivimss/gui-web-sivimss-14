@@ -17,7 +17,7 @@
     <div class="col-md-12 flex justify-content-end">
 
       <button class="btn btn-gold btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
-      <button class="btn ml-4 btn-primary btn-md" type="button" (click)="aceptarModal()">Aceptar</button>
+      <button class="btn ml-4 btn-primary btn-md" [disabled]="form.invalid" type="button" (click)="aceptarModal()">Aceptar</button>
     </div>
   </div>
 </form>

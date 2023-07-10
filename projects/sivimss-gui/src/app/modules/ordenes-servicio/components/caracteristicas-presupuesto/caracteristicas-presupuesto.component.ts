@@ -116,7 +116,7 @@ export class CaracteristicasPresupuestoComponent
   selecionaTipoOtorgamiento: number | null = null;
   valoresTipoOrtogamiento: any[] = [
     { value: 1, label: 'Estudio socioeconómico' },
-    { value: 2, label: 'EscritoLlibre' },
+    { value: 2, label: 'Escrito libre' },
   ];
   mostrarQuitarPresupuesto: boolean = false;
   total: number = 0;
@@ -412,7 +412,6 @@ export class CaracteristicasPresupuestoComponent
         return;
       }
       this.datosPaquetes.forEach((datos: any) => {
-        console.log(datos);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;
           datos.proveedor = respuesta.nombreProveedor;
@@ -584,6 +583,13 @@ export class CaracteristicasPresupuestoComponent
   }
 
   agregarArticulo(datos: any): void {
+    if(!datos.proveedor){
+      setTimeout(()=> {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Agrega un proveedor para asignar al presupuesto');
+      datos.utilizarArticulo = null;
+      },100);
+      return
+    }
     datos.proviene = 'paquete';
     this.paquete.activo = 1;
     this.paquete.cantidad = datos.cantidad ?? null;
@@ -611,7 +617,6 @@ export class CaracteristicasPresupuestoComponent
 
     datos.bloquearRadioButton = true;
     this.datosPresupuesto.push(datos);
-    console.log(datos);
     this.totalpresupuesto();
   }
 
@@ -634,7 +639,8 @@ export class CaracteristicasPresupuestoComponent
     let pretotal = Number(totalPaquete) + Number(totalArticulos);
     this.total = pretotal;
   }
-  quitarArticulo(datos: any): void {
+  quitarArticulo(datos: any,rowIndex: number): void {
+    datos.fila = rowIndex + 1;
     const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
       header: '',
       style: { maxWidth: '600px', width: '100%' },
@@ -645,6 +651,8 @@ export class CaracteristicasPresupuestoComponent
         datos.desmotivo = salida;
         this.elementosEliminadosPaquete.push(datos);
         this.quitarPaquete(datos);
+      }else{
+        datos.utilizarArticulo = null;
       }
     });
   }
@@ -840,6 +848,8 @@ export class CaracteristicasPresupuestoComponent
       detalle.idTipoServicio = parseInt(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
 
+      detalle.proviene = datos.proviene;
+
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
@@ -968,7 +978,6 @@ export class CaracteristicasPresupuestoComponent
     }
 
     // this.detallePresupuesto = arrayDatosPresupuesto;
-    console.log('alta od 3', this.altaODS);
 
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -997,7 +1006,6 @@ export class CaracteristicasPresupuestoComponent
 
   abrirModalDonarAtaud(event: MouseEvent): void {
     event.stopPropagation();
-    console.log(this.valorFila);
     const ref = this.dialogService.open(ModalDonarArticuloComponent, {
       header: 'Donar ataúd',
       style: { maxWidth: '353px', width: '100%' },
@@ -1006,7 +1014,6 @@ export class CaracteristicasPresupuestoComponent
       },
     });
     ref.onClose.subscribe((salida: any) => {
-      console.log(salida);
       if (salida != null) {
         this.quitarPaquete(salida);
         this.datosPresupuesto.push(salida);
