@@ -62,7 +62,9 @@ import { ɵDomRendererFactory2 } from '@angular/platform-browser';
   templateUrl: './modificar-informacion-servicio.component.html',
   styleUrls: ['./modificar-informacion-servicio.component.scss'],
 })
-export class ModificarInformacionServicioComponent implements OnInit {
+export class ModificarInformacionServicioComponent
+  implements OnInit, AfterContentChecked
+{
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @Output()
@@ -177,6 +179,10 @@ export class ModificarInformacionServicioComponent implements OnInit {
     this.altaODS = datodPrevios;
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   inicializarForm(): void {
