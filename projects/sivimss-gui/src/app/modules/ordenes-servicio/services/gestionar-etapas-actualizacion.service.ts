@@ -163,6 +163,7 @@ export class GestionarEtapasActualizacionService {
     datosPaquetes: [],
     datosPresupuesto: [],
     elementosEliminadosPaquete: [],
+    elementosEliminadosPresupuesto: [],
     total: 0,
   };
 

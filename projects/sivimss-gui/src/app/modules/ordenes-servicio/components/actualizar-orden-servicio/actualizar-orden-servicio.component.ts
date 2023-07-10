@@ -89,7 +89,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
   // ];
 
   idEtapaSeleccionada: number = 0;
-
+  estatusValida: number = 0;
   constructor(
     private gestionarEtapasService: GestionarEtapasActualizacionService,
     private rutaActiva: ActivatedRoute,
@@ -107,6 +107,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
 
     if (Number(estatus) == 1) {
+      this.estatusValida = 1;
       this.titulo = 'ACTUALIZAR ORDEN DE SERVICIO';
     } else {
       this.titulo = 'GENERAR ORDEN COMPLEMENTARIA';
@@ -122,10 +123,9 @@ export class ActualizarOrdenServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          this.caracteristicas(respuesta.datos);
+          if (this.estatusValida == 1) this.caracteristicas(respuesta.datos);
           this.gestionarEtapasService.datosContratante$.next(respuesta.datos);
           this.gestionarEtapasService.datosConsultaODS$.next(respuesta.datos);
-          this.caracteristicas(respuesta.datos);
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -222,20 +222,27 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-        salidaPaquete.push(datos);
+        if (element.idProveedor != null && element.idProveedor != '') {
+          salidaPaquete.push(datos);
+        }
       }
     }
 
+    let total = 0;
     if (presupuesto != null) {
       let detallePresupuesto = presupuesto.detallePresupuesto;
-      let idCaracteristicasPresupuesto =
-        presupuesto.idCaracteristicasPresupuesto;
+
       idPaquete = presupuesto.idPaquete;
       observaciones = presupuesto.observaciones;
       notasServicio = presupuesto.notasServicio;
 
       for (let i = 0; i < detallePresupuesto.length; i++) {
         const element = detallePresupuesto[i];
+        total += Number(element.importeMonto * element.cantidad);
+        let utilizarArticulo = false;
+        if (element.servicioDetalleTraslado == 'paquete') {
+          utilizarArticulo = true;
+        }
         let coordOrigen = null;
         let coordDestino = null;
         let destino = null;
@@ -258,7 +265,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           idPaqueteDetallePresupuesto: element.idPaqueteDetallePresupuesto,
           cantidad: element.cantidad,
           concepto: element.concepto,
-          kilometraje: element.kilometraje,
+          kilometraje: totalKilometros,
           coordOrigen: coordOrigen,
           coordDestino: coordDestino,
           destino: destino,
@@ -269,13 +276,16 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           idInventario: element.idInventario,
           totalKilometros: totalKilometros,
           idArticulo: element.idArticulo,
-          idTipoServicio: element.idTipoServicio,
+          idTipoServicio: element.idTipoServicio ?? null,
           idProveedor: element.idProveedor,
           totalPaquete: Number(element.importeMonto * element.cantidad),
           importe: element.importeMonto,
           esDonado: element.esDonado,
           proviene: element.proviene,
+          utilizarArticulo: utilizarArticulo,
+          activo: 1,
         };
+
         salidaPresupuesto.push(datosPresupuesto);
       }
     }
@@ -290,7 +300,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
       datosPaquetes: salidaPaquete,
       datosPresupuesto: salidaPresupuesto,
       elementosEliminadosPaquete: [],
-      total: 0,
+      total: total,
     };
     console.log(datosEtapaCaracteristicas);
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(

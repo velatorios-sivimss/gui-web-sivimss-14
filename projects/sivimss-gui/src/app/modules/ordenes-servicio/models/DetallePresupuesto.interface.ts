@@ -11,5 +11,6 @@ export interface DetallePresupuestoInterface {
   idProveedor: number | null;
   esDonado: number | null;
   importeMonto: number | null;
+  activo?: number | null;
   servicioDetalleTraslado: ServicioDetalleTrasladotoInterface | null;
 }
