@@ -116,8 +116,8 @@
     <div class="row mb-2">
       <div class="col-md-6">
         <div class="flex align-items-center">
-          <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon" (onChange)="abrirModalAgregarPanteon()"
-            [binary]="true"></p-checkbox>
+          <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon"
+            (onChange)="abrirModalAgregarPanteon()" [binary]="true" onCloseOnNavigation></p-checkbox>
           <label class="control-label" [for]="'agregarPanteon'">Agregar panteón</label>
         </div>
         <span class="campo-obligatorio"
@@ -197,13 +197,13 @@
         <label class="control-label">¿El servicio fue gestinado por un promotor?<span class="req">*</span>:</label>
         <div class="flex">
           <div class="flex align-items-center mx-2">
-            <p-radioButton [inputId]="'Si'" name="gestionadoPorPromotor" [value]="true" (click)="changePromotor('si')"
-              formControlName="gestionadoPorPromotor"></p-radioButton>
+            <p-radioButton [inputId]="'Si'" name="gestionadoPorPromotor" [value]="true"
+              (onChange)="changePromotor('si')" formControlName="gestionadoPorPromotor"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'Si'">'Si'</label>
           </div>
           <div class="flex align-items-center mx-2">
-            <p-radioButton [inputId]="'No'" name="gestionadoPorPromotor" [value]="false" (click)="changePromotor('no')"
-              formControlName="gestionadoPorPromotor"></p-radioButton>
+            <p-radioButton [inputId]="'No'" name="gestionadoPorPromotor" [value]="false"
+              (onChange)="changePromotor('no')" formControlName="gestionadoPorPromotor"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'No'">'No'</label>
           </div>
         </div>
@@ -235,11 +235,12 @@
 
 <div class="row my-4 flex align-items-center">
   <div class="col-md-3">
-    <button type="button" (click)="preorden()" class="btn btn-lg btn-primary">Guardar pre-orden</button>
+    <button type="button" (click)="preorden()" [disabled]="form.invalid" class="btn btn-lg btn-primary">Guardar
+      pre-orden</button>
   </div>
   <div class="col-md-9">
     <span class="etiqueta-base">En caso de que no termines de generar esta orden de servicio, será guardada con el
-      <b>estatus-pre-orden</b></span>
+      <b>estatus-pre-orden</b>.</span>
   </div>
 </div>
 
@@ -247,6 +248,7 @@
   <div class="col-md-12 flex justify-content-end align-items-center">
     <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
     <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-    <button type="button" class="btn btn-md btn-primary ml-5" (click)="generada()">Generar orden de servicio</button>
+    <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="form.invalid" (click)="generada()">Generar
+      orden de servicio</button>
   </div>
 </div>
