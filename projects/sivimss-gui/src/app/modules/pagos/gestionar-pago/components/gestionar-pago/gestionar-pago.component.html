@@ -1,64 +1,59 @@
 <app-titulo-principal titulo="Gestionar pago"></app-titulo-principal>
 <div class="border-panel">
   <form [formGroup]="filtroGestionarPagoForm">
-    <div class="row mb-3">
-      <div class="col-md-6">
+    <div class="row mb-4">
+      <div class="col-md-12">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
                     [options]="catalogoVelatorios" placeholder="Seleccionar el velatorio">
         </p-dropdown>
       </div>
-      <div class="col-md-6">
-        <label class="control-label" for="folioODS">Folio de la Orden de Servicio (ODS):</label>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <span class="control-label font-bold block">Folio: </span>
+        <label class="control-label" for="folioODS">Folio de la Orden de Servicio (ODS): </label>
         <p-dropdown appendTo="body" id="folioODS" class="form-control" formControlName="folioODS"
-                    [options]="foliosODS" placeholder="Ingresa el folio (ODS)" (onChange)="limpiarFolios(1)">
+                    [options]="foliosODS" placeholder="Ingresa el folio" (onChange)="limpiarFolios(1)">
         </p-dropdown>
       </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="folioPNCPF">Folio del Nuevo convenio de previsión funeraria (PNCPF):</label>
+      <div class="col-md-4">
+        <label class="control-label mb-3" for="folioPNCPF">Folio del Nuevo convenio de previsión funeraria
+          (PNCPF):</label>
         <p-dropdown appendTo="body" id="folioPNCPF" class="form-control" formControlName="folioPNCPF"
-                    [options]="foliosPNCPF" placeholder="Ingresa el folio (PNCPF)" (onChange)="limpiarFolios(2)">
+                    [options]="foliosPNCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(2)">
         </p-dropdown>
       </div>
-      <div class="col-md-6">
-        <label class="control-label" for="folioPRCPF">Folio de la Renovación de convenios de previsión funeraria
-          (PRCPF):</label>
+      <div class="col-md-4">
+        <label class="control-label mb-3" for="folioPRCPF">Folio de la Renovación de convenios de previsión
+          funeraria (PRCPF):</label>
         <p-dropdown appendTo="body" id="folioPRCPF" class="form-control" formControlName="folioPRCPF"
-                    [options]="foliosPRCPF" placeholder="Ingresa el folio (PRCPF)" (onChange)="limpiarFolios(3)">
+                    [options]="foliosPRCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(3)">
         </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="nombreContratante">Nombre contratante:</label>
-        <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
-               placeholder="Ingresa nombre del contratante">
+      <div class="col-md-4">
+        <label class="control-label" for="elaboracionInicio">Fecha inicio:</label>
+        <p-calendar id="elaboracionInicio" formControlName="elaboracionInicio" styleClass="form-control"
+                    [showIcon]="true"
+                    placeholder="Fecha inicio" dateFormat="dd/mm/yy" appendTo="body"
+                    (onSelect)="validarMismaFechaInicioFin()"
+                    [maxDate]="filtroGestionarPagoForm.get('elaboracionFin')?.value || fechaAnterior">
+        </p-calendar>
       </div>
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-12">
-            <label class="control-label">
-              Rango de fechas de elaboración:
-            </label>
-          </div>
-          <div class="col-md-6">
-            <p-calendar id="elaboracionInicio" formControlName="elaboracionInicio" styleClass="form-control"
-                        [showIcon]="true"
-                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                        (onSelect)="validarMismaFechaInicioFin()"
-                        [maxDate]="filtroGestionarPagoForm.get('elaboracionFin')?.value || fechaAnterior">
-            </p-calendar>
-          </div>
-          <div class="col-md-6">
-            <p-calendar id="elaboracionFin" formControlName="elaboracionFin" styleClass="form-control" [showIcon]="true"
-                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                        (onSelect)="validarMismaFechaInicioFin()"
-                        [minDate]="filtroGestionarPagoForm.get('elaboracionInicio')?.value" [maxDate]="fechaActual">
-            </p-calendar>
-          </div>
-        </div>
+      <div class="col-md-4">
+        <label class="control-label" for="elaboracionFin">Fecha fin:</label>
+        <p-calendar id="elaboracionFin" formControlName="elaboracionFin" styleClass="form-control" [showIcon]="true"
+                    placeholder="Fecha fin" dateFormat="dd/mm/yy" appendTo="body"
+                    (onSelect)="validarMismaFechaInicioFin()"
+                    [minDate]="filtroGestionarPagoForm.get('elaboracionInicio')?.value" [maxDate]="fechaActual">
+        </p-calendar>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="nombreContratante">Nombre del contratante:</label>
+        <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
+               placeholder="Ingresa nombre">
       </div>
     </div>
     <div class="row mt-6">
@@ -78,12 +73,12 @@
       <tr>
         <th pResizableColumn id="columna_gestionar_pago_fecha">Fecha</th>
         <th pResizableColumn id="columna_gestionar_pago_folio">Folio</th>
-        <th pResizableColumn id="columna_gestionar_pago_contratante">Nombre Contratante</th>
-        <th pResizableColumn id="columna_gestionar_pago_tipo_pago">Tipo Pago</th>
+        <th pResizableColumn id="columna_gestionar_pago_contratante">Nombre contratante</th>
+        <th pResizableColumn id="columna_gestionar_pago_tipo_pago">Tipo de pago</th>
         <th pResizableColumn id="columna_gestionar_pago_total">Total</th>
         <th pResizableColumn id="columna_gestionar_pago_estatus">Estatus</th>
-        <th pResizableColumn id="columna_gestionar_pago_estatus_pago">Estatus de Pago</th>
-        <th pResizableColumn id="columna_gestionar_pago_datos_pago">Datos de Pago</th>
+        <th pResizableColumn id="columna_gestionar_pago_estatus_pago">Estatus de pago</th>
+        <th pResizableColumn id="columna_gestionar_pago_datos_pago">Datos de pago</th>
         <th id="columna_gestionar_pago_datos_botones"></th>
       </tr>
     </ng-template>
@@ -99,9 +94,6 @@
         <td>{{pago.desMetodoPago | titlecase}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a>
-              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-            </a>
             <a (click)="abrirPanel($event,pago)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
@@ -123,6 +115,8 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Gestionar Pago">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ir a Pago">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar Pago">
       </app-overlay-panel-opcion>
