@@ -123,7 +123,13 @@ export class ActualizarOrdenServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          if (this.estatusValida == 1) this.caracteristicas(respuesta.datos);
+          if (this.estatusValida == 1) {
+            this.caracteristicas(respuesta.datos);
+            if (respuesta.datos.informacionServicio != null)
+              this.datosInformacionServicio(
+                respuesta.datos.informacionServicio
+              );
+          }
           this.gestionarEtapasService.datosContratante$.next(respuesta.datos);
           this.gestionarEtapasService.datosConsultaODS$.next(respuesta.datos);
         },
@@ -308,6 +314,67 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     );
   }
 
+  datosInformacionServicio(datos: any): void {
+    console.log(datos);
+    let validaPromotor = false;
+    let idPromotor = datos.informacionServicioVelacion.idPromotor ?? null;
+    if (idPromotor != null && Number(idPromotor) > 0) {
+      validaPromotor = true;
+    }
+
+    let cp = datos.informacionServicioVelacion.cp;
+    let codigoPostal = null;
+    let calle = null;
+    let interior = null;
+    let exterior = null;
+    let colonia = null;
+    let municipio = null;
+    let estado = null;
+    let idDomicilio = null;
+
+    if (cp != null) {
+      codigoPostal = cp.codigoPostal;
+      calle = cp.desCalle;
+      interior = cp.numInterior;
+      exterior = cp.numExterior;
+      colonia = cp.desColonia;
+      municipio = cp.desMunicipio;
+      estado = cp.desEstado;
+      idDomicilio = cp.idDomicilio;
+    }
+
+    let datosEtapaInformacionServicio = {
+      fechaCortejo: datos.fechaCortejo ?? null,
+      fechaCremacion: datos.fechaCremacion ?? null,
+      fechaRecoger: datos.fechaRecoger ?? null,
+      horaRecoger: datos.horaRecoger ?? null,
+      horaCortejo: datos.horaCortejo ?? null,
+      horaCremacion: datos.horaCremacion ?? null,
+      idPanteon: datos.idPanteon ?? null,
+      idPromotor: datos.idPromotor ?? null,
+      idSala: datos.idSala ?? null,
+      fechaInstalacion:
+        datos.informacionServicioVelacion.fechaInstalacion ?? null,
+      fechaVelacion: datos.informacionServicioVelacion.fechaVelacion ?? null,
+      horaInstalacion:
+        datos.informacionServicioVelacion.horaInstalacion ?? null,
+      horaVelacion: datos.informacionServicioVelacion.horaVelacion ?? null,
+      idCapilla: datos.informacionServicioVelacion.idCapilla ?? null,
+      cp: codigoPostal,
+      calle: calle,
+      interior: interior,
+      exterior: exterior,
+      colonia: colonia,
+      municipio: municipio,
+      estado: estado,
+      idDomicilio: idDomicilio,
+      gestionadoPorPromotor: validaPromotor,
+      promotor: datos.informacionServicioVelacion.idPromotor,
+    };
+    this.gestionarEtapasService.datosEtapaInformacionServicio$.next(
+      datosEtapaInformacionServicio
+    );
+  }
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {
     //Con esta etapa que se recibe ya se puede modificar su estado.
     //Al modificar el estado de la etapa su estilo se actualiza.

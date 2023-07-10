@@ -181,7 +181,11 @@ export class ModificarDatosContratanteComponent
     this.gestionarEtapasService.datosConsultaODS$
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
+
+   
   }
+
+
 
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
