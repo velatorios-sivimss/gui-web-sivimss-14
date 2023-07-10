@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {GestionarPagoResolver} from "./services/gestionar-pago.resolver";
 import {GestionarPagoComponent} from "./components/gestionar-pago/gestionar-pago.component";
 import {DetalleGestionPagoComponent} from "./components/detalle-gestion-pago/detalle-gestion-pago.component";
+import {DetalleGestionPagoResolver} from "./services/detalle-gestion-pago.resolver";
 
 const routes: Routes = [
   {
@@ -14,14 +15,17 @@ const routes: Routes = [
   },
   {
     path: 'detalle-de-pago/:idPagoBitacora',
-    component: DetalleGestionPagoComponent
+    component: DetalleGestionPagoComponent,
+    resolve: {
+      respuesta: DetalleGestionPagoResolver
+    }
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [GestionarPagoResolver]
+  providers: [GestionarPagoResolver, DetalleGestionPagoResolver]
 })
 export class GestionarPagoRoutingModule {
 }
