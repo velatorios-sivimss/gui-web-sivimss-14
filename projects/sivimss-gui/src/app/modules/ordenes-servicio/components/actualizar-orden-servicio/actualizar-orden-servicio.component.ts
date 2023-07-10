@@ -151,20 +151,24 @@ export class ActualizarOrdenServicioComponent implements OnInit {
   }
 
   caracteristicas(datos: any): void {
+    console.log(datos);
     let datosPaquete = datos.caracteristicasPresupuesto;
-    let observaciones =
-      datosPaquete.caracteristicasDelPresupuesto.observaciones;
-    let notasServicio =
-      datosPaquete.caracteristicasDelPresupuesto.notasServicio;
-    let idPaquete = datosPaquete.caracteristicasPaqueteResponse.idPaquete;
+    let presupuesto = datosPaquete.caracteristicasDelPresupuesto;
+
+    let observaciones = null;
+
+    let notasServicio = null;
+    let idPaquete = null;
     let otorgamiento = null;
     let mostrarOtorgamiento = false;
     let salidaPaquete = [];
+    let salidaPresupuesto = [];
     if (datosPaquete != null) {
       let caracteristicasPaquete = datosPaquete.caracteristicasPaqueteResponse;
-
+      observaciones = datosPaquete.caracteristicasDelPresupuesto.observaciones;
+      notasServicio = datosPaquete.caracteristicasDelPresupuesto.notasServicio;
       let paquete = caracteristicasPaquete.detallePaquete;
-
+      idPaquete = datosPaquete.caracteristicasPaqueteResponse.idPaquete;
       otorgamiento = Number(caracteristicasPaquete.otorgamiento);
       if (otorgamiento > 0) {
         mostrarOtorgamiento = true;
@@ -205,7 +209,6 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           idCategoria: element.idCategoria,
           importe: element.importeMonto,
           idTipoServicio: element.idTipoServicio,
-          fila: i,
           idInventario: element.idInventario,
           proveedor: element.nombreProveedor,
           idProveedor: element.idProveedor,
@@ -223,6 +226,61 @@ export class ActualizarOrdenServicioComponent implements OnInit {
       }
     }
 
+    if (presupuesto != null) {
+      let detallePresupuesto = presupuesto.detallePresupuesto;
+      let idCaracteristicasPresupuesto =
+        presupuesto.idCaracteristicasPresupuesto;
+      idPaquete = presupuesto.idPaquete;
+      observaciones = presupuesto.observaciones;
+      notasServicio = presupuesto.notasServicio;
+
+      for (let i = 0; i < detallePresupuesto.length; i++) {
+        const element = detallePresupuesto[i];
+        let coordOrigen = null;
+        let coordDestino = null;
+        let destino = null;
+        let origen = null;
+        let totalKilometros = null;
+        if (element.servicioDetalleTraslado != null) {
+          coordOrigen = [
+            element.servicioDetalleTraslado.latitudInicial,
+            element.servicioDetalleTraslado.longitudInicial,
+          ];
+          coordDestino = [
+            element.servicioDetalleTraslado.latitudFinal,
+            element.servicioDetalleTraslado.longitudFinal,
+          ];
+          destino = element.servicioDetalleTraslado.destino;
+          origen = element.servicioDetalleTraslado.origen;
+          totalKilometros = element.servicioDetalleTraslado.totalKilometros;
+        }
+        let datosPresupuesto = {
+          idPaqueteDetallePresupuesto: element.idPaqueteDetallePresupuesto,
+          cantidad: element.cantidad,
+          concepto: element.concepto,
+          kilometraje: element.kilometraje,
+          coordOrigen: coordOrigen,
+          coordDestino: coordDestino,
+          destino: destino,
+          origen: origen,
+          proveedor: element.nombreProveedor,
+          grupo: element.grupo,
+          idCategoria: element.idCategoria,
+          idInventario: element.idInventario,
+          totalKilometros: totalKilometros,
+          idArticulo: element.idArticulo,
+          idTipoServicio: element.idTipoServicio,
+          idProveedor: element.idProveedor,
+          totalPaquete: Number(element.importeMonto * element.cantidad),
+          importe: element.importeMonto,
+          esDonado: element.esDonado,
+          proviene: element.proviene,
+        };
+        salidaPresupuesto.push(datosPresupuesto);
+      }
+    }
+    console.log('salida presg', salidaPresupuesto);
+
     let datosEtapaCaracteristicas = {
       observaciones: observaciones,
       notasServicio: notasServicio,
@@ -230,7 +288,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
       mostrarTIpoOtorgamiento: mostrarOtorgamiento,
       selecionaTipoOtorgamiento: otorgamiento,
       datosPaquetes: salidaPaquete,
-      datosPresupuesto: [],
+      datosPresupuesto: salidaPresupuesto,
       elementosEliminadosPaquete: [],
       total: 0,
     };

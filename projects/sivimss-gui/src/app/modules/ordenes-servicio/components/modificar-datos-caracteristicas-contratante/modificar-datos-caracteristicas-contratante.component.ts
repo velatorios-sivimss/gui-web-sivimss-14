@@ -574,6 +574,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
       }
 
       this.datosPaquetes.forEach((datos: any) => {
+        console.log('respuesta', respuesta.fila);
+        console.log('datos', datos.fila);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = null;
           datos.proveedor = respuesta.proveedor;
@@ -905,7 +907,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
           : Number(datos.idServicio);
       detalle.idTipoServicio = parseInt(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
-
+      detalle.proviene = datos.proviene;
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
