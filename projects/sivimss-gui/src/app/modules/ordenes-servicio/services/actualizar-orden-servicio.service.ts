@@ -8,15 +8,15 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
 import { MensajeSistema } from '../../../models/mensaje-sistema';
-import {Panteon} from "../models/Panteon.interface";
+import { Panteon } from '../models/Panteon.interface';
 
 @Injectable()
-export class GenerarOrdenServicioService extends BaseService<
+export class ActualizarOrdenServicioService extends BaseService<
   HttpRespuesta<any>,
   any
 > {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, '', '', 20, '', '', '');
+    super(_http, `${environment.api.mssivimss}`, '', '', 30, '', '', '');
   }
 
   private mensajesSistemaSubject: BehaviorSubject<MensajeSistema[] | null> =
@@ -226,42 +226,25 @@ export class GenerarOrdenServicioService extends BaseService<
   }
 
   consultarDatosPanteon(nombrePanteon: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-buscar-panteon`,
-      {nombrePanteon: nombrePanteon})
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `${this._funcionalidad}/buscar-filtros/orden-buscar-panteon`,
+      { nombrePanteon: nombrePanteon }
+    );
   }
 
-  guardarPanteon(objetoGuardarPanteon: Panteon): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/orden-guardar-panteon`,
-      objetoGuardarPanteon)
+  guardarPanteon(
+    objetoGuardarPanteon: Panteon
+  ): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `${this._funcionalidad}/orden-guardar-panteon`,
+      objetoGuardarPanteon
+    );
   }
 
-  consultarContratoPf(folio: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-consultar-contratoPf`,
-      folio)
-  }
-
-  consultarContratantesPf(idContrato: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-consultar-contratantes-contratoPf`,
-      {idContrato:idContrato})
-  }
-
-  consultarBeneficiariosPf(idContrato: number,idContratante:number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-consultar-contratantes-benficiarios`,
-      {idContrato:idContrato,idContratante:idContratante})
-  }
-
-  consultarPersona(idPersona: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/orden-persona-consultar`,
-      {idPersona:idPersona})
-  }
-
-  generarArchivoServiciosInmediatos(idOrdenServicio: number):Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-generada`,
-      {idOrdenServicio:idOrdenServicio,tipoReporte:'pdf'});
-  }
-
-  generarArchivoOrdenServicio(idOrdenServicio:number,estatus:number):Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-orden-servicio-generada`,
-      {idOrdenServicio:idOrdenServicio,estatus:estatus,tipoReporte:'pdf'});
+  consultarDetalleODS(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `${this._funcionalidad}/orden-detalle`,
+      parametros
+    );
   }
 }

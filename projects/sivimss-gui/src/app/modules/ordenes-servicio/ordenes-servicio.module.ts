@@ -53,7 +53,11 @@ import { ConsultarOrdenServicioService } from './services/consultar-orden-servic
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
 import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module';
-
+import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-servicio/actualizar-orden-servicio.component';
+import { ModificarDatosCaracteristicasContratanteComponent } from './components/modificar-datos-caracteristicas-contratante/modificar-datos-caracteristicas-contratante.component';
+import { ModalConvenioPfComponent } from './components/modal-convenio-pf/modal-convenio-pf.component';
+import { ActualizarOrdenServicioService } from './services/actualizar-orden-servicio.service';
+import { GestionarEtapasActualizacionService } from './services/gestionar-etapas-actualizacion.service';
 @NgModule({
   declarations: [
     OrdenesServicioComponent,
@@ -85,6 +89,9 @@ import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module
     ModalAgregarUrnaComponent,
     ModalAgregarEmpaqueComponent,
     ModalAgregarArticulosComplementariosComponent,
+    ActualizarOrdenServicioComponent,
+    ModificarDatosCaracteristicasContratanteComponent,
+    ModalConvenioPfComponent,
   ],
   imports: [
     CommonModule,
@@ -115,6 +122,8 @@ import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module
     DialogService,
     GestionarEtapasService,
     ConsultarOrdenServicioService,
+    ActualizarOrdenServicioService,
+    GestionarEtapasActualizacionService,
   ],
 })
 export class OrdenesServicioModule {}

@@ -183,10 +183,10 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Generar Orden complementaria" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')" titulo="Modificar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generado')" (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generado')" (click)="descargarContratoServInmediatos()" titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden') || ordenServicioSeleccionada.estatus?.includes('Generado')" (click)="descargarOrdenServicio()" titulo="Descargar Orden de servicio"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarContratoServInmediatos()" titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden') || ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarOrdenServicio()" titulo="Descargar Orden de servicio"></app-overlay-panel-opcion>
 <!--      <app-overlay-panel-opcion titulo="Ver tarjeta de identificación" (click)="abrirModalVerTarjetaIdent()"></app-overlay-panel-opcion>-->
     </app-overlay-panel-opciones>
   </ng-template>

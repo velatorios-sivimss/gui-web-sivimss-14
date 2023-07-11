@@ -127,6 +127,10 @@ export const idsModulos: DatoModulo = {
     ruta: 'convenios-prevision-funeraria/ingresar-nuevo-convenio',
     icono: 'default-icon.svg'
   },
+  '26': {
+    ruta: '',
+    icono: 'default-icon.svg'
+  },
 };
 
 

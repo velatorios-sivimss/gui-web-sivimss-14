@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -7,6 +7,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./modificar-informacion-servicio.component.scss'],
 })
 export class ModificarInformacionServicioComponent implements OnInit {
+  @Output()
+  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+
   form!: FormGroup;
 
   constructor(private readonly formBuilder: FormBuilder) {}

@@ -53,7 +53,7 @@
     <div class="col-md-4">
       <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
       <p-dropdown id="estado" class="form-control" formControlName="estado" placeholder="Selecciona estado"
-                  [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
+                  [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
       <span class="campo-obligatorio" *ngIf="f.estado?.errors?.required && (f.estado?.dirty || f.estado?.touched)">Campo obligatorio</span>
     </div>
   </div>
