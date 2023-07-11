@@ -1,0 +1,119 @@
+<app-titulo-principal titulo="Solicitudes de pago"></app-titulo-principal>
+<div class="border-panel">
+    <form [formGroup]="filtroFormSolicitudesPago" (ngSubmit)="buscar()">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="velatorio">Velatorio:</label>
+                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true">
+                </p-dropdown>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-3">
+                    <label class="control-label" for="fechaInicial">Rango de fechas de elaboración</label>
+                    <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true" placeholder="Fecha inicial" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()" [maxDate]="filtroFormSolicitudesPago.get('fechaFinal')?.value || fechaAnterior">
+                    </p-calendar>
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label" for="fechaFinal">fecha de inicio</label>
+                    <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()" [minDate]="filtroFormSolicitudesPago.get('fechaInicial')?.value"
+                        [maxDate]="fechaActual">
+                    </p-calendar>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="ejercFiscal">Ejercicio fiscal:</label>
+                <p-dropdown id="ejercFiscal" class="form-control" formControlName="ejercFiscal" [options]="catalogoNiveles" placeholder="Selecciona el ejercicio fiscal">
+                </p-dropdown>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="tipoSolic">Tipo de solicitud de pago:</label>
+                <p-dropdown id="tipoSolic" class="form-control" formControlName="tipoSolic" [options]="opciones" placeholder="Selecciona el tipo de solicitud" [filter]="true">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="folio">Folio de la solicitud de pago:</label>
+                <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="opciones" placeholder="Selecciona el folio" [filter]="true">
+                </p-dropdown>
+            </div>
+            <div class="col-md-6">
+
+            </div>
+        </div>
+        <div class="row mt-6">
+            <div class="col-md-12 flex justify-content-end">
+                <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+                <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<section class="mt-5">
+    <div class="flex justify-content-between align-items-center">
+        <h2 class="subtitulo">Formatos de actividad</h2>
+        <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['USUARIOS','ALTA']" (click)="abrirModalGenerarSolicitudPago()">Generar solicitud pago
+</button>
+    </div>
+
+    <p-table styleClass="mt-5 mb-8" [value]="solicitudesPago" [paginator]="solicitudesPago.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="columna_velatorio">Velatorio</th>
+                <th id="columna_folio">Folio de la solicitud de pago</th>
+                <th id="columna_ejercicio">Ejercicio fiscal</th>
+                <th id="columna_fecha">Fecha de elaboración</th>
+                <th id="columna_tipo">Tipo de solicitud</th>
+                <th id="columna_estatus">Estatus</th>
+                <th id="columna"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-solicitud>
+            <tr>
+                <td>{{solicitud.idVelatorio}}</td>
+                <td>{{solicitud.folio}} </td>
+                <td>{{solicitud.ejercFiscal}} </td>
+                <td>{{solicitud.fechaElaboracion}}</td>
+                <td>{{solicitud.tipoSolic}}</td>
+                <td>{{solicitud.estatus}}</td>
+                <td>
+                    <div class="contenedor-celda-iconos">
+                        <a (click)="abrirDetalleSolicitudPago(solicitud)">
+                            <img src="assets/images/imagen-icono-ver.svg" alt="Ver">
+                        </a>
+                        <a (click)="abrirPanel($event,solicitud)">
+                            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <th colspan="5" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
+                    No se encontró información relacionada a tu búsqueda
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+                <span class="total-elements"> {{solicitudesPago.length}} de {{totalElementos}} </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+        </ng-template>
+    </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Cancelar solicitud de pago" (click)="abrirModalCancelarSolicitudPago()" routerLinkActive></app-overlay-panel-opcion>
+            <app-overlay-panel-opcion titulo="Rechazar solicitud de pago" (click)="abrirModalRechazarSolicitudPago()" routerLinkActive></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>
