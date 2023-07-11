@@ -45,6 +45,7 @@ export class GestionarPagoComponent implements OnInit {
 
   pagos: PagoGestion[] = [];
   tipoFolio: null | 1 | 2 | 3 = null;
+  pagoSeleccionado!: PagoGestion;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -157,6 +158,7 @@ export class GestionarPagoComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, pago: PagoGestion): void {
     this.overlayPanel.toggle(event);
+    this.pagoSeleccionado = pago;
   }
 
   validarMismaFechaInicioFin(): void {

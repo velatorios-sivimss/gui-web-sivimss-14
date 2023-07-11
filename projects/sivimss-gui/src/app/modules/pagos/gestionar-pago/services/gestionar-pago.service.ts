@@ -17,7 +17,7 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, '', '', 66,
-      'genpago-consulta', '', '');
+      'genpago-consulta', 'genpago-detalle', '');
   }
 
   consultarFoliosODS(): Observable<HttpRespuesta<any>> {
@@ -30,5 +30,11 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
   consultarFoliosRenPrevFun(): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._renPrevFunFolios}`, this.body);
+  }
+
+  obtenerDetallePago(idPago: number, idFlujo: number): Observable<HttpRespuesta<any>> {
+    const body = {idPago, idFlujo};
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._detalle}`, body);
+
   }
 }
