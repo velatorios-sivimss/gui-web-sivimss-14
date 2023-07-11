@@ -90,7 +90,7 @@ export class ModalGenerarTarjetaIdentificacionComponent implements OnInit {
     this.loaderService.activar();
     const configuracionArchivo: OpcionesArchivos = {};
     const idODS:number = this.config.data.ods.idOrdenServicio
-    this.consultarOrdenServicioService.generarArchivoTarjetaIdetificacion(+this.f.nombreOperador.value,idODS).pipe(
+    this.consultarOrdenServicioService.generarArchivoTarjetaIdetificacion(this.f.nombreOperador.value.toString(),idODS).pipe(
       finalize(()=>this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>): void => {

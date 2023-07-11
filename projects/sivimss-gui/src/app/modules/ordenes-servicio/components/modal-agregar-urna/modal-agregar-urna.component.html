@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-  <div class="row">
+  <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="urna">Urnas<span class="req">*</span>:</label>
       <p-dropdown #dd id="urna" class="form-control" formControlName="urna" placeholder="Selecciona una urna"
@@ -7,13 +7,12 @@
       <span class="campo-obligatorio" *ngIf="f.urna?.errors?.required && (f.urna?.dirty || f.urna?.touched)">Campo
         obligatorio</span>
     </div>
-
   </div>
-  <div class="row">
-    <div class="row mb-3 flex align-items-end">
+  <div class="row mb-3">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
       <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Agregar
       </button>
-      <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
     </div>
   </div>
 </form>

@@ -28,7 +28,7 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
   }
 
   unidadMedica(idDelegacion: number): Observable<HttpRespuesta<any>>{
-    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/consultar-unidad-medica`,
+    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar/consultar-unidad-medica`,
       {idDelegacion: idDelegacion});
   }
 
@@ -88,12 +88,13 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
     return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar/consultar-costo-cancelar`,{})
   }
 
+
   crearTarjetaIdentificacion(idOperador:number,idOrdenServicio:number): Observable<HttpRespuesta<any>>{
   return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar/tarjeta-identificacion`,
   {idOperador: idOperador, idOrdenServicio:idOrdenServicio});
   }
 
-  generarArchivoTarjetaIdetificacion(idOperador:number,idOrdenServicio:number): Observable<HttpRespuesta<any>>{
+  generarArchivoTarjetaIdetificacion(idOperador:string,idOrdenServicio:number): Observable<HttpRespuesta<any>>{
     return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar/reporte-tarjeta-iden`,
       {idOperador: idOperador, idOrdenServicio:idOrdenServicio});
   }

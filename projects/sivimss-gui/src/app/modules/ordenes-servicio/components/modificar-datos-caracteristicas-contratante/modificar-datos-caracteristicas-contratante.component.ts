@@ -49,13 +49,16 @@ import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/me
 import { ModalEliminarArticuloComponent } from '../modal-eliminar-articulo/modal-eliminar-articulo.component';
 import { ModalDonarArticuloComponent } from '../modal-donar-articulo/modal-donar-articulo.component';
 import { UsuarioEnSesion } from '../../../../models/usuario-en-sesion.interface';
-
+import { ActivatedRoute } from '@angular/router';
+import { ActualizarOrdenServicioService } from '../../services/actualizar-orden-servicio.service';
+import { GestionarEtapasActualizacionService } from '../../services/gestionar-etapas-actualizacion.service';
+import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 @Component({
-  selector: 'app-caracteristicas-presupuesto',
-  templateUrl: './caracteristicas-presupuesto.component.html',
-  styleUrls: ['./caracteristicas-presupuesto.component.scss'],
+  selector: 'app-modificar-datos-caracteristicas-contratante',
+  templateUrl: './modificar-datos-caracteristicas-contratante.component.html',
+  styleUrls: ['./modificar-datos-caracteristicas-contratante.component.scss'],
 })
-export class CaracteristicasPresupuestoComponent
+export class ModificarDatosCaracteristicasContratanteComponent
   implements OnInit, AfterContentChecked
 {
   @Output()
@@ -116,7 +119,7 @@ export class CaracteristicasPresupuestoComponent
   selecionaTipoOtorgamiento: number | null = null;
   valoresTipoOrtogamiento: any[] = [
     { value: 1, label: 'Estudio socioeconómico' },
-    { value: 2, label: 'Escrito libre' },
+    { value: 2, label: 'EscritoLlibre' },
   ];
   mostrarQuitarPresupuesto: boolean = false;
   total: number = 0;
@@ -126,15 +129,19 @@ export class CaracteristicasPresupuestoComponent
   esExtremidad: number = 0;
   esObito: number = 0;
   bloquearPaquete: boolean = false;
+  ocultarFolioEstatus: boolean = false;
+
   constructor(
+    private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
     private loaderService: LoaderService,
-
+    private rutaActiva: ActivatedRoute,
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
-    private gestionarOrdenServicioService: GenerarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasService,
+    private gestionarOrdenServicioService: ActualizarOrdenServicioService,
+    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef
   ) {
     this.altaODS.contratante = this.contratante;
@@ -156,14 +163,17 @@ export class CaracteristicasPresupuestoComponent
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
+    this.buscarPaquetes();
   }
 
   ngOnInit(): void {
+    let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     const usuario: UsuarioEnSesion = JSON.parse(
       localStorage.getItem('usuario') as string
     );
     this.idVelatorio = +usuario.idVelatorio;
-    this.buscarPaquetes();
+
     this.gestionarEtapasService.altaODS$
       .asObservable()
       .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
@@ -173,6 +183,10 @@ export class CaracteristicasPresupuestoComponent
       .subscribe((datosEtapaCaracteristicas) =>
         this.inicializarForm(datosEtapaCaracteristicas)
       );
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -186,11 +200,19 @@ export class CaracteristicasPresupuestoComponent
   }
 
   inicializarForm(datos: any): void {
-    this.paqueteSeleccionado = datos.paqueteSeleccionado;
+    console.log('inciando form', datos);
+    this.paqueteSeleccionado =
+      datos.paqueteSeleccionado == null
+        ? null
+        : Number(datos.paqueteSeleccionado);
     this.mostrarTIpoOtorgamiento = datos.mostrarTIpoOtorgamiento;
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
+    this.selecionaTipoOtorgamiento =
+      datos.selecionaTipoOtorgamiento == null
+        ? null
+        : Number(datos.selecionaTipoOtorgamiento);
     this.total = datos.total;
     this.form = this.formBuilder.group({
       observaciones: [
@@ -336,6 +358,75 @@ export class CaracteristicasPresupuestoComponent
       );
   }
 
+  agregarArticulo(datos: any): void {
+    datos.proviene = 'paquete';
+    this.paquete.activo = 1;
+    this.paquete.cantidad = datos.cantidad ?? null;
+    this.paquete.desmotivo = datos.desmotivo ?? null;
+    this.paquete.idArticulo = datos.idArticulo ?? null;
+    this.paquete.idProveedor = datos.idProveedor;
+    this.paquete.idServicio = datos.idServicio ?? null;
+    this.paquete.idTipoServicio = datos.idTipoServicio ?? null;
+    this.paquete.importeMonto = datos.importe ?? null;
+    this.paquete.totalPaquete = datos.totalPaquete;
+    this.servicioDetalleTraslado = {} as ServicioDetalleTrasladotoInterface;
+    this.paquete.servicioDetalleTraslado = null;
+    if (Number(datos.idTipoServicio) == 4) {
+      this.servicioDetalleTraslado.destino = datos.destino ?? null;
+      this.servicioDetalleTraslado.latitudInicial =
+        datos.coordOrigen[0] ?? null;
+      this.servicioDetalleTraslado.latitudFinal = datos.coordOrigen[1] ?? null;
+      this.servicioDetalleTraslado.longitudInicial =
+        datos.coordDestino[0] ?? null;
+      this.servicioDetalleTraslado.longitudFinal =
+        datos.coordDestino[1] ?? null;
+      this.servicioDetalleTraslado.origen = datos.origen ?? null;
+      this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
+    }
+
+    datos.bloquearRadioButton = true;
+    this.datosPresupuesto.push(datos);
+    this.totalpresupuesto();
+  }
+
+  totalpresupuesto(): void {
+    let datosPresupuesto = this.datosPresupuesto;
+    let totalPaquete = 0;
+    let totalArticulos = 0;
+
+    datosPresupuesto.forEach(function (datos) {
+      if (datos.proviene == 'paquete') {
+        totalPaquete = datos.totalPaquete;
+      } else {
+        totalArticulos += datos.importe;
+      }
+    });
+    let pretotal = Number(totalPaquete) + Number(totalArticulos);
+    this.total = pretotal;
+  }
+
+  quitarArticulo(datos: any): void {
+    const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
+      header: '',
+      style: { maxWidth: '600px', width: '100%' },
+      data: {},
+    });
+    ref.onClose.subscribe((salida: any) => {
+      if (salida != null) {
+        datos.desmotivo = salida;
+        this.elementosEliminadosPaquete.push(datos);
+        this.quitarPaquete(datos);
+      }
+    });
+  }
+
+  quitarPaquete(datos: any) {
+    let nuevoArray = this.datosPaquetes.filter(
+      (item) => datos.fila !== item.fila
+    );
+    this.datosPaquetes = nuevoArray;
+  }
+
   abrirPanel(
     event: MouseEvent,
     paqueteSeleccionado: any,
@@ -396,143 +487,6 @@ export class CaracteristicasPresupuestoComponent
     this.overlayPanel.toggle(event);
   }
 
-  abrirModalAgregarAtaud(event: MouseEvent) {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalAgregarAlPaqueteComponent, {
-      header: 'Agregar ataúd',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        tipoAsignacion: this.tipoAsignacion,
-        idVelatorio: this.idVelatorio,
-        fila: this.fila,
-      },
-    });
-    ref.onClose.subscribe((respuesta: any) => {
-      if (respuesta == null) {
-        return;
-      }
-      this.datosPaquetes.forEach((datos: any) => {
-        if (Number(datos.fila) == Number(respuesta.fila)) {
-          datos.idInventario = respuesta.idInventario;
-          datos.proveedor = respuesta.nombreProveedor;
-          datos.idProveedor = respuesta.idProveedor;
-          datos.idArticulo = respuesta.idArticulo;
-          datos.idAsignacion = respuesta.idAsignacion;
-          datos.utilizarArticulo = false;
-          datos.bloquearRadioButton = false;
-          datos.concepto = respuesta.concepto;
-        }
-      });
-    });
-  }
-
-  abrirModalAgregarProveedorTraslado(event: MouseEvent): void {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalAgregarServicioComponent, {
-      header: 'Agregar proveedor traslado',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        proveedor: this.listaproveedor,
-        traslado: true,
-        fila: this.fila,
-        proviene: 'traslados',
-        idServicio: this.idServicio,
-        //Pasa info a ModalVerTarjetaIdentificacionComponent
-      },
-    });
-    ref.onClose.subscribe((respuesta: any) => {
-      if (respuesta == null) {
-        return;
-      }
-      this.datosPaquetes.forEach((datos: any) => {
-        if (Number(datos.fila) == Number(respuesta.fila)) {
-          datos.idInventario = null;
-          datos.proveedor = respuesta.proveedor;
-          datos.idProveedor = respuesta.datosFormulario.proveedor;
-          datos.kilometraje = respuesta.datosFormulario.kilometraje;
-          datos.coordOrigen = respuesta.coordOrigen;
-          datos.coordDestino = respuesta.coordDestino;
-          datos.destino = respuesta.datosFormulario.destino;
-          datos.origen = respuesta.datosFormulario.origen;
-          datos.utilizarArticulo = false;
-          datos.bloquearRadioButton = false;
-        }
-      });
-    });
-  }
-
-  abrirModalAgregarProveedor(event: MouseEvent): void {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalAgregarServicioComponent, {
-      header: 'Agregar proveedor',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        proveedor: this.listaproveedor,
-        traslado: false,
-        fila: this.fila,
-        proviene: 'proveedor',
-        idServicio: this.idServicio,
-        //Pasa info a ModalVerTarjetaIdentificacionComponent
-      },
-    });
-    ref.onClose.subscribe((respuesta: any) => {
-      if (respuesta == null) {
-        return;
-      }
-
-      this.datosPaquetes.forEach((datos: any) => {
-        if (Number(datos.fila) == Number(respuesta.fila)) {
-          datos.idInventario = null;
-          datos.proveedor = respuesta.proveedor;
-          datos.idProveedor = respuesta.datosFormulario.proveedor;
-          datos.kilometraje = null;
-          datos.coordOrigen = null;
-          datos.coordDestino = null;
-          datos.utilizarArticulo = false;
-          datos.bloquearRadioButton = false;
-        }
-      });
-    });
-  }
-
-  abrirModalAgregarAtauds(): void {
-    this.formAgregarAtaud = this.formBuilder.group({
-      ataud: [{ value: null, disabled: false }, [Validators.required]],
-      proveedor: [{ value: null, disabled: false }, [Validators.required]],
-    });
-    this.mostrarModalAgregarAtaud = true;
-  }
-
-  abrirModalAgregarServicio() {
-    const ref = this.dialogService.open(ModalAgregarServicioComponent, {
-      header: 'Agregar servicio',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        dummy: '', //Pasa info a ModalVerTarjetaIdentificacionComponent
-      },
-    });
-    ref.onClose.subscribe((val: boolean) => {
-      if (val) {
-        //Obtener info cuando se cierre el modal en ModalVerTarjetaIdentificacionComponent
-      }
-    });
-  }
-
-  abrirModalVerKm(): void {
-    const ref = this.dialogService.open(ModalVerKilometrajeComponent, {
-      header: 'Ver kilometraje',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        dummy: '', //Pasa info a ModalVerKilometrajeComponent
-      },
-    });
-    ref.onClose.subscribe((val: boolean) => {
-      if (val) {
-        //Obtener info cuando se cierre el modal en ModalVerKilometrajeComponent
-      }
-    });
-  }
-
   consultarProveeedorServicio(): void {
     const parametros = { idServicio: this.idServicio };
     this.gestionarOrdenServicioService
@@ -582,85 +536,141 @@ export class CaracteristicasPresupuestoComponent
       );
   }
 
-  agregarArticulo(datos: any): void {
-    if(!datos.proveedor){
-      setTimeout(()=> {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Agrega un proveedor para asignar al presupuesto');
-      datos.utilizarArticulo = null;
-      },100);
-      return
-    }
-    datos.proviene = 'paquete';
-    this.paquete.activo = 1;
-    this.paquete.cantidad = datos.cantidad ?? null;
-    this.paquete.desmotivo = datos.desmotivo ?? null;
-    this.paquete.idArticulo = datos.idArticulo ?? null;
-    this.paquete.idProveedor = datos.idProveedor;
-    this.paquete.idServicio = datos.idServicio ?? null;
-    this.paquete.idTipoServicio = datos.idTipoServicio ?? null;
-    this.paquete.importeMonto = datos.importe ?? null;
-    this.paquete.totalPaquete = datos.totalPaquete;
-    this.servicioDetalleTraslado = {} as ServicioDetalleTrasladotoInterface;
-    this.paquete.servicioDetalleTraslado = null;
-    if (Number(datos.idTipoServicio) == 4) {
-      this.servicioDetalleTraslado.destino = datos.destino ?? null;
-      this.servicioDetalleTraslado.latitudInicial =
-        datos.coordOrigen[0] ?? null;
-      this.servicioDetalleTraslado.latitudFinal = datos.coordOrigen[1] ?? null;
-      this.servicioDetalleTraslado.longitudInicial =
-        datos.coordDestino[0] ?? null;
-      this.servicioDetalleTraslado.longitudFinal =
-        datos.coordDestino[1] ?? null;
-      this.servicioDetalleTraslado.origen = datos.origen ?? null;
-      this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
-    }
-
-    datos.bloquearRadioButton = true;
-    this.datosPresupuesto.push(datos);
-    this.totalpresupuesto();
-  }
-
-  ngAfterContentChecked(): void {
-    this.changeDetector.detectChanges();
-  }
-
-  totalpresupuesto(): void {
-    let datosPresupuesto = this.datosPresupuesto;
-    let totalPaquete = 0;
-    let totalArticulos = 0;
-
-    datosPresupuesto.forEach(function (datos) {
-      if (datos.proviene == 'paquete') {
-        totalPaquete = datos.totalPaquete;
-      } else {
-        totalArticulos += datos.importe;
-      }
-    });
-    let pretotal = Number(totalPaquete) + Number(totalArticulos);
-    this.total = pretotal;
-  }
-  quitarArticulo(datos: any,rowIndex: number): void {
-    datos.fila = rowIndex + 1;
-    const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
-      header: '',
-      style: { maxWidth: '600px', width: '100%' },
-      data: {},
+  abrirModalAgregarAlPrespuesto(event: MouseEvent) {
+    event.stopPropagation();
+    const ref = this.dialogService.open(ModalAgregarAlPresupuestoComponent, {
+      header: 'Agregar a presupuesto',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        idVelatorio: this.idVelatorio,
+        tipoOrden: this.tipoOrden,
+      },
     });
     ref.onClose.subscribe((salida: any) => {
       if (salida != null) {
-        datos.desmotivo = salida;
-        this.elementosEliminadosPaquete.push(datos);
-        this.quitarPaquete(datos);
-      }else{
-        datos.utilizarArticulo = null;
+        this.datosPresupuesto.push(salida);
+        this.totalpresupuesto();
       }
     });
   }
-  quitarPaquete(datos: any) {
-    let nuevoArray = this.datosPaquetes.filter(
-      (item) => datos.fila !== item.fila
-    );
-    this.datosPaquetes = nuevoArray;
+
+  abrirModalAgregarProveedor(event: MouseEvent): void {
+    event.stopPropagation();
+    const ref = this.dialogService.open(ModalAgregarServicioComponent, {
+      header: 'Agregar proveedor',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        proveedor: this.listaproveedor,
+        traslado: false,
+        fila: this.fila,
+        proviene: 'proveedor',
+        idServicio: this.idServicio,
+        //Pasa info a ModalVerTarjetaIdentificacionComponent
+      },
+    });
+    ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta == null) {
+        return;
+      }
+
+      this.datosPaquetes.forEach((datos: any) => {
+        if (Number(datos.fila) == Number(respuesta.fila)) {
+          datos.idInventario = null;
+          datos.proveedor = respuesta.proveedor;
+          datos.idProveedor = respuesta.datosFormulario.proveedor;
+          datos.kilometraje = null;
+          datos.coordOrigen = null;
+          datos.coordDestino = null;
+          datos.utilizarArticulo = false;
+          datos.bloquearRadioButton = false;
+        }
+      });
+    });
+  }
+
+  abrirModalAgregarProveedorTraslado(event: MouseEvent): void {
+    event.stopPropagation();
+    const ref = this.dialogService.open(ModalAgregarServicioComponent, {
+      header: 'Agregar proveedor traslado',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        proveedor: this.listaproveedor,
+        traslado: true,
+        fila: this.fila,
+        proviene: 'traslados',
+        idServicio: this.idServicio,
+        //Pasa info a ModalVerTarjetaIdentificacionComponent
+      },
+    });
+    ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta == null) {
+        return;
+      }
+      this.datosPaquetes.forEach((datos: any) => {
+        if (Number(datos.fila) == Number(respuesta.fila)) {
+          datos.idInventario = null;
+          datos.proveedor = respuesta.proveedor;
+          datos.idProveedor = respuesta.datosFormulario.proveedor;
+          datos.kilometraje = respuesta.datosFormulario.kilometraje;
+          datos.coordOrigen = respuesta.coordOrigen;
+          datos.coordDestino = respuesta.coordDestino;
+          datos.destino = respuesta.datosFormulario.destino;
+          datos.origen = respuesta.datosFormulario.origen;
+          datos.utilizarArticulo = false;
+          datos.bloquearRadioButton = false;
+        }
+      });
+    });
+  }
+
+  abrirModalAgregarAtaud(event: MouseEvent) {
+    event.stopPropagation();
+    const ref = this.dialogService.open(ModalAgregarAlPaqueteComponent, {
+      header: 'Agregar ataúd',
+      style: { maxWidth: '876px', width: '100%' },
+      data: {
+        tipoAsignacion: this.tipoAsignacion,
+        idVelatorio: this.idVelatorio,
+        fila: this.fila,
+      },
+    });
+    ref.onClose.subscribe((respuesta: any) => {
+      if (respuesta == null) {
+        return;
+      }
+      this.datosPaquetes.forEach((datos: any) => {
+        console.log(datos);
+        if (Number(datos.fila) == Number(respuesta.fila)) {
+          datos.idInventario = respuesta.idInventario;
+          datos.proveedor = respuesta.nombreProveedor;
+          datos.idProveedor = respuesta.idProveedor;
+          datos.idArticulo = respuesta.idArticulo;
+          datos.idAsignacion = respuesta.idAsignacion;
+          datos.utilizarArticulo = false;
+          datos.bloquearRadioButton = false;
+          datos.concepto = respuesta.concepto;
+        }
+      });
+    });
+  }
+  abrirModalDonarAtaud(event: MouseEvent): void {
+    event.stopPropagation();
+    console.log(this.valorFila);
+    const ref = this.dialogService.open(ModalDonarArticuloComponent, {
+      header: 'Donar ataúd',
+      style: { maxWidth: '353px', width: '100%' },
+      data: {
+        datos: this.valorFila,
+      },
+    });
+    ref.onClose.subscribe((salida: any) => {
+      console.log(salida);
+      if (salida != null) {
+        this.quitarPaquete(salida);
+        this.datosPresupuesto.push(salida);
+        this.totalpresupuesto();
+      }
+    });
   }
 
   quitarPresupuesto(): void {
@@ -735,6 +745,54 @@ export class CaracteristicasPresupuestoComponent
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(1);
+  }
+
+  validacionFormulario(): boolean {
+    let banderaPaquete = false;
+    let banderaPresupuesto = false;
+
+    if (this.tipoOrden == 1) {
+      this.datosPresupuesto.forEach(function (datos) {
+        if (
+          datos.proviene.includes('paquete') &&
+          datos.utilizarArticulo.includes('true')
+        ) {
+          banderaPaquete = true;
+        }
+        if (datos.proviene.includes('presupuesto')) {
+          banderaPresupuesto = true;
+        }
+      });
+      if (banderaPaquete && this.form.valid && this.dd) {
+        return false;
+      }
+    }
+
+    if (this.tipoOrden == 2) {
+      this.datosPresupuesto.forEach(function (datos) {
+        if (
+          datos.proviene.includes('paquete') &&
+          datos.utilizarArticulo.includes('true')
+        ) {
+          banderaPaquete = true;
+        }
+      });
+      if (banderaPaquete && this.form.valid && this.dd) {
+        return false;
+      }
+    }
+
+    if (this.tipoOrden == 3) {
+      this.datosPresupuesto.forEach(function (datos) {
+        if (datos.proviene.includes('presupuesto')) {
+          banderaPresupuesto = true;
+        }
+      });
+      if (banderaPresupuesto && this.form.valid) {
+        return false;
+      }
+    }
+    return true;
   }
 
   continuar() {
@@ -848,8 +906,6 @@ export class CaracteristicasPresupuestoComponent
       detalle.idTipoServicio = parseInt(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
 
-      detalle.proviene = datos.proviene;
-
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
@@ -887,7 +943,7 @@ export class CaracteristicasPresupuestoComponent
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
-        detalle.activo = datos.activo ?? 1;
+        detalle.activo = datos.activo ?? 0;
         let cordenadas = datos.coordOrigen ?? null;
         traslado.longitudInicial = null;
         traslado.latitudInicial = null;
@@ -978,95 +1034,12 @@ export class CaracteristicasPresupuestoComponent
     }
 
     // this.detallePresupuesto = arrayDatosPresupuesto;
+    console.log('alta od 3', this.altaODS);
 
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
   get f() {
     return this.form.controls;
-  }
-
-  abrirModalAgregarAlPrespuesto(event: MouseEvent) {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalAgregarAlPresupuestoComponent, {
-      header: 'Agregar a presupuesto',
-      style: { maxWidth: '876px', width: '100%' },
-      data: {
-        idVelatorio: this.idVelatorio,
-        tipoOrden: this.tipoOrden,
-      },
-    });
-    ref.onClose.subscribe((salida: any) => {
-      if (salida != null) {
-        this.datosPresupuesto.push(salida);
-        this.totalpresupuesto();
-      }
-    });
-  }
-
-  abrirModalDonarAtaud(event: MouseEvent): void {
-    event.stopPropagation();
-    const ref = this.dialogService.open(ModalDonarArticuloComponent, {
-      header: 'Donar ataúd',
-      style: { maxWidth: '353px', width: '100%' },
-      data: {
-        datos: this.valorFila,
-      },
-    });
-    ref.onClose.subscribe((salida: any) => {
-      if (salida != null) {
-        this.quitarPaquete(salida);
-        this.datosPresupuesto.push(salida);
-        this.totalpresupuesto();
-      }
-    });
-  }
-
-  validacionFormulario(): boolean {
-    let banderaPaquete = false;
-    let banderaPresupuesto = false;
-
-    if (this.tipoOrden == 1) {
-      this.datosPresupuesto.forEach(function (datos) {
-        if (
-          datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo.includes('true')
-        ) {
-          banderaPaquete = true;
-        }
-        if (datos.proviene.includes('presupuesto')) {
-          banderaPresupuesto = true;
-        }
-      });
-      if (banderaPaquete && this.form.valid && this.dd) {
-        return false;
-      }
-    }
-
-    if (this.tipoOrden == 2) {
-      this.datosPresupuesto.forEach(function (datos) {
-        if (
-          datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo.includes('true')
-        ) {
-          banderaPaquete = true;
-        }
-      });
-      if (banderaPaquete && this.form.valid && this.dd) {
-        return false;
-      }
-    }
-
-    if (this.tipoOrden == 3) {
-      this.datosPresupuesto.forEach(function (datos) {
-        if (datos.proviene.includes('presupuesto')) {
-          banderaPresupuesto = true;
-        }
-      });
-      if (banderaPresupuesto && this.form.valid) {
-        return false;
-      }
-    }
-    return true;
   }
 }

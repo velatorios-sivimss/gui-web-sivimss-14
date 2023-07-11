@@ -8,16 +8,16 @@
     <div class="col-md-6">
       <label class="control-label" for="motivo">Motivo<span class="req">*</span>:</label>
       <input id="motivo" type="text" class="form-control" formControlName="motivo" placeholder="Ingresa el motivo"
-        maxlength="80" lettersOnly (keyup.space)="noEspaciosAlPrincipio(2)">
+        maxlength="80" lettersOnly (keyup.space)="noEspaciosAlPrincipio()">
       <span class="campo-obligatorio" *ngIf="f.motivo?.errors?.required && (f.motivo?.dirty || f.motivo?.touched)">Campo
         obligatorio</span>
     </div>
   </div>
   <div class="row mt-4">
     <div class="col-md-12 flex justify-content-end">
-      <button class="btn btn-primary btn-md" type="button" (click)="aceptarModal()">Aceptar</button>
 
       <button class="btn btn-gold btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn ml-4 btn-primary btn-md" [disabled]="form.invalid" type="button" (click)="aceptarModal()">Aceptar</button>
     </div>
   </div>
 </form>

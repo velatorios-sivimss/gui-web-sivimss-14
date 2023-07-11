@@ -33,9 +33,10 @@ export class ModalEliminarArticuloComponent implements OnInit {
     return this.form.controls;
   }
 
-  noEspaciosAlPrincipio(posicion: number) {
-    const formName = [this.f.motivo.value];
-    formName[posicion].setValue(formName[posicion].value.trimStart());
+  noEspaciosAlPrincipio() {
+    this.f.motivo.setValue(
+      this.f.motivo.value.trimStart()
+    )
   }
 
   aceptarModal(): void {
