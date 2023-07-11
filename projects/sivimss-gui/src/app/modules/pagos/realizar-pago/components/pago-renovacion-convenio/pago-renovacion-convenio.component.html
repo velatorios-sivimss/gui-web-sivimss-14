@@ -15,12 +15,12 @@
   </ng-template>
   <ng-template pTemplate="body" let-pago>
     <tr>
-      <td>{{pago.fechaPago}}</td>
+      <td>{{pago.fechaPago  | date:'dd/MM/YYYY'}}</td>
       <td>{{pago.folio}}</td>
       <td>{{pago.tipoPago}}</td>
-      <td>{{pago.total}}</td>
-      <td>{{pago.totalPagado}}</td>
-      <td>{{pago.diferenciasTotales}}</td>
+      <td class="font-bold">{{pago.total | currency}}</td>
+      <td class="font-bold">{{pago.totalPagado | currency}}</td>
+      <td class="font-bold">{{pago.diferenciasTotales | currency}}</td>
       <td>
         <div class="contenedor-celda-iconos">
           <a (click)="abrirPanel($event,pago)">
