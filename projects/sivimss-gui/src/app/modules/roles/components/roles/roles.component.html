@@ -74,8 +74,8 @@
               <span class="activo" *ngIf="roles.estatusRol">Activo</span>
               <span class="inactivo" *ngIf="!roles.estatusRol">Inactivo</span>
             </div>
-            <div class="contenedor-celda-iconos">
-              <a (click)="abrirPanel($event,roles)" *appValidaRol="['ROLES','MODIFICAR']" onCloseOnNavigation>
+            <div class="contenedor-celda-iconos" *appValidaRol="['ROLES','MODIFICAR']">
+              <a (click)="abrirPanel($event,roles)"  onCloseOnNavigation>
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
             </div>
