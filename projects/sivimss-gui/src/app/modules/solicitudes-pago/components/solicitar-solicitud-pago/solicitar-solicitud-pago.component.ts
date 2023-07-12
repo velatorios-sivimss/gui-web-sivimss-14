@@ -17,6 +17,10 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   pagoSeleccionado: any = {}
   opcion1: boolean = false;
   opcion2: boolean = false;
+  opcion3: boolean = false;
+  opcion4: boolean = false;
+  opcion5: boolean = false;
+
   fechaActual: Date = new Date();
   opcionesSolicitud: number = 0;
   catalogotipoSolicitud: TipoDropdown[] = [
@@ -64,6 +68,15 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   inicializarModificarPagoForm(): void {
     this.solicitarPagoForm = this.formBulder.group({
       tipoSolicitud: [{ value: null, disabled: false }, [ Validators.required]],
+      fechaElaboracion1: [{ value: null, disabled: false }, [ Validators.required]],
+      nomDestinatario1: [{ value: null, disabled: false }, [ Validators.required]],
+      nomRemitente1: [{ value: null, disabled: false }, [ Validators.required]],
+      referenciaTD1: [{ value: null, disabled: false }, [ Validators.required]],
+      beneficiario1: [{ value: null, disabled: false }, [ Validators.required]],
+      concepto1: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(60)]],
+      importeTotal1: [{ value: null, disabled: false }, [ Validators.required]],
+      cantidad1: [{ value: null, disabled: false }, [ Validators.required]],
+      observ1: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(100)]],
     });
   }
 
@@ -83,10 +96,17 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       this.opcion1 = true;
       this.opcion2 = false;
     }
-    if (idTipo === 2) {
+    if (idTipo === 2 || idTipo === 3 || idTipo === 4) {
       this.opcion2 = true;
       this.opcion1 = false;
     }
+    if (idTipo === 5) {
+      this.opcion1 = false;
+      this.opcion2 = false;
+      this.opcion3 = true;
+
+    }
+
 
   }
 
