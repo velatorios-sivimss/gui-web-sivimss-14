@@ -42,7 +42,7 @@ export class MenuSidebarComponent implements OnInit, OnDestroy {
       const moduloConPropiedadesExtras = {
         ...modulo,
         ruta: idsModulos[modulo.idModulo].ruta,
-        icono: idsModulos[modulo.idModulo].icono || this.NOMBRE_ICONO_POR_DEFECTO
+        icono: idsModulos[modulo.idModulo].icono ?? this.NOMBRE_ICONO_POR_DEFECTO
       };
       if (moduloConPropiedadesExtras.modulos !== null) {
         moduloConPropiedadesExtras.modulos = this.agregarPropiedadesExtras(moduloConPropiedadesExtras.modulos);
