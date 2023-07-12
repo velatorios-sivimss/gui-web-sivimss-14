@@ -69,12 +69,12 @@
         <td pResizableColumn>{{roles.fCreacion}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
-            <div class="contenedor-inputswitch" onCloseOnNavigation>
-              <p-inputSwitch [(ngModel)]="roles.estatusRol" (ngModelChange)="cambiarEstatus(roles);"></p-inputSwitch>
+            <div class="contenedor-inputswitch" *appValidaRol="['ROLES','MODIFICAR']" onCloseOnNavigation>
+              <p-inputSwitch [(ngModel)]="roles.estatusRol"  (ngModelChange)="cambiarEstatus(roles);"></p-inputSwitch>
               <span class="activo" *ngIf="roles.estatusRol">Activo</span>
               <span class="inactivo" *ngIf="!roles.estatusRol">Inactivo</span>
             </div>
-            <div class="contenedor-celda-iconos" *appValidaRol="['ROLES','MODIFICAR']">
+            <div class="contenedor-celda-iconos" >
               <a (click)="abrirPanel($event,roles)"  onCloseOnNavigation>
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
