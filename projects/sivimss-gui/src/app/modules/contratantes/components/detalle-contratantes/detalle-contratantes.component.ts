@@ -125,13 +125,14 @@ export class DetalleContratantesComponent implements OnInit {
 
   abrirModalModificarContratante(): void {
     this.ref.close({ estatus: false });
+    document.body.style.overflow = 'hidden';
     this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
       header: "Modificar contratante",
       width: "920px",
       data: { contratante: this.contratante, origen: "modificar" },
     });
-
     this.modificarRef.onClose.subscribe((resultado: ConfirmarContratante) => {
+      document.body.style.overflow = 'scroll';
       if (resultado.estatus) {
         this.alertaService.mostrar(TipoAlerta.Exito, this.alertaEstatus[2]);
         this.ref.close({ estatus: true });
