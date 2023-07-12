@@ -81,7 +81,7 @@
         <td> {{contratante.tel}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
-            <div class="contenedor-inputswitch">
+            <div class="contenedor-inputswitch" *appValidaRol="['CONTRATANTES','MODIFICAR']">
               <p-inputSwitch [(ngModel)]="contratante.estatus"
                 (click)="contratante.estatus = !contratante.estatus; abrirModalCambiarEstatus(contratante)">
               </p-inputSwitch>
@@ -90,12 +90,9 @@
             </div>
 
             <div class="contenedor-celda-iconos">
-              <a (click)="abrirModalDetalleContratante(contratante)">
+              <a (click)="abrirModalDetalleContratante(contratante)" *appValidaRol="['CONTRATANTES','CONSULTA']">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
               </a>
-              <!-- <a (click)="abrirPanel($event,contratante)">
-                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-              </a> -->
             </div>
           </div>
         </td>
@@ -115,7 +112,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table">
+        <div class="export-table" *appValidaRol="['CONTRATANTES','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
