@@ -24,9 +24,18 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nombre">Nombre:</label>
-        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre" maxlength="30"
+        <label class="control-label" for="nombreContratante">Nombre:</label>
+        <p-autoComplete id="nombreContratante" class="form-control" formControlName="nombre" [showEmptyMessage]="true"
+          [suggestions]="contratantesFiltrados" (completeMethod)="filtrarContratantes()" [style]="{'width':'100%'}"
+          [minLength]="3" class="p-autocomplete" placeholder="Ingresa el nombre" field="label"
+          [inputStyleClass]="filtroForm.valid ? 'input-autocomplete' : 'input-autocomplete input-autocomplete-error'"
           trimmer lettersOnly>
+          <ng-template let-articulo pTemplate="item">
+            <div class="autocomplete-item">
+              <div>{{articulo.label}}</div>
+            </div>
+          </ng-template>
+        </p-autoComplete>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="estatus">Estatus:</label>
@@ -72,7 +81,7 @@
         <td> {{contratante.tel}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
-            <div class="contenedor-inputswitch">
+            <div class="contenedor-inputswitch" *appValidaRol="['CONTRATANTES','MODIFICAR']">
               <p-inputSwitch [(ngModel)]="contratante.estatus"
                 (click)="contratante.estatus = !contratante.estatus; abrirModalCambiarEstatus(contratante)">
               </p-inputSwitch>
@@ -81,12 +90,9 @@
             </div>
 
             <div class="contenedor-celda-iconos">
-              <a (click)="abrirModalDetalleContratante(contratante)">
+              <a (click)="abrirModalDetalleContratante(contratante)" *appValidaRol="['CONTRATANTES','CONSULTA']">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
               </a>
-              <!-- <a (click)="abrirPanel($event,contratante)">
-                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-              </a> -->
             </div>
           </div>
         </td>
@@ -106,7 +112,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table">
+        <div class="export-table" *appValidaRol="['CONTRATANTES','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
@@ -119,15 +125,6 @@
     </ng-template>
   </p-table>
 </section>
-
-<!-- <p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Modificar"
-        (click)="abrirModalModificarContratante()"></app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel> -->
 
 <p-confirmDialog #cd [style]="{width: '30vw'}">
   <ng-template pTemplate="header">
