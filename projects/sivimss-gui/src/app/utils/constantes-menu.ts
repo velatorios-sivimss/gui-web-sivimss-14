@@ -55,9 +55,33 @@ export const idsModulos: DatoModulo = {
     ruta: '/contratantes',
     icono: ''
   },
+  '12': {
+    ruta: '',
+    icono: 'default-icon.svg'
+  },
+  '13': {
+    ruta: 'ordenes-de-servicio',
+    icono: 'default-icon.svg'
+  },
   '14': {
     ruta: '/inventario-interno',
     icono: ''
+  },
+  '15': {
+    ruta: '',
+    icono: 'default-icon.svg'
+  },
+  '16': {
+    ruta: 'convenios-prevision-funeraria',
+    icono: 'default-icon.svg'
+  },
+  '17': {
+    ruta: 'convenios-prevision-funeraria/ingresar-nuevo-convenio',
+    icono: 'default-icon.svg'
+  },
+  '18': {
+    ruta: 'ordenes-de-servicio/generar-orden-de-servicio',
+    icono: 'default-icon.svg'
   },
   '19': {
     ruta: '/salas',
@@ -87,6 +111,14 @@ export const idsModulos: DatoModulo = {
     ruta: '/control-de-vehiculos',
     icono: ''
   },
+  '26': {
+    ruta: '',
+    icono: 'default-icon.svg'
+  },
+  '36': {
+    ruta: '',
+    icono: 'pagos.svg'
+  },
   '64': {
     ruta: '/consulta-donaciones',
     icono: ''
@@ -103,33 +135,9 @@ export const idsModulos: DatoModulo = {
     ruta: '/gestionar-tramites',
     icono: ''
   },
-  '12': {
-    ruta: '',
-    icono: 'default-icon.svg'
-  },
-  '13': {
-    ruta: 'ordenes-de-servicio',
-    icono: 'default-icon.svg'
-  },
-  '18': {
-    ruta: 'ordenes-de-servicio/generar-orden-de-servicio',
-    icono: 'default-icon.svg'
-  },
-  '15': {
-    ruta: '',
-    icono: 'default-icon.svg'
-  },
-  '16': {
-    ruta: 'convenios-prevision-funeraria',
-    icono: 'default-icon.svg'
-  },
-  '17': {
-    ruta: 'convenios-prevision-funeraria/ingresar-nuevo-convenio',
-    icono: 'default-icon.svg'
-  },
-  '26': {
-    ruta: '',
-    icono: 'default-icon.svg'
+  '102': {
+    ruta: '/pagos/generar-formato-pagare',
+    icono: ''
   },
 };
 
