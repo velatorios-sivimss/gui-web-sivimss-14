@@ -6,7 +6,7 @@
         <span class="valor-subtitulo">XXXXXX</span>
       </span>
     </div>
-    <div class="flex flex-column ml-5 mt-2">
+    <div class="flex flex-column ml-5 mt-2" *appValidaRol="['GENERAR_RECIBO_PAGO','CONSULTA']">
       <a (click)="overlayPanel.toggle($event)">
         <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
       </a>
@@ -164,7 +164,8 @@
 
 <div class="row flex justify-content-end mb-4">
   <button class="btn btn-default btn-md" [routerLink]="'../../'">Regresar</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="generarRecibo()" [disabled]="FormReciboPago.invalid">
+  <button class="ml-4 btn btn-primary btn-md" (click)="generarRecibo()" [disabled]="FormReciboPago.invalid"
+          *appValidaRol="['GENERAR_RECIBO_PAGO','ALTA']">
     Generar formato de pago
   </button>
 </div>
