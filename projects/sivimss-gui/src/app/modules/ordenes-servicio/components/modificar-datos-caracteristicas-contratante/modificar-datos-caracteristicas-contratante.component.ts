@@ -204,7 +204,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   inicializarForm(datos: any): void {
-    console.log('inciando form', datos);
     this.paqueteSeleccionado =
       datos.paqueteSeleccionado == null
         ? null
@@ -586,8 +585,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
       }
 
       this.datosPaquetes.forEach((datos: any) => {
-        console.log('respuesta', respuesta.fila);
-        console.log('datos', datos.fila);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = null;
           datos.proveedor = respuesta.proveedor;
@@ -653,7 +650,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
         return;
       }
       this.datosPaquetes.forEach((datos: any) => {
-        console.log(datos);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;
           datos.proveedor = respuesta.nombreProveedor;
@@ -669,7 +665,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
   abrirModalDonarAtaud(event: MouseEvent): void {
     event.stopPropagation();
-    console.log(this.valorFila);
     const ref = this.dialogService.open(ModalDonarArticuloComponent, {
       header: 'Donar ataúd',
       style: { maxWidth: '353px', width: '100%' },
@@ -678,7 +673,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
       },
     });
     ref.onClose.subscribe((salida: any) => {
-      console.log(salida);
       if (salida != null) {
         this.quitarPaquete(salida);
         this.datosPresupuesto.push(salida);
@@ -1094,7 +1088,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
     }
 
     // this.detallePresupuesto = arrayDatosPresupuesto;
-    console.log('alta od 3', this.altaODS);
 
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }

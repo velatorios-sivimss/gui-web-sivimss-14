@@ -153,6 +153,13 @@ export class ModificarInformacionServicioComponent
   ngOnInit(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.idVelatorio = +usuario.idVelatorio;
+
+    this.gestionarEtapasService.datosEtapaInformacionServicio$
+      .asObservable()
+      .subscribe((datosEtapaInformacionServicio) =>
+        this.llenarFormulario(datosEtapaInformacionServicio)
+    );
+
     this.gestionarEtapasService.datosEtapaCaracteristicas$
       .asObservable()
       .subscribe((datosEtapaCaracteristicas) =>
@@ -163,11 +170,7 @@ export class ModificarInformacionServicioComponent
       .asObservable()
       .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
 
-    this.gestionarEtapasService.datosEtapaInformacionServicio$
-      .asObservable()
-      .subscribe((datosEtapaInformacionServicio) =>
-        this.llenarFormulario(datosEtapaInformacionServicio)
-      );
+
 
     this.buscarCapillas();
     this.buscarSalas();
@@ -175,7 +178,6 @@ export class ModificarInformacionServicioComponent
   }
 
   llenarFormulario(datos: any): void {
-    console.log(datos);
     this.idPanteon = datos.idPanteon;
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
@@ -368,7 +370,6 @@ export class ModificarInformacionServicioComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.capillas = [];
@@ -419,7 +420,6 @@ export class ModificarInformacionServicioComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -470,7 +470,6 @@ export class ModificarInformacionServicioComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.promotores = [];
@@ -630,7 +629,6 @@ export class ModificarInformacionServicioComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -709,7 +707,6 @@ export class ModificarInformacionServicioComponent
       gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
       promotor: formulario.cortejo.promotor,
     };
-    console.log(datos);
     this.informacionServicio.fechaCortejo =
       formulario.cortejo.fecha == null
         ? null
@@ -786,7 +783,6 @@ export class ModificarInformacionServicioComponent
 
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
-    console.log('ods final', this.altaODS);
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -950,9 +946,5 @@ export class ModificarInformacionServicioComponent
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(2);
     this.llenarDatos();
-    console.log(
-      'la fecha es' + moment(this.recoger.fecha.value).format('yyyy-MM-DD')
-    );
-    console.log('la hora es' + moment(this.recoger.hora.value).format('HH:mm'));
   }
 }

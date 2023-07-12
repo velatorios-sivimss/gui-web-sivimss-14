@@ -819,6 +819,7 @@ export class DatosFinadoComponent implements OnInit {
     } else {
       this.habilitarTodo();
       this.datosFinado.velatorioPrevision.disable();
+      if(idTipoOrden == 1)this.datosFinado.noContrato.disable();
     }
   }
 
@@ -1039,5 +1040,20 @@ export class DatosFinadoComponent implements OnInit {
   }
   convertirAMayusculas(): void {
     this.datosFinado.curp.setValue(this.datosFinado.curp.value.toUpperCase());
+  }
+
+  validarBotonAceptar(): boolean {
+
+    if(this.datosFinado.tipoOrden.value == 2){
+      if(this.form.invalid || !this.validacionPersonaConvenio){
+        return true;
+      }
+    }
+    if(this.datosFinado.tipoOrden.value == 1){
+      if(this.form.invalid){
+        return true;
+      }
+    }
+    return false;
   }
 }

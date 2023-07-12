@@ -364,11 +364,21 @@ export class ModificarDatosContratanteComponent
     ) {
       nacionalidad = 2;
     }
+
+
+    let matricula:string
+    if(typeof datos.contratante.matricula == 'string'){
+      datos.contratante.matricula.includes('null') ? matricula = '' : matricula = datos.contratante.matricula
+    }else{
+      matricula = datos.contratante.matricula;
+    }
+
+
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
         matricula: [
           {
-            value: datos.contratante.matricula.includes('null') ? null : datos.contratante.matricula,
+            value: matricula,
             disabled: false,
           },
           [Validators.required],
@@ -377,7 +387,8 @@ export class ModificarDatosContratanteComponent
           {
             value:
               datos.contratante.matricula == null ||
-              datos.contratante.matricula == ''
+              datos.contratante.matricula == '' ||
+              datos.contratante.matricula == 'null'
                 ? false
                 : true,
             disabled: false,
@@ -885,7 +896,6 @@ export class ModificarDatosContratanteComponent
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    console.log('formulario', formulario);
     let datosEtapaContratante = {
       idOrdenServicio: this.idODS,
       idParentesco: formulario.datosContratante.parentesco,
@@ -963,7 +973,6 @@ export class ModificarDatosContratanteComponent
     this.altaODS.idVelatorio = null;
     this.altaODS.idOperador = null;
     this.contratante.cp = this.cp;
-    console.log('paso a 2', datosEtapaContratante);
 
     this.gestionarEtapasService.datosContratante$.next(datosEtapaContratante);
 
@@ -972,9 +981,7 @@ export class ModificarDatosContratanteComponent
   }
 
   llenarDAtosFinado(): void {
-    console.log('datos generales', this.datosConsulta);
 
-    debugger
     let finado = this.datosConsulta.finado;
     let nss = finado.nss;
     let nssCheck = true;
@@ -989,7 +996,6 @@ export class ModificarDatosContratanteComponent
       matriculaChek = false;
       matricula = null;
     }
-    console.log('qie trae', finado.cp);
     let datosEtapaFinado = {
       datosFinado: {
         tipoOrden: finado.idTipoOrden,
@@ -1039,7 +1045,6 @@ export class ModificarDatosContratanteComponent
         idDomicilio: Number(finado.cp.idDomicilio),
       },
     };
-    console.log(datosEtapaFinado);
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
   }
 

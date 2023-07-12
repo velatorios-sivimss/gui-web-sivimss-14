@@ -115,6 +115,8 @@ export class ModificarDatosFinadoComponent
   fechaActual = new Date();
   validacionPersonaConvenio: boolean = false;
   ocultarFolioEstatus: boolean = false;
+
+  idPersona: number | null = null;
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -151,11 +153,12 @@ export class ModificarDatosFinadoComponent
 
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
-    this.pais = respuesta[this.POSICION_PAIS]!;
+    this.pais = respuesta[this.POSICION_PAIS];
     this.estado = respuesta[this.POSICION_ESTADO];
     this.unidadesMedicas = respuesta[this.POSICION_UNIDADES_MEDICAS];
     this.tipoPension = respuesta[this.POSICION_PENSION];
-    let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     else this.ocultarFolioEstatus = false;
     this.gestionarEtapasService.altaODS$
@@ -165,7 +168,9 @@ export class ModificarDatosFinadoComponent
     this.gestionarEtapasService.datosEtapaFinado$
       .asObservable()
       .subscribe((datosEtapaFinado) => this.inicializarForm(datosEtapaFinado));
+    this.cambiarValidacionMatricula();
     this.inicializarCalcularEdad();
+    this.cambiarValidacionNSS();
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -177,7 +182,6 @@ export class ModificarDatosFinadoComponent
   }
 
   inicializarForm(datosEtapaFinado: any): void {
-    console.log('datosEtapa finado', datosEtapaFinado);
     let nacionalidad = 1;
     if (
       datosEtapaFinado.datosFinado.idEstado == null ||
@@ -186,11 +190,24 @@ export class ModificarDatosFinadoComponent
       nacionalidad = 2;
     }
 
+    let esObito: boolean;
+    let extremidad: boolean;
+    if(typeof  datosEtapaFinado.datosFinado.esObito == "string"){
+      datosEtapaFinado.datosFinado.esObito.includes("true") ? esObito = true : esObito = false;
+    }else{
+      esObito = datosEtapaFinado.datosFinado.esObito;
+    }
+
+    if(typeof  datosEtapaFinado.datosFinado.esParaExtremidad == "string"){
+      datosEtapaFinado.datosFinado.esParaExtremidad.includes("true")? extremidad = true : extremidad = false;
+    }else{
+      extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
+    }
+
+
     let [dia, mes, anio] =
       datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
     let edad = moment().diff(moment(anio + '-' + mes + '-' + dia), 'years');
-    console.log(edad, datosEtapaFinado.datosFinado.fechaNacimiento);
-    console.log(anio + '-' + mes + '-' + dia);
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
         tipoOrden: [
@@ -209,11 +226,11 @@ export class ModificarDatosFinadoComponent
           [Validators.required],
         ],
         esObito: [
-          { value: datosEtapaFinado.datosFinado.esObito.includes("true") ? true : false, disabled: false },
+          { value: esObito, disabled: false },
         ],
         esParaExtremidad: [
           {
-            value: datosEtapaFinado.datosFinado.esParaExtremidad.includes("true")? true : false,
+            value: extremidad,
             disabled: false,
           },
         ],
@@ -368,8 +385,6 @@ export class ModificarDatosFinadoComponent
         ],
       }),
     });
-
-    console.log('que tiene', datosEtapaFinado.datosFinado.matricula);
     if (
       datosEtapaFinado.datosFinado.matricula == null ||
       datosEtapaFinado.datosFinado.matricula == ''
@@ -393,9 +408,9 @@ export class ModificarDatosFinadoComponent
     }
 
     if (datosEtapaFinado.datosFinado.esObito != null)
-      this.esObito(datosEtapaFinado.datosFinado.esObito.includes("true") ? true : false);
+      this.esObito(esObito);
     if (datosEtapaFinado.datosFinado.esParaExtremidad != null)
-      this.esExtremidad(datosEtapaFinado.datosFinado.esParaExtremidad.includes("true") ? true : false);
+      this.esExtremidad(extremidad);
     if (datosEtapaFinado.datosFinado.noContrato == null) {
       this.datosFinado.noContrato.disable();
       this.datosFinado.velatorioPrevision.disable();
@@ -535,7 +550,6 @@ export class ModificarDatosFinadoComponent
     this.datosFinado.unidadProcedencia.setValue(null);
     this.datosFinado.unidadProcedencia.clearValidators();
     this.datosFinado.unidadProcedencia.updateValueAndValidity();
-    console.log(this.form);
   }
 
   convertirAMayusculas(): void {
@@ -570,28 +584,34 @@ export class ModificarDatosFinadoComponent
       style: { maxWidth: '876px', width: '100%' },
       data: { folio: this.datosFinado.noContrato.value },
     });
-    ref.onClose.subscribe((persona: Persona) => {
-      let [anio, mes, dia]: any = persona.fechaNac?.split('-');
+    ref.onClose.subscribe((persona: any) => {
+      let [anio, mes, dia]: any = persona.finado.fechaNac?.split('-');
       this.validacionPersonaConvenio = true;
       dia = dia.substr(0, 2);
       const fecha = new Date(anio + '/' + mes + '/' + dia);
-      this.datosFinado.matricula.setValue(persona.matricula);
-      this.datosFinado.curp.setValue(persona.curp);
-      this.datosFinado.nss.setValue(persona.nss);
-      this.datosFinado.nombre.setValue(persona.nomPersona);
-      this.datosFinado.primerApellido.setValue(persona.primerApellido);
-      this.datosFinado.segundoApellido.setValue(persona.segundoApellido);
+      this.datosFinado.matricula.setValue(persona.finado.matricula);
+      this.datosFinado.curp.setValue(persona.finado.curp);
+      this.datosFinado.nss.setValue(persona.finado.nss);
+      this.datosFinado.nombre.setValue(persona.finado.nomPersona);
+      this.datosFinado.primerApellido.setValue(persona.finado.primerApellido);
+      this.datosFinado.segundoApellido.setValue(persona.finado.segundoApellido);
       this.datosFinado.fechaNacimiento.setValue(fecha);
-      this.datosFinado.sexo.setValue(persona?.sexo);
-      if (Number(persona.idPais) == 119) {
+      this.datosFinado.sexo.setValue(persona?.finado.sexo);
+      if (Number(persona.finado.idPais) == 119) {
         this.datosFinado.nacionalidad.setValue(1);
-        this.datosFinado.lugarNacimiento.setValue(Number(persona.idEstado));
+        this.datosFinado.lugarNacimiento.setValue(Number(persona.finado.idEstado));
       } else {
         this.datosFinado.nacionalidad.setValue(2);
-        this.datosFinado.paisNacimiento.setValue(Number(persona.idPais));
+        this.datosFinado.paisNacimiento.setValue(Number(persona.finado.idPais));
       }
-      this.datosFinado.sexo.setValue(Number(persona.sexo));
-      this.datosFinado.otroTipoSexo.setValue(persona.otroSexo);
+      this.datosFinado.sexo.setValue(Number(persona.finado.sexo));
+      this.datosFinado.otroTipoSexo.setValue(persona.finado.otroSexo);
+
+      this.idVelatorioContratoPrevision = +persona.idVelacion;
+      this.idContratoPrevision = +persona.idContrato
+      this.idPersona = +persona.finado.idPersona
+      this.idContratante = +persona.idContratantePf
+
       this.cambiarTipoSexo();
       this.cambiarNacionalidad();
     });
@@ -884,7 +904,6 @@ export class ModificarDatosFinadoComponent
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    console.log(formulario);
     let datosEtapaFinado = {
       datosFinado: {
         tipoOrden: formulario.datosFinado.tipoOrden,
@@ -1003,7 +1022,6 @@ export class ModificarDatosFinadoComponent
 
     this.altaODS.finado = this.finado;
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
-    console.log('ods segunda fase', this.altaODS);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
@@ -1072,4 +1090,7 @@ export class ModificarDatosFinadoComponent
     this.datosAlta();
   }
 
+  validarFormulario(): void{
+    this.form;
+  }
 }
