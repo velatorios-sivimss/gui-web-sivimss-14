@@ -27,6 +27,7 @@ import { ModificarContratantesComponent } from './components/modificar-contratan
 import { BtnRegresarModule } from "../../shared/btn-regresar/btn-regresar.module";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { UtileriaModule } from "../../shared/utileria/utileria.module";
+import { AutoCompleteModule } from "primeng/autocomplete";
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { UtileriaModule } from "../../shared/utileria/utileria.module";
     BtnRegresarModule,
     ConfirmDialogModule,
     UtileriaModule,
+    AutoCompleteModule,
   ],
   providers:[
     ContratantesService

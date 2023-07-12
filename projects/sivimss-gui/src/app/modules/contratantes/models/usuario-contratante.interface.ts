@@ -58,3 +58,11 @@ export interface TipoCatalogo {
   idCatalogo: number,
   cp?: number
 }
+
+export interface BuscarContratantes {
+  curp?: string | null;
+  nss?: string | null;
+  nomContratante?: string | null;
+  id?: number | null;
+  estatus?: boolean | null;
+}
