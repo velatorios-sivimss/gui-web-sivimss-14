@@ -99,12 +99,14 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     private changeDetector: ChangeDetectorRef,
     private alertaService: AlertaService
   ) {
-    this.buscarDetalle(Number(this.rutaActiva.snapshot.paramMap.get('idODS')));
+    // this.buscarDetalle(Number(this.rutaActiva.snapshot.paramMap.get('idODS')));
+    this.buscarDetalle(Number(this.rutaActiva.snapshot.queryParams.idODS));
   }
 
   ngOnInit(): void {
     // this.gestionarEtapasService.etapas$.next(this.etapas);
-    let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
 
     if (Number(estatus) == 1) {
       this.estatusValida = 1;
@@ -169,7 +171,8 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     let mostrarOtorgamiento = false;
     let salidaPaquete = [];
     let salidaPresupuesto = [];
-    if (datosPaquete != null) {
+    //PREGUNTAR A LEANDRO
+    if (datosPaquete != null && datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
       let caracteristicasPaquete = datosPaquete.caracteristicasPaqueteResponse;
       observaciones = datosPaquete.caracteristicasDelPresupuesto.observaciones;
       notasServicio = datosPaquete.caracteristicasDelPresupuesto.notasServicio;

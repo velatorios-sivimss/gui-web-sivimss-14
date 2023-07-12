@@ -349,7 +349,8 @@
       <div class="col-md-12 flex justify-content-end align-items-center">
         <button class="btn btn-md btn-default" (click)="regresar()">Regresar</button>
         <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-        <button type="button" [disabled]="form.invalid && !validacionPersonaConvenio" (click)="continuar()"
+<!--        <button type="button" [disabled]="form.invalid || !validacionPersonaConvenio" (click)="continuar()"-->
+        <button type="button" [disabled]="form.invalid" (click)="continuar()"
           class="btn btn-md btn-primary ml-5">Aceptar</button>
       </div>
     </div>

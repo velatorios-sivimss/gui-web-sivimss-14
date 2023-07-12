@@ -55,12 +55,14 @@ import { GestionarEtapasActualizacionService } from '../../services/gestionar-et
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { ɵDomRendererFactory2 } from '@angular/platform-browser';
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-modificar-informacion-servicio',
   templateUrl: './modificar-informacion-servicio.component.html',
   styleUrls: ['./modificar-informacion-servicio.component.scss'],
+  providers: [DescargaArchivosService]
+
 })
 export class ModificarInformacionServicioComponent
   implements OnInit, AfterContentChecked
@@ -126,7 +128,7 @@ export class ModificarInformacionServicioComponent
     private router: Router,
 
     private descargaArchivosService: DescargaArchivosService,
-    private renderer: ɵDomRendererFactory2
+    private renderer: Renderer2
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -147,9 +149,10 @@ export class ModificarInformacionServicioComponent
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
-    this.inicializarForm();
   }
   ngOnInit(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.idVelatorio = +usuario.idVelatorio;
     this.gestionarEtapasService.datosEtapaCaracteristicas$
       .asObservable()
       .subscribe((datosEtapaCaracteristicas) =>
@@ -173,6 +176,100 @@ export class ModificarInformacionServicioComponent
 
   llenarFormulario(datos: any): void {
     console.log(datos);
+    this.idPanteon = datos.idPanteon;
+    this.form = this.formBuilder.group({
+      lugarVelacion: this.formBuilder.group({
+        capilla: [
+          { value: datos.idCapilla, disabled: false },
+          [Validators.required],
+        ],
+        fecha: [
+          { value: datos.fechaVelacion, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaVelacion, disabled: false },
+          [Validators.required],
+        ],
+        calle: [{ value: datos.calle, disabled: false }, [Validators.required]],
+        exterior: [
+          { value: datos.exterior, disabled: false },
+          [Validators.required],
+        ],
+        interior: [
+          { value: datos.interior, disabled: false },
+          [Validators.required],
+        ],
+        cp: [{ value: datos.cp, disabled: false }, [Validators.required]],
+        colonia: [
+          { value: datos.colonia, disabled: false },
+          [Validators.required],
+        ],
+        municipio: [
+          { value: datos.municipio, disabled: false },
+          [Validators.required],
+        ],
+        estado: [
+          { value: datos.estado, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      lugarCremacion: this.formBuilder.group({
+        sala: [{ value: datos.idSala, disabled: false }, [Validators.required]],
+        fecha: [
+          { value: datos.fechaCremacion, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaCremacion, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      inhumacion: this.formBuilder.group({
+        agregarPanteon: [
+          { value: null, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      recoger: this.formBuilder.group({
+        fecha: [
+          { value: datos.fechaRecoger, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaRecoger, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      instalacionServicio: this.formBuilder.group({
+        fecha: [
+          { value: datos.fechaInstalacion, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaInstalacion, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      cortejo: this.formBuilder.group({
+        fecha: [
+          { value: datos.fechaCortejo, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaCortejo, disabled: false },
+          [Validators.required],
+        ],
+        gestionadoPorPromotor: [
+          { value: datos.gestionadoPorPromotor, disabled: false },
+          [Validators.required],
+        ],
+        promotor: [
+          { value: datos.promotor, disabled: false },
+          [Validators.required],
+        ],
+      }),
+    });
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -529,7 +626,7 @@ export class ModificarInformacionServicioComponent
   guardarODS(): void {
     this.loaderService.activar();
     this.gestionarOrdenServicioService
-      .generarODS(this.altaODS)
+      .actualizarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -783,7 +880,9 @@ export class ModificarInformacionServicioComponent
   }
 
   generada(): void {
-    this.altaODS.idEstatus = 2;
+    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
+    this.altaODS.idEstatus = Number(estatus);
     this.llenarDatos();
     this.guardarODS();
   }

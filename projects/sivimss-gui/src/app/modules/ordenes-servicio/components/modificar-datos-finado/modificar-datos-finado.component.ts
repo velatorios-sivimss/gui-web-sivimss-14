@@ -191,7 +191,6 @@ export class ModificarDatosFinadoComponent
     let edad = moment().diff(moment(anio + '-' + mes + '-' + dia), 'years');
     console.log(edad, datosEtapaFinado.datosFinado.fechaNacimiento);
     console.log(anio + '-' + mes + '-' + dia);
-
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
         tipoOrden: [
@@ -210,11 +209,11 @@ export class ModificarDatosFinadoComponent
           [Validators.required],
         ],
         esObito: [
-          { value: datosEtapaFinado.datosFinado.esObito, disabled: false },
+          { value: datosEtapaFinado.datosFinado.esObito.includes("true") ? true : false, disabled: false },
         ],
         esParaExtremidad: [
           {
-            value: datosEtapaFinado.datosFinado.esParaExtremidad,
+            value: datosEtapaFinado.datosFinado.esParaExtremidad.includes("true")? true : false,
             disabled: false,
           },
         ],
@@ -394,9 +393,9 @@ export class ModificarDatosFinadoComponent
     }
 
     if (datosEtapaFinado.datosFinado.esObito != null)
-      this.esObito(datosEtapaFinado.datosFinado.esObito);
+      this.esObito(datosEtapaFinado.datosFinado.esObito.includes("true") ? true : false);
     if (datosEtapaFinado.datosFinado.esParaExtremidad != null)
-      this.esExtremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
+      this.esExtremidad(datosEtapaFinado.datosFinado.esParaExtremidad.includes("true") ? true : false);
     if (datosEtapaFinado.datosFinado.noContrato == null) {
       this.datosFinado.noContrato.disable();
       this.datosFinado.velatorioPrevision.disable();
@@ -1072,4 +1071,5 @@ export class ModificarDatosFinadoComponent
     this.seleccionarEtapa.emit(0);
     this.datosAlta();
   }
+
 }

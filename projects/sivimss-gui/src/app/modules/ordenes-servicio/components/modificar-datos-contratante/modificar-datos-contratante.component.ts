@@ -174,15 +174,15 @@ export class ModificarDatosContratanteComponent
       .subscribe((datosContratante) =>
         this.llenarFormmulario(
           datosContratante,
-          Number(this.rutaActiva.snapshot.paramMap.get('idEstatus')),
-          Number(this.rutaActiva.snapshot.paramMap.get('idODS'))
+          Number(this.rutaActiva.snapshot.queryParams.idODS),
+          Number(this.rutaActiva.snapshot.queryParams.idEstatus)
         )
       );
     this.gestionarEtapasService.datosConsultaODS$
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
 
-   
+
   }
 
 
@@ -368,7 +368,7 @@ export class ModificarDatosContratanteComponent
       datosContratante: this.formBuilder.group({
         matricula: [
           {
-            value: datos.contratante.matricula,
+            value: datos.contratante.matricula.includes('null') ? null : datos.contratante.matricula,
             disabled: false,
           },
           [Validators.required],
@@ -936,9 +936,14 @@ export class ModificarDatosContratanteComponent
     this.contratante.segundoApellido = datos.contratante.segundoApellido;
     this.contratante.sexo = datos.contratante.sexo;
     this.contratante.otroSexo = datos.contratante.primerApellido;
-    this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
-      'yyyy-MM-DD'
-    );
+
+    let [dia,mes,anio]= datos.contratante.fechaNac.split('/');
+    dia = dia.substr(0,2);
+    const fecha = new Date(anio+"-"+mes+"-"+dia)
+    // this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
+    //   'yyyy-MM-DD'
+    // );
+    this.contratante.fechaNac = anio+"-"+mes+"-"+dia;
     this.contratante.idPais = datos.contratante.idPais;
     this.contratante.idEstado = datos.contratante.idEstado;
     this.contratante.telefono = datos.contratante.telefono;
@@ -969,6 +974,7 @@ export class ModificarDatosContratanteComponent
   llenarDAtosFinado(): void {
     console.log('datos generales', this.datosConsulta);
 
+    debugger
     let finado = this.datosConsulta.finado;
     let nss = finado.nss;
     let nssCheck = true;

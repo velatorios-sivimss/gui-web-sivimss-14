@@ -223,6 +223,10 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   buscarPaquetes(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(
+      localStorage.getItem('usuario') as string
+    );
+    this.idVelatorio = +usuario.idVelatorio;
     this.loaderService.activar();
     const parametros = { idVelatorio: this.idVelatorio };
     this.gestionarOrdenServicioService
@@ -357,6 +361,13 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   agregarArticulo(datos: any): void {
+    if(!datos.proveedor){
+      setTimeout(()=> {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Agrega un proveedor para asignar al presupuesto');
+        datos.utilizarArticulo = null;
+      },100);
+      return
+    }
     datos.proviene = 'paquete';
     this.paquete.activo = 1;
     this.paquete.cantidad = datos.cantidad ?? null;
@@ -403,7 +414,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.total = pretotal;
   }
 
-  quitarArticulo(datos: any): void {
+  quitarArticulo(datos: any,rowIndex: number): void {
+    datos.fila = rowIndex + 1;
     const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
       header: '',
       style: { maxWidth: '600px', width: '100%' },
@@ -414,6 +426,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
         datos.desmotivo = salida;
         this.elementosEliminadosPaquete.push(datos);
         this.quitarPaquete(datos);
+      }else{
+        datos.utilizarArticulo = null;
       }
     });
   }
