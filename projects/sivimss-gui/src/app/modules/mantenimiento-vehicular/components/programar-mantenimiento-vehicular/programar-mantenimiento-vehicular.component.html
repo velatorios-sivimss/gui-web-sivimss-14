@@ -96,7 +96,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan=9 class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular">
+        <th colspan=9 class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular" *ngIf="realizoBusqueda">
           No se encontró información relacionada a tu búsqueda
         </th>
       </tr>
