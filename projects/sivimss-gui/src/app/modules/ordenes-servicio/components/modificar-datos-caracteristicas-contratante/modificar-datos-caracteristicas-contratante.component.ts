@@ -130,7 +130,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
   esObito: number = 0;
   bloquearPaquete: boolean = false;
   ocultarFolioEstatus: boolean = false;
-
+  elementosEliminadosPresupuesto: any[] = [];
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -164,6 +164,10 @@ export class ModificarDatosCaracteristicasContratanteComponent
       this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
     this.buscarPaquetes();
+    this.form = this.formBuilder.group({
+      observaciones: [{ value: null, disabled: false }, [Validators.required]],
+      notasServicio: [{ value: null, disabled: false }, [Validators.required]],
+    });
   }
 
   ngOnInit(): void {
@@ -200,7 +204,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   inicializarForm(datos: any): void {
-    console.log('inciando form', datos);
     this.paqueteSeleccionado =
       datos.paqueteSeleccionado == null
         ? null
@@ -214,19 +217,15 @@ export class ModificarDatosCaracteristicasContratanteComponent
         ? null
         : Number(datos.selecionaTipoOtorgamiento);
     this.total = datos.total;
-    this.form = this.formBuilder.group({
-      observaciones: [
-        { value: datos.observaciones, disabled: false },
-        [Validators.required],
-      ],
-      notasServicio: [
-        { value: datos.notasServicio, disabled: false },
-        [Validators.required],
-      ],
-    });
+    this.f.observaciones.setValue(datos.observaciones);
+    this.f.notasServicio.setValue(datos.notasServicio);
   }
 
   buscarPaquetes(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(
+      localStorage.getItem('usuario') as string
+    );
+    this.idVelatorio = +usuario.idVelatorio;
     this.loaderService.activar();
     const parametros = { idVelatorio: this.idVelatorio };
     this.gestionarOrdenServicioService
@@ -285,6 +284,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     }
     this.datosPresupuesto = [];
     this.elementosEliminadosPaquete = [];
+    this.elementosEliminadosPresupuesto = [];
+
     this.loaderService.activar();
     this.buscarTipoAsignacion();
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
@@ -359,6 +360,13 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   agregarArticulo(datos: any): void {
+    if(!datos.proveedor){
+      setTimeout(()=> {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Agrega un proveedor para asignar al presupuesto');
+        datos.utilizarArticulo = null;
+      },100);
+      return
+    }
     datos.proviene = 'paquete';
     this.paquete.activo = 1;
     this.paquete.cantidad = datos.cantidad ?? null;
@@ -405,7 +413,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.total = pretotal;
   }
 
-  quitarArticulo(datos: any): void {
+  quitarArticulo(datos: any,rowIndex: number): void {
+    datos.fila = rowIndex + 1;
     const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
       header: '',
       style: { maxWidth: '600px', width: '100%' },
@@ -416,6 +425,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
         datos.desmotivo = salida;
         this.elementosEliminadosPaquete.push(datos);
         this.quitarPaquete(datos);
+      }else{
+        datos.utilizarArticulo = null;
       }
     });
   }
@@ -639,7 +650,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
         return;
       }
       this.datosPaquetes.forEach((datos: any) => {
-        console.log(datos);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;
           datos.proveedor = respuesta.nombreProveedor;
@@ -655,7 +665,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
   abrirModalDonarAtaud(event: MouseEvent): void {
     event.stopPropagation();
-    console.log(this.valorFila);
     const ref = this.dialogService.open(ModalDonarArticuloComponent, {
       header: 'Donar ataúd',
       style: { maxWidth: '353px', width: '100%' },
@@ -664,7 +673,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
       },
     });
     ref.onClose.subscribe((salida: any) => {
-      console.log(salida);
       if (salida != null) {
         this.quitarPaquete(salida);
         this.datosPresupuesto.push(salida);
@@ -674,6 +682,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   quitarPresupuesto(): void {
+    this.elementosEliminadosPresupuesto.push(this.valorFila);
     let nuevoArray = this.datosPresupuesto.filter(
       (item) => this.valorFila.fila !== item.fila
     );
@@ -755,7 +764,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       this.datosPresupuesto.forEach(function (datos) {
         if (
           datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo.includes('true')
+          datos.utilizarArticulo == true
         ) {
           banderaPaquete = true;
         }
@@ -772,7 +781,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       this.datosPresupuesto.forEach(function (datos) {
         if (
           datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo.includes('true')
+          datos.utilizarArticulo == true
         ) {
           banderaPaquete = true;
         }
@@ -884,7 +893,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.cantidad = Number(datos.cantidad);
       let datosDonados = datos.esDonado ?? false;
       detalle.esDonado = 0;
-
+      detalle.activo = 1;
       if (datosDonados) {
         detalle.esDonado = 1;
       }
@@ -905,7 +914,52 @@ export class ModificarDatosCaracteristicasContratanteComponent
           : Number(datos.idServicio);
       detalle.idTipoServicio = parseInt(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
+      detalle.proviene = datos.proviene;
+      if (Number(datos.idTipoServicio) == 4) {
+        let traslado: ServicioDetalleTrasladotoInterface =
+          {} as ServicioDetalleTrasladotoInterface;
+        traslado.destino = datos.destino;
+        traslado.longitudInicial = Number(datos.coordOrigen[0]);
+        traslado.latitudInicial = Number(datos.coordOrigen[1]);
+        traslado.longitudFinal = Number(datos.coordDestino[0]);
+        traslado.latitudFinal = Number(datos.coordDestino[1]);
+        traslado.origen = datos.origen;
+        traslado.totalKilometros = datos.kilometraje;
+        detalle.servicioDetalleTraslado = traslado;
+      }
+      detalle.importeMonto = datos.totalPaquete ?? null;
+      this.detallePresupuesto.push(detalle);
+    });
 
+    this.elementosEliminadosPresupuesto.forEach((datos: any) => {
+      let detalle: DetallePresupuestoInterface =
+        {} as DetallePresupuestoInterface;
+
+      detalle.cantidad = Number(datos.cantidad);
+      let datosDonados = datos.esDonado ?? false;
+      detalle.esDonado = 0;
+      detalle.activo = 0;
+      if (datosDonados) {
+        detalle.esDonado = 1;
+      }
+
+      detalle.idArticulo =
+        datos.idArticulo == '' || datos.idArticulo == null
+          ? null
+          : Number(datos.idArticulo);
+      detalle.idCategoria = parseInt(datos.idCategoria);
+      detalle.idInventario =
+        datos.idInventario == '' || datos.idInventario == null
+          ? null
+          : Number(datos.idInventario);
+      detalle.idProveedor = parseInt(datos.idProveedor);
+      detalle.idServicio =
+        datos.idServicio == '' || datos.idServicio == null
+          ? null
+          : Number(datos.idServicio);
+      detalle.idTipoServicio = parseInt(datos.idTipoServicio);
+      detalle.servicioDetalleTraslado = null;
+      detalle.proviene = datos.proviene;
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
@@ -1034,7 +1088,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
     }
 
     // this.detallePresupuesto = arrayDatosPresupuesto;
-    console.log('alta od 3', this.altaODS);
 
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }

@@ -30,19 +30,19 @@ const routes: Routes = [
     },
   },
   {
-    path: 'modificar-orden-de-servicio/:idODS/:idEstatus',
+    path: 'modificar-orden-de-servicio',
     component: ActualizarOrdenServicioComponent,
     resolve: {
       respuesta: ActualizarOrdenServicioResolver,
     },
   },
-  {
-    path: 'modificar-orden-de-servicio/:idODS/:idEstatus',
-    component: ActualizarOrdenServicioComponent,
-    resolve: {
-      respuesta: ActualizarOrdenServicioResolver,
-    },
-  },
+  // {
+  //   path: 'modificar-orden-de-servicio/:idODS/:idEstatus',
+  //   component: ActualizarOrdenServicioComponent,
+  //   resolve: {
+  //     respuesta: ActualizarOrdenServicioResolver,
+  //   },
+  // },
   {
     path: 'cancelar-orden-de-servicio',
     component: CancelarOrdenServicioComponent,

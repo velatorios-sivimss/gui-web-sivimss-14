@@ -144,7 +144,7 @@ export class ModalAgregarUrnaComponent implements OnInit {
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,
-      idInventario: null,
+      idInventario: this.idInventario,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
       idProveedor: null,

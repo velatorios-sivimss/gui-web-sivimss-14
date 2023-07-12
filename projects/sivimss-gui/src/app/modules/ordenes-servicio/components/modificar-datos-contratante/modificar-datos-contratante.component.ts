@@ -174,14 +174,18 @@ export class ModificarDatosContratanteComponent
       .subscribe((datosContratante) =>
         this.llenarFormmulario(
           datosContratante,
-          Number(this.rutaActiva.snapshot.paramMap.get('idEstatus')),
-          Number(this.rutaActiva.snapshot.paramMap.get('idODS'))
+          Number(this.rutaActiva.snapshot.queryParams.idODS),
+          Number(this.rutaActiva.snapshot.queryParams.idEstatus)
         )
       );
     this.gestionarEtapasService.datosConsultaODS$
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
+
+
   }
+
+
 
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
@@ -360,11 +364,21 @@ export class ModificarDatosContratanteComponent
     ) {
       nacionalidad = 2;
     }
+
+
+    let matricula:string
+    if(typeof datos.contratante.matricula == 'string'){
+      datos.contratante.matricula.includes('null') ? matricula = '' : matricula = datos.contratante.matricula
+    }else{
+      matricula = datos.contratante.matricula;
+    }
+
+
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
         matricula: [
           {
-            value: datos.contratante.matricula,
+            value: matricula,
             disabled: false,
           },
           [Validators.required],
@@ -373,7 +387,8 @@ export class ModificarDatosContratanteComponent
           {
             value:
               datos.contratante.matricula == null ||
-              datos.contratante.matricula == ''
+              datos.contratante.matricula == '' ||
+              datos.contratante.matricula == 'null'
                 ? false
                 : true,
             disabled: false,
@@ -881,7 +896,6 @@ export class ModificarDatosContratanteComponent
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    console.log('formulario', formulario);
     let datosEtapaContratante = {
       idOrdenServicio: this.idODS,
       idParentesco: formulario.datosContratante.parentesco,
@@ -932,9 +946,14 @@ export class ModificarDatosContratanteComponent
     this.contratante.segundoApellido = datos.contratante.segundoApellido;
     this.contratante.sexo = datos.contratante.sexo;
     this.contratante.otroSexo = datos.contratante.primerApellido;
-    this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
-      'yyyy-MM-DD'
-    );
+
+    let [dia,mes,anio]= datos.contratante.fechaNac.split('/');
+    dia = dia.substr(0,2);
+    const fecha = new Date(anio+"-"+mes+"-"+dia)
+    // this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
+    //   'yyyy-MM-DD'
+    // );
+    this.contratante.fechaNac = anio+"-"+mes+"-"+dia;
     this.contratante.idPais = datos.contratante.idPais;
     this.contratante.idEstado = datos.contratante.idEstado;
     this.contratante.telefono = datos.contratante.telefono;
@@ -954,7 +973,6 @@ export class ModificarDatosContratanteComponent
     this.altaODS.idVelatorio = null;
     this.altaODS.idOperador = null;
     this.contratante.cp = this.cp;
-    console.log('paso a 2', datosEtapaContratante);
 
     this.gestionarEtapasService.datosContratante$.next(datosEtapaContratante);
 
@@ -963,7 +981,6 @@ export class ModificarDatosContratanteComponent
   }
 
   llenarDAtosFinado(): void {
-    console.log('datos generales', this.datosConsulta);
 
     let finado = this.datosConsulta.finado;
     let nss = finado.nss;
@@ -979,7 +996,6 @@ export class ModificarDatosContratanteComponent
       matriculaChek = false;
       matricula = null;
     }
-    console.log('qie trae', finado.cp);
     let datosEtapaFinado = {
       datosFinado: {
         tipoOrden: finado.idTipoOrden,
@@ -1029,7 +1045,6 @@ export class ModificarDatosContratanteComponent
         idDomicilio: Number(finado.cp.idDomicilio),
       },
     };
-    console.log(datosEtapaFinado);
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
   }
 
