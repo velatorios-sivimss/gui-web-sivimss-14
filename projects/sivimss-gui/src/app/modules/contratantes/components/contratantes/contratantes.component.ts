@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { OverlayPanel } from "primeng/overlaypanel";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
+import { DIEZ_ELEMENTOS_POR_PAGINA, PATRON_CURP } from "../../../../utils/constantes";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
@@ -171,7 +171,7 @@ export class ContratantesComponent implements OnInit {
   }
 
   descargarReporteTabla(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Disponibilidad de capillas" };
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Listado contratantes" };
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
