@@ -11,10 +11,27 @@
         <div class="flex flex-column">
           <span>Fecha de pago</span>
           <div class="contenedor-inputswitch">
-            <span class="font-bold ml-4">{{registroPago.fecha}}</span>
+            <span class="font-bold ml-4">{{registroPago.fecPago}}</span>
           </div>
         </div>
       </div>
     </ng-template>
   </app-table-panel>
+  <h2 class="subtitulo pt-4 pb-4">Métodos de pago utilizados</h2>
+  <div class="row flex mb-4">
+    <div class="col-md-10"></div>
+    <div class="col-md-2">
+      <div class="col">
+        <span class="flex flex-column etiqueta-base align-items-end">Monto Total</span>
+        <span
+          class="flex flex-column texto-base align-items-end font-bold"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex mt-4 mb-4 justify-content-end">
+  <button class="ml-6 mt-3 btn btn-default btn-md" [routerLink]="'./../../..'">
+    Regresar
+  </button>
 </div>

@@ -15,6 +15,7 @@ import {CalendarModule} from "primeng/calendar";
 import { DetalleGestionPagoComponent } from './components/detalle-gestion-pago/detalle-gestion-pago.component';
 import {CustomTemplateModule} from "../../../shared/custom-template/custom-template.module";
 import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
+import {AccordionModule} from "primeng/accordion";
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
     CalendarModule,
     CustomTemplateModule,
     TablePanelModule,
+    AccordionModule,
   ],
   providers: [GestionarPagoService]
 })
