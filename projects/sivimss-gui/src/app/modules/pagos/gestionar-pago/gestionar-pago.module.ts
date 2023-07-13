@@ -13,6 +13,8 @@ import {OverlayPanelModule} from "primeng/overlaypanel";
 import {OverlayPanelOpcionesModule} from "../../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
 import {CalendarModule} from "primeng/calendar";
 import { DetalleGestionPagoComponent } from './components/detalle-gestion-pago/detalle-gestion-pago.component';
+import {CustomTemplateModule} from "../../../shared/custom-template/custom-template.module";
+import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 
 
 @NgModule({
@@ -31,6 +33,8 @@ import { DetalleGestionPagoComponent } from './components/detalle-gestion-pago/d
     OverlayPanelModule,
     OverlayPanelOpcionesModule,
     CalendarModule,
+    CustomTemplateModule,
+    TablePanelModule,
   ],
   providers: [GestionarPagoService]
 })

@@ -1,1 +1,20 @@
 <app-titulo-principal titulo="Gestionar pago"></app-titulo-principal>
+<div class="border-panel">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span>Folio </span><span class="font-bold ml-3">{{registroPago.folio}}</span>
+      </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <span>Fecha de pago</span>
+          <div class="contenedor-inputswitch">
+            <span class="font-bold ml-4">{{registroPago.fecha}}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </app-table-panel>
+</div>

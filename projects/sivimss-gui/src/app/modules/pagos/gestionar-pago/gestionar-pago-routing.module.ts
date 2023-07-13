@@ -14,7 +14,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'detalle-de-pago/:idPagoBitacora',
+    path: 'detalle-de-pago/:idPagoBitacora/:idFlujo',
     component: DetalleGestionPagoComponent,
     resolve: {
       respuesta: DetalleGestionPagoResolver

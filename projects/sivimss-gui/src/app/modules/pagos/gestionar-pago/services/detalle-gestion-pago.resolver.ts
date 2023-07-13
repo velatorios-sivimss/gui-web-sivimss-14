@@ -11,7 +11,7 @@ export class DetalleGestionPagoResolver implements Resolve<boolean> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const idPagoBitacora: number = route.paramMap.get('idPagoBitacora') as unknown as number;
-    const idFlujo: number = route.queryParamMap.get('tipoPago') as unknown as number;
+    const idFlujo: number = route.paramMap.get('idFlujo') as unknown as number;
     return this.gestionarPagoService.obtenerDetallePago(idPagoBitacora, idFlujo);
   }
 }

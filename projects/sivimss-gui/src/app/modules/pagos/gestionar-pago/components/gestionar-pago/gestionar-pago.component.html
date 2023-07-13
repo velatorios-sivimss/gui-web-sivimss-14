@@ -115,8 +115,7 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Gestionar Pago"
-                                [routerLink]="['./detalle-de-pago', pagoSeleccionado.id]"
-                                [queryParams]="{tipoPago: pagoSeleccionado.idFlujo}">
+                                [routerLink]="['./detalle-de-pago', pagoSeleccionado.id, pagoSeleccionado.idFlujo]">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ir a Pago">
       </app-overlay-panel-opcion>
