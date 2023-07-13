@@ -6,7 +6,6 @@ import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/al
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { SelectButtonModule } from "primeng/selectbutton";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { CATALOGOS_DUMMIES } from "../../../servicios-funerarios/constants/dummies";
 import { RegistrarEntradaComponent } from "../registrar-entrada/registrar-entrada.component";
 import { RegistrarSalidaComponent } from "../registrar-salida/registrar-salida.component";
 import { ActivatedRoute } from '@angular/router';
@@ -14,7 +13,6 @@ import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/fu
 import { CapillaReservacionService } from '../../services/capilla-reservacion.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { finalize } from "rxjs/operators";
-import * as moment from 'moment'
 import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
 import { HttpErrorResponse } from '@angular/common/http';
 import { mensajes } from "../../../reservar-salas/constants/mensajes";
