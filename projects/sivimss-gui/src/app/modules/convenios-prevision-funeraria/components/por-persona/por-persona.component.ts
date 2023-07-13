@@ -261,6 +261,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
       (respuesta: HttpRespuesta<any>) => {
         this.fp.estado.setValue(respuesta.datos[0]?.estado);
         this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fp.colonia.setValue(respuesta.datos[0]?.colonia)
         this.validarFormularioVacio(false,'local');
       },
       (error:HttpErrorResponse) => {

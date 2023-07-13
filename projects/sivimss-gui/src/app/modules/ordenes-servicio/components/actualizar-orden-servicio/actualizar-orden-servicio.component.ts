@@ -207,7 +207,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           bloquearRadioButton = false;
         }
         let datos = {
-          idCategoriaPaquete: element.idCategoriaPaquete,
+          idCategoriaPaquete: element.idCategoria,
           idPaqueteDetalle: element.idPaqueteDetalle,
           grupo: element.grupo,
           concepto: element.concepto,
@@ -231,9 +231,10 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-        if (element.idProveedor != null && element.idProveedor != '') {
+        // debugger
+        // if (element.idProveedor != null && element.idProveedor != '') {
           salidaPaquete.push(datos);
-        }
+        // }
       }
     }
 

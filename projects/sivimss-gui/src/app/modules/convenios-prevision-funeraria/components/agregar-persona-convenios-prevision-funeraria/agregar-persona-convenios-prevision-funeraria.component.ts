@@ -198,6 +198,8 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       (respuesta: HttpRespuesta<any>) => {
         this.fp.estado.setValue(respuesta.datos[0]?.estado);
         this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fp.colonia.setValue(respuesta.datos[0]?.colonia);
+
       },
       (error:HttpErrorResponse) => {
         console.log(error);

@@ -113,6 +113,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
       (respuesta: HttpRespuesta<any>) => {
         this.fe.estado.setValue(respuesta.datos[0]?.estado);
         this.fe.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fe.colonia.setValue(respuesta.datos[0]?.colonia);
       },
       (error:HttpErrorResponse) => {
         console.log(error);

@@ -993,7 +993,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe);
       detalle.totalPaquete = Number(datos.totalPaquete);
-      detalle.idCategoriaPaquete = datos.idCategoriaPaquete;
+      detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
@@ -1034,7 +1034,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe) ?? null;
       detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
-      detalle.idCategoriaPaquete = datos.idCategoriaPaquete;
+      detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
