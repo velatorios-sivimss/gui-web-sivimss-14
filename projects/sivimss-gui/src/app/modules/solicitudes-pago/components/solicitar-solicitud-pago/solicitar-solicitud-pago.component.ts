@@ -100,11 +100,10 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       this.opcion2 = true;
       this.opcion1 = false;
     }
-    if (idTipo === 5) {
+    if (idTipo === 5 || idTipo === 6) {
       this.opcion1 = false;
       this.opcion2 = false;
       this.opcion3 = true;
-
     }
 
 
