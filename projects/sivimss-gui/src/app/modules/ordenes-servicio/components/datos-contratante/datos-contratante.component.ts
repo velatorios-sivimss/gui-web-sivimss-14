@@ -364,10 +364,9 @@ export class DatosContratanteComponent implements OnInit {
               if (respuesta.datos.sexo.includes('MUJER')) {
                 this.datosContratante.sexo.setValue(1);
               }
-
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {

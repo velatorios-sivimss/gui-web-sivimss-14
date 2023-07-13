@@ -460,8 +460,8 @@ export class ModificarDatosFinadoComponent
                 this.datosFinado.sexo.setValue(1);
               }
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosFinado.nacionalidad.setValue(1);
               } else {
