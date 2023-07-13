@@ -66,3 +66,13 @@ export interface BuscarContratantes {
   id?: number | null;
   estatus?: boolean | null;
 }
+
+export interface ReporteTabla {
+  curp?: number | null;
+  nss?: string | null;
+  nomContratante?: string | null;
+  id?: number | null;
+  estatus?: string | null;
+  rutaNombreReporte?: string;
+  tipoReporte?: string;
+}
