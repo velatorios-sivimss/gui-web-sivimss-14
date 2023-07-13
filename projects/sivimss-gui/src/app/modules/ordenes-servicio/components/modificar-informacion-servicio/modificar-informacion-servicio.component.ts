@@ -56,6 +56,7 @@ import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrum
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {GenerarOrdenServicioService} from "../../services/generar-orden-servicio.service";
 
 @Component({
   selector: 'app-modificar-informacion-servicio',
@@ -113,6 +114,7 @@ export class ModificarInformacionServicioComponent
   validaDomicilio: boolean = false;
   tipoOrden: number = 0;
   fechaActual = new Date();
+  estatusUrl:number = 0;
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -122,6 +124,7 @@ export class ModificarInformacionServicioComponent
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
+    private generarOrdenServicioService: GenerarOrdenServicioService,
     private gestionarEtapasService: GestionarEtapasActualizacionService,
     private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef,
@@ -153,6 +156,11 @@ export class ModificarInformacionServicioComponent
   ngOnInit(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.idVelatorio = +usuario.idVelatorio;
+
+    this.estatusUrl = this.rutaActiva.snapshot.queryParams.idEstatus;
+
+
+
 
     this.gestionarEtapasService.datosEtapaInformacionServicio$
       .asObservable()
@@ -619,13 +627,13 @@ export class ModificarInformacionServicioComponent
   preorden(): void {
     this.altaODS.idEstatus = 1;
     this.llenarDatos();
-    this.guardarODS();
+    this.altaODS.idEstatus ? this.guardarODS(0) : this.guardarODSComplementaria(0);
   }
 
-  guardarODS(): void {
+  guardarODS(consumoTablas:number): void {
+    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
     this.loaderService.activar();
-    this.gestionarOrdenServicioService
-      .actualizarODS(this.altaODS)
+    this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -643,7 +651,68 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio);
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio,consumoTablas);
+          this.descargarOrdenServicio(
+            respuesta.datos.idOrdenServicio,
+            respuesta.datos.idEstatus
+          );
+          const ExitoMsg: string =
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+              parseInt(respuesta.mensaje)
+            );
+          this.alertaService.mostrar(
+            TipoAlerta.Exito,
+            ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
+          );
+          this.router.navigate(['ordenes-de-servicio']);
+        },
+        (error: HttpErrorResponse) => {
+          try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          }
+        }
+      );
+  }
+
+  guardarODSComplementaria(consumoTablas:number): void {
+    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
+    if(this.altaODS.idEstatus == 1){
+
+    }
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.salas = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+
+            return;
+          }
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio,consumoTablas);
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -787,11 +856,11 @@ export class ModificarInformacionServicioComponent
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
-  descargarContratoServInmediatos(idOrdenServicio: number): void {
+  descargarContratoServInmediatos(idOrdenServicio: number,consumoTablas:number): void {
     this.loaderService.activar();
     const configuracionArchivo: OpcionesArchivos = { ext: 'pdf' };
     this.gestionarOrdenServicioService
-      .generarArchivoServiciosInmediatos(idOrdenServicio)
+      .generarArchivoServiciosInmediatos(idOrdenServicio,consumoTablas)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -877,10 +946,12 @@ export class ModificarInformacionServicioComponent
 
   generada(): void {
     // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
-    let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
-    this.altaODS.idEstatus = Number(estatus);
+    // let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
+    this.altaODS.idEstatus = 2;
     this.llenarDatos();
-    this.guardarODS();
+    this.altaODS.idEstatus ? this.guardarODS(1) : this.guardarODSComplementaria(2);
+
+    // this.guardarODS(1);
   }
 
   regresar() {

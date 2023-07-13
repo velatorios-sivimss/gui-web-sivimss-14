@@ -9,6 +9,8 @@ export interface OrdenServicioPaginado {
   idOrdenServicio:any;
   contratoConvenio?:string;
   tiempoGeneracionODSHrs?: number;
+  EntradaDonacion: number | null;
+  SalidaDonacion: number | null
 }
 
 export interface OrdenServicioFiltroConsulta {

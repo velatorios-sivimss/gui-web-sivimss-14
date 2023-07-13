@@ -116,6 +116,8 @@ export class ModificarDatosFinadoComponent
   validacionPersonaConvenio: boolean = false;
   ocultarFolioEstatus: boolean = false;
 
+  idDomicilio: number | null = null;
+
   idPersona: number | null = null;
   constructor(
     private route: ActivatedRoute,
@@ -189,7 +191,9 @@ export class ModificarDatosFinadoComponent
     ) {
       nacionalidad = 2;
     }
-
+    this.idPersona = datosEtapaFinado.datosFinado.idPersona;
+    this.idDomicilio = datosEtapaFinado.direccion.idDomicilio;
+    // this.idPersona = datosEtapaFinado.datosFinado.
     let esObito: boolean;
     let extremidad: boolean;
     if(typeof  datosEtapaFinado.datosFinado.esObito == "string"){
@@ -972,8 +976,8 @@ export class ModificarDatosFinadoComponent
     this.finado.idTipoPension = null;
     this.finado.idContratoPrevision = this.idContratoPrevision;
     this.finado.idVelatorioContratoPrevision = null;
-    this.finado.cp = null;
-    this.finado.idPersona = null;
+    // this.finado.cp = null;
+    // this.finado.idPersona = null;
     this.altaODS.idContratantePf = this.idContratante;
     if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
       this.finado.rfc = null;
@@ -1015,9 +1019,9 @@ export class ModificarDatosFinadoComponent
       this.cpFinado.desColonia = datosEtapaFinado.direccion.colonia;
       this.cpFinado.desMunicipio = datosEtapaFinado.direccion.municipio;
       this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
-      this.cpFinado.idDomicilio = null;
+      this.cpFinado.idDomicilio = this.idDomicilio;
       this.finado.cp = this.cpFinado;
-      this.finado.idPersona = null;
+      this.finado.idPersona = this.idPersona;
     }
 
     this.altaODS.finado = this.finado;

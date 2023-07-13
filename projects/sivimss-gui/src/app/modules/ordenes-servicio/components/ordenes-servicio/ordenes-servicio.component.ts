@@ -73,9 +73,12 @@ export class OrdenesServicioComponent implements OnInit {
   mensajeArchivoConfirmacion: string = "";
   mostrarModalConfirmacion: boolean = false;
 
+  mostrarDescargaEntradas: boolean = false;
+  mostrarDescagaSalidas: boolean = false;
+
 
   ordenesServicio: OrdenServicioPaginado[] = [];
-  ordenServicioSeleccionada!: OrdenServicioPaginado;
+  ordenServicioSeleccionada!: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -228,6 +231,8 @@ export class OrdenesServicioComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, ordenServicioSeleccionada: any): void {
     this.ordenServicioSeleccionada = ordenServicioSeleccionada;
+    this.ordenServicioSeleccionada.EntradaDonacion > 0 ? this.mostrarDescargaEntradas = true : this.mostrarDescargaEntradas = false
+    this.ordenServicioSeleccionada.SalidaDonacion   > 0 ? this.mostrarDescagaSalidas = true : this.mostrarDescagaSalidas = false
     this.overlayPanel.toggle(event);
   }
 
@@ -428,9 +433,16 @@ export class OrdenesServicioComponent implements OnInit {
 
   descargarContratoServInmediatos(): void{
     this.loaderService.activar()
+    let tipoReporte = 0;
+    if(this.ordenServicioSeleccionada.estatus?.includes('Generada')){
+      tipoReporte = 1;
+    }
+    if(this.ordenServicioSeleccionada.estatus?.includes('Preorden')){
+      tipoReporte = 0;
+    }
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio).pipe(
+    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio,tipoReporte).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
