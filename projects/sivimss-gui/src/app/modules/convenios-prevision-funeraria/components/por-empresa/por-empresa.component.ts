@@ -113,6 +113,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
       (respuesta: HttpRespuesta<any>) => {
         this.fe.estado.setValue(respuesta.datos[0]?.estado);
         this.fe.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fe.colonia.setValue(respuesta.datos[0]?.colonia);
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -237,4 +238,19 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     if(this.folioEmpresa === "")return;
       this.consultarFolio("onChanges");
   }
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.fe.rfc]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirMinusculas(posicion:number): void {
+    const formularios = [this.fe.correoElectronico]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toLowerCase()
+    )
+  }
+
 }

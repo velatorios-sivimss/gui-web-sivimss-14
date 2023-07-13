@@ -187,6 +187,22 @@ export class ModificarInformacionServicioComponent
 
   llenarFormulario(datos: any): void {
     this.idPanteon = datos.idPanteon;
+    const fechaActual = moment().format('YYYY-MM-DD');
+    const [anio,mes,dia] = fechaActual.split('-')
+    // debugger
+    // let horaVelacion:string;
+    // if(typeof datos.horaVelacion){
+    //   datos.horaVelacion.inclu
+    // }
+
+    if(typeof datos.horaVelacion == "string"){
+      const [horas,minutos] = datos.horaVelacion.split(':')
+      datos.horaVelacion = new Date(+anio,+mes,+dia,+horas,+minutos)
+    }
+
+
+
+
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [

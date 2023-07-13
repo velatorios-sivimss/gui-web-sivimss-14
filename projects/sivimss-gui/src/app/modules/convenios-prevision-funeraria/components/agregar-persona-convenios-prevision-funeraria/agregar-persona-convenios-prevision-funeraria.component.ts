@@ -198,6 +198,8 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       (respuesta: HttpRespuesta<any>) => {
         this.fp.estado.setValue(respuesta.datos[0]?.estado);
         this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fp.colonia.setValue(respuesta.datos[0]?.colonia);
+
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -371,6 +373,21 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
 
   cancelar(): void {
     console.log("Se comenta método para que no marque error en Sonar");
+  }
+
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.fp.curp,this.fp.rfc]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirMinusculas(posicion: number): void {
+    const formularios = [this.fp.correoElectronico]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toLowerCase()
+    )
   }
 
   get fp() {

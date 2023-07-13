@@ -181,7 +181,7 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar Orden complementaria" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Generar Orden complementaria" onCloseOnNavigation (click)="ordenComplementaria()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')" (click)="modificarODS()" titulo="Modificar"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
