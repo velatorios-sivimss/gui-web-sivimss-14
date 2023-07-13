@@ -28,6 +28,7 @@ import { BtnRegresarModule } from "../../shared/btn-regresar/btn-regresar.module
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { UtileriaModule } from "../../shared/utileria/utileria.module";
 import { AutoCompleteModule } from "primeng/autocomplete";
+import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { AutoCompleteModule } from "primeng/autocomplete";
     ConfirmDialogModule,
     UtileriaModule,
     AutoCompleteModule,
+    ValidaRolModule
   ],
   providers:[
     ContratantesService
