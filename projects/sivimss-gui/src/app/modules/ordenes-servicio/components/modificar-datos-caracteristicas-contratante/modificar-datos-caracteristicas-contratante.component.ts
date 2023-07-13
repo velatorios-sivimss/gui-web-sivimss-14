@@ -985,11 +985,13 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.idArticulo = parseInt(datos.idArticulo);
       detalle.desmotivo = datos.desmotivo;
       detalle.activo = 1;
-      detalle.idProveedor = datos.idProveedor ?? null;
+      detalle.idProveedor =
+        // datos.idProveedor ?? null;
+        (datos.idProveedor == '' || datos.idProveedor == null) ? null : Number(datos.idProveedor);
       detalle.idServicio =
-        datos.idServicio == '' ? null : Number(datos.idServicio);
+        (datos.idServicio == '' || datos.idServicio == null)  ? null : Number(datos.idServicio);
       detalle.idTipoServicio =
-        datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
+        (datos.idTipoServicio == '' || datos.idTipoServicio) ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe);
       detalle.totalPaquete = Number(datos.totalPaquete);
@@ -1026,11 +1028,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.desmotivo = datos.desmotivo ?? null;
       detalle.activo = 0;
       detalle.idProveedor =
-        datos.idProveedor == '' ? null : Number(datos.idProveedor);
+        (datos.idProveedor == '' || datos.idProveedor == null) ? null : Number(datos.idProveedor);
       detalle.idServicio =
-        datos.idServicio == '' ? null : Number(datos.idServicio);
+        (datos.idServicio == '' || datos.idServicio == null) ? null : Number(datos.idServicio);
       detalle.idTipoServicio =
-        datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
+        (datos.idTipoServicio == '' || datos.idTipoServicio) ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe) ?? null;
       detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
