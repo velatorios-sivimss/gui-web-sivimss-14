@@ -364,7 +364,7 @@ export class ModificarDatosContratanteComponent
     ) {
       nacionalidad = 2;
     }
-
+    this.idDomicilio = datos.contratante.cp.idDomicilio
 
     let matricula:string
     if(typeof datos.contratante.matricula == 'string'){
@@ -372,7 +372,6 @@ export class ModificarDatosContratanteComponent
     }else{
       matricula = datos.contratante.matricula;
     }
-
 
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
@@ -998,6 +997,7 @@ export class ModificarDatosContratanteComponent
     }
     let datosEtapaFinado = {
       datosFinado: {
+        idPersona: finado.idPersona,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,
         velatorioPrevision: finado.idVelatorioContratoPrevision,

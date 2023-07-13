@@ -267,12 +267,13 @@ export class ActualizarOrdenServicioService extends BaseService<
   }
 
   generarArchivoServiciosInmediatos(
-    idOrdenServicio: number
+    idOrdenServicio: number,
+    tipoOrden:number
   ): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-generada`,
-      { idOrdenServicio: idOrdenServicio, tipoReporte: 'pdf' }
+        `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato`,
+      {idOrdenServicio:idOrdenServicio,generaReporte:tipoOrden,tipoReporte:'pdf'}
     );
   }
 }

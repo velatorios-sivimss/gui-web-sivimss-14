@@ -103,9 +103,9 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-ods-consulta`,objetoPaginado);
   }
 
-  generarArchivoServiciosInmediatos(idOrdenServicio: number):Observable<HttpRespuesta<any>> {
+  generarArchivoServiciosInmediatos(idOrdenServicio: number,tipoOrden:number ):Observable<HttpRespuesta<any>> {
   return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato`,
-    {idOrdenServicio:idOrdenServicio,tipoReporte:'pdf'});
+    {idOrdenServicio:idOrdenServicio,generaReporte:tipoOrden,tipoReporte:'pdf'});
   }
 
   generarArchivoOrdenServicio(idOrdenServicio:number,estatus:number):Observable<HttpRespuesta<any>> {
