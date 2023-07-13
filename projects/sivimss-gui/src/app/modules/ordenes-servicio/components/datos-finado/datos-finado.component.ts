@@ -101,6 +101,8 @@ export class DatosFinadoComponent implements OnInit {
   fechaActual = new Date();
   validacionPersonaConvenio: boolean = false;
 
+  idPersona: number | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -409,12 +411,7 @@ export class DatosFinadoComponent implements OnInit {
             return;
           }
           this.limpiarConsultaDatosPersonales();
-          this.alertaService.mostrar(
-            TipoAlerta.Precaucion,
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-              parseInt(respuesta.mensaje)
-            )
-          );
+          this.alertaService.mostrar(TipoAlerta.Precaucion,"CURP no valido.");
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -693,7 +690,7 @@ export class DatosFinadoComponent implements OnInit {
     this.finado.idContratoPrevision = this.idContratoPrevision;
     this.finado.idVelatorioContratoPrevision = null;
     this.finado.cp = null;
-    this.finado.idPersona = null;
+    this.finado.idPersona = this.idPersona;
     this.altaODS.idContratantePf = this.idContratante;
     if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
       this.finado.rfc = null;
@@ -737,7 +734,7 @@ export class DatosFinadoComponent implements OnInit {
       this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
       this.cpFinado.idDomicilio = null;
       this.finado.cp = this.cpFinado;
-      this.finado.idPersona = null;
+      // this.finado.idPersona = null;
     }
 
     this.altaODS.finado = this.finado;
@@ -822,6 +819,7 @@ export class DatosFinadoComponent implements OnInit {
     } else {
       this.habilitarTodo();
       this.datosFinado.velatorioPrevision.disable();
+      if(idTipoOrden == 1)this.datosFinado.noContrato.disable();
     }
   }
 
@@ -973,10 +971,10 @@ export class DatosFinadoComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.direccion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -1003,38 +1001,59 @@ export class DatosFinadoComponent implements OnInit {
   }
 
   consultarFolioPf(event: any): void {
+    if(!this.datosFinado.noContrato.value)return;
     const ref = this.dialogService.open(ModalConvenioPfComponent, {
       header: 'Número de contrato',
       style: { maxWidth: '876px', width: '100%' },
       data: { folio: this.datosFinado.noContrato.value },
     });
-    ref.onClose.subscribe((persona: Persona) => {
-      let [anio, mes, dia]: any = persona.fechaNac?.split('-');
+    ref.onClose.subscribe((persona: any) => {
+      let [anio, mes, dia]: any = persona.finado.fechaNac?.split('-');
       this.validacionPersonaConvenio = true;
       dia = dia.substr(0, 2);
       const fecha = new Date(anio + '/' + mes + '/' + dia);
-      this.datosFinado.matricula.setValue(persona.matricula);
-      this.datosFinado.curp.setValue(persona.curp);
-      this.datosFinado.nss.setValue(persona.nss);
-      this.datosFinado.nombre.setValue(persona.nomPersona);
-      this.datosFinado.primerApellido.setValue(persona.primerApellido);
-      this.datosFinado.segundoApellido.setValue(persona.segundoApellido);
+      this.datosFinado.matricula.setValue(persona.finado.matricula);
+      this.datosFinado.curp.setValue(persona.finado.curp);
+      this.datosFinado.nss.setValue(persona.finado.nss);
+      this.datosFinado.nombre.setValue(persona.finado.nomPersona);
+      this.datosFinado.primerApellido.setValue(persona.finado.primerApellido);
+      this.datosFinado.segundoApellido.setValue(persona.finado.segundoApellido);
       this.datosFinado.fechaNacimiento.setValue(fecha);
-      this.datosFinado.sexo.setValue(persona?.sexo);
-      if (Number(persona.idPais) == 119) {
+      this.datosFinado.sexo.setValue(persona.finado?.sexo);
+      if (Number(persona.finado.idPais) == 119) {
         this.datosFinado.nacionalidad.setValue(1);
-        this.datosFinado.lugarNacimiento.setValue(Number(persona.idEstado));
+        this.datosFinado.lugarNacimiento.setValue(Number(persona.finado.idEstado));
       } else {
         this.datosFinado.nacionalidad.setValue(2);
-        this.datosFinado.paisNacimiento.setValue(Number(persona.idPais));
+        this.datosFinado.paisNacimiento.setValue(Number(persona.finado.idPais));
       }
-      this.datosFinado.sexo.setValue(Number(persona.sexo));
-      this.datosFinado.otroTipoSexo.setValue(persona.otroSexo);
+      this.datosFinado.sexo.setValue(Number(persona.finado.sexo));
+      this.datosFinado.otroTipoSexo.setValue(persona.finado.otroSexo);
+      this.idVelatorioContratoPrevision = +persona.idVelacion;
+      this.idContratoPrevision = +persona.idContrato
+      this.idPersona = +persona.finado.idPersona
+      this.idContratante = +persona.idContratantePf
+
       this.cambiarTipoSexo();
       this.cambiarNacionalidad();
     });
   }
   convertirAMayusculas(): void {
     this.datosFinado.curp.setValue(this.datosFinado.curp.value.toUpperCase());
+  }
+
+  validarBotonAceptar(): boolean {
+
+    if(this.datosFinado.tipoOrden.value == 2){
+      if(this.form.invalid || !this.validacionPersonaConvenio){
+        return true;
+      }
+    }
+    if(this.datosFinado.tipoOrden.value == 1){
+      if(this.form.invalid){
+        return true;
+      }
+    }
+    return false;
   }
 }

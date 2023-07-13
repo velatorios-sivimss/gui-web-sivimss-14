@@ -255,9 +255,9 @@ export class GenerarOrdenServicioService extends BaseService<
       {idPersona:idPersona})
   }
 
-  generarArchivoServiciosInmediatos(idOrdenServicio: number):Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-generada`,
-      {idOrdenServicio:idOrdenServicio,tipoReporte:'pdf'});
+  generarArchivoServiciosInmediatos(idOrdenServicio: number,tipoOrden:number):Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato`,
+      {idOrdenServicio:idOrdenServicio,generaReporte:tipoOrden,tipoReporte:'pdf'});
   }
 
   generarArchivoOrdenServicio(idOrdenServicio:number,estatus:number):Observable<HttpRespuesta<any>> {

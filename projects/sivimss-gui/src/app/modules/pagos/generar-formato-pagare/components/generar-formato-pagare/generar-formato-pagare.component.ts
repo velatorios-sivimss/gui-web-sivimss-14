@@ -172,7 +172,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       idNivel: this.filtroForm.get("nivel")?.value,
       idDelegacion: this.filtroForm.get("delegacion")?.value,
       idVelatorio: this.filtroForm.get("velatorio")?.value,
-      folioODS: this.filtroForm.get("folioODS")?.value.label,
+      folioODS: this.filtroForm.get("folioODS")?.value,
       nomContratante: this.filtroForm.get("nomContratante")?.value,
       fecIniODS: this.filtroForm.get("fechaInicial")?.value,
       fecFinODS: this.filtroForm.get("fechaFinal")?.value,
@@ -243,7 +243,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
-    this.obtenerFoliosGenerados();
   }
 
   get f() {
