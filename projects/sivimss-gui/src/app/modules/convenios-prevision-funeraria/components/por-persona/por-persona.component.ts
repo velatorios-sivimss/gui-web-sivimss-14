@@ -408,6 +408,20 @@ export class PorPersonaComponent implements OnInit,OnChanges {
     this.consultarFolioPersona();
   }
 
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.fp.curp,this.fp.rfc]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirMinusculas(posicion:number): void {
+    const formularios = [this.fp.correoElectronico]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toLowerCase()
+    )
+  }
+
   get fp() {
     return this.personaForm.controls;
   }

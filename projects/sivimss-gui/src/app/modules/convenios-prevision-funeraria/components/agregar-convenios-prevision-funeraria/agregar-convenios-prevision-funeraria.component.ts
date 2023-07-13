@@ -468,6 +468,14 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     }
   }
 
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.ff.rfcCurp]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
 }
 
 

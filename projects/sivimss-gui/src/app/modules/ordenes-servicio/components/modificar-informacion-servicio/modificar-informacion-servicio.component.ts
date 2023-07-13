@@ -187,6 +187,15 @@ export class ModificarInformacionServicioComponent
 
   llenarFormulario(datos: any): void {
     this.idPanteon = datos.idPanteon;
+    // debugger
+    // let horaVelacion:string;
+    // if(typeof datos.horaVelacion){
+    //   datos.horaVelacion.inclu
+    // }
+
+
+
+
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [

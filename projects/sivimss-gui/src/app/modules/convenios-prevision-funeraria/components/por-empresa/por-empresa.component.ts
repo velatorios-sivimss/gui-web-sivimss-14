@@ -237,4 +237,19 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     if(this.folioEmpresa === "")return;
       this.consultarFolio("onChanges");
   }
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.fe.rfc]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirMinusculas(posicion:number): void {
+    const formularios = [this.fe.correoElectronico]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toLowerCase()
+    )
+  }
+
 }

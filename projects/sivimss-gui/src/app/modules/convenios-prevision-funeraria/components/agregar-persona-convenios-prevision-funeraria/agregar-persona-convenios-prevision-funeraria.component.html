@@ -13,7 +13,7 @@
           <div class="col-md-4">
             <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
             <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18" alphanumericOnly
-                   (blur)="consultaCURP()">
+                   (blur)="consultaCURP()" (keyup)="convertirMayusculas(0)">
             <span class="campo-obligatorio"
                   *ngIf="fp.curp?.errors?.required && (fp.curp?.dirty || fp.curp?.touched)">Este campo es obligatorio *.</span>
             <span class="campo-obligatorio"
@@ -22,7 +22,7 @@
           <div class="col-md-4">
             <label class="control-label" for="rfc">R.F.C:</label>
             <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C." maxlength="13" alphanumericOnly
-                   (blur)="consultaRFC()">
+                   (blur)="consultaRFC()" (keyup)="convertirMayusculas(1)">
           </div>
           <div class="col-md-4">
             <label class="control-label" for="matricula">Matrícula :</label>
@@ -54,7 +54,7 @@
           <div class="col-md-8">
             <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
             <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
-            maxlength="45" (blur)="validarCorreoElectornico()">
+            maxlength="45" (blur)="validarCorreoElectornico()" (keyup)="convertirMinusculas(0)">
             <span class="campo-obligatorio"
                   *ngIf="fp.correoElectronico?.errors?.required && (fp.correoElectronico?.dirty || fp.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           </div>

@@ -508,6 +508,11 @@ export class OrdenesServicioComponent implements OnInit {
       {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:1 }})
   }
 
+  ordenComplementaria(): void {
+    this.router.navigate(["ordenes-de-servicio/modificar-orden-de-servicio"],
+      {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:0 }})
+  }
+
   limpiarFiltros(): void {
     this.filtroForm.reset();
     this.paginar();

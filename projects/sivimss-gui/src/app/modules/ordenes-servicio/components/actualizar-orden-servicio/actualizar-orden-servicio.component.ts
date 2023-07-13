@@ -171,7 +171,6 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     let mostrarOtorgamiento = false;
     let salidaPaquete = [];
     let salidaPresupuesto = [];
-    //PREGUNTAR A LEANDRO
     if (datosPaquete != null && datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
       let caracteristicasPaquete = datosPaquete.caracteristicasPaqueteResponse;
       observaciones = datosPaquete.caracteristicasDelPresupuesto.observaciones;
@@ -208,6 +207,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           bloquearRadioButton = false;
         }
         let datos = {
+          idCategoriaPaquete: element.idCategoriaPaquete,
           idPaqueteDetalle: element.idPaqueteDetalle,
           grupo: element.grupo,
           concepto: element.concepto,

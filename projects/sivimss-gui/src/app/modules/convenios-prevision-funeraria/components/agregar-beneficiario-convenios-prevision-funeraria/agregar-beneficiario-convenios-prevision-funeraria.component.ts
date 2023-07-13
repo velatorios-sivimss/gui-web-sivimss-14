@@ -146,7 +146,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
       segundoApellido: this.f.segundoApellido.value.toString(),
       parentesco: this.f.parentesco.value.toString(),
       curp: this.f.curp.value.toString(),
-      rfc: this.f.rfc.value.toString(),
+      rfc: this.f.rfc.value ? this.f.rfc.value.toString() : "",
       actaNacimiento: this.f.actaNacimiento.value.toString(),
       correoElectronico: this.f.correoElectronico.value.toString(),
       telefono: this.f.telefono.value.toString(),

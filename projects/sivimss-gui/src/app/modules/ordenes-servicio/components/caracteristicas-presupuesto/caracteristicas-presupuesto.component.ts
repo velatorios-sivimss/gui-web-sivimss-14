@@ -883,6 +883,7 @@ export class CaracteristicasPresupuestoComponent
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe);
       detalle.totalPaquete = Number(datos.totalPaquete);
+      detalle.idCategoriaPaquete = datos.idCategoriaPaquete;
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
@@ -923,6 +924,7 @@ export class CaracteristicasPresupuestoComponent
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe) ?? null;
       detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
+      detalle.idCategoriaPaquete = datos.idCategoriaPaquete;
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
