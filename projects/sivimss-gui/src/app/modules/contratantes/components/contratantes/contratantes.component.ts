@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { BuscarContratantes, BusquedaContratante, ConfirmarContratante, UsuarioContratante } from "../../models/usuario-contratante.interface";
+import { BuscarContratantes, BusquedaContratante, ConfirmarContratante, ReporteTabla, UsuarioContratante } from "../../models/usuario-contratante.interface";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { ConfirmationService, LazyLoadEvent } from "primeng/api";
 import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
@@ -18,7 +18,7 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ReporteTabla } from '../../../velacion-domicilio/models/velacion-domicilio.interface';
+
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 @Component({
@@ -218,11 +218,19 @@ export class ContratantesComponent implements OnInit {
   }
 
   reporteTabla(tipoReporte: string): ReporteTabla {
+    let nomContratante: string | null = null;
+    let idContratante: number | null = null;
+    if (typeof this.ff.nombre?.value === 'object') {
+      idContratante = +this.ff.nombre?.value?.value;
+    } else {
+      nomContratante = this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue();
+    }
     return {
-      curp: this.ff.curp.value,
-      nss: this.ff.nss.value,
-      nomContratante: this.ff.nombre.value,
-      estatus: this.ff.estatus.value,
+      curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
+      nss: this.ff.nss.getRawValue() === '' ? null : this.ff.nss.getRawValue(),
+      nomContratante,
+      id: idContratante,
+      estatus: this.ff.estatus.getRawValue() === '' ? null : this.ff.estatus.getRawValue(),
       rutaNombreReporte: 'reportes/generales/ReporteCatUsrContra.jrxml',
       tipoReporte,
     }
