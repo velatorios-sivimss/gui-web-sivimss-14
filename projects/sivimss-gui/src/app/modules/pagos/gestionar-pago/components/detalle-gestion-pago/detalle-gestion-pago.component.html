@@ -30,6 +30,9 @@
               <span>Importe</span>
               <b>{{pago.importe | currency}}</b>
             </div>
+            <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event, pago)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
           </div>
         </div>
       </ng-template>
@@ -56,10 +59,10 @@
     </p-accordionTab>
   </p-accordion>
   <div class="row flex mb-4">
-    <div class="col-md-10"></div>
-    <div class="col-md-2">
+    <div class="col-md-9"></div>
+    <div class="col-md-3">
       <div class="col">
-        <span class="flex flex-column etiqueta-base align-items-end mr-6">Monto Total</span>
+        <span class="flex flex-column etiqueta-base align-items-end mr-15">Monto Total</span>
         <span
           class="flex flex-column texto-base align-items-end font-bold"></span>
       </div>
@@ -72,3 +75,14 @@
     Regresar
   </button>
 </div>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion class="text-center" titulo="Modificar pago">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion class="text-center" titulo="Cancelar pago">
+      </app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
