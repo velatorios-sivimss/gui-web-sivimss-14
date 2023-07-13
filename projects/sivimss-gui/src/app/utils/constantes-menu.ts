@@ -57,7 +57,7 @@ export const idsModulos: DatoModulo = {
   },
   '12': {
     ruta: '',
-    icono: 'default-icon.svg'
+    icono: 'ods.svg'
   },
   '13': {
     ruta: 'ordenes-de-servicio',
