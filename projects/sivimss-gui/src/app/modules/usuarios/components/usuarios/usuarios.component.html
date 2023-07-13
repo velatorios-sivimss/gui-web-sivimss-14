@@ -78,7 +78,7 @@
         <td pResizableColumn>{{usuario.desRol}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <div class="contenedor-inputswitch flex mr-4">
+            <div class="contenedor-inputswitch flex mr-4" *appValidaRol="['USUARIOS','MODIFICAR']">
               <p-inputSwitch [(ngModel)]="usuario.estatus"
                              (ngModelChange)="abrirModalCambioEstatusUsuario(usuario);"></p-inputSwitch>
               <span class="activo mr-3" *ngIf="usuario.estatus">Activo</span>
