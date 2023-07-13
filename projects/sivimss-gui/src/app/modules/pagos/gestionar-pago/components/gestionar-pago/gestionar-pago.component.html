@@ -115,13 +115,10 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Gestionar Pago"
+                                *ngIf="['Pagado','Facturado'].includes(pagoSeleccionado.desEstatusPago)"
                                 [routerLink]="['./detalle-de-pago', pagoSeleccionado.id, pagoSeleccionado.idFlujo]">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ir a Pago">
-      </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar Pago">
-      </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar Pago">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
