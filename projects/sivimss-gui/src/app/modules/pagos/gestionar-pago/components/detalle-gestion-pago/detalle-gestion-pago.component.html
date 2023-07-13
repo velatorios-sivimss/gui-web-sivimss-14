@@ -36,19 +36,19 @@
       <ng-template pTemplate="content">
         <div class="row grid">
           <div class="col">
-            <span class="flex flex-column etiqueta-base">Fecha</span>
+            <span class="flex flex-column etiqueta-base font-bold">Fecha:</span>
             <span class="texto-base">{{pago.fecPago }}</span>
           </div>
           <div class="col">
-            <span class="flex flex-column etiqueta-base">total</span>
+            <span class="flex flex-column etiqueta-base font-bold">Total:</span>
             <span class="texto-base">{{pago.importe | currency}}</span>
           </div>
           <div class="col">
-            <span class="flex flex-column etiqueta-base">Folio de autorización</span>
+            <span class="flex flex-column etiqueta-base font-bold">Folio de autorización:</span>
             <span class="texto-base">{{pago.numAutorizacion}}</span>
           </div>
           <div class="col">
-            <span class="flex flex-column etiqueta-base">Banco</span>
+            <span class="flex flex-column etiqueta-base font-bold">Banco:</span>
             <span class="texto-base">{{pago.desBanco}}</span>
           </div>
         </div>
@@ -59,7 +59,7 @@
     <div class="col-md-10"></div>
     <div class="col-md-2">
       <div class="col">
-        <span class="flex flex-column etiqueta-base align-items-end">Monto Total</span>
+        <span class="flex flex-column etiqueta-base align-items-end mr-6">Monto Total</span>
         <span
           class="flex flex-column texto-base align-items-end font-bold"></span>
       </div>
