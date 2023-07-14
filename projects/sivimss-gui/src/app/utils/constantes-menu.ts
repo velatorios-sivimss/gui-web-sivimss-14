@@ -45,7 +45,7 @@ export const idsModulos: DatoModulo = {
   },
   '9': {
     ruta: 'reservar-salas',
-    icono: 'default-icon.svg'
+    icono: 'reservar-salas.svg'
   },
   '10': {
     ruta: '/proveedores',
@@ -69,7 +69,7 @@ export const idsModulos: DatoModulo = {
   },
   '15': {
     ruta: '',
-    icono: 'default-icon.svg'
+    icono: 'convenios-prev-funeraria.svg'
   },
   '16': {
     ruta: 'convenios-prevision-funeraria',
@@ -101,7 +101,7 @@ export const idsModulos: DatoModulo = {
   },
   '23': {
     ruta: '/programar-mantenimiento-vehicular',
-    icono: 'default-icon.svg'
+    icono: 'programa-mtto-vehicular.svg'
   },
   '24': {
     ruta: '/reservar-capilla/velacion-en-domicilio',
@@ -109,11 +109,11 @@ export const idsModulos: DatoModulo = {
   },
   '25': {
     ruta: '/control-de-vehiculos',
-    icono: 'default-icon.svg'
+    icono: 'eleccion-vehiculo.svg'
   },
   '26': {
     ruta: '',
-    icono: 'default-icon.svg'
+    icono: 'reservar-capilla.svg'
   },
   '36': {
     ruta: '',
@@ -129,7 +129,7 @@ export const idsModulos: DatoModulo = {
   },
   '66': {
     ruta: '/generar-nota-remision',
-    icono: 'default-icon.svg'
+    icono: 'generar-nota-remision.svg'
   },
   '70': {
     ruta: '/gestionar-tramites',
