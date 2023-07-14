@@ -173,6 +173,7 @@ export class ModificarDatosFinadoComponent
     this.cambiarValidacionMatricula();
     this.inicializarCalcularEdad();
     this.cambiarValidacionNSS();
+    this.changeTipoOrden();
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -208,10 +209,15 @@ export class ModificarDatosFinadoComponent
       extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
     }
 
+    let edad;
+    if(datosEtapaFinado.datosFinado.fechaNacimiento){
+      let [dia, mes, anio] =
+        datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
+      edad = moment().diff(moment(anio + '-' + mes + '-' + dia), 'years');
+    }
 
-    let [dia, mes, anio] =
-      datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
-    let edad = moment().diff(moment(anio + '-' + mes + '-' + dia), 'years');
+
+
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
         tipoOrden: [
@@ -288,7 +294,7 @@ export class ModificarDatosFinadoComponent
           },
           [Validators.required],
         ],
-        edad: [{ value: edad, disabled: true }, [Validators.required]],
+        edad: [{ value: edad ? edad : null, disabled: true }, [Validators.required]],
         sexo: [
           { value: datosEtapaFinado.datosFinado.sexo, disabled: false },
           [Validators.required],
