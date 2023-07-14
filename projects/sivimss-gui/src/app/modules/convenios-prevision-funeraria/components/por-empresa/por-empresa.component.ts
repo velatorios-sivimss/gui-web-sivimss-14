@@ -200,7 +200,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   }
 
   validarFormularioVacio(formularioPrincipalValido?: boolean, origen?: string): void {
-    this.empresaForm.valid ? this.formularioValido.emit(true):this.formularioValido.emit(false)
+    (this.empresaForm.valid && this.personasConvenio.length > 0) ? this.formularioValido.emit(true):this.formularioValido.emit(false)
   }
 
   get fe() {

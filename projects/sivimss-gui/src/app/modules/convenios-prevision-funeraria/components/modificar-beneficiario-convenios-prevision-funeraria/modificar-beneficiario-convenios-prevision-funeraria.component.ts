@@ -44,13 +44,19 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
 
   ngOnInit(): void {
     this.datosBeneficiario = this.config.data;
-    let [anio,mes,dia] = this.datosBeneficiario.fechaNacimiento.split('-');
-    dia = dia.substr(0,2);
+    let fecha;
+    if(typeof this.datosBeneficiario.fechaNacimiento == "string"){
+      let [anio,mes,dia] = this.datosBeneficiario.fechaNacimiento.split('-');
+      dia = dia.substr(0,2);
+      fecha = new Date(anio+"/"+mes+"/"+dia);
+    }else{
+      fecha = this.datosBeneficiario.fechaNacimiento
+    }
 
     let respuesta = this.route.snapshot.data['respuesta'];
     this.parentesco = respuesta[this.POSICION_PARENTESCO]!.map((parentesco: TipoDropdown) => (
       {label: parentesco.label, value: parentesco.value} )) || [];
-    this.inicializarBeneficiarioForm(new Date(anio+"/"+mes+"/"+dia));
+    this.inicializarBeneficiarioForm(fecha);
     this.consultaVelatorio();
     if(+this.f.edad.value < 18){
       this.f.validaActaNacimientoBeneficiario.enable();
@@ -59,6 +65,7 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
       this.f.validaActaNacimientoBeneficiario.disable();
       this.f.validaIneBeneficiario.disable();
     }
+    this.validarEdad()
   }
 
   inicializarBeneficiarioForm(fecha: Date): void {
