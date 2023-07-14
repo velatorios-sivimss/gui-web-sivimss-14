@@ -7,6 +7,7 @@ export const funcionalidades: { [valor: string]: string } = {
   'SERVICIOS': '7',
   'VELATORIOS': '8',
   'SALAS_RESERVACION': '9',
+  'CONTRATANTES': '11',
   'GENERAR_RECIBO_PAGO': '23',
   'CAPILLA_RESERVACION': '31',
   'MANTENIMIENTO_VEHICULAR': '40',
@@ -24,7 +25,3 @@ export const permisos: { [valor: string]: string } = {
   'APROBACION': '5',
   'IMPRIMIR': '6'
 }
-
-
-
-

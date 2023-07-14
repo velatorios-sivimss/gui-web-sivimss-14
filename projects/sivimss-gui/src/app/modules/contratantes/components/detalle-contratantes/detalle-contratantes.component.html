@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="flex flex-column ml-5" style="cursor: pointer;" *ngIf="origen == 'detalle'">
-        <a (click)="overlayPanel.toggle($event)">
+        <a (click)="overlayPanel.toggle($event)" *appValidaRol="['CONTRATANTES','MODIFICAR']">
           <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
         </a>
       </div>

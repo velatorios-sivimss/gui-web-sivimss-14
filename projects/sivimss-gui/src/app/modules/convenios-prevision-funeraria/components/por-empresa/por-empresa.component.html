@@ -19,7 +19,7 @@
       <div class="col-md-4">
         <label class="control-label" for="rfc">RFC <span class="req">*</span>:</label>
         <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa RFC" maxlength="13" (blur)="consultarRFC()"
-               (change)="validarFormularioVacio(false,'local')">
+               (change)="validarFormularioVacio(false,'local')" (keyup)="convertirMayusculas(0)">
         <span class="campo-obligatorio"
               *ngIf="fe.rfc?.errors?.required && (fe.rfc?.dirty || fe.rfc?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -93,7 +93,7 @@
       <div class="col-md-6">
         <label class="control-label" for="correoElectronico">Correo electrónico <span class="req">*</span>:</label>
         <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
-        maxlength="35" (change)="validarFormularioVacio(false,'local')">
+        maxlength="35" (change)="validarFormularioVacio(false,'local')" (keyup)="convertirMinusculas(0)">
       </div>
       <div class="col-md-6">
         <label class="control-label" for="numeroInterior">Teléfono <span class="req">*</span>:</label>

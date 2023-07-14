@@ -261,6 +261,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
       (respuesta: HttpRespuesta<any>) => {
         this.fp.estado.setValue(respuesta.datos[0]?.estado);
         this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fp.colonia.setValue(respuesta.datos[0]?.colonia)
         this.validarFormularioVacio(false,'local');
       },
       (error:HttpErrorResponse) => {
@@ -406,6 +407,20 @@ export class PorPersonaComponent implements OnInit,OnChanges {
 
     if(this.folioConvenio === "" || this.folioConvenio == undefined) return;
     this.consultarFolioPersona();
+  }
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.fp.curp,this.fp.rfc]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirMinusculas(posicion:number): void {
+    const formularios = [this.fp.correoElectronico]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toLowerCase()
+    )
   }
 
   get fp() {

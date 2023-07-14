@@ -42,7 +42,6 @@ hr {
     margin-left: auto;
     margin-right: auto;
     width: 75%;
-
     p {
         font-style: normal;
         font-weight: 700;
@@ -101,7 +100,9 @@ hr.solid {
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     height: 150px;
-    margin-bottom: 30px;
+    margin-bottom: 0px;
+    margin-top: 30px;
+    margin-left: -200px;
     transition: 0.3s;
     float: right;
     width: 300px;
@@ -153,7 +154,6 @@ hr.solid {
     justify-content: center;
 }
 
-
 .logo-imss {
     background-color: #235B4E;
     width: 186px;
@@ -161,7 +161,6 @@ hr.solid {
 
 .float-left {
     float: left;
-
 }
 
 .float-right {

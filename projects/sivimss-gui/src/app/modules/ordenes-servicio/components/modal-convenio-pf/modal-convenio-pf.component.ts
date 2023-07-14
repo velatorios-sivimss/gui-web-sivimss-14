@@ -19,13 +19,15 @@ export class ModalConvenioPfComponent implements OnInit {
 
   form!: FormGroup;
   objetoContratante!: any;
-  contratantes: TipoDropdown[] = [];
+  contratantes!: TipoDropdown[];
 
   objetoBeneficiario!: any;
   beneficiarios: TipoDropdown[] = [];
   folioContrato: string = "";
   idContrato!: number;
+  idVelatorio!: number;
   idPersona!: number;
+  existeSiniestro:boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -57,7 +59,13 @@ export class ModalConvenioPfComponent implements OnInit {
       finalize(()=>this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        if(respuesta.datos === null){
+          const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
+          this.alertaService.mostrar(TipoAlerta.Precaucion,errorMsg || 'El contrato de Previsión Funeraria que deseas utilizar no se encuentra vigente. ');
+          return
+        }
         this.idContrato = respuesta.datos.idContratoPF;
+        this.idVelatorio = respuesta.datos.idVelatorio
         this.consultarContratantes();
       },
       (error: HttpErrorResponse) => {
@@ -86,11 +94,24 @@ export class ModalConvenioPfComponent implements OnInit {
   }
 
   consultarBeneficiarios(): void {
+    this.existeSiniestro = true;
+    this.objetoContratante.forEach((contratante:any) => {
+      if(contratante.idContratante == this.formulario.contratante.value){
+        if(contratante.validaSiniestro == 0){
+          this.existeSiniestro = false;
+          const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(73);
+          this.alertaService.mostrar(TipoAlerta.Precaucion,errorMsg ||  'El contrato de Previsión Funeraria ya cuenta con el límite de siniestros a cubrir.'  );
+        }
+      }
+    });
+    if(!this.existeSiniestro) return;
     this.loaderService.activar();
+
     this.gestionarOrdenServicioService.consultarBeneficiariosPf(this.idContrato,this.formulario.contratante.value).pipe(
       finalize(()=>this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        this.existeSiniestro = true;
         this.objetoBeneficiario = respuesta.datos || [];
         this.beneficiarios = respuesta.datos.map((beneficiario: any) => (
           {label: beneficiario.nombreBeneficiario, value: beneficiario.idPersona}
@@ -112,7 +133,12 @@ export class ModalConvenioPfComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        this.ref.close(respuesta.datos[0]);
+        this.ref.close({
+          finado:respuesta.datos[0],
+          idContrato:this.idContrato,
+          idVelacion:this.idVelatorio,
+          idContratantePf: this.formulario.contratante.value
+        });
       },
       (error: HttpErrorResponse) => {
         const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
