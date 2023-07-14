@@ -349,29 +349,30 @@ export class ConsultaConveniosComponent implements OnInit {
 
   realizarBusquedaSubForm(controlName: string) {
     this.fsf[controlName].patchValue(this.fsf[controlName].value.trim());
-    if (this.fsf[controlName].value && this.fsf[controlName].value !== '') {
-      switch (controlName) {
-        case 'folioConvenio':
-          this.buscarPorConvenio(this.fsf[controlName].value);
-          break;
-        case 'rfc':
-          this.buscarPorAfiliado(this.fsf[controlName].value);
-          break;
-        case 'folioConvenioVigencia':
-          this.buscarPorVigencia(this.fsf[controlName].value);
-          break;
-        case 'numeroFactura':
-          this.buscarPorFactura(this.fsf[controlName].value);
-          break;
-        case 'nombreBeneficiario':
-          this.buscarPorBeneficiario(this.fsf[controlName].value);
-          break;
-        case 'folioSiniestro':
-          this.buscarPorSiniestro(this.fsf[controlName].value);
-          break;
-        default:
-          break;
-      }
+    if (this.fsf[controlName].value === '') {
+      this.fsf[controlName].setValue(null);
+    }
+    switch (controlName) {
+      case 'folioConvenio':
+        this.buscarPorConvenio(this.fsf[controlName].value);
+        break;
+      case 'rfc':
+        this.buscarPorAfiliado(this.fsf[controlName].value);
+        break;
+      case 'folioConvenioVigencia':
+        this.buscarPorVigencia(this.fsf[controlName].value);
+        break;
+      case 'numeroFactura':
+        this.buscarPorFactura(this.fsf[controlName].value);
+        break;
+      case 'nombreBeneficiario':
+        this.buscarPorBeneficiario(this.fsf[controlName].value);
+        break;
+      case 'folioSiniestro':
+        this.buscarPorSiniestro(this.fsf[controlName].value);
+        break;
+      default:
+        break;
     }
   }
 
