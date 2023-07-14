@@ -173,7 +173,7 @@ export class ModificarDatosFinadoComponent
     this.cambiarValidacionMatricula();
     this.inicializarCalcularEdad();
     this.cambiarValidacionNSS();
-    this.changeTipoOrden();
+    this.changeTipoOrden(true);
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -651,9 +651,9 @@ export class ModificarDatosFinadoComponent
     this.datosFinado.nss.patchValue(this.datosFinado.nss.value);
   }
 
-  async changeTipoOrden() {
+  async changeTipoOrden(modificacion?: boolean) {
     const idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
-    this.form.reset();
+    if(!modificacion)this.form.reset();
     if (idTipoOden == 1) {
       this.habilitarTodo();
       this.datosFinado.tipoOrden.setValue(1);
