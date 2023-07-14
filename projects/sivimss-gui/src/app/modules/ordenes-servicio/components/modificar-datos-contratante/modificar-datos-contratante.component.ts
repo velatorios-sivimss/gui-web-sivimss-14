@@ -995,6 +995,15 @@ export class ModificarDatosContratanteComponent
       matriculaChek = false;
       matricula = null;
     }
+    let calle = finado.cp?.desCalle ?? null;
+    let noExterior = finado.cp?.numExterior ?? null;
+    let noInterior = finado.cp?.numInterior ?? null;
+    let cp = finado.cp?.codigoPostal ?? null;
+    let colonia = finado.cp?.desColonia ?? null;
+    let municipio =finado.cp?.desMunicipio ?? null;
+    let estado = finado.cp?.desEstado ?? null;
+    let idDomicilio = finado.cp?.idDomicilio ?? null;
+
     let datosEtapaFinado = {
       datosFinado: {
         idPersona: finado.idPersona,
@@ -1035,14 +1044,14 @@ export class ModificarDatosContratanteComponent
         tipoPension: finado.idTipoPension,
       },
       direccion: {
-        calle: finado.cp.desCalle,
-        noExterior: finado.cp.numExterior,
-        noInterior: finado.cp.numInterior,
-        cp: finado.cp.codigoPostal,
-        colonia: finado.cp.desColonia,
-        municipio: finado.cp.desMunicipio,
-        estado: finado.cp.desEstado,
-        idDomicilio: Number(finado.cp.idDomicilio),
+        calle: calle,
+        noExterior:noExterior,
+        noInterior:noInterior,
+        cp:cp,
+        colonia: colonia,
+        municipio: municipio,
+        estado: estado,
+        idDomicilio: idDomicilio,
       },
     };
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
