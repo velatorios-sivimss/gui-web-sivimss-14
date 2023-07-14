@@ -23,7 +23,7 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { DetalleConvenioPrevisionFunerariaComponent } from "../detalle-convenio-prevision-funeraria/detalle-convenio-prevision-funeraria.component";
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {
@@ -46,6 +46,7 @@ export class ConsultaConveniosComponent implements OnInit {
   filtroSubForm!: FormGroup;
   archivoRef!: DynamicDialogRef;
   estatusRef!: DynamicDialogRef;
+  busquedaRealizada: boolean = false;
 
   numPaginaActual = {
     tablaConvenios: 0,
@@ -149,7 +150,7 @@ export class ConsultaConveniosComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if(respuesta.mensaje === "OK" && respuesta.datos) {
+          if (respuesta.mensaje === "OK" && respuesta.datos) {
             // Seteamos los datos de cada seccion
             this.datosAfiliado = respuesta.datos.afiliados.datos.content;
             this.vigenciaConvenio = respuesta.datos.vigencias.datos.content;
@@ -211,13 +212,20 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   paginar(event: LazyLoadEvent): void {
+    if (!validarAlMenosUnCampoConValor(this.filtroForm.value)) return;
+    if (event?.first !== undefined && event.rows !== undefined) {
+      this.numPaginaActual.tablaConvenios = Math.floor(event.first / event.rows);
+    } else {
+      this.numPaginaActual.tablaConvenios = 0;
+    }
+
     const filtros: FiltrosConvenio = this.crearSolicitudFiltros();
     this.cargadorService.activar();
-    this.consultaConvenioService.consultarConvenios(filtros, 0, this.cantElementosPorPagina)
+    this.consultaConvenioService.consultarConvenios(filtros, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if(respuesta.mensaje === "Exito" && respuesta.datos) {
+          if (respuesta.mensaje === "Exito" && respuesta.datos) {
             // Seteamos los datos de convenios
             this.convenioPrevision = respuesta.datos.content;
             this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
@@ -264,9 +272,10 @@ export class ConsultaConveniosComponent implements OnInit {
   buscarPorFiltros(): void {
     this.consultaConvenioService.consultarConvenios(this.obtenerObjetoParaFiltrado(), this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.mensaje === "Exito" && respuesta.datos) {
+        if (respuesta.mensaje === "Exito" && respuesta.datos) {
           this.convenioPrevision = respuesta.datos.content;
           this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
+          this.busquedaRealizada = true;
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -278,7 +287,11 @@ export class ConsultaConveniosComponent implements OnInit {
 
   obtenerObjetoParaFiltrado(): any {
     return {
-      ...this.filtroForm.value,
+      folioConvenio: this.ff.folioConvenio.getRawValue() === '' ? null : this.ff.folioConvenio.getRawValue(),
+      rfc: this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+      nombre: this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue(),
+      curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
+      estatusConvenio: this.ff.estatusConvenio.getRawValue() === '' ? null : this.ff.estatusConvenio.getRawValue(),
     };
   }
 
@@ -288,6 +301,7 @@ export class ConsultaConveniosComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
+    this.busquedaRealizada = false;
   }
 
   abrirPanel(event: MouseEvent, convenio: ConveniosPrevisionFunerariaInterface): void {
@@ -367,17 +381,17 @@ export class ConsultaConveniosComponent implements OnInit {
     datosBusqueda.folioConvenio = subFormValue;
     this.consultaConvenioService.consultarConvenios(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.convenioPrevision = respuesta.datos.content;
-          this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.convenioPrevision = respuesta.datos.content;
+            this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorBeneficiario(subFormValue: string): void {
@@ -388,17 +402,17 @@ export class ConsultaConveniosComponent implements OnInit {
     };
     this.consultaConvenioService.consultarBeneficiarios(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.beneficiario = [];
-          this.beneficiario = respuesta.datos.content;
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.beneficiario = [];
+            this.beneficiario = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorFactura(subFormValue: string): void {
@@ -409,17 +423,17 @@ export class ConsultaConveniosComponent implements OnInit {
     };
     this.consultaConvenioService.consultarFacturas(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.vigenciaConvenio = [];
-          this.facturaConvenio = respuesta.datos.content;
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.vigenciaConvenio = [];
+            this.facturaConvenio = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorSiniestro(subFormValue: string): void {
@@ -430,17 +444,17 @@ export class ConsultaConveniosComponent implements OnInit {
     };
     this.consultaConvenioService.buscarPorFiltros(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.vigenciaConvenio = [];
-          this.siniestro = respuesta.datos.content;
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.vigenciaConvenio = [];
+            this.siniestro = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorAfiliado(subFormValue: string): void {
@@ -451,17 +465,17 @@ export class ConsultaConveniosComponent implements OnInit {
     };
     this.consultaConvenioService.consultarAfiliados(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.vigenciaConvenio = [];
-          this.datosAfiliado = respuesta.datos.content;
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.vigenciaConvenio = [];
+            this.datosAfiliado = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorVigencia(subFormValue: string): void {
@@ -471,17 +485,17 @@ export class ConsultaConveniosComponent implements OnInit {
     };
     this.consultaConvenioService.consultarVigencias(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.vigenciaConvenio = [];
-          this.vigenciaConvenio = respuesta.datos.content;
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.vigenciaConvenio = [];
+            this.vigenciaConvenio = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   descargarPDF(): void {
@@ -491,26 +505,26 @@ export class ConsultaConveniosComponent implements OnInit {
     datosBusqueda.tipoReporte = "pdf";
     this.consultaConvenioService.descargarPDF(datosBusqueda).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-        next: (respuesta:any) => {
-            const file = new Blob([respuesta], {type: 'application/pdf'});
-            const element = document.createElement('a');
-            element.href = URL.createObjectURL(file);
-            element.download = "Convenios previsión funeraria";
-            document.body.appendChild(element);
-            element.click();
-            window.open(element.href);
-            // this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
-            //   data: url,
-            //   header: "",
-            //   width: "940px",
-            // })
+        next: (respuesta: any) => {
+          const file = new Blob([respuesta], { type: 'application/pdf' });
+          const element = document.createElement('a');
+          element.href = URL.createObjectURL(file);
+          element.download = "Convenios previsión funeraria";
+          document.body.appendChild(element);
+          element.click();
+          window.open(element.href);
+          // this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
+          //   data: url,
+          //   header: "",
+          //   width: "940px",
+          // })
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
       }
-    );
+      );
   }
 
   descargarExcel(): void {
@@ -519,34 +533,35 @@ export class ConsultaConveniosComponent implements OnInit {
     datosBusqueda.tipoReporte = "xls";
     this.consultaConvenioService.descargarExcel(datosBusqueda).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-        next: (respuesta:any) => {
-            const file = new Blob([respuesta], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'});
-            const url = window.URL.createObjectURL(file);
-            window.open(url);
+        next: (respuesta: any) => {
+          const file = new Blob([respuesta], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' });
+          const url = window.URL.createObjectURL(file);
+          window.open(url);
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
       }
-    );
+      );
   }
 
   modificarConvenio(): void {
-    localStorage.setItem('datosConvenio', JSON.stringify({convenio:this.convenioSeleccionado}));
-    this.router.navigate(['./modificar-nuevo-convenio'],{
-      relativeTo: this.activatedRoute});
+    localStorage.setItem('datosConvenio', JSON.stringify({ convenio: this.convenioSeleccionado }));
+    this.router.navigate(['./modificar-nuevo-convenio'], {
+      relativeTo: this.activatedRoute
+    });
   }
 
-  cambiarEstatusConvenio(): void{
+  cambiarEstatusConvenio(): void {
     this.estatusRef = this.dialogService.open(EstatusConvenioPrevisionFunerariaComponent, {
       header: this.convenioSeleccionado.estatusConvenio?.includes('3') ? 'Activar' : 'Desactivar',
       width: "920px",
       data: this.convenioSeleccionado,
     })
 
-    this.estatusRef.onClose.subscribe((estatus:boolean) => {
-      if(estatus){
+    this.estatusRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
         this.paginar_()
       }
     });

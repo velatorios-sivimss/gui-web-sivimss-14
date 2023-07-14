@@ -6,7 +6,7 @@
       <div class="col-md-6">
         <label class="control-label" for="folioConvenio">Folio convenio:</label>
         <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
-          placeholder="Ingresa el no. de folio" maxlength="12" trimmer alphanumericOnly>
+          placeholder="Ingresa el no. de folio" maxlength="12" trimmer folioOdsAlphanumeric>
         <span class="campo-obligatorio"
           *ngIf="ff.folioConvenio?.errors?.required && (ff.folioConvenio?.dirty || ff.folioConvenio?.touched)">
           Campo obligatorio</span>
@@ -118,6 +118,13 @@
         </td>
       </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr *ngIf="busquedaRealizada">
+        <th colspan="12" class="p-2 text-center font-bold text-xl" id="reporte_convenio_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
+      </tr>
+    </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
         <span class="total-elements">{{convenioPrevision.length}} de {{totalElementos.tablaConvenios}}</span>
@@ -181,13 +188,15 @@
           </ng-template>
           <ng-template pTemplate="body" let-datosAfiliado>
             <tr>
-              <td> {{datosAfiliado.descVelatorio}} </td>
-              <td> {{datosAfiliado.afiliado}} </td>
+              <td> {{datosAfiliado.nombreVelatorio}} </td>
+              <td> {{datosAfiliado.nombreAfiliado}} </td>
               <td> {{datosAfiliado.rfcTitular}} </td>
               <td> {{datosAfiliado.fechaNacimiento | date: 'dd/MM/yyyy'}} </td>
               <td> {{datosAfiliado.edad}} </td>
-              <td> {{datosAfiliado.genero}} </td>
-              <td> {{datosAfiliado.correoElectronico}} </td>
+              <td *ngIf="datosAfiliado.genero === 1"> Masculino </td>
+              <td *ngIf="datosAfiliado.genero === 2"> Femenino </td>
+              <td *ngIf="datosAfiliado.genero === 3"> Otro </td>
+              <td> {{datosAfiliado.correo}} </td>
             </tr>
           </ng-template>
         </p-table>
