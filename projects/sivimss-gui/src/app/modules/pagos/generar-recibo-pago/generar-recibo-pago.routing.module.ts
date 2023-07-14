@@ -26,7 +26,13 @@ const routes: Route[] = [
     component: ReciboPagoTramitesComponent,
     resolve: {
       respuesta: ReciboPagoTramitesResolver
-    }
+    },
+    data: {
+      validaRol: {
+        funcionalidad: 'GENERAR_RECIBO_PAGO',
+        permiso: 'ALTA'
+      }
+    },
   },
   {
     path: 'detalle-recibo-pago-tramites/:idRecibo',

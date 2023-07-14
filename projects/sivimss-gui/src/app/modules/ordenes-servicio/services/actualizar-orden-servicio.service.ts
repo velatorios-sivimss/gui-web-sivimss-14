@@ -118,6 +118,13 @@ export class ActualizarOrdenServicioService extends BaseService<
     );
   }
 
+  actualizarODS(parametros:any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base + `${this._funcionalidad}/orden-actualizar`,
+      parametros
+    );
+  }
+
   buscarPromotor(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/catalogo/orden-consultar-promotores`
@@ -254,18 +261,19 @@ export class ActualizarOrdenServicioService extends BaseService<
   ): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar/reporte-orden-servicio-generada`,
+        `${this._funcionalidad}/buscar/reporte-orden-servicio-modificada`,
       { idOrdenServicio: idOrdenServicio, estatus: estatus, tipoReporte: 'pdf' }
     );
   }
 
   generarArchivoServiciosInmediatos(
-    idOrdenServicio: number
+    idOrdenServicio: number,
+    tipoOrden:number
   ): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-generada`,
-      { idOrdenServicio: idOrdenServicio, tipoReporte: 'pdf' }
+        `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-modificada`,
+      {idOrdenServicio:idOrdenServicio,generaReporte:tipoOrden,tipoReporte:'pdf'}
     );
   }
 }

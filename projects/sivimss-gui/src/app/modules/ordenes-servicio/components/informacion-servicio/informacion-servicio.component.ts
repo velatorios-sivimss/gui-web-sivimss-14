@@ -714,8 +714,10 @@ export class InformacionServicioComponent implements OnInit {
 
   descargarContratoServInmediatos(idOrdenServicio:number ): void{
     this.loaderService.activar()
+    let tipoOrden;
+    this.altaODS.idEstatus == 1 ? tipoOrden = 0 : tipoOrden = 1
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    this.gestionarOrdenServicioService.generarArchivoServiciosInmediatos(idOrdenServicio).pipe(
+    this.gestionarOrdenServicioService.generarArchivoServiciosInmediatos(idOrdenServicio,tipoOrden).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
@@ -784,7 +786,7 @@ export class InformacionServicioComponent implements OnInit {
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    this.inhumacion.agregarPanteon.disable();
+    // this.inhumacion.agregarPanteon.disable();
     this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();

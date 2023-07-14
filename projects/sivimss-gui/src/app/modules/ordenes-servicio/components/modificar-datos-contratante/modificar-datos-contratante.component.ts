@@ -174,15 +174,15 @@ export class ModificarDatosContratanteComponent
       .subscribe((datosContratante) =>
         this.llenarFormmulario(
           datosContratante,
-          Number(this.rutaActiva.snapshot.paramMap.get('idEstatus')),
-          Number(this.rutaActiva.snapshot.paramMap.get('idODS'))
+          Number(this.rutaActiva.snapshot.queryParams.idODS),
+          Number(this.rutaActiva.snapshot.queryParams.idEstatus)
         )
       );
     this.gestionarEtapasService.datosConsultaODS$
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
 
-   
+
   }
 
 
@@ -364,11 +364,20 @@ export class ModificarDatosContratanteComponent
     ) {
       nacionalidad = 2;
     }
+    this.idDomicilio = datos.contratante.cp.idDomicilio
+
+    let matricula:string
+    if(typeof datos.contratante.matricula == 'string'){
+      datos.contratante.matricula.includes('null') ? matricula = '' : matricula = datos.contratante.matricula
+    }else{
+      matricula = datos.contratante.matricula;
+    }
+
     this.form = this.formBuilder.group({
       datosContratante: this.formBuilder.group({
         matricula: [
           {
-            value: datos.contratante.matricula,
+            value: matricula,
             disabled: false,
           },
           [Validators.required],
@@ -377,7 +386,8 @@ export class ModificarDatosContratanteComponent
           {
             value:
               datos.contratante.matricula == null ||
-              datos.contratante.matricula == ''
+              datos.contratante.matricula == '' ||
+              datos.contratante.matricula == 'null'
                 ? false
                 : true,
             disabled: false,
@@ -610,8 +620,8 @@ export class ModificarDatosContratanteComponent
                 this.datosContratante.sexo.setValue(1);
               }
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
@@ -885,7 +895,6 @@ export class ModificarDatosContratanteComponent
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    console.log('formulario', formulario);
     let datosEtapaContratante = {
       idOrdenServicio: this.idODS,
       idParentesco: formulario.datosContratante.parentesco,
@@ -936,9 +945,14 @@ export class ModificarDatosContratanteComponent
     this.contratante.segundoApellido = datos.contratante.segundoApellido;
     this.contratante.sexo = datos.contratante.sexo;
     this.contratante.otroSexo = datos.contratante.primerApellido;
-    this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
-      'yyyy-MM-DD'
-    );
+
+    let [dia,mes,anio]= datos.contratante.fechaNac.split('/');
+    dia = dia.substr(0,2);
+    const fecha = new Date(anio+"-"+mes+"-"+dia)
+    // this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
+    //   'yyyy-MM-DD'
+    // );
+    this.contratante.fechaNac = anio+"-"+mes+"-"+dia;
     this.contratante.idPais = datos.contratante.idPais;
     this.contratante.idEstado = datos.contratante.idEstado;
     this.contratante.telefono = datos.contratante.telefono;
@@ -958,7 +972,6 @@ export class ModificarDatosContratanteComponent
     this.altaODS.idVelatorio = null;
     this.altaODS.idOperador = null;
     this.contratante.cp = this.cp;
-    console.log('paso a 2', datosEtapaContratante);
 
     this.gestionarEtapasService.datosContratante$.next(datosEtapaContratante);
 
@@ -967,7 +980,6 @@ export class ModificarDatosContratanteComponent
   }
 
   llenarDAtosFinado(): void {
-    console.log('datos generales', this.datosConsulta);
 
     let finado = this.datosConsulta.finado;
     let nss = finado.nss;
@@ -983,9 +995,18 @@ export class ModificarDatosContratanteComponent
       matriculaChek = false;
       matricula = null;
     }
-    console.log('qie trae', finado.cp);
+    let calle = finado.cp?.desCalle ?? null;
+    let noExterior = finado.cp?.numExterior ?? null;
+    let noInterior = finado.cp?.numInterior ?? null;
+    let cp = finado.cp?.codigoPostal ?? null;
+    let colonia = finado.cp?.desColonia ?? null;
+    let municipio =finado.cp?.desMunicipio ?? null;
+    let estado = finado.cp?.desEstado ?? null;
+    let idDomicilio = finado.cp?.idDomicilio ?? null;
+
     let datosEtapaFinado = {
       datosFinado: {
+        idPersona: finado.idPersona,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,
         velatorioPrevision: finado.idVelatorioContratoPrevision,
@@ -1023,17 +1044,16 @@ export class ModificarDatosContratanteComponent
         tipoPension: finado.idTipoPension,
       },
       direccion: {
-        calle: finado.cp.desCalle,
-        noExterior: finado.cp.numExterior,
-        noInterior: finado.cp.numInterior,
-        cp: finado.cp.codigoPostal,
-        colonia: finado.cp.desColonia,
-        municipio: finado.cp.desMunicipio,
-        estado: finado.cp.desEstado,
-        idDomicilio: Number(finado.cp.idDomicilio),
+        calle: calle,
+        noExterior:noExterior,
+        noInterior:noInterior,
+        cp:cp,
+        colonia: colonia,
+        municipio: municipio,
+        estado: estado,
+        idDomicilio: idDomicilio,
       },
     };
-    console.log(datosEtapaFinado);
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
   }
 

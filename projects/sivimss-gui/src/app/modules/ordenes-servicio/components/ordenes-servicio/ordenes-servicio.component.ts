@@ -73,9 +73,12 @@ export class OrdenesServicioComponent implements OnInit {
   mensajeArchivoConfirmacion: string = "";
   mostrarModalConfirmacion: boolean = false;
 
+  mostrarDescargaEntradas: boolean = false;
+  mostrarDescagaSalidas: boolean = false;
+
 
   ordenesServicio: OrdenServicioPaginado[] = [];
-  ordenServicioSeleccionada!: OrdenServicioPaginado;
+  ordenServicioSeleccionada!: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -88,6 +91,8 @@ export class OrdenesServicioComponent implements OnInit {
     private route: ActivatedRoute,
     private descargaArchivosService: DescargaArchivosService,
     private renderer: Renderer2,
+
+    private router: Router,
   ) {
   }
 
@@ -226,6 +231,8 @@ export class OrdenesServicioComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, ordenServicioSeleccionada: any): void {
     this.ordenServicioSeleccionada = ordenServicioSeleccionada;
+    this.ordenServicioSeleccionada.EntradaDonacion > 0 ? this.mostrarDescargaEntradas = true : this.mostrarDescargaEntradas = false
+    this.ordenServicioSeleccionada.SalidaDonacion   > 0 ? this.mostrarDescagaSalidas = true : this.mostrarDescagaSalidas = false
     this.overlayPanel.toggle(event);
   }
 
@@ -426,9 +433,16 @@ export class OrdenesServicioComponent implements OnInit {
 
   descargarContratoServInmediatos(): void{
     this.loaderService.activar()
+    let tipoReporte = 0;
+    if(this.ordenServicioSeleccionada.estatus?.includes('Generada')){
+      tipoReporte = 1;
+    }
+    if(this.ordenServicioSeleccionada.estatus?.includes('Preorden')){
+      tipoReporte = 0;
+    }
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio).pipe(
+    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio,tipoReporte).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
@@ -457,7 +471,7 @@ export class OrdenesServicioComponent implements OnInit {
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
     let estatusODS:number = 1;
-    this.ordenServicioSeleccionada.estatus?.includes("Generado") ? estatusODS = 2 : estatusODS= 1;
+    this.ordenServicioSeleccionada.estatus?.includes("Generada") ? estatusODS = 2 : estatusODS= 1;
     this.consultarOrdenServicioService.generarArchivoOrdenServicio(
       this.ordenServicioSeleccionada.idOrdenServicio,estatusODS
     ).pipe(
@@ -482,6 +496,21 @@ export class OrdenesServicioComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
     )
+  }
+
+  modificarODS(): void {
+    // debugger
+    // let estatusODS =["Cancelado","Preorden","Generada","En transito","Pagada","Facturada","Concluida","Activa"]
+    // let od = this.ordenServicioSeleccionada;
+    // let estatusODS;
+    // this.ordenServicioSeleccionada == 1 ? estatusODS = 1 :
+    this.router.navigate(["ordenes-de-servicio/modificar-orden-de-servicio"],
+      {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:1 }})
+  }
+
+  ordenComplementaria(): void {
+    this.router.navigate(["ordenes-de-servicio/modificar-orden-de-servicio"],
+      {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:0 }})
   }
 
   limpiarFiltros(): void {

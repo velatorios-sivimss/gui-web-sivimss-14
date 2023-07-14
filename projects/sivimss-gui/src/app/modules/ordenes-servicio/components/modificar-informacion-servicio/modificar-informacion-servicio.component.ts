@@ -55,12 +55,15 @@ import { GestionarEtapasActualizacionService } from '../../services/gestionar-et
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { ɵDomRendererFactory2 } from '@angular/platform-browser';
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {GenerarOrdenServicioService} from "../../services/generar-orden-servicio.service";
 
 @Component({
   selector: 'app-modificar-informacion-servicio',
   templateUrl: './modificar-informacion-servicio.component.html',
   styleUrls: ['./modificar-informacion-servicio.component.scss'],
+  providers: [DescargaArchivosService]
+
 })
 export class ModificarInformacionServicioComponent
   implements OnInit, AfterContentChecked
@@ -111,6 +114,7 @@ export class ModificarInformacionServicioComponent
   validaDomicilio: boolean = false;
   tipoOrden: number = 0;
   fechaActual = new Date();
+  estatusUrl:number = 0;
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -120,13 +124,14 @@ export class ModificarInformacionServicioComponent
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
+    private generarOrdenServicioService: GenerarOrdenServicioService,
     private gestionarEtapasService: GestionarEtapasActualizacionService,
     private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef,
     private router: Router,
 
     private descargaArchivosService: DescargaArchivosService,
-    private renderer: ɵDomRendererFactory2
+    private renderer: Renderer2
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -147,9 +152,22 @@ export class ModificarInformacionServicioComponent
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
-    this.inicializarForm();
   }
   ngOnInit(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.idVelatorio = +usuario.idVelatorio;
+
+    this.estatusUrl = this.rutaActiva.snapshot.queryParams.idEstatus;
+
+
+
+
+    this.gestionarEtapasService.datosEtapaInformacionServicio$
+      .asObservable()
+      .subscribe((datosEtapaInformacionServicio) =>
+        this.llenarFormulario(datosEtapaInformacionServicio)
+    );
+
     this.gestionarEtapasService.datosEtapaCaracteristicas$
       .asObservable()
       .subscribe((datosEtapaCaracteristicas) =>
@@ -160,11 +178,7 @@ export class ModificarInformacionServicioComponent
       .asObservable()
       .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
 
-    this.gestionarEtapasService.datosEtapaInformacionServicio$
-      .asObservable()
-      .subscribe((datosEtapaInformacionServicio) =>
-        this.llenarFormulario(datosEtapaInformacionServicio)
-      );
+
 
     this.buscarCapillas();
     this.buscarSalas();
@@ -172,7 +186,116 @@ export class ModificarInformacionServicioComponent
   }
 
   llenarFormulario(datos: any): void {
-    console.log(datos);
+    this.idPanteon = datos.idPanteon;
+    const fechaActual = moment().format('YYYY-MM-DD');
+    const [anio,mes,dia] = fechaActual.split('-')
+    // debugger
+    // let horaVelacion:string;
+    // if(typeof datos.horaVelacion){
+    //   datos.horaVelacion.inclu
+    // }
+
+    if(typeof datos.horaVelacion == "string"){
+      const [horas,minutos] = datos.horaVelacion.split(':')
+      datos.horaVelacion = new Date(+anio,+mes,+dia,+horas,+minutos)
+    }
+
+
+
+
+    this.form = this.formBuilder.group({
+      lugarVelacion: this.formBuilder.group({
+        capilla: [
+          { value: datos.idCapilla, disabled: false },
+          [Validators.required],
+        ],
+        fecha: [
+          { value: datos.fechaVelacion, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaVelacion, disabled: false },
+          [Validators.required],
+        ],
+        calle: [{ value: datos.calle, disabled: false }, [Validators.required]],
+        exterior: [
+          { value: datos.exterior, disabled: false },
+          [Validators.required],
+        ],
+        interior: [
+          { value: datos.interior, disabled: false },
+          [Validators.required],
+        ],
+        cp: [{ value: datos.cp, disabled: false }, [Validators.required]],
+        colonia: [
+          { value: datos.colonia, disabled: false },
+          [Validators.required],
+        ],
+        municipio: [
+          { value: datos.municipio, disabled: false },
+          [Validators.required],
+        ],
+        estado: [
+          { value: datos.estado, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      lugarCremacion: this.formBuilder.group({
+        sala: [{ value: datos.idSala, disabled: false }, [Validators.required]],
+        fecha: [
+          { value: datos.fechaCremacion, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaCremacion, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      inhumacion: this.formBuilder.group({
+        agregarPanteon: [
+          { value: null, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      recoger: this.formBuilder.group({
+        fecha: [
+          { value: datos.fechaRecoger, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaRecoger, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      instalacionServicio: this.formBuilder.group({
+        fecha: [
+          { value: datos.fechaInstalacion, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaInstalacion, disabled: false },
+          [Validators.required],
+        ],
+      }),
+      cortejo: this.formBuilder.group({
+        fecha: [
+          { value: datos.fechaCortejo, disabled: false },
+          [Validators.required],
+        ],
+        hora: [
+          { value: datos.horaCortejo, disabled: false },
+          [Validators.required],
+        ],
+        gestionadoPorPromotor: [
+          { value: datos.gestionadoPorPromotor, disabled: false },
+          [Validators.required],
+        ],
+        promotor: [
+          { value: datos.promotor, disabled: false },
+          [Validators.required],
+        ],
+      }),
+    });
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -271,7 +394,6 @@ export class ModificarInformacionServicioComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.capillas = [];
@@ -322,7 +444,6 @@ export class ModificarInformacionServicioComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -373,7 +494,6 @@ export class ModificarInformacionServicioComponent
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.promotores = [];
@@ -432,7 +552,7 @@ export class ModificarInformacionServicioComponent
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    this.inhumacion.agregarPanteon.disable();
+    // this.inhumacion.agregarPanteon.disable();
     this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();
@@ -523,17 +643,16 @@ export class ModificarInformacionServicioComponent
   preorden(): void {
     this.altaODS.idEstatus = 1;
     this.llenarDatos();
-    this.guardarODS();
+    this.altaODS.idEstatus ? this.guardarODS(0) : this.guardarODSComplementaria(0);
   }
 
-  guardarODS(): void {
+  guardarODS(consumoTablas:number): void {
+    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
     this.loaderService.activar();
-    this.gestionarOrdenServicioService
-      .generarODS(this.altaODS)
+    this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -548,7 +667,68 @@ export class ModificarInformacionServicioComponent
 
             return;
           }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio);
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio,consumoTablas);
+          this.descargarOrdenServicio(
+            respuesta.datos.idOrdenServicio,
+            respuesta.datos.idEstatus
+          );
+          const ExitoMsg: string =
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+              parseInt(respuesta.mensaje)
+            );
+          this.alertaService.mostrar(
+            TipoAlerta.Exito,
+            ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
+          );
+          this.router.navigate(['ordenes-de-servicio']);
+        },
+        (error: HttpErrorResponse) => {
+          try {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(error.error.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          } catch (error) {
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+          }
+        }
+      );
+  }
+
+  guardarODSComplementaria(consumoTablas:number): void {
+    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
+    if(this.altaODS.idEstatus == 1){
+
+    }
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.salas = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Info,
+              errorMsg || 'El servicio no responde, no permite más llamadas.'
+            );
+
+            return;
+          }
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio,consumoTablas);
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -612,7 +792,6 @@ export class ModificarInformacionServicioComponent
       gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
       promotor: formulario.cortejo.promotor,
     };
-    console.log(datos);
     this.informacionServicio.fechaCortejo =
       formulario.cortejo.fecha == null
         ? null
@@ -689,16 +868,15 @@ export class ModificarInformacionServicioComponent
 
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
-    console.log('ods final', this.altaODS);
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
-  descargarContratoServInmediatos(idOrdenServicio: number): void {
+  descargarContratoServInmediatos(idOrdenServicio: number,consumoTablas:number): void {
     this.loaderService.activar();
     const configuracionArchivo: OpcionesArchivos = { ext: 'pdf' };
     this.gestionarOrdenServicioService
-      .generarArchivoServiciosInmediatos(idOrdenServicio)
+      .generarArchivoServiciosInmediatos(idOrdenServicio,consumoTablas)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -783,9 +961,13 @@ export class ModificarInformacionServicioComponent
   }
 
   generada(): void {
+    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
+    // let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
     this.altaODS.idEstatus = 2;
     this.llenarDatos();
-    this.guardarODS();
+    this.altaODS.idEstatus ? this.guardarODS(1) : this.guardarODSComplementaria(2);
+
+    // this.guardarODS(1);
   }
 
   regresar() {
@@ -851,9 +1033,5 @@ export class ModificarInformacionServicioComponent
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(2);
     this.llenarDatos();
-    console.log(
-      'la fecha es' + moment(this.recoger.fecha.value).format('yyyy-MM-DD')
-    );
-    console.log('la hora es' + moment(this.recoger.hora.value).format('HH:mm'));
   }
 }

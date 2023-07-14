@@ -204,7 +204,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   inicializarForm(datos: any): void {
-    console.log('inciando form', datos);
     this.paqueteSeleccionado =
       datos.paqueteSeleccionado == null
         ? null
@@ -223,6 +222,10 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   buscarPaquetes(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(
+      localStorage.getItem('usuario') as string
+    );
+    this.idVelatorio = +usuario.idVelatorio;
     this.loaderService.activar();
     const parametros = { idVelatorio: this.idVelatorio };
     this.gestionarOrdenServicioService
@@ -357,6 +360,13 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   agregarArticulo(datos: any): void {
+    if(!datos.proveedor){
+      setTimeout(()=> {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Agrega un proveedor para asignar al presupuesto');
+        datos.utilizarArticulo = null;
+      },100);
+      return
+    }
     datos.proviene = 'paquete';
     this.paquete.activo = 1;
     this.paquete.cantidad = datos.cantidad ?? null;
@@ -403,7 +413,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.total = pretotal;
   }
 
-  quitarArticulo(datos: any): void {
+  quitarArticulo(datos: any,rowIndex: number): void {
+    datos.fila = rowIndex + 1;
     const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
       header: '',
       style: { maxWidth: '600px', width: '100%' },
@@ -414,6 +425,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
         datos.desmotivo = salida;
         this.elementosEliminadosPaquete.push(datos);
         this.quitarPaquete(datos);
+      }else{
+        datos.utilizarArticulo = null;
       }
     });
   }
@@ -572,8 +585,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
       }
 
       this.datosPaquetes.forEach((datos: any) => {
-        console.log('respuesta', respuesta.fila);
-        console.log('datos', datos.fila);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = null;
           datos.proveedor = respuesta.proveedor;
@@ -639,7 +650,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
         return;
       }
       this.datosPaquetes.forEach((datos: any) => {
-        console.log(datos);
         if (Number(datos.fila) == Number(respuesta.fila)) {
           datos.idInventario = respuesta.idInventario;
           datos.proveedor = respuesta.nombreProveedor;
@@ -655,7 +665,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
   abrirModalDonarAtaud(event: MouseEvent): void {
     event.stopPropagation();
-    console.log(this.valorFila);
     const ref = this.dialogService.open(ModalDonarArticuloComponent, {
       header: 'Donar ataúd',
       style: { maxWidth: '353px', width: '100%' },
@@ -664,7 +673,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
       },
     });
     ref.onClose.subscribe((salida: any) => {
-      console.log(salida);
       if (salida != null) {
         this.quitarPaquete(salida);
         this.datosPresupuesto.push(salida);
@@ -977,19 +985,22 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.idArticulo = parseInt(datos.idArticulo);
       detalle.desmotivo = datos.desmotivo;
       detalle.activo = 1;
-      detalle.idProveedor = datos.idProveedor ?? null;
+      detalle.idProveedor =
+        // datos.idProveedor ?? null;
+        (datos.idProveedor == '' || datos.idProveedor == null) ? null : Number(datos.idProveedor);
       detalle.idServicio =
-        datos.idServicio == '' ? null : Number(datos.idServicio);
+        (datos.idServicio == '' || datos.idServicio == null)  ? null : Number(datos.idServicio);
       detalle.idTipoServicio =
-        datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
+        (datos.idTipoServicio == '' || datos.idTipoServicio) ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe);
       detalle.totalPaquete = Number(datos.totalPaquete);
+      detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
-        detalle.activo = datos.activo ?? 0;
+        detalle.activo = datos.activo ?? 1;
         let cordenadas = datos.coordOrigen ?? null;
         traslado.longitudInicial = null;
         traslado.latitudInicial = null;
@@ -1017,14 +1028,15 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.desmotivo = datos.desmotivo ?? null;
       detalle.activo = 0;
       detalle.idProveedor =
-        datos.idProveedor == '' ? null : Number(datos.idProveedor);
+        (datos.idProveedor == '' || datos.idProveedor == null) ? null : Number(datos.idProveedor);
       detalle.idServicio =
-        datos.idServicio == '' ? null : Number(datos.idServicio);
+        (datos.idServicio == '' || datos.idServicio == null) ? null : Number(datos.idServicio);
       detalle.idTipoServicio =
-        datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
+        (datos.idTipoServicio == '' || datos.idTipoServicio) ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe) ?? null;
       detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
+      detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
@@ -1080,7 +1092,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
     }
 
     // this.detallePresupuesto = arrayDatosPresupuesto;
-    console.log('alta od 3', this.altaODS);
 
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
