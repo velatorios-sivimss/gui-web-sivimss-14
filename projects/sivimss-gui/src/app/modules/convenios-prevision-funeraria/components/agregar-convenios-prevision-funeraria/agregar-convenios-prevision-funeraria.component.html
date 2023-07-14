@@ -25,7 +25,7 @@
           <div class="col-md-4">
             <label class="control-label" for="rfcCurp">RFC o CURP</label>
             <input id="rfcCurp" class="form-control" formControlName="rfcCurp" placeholder="Ingresa el RFC o CURP"
-                   maxlength="18" alphanumericOnly (blur)="consultaRFCCURP()">
+                   maxlength="18" alphanumericOnly (blur)="consultaRFCCURP()" (keyup)="convertirMayusculas(0)">
             <span class="campo-obligatorio"
                   *ngIf="ff.rfcCurp?.errors?.required && (ff.rfcCurp?.dirty || ff.rfcCurp?.touched)">
                               Campo obligatorio</span>
