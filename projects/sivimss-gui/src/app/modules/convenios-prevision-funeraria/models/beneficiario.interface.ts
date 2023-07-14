@@ -14,7 +14,10 @@ export interface BeneficiarioInterface {
   correoElectronico?: string;
   telefono?: number;
 
-  documentacion?: any,
+  documentacion?:{
+    validaActaNacimientoBeneficiario?: boolean
+    validaIneBeneficiario?: boolean
+  } ,
 
   matricula?: string,
   nss?: string,
@@ -32,4 +35,6 @@ export interface BeneficiarioInterface {
   pais?: string,
   enfermedadPreexistente?: string,
   otraEnfermedad?: string,
+  validaActaNacimientoBeneficiario?:boolean,
+  validaIneBeneficiario?:boolean,
 }

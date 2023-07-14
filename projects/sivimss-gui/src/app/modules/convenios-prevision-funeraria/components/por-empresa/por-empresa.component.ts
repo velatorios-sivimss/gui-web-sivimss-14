@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
@@ -20,7 +20,7 @@ import {Empresa} from "../../models/empresa.interface";
   templateUrl: './por-empresa.component.html',
   styleUrls: ['./por-empresa.component.scss']
 })
-export class PorEmpresaComponent implements OnInit, OnChanges {
+export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
 
   @Input() existePersona: boolean = false;
   @Input() folioEmpresa!: any;
@@ -251,6 +251,10 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     formularios[posicion].setValue(
       formularios[posicion].value.toLowerCase()
     )
+  }
+
+  ngAfterViewInit(): void {
+    this.validarFormularioVacio();
   }
 
 }

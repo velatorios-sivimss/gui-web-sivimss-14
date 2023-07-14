@@ -333,6 +333,11 @@ export class PorPersonaComponent implements OnInit,OnChanges {
               telefono: beneficiario.telefono,
               edad: beneficiario.edad,
               parentesco : beneficiario.idParentesco,
+              actaNacimiento: beneficiario.cveActa,
+              documentacion: {
+                  validaActaNacimientoBeneficiario: beneficiario.validaActaNacimientoBeneficiario,
+                  validaIneBeneficiario: beneficiario.validaIneBeneficiario,
+              }
             }
             )
           });

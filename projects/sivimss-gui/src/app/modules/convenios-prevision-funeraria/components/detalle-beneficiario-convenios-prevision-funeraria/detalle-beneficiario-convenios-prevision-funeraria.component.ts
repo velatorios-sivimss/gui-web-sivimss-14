@@ -19,7 +19,7 @@ export class DetalleBeneficiarioConveniosPrevisionFunerariaComponent implements 
 
   readonly POSICION_PARENTESCO   = 2;
 
-  beneficiario!: BeneficiarioInterface;
+  beneficiario!: any;
   parentesco!: TipoDropdown[];
   parentescoDescripcion!: TipoDropdown[];
   velatorio!: TipoDropdown[] ;

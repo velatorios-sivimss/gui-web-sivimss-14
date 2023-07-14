@@ -260,7 +260,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.fp.nombre.setValue(respuesta.datos.nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
-          this.fp.idPersona.setValue(respuesta.datos.idPersona)
+          // this.fp.idPersona.setValue(respuesta.datos.idPersona)
           return
         }
         this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
@@ -334,7 +334,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.fp.nombre.patchValue(null)
     this.fp.primerApellido.patchValue(null)
     this.fp.segundoApellido.patchValue(null)
-    this.fp.idPersona.patchValue(null)
+    // this.fp.idPersona.patchValue(null)
     if(posicion == 1)this.fp.rfc.patchValue(null)
     if(posicion == 2)this.fp.curp.patchValue(null)
     this.fp.correoElectronico.patchValue(null)
@@ -402,9 +402,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.indice--;
   }
 
-  cancelar(): void {
-    console.log("Se comenta método para que no marque error en Sonar");
-  }
 
 
   convertirMayusculas(posicion: number): void {

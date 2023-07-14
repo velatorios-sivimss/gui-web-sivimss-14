@@ -207,10 +207,10 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
         //TODO agregar id promotor
         if(!respuesta.datos)return;
         this.ff.rfcCurp.setValue(respuesta.datos[0].rfc);
-        if(respuesta.datos[0].datosContratante.idPromotor){
+        if(respuesta.datos[0]?.idPromotor){
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
-          this.ff.listaPromotor.setValue(+respuesta.datos.datosContratante.idPromotor);
+          this.ff.listaPromotor.setValue(+respuesta.datos[0].idPromotor);
         }
       },
       (error: HttpErrorResponse) => {
@@ -370,9 +370,10 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
        nombreVelatorio: this.velatorioDescripcion,
        indTipoContratacion: this.ff.tipoContratacion.value,
        idPromotor: this.ff.listaPromotor?.value ?? "",
-       // numeroConvenio: this.ff.numeroConvenio.value,
-       // rfcCurp: this.ff.rfcCurp?.value ?? "",
+       numeroConvenio: this.ff.numeroConvenio.value,
+       rfcCurp: this.ff.rfcCurp?.value ?? "",
        empresa:{
+
          nombreEmpresa: event.nombre,
          razonSocial: event.razonSocial,
          rfc: event.nombre,
@@ -475,7 +476,6 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   validarFormularioEmpresa(event: any): void{
-    // debugger
     this.deshabilitarBtnGuardarEmpresa = !(this.filtroForm.valid && event);
   }
 
