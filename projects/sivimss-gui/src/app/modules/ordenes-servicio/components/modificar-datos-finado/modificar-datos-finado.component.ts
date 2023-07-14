@@ -375,7 +375,7 @@ export class ModificarDatosFinadoComponent
         ],
         noInterior: [
           { value: datosEtapaFinado.direccion.noInterior, disabled: false },
-          [Validators.required],
+
         ],
         cp: [
           { value: datosEtapaFinado.direccion.cp, disabled: false },
