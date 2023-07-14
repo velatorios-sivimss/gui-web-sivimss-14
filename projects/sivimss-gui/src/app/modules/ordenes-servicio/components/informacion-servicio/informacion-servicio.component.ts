@@ -786,7 +786,7 @@ export class InformacionServicioComponent implements OnInit {
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    this.inhumacion.agregarPanteon.disable();
+    // this.inhumacion.agregarPanteon.disable();
     this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();
