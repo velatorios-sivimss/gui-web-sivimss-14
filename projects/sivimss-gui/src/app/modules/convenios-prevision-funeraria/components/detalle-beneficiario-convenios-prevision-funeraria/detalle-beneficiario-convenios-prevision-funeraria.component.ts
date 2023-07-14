@@ -19,7 +19,7 @@ export class DetalleBeneficiarioConveniosPrevisionFunerariaComponent implements 
 
   readonly POSICION_PARENTESCO   = 2;
 
-  beneficiario!: BeneficiarioInterface;
+  beneficiario!: any;
   parentesco!: TipoDropdown[];
   parentescoDescripcion!: TipoDropdown[];
   velatorio!: TipoDropdown[] ;
@@ -36,13 +36,11 @@ export class DetalleBeneficiarioConveniosPrevisionFunerariaComponent implements 
   ngOnInit(): void {
     let respuesta = this.route.snapshot.data['respuesta'];
     this.beneficiario = this.config.data;
-    this.velatorio
     this.parentesco = respuesta[this.POSICION_PARENTESCO]!.map((parentesco: TipoDropdown) => (
       {label: parentesco.label, value: parentesco.value} )) || [];
     this.parentescoDescripcion = this.parentesco.filter( (elemento) => {
       return elemento.value == this.beneficiario.parentesco;
     })
-
     this.consultaVelatorio();
   }
 
