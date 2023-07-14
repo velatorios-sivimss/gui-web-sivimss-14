@@ -417,7 +417,7 @@
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" *ngIf="indice > 0" class="btn btn-default btn-md ml-5" (click)="regresar()">Regresar</button>
-      <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../" (click)="cancelar()">Cancelar</button>
+      <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
       <button type="submit" *ngIf="indice < 2" [disabled]="personaForm.invalid"  class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
       <button type="submit" *ngIf="indice == 2"  class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
       <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="guardar()">Guardar</button>
