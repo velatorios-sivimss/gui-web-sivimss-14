@@ -58,6 +58,7 @@ import { ModificarDatosCaracteristicasContratanteComponent } from './components/
 import { ModalConvenioPfComponent } from './components/modal-convenio-pf/modal-convenio-pf.component';
 import { ActualizarOrdenServicioService } from './services/actualizar-orden-servicio.service';
 import { GestionarEtapasActualizacionService } from './services/gestionar-etapas-actualizacion.service';
+import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
 @NgModule({
   declarations: [
     OrdenesServicioComponent,
@@ -116,6 +117,7 @@ import { GestionarEtapasActualizacionService } from './services/gestionar-etapas
     AutoCompleteModule,
     BtnRegresarModule,
     CeldaStickyModule,
+    ValidaRolModule
   ],
   providers: [
     GenerarOrdenServicioService,
