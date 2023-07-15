@@ -499,7 +499,6 @@ export class OrdenesServicioComponent implements OnInit {
   }
 
   modificarODS(): void {
-    // debugger
     // let estatusODS =["Cancelado","Preorden","Generada","En transito","Pagada","Facturada","Concluida","Activa"]
     // let od = this.ordenServicioSeleccionada;
     // let estatusODS;

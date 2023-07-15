@@ -128,7 +128,6 @@ export class DatosContratanteComponent implements OnInit {
 
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.gestionarEtapasService.datosEtapaContratante$
-      .asObservable()
       .subscribe((datosEtapaContratante) =>
         this.inicializarForm(datosEtapaContratante)
       );

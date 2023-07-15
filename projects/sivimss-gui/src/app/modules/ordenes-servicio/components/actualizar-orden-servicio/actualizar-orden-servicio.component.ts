@@ -231,7 +231,6 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-        // debugger
         // if (element.idProveedor != null && element.idProveedor != '') {
           salidaPaquete.push(datos);
         // }

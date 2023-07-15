@@ -833,6 +833,7 @@ export class ModificarDatosFinadoComponent
     });
 
     await Object.keys(this.direccion).forEach((key) => {
+      if (key.includes("noInterior"))return;
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();

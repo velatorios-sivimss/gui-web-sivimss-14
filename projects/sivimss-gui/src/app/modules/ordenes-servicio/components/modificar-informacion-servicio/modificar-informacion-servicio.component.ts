@@ -189,7 +189,6 @@ export class ModificarInformacionServicioComponent
     this.idPanteon = datos.idPanteon;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio,mes,dia] = fechaActual.split('-')
-    // debugger
     // let horaVelacion:string;
     // if(typeof datos.horaVelacion){
     //   datos.horaVelacion.inclu
