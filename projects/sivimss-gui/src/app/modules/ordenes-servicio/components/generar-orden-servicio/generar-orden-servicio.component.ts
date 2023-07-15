@@ -173,7 +173,6 @@ export class GenerarOrdenServicioComponent implements OnInit, OnDestroy {
         estado: null,
       },
     };
-
     const datosEtapaCaracteristicas = {
       observaciones: null,
       notasServicio: null,
@@ -185,7 +184,6 @@ export class GenerarOrdenServicioComponent implements OnInit, OnDestroy {
       elementosEliminadosPaquete: [],
       total: 0,
     };
-
     const datosEtapaInformacionServicio = {
       fechaCortejo: null,
       fechaCremacion: null,

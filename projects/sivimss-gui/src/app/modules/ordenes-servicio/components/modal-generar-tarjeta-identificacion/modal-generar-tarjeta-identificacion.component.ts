@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { FormTarjetaIdentificacion } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/models/form-tarjeta-identificacion.enum";

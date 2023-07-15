@@ -413,8 +413,8 @@ export class DatosContratanteComponent implements OnInit {
               this.direccion.cp.setValue(datos.cp);
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.calle.setValue(datos.calle);
-              this.direccion.noInterior.setValue(datos.numExterior);
-              this.direccion.noExterior.setValue(datos.numInterior);
+              this.direccion.noInterior.setValue(datos.numInterior);
+              this.direccion.noExterior.setValue(datos.noExterior);
               this.idDomicilio = datos.idDomicilio;
             }
             return;
