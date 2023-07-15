@@ -20,7 +20,7 @@ import { Subscription, finalize } from 'rxjs';
   templateUrl: './actualizar-orden-servicio.component.html',
   styleUrls: ['./actualizar-orden-servicio.component.scss'],
 })
-export class ActualizarOrdenServicioComponent implements OnInit {
+export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
   readonly DATOS_DEL_CONTRATANTE = 0;
   readonly DATOS_DEL_FINADO = 1;
   readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
@@ -384,5 +384,92 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     // this.etapas.forEach((etapa: Etapa) => etapa.estado = EtapaEstado.Inactivo);
     // etapaSeleccionada.estado = EtapaEstado.Activo;
     this.idEtapaSeleccionada = idEtapaSeleccionada;
+  }
+
+  ngOnDestroy(): void {
+    const datosEtapaFinado = {
+      datosFinado: {
+        tipoOrden: null,
+        noContrato: null,
+        velatorioPrevision: null,
+        esObito: null,
+        esParaExtremidad: null,
+        matricula: null,
+        matriculaCheck: true,
+        curp: null,
+        nss: null,
+        nssCheck: true,
+        nombre: null,
+        primerApellido: null,
+        segundoApellido: null,
+        fechaNacimiento: null,
+        edad: null,
+        sexo: null,
+        otroTipoSexo: null,
+        nacionalidad: null,
+        lugarNacimiento: null,
+        paisNacimiento: null,
+        fechaDefuncion: null,
+        causaDeceso: null,
+        lugarDeceso: null,
+        horaDeceso: null,
+        clinicaAdscripcion: null,
+        unidadProcedencia: null,
+        procedenciaFinado: null,
+        tipoPension: null,
+      },
+      direccion: {
+        calle: null,
+        noExterior: null,
+        noInterior: null,
+        cp: null,
+        colonia: null,
+        municipio: null,
+        estado: null,
+        idDomicilio: null,
+      },
+    };
+    const datosEtapaCaracteristicas = {
+      observaciones: null,
+      notasServicio: null,
+      paqueteSeleccionado: null,
+      mostrarTIpoOtorgamiento: false,
+      selecionaTipoOtorgamiento: null,
+      datosPaquetes: [],
+      datosPresupuesto: [],
+      elementosEliminadosPaquete: [],
+      elementosEliminadosPresupuesto: [],
+      total: 0,
+    };
+    const datosEtapaInformacionServicio = {
+      fechaCortejo: null,
+      fechaCremacion: null,
+      fechaRecoger: null,
+      horaRecoger: null,
+      horaCortejo: null,
+      horaCremacion: null,
+      idPanteon: null,
+      idPromotor: null,
+      idSala: null,
+      cp: null,
+      fechaInstalacion: null,
+      fechaVelacion: null,
+      horaInstalacion: null,
+      horaVelacion: null,
+      idCapilla: null,
+      calle: null,
+      interior: null,
+      exterior: null,
+      colonia: null,
+      municipio: null,
+      estado: null,
+      gestionadoPorPromotor: null,
+      promotor: null,
+    };
+
+    this.gestionarEtapasService.datosContratante$.next({})
+    this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
+    this.gestionarEtapasService.datosEtapaCaracteristicas$.next(datosEtapaCaracteristicas);
+    this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datosEtapaInformacionServicio);
   }
 }
