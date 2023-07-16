@@ -126,6 +126,10 @@ export class CaracteristicasPresupuestoComponent
   esExtremidad: number = 0;
   esObito: number = 0;
   bloquearPaquete: boolean = false;
+  paqueteSeleccionadoDD!:Dropdown;
+  valorPrevioDD: number = 0;
+  confCambiarPaquete:boolean = false;
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -254,9 +258,27 @@ export class CaracteristicasPresupuestoComponent
       );
   }
 
-  detallePaqueteFunction(dd: Dropdown): void {
-    let nombrePaquete = dd.selectedOption.label;
-    this.dd = dd.selectedOption.value;
+  confirmarCambioPaquete(dd:Dropdown): void {
+    //this.paqueteSeleccionado = this.valorPrevioDD;
+    this.confCambiarPaquete = true;
+    this.paqueteSeleccionadoDD = dd.selectedOption;
+  }
+
+  valorPrevio(dd:Dropdown):void {
+    this.valorPrevioDD = dd.selectedOption?.value ?? null;
+    //this.valorPrevioDD = dd.selectedOption
+  }
+
+  cancelarCambioPaquete(): void{
+    this.confCambiarPaquete = false;
+    this.paqueteSeleccionado = this.valorPrevioDD;
+  }
+
+
+  detallePaqueteFunction(): void {
+    let nombrePaquete = this.paqueteSeleccionadoDD.label;
+    this.confCambiarPaquete = false;
+    this.dd = this.paqueteSeleccionadoDD.value;
     this.mostrarTIpoOtorgamiento = false;
     if (nombrePaquete.trim() == 'Paquete social') {
       this.mostrarTIpoOtorgamiento = true;
