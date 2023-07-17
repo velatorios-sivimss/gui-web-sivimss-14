@@ -590,6 +590,7 @@ export class ModificarDatosContratanteComponent
   }
 
   consultarCURP(): void {
+    this.limpiarFormularioConsultaRfcCurp('curp');
     if (!this.datosContratante.curp.value) {
       return;
     }
@@ -702,7 +703,32 @@ export class ModificarDatosContratanteComponent
     this.datosContratante.nacionalidad.reset();
   }
 
+  limpiarFormularioConsultaRfcCurp(origen:string): void{
+    if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
+    if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
+    this.datosContratante.nombre.patchValue(null)
+    this.datosContratante.primerApellido.patchValue(null)
+    this.datosContratante.segundoApellido.patchValue(null)
+    this.datosContratante.fechaNacimiento.patchValue(null)
+    this.datosContratante.sexo.patchValue(null)
+    this.datosContratante.otroTipoSexo.patchValue(null)
+    this.datosContratante.nacionalidad.patchValue(null)
+    this.datosContratante.lugarNacimiento.patchValue(null)
+    this.datosContratante.paisNacimiento.patchValue(null)
+    this.datosContratante.telefono.patchValue(null)
+    this.datosContratante.correoElectronico.patchValue(null)
+    this.datosContratante.parentesco.patchValue(null)
+    this.direccion.calle.patchValue(null)
+    this.direccion.noExterior.patchValue(null)
+    this.direccion.noInterior.patchValue(null)
+    this.direccion.cp.patchValue(null)
+    this.direccion.colonia.patchValue(null)
+    this.direccion.municipio.patchValue(null)
+    this.direccion.estado.patchValue(null)
+  }
+
   consultarRFC(): void {
+    this.limpiarFormularioConsultaRfcCurp('rfc');
     if (!this.datosContratante.rfc.value) {
       return;
     }

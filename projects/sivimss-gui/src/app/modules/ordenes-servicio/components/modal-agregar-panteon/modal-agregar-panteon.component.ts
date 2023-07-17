@@ -213,8 +213,6 @@ export class ModalAgregarPanteonComponent implements OnInit {
   }
 
 
-
-
   cerrarModal() {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
     this.ref.close(false);
