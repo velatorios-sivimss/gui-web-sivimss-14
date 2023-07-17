@@ -209,6 +209,12 @@ export class ModalAgregarServicioComponent
   }
 
   seleccionaProveedor(dd: Dropdown): void {
+    if(this.form.controls.proveedor.invalid){
+      console.log("invalido")
+    }else{
+      console.log("valido")
+    }
+
     this.proveedor = dd.selectedOption.label;
     this.idProveedor = Number(dd.selectedOption.value);
     this.proveedorCompletos.forEach((datos: any) => {

@@ -318,6 +318,18 @@ export class PorPersonaComponent implements OnInit,OnChanges {
           this.fp.segundoApellido.setValue(respuesta.datos.datosContratante.segundoApellido);
           this.fp.correoElectronico.setValue(respuesta.datos.datosContratante.correo);
           this.fp.telefono.setValue(respuesta.datos.datosContratante.telefono);
+          this.fp.calle.setValue(respuesta.datos.datosContratante.calle);
+          this.fp.numeroExterior.setValue(respuesta.datos.datosContratante.numExterior)
+          this.fp.numeroInterior.setValue(respuesta.datos.datosContratante.numInterior);
+          this.fp.cp.setValue(respuesta.datos.datosContratante.cp);
+          this.fp.colonia.setValue(respuesta.datos.datosContratante.colonia);
+          this.fp.municipio.setValue(respuesta.datos.datosContratante.municipio);
+          this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
+          this.fp.pais.setValue(+respuesta.datos.datosContratante.idPais);
+          this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
+
+        // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
+
         // if(this.escenario.includes('modificar')){
           respuesta.datos.beneficiarios.forEach((beneficiario:any) => {
             const [anio, mes, dia]: string[] = beneficiario.fechaNacimiento.split("-");
