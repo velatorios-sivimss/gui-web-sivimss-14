@@ -342,6 +342,10 @@ export class DatosContratanteComponent implements OnInit {
           if (respuesta.datos) {
             console.log('curp', respuesta);
             if (respuesta.mensaje.includes('Externo')) {
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
 
@@ -414,7 +418,7 @@ export class DatosContratanteComponent implements OnInit {
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.calle.setValue(datos.calle);
               this.direccion.noInterior.setValue(datos.numInterior);
-              this.direccion.noExterior.setValue(datos.noExterior);
+              this.direccion.noExterior.setValue(datos.numExterior);
               this.idDomicilio = datos.idDomicilio;
             }
             return;

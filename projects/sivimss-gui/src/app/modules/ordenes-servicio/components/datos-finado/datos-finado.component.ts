@@ -361,6 +361,10 @@ export class DatosFinadoComponent implements OnInit {
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
               this.datosFinado.nombre.setValue(respuesta.datos.nombre);

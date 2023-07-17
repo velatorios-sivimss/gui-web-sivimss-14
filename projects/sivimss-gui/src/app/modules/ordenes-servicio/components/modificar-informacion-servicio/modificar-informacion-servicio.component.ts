@@ -329,7 +329,6 @@ export class ModificarInformacionServicioComponent
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
           { value: null, disabled: false },
-          [Validators.required],
         ],
       }),
       recoger: this.formBuilder.group({
@@ -552,7 +551,7 @@ export class ModificarInformacionServicioComponent
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
     // this.inhumacion.agregarPanteon.disable();
-    this.cortejo.gestionadoPorPromotor.disable();
+    // this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();
     this.instalacionServicio.hora.disable();

@@ -266,7 +266,6 @@ export class CaracteristicasPresupuestoComponent
 
   valorPrevio(dd:Dropdown):void {
     this.valorPrevioDD = dd.selectedOption?.value ?? null;
-    //this.valorPrevioDD = dd.selectedOption
   }
 
   cancelarCambioPaquete(): void{
@@ -1018,6 +1017,7 @@ export class CaracteristicasPresupuestoComponent
       data: {
         idVelatorio: this.idVelatorio,
         tipoOrden: this.tipoOrden,
+        presupuesto: this.datosPresupuesto
       },
     });
     ref.onClose.subscribe((salida: any) => {
