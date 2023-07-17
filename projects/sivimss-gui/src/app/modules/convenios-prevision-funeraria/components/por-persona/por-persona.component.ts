@@ -331,28 +331,28 @@ export class PorPersonaComponent implements OnInit,OnChanges {
         // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
 
         // if(this.escenario.includes('modificar')){
-          respuesta.datos.beneficiarios.forEach((beneficiario:any) => {
-            const [anio, mes, dia]: string[] = beneficiario.fechaNacimiento.split("-");
-            const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
-            this.beneficiarios.push({
-              fechaNacimiento: objetoFecha,
-              nombre: beneficiario.nombreBeneficiario,
-              primerApellido: beneficiario.primerApellido,
-              segundoApellido: beneficiario.segundoApellido,
-              curp: beneficiario.curp,
-              rfc: beneficiario.rfc ?? null,
-              correoElectronico: beneficiario.correo,
-              telefono: beneficiario.telefono,
-              edad: beneficiario.edad,
-              parentesco : beneficiario.idParentesco,
-              actaNacimiento: beneficiario.cveActa,
-              documentacion: {
-                  validaActaNacimientoBeneficiario: beneficiario.validaActaNacimientoBeneficiario,
-                  validaIneBeneficiario: beneficiario.validaIneBeneficiario,
-              }
-            }
-            )
-          });
+        //   respuesta.datos.beneficiarios.forEach((beneficiario:any) => {
+        //     const [anio, mes, dia]: string[] = beneficiario.fechaNacimiento.split("-");
+        //     const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
+        //     this.beneficiarios.push({
+        //       fechaNacimiento: objetoFecha,
+        //       nombre: beneficiario.nombreBeneficiario,
+        //       primerApellido: beneficiario.primerApellido,
+        //       segundoApellido: beneficiario.segundoApellido,
+        //       curp: beneficiario.curp,
+        //       rfc: beneficiario.rfc ?? null,
+        //       correoElectronico: beneficiario.correo,
+        //       telefono: beneficiario.telefono,
+        //       edad: beneficiario.edad,
+        //       parentesco : beneficiario.idParentesco,
+        //       actaNacimiento: beneficiario.cveActa,
+        //       documentacion: {
+        //           validaActaNacimientoBeneficiario: beneficiario.validaActaNacimientoBeneficiario,
+        //           validaIneBeneficiario: beneficiario.validaIneBeneficiario,
+        //       }
+        //     }
+        //     )
+        //   });
         // }
 
 

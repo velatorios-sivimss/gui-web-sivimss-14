@@ -1057,6 +1057,15 @@ export class DatosFinadoComponent implements OnInit {
         return true;
       }
     }
+    if(this.datosFinado.tipoOrden.value == 3){
+      if(this.form.invalid){
+        return true;
+      }
+    }
+
+    if(this.form.invalid){
+      return true;
+    }
     return false;
   }
 }
