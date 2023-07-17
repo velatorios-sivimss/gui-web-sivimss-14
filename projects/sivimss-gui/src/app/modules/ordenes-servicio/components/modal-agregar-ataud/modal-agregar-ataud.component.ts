@@ -30,6 +30,8 @@ export class ModalAgregarAtaudComponent implements OnInit {
   idProveedor: number = 0;
   idArticulo: number = 0;
   idInventario: number = 0;
+
+  inventarioSeleccionado:number[] = [];
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -42,12 +44,14 @@ export class ModalAgregarAtaudComponent implements OnInit {
 
   ngOnInit(): void {
     this.idVelatorio = this.config.data.idVelatorio;
+    this.inventarioSeleccionado = this.config.data.idInventarios;
     this.inicializarForm();
     this.consultarAtaudes(this.config.data.idVelatorio);
   }
 
   consultarAtaudes(idVelatorio: number): void {
     const parametros = { idVelatorio: idVelatorio };
+    let arregloAtaudTemporal:any;
     this.gestionarOrdenServicioService
       .consultarTodoslosAtaudes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -80,9 +84,17 @@ export class ModalAgregarAtaudComponent implements OnInit {
             return;
           }
 
-          this.ataudesCompletos = datos;
+          arregloAtaudTemporal = datos;
+
+          this.inventarioSeleccionado.forEach((elemento:any) => {
+            arregloAtaudTemporal = arregloAtaudTemporal.filter((filtro:any) => {
+              return filtro.idInventario != elemento;
+            });
+          });
+
+          this.ataudesCompletos = arregloAtaudTemporal;
           this.ataudes = mapearArregloTipoDropdown(
-            datos,
+            arregloAtaudTemporal,
             'nombreArticulo',
             'idInventario'
           );

@@ -131,6 +131,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
   bloquearPaquete: boolean = false;
   ocultarFolioEstatus: boolean = false;
   elementosEliminadosPresupuesto: any[] = [];
+  paqueteSeleccionadoDD!:Dropdown;
+  valorPrevioDD: number = 0;
+  confCambiarPaquete:boolean = false;
+
+
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -275,9 +280,25 @@ export class ModificarDatosCaracteristicasContratanteComponent
       );
   }
 
-  detallePaqueteFunction(dd: Dropdown): void {
-    let nombrePaquete = dd.selectedOption.label;
-    this.dd = dd.selectedOption.value;
+  confirmarCambioPaquete(dd:Dropdown): void {
+    //this.paqueteSeleccionado = this.valorPrevioDD;
+    this.confCambiarPaquete = true;
+    this.paqueteSeleccionadoDD = dd.selectedOption;
+  }
+
+  valorPrevio(dd:Dropdown):void {
+    this.valorPrevioDD = dd.selectedOption?.value ?? null;
+  }
+
+  cancelarCambioPaquete(): void{
+    this.confCambiarPaquete = false;
+    this.paqueteSeleccionado = this.valorPrevioDD;
+  }
+
+  detallePaqueteFunction(): void {
+    let nombrePaquete = this.paqueteSeleccionadoDD.label;
+    this.confCambiarPaquete = false
+    this.dd = this.paqueteSeleccionadoDD.value;
     this.mostrarTIpoOtorgamiento = false;
     if (nombrePaquete.trim() == 'Paquete social') {
       this.mostrarTIpoOtorgamiento = true;
@@ -555,6 +576,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       data: {
         idVelatorio: this.idVelatorio,
         tipoOrden: this.tipoOrden,
+        presupuesto: this.datosPresupuesto
       },
     });
     ref.onClose.subscribe((salida: any) => {

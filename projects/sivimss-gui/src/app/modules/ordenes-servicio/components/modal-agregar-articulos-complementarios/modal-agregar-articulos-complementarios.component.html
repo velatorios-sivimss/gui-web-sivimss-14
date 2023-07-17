@@ -24,7 +24,8 @@
   <div class="row">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()">Agregar
+      <button type="button" class="ml-5 btn btn-primary btn-md" (click)="aceptarModal()"
+      [disabled]="form.invalid">Agregar
       </button>
     </div>
   </div>

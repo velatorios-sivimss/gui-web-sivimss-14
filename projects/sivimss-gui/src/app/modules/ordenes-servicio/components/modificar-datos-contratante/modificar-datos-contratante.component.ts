@@ -601,6 +601,10 @@ export class ModificarDatosContratanteComponent
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               this.idPersona = null;
               this.idContratante = null;
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');

@@ -231,7 +231,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(!respuesta.datos)return;
-          this.ff.rfcCurp.setValue(respuesta.datos.datosContratante.curp);
+        this.ff.rfcCurp.setValue(respuesta.datos.datosContratante.curp);
         if(respuesta.datos.datosContratante.idPromotor){
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
