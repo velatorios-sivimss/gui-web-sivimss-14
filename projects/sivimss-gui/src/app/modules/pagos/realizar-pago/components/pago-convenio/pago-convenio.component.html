@@ -56,6 +56,8 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

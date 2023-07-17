@@ -56,10 +56,12 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Generar pagaré"
-                                [routerLink]="['./../../generar-formato-pagare/formato-pagare', pagoSeleccionado.idRegistro]">
+      <app-overlay-panel-opcion
+        *ngIf="pagoSeleccionado.estatus"
+        titulo="Generar pagaré"
+        [routerLink]="['./../../generar-formato-pagare/formato-pagare', pagoSeleccionado.idRegistro]">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar método de pago">
+      <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

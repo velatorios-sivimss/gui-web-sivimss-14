@@ -29,6 +29,7 @@ export class DetalleMetodoPagoComponent implements OnInit {
 
   registroPago!: DetallePago;
   idPagoBitacora!: number;
+  fecha: Date = new Date();
 
   constructor(
     private router: Router,
