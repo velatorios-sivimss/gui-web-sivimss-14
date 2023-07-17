@@ -466,10 +466,69 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
       gestionadoPorPromotor: null,
       promotor: null,
     };
+    const etapas: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Activo,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 2,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 3,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: 'solid',
+        },
+      },
+    ];
 
     this.gestionarEtapasService.datosContratante$.next({})
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(datosEtapaCaracteristicas);
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datosEtapaInformacionServicio);
+    this.gestionarEtapasService.etapas$.next(etapas)
   }
 }
