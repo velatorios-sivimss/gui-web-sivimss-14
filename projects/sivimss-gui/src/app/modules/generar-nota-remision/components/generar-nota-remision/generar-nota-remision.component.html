@@ -1,125 +1,150 @@
 <app-titulo-principal titulo="Servicios / Generar nota de remisión"></app-titulo-principal>
 <div class="border-panel">
-    <form [formGroup]="filtroForm" (ngSubmit)="buscarFoliosNotaRemision()">
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="control-label" for="nivel">Nivel:</label>
-                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles" placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
-                </p-dropdown>
-            </div>
-            <div class="col-md-4">
-                <label class="control-label" for="delegacion">Delegación:</label>
-                <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones" placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)='obtenerVelatorios();'>
-                </p-dropdown>
-            </div>
-            <div class="col-md-4">
-                <label class="control-label" for="velatorio">Velatorio:</label>
-                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label" (onChange)="obtenerFoliosGenerados()">
-                </p-dropdown>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="control-label" for="folio">Folio de la ODS<span class="req"
+  <form [formGroup]="filtroForm" (ngSubmit)="buscarFoliosNotaRemision()">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+                    placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+                    placeholder="Seleccionar la delegación" [filter]="true" filterBy="label"
+                    (onChange)='obtenerVelatorios();'>
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+                    placeholder="Selecciona el velatorio" [filter]="true" filterBy="label"
+                    (onChange)="obtenerFoliosGenerados()">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="folio">Folio de la ODS<span class="req"
                                                                       *ngIf="hayCamposObligatorios">*</span>:</label>
-                <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="foliosGenerados" optionLabel="label" placeholder="Selecciona el folio" [filter]="true" filterBy="label">
-                </p-dropdown>
-            </div>
-            <div class="col-md-4">
-                <label class="control-label" for="fechaInicial">Rango de fechas<span class="req"
+        <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="foliosGenerados"
+                    optionLabel="label" placeholder="Selecciona el folio" [filter]="true" filterBy="label">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="fechaInicial">Rango de fechas<span class="req"
                                                                              *ngIf="hayCamposObligatorios">*</span>:</label>
-                <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true" placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="f!.fechaFinal!.value" [maxDate]="fechaActual">
-                </p-calendar>
-            </div>
-            <div class="col-md-4 pt-5">
-                <div class="row mt-2">
-                    <div class="col-md-12">
-                        <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true" dateFormat="dd/mm/yy" placeholder="Fecha final" [minDate]="f!.fechaInicial!.value" [maxDate]="fechaActual">
-                        </p-calendar>
-                    </div>
-                </div>
-            </div>
+        <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true"
+                    placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="f!.fechaFinal!.value"
+                    [maxDate]="fechaActual">
+        </p-calendar>
+      </div>
+      <div class="col-md-4 pt-5">
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
+                        dateFormat="dd/mm/yy" placeholder="Fecha final" [minDate]="f!.fechaInicial!.value"
+                        [maxDate]="fechaActual">
+            </p-calendar>
+          </div>
         </div>
-        <div class="row mt-6">
-            <div class="col-md-12 flex justify-content-end">
-                <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-                <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
-            </div>
-        </div>
-    </form>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+      </div>
+    </div>
+  </form>
 </div>
 
 <section class="mt-5">
-    <div class="flex justify-content-between align-items-center">
-        <h2 class="subtitulo">Órdenes de servicio</h2>
-    </div>
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Órdenes de servicio</h2>
+  </div>
 
-    <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="notasRemision" [paginator]="notasRemision.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)"
-        [resizableColumns]="true" [columnResizeMode]="'expand'">
-        <ng-template pTemplate="header">
-            <tr>
-                <th id="columna_nota_remision_fecha" pResizableColumn>Fecha ODS</th>
-                <th id="columna_nota_remision_folioODS" pResizableColumn>Folio ODS</th>
-                <th id="columna_nota_remision_folioCon" pResizableColumn>Folio convenio</th>
-                <th id="columna_nota_remision_contratante" pResizableColumn>Contratante</th>
-                <th id="columna_nota_remision_finado" pResizableColumn>Nombre de finado</th>
-                <th id="columna_nota_remision_estatus">Estatus</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-notaRemision>
-            <tr>
-                <td pResizableColumn> {{notaRemision.fechaODS}} </td>
-                <td pResizableColumn> {{notaRemision.folioODS}} </td>
-                <td pResizableColumn> {{notaRemision.folioConvenio}} </td>
-                <td pResizableColumn> {{notaRemision.nomContratante}} </td>
-                <td pResizableColumn> {{notaRemision.nomFinado}} </td>
-                <td>
-                    <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'90px 80px'}">
-                        <div>
-                            {{clavesEstatus[notaRemision.estatus]}}
-                        </div>
-                        <div class="contenedor-celda-iconos">
-                            <a (click)="abrirPanel($event,notaRemision)">
-                                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <th colspan="6" class="p-2 text-center font-bold text-xl" id="nota_remision_sin_resultados">
-                    No se encontro información relacionada a tu búsqueda
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorleft">
-            <div class="paginator-template">
-                <span class="total-elements"> {{notasRemision.length}} de {{totalElementos}} </span>
+  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="notasRemision"
+           [paginator]="notasRemision.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
+           [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)"
+           [resizableColumns]="true" [columnResizeMode]="'expand'">
+    <ng-template pTemplate="header">
+      <tr>
+        <th id="columna_nota_remision_fecha" pResizableColumn>Fecha ODS</th>
+        <th id="columna_nota_remision_folioODS" pResizableColumn>Folio ODS</th>
+        <th id="columna_nota_remision_folioCon" pResizableColumn>Folio convenio</th>
+        <th id="columna_nota_remision_contratante" pResizableColumn>Contratante</th>
+        <th id="columna_nota_remision_finado" pResizableColumn>Nombre de finado</th>
+        <th id="columna_nota_remision_estatus">Estatus</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-notaRemision>
+      <tr>
+        <td pResizableColumn> {{notaRemision.fechaODS}} </td>
+        <td pResizableColumn> {{notaRemision.folioODS}} </td>
+        <td pResizableColumn> {{notaRemision.folioConvenio}} </td>
+        <td pResizableColumn> {{notaRemision.nomContratante}} </td>
+        <td pResizableColumn> {{notaRemision.nomFinado}} </td>
+        <td>
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'90px 80px'}">
+            <div>
+              {{clavesEstatus[notaRemision.estatus]}}
             </div>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-        </ng-template>
-    </p-table>
+            <div class="contenedor-celda-iconos">
+              <a (click)="abrirPanel($event,notaRemision)">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="6" class="p-2 text-center font-bold text-xl" id="nota_remision_sin_resultados">
+          No se encontro información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements"> {{notasRemision.length}} de {{totalElementos}} </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+    </ng-template>
+  </p-table>
 </section>
 
 <p-overlayPanel #overlayPanel>
-    <ng-template pTemplate="content">
-        <app-overlay-panel-opciones>
-            <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus === 1" titulo="Generar nota de remisión" (click)="generarNotaRemision(); overlayPanel.toggle($event)">
-                <div *appValidaRol="['GENERAR_NOTA_REMISION','ALTA']"></div>
-            </app-overlay-panel-opcion>
-            <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus !== 1" titulo="Ver" (click)="verDetalleNotaRemision(); overlayPanel.toggle($event)">
-                <div *appValidaRol="['GENERAR_NOTA_REMISION','CONSULTA']"></div>
-            </app-overlay-panel-opcion>
-            <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus !== 1" titulo="Descargar PDF" (click)="generarReporteNotaRemision('pdf'); overlayPanel.toggle($event)">
-                <div *appValidaRol="['GENERAR_NOTA_REMISION','IMPRIMIR']"></div>
-            </app-overlay-panel-opcion>
-            <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus !== 1" titulo="Descargar Excel" (click)="generarReporteNotaRemision('xls'); overlayPanel.toggle($event)">
-                <div *appValidaRol="['GENERAR_NOTA_REMISION','IMPRIMIR']"></div>
-            </app-overlay-panel-opcion>
-            <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus === 2 && notaRemisionSeleccionada?.total !== 2" titulo="Cancelar" (click)="cancelarNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
-        </app-overlay-panel-opciones>
-    </ng-template>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <ng-container *appValidaRol="['GENERAR_NOTA_REMISION','ALTA']">
+        <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus === 1" titulo="Generar nota de remisión"
+                                  (click)="generarNotaRemision(); overlayPanel.toggle($event)">
+        </app-overlay-panel-opcion>
+      </ng-container>
+      <ng-container *appValidaRol="['GENERAR_NOTA_REMISION','CONSULTA']">
+        <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus !== 1" titulo="Ver"
+                                  (click)="verDetalleNotaRemision(); overlayPanel.toggle($event)">
+        </app-overlay-panel-opcion>
+      </ng-container>
+      <ng-container *appValidaRol="['GENERAR_NOTA_REMISION','IMPRIMIR']">
+        <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus !== 1" titulo="Descargar PDF"
+                                  (click)="generarReporteNotaRemision('pdf'); overlayPanel.toggle($event)">
+        </app-overlay-panel-opcion>
+      </ng-container>
+      <ng-container *appValidaRol="['GENERAR_NOTA_REMISION','IMPRIMIR']">
+        <app-overlay-panel-opcion *ngIf="notaRemisionSeleccionada?.estatus !== 1" titulo="Descargar Excel"
+                                  (click)="generarReporteNotaRemision('xls'); overlayPanel.toggle($event)">
+        </app-overlay-panel-opcion>
+      </ng-container>
+      <ng-container *appValidaRol="['GENERAR_NOTA_REMISION','MODIFICACION']">
+        <app-overlay-panel-opcion
+          *ngIf="notaRemisionSeleccionada?.estatus === 2 && notaRemisionSeleccionada?.total !== 2"
+          titulo="Cancelar"
+          (click)="cancelarNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
+      </ng-container>
+    </app-overlay-panel-opciones>
+  </ng-template>
 </p-overlayPanel>
