@@ -80,7 +80,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
       delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }],
       velatorio: [{ value: null, disabled: +this.rolLocalStorage.idOficina === 3 }],
     });
-    if(this.f.deleacion.value != null){
+    if(this.f.delegacion.value != null){
       this.cambiarDelegacion();
     }
   }
