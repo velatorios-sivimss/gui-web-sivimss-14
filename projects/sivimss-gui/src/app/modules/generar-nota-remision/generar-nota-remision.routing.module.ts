@@ -33,21 +33,39 @@ const routes: Route[] = [
     component: FormatoGenerarNotaRemisionComponent,
     resolve: {
       respuesta: DetalleOrderServicioResolver
-    }
+    },
+    data: {
+      validaRol: {
+        funcionalidad: 'GENERAR_NOTA_REMISION',
+        permiso: 'CONSULTA'
+      }
+    },
   },
   {
     path: 'detalle-formato/:idNota/:idOds',
     component: DetalleFormatoGenerarNotaRemisionComponent,
     resolve: {
       respuesta: DetalleNotaRemisionResolver
-    }
+    },
+    data: {
+      validaRol: {
+        funcionalidad: 'GENERAR_NOTA_REMISION',
+        permiso: 'CONSULTA'
+      }
+    },
   },
   {
     path: 'cancelar-formato/:idNota/:idOds',
     component: CancelarFormatoGenerarNotaRemisionComponent,
     resolve: {
       respuesta: DetalleNotaRemisionResolver
-    }
+    },
+    data: {
+      validaRol: {
+        funcionalidad: 'GENERAR_NOTA_REMISION',
+        permiso: 'MODIFICACION'
+      }
+    },
   },
 ];
 
