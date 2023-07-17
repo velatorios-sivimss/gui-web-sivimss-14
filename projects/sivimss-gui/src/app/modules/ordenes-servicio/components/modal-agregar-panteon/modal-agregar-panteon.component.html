@@ -2,11 +2,6 @@
   <div class="row mb-2">
     <div class="col-md-12">
       <label class="control-label" for="nombrePanteon">Nombre del panteón<span class="req">*</span>:</label>
-<!--      <input id="nombrePanteon" type="text" class="form-control" formControlName="nombrePanteon"-->
-<!--             placeholder="Ingresa nombre del panteón">-->
-<!--      <span class="campo-obligatorio"-->
-<!--            *ngIf="f.nombrePanteon?.errors?.required && (f.nombrePanteon?.dirty || f.nombrePanteon?.touched)">Campo obligatorio</span>-->
-
       <p-autoComplete id="nombrePanteon"  class="form-control" formControlName="nombrePanteon"
                       (keyup.space)="sinEspacioInicial()"  (onSelect)="seleccionaPanteon($event)" autocomplete="panteon" [suggestions]="panteonServicioFiltrados"
                       (completeMethod)="filtrarPateon($event)"
@@ -52,8 +47,8 @@
     </div>
     <div class="col-md-4">
       <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
-      <p-dropdown id="estado" class="form-control" formControlName="estado" placeholder="Selecciona estado"
-                  [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
+      <input id="estado" type="text" class="form-control" formControlName="estado"
+             placeholder="Ingresa el estado">
       <span class="campo-obligatorio" *ngIf="f.estado?.errors?.required && (f.estado?.dirty || f.estado?.touched)">Campo obligatorio</span>
     </div>
   </div>
@@ -72,7 +67,7 @@
     </div>
     <div class="col-md-3">
       <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
-      <input id="telefono" type="text" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono">
+      <input id="telefono" type="text" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono" maxlength="10">
       <span class="campo-obligatorio"
             *ngIf="f.telefono?.errors?.required && (f.telefono?.dirty || f.telefono?.touched)">Campo obligatorio</span>
     </div>
@@ -80,7 +75,7 @@
   <div class="row">
     <div class="col-md-12 flex justify-content-end align-items-center">
       <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-      <button type="button" class="ml-6 btn btn-primary btn-md" (click)="guardarPanteon()">Aceptar</button>
+      <button type="button" class="ml-6 btn btn-primary btn-md" [disabled]="form.invalid" (click)="guardarPanteon()">Aceptar</button>
     </div>
   </div>
 </form>
