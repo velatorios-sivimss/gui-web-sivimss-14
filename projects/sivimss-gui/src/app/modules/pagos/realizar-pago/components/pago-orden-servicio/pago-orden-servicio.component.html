@@ -54,10 +54,13 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"
-                                onCloseOnNavigation></app-overlay-panel-opcion>
       <app-overlay-panel-opcion
-        *ngIf="pagoSeleccionado.estatus"
+        titulo="Registrar pago" (click)="registrarPago()"
+        *ngIf="pagoSeleccionado.estatusPago === 'Generado' ||
+        (pagoSeleccionado.estatusPago === 'Pendiente' && !pagoSeleccionado.generarPagare)"
+        onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion
+        *ngIf="pagoSeleccionado.estatusPago === 'Pendiente' && !!pagoSeleccionado.generarPagare"
         titulo="Generar pagaré"
         [routerLink]="['./../../generar-formato-pagare/formato-pagare', pagoSeleccionado.idRegistro]">
       </app-overlay-panel-opcion>

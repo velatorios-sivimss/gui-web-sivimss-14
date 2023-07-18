@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, ActivatedRouteSnapshot, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 interface DetallePago {
   folio: string,
@@ -30,6 +30,7 @@ export class DetalleMetodoPagoComponent implements OnInit {
   registroPago!: DetallePago;
   idPagoBitacora!: number;
   fecha: Date = new Date();
+  tipoPago: string = '';
 
   constructor(
     private router: Router,
@@ -39,7 +40,18 @@ export class DetalleMetodoPagoComponent implements OnInit {
 
   ngOnInit(): void {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
+    this.tipoPago = this.obtenerTipoPago();
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
+  }
+
+  obtenerTipoPago(): string {
+    if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
+      return 'la ODS'
+    }
+    if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
+      return 'el Nuevo Convenio de Previsión Funeraria';
+    }
+    return 'la Renovación del Nuevo Convenio de Previsión Funeraria';
   }
 
   redireccionPago(): void {
