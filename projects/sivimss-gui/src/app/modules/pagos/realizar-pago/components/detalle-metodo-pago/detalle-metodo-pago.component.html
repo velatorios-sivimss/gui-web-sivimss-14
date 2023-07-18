@@ -115,9 +115,6 @@
                                 *ngIf="registroPago.estatusPago === 'Pagado'"
                                 [routerLink]="['../../modificar-metodo-de-pago', idPagoBitacora]">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Generar pagaré" *ngIf="registroPago.tipoPago === 'Pago de Orden de Servicio'
-       && registroPago.estatusPago === 'Pendiente'">
-      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
