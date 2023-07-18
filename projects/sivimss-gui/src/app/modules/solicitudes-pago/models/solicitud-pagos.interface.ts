@@ -1,4 +1,5 @@
 export interface SolicitudPago {
+  id: number;
   idVelatorio: number;
   folio: string;
   ejercFiscal: string,
@@ -8,6 +9,7 @@ export interface SolicitudPago {
 }
 
 export interface SolicitarSolicitudPago {
+  id: number;
   tipoSolicitud: string;
   fechaElaboracion1: string;
   nomDestinatario1: string;
@@ -19,8 +21,13 @@ export interface SolicitarSolicitudPago {
   cantidad1: string;
   observ1: string;
 
+  folio2: string;
   folioFiscal2: string;
+  estatus2: string;
+  ejerciFiscal2: string;
   fechaElaboracion2: string;
+  unidadOpe : string;
+  solicitadoPor  : string;
   nombreDestinatario2: string;
   nomRemitente2: string;
   referenciaTD2: string;
@@ -39,8 +46,25 @@ export interface SolicitarSolicitudPago {
   concepto3: string;
   cantidadLetra3: string;
   observ3: string;
+
+  folioFiscal4: string;
+  fechaElaboracion4: string;
+  nombreDestinatario4: string;
+  nomRemitente4: string;
+  referenciaTD4: string;
+  beneficiario4: string;
+  concepto4: string;
+  cantidadLetra4: string;
+  observ4: string;
+  
 }
 
+export interface PartidaPresupuestal {
+  idPartida: number;
+  partidaPresupuestal: string;
+  cuentasContables: string;
+  importeTotal: string;
+}
 
 export interface CancelarSolicitudPago {
   motivo: string;

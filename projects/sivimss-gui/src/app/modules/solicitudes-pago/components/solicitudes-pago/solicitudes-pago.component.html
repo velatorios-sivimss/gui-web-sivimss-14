@@ -7,19 +7,19 @@
                 <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true">
                 </p-dropdown>
             </div>
-            <div class="col-md-6">
-                <div class="col-md-3">
-                    <label class="control-label" for="fechaInicial">Rango de fechas de elaboración</label>
-                    <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true" placeholder="Fecha inicial" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()" [maxDate]="filtroFormSolicitudesPago.get('fechaFinal')?.value || fechaAnterior">
-                    </p-calendar>
-                </div>
-                <div class="col-md-3">
-                    <label class="control-label" for="fechaFinal">fecha de inicio</label>
-                    <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()" [minDate]="filtroFormSolicitudesPago.get('fechaInicial')?.value"
-                        [maxDate]="fechaActual">
-                    </p-calendar>
-                </div>
+
+            <div class="col-md-3">
+                <label class="control-label" for="fechaInicial">Rango de fechas de elaboración</label>
+                <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true" placeholder="Fecha inicial" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()" [maxDate]="filtroFormSolicitudesPago.get('fechaFinal')?.value || fechaAnterior">
+                </p-calendar>
             </div>
+            <div class="col-md-3">
+                <label class="control-label" for="fechaFinal">''</label>
+                <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()" [minDate]="filtroFormSolicitudesPago.get('fechaInicial')?.value"
+                    [maxDate]="fechaActual">
+                </p-calendar>
+            </div>
+
         </div>
         <div class="row mb-3">
             <div class="col-md-6">

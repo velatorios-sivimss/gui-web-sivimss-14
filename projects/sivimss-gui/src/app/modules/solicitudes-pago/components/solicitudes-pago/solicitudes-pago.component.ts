@@ -25,6 +25,7 @@ import { CATALOGOS_DUMMIES, CATALOGO_NIVEL } from '../../../articulos/constants/
 import { SolicitarSolicitudPagoComponent } from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
 import { CancelarSolicitudPagoComponent } from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
 import { RechazarSolicitudPagoComponent } from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
+import { VerDetalleSolicitudPagoComponent } from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
 
@@ -89,11 +90,6 @@ export class SolicitudesPagoComponent implements OnInit {
     this.obtenerVelatorios();
   }
 
-  abrirDetalleSolicitudPago(solicitudPagoSeleccionado: ListadoSolicitudPago): void {
-    this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
-    this.router.navigate([`comisiones/detalle-comision/${solicitudPagoSeleccionado.id}`]).then(() => { }).catch(() => { });
-  }
-
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormSolicitudesPago = this.formBuilder.group({
@@ -135,7 +131,8 @@ export class SolicitudesPagoComponent implements OnInit {
       idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
     }
     this.solicitudesPago = [
-      {
+      {  
+        id: 1,
         idVelatorio: 1,
         folio: '000001',
         ejercFiscal: 'TASASL12107034Y',
@@ -144,6 +141,7 @@ export class SolicitudesPagoComponent implements OnInit {
         estatus: 'Prado',
       },
       {
+        id: 2,
         idVelatorio: 2,
         folio: '000002',
         ejercFiscal: 'TASASL12107034Y',
@@ -152,6 +150,7 @@ export class SolicitudesPagoComponent implements OnInit {
         estatus: 'Cardenas',
       },
       {
+        id: 3,
         idVelatorio: 3,
         folio: '000003',
         ejercFiscal: 'TASASL12107034Y',
@@ -167,6 +166,19 @@ export class SolicitudesPagoComponent implements OnInit {
     debugger
     this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
     this.overlayPanel.toggle(event);
+  }
+
+  
+  abrirDetalleSolicitudPago(solicitudPagoSeleccionado: ListadoSolicitudPago): void {
+    this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
+    this.cancelarRef = this.dialogService.open(
+      VerDetalleSolicitudPagoComponent,
+      {
+        header: 'Solicitud de comprobación de bienes y servicios',
+        width: '880px',
+        data: solicitudPagoSeleccionado.id
+      },
+    )
   }
 
   abrirModalGenerarSolicitudPago(): void {

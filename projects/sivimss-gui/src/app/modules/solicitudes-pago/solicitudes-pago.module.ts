@@ -14,6 +14,7 @@ import { OverlayPanelOpcionesModule } from '../../shared/overlay-panel-opciones/
 import {DialogModule} from 'primeng/dialog';
 import {StepsModule} from 'primeng/steps';
 import {AutoCompleteModule} from 'primeng/autocomplete';
+import {CheckboxModule} from "primeng/checkbox";
 
 import {CalendarModule} from 'primeng/calendar';
 import {AccordionModule} from 'primeng/accordion';
@@ -25,13 +26,15 @@ import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 import { SolicitarSolicitudPagoComponent } from './components/solicitar-solicitud-pago/solicitar-solicitud-pago.component'; 
 import { CancelarSolicitudPagoComponent } from "./components/cancelar-solicitud-pago/cancelar-solicitud-pago.component";  
 import { RechazarSolicitudPagoComponent } from "./components/rechazar-solicitud-pago/rechazar-solicitud-pago.component";  
+import { VerDetalleSolicitudPagoComponent } from './components/ver-detalle-solicitud/ver-detalle-solicitud.component';
 
 @NgModule({
   declarations: [
     SolicitudesPagoComponent,
     SolicitarSolicitudPagoComponent,
     CancelarSolicitudPagoComponent,
-    RechazarSolicitudPagoComponent
+    RechazarSolicitudPagoComponent,
+    VerDetalleSolicitudPagoComponent
   ],
   imports: [
     CalendarModule,
@@ -53,6 +56,7 @@ import { RechazarSolicitudPagoComponent } from "./components/rechazar-solicitud-
     AutoCompleteModule,
     ValidaRolModule,
     UtileriaModule,
+    CheckboxModule,
   ],
   providers: [SolicitudesPagoService]
 })
