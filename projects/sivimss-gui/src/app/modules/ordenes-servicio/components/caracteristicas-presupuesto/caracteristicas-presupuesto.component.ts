@@ -1052,12 +1052,24 @@ export class CaracteristicasPresupuestoComponent
   validacionFormulario(): boolean {
     let banderaPaquete = false;
     let banderaPresupuesto = false;
+    let banderaTipo = false;
 
     if (this.tipoOrden == 1) {
       this.datosPresupuesto.forEach(function (datos) {
+
+        if(typeof datos.utilizarArticulo == "string"){
+          if(datos.utilizarArticulo.includes("true")){
+            banderaTipo = true
+          } else{
+            banderaTipo = false
+          }
+        }else{
+          banderaTipo = datos.utilizarArticulo;
+        }
+
         if (
           datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo.includes('true')
+          banderaTipo
         ) {
           banderaPaquete = true;
         }
