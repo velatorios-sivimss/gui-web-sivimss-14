@@ -65,6 +65,7 @@ export class ConveniosPfModificarComponent implements OnInit {
   fecha!: string;
   escenario: string = "modificar"
   siguienteSeccion!: boolean;
+  idPersona!: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -81,6 +82,7 @@ export class ConveniosPfModificarComponent implements OnInit {
   ngOnInit(): void {
 
     // let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
+    let flujoLocal = false;
     localStorage.removeItem('datosConvenio');
     this.folioUnicoDelConvenio = this.rutaActiva.snapshot.queryParams.folio;
     this.velatorioUsuario= "";
@@ -88,6 +90,7 @@ export class ConveniosPfModificarComponent implements OnInit {
 
     this.inicializarModeloGuardarPersona();
     const formularioPrevio = JSON.parse(localStorage.getItem('fomularioPrincipal') as string);
+    if(formularioPrevio)flujoLocal = true;
     localStorage.removeItem('fomularioPrincipal')
 
     this.personasAgregadas = JSON.parse(localStorage.getItem('persona') as string) || [];
@@ -108,7 +111,7 @@ export class ConveniosPfModificarComponent implements OnInit {
     this.inicializarDocumentacionForm();
     this.validarEscenarioPorEmpresa();
     this.consultaVelatorio();
-    this.consultarTipoContratacion();
+    if(!flujoLocal)this.consultarTipoContratacion();
 
     // this.consultarConvenio(this.folioUnicoDelConvenio);
   }
@@ -398,7 +401,9 @@ export class ConveniosPfModificarComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        this.velatorioUsuario = respuesta.datos.datosContratante.nombreVelatorio
         this.ff.rfcCurp.setValue(respuesta.datos.datosContratante.curp);
+        this.idPersona = respuesta.datos.datosContratante.idPersona
         if(respuesta.datos.datosContratante.idPromotor){
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
@@ -431,7 +436,7 @@ export class ConveniosPfModificarComponent implements OnInit {
       nombreVelatorio: "",
       indTipoContratacion: "",
       idPromotor: "",
-      idPersona: null,
+      idPersona: this.idPersona ? this.idPersona : null,
       idDomicilio: null,
       idContratante: null,
       persona: {

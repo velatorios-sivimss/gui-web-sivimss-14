@@ -328,6 +328,9 @@ export class PorPersonaComponent implements OnInit,OnChanges {
           this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
           this.fp.pais.setValue(+respuesta.datos.datosContratante.idPais);
           this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
+          this.fp.idPersona.setValue(+respuesta.datos.datosContratante.idPersona)
+        this.fp.enfermedadPrexistente.setValue(+respuesta.datos.datosContratante.idEnfermedadPreexistente);
+        this.fp.otraEnfermedad.setValue(respuesta.datos.datosContratante.otraEnfermedad);
 
         // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
 
