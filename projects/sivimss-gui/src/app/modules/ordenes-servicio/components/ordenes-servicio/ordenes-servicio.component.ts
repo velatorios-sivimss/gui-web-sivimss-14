@@ -101,6 +101,7 @@ export class OrdenesServicioComponent implements OnInit {
 
     let respuesta = this.route.snapshot.data['respuesta'];
     this.delegaciones = respuesta[this.POSICION_DELEGACION];
+    this.unidadesMedicas = respuesta[1];
 
 
 
@@ -298,7 +299,7 @@ export class OrdenesServicioComponent implements OnInit {
       finalize(()=>this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>): void => {
-        this.consultarUnidadMedica();
+        // this.consultarUnidadMedica();
         this.velatorios = respuesta.datos.map((velatorio: catalogoVelatorio) => (
           { label: velatorio.DES_VELATORIO, value: velatorio.idVelatorio })) || [];
       },
@@ -378,19 +379,22 @@ export class OrdenesServicioComponent implements OnInit {
   }
 
   consultarUnidadMedica(): void {
-    this.loaderService.activar();
-    this.consultarOrdenServicioService.unidadMedica(this.formulario.delegacion.value).pipe(
-      finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
-        this.unidadesMedicas = respuesta.datos.map((unidadMedica: catalogoUnidadesMedicas) => (
-          { label: unidadMedica.nombreUnidad, value: unidadMedica.idUnidadMedica })) || [];
-      },
-      (error:HttpErrorResponse) => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
-      }
-    )
+    // this.loaderService.activar();
+    // this.consultarOrdenServicioService.unidadMedica(this.formulario.delegacion.value).pipe(
+    //   finalize(()=>this.loaderService.desactivar())
+    // ).subscribe(
+    //   (respuesta: HttpRespuesta<any>): void => {
+    //     this.unidadesMedicas = respuesta.datos.map((unidadMedica: catalogoUnidadesMedicas) => (
+    //       { label: unidadMedica.nombreUnidad, value: unidadMedica.idUnidadMedica })) || [];
+    //   },
+    //   (error:HttpErrorResponse) => {
+    //     const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+    //     this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
+    //   }
+    // )
+
+
+
   }
 
   exportarArchivo(extension: string): void {
