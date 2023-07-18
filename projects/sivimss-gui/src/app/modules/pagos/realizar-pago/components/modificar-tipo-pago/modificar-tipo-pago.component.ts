@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DynamicDialogConfig} from "primeng/dynamicdialog";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
 
 @Component({
@@ -21,16 +21,27 @@ export class ModificarTipoPagoComponent implements OnInit {
 
   tipoPagoForm!: FormGroup;
   tipoPago: any[] = [];
+  resumenSolicitud!: any;
 
   constructor(
     private formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
+    public ref: DynamicDialogRef,
   ) {
   }
 
   ngOnInit(): void {
     this.inicializarTipoPagoForm();
     this.llenarCatalogos();
+  }
+
+  cancelar(): void {
+    this.ref.close();
+  }
+
+  aceptar(): void {
+    this.resumenSolicitud = this.tipoPagoForm.getRawValue();
+    this.pasoModificarPago = this.RESUMEN_DE_PAGO;
   }
 
   inicializarTipoPagoForm(): void {
@@ -55,9 +66,25 @@ export class ModificarTipoPagoComponent implements OnInit {
     this.tipoPago = TIPO_PAGO_CATALOGOS_CONVENIO;
   }
 
+  seleccionarId(): void {
+    this.idPago = +this.tipoPagoForm.get('tipoPago')?.value;
+    this.validarCamposRequeridos(this.idPago);
+  }
+
+  validarCamposRequeridos(id: number): void {
+    if (this.fechasDeshabilitadas.includes(id)) {
+      this.tipoPagoForm.get('fecha')?.clearValidators();
+    }
+    if (this.pagosDeshabilitados.includes(id)) {
+      this.tipoPagoForm.get('noAutorizacion')?.clearValidators();
+      this.tipoPagoForm.get('nombreBanco')?.clearValidators();
+    }
+    if (id === 8) {
+      this.tipoPagoForm.get('importe')?.addValidators([Validators.max(this.total), Validators.min(this.total)]);
+    }
+  }
+
   get pf() {
     return this.tipoPagoForm?.controls
   }
-
-
 }

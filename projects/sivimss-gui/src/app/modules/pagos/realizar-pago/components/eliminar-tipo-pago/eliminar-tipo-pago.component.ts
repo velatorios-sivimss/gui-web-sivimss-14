@@ -32,7 +32,6 @@ export class EliminarTipoPagoComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
     private router: Router,
-    private readonly activatedRoute: ActivatedRoute,
   ) {
     this.registroMetodoPago = this.config.data.pago;
     this.total = this.config.data.total;
