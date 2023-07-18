@@ -86,6 +86,7 @@ export class PagoRenovacionConvenioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
+        const ERROR: string = 'Error al guardar la información de la Pago de Renovación de Convenios de Previsión Funeraria. Intenta nuevamente.'
         this.mensajesSistemaService.mostrarMensajeError(error);
       },
     });
