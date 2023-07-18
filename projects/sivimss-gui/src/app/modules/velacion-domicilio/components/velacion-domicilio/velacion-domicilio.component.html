@@ -7,7 +7,8 @@
         <p-dropdown appendTo="body" id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
           placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
         </p-dropdown>
-        <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Este campo es obligatorio *.</span>
+        <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
@@ -16,7 +17,8 @@
           (onChange)='obtenerVelatorios();'>
         </p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="f.delegacion?.errors?.required && (f.delegacion?.dirty || f.delegacion?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="f.delegacion?.errors?.required && (f.delegacion?.dirty || f.delegacion?.touched)">Este campo es
+          obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
@@ -27,12 +29,13 @@
           (onChange)="obtenerFoliosGenerados();">
         </p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Este campo es obligatorio *.</span>
+          *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Este campo es
+          obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folioODS">Folio de la ODS:</label>
-        <input id="folioODS" class="form-control" formControlName="folioODS"
-          optionLabel="label" placeholder="Ingresa el folio de la ODS" folioOdsAlphanumeric trimmer maxlength="11">
+        <input id="folioODS" class="form-control" formControlName="folioODS" optionLabel="label"
+          placeholder="Ingresa el folio de la ODS" folioOdsAlphanumeric trimmer maxlength="11">
       </div>
     </div>
     <div class="row mb-3">
@@ -69,8 +72,8 @@
 <section class="my-3">
   <div class="flex justify-content-between align-items-center mb-3">
     <h2 class="subtitulo"></h2>
-    <button type="button" class="btn btn-primary btn-lg" routerLink="generar-vale-salida">Generar vale de
-      salida</button>
+    <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['VALE_SALIDA','ALTA']"
+      routerLink="generar-vale-salida">Generar vale de salida</button>
   </div>
 
   <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="vale" [paginator]="vale.length > 0"
@@ -123,7 +126,7 @@
 
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table">
+        <div class="export-table" *appValidaRol="['VALE_SALIDA','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
@@ -136,7 +139,7 @@
     <ng-template pTemplate="emptymessage">
       <tr>
         <th id="emptymessage" colspan="12" class="p-2 text-center font-bold text-xl">
-          No hay elementos que coincidan con los parámetros seleccionados
+          No hay elementos que coincidan con los parámetros seleccionadoss
         </th>
       </tr>
     </ng-template>
@@ -155,7 +158,9 @@
 </p-overlayPanel>
 
 <p-confirmDialog #cd [style]="{width: '30vw'}">
-  <ng-template pTemplate="header"><h5></h5></ng-template>
+  <ng-template pTemplate="header">
+    <h5></h5>
+  </ng-template>
   <ng-template pTemplate="footer">
     <div class="row mb-3">
       <div class="col-md-12 flex justify-content-center">
