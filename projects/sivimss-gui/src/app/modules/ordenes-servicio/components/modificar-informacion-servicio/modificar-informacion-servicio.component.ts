@@ -320,7 +320,7 @@ export class ModificarInformacionServicioComponent
         hora: [{ value: null, disabled: false }, [Validators.required]],
         calle: [{ value: null, disabled: false }, [Validators.required]],
         exterior: [{ value: null, disabled: false }, [Validators.required]],
-        interior: [{ value: null, disabled: false }, [Validators.required]],
+        interior: [{ value: null, disabled: false }],
         cp: [{ value: null, disabled: false }, [Validators.required]],
         colonia: [{ value: null, disabled: false }, [Validators.required]],
         municipio: [{ value: null, disabled: false }, [Validators.required]],

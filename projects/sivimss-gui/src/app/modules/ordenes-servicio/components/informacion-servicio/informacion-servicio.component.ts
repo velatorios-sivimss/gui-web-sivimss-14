@@ -209,7 +209,6 @@ export class InformacionServicioComponent implements OnInit {
         ],
         interior: [
           { value: datos.interior, disabled: false },
-          [Validators.required],
         ],
         cp: [{ value: datos.cp, disabled: false }, [Validators.required]],
         colonia: [

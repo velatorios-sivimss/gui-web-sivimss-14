@@ -79,6 +79,8 @@ export class ModalAgregarServicioComponent
   proveedorCompletos: any[] = [];
   disableddMapa: boolean = false;
   ocultarBtn: boolean = false;
+  paqueteSelccionado!: any;
+  botonPresupuesto:boolean = true;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -96,6 +98,7 @@ export class ModalAgregarServicioComponent
     this.fila = this.config.data.fila;
     this.proviene = this.config.data.proviene;
     this.idServicio = this.config.data.idServicio;
+    this.paqueteSelccionado = this.config.data.paqueteSeleccionado;
     this.inicializarForm();
   }
 
@@ -107,21 +110,23 @@ export class ModalAgregarServicioComponent
       this.disableddMapa = false;
       this.ocultarServicios = false;
       validacionServicio = [];
-      this.ocultarMapa = true;
+      this.ocultarMapa = false;
       this.ocultarProveedor = false;
       this.ocultarBtn = false;
     } else if (this.proviene == 'proveedor') {
       this.disableddMapa = true;
-      this.ocultarMapa = false;
+      this.ocultarMapa = true;
       this.ocultarServicios = false;
       validacionServicio = [];
+      validacionMapa = [];
       this.ocultarProveedor = true;
       this.ocultarBtn = true;
     } else if (this.proviene == 'servicios') {
+      this.botonPresupuesto = false;
       this.disableddMapa = true;
       this.ocultarMapa = true;
       this.ocultarServicios = true;
-      this.ocultarBtn = false;
+      this.ocultarBtn = true;
       this.ocultarProveedor = true;
       validacionMapa = [];
       this.buscarServicios();
@@ -189,8 +194,30 @@ export class ModalAgregarServicioComponent
   }
 
   seleccionaServicio(dd: Dropdown): void {
+    let tipoServicio = dd.selectedOption.label.toUpperCase()
     this.nombreServicio = dd.selectedOption.label;
     this.idServicio = dd.selectedOption.value;
+
+
+    if(tipoServicio.includes("TRASLADO")){
+      this.ocultarMapa = false;
+      // servicio: [{ value: null, disabled: false }, validacionServicio],
+      // proveedor: [{ value: null, disabled: false }, [Validators.required]],
+      this.f.origen.setValidators(Validators.required);
+      this.f.origen.updateValueAndValidity();
+      this.f.destino.setValidators(Validators.required);
+      this.f.destino.updateValueAndValidity();
+      // kilometraje: [{ value: null, disabled: false }, validacionMapa],
+
+
+    }else{
+      this.ocultarMapa = true;
+      this.f.origen.clearValidators();
+      this.f.origen.updateValueAndValidity();
+      this.f.destino.clearValidators();
+      this.f.destino.updateValueAndValidity();
+    }
+
     this.serviciosCompletos.forEach((datos: any) => {
       if (Number(datos.idServicio) == Number(dd.selectedOption.value)) {
         this.concepto = datos.nombreServicio;
@@ -209,12 +236,6 @@ export class ModalAgregarServicioComponent
   }
 
   seleccionaProveedor(dd: Dropdown): void {
-    if(this.form.controls.proveedor.invalid){
-      console.log("invalido")
-    }else{
-      console.log("valido")
-    }
-
     this.proveedor = dd.selectedOption.label;
     this.idProveedor = Number(dd.selectedOption.value);
     this.proveedorCompletos.forEach((datos: any) => {

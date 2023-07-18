@@ -82,6 +82,7 @@
       <ng-container *ngIf="ff.tipoContratacion.value== 1" >
         <app-por-persona [folioConvenio]="folioConvenioPersona"
                          [confirmacionGuardado]="confirmarGuardadoPersona"
+                         [siguienteSeccion]="siguienteSeccion"
                          [consultarFormularioValido]="consultarFormularioValido"
                          [escenario]="'modificar'"
                          (formularioValido)="validarFormularioPersona($event)"

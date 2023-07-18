@@ -129,6 +129,7 @@ export class CaracteristicasPresupuestoComponent
   paqueteSeleccionadoDD!:Dropdown;
   valorPrevioDD: number = 0;
   confCambiarPaquete:boolean = false;
+  tablaPaqueteSeleccion!: any;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -363,6 +364,7 @@ export class CaracteristicasPresupuestoComponent
     noFila: number,
     proviene: string
   ): void {
+    this.tablaPaqueteSeleccion = paqueteSeleccionado;
     paqueteSeleccionado.fila = noFila + 1;
     this.idServicio = Number(paqueteSeleccionado.idServicio);
     this.fila = noFila + 1;
@@ -493,6 +495,7 @@ export class CaracteristicasPresupuestoComponent
         fila: this.fila,
         proviene: 'proveedor',
         idServicio: this.idServicio,
+        paqueteSeleccionado: this.tablaPaqueteSeleccion
         //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });
@@ -654,7 +657,7 @@ export class CaracteristicasPresupuestoComponent
       if (datos.proviene == 'paquete') {
         totalPaquete = datos.totalPaquete;
       } else {
-        totalArticulos += datos.importe;
+        totalArticulos += Number(datos.importe);
       }
     });
     let pretotal = Number(totalPaquete) + Number(totalArticulos);
