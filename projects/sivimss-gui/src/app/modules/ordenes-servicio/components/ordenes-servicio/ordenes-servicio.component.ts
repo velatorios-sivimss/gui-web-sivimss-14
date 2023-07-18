@@ -512,6 +512,67 @@ export class OrdenesServicioComponent implements OnInit {
       {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:0 }})
   }
 
+  descargarEntradas(): void {
+    this.loaderService.activar()
+    let filtros = this.obtenerObjetoParaFiltrado();
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    this.consultarOrdenServicioService.generarArchivoEntradaDonaciones(
+      this.ordenServicioSeleccionada.idDonacion,
+      this.ordenServicioSeleccionada.idAtaudDonacion,
+    ).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
+  }
+
+  descargarSalidas(): void {
+    this.loaderService.activar()
+    let filtros = this.obtenerObjetoParaFiltrado();
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    this.consultarOrdenServicioService.generarArchivoSalidaDonaciones(
+      this.ordenServicioSeleccionada.idSalidaDona,
+    ).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
+  }
+
   limpiarFiltros(): void {
     this.filtroForm.reset();
     this.paginar();

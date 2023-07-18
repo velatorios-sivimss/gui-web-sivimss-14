@@ -190,7 +190,7 @@
         <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarContratoServInmediatos()" titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden') || ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarOrdenServicio()" titulo="Descargar Orden de servicio"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="mostrarDescargaEntradas" titulo="Generar reporte aceptación de donación" (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="mostrarDescargaEntradas" titulo="Generar reporte aceptación de donación" (click)="descargarEntradas()"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="mostrarDescagaSalidas" titulo="Generar reporte control de salida de donación" (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
       </div>
     </app-overlay-panel-opciones>
