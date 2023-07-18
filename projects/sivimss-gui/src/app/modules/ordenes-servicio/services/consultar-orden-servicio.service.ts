@@ -27,10 +27,6 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
       {idVelatorio: idVelatorio});
   }
 
-  unidadMedica(idDelegacion: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-unidad-medica`,
-      {idDelegacion: idDelegacion});
-  }
 
   consultaTipoODS(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams()
@@ -46,6 +42,16 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
       .append("tamanio", 5)
       .append("servicio", 'consultar-estado-ods')
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, {params});
+  }
+
+  // unidadMedica(idDelegacion: number): Observable<HttpRespuesta<any>> {
+  //   return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-unidad-medica`,
+  //     {idDelegacion: idDelegacion});
+  // }
+
+  unidadMedica(): Observable<TipoDropdown[]> {
+    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_unidadesMedicas'));
+    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
   obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
