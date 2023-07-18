@@ -170,10 +170,21 @@ export class ModificarDatosFinadoComponent
     this.gestionarEtapasService.datosEtapaFinado$
       .asObservable()
       .subscribe((datosEtapaFinado) => this.inicializarForm(datosEtapaFinado));
-    this.cambiarValidacionMatricula();
-    this.inicializarCalcularEdad();
-    this.cambiarValidacionNSS();
-    this.changeTipoOrden(true);
+
+
+
+    setTimeout(()=> {
+      this.cambiarValidacionMatricula();
+      this.inicializarCalcularEdad();
+      this.cambiarValidacionNSS();
+      this.changeTipoOrden(true);
+      this.cambiarTipoSexo();
+
+    },300)
+
+
+
+
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -210,13 +221,14 @@ export class ModificarDatosFinadoComponent
     }
 
     let edad;
+    let fechaNacimiento;
     if(datosEtapaFinado.datosFinado.fechaNacimiento){
       let [dia, mes, anio] =
         datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
-      edad = moment().diff(moment(anio + '-' + mes + '-' + dia), 'years');
+      fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
+      let a = moment(anio + '-' + mes + '-' + dia);
+      edad = moment().diff(a, 'years');
     }
-
-
 
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
@@ -289,7 +301,7 @@ export class ModificarDatosFinadoComponent
         ],
         fechaNacimiento: [
           {
-            value: datosEtapaFinado.datosFinado.fechaNacimiento,
+            value: fechaNacimiento,
             disabled: true,
           },
           [Validators.required],
@@ -395,27 +407,38 @@ export class ModificarDatosFinadoComponent
         ],
       }),
     });
-    if (
-      datosEtapaFinado.datosFinado.matricula == null ||
-      datosEtapaFinado.datosFinado.matricula == ''
-    ) {
-      this.datosFinado.matricula.disable();
-      this.datosFinado.matriculaCheck.setValue(false);
-    } else {
-      this.datosFinado.matricula.disable();
-      this.datosFinado.matriculaCheck.setValue(true);
-    }
+    setTimeout(()=> {
+      if (
+        datosEtapaFinado.datosFinado.matricula == null ||
+        datosEtapaFinado.datosFinado.matricula == ''
+      ) {
+        this.datosFinado.matricula.disable();
+        this.datosFinado.matriculaCheck.setValue(false);
+      } else {
+        this.datosFinado.matricula.disable();
+        this.datosFinado.matriculaCheck.setValue(true);
+      }
 
-    if (
-      datosEtapaFinado.datosFinado.nss == null ||
-      datosEtapaFinado.datosFinado.nss == ''
-    ) {
-      this.datosFinado.nss.disable();
-      this.datosFinado.nssCheck.setValue(false);
-    } else {
-      this.datosFinado.nss.enable();
-      this.datosFinado.nssCheck.setValue(true);
-    }
+      if (
+        datosEtapaFinado.datosFinado.nss == null ||
+        datosEtapaFinado.datosFinado.nss == ''
+      ) {
+        this.datosFinado.nss.disable();
+        this.datosFinado.nssCheck.setValue(false);
+      } else {
+        this.datosFinado.nss.enable();
+        this.datosFinado.nssCheck.setValue(true);
+      }
+
+
+      if(datosEtapaFinado.datosFinado.clinicaAdscripcion){
+        this.changeClinica();
+      }else if(datosEtapaFinado.datosFinado.unidadProcedencia){
+        this.changeUnidad();
+      }
+
+
+    },500)
 
     if (datosEtapaFinado.datosFinado.esObito != null)
       this.esObito(esObito);
@@ -1105,7 +1128,4 @@ export class ModificarDatosFinadoComponent
     this.datosAlta();
   }
 
-  validarFormulario(): void{
-    this.form;
-  }
 }
