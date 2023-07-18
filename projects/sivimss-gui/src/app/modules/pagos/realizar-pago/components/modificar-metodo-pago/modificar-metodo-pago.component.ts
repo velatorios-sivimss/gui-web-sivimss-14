@@ -72,8 +72,8 @@ export class ModificarMetodoPagoComponent implements OnInit {
 
   cancelarTipoPago(): void {
     const data = {
-      metodoPago: this.pagoSeleccionado.metodoPago, importe: this.pagoSeleccionado.importe,
-      tipoPago: this.registroPago.tipoPago
+      pago: this.pagoSeleccionado,
+      total: this.registroPago.totalAPagar
     };
     const CANCELAR_TIPO_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Cancelar pago",

@@ -88,8 +88,7 @@ export class PagoConvenioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        const ERROR: string = 'Error al guardar la información del Pago de Nuevo Convenios de Previsión Funeraria. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       },
     });
   }

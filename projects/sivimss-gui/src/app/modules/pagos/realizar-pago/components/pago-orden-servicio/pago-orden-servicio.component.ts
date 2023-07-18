@@ -88,8 +88,7 @@ export class PagoOrdenServicioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
-        const ERROR: string = 'Error al guardar la información del Pago de la Orden de Servicio. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       },
     });
   }
