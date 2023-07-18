@@ -40,6 +40,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
   @Input() consultarFormularioValido!: boolean;
   @Input() confirmacionGuardado!: boolean;
   @Input() escenario!: string;
+  @Input() siguienteSeccion!: boolean
   @Output() formularioValido = new EventEmitter<{ origen:string,valido:boolean }>();
   @Output() formularioPersona = new EventEmitter<any>();
 
@@ -446,6 +447,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
       )
     }
 
+    if(this.siguienteSeccion)return;
     if(this.folioConvenio === "" || this.folioConvenio == undefined) return;
     this.consultarFolioPersona();
   }

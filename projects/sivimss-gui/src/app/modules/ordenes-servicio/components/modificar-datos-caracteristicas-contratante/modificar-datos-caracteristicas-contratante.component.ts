@@ -427,7 +427,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       if (datos.proviene == 'paquete') {
         totalPaquete = datos.totalPaquete;
       } else {
-        totalArticulos += datos.importe;
+        totalArticulos += Number(datos.importe);
       }
     });
     let pretotal = Number(totalPaquete) + Number(totalArticulos);

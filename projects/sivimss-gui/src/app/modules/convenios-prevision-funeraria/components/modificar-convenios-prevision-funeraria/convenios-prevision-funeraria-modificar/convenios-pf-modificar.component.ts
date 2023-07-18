@@ -64,6 +64,7 @@ export class ConveniosPfModificarComponent implements OnInit {
   velatorioUsuario!: string;
   fecha!: string;
   escenario: string = "modificar"
+  siguienteSeccion!: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -306,11 +307,11 @@ export class ConveniosPfModificarComponent implements OnInit {
       folioConvenio: this.ff.numeroConvenio.value,
       idVelatorio: datosUsuario.idVelatorio,
       nombreVelatorio: this.velatorioDescripcion,
-      indTipoContratacion: this.ff.tipoContratacion.value.toString(),
       idPromotor: this.ff.listaPromotor.value ? this.ff.listaPromotor.value.toString() : "",
-      idPersona :event?.idPersona.toString() ?? null,
+      idPersona : event.idPersona ? event?.idPersona.toString() : null,
       idDomicilio :null,
       idContratante :null,
+      indTipoContratacion: this.ff.tipoContratacion.value.toString(),
 
       // numeroConvenio: this.ff.numeroConvenio.value,
       // rfcCurp: this.ff.rfcCurp.value,
@@ -346,6 +347,7 @@ export class ConveniosPfModificarComponent implements OnInit {
   siguiente(): void {
     if(this.indice == 0){
       this.confirmarGuardadoPersona = false;
+      this.siguienteSeccion = true;
       this.confirmarGuardarPersona()
       return;
     }

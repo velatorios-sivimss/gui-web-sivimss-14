@@ -40,9 +40,9 @@
             <td>{{paquete.grupo}}</td>
             <td>{{paquete.concepto}}</td>
             <td>{{paquete.cantidad}}</td>
-            <td>{{paquete.importe}}</td>
+            <td>{{paquete.importe | currency:"USD":"symbol"}}</td>
             <td>{{paquete.proveedor}}</td>
-            <td>{{paquete.totalPaquete}}</td>
+            <td>{{paquete.totalPaquete | currency:"USD":"symbol"}}</td>
             <td style="width:200px">
               <div class="flex ">
                 <div class="flex align-items- mr-2">
@@ -102,9 +102,9 @@
             <td>{{paquete.grupo}}</td>
             <td>{{paquete.concepto}}</td>
             <td>{{paquete.cantidad}}</td>
-            <td>{{paquete.importe}}</td>
+            <td>{{paquete.importe | currency:"USD":"symbol"}}</td>
             <td>{{paquete.proveedor}}</td>
-            <td>{{paquete.totalPaquete}}</td>
+            <td>{{paquete.totalPaquete | currency:"USD":"symbol"}}</td>
             <td style="width:200px">
               <div class="flex " *ngIf="paquete.proviene!='paquete'">
                 <a class="barras" (click)="abrirPanel($event,paquete,rowIndex+1,'presupuesto')">
