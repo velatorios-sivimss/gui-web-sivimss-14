@@ -315,7 +315,7 @@
         </div>
         <div class="col-md-3">
           <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
-          <input id="colonia" type="text" class="form-control" formControlName="colonia" placeholder="Ingresa colonia" (blur)="validarFormulario()">
+          <input id="colonia" type="text" class="form-control" formControlName="colonia" placeholder="Ingresa colonia">
           <span class="campo-obligatorio"
             *ngIf="direccion.colonia?.errors?.required && (direccion.colonia?.dirty || direccion.colonia?.touched)">Campo
             obligatorio</span>

@@ -317,7 +317,6 @@ export class DatosFinadoComponent implements OnInit {
         ],
         noInterior: [
           { value: datosEtapaFinado.direccion.noInterior, disabled: false },
-          [Validators.required],
         ],
         cp: [
           { value: datosEtapaFinado.direccion.cp, disabled: false },
@@ -362,6 +361,10 @@ export class DatosFinadoComponent implements OnInit {
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
               this.datosFinado.nombre.setValue(respuesta.datos.nombre);
@@ -379,8 +382,8 @@ export class DatosFinadoComponent implements OnInit {
                 this.datosFinado.sexo.setValue(1);
               }
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosFinado.nacionalidad.setValue(1);
               } else {
@@ -949,7 +952,6 @@ export class DatosFinadoComponent implements OnInit {
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].enable();
     });
-
     Object.keys(this.direccion).forEach((key) => {
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].enable();
@@ -964,6 +966,7 @@ export class DatosFinadoComponent implements OnInit {
     });
 
     Object.keys(this.direccion).forEach((key) => {
+      if (key.includes("noInterior"))return;
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
@@ -1053,6 +1056,15 @@ export class DatosFinadoComponent implements OnInit {
       if(this.form.invalid){
         return true;
       }
+    }
+    if(this.datosFinado.tipoOrden.value == 3){
+      if(this.form.invalid){
+        return true;
+      }
+    }
+
+    if(this.form.invalid){
+      return true;
     }
     return false;
   }

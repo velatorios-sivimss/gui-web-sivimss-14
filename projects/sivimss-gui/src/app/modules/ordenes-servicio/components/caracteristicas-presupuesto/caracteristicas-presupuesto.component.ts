@@ -126,6 +126,11 @@ export class CaracteristicasPresupuestoComponent
   esExtremidad: number = 0;
   esObito: number = 0;
   bloquearPaquete: boolean = false;
+  paqueteSeleccionadoDD!:Dropdown;
+  valorPrevioDD: number = 0;
+  confCambiarPaquete:boolean = false;
+  tablaPaqueteSeleccion!: any;
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
@@ -254,9 +259,26 @@ export class CaracteristicasPresupuestoComponent
       );
   }
 
-  detallePaqueteFunction(dd: Dropdown): void {
-    let nombrePaquete = dd.selectedOption.label;
-    this.dd = dd.selectedOption.value;
+  confirmarCambioPaquete(dd:Dropdown): void {
+    //this.paqueteSeleccionado = this.valorPrevioDD;
+    this.confCambiarPaquete = true;
+    this.paqueteSeleccionadoDD = dd.selectedOption;
+  }
+
+  valorPrevio(dd:Dropdown):void {
+    this.valorPrevioDD = dd.selectedOption?.value ?? null;
+  }
+
+  cancelarCambioPaquete(): void{
+    this.confCambiarPaquete = false;
+    this.paqueteSeleccionado = this.valorPrevioDD;
+  }
+
+
+  detallePaqueteFunction(): void {
+    let nombrePaquete = this.paqueteSeleccionadoDD.label;
+    this.confCambiarPaquete = false;
+    this.dd = this.paqueteSeleccionadoDD.value;
     this.mostrarTIpoOtorgamiento = false;
     if (nombrePaquete.trim() == 'Paquete social') {
       this.mostrarTIpoOtorgamiento = true;
@@ -342,6 +364,7 @@ export class CaracteristicasPresupuestoComponent
     noFila: number,
     proviene: string
   ): void {
+    this.tablaPaqueteSeleccion = paqueteSeleccionado;
     paqueteSeleccionado.fila = noFila + 1;
     this.idServicio = Number(paqueteSeleccionado.idServicio);
     this.fila = noFila + 1;
@@ -472,6 +495,7 @@ export class CaracteristicasPresupuestoComponent
         fila: this.fila,
         proviene: 'proveedor',
         idServicio: this.idServicio,
+        paqueteSeleccionado: this.tablaPaqueteSeleccion
         //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });
@@ -633,7 +657,7 @@ export class CaracteristicasPresupuestoComponent
       if (datos.proviene == 'paquete') {
         totalPaquete = datos.totalPaquete;
       } else {
-        totalArticulos += datos.importe;
+        totalArticulos += Number(datos.importe);
       }
     });
     let pretotal = Number(totalPaquete) + Number(totalArticulos);
@@ -883,6 +907,7 @@ export class CaracteristicasPresupuestoComponent
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe);
       detalle.totalPaquete = Number(datos.totalPaquete);
+      detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
@@ -923,6 +948,7 @@ export class CaracteristicasPresupuestoComponent
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe) ?? null;
       detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
+      detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
@@ -994,6 +1020,7 @@ export class CaracteristicasPresupuestoComponent
       data: {
         idVelatorio: this.idVelatorio,
         tipoOrden: this.tipoOrden,
+        presupuesto: this.datosPresupuesto
       },
     });
     ref.onClose.subscribe((salida: any) => {
@@ -1025,12 +1052,24 @@ export class CaracteristicasPresupuestoComponent
   validacionFormulario(): boolean {
     let banderaPaquete = false;
     let banderaPresupuesto = false;
+    let banderaTipo = false;
 
     if (this.tipoOrden == 1) {
       this.datosPresupuesto.forEach(function (datos) {
+
+        if(typeof datos.utilizarArticulo == "string"){
+          if(datos.utilizarArticulo.includes("true")){
+            banderaTipo = true
+          } else{
+            banderaTipo = false
+          }
+        }else{
+          banderaTipo = datos.utilizarArticulo;
+        }
+
         if (
           datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo.includes('true')
+          banderaTipo
         ) {
           banderaPaquete = true;
         }

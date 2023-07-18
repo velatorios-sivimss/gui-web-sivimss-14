@@ -590,6 +590,7 @@ export class ModificarDatosContratanteComponent
   }
 
   consultarCURP(): void {
+    this.limpiarFormularioConsultaRfcCurp('curp');
     if (!this.datosContratante.curp.value) {
       return;
     }
@@ -601,6 +602,10 @@ export class ModificarDatosContratanteComponent
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               this.idPersona = null;
               this.idContratante = null;
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
@@ -620,8 +625,8 @@ export class ModificarDatosContratanteComponent
                 this.datosContratante.sexo.setValue(1);
               }
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
@@ -698,7 +703,32 @@ export class ModificarDatosContratanteComponent
     this.datosContratante.nacionalidad.reset();
   }
 
+  limpiarFormularioConsultaRfcCurp(origen:string): void{
+    if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
+    if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
+    this.datosContratante.nombre.patchValue(null)
+    this.datosContratante.primerApellido.patchValue(null)
+    this.datosContratante.segundoApellido.patchValue(null)
+    this.datosContratante.fechaNacimiento.patchValue(null)
+    this.datosContratante.sexo.patchValue(null)
+    this.datosContratante.otroTipoSexo.patchValue(null)
+    this.datosContratante.nacionalidad.patchValue(null)
+    this.datosContratante.lugarNacimiento.patchValue(null)
+    this.datosContratante.paisNacimiento.patchValue(null)
+    this.datosContratante.telefono.patchValue(null)
+    this.datosContratante.correoElectronico.patchValue(null)
+    this.datosContratante.parentesco.patchValue(null)
+    this.direccion.calle.patchValue(null)
+    this.direccion.noExterior.patchValue(null)
+    this.direccion.noInterior.patchValue(null)
+    this.direccion.cp.patchValue(null)
+    this.direccion.colonia.patchValue(null)
+    this.direccion.municipio.patchValue(null)
+    this.direccion.estado.patchValue(null)
+  }
+
   consultarRFC(): void {
+    this.limpiarFormularioConsultaRfcCurp('rfc');
     if (!this.datosContratante.rfc.value) {
       return;
     }
@@ -995,6 +1025,15 @@ export class ModificarDatosContratanteComponent
       matriculaChek = false;
       matricula = null;
     }
+    let calle = finado.cp?.desCalle ?? null;
+    let noExterior = finado.cp?.numExterior ?? null;
+    let noInterior = finado.cp?.numInterior ?? null;
+    let cp = finado.cp?.codigoPostal ?? null;
+    let colonia = finado.cp?.desColonia ?? null;
+    let municipio =finado.cp?.desMunicipio ?? null;
+    let estado = finado.cp?.desEstado ?? null;
+    let idDomicilio = finado.cp?.idDomicilio ?? null;
+
     let datosEtapaFinado = {
       datosFinado: {
         idPersona: finado.idPersona,
@@ -1035,14 +1074,14 @@ export class ModificarDatosContratanteComponent
         tipoPension: finado.idTipoPension,
       },
       direccion: {
-        calle: finado.cp.desCalle,
-        noExterior: finado.cp.numExterior,
-        noInterior: finado.cp.numInterior,
-        cp: finado.cp.codigoPostal,
-        colonia: finado.cp.desColonia,
-        municipio: finado.cp.desMunicipio,
-        estado: finado.cp.desEstado,
-        idDomicilio: Number(finado.cp.idDomicilio),
+        calle: calle,
+        noExterior:noExterior,
+        noInterior:noInterior,
+        cp:cp,
+        colonia: colonia,
+        municipio: municipio,
+        estado: estado,
+        idDomicilio: idDomicilio,
       },
     };
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);

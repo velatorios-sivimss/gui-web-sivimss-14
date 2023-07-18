@@ -29,6 +29,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
   idVelatorio: number = 0;
   idArticulo: number = 0;
   idInventario: number = 0;
+  inventarioSeleccionado:number[] = [];
   idProveedor: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -42,12 +43,14 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
 
   ngOnInit(): void {
     this.idVelatorio = this.config.data.idVelatorio;
+    this.inventarioSeleccionado = this.config.data.idInventarios;
     this.inicializarForm();
     this.consultarEmpaque(this.config.data.idVelatorio);
   }
 
   consultarEmpaque(idVelatorio: number): void {
     const parametros = { idVelatorio: idVelatorio };
+    let arregloEmpaqueTemporal:any;
     this.gestionarOrdenServicioService
       .consultarEmpaques(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -79,10 +82,17 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
 
             return;
           }
+          arregloEmpaqueTemporal = datos;
 
-          this.empaqueCompletos = datos;
+          this.inventarioSeleccionado.forEach((elemento:any) => {
+            arregloEmpaqueTemporal = arregloEmpaqueTemporal.filter((filtro:any) => {
+              return filtro.idInventario != elemento;
+            });
+          });
+
+          this.empaqueCompletos = arregloEmpaqueTemporal;
           this.empaque = mapearArregloTipoDropdown(
-            datos,
+            arregloEmpaqueTemporal,
             'nombreArticulo',
             'idInventario'
           );

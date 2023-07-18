@@ -187,6 +187,21 @@ export class ModificarInformacionServicioComponent
 
   llenarFormulario(datos: any): void {
     this.idPanteon = datos.idPanteon;
+    const fechaActual = moment().format('YYYY-MM-DD');
+    const [anio,mes,dia] = fechaActual.split('-')
+    // let horaVelacion:string;
+    // if(typeof datos.horaVelacion){
+    //   datos.horaVelacion.inclu
+    // }
+
+    if(typeof datos.horaVelacion == "string"){
+      const [horas,minutos] = datos.horaVelacion.split(':')
+      datos.horaVelacion = new Date(+anio,+mes,+dia,+horas,+minutos)
+    }
+
+
+
+
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [
@@ -286,6 +301,11 @@ export class ModificarInformacionServicioComponent
     this.altaODS = datodPrevios;
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
+    if(Number(this.altaODS.finado.idTipoOrden) < 3){
+      this.cortejo.gestionadoPorPromotor.disable();
+    }else{
+      this.cortejo.gestionadoPorPromotor.enable();
+    }
   }
 
   ngAfterContentChecked(): void {
@@ -300,7 +320,7 @@ export class ModificarInformacionServicioComponent
         hora: [{ value: null, disabled: false }, [Validators.required]],
         calle: [{ value: null, disabled: false }, [Validators.required]],
         exterior: [{ value: null, disabled: false }, [Validators.required]],
-        interior: [{ value: null, disabled: false }, [Validators.required]],
+        interior: [{ value: null, disabled: false }],
         cp: [{ value: null, disabled: false }, [Validators.required]],
         colonia: [{ value: null, disabled: false }, [Validators.required]],
         municipio: [{ value: null, disabled: false }, [Validators.required]],
@@ -314,7 +334,6 @@ export class ModificarInformacionServicioComponent
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
           { value: null, disabled: false },
-          [Validators.required],
         ],
       }),
       recoger: this.formBuilder.group({
@@ -536,8 +555,8 @@ export class ModificarInformacionServicioComponent
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    this.inhumacion.agregarPanteon.disable();
-    this.cortejo.gestionadoPorPromotor.disable();
+    // this.inhumacion.agregarPanteon.disable();
+    // this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();
     this.instalacionServicio.hora.disable();

@@ -131,6 +131,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
   bloquearPaquete: boolean = false;
   ocultarFolioEstatus: boolean = false;
   elementosEliminadosPresupuesto: any[] = [];
+  paqueteSeleccionadoDD!:Dropdown;
+  valorPrevioDD: number = 0;
+  confCambiarPaquete:boolean = false;
+
+
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -275,9 +280,25 @@ export class ModificarDatosCaracteristicasContratanteComponent
       );
   }
 
-  detallePaqueteFunction(dd: Dropdown): void {
-    let nombrePaquete = dd.selectedOption.label;
-    this.dd = dd.selectedOption.value;
+  confirmarCambioPaquete(dd:Dropdown): void {
+    //this.paqueteSeleccionado = this.valorPrevioDD;
+    this.confCambiarPaquete = true;
+    this.paqueteSeleccionadoDD = dd.selectedOption;
+  }
+
+  valorPrevio(dd:Dropdown):void {
+    this.valorPrevioDD = dd.selectedOption?.value ?? null;
+  }
+
+  cancelarCambioPaquete(): void{
+    this.confCambiarPaquete = false;
+    this.paqueteSeleccionado = this.valorPrevioDD;
+  }
+
+  detallePaqueteFunction(): void {
+    let nombrePaquete = this.paqueteSeleccionadoDD.label;
+    this.confCambiarPaquete = false
+    this.dd = this.paqueteSeleccionadoDD.value;
     this.mostrarTIpoOtorgamiento = false;
     if (nombrePaquete.trim() == 'Paquete social') {
       this.mostrarTIpoOtorgamiento = true;
@@ -406,7 +427,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       if (datos.proviene == 'paquete') {
         totalPaquete = datos.totalPaquete;
       } else {
-        totalArticulos += datos.importe;
+        totalArticulos += Number(datos.importe);
       }
     });
     let pretotal = Number(totalPaquete) + Number(totalArticulos);
@@ -555,6 +576,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
       data: {
         idVelatorio: this.idVelatorio,
         tipoOrden: this.tipoOrden,
+        presupuesto: this.datosPresupuesto
       },
     });
     ref.onClose.subscribe((salida: any) => {
@@ -985,19 +1007,22 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.idArticulo = parseInt(datos.idArticulo);
       detalle.desmotivo = datos.desmotivo;
       detalle.activo = 1;
-      detalle.idProveedor = datos.idProveedor ?? null;
+      detalle.idProveedor =
+        // datos.idProveedor ?? null;
+        (datos.idProveedor == '' || datos.idProveedor == null) ? null : Number(datos.idProveedor);
       detalle.idServicio =
-        datos.idServicio == '' ? null : Number(datos.idServicio);
+        (datos.idServicio == '' || datos.idServicio == null)  ? null : Number(datos.idServicio);
       detalle.idTipoServicio =
-        datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
+        (datos.idTipoServicio == '' || datos.idTipoServicio) ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe);
       detalle.totalPaquete = Number(datos.totalPaquete);
+      detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =
           {} as ServicioDetalleTrasladotoInterface;
-        detalle.activo = datos.activo ?? 0;
+        detalle.activo = datos.activo ?? 1;
         let cordenadas = datos.coordOrigen ?? null;
         traslado.longitudInicial = null;
         traslado.latitudInicial = null;
@@ -1025,14 +1050,15 @@ export class ModificarDatosCaracteristicasContratanteComponent
       detalle.desmotivo = datos.desmotivo ?? null;
       detalle.activo = 0;
       detalle.idProveedor =
-        datos.idProveedor == '' ? null : Number(datos.idProveedor);
+        (datos.idProveedor == '' || datos.idProveedor == null) ? null : Number(datos.idProveedor);
       detalle.idServicio =
-        datos.idServicio == '' ? null : Number(datos.idServicio);
+        (datos.idServicio == '' || datos.idServicio == null) ? null : Number(datos.idServicio);
       detalle.idTipoServicio =
-        datos.idTipoServicio == '' ? null : Number(datos.idTipoServicio);
+        (datos.idTipoServicio == '' || datos.idTipoServicio) ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;
       detalle.importeMonto = Number(datos.importe) ?? null;
       detalle.totalPaquete = Number(datos.totalPaquete) ?? null;
+      detalle.idCategoriaPaquete = datos.idCategoria === "" ? null : Number(datos.idCategoria)
 
       if (Number(datos.idTipoServicio) == 4) {
         let traslado: ServicioDetalleTrasladotoInterface =

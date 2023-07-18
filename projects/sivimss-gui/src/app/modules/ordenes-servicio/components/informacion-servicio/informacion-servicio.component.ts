@@ -146,6 +146,11 @@ export class InformacionServicioComponent implements OnInit {
     this.altaODS = datodPrevios;
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
+    if(Number(this.altaODS.finado.idTipoOrden) < 3){
+      this.cortejo.gestionadoPorPromotor.disable();
+    }else{
+      this.cortejo.gestionadoPorPromotor.enable();
+    }
   }
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
@@ -204,7 +209,6 @@ export class InformacionServicioComponent implements OnInit {
         ],
         interior: [
           { value: datos.interior, disabled: false },
-          [Validators.required],
         ],
         cp: [{ value: datos.cp, disabled: false }, [Validators.required]],
         colonia: [
@@ -234,7 +238,7 @@ export class InformacionServicioComponent implements OnInit {
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
           { value: null, disabled: false },
-          [Validators.required],
+
         ],
       }),
       recoger: this.formBuilder.group({
@@ -279,7 +283,7 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   changePromotor(validacion: string): void {
-    if (validacion == 'si' && Number(this.tipoOrden) < 3)
+    if (validacion == 'si')
       this.cortejo.promotor.enable();
     else {
       this.cortejo.promotor.disable();
@@ -786,7 +790,7 @@ export class InformacionServicioComponent implements OnInit {
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    this.inhumacion.agregarPanteon.disable();
+    // this.inhumacion.agregarPanteon.disable();
     this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();

@@ -261,7 +261,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   ): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar/reporte-orden-servicio-generada`,
+        `${this._funcionalidad}/buscar/reporte-orden-servicio-modificada`,
       { idOrdenServicio: idOrdenServicio, estatus: estatus, tipoReporte: 'pdf' }
     );
   }
@@ -272,7 +272,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   ): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato`,
+        `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-modificada`,
       {idOrdenServicio:idOrdenServicio,generaReporte:tipoOrden,tipoReporte:'pdf'}
     );
   }

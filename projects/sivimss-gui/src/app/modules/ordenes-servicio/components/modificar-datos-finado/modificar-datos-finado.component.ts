@@ -170,9 +170,21 @@ export class ModificarDatosFinadoComponent
     this.gestionarEtapasService.datosEtapaFinado$
       .asObservable()
       .subscribe((datosEtapaFinado) => this.inicializarForm(datosEtapaFinado));
-    this.cambiarValidacionMatricula();
-    this.inicializarCalcularEdad();
-    this.cambiarValidacionNSS();
+
+
+
+    setTimeout(()=> {
+      this.cambiarValidacionMatricula();
+      this.inicializarCalcularEdad();
+      this.cambiarValidacionNSS();
+      this.changeTipoOrden(true);
+      this.cambiarTipoSexo();
+
+    },300)
+
+
+
+
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -208,10 +220,16 @@ export class ModificarDatosFinadoComponent
       extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
     }
 
+    let edad;
+    let fechaNacimiento;
+    if(datosEtapaFinado.datosFinado.fechaNacimiento){
+      let [dia, mes, anio] =
+        datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
+      fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
+      let a = moment(anio + '-' + mes + '-' + dia);
+      edad = moment().diff(a, 'years');
+    }
 
-    let [dia, mes, anio] =
-      datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
-    let edad = moment().diff(moment(anio + '-' + mes + '-' + dia), 'years');
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
         tipoOrden: [
@@ -283,12 +301,12 @@ export class ModificarDatosFinadoComponent
         ],
         fechaNacimiento: [
           {
-            value: datosEtapaFinado.datosFinado.fechaNacimiento,
+            value: fechaNacimiento,
             disabled: true,
           },
           [Validators.required],
         ],
-        edad: [{ value: edad, disabled: true }, [Validators.required]],
+        edad: [{ value: edad ? edad : null, disabled: true }, [Validators.required]],
         sexo: [
           { value: datosEtapaFinado.datosFinado.sexo, disabled: false },
           [Validators.required],
@@ -369,7 +387,7 @@ export class ModificarDatosFinadoComponent
         ],
         noInterior: [
           { value: datosEtapaFinado.direccion.noInterior, disabled: false },
-          [Validators.required],
+
         ],
         cp: [
           { value: datosEtapaFinado.direccion.cp, disabled: false },
@@ -389,27 +407,38 @@ export class ModificarDatosFinadoComponent
         ],
       }),
     });
-    if (
-      datosEtapaFinado.datosFinado.matricula == null ||
-      datosEtapaFinado.datosFinado.matricula == ''
-    ) {
-      this.datosFinado.matricula.disable();
-      this.datosFinado.matriculaCheck.setValue(false);
-    } else {
-      this.datosFinado.matricula.disable();
-      this.datosFinado.matriculaCheck.setValue(true);
-    }
+    setTimeout(()=> {
+      if (
+        datosEtapaFinado.datosFinado.matricula == null ||
+        datosEtapaFinado.datosFinado.matricula == ''
+      ) {
+        this.datosFinado.matricula.disable();
+        this.datosFinado.matriculaCheck.setValue(false);
+      } else {
+        this.datosFinado.matricula.disable();
+        this.datosFinado.matriculaCheck.setValue(true);
+      }
 
-    if (
-      datosEtapaFinado.datosFinado.nss == null ||
-      datosEtapaFinado.datosFinado.nss == ''
-    ) {
-      this.datosFinado.nss.disable();
-      this.datosFinado.nssCheck.setValue(false);
-    } else {
-      this.datosFinado.nss.enable();
-      this.datosFinado.nssCheck.setValue(true);
-    }
+      if (
+        datosEtapaFinado.datosFinado.nss == null ||
+        datosEtapaFinado.datosFinado.nss == ''
+      ) {
+        this.datosFinado.nss.disable();
+        this.datosFinado.nssCheck.setValue(false);
+      } else {
+        this.datosFinado.nss.enable();
+        this.datosFinado.nssCheck.setValue(true);
+      }
+
+
+      if(datosEtapaFinado.datosFinado.clinicaAdscripcion){
+        this.changeClinica();
+      }else if(datosEtapaFinado.datosFinado.unidadProcedencia){
+        this.changeUnidad();
+      }
+
+
+    },500)
 
     if (datosEtapaFinado.datosFinado.esObito != null)
       this.esObito(esObito);
@@ -443,6 +472,10 @@ export class ModificarDatosFinadoComponent
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
               this.datosFinado.nombre.setValue(respuesta.datos.nombre);
@@ -460,8 +493,8 @@ export class ModificarDatosFinadoComponent
                 this.datosFinado.sexo.setValue(1);
               }
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosFinado.nacionalidad.setValue(1);
               } else {
@@ -645,9 +678,9 @@ export class ModificarDatosFinadoComponent
     this.datosFinado.nss.patchValue(this.datosFinado.nss.value);
   }
 
-  async changeTipoOrden() {
+  async changeTipoOrden(modificacion?: boolean) {
     const idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
-    this.form.reset();
+    if(!modificacion)this.form.reset();
     if (idTipoOden == 1) {
       this.habilitarTodo();
       this.datosFinado.tipoOrden.setValue(1);
@@ -827,6 +860,7 @@ export class ModificarDatosFinadoComponent
     });
 
     await Object.keys(this.direccion).forEach((key) => {
+      if (key.includes("noInterior"))return;
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
@@ -1094,7 +1128,4 @@ export class ModificarDatosFinadoComponent
     this.datosAlta();
   }
 
-  validarFormulario(): void{
-    this.form;
-  }
 }

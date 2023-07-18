@@ -2,7 +2,7 @@
   <div class="col-md-4">
     <label class="control-label" for="paquete">Paquete<span class="req">*</span>:</label>
     <p-dropdown #dd id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado" [disabled]="bloquearPaquete"
-      placeholder="Selecciona el paquete" [options]="paquetes" (onChange)="detallePaqueteFunction(dd)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
+      placeholder="Selecciona el paquete" [options]="paquetes" (onClick)="valorPrevio(dd)" (onChange)="confirmarCambioPaquete(dd)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
   </div>
   <div class="col-md-6" *ngIf="mostrarTIpoOtorgamiento">
     <label class="control-label" for="selecionaTipoOtorgamiento">Para el otorgamiento de este paquete fue presentado un:<span
@@ -40,9 +40,9 @@
             <td>{{paquete.grupo}}</td>
             <td>{{paquete.concepto}}</td>
             <td>{{paquete.cantidad}}</td>
-            <td>{{paquete.importe}}</td>
+            <td>{{paquete.importe | currency:"USD":"symbol"}}</td>
             <td>{{paquete.proveedor}}</td>
-            <td>{{paquete.totalPaquete}}</td>
+            <td>{{paquete.totalPaquete | currency:"USD":"symbol"}}</td>
             <td style="width:200px">
               <div class="flex ">
                 <div class="flex align-items- mr-2">
@@ -102,9 +102,9 @@
             <td>{{paquete.grupo}}</td>
             <td>{{paquete.concepto}}</td>
             <td>{{paquete.cantidad}}</td>
-            <td>{{paquete.importe}}</td>
+            <td>{{paquete.importe | currency:"USD":"symbol"}}</td>
             <td>{{paquete.proveedor}}</td>
-            <td>{{paquete.totalPaquete}}</td>
+            <td>{{paquete.totalPaquete | currency:"USD":"symbol"}}</td>
             <td style="width:200px">
               <div class="flex " *ngIf="paquete.proviene!='paquete'">
                 <a class="barras" (click)="abrirPanel($event,paquete,rowIndex+1,'presupuesto')">
@@ -184,3 +184,16 @@
     </div>
   </div>
 </form>
+<p-dialog header="" [(visible)]="confCambiarPaquete" [style]="{width: '50vw'}"
+          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
+  <div class="row">
+    <p class="text-center">¿Estás seguro de cambiar el paquete funerario? Se eliminarán de la tabla los artículos y servicios.</p>
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="submit" class="btn btn-default btn-md" (click)="cancelarCambioPaquete()">Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="detallePaqueteFunction()">Aceptar</button>
+    </div>
+  </div>
+</p-dialog>

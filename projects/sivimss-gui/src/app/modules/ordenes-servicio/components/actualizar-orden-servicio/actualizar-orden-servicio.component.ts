@@ -20,7 +20,7 @@ import { Subscription, finalize } from 'rxjs';
   templateUrl: './actualizar-orden-servicio.component.html',
   styleUrls: ['./actualizar-orden-servicio.component.scss'],
 })
-export class ActualizarOrdenServicioComponent implements OnInit {
+export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
   readonly DATOS_DEL_CONTRATANTE = 0;
   readonly DATOS_DEL_FINADO = 1;
   readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
@@ -171,7 +171,6 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     let mostrarOtorgamiento = false;
     let salidaPaquete = [];
     let salidaPresupuesto = [];
-    //PREGUNTAR A LEANDRO
     if (datosPaquete != null && datosPaquete.caracteristicasPaqueteResponse != null && datosPaquete.caracteristicasDelPresupuesto != null) {
       let caracteristicasPaquete = datosPaquete.caracteristicasPaqueteResponse;
       observaciones = datosPaquete.caracteristicasDelPresupuesto.observaciones;
@@ -208,6 +207,7 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           bloquearRadioButton = false;
         }
         let datos = {
+          idCategoriaPaquete: element.idCategoria,
           idPaqueteDetalle: element.idPaqueteDetalle,
           grupo: element.grupo,
           concepto: element.concepto,
@@ -231,9 +231,9 @@ export class ActualizarOrdenServicioComponent implements OnInit {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-        if (element.idProveedor != null && element.idProveedor != '') {
+        // if (element.idProveedor != null && element.idProveedor != '') {
           salidaPaquete.push(datos);
-        }
+        // }
       }
     }
 
@@ -384,5 +384,151 @@ export class ActualizarOrdenServicioComponent implements OnInit {
     // this.etapas.forEach((etapa: Etapa) => etapa.estado = EtapaEstado.Inactivo);
     // etapaSeleccionada.estado = EtapaEstado.Activo;
     this.idEtapaSeleccionada = idEtapaSeleccionada;
+  }
+
+  ngOnDestroy(): void {
+    const datosEtapaFinado = {
+      datosFinado: {
+        tipoOrden: null,
+        noContrato: null,
+        velatorioPrevision: null,
+        esObito: null,
+        esParaExtremidad: null,
+        matricula: null,
+        matriculaCheck: true,
+        curp: null,
+        nss: null,
+        nssCheck: true,
+        nombre: null,
+        primerApellido: null,
+        segundoApellido: null,
+        fechaNacimiento: null,
+        edad: null,
+        sexo: null,
+        otroTipoSexo: null,
+        nacionalidad: null,
+        lugarNacimiento: null,
+        paisNacimiento: null,
+        fechaDefuncion: null,
+        causaDeceso: null,
+        lugarDeceso: null,
+        horaDeceso: null,
+        clinicaAdscripcion: null,
+        unidadProcedencia: null,
+        procedenciaFinado: null,
+        tipoPension: null,
+      },
+      direccion: {
+        calle: null,
+        noExterior: null,
+        noInterior: null,
+        cp: null,
+        colonia: null,
+        municipio: null,
+        estado: null,
+        idDomicilio: null,
+      },
+    };
+    const datosEtapaCaracteristicas = {
+      observaciones: null,
+      notasServicio: null,
+      paqueteSeleccionado: null,
+      mostrarTIpoOtorgamiento: false,
+      selecionaTipoOtorgamiento: null,
+      datosPaquetes: [],
+      datosPresupuesto: [],
+      elementosEliminadosPaquete: [],
+      elementosEliminadosPresupuesto: [],
+      total: 0,
+    };
+    const datosEtapaInformacionServicio = {
+      fechaCortejo: null,
+      fechaCremacion: null,
+      fechaRecoger: null,
+      horaRecoger: null,
+      horaCortejo: null,
+      horaCremacion: null,
+      idPanteon: null,
+      idPromotor: null,
+      idSala: null,
+      cp: null,
+      fechaInstalacion: null,
+      fechaVelacion: null,
+      horaInstalacion: null,
+      horaVelacion: null,
+      idCapilla: null,
+      calle: null,
+      interior: null,
+      exterior: null,
+      colonia: null,
+      municipio: null,
+      estado: null,
+      gestionadoPorPromotor: null,
+      promotor: null,
+    };
+    const etapas: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Activo,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 2,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 3,
+        estado: EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: 'solid',
+        },
+      },
+    ];
+
+    this.gestionarEtapasService.datosContratante$.next({})
+    this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
+    this.gestionarEtapasService.datosEtapaCaracteristicas$.next(datosEtapaCaracteristicas);
+    this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datosEtapaInformacionServicio);
+    this.gestionarEtapasService.etapas$.next(etapas)
   }
 }
