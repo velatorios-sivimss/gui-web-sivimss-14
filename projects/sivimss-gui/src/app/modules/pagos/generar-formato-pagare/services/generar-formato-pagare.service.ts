@@ -96,8 +96,9 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
-  obtenerFoliosODS(idVelatorio: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-pag`, {idVelatorio});
+  obtenerFoliosODS(idDelegacion: string, idVelatorio: string): Observable<HttpRespuesta<any>> {
+    const body = { "idDelegacion": idDelegacion, "idVelatorio": idVelatorio  }
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-pag`, body);
   }
 
   buscarContratantesGeneradosPorfolio(id: number): Observable<HttpRespuesta<any>> {
