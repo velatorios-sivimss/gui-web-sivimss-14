@@ -4,8 +4,18 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {AlertaService} from "../../../../../shared/alerta/services/alerta.service";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {Router} from "@angular/router";
+import {HttpErrorResponse} from "@angular/common/http";
+
+interface SolicitudModificacionPago {
+  idPagoDetalle: number,
+  importePago: number,
+  cambioMetPago: boolean,
+  descBanco: string,
+  idMetodoPago: number,
+  numAutorizacion: string
+}
 
 @Component({
   selector: 'app-modificar-tipo-pago',
@@ -27,6 +37,7 @@ export class ModificarTipoPagoComponent implements OnInit {
   tipoPagos: any[] = [];
   tipoPago: string = '';
   resumenSolicitud!: any;
+  idPagoDetalle!: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -66,6 +77,7 @@ export class ModificarTipoPagoComponent implements OnInit {
 
   llenarCatalogos(): void {
     this.tipoPagoForm.get('tipoPagoAnterior')?.patchValue(this.config.data.metodoPago);
+    this.idPagoDetalle = this.config.data.idPagoDetalle;
     this.total = this.config.data.importe;
     if (this.config.data.tipoPago === 'Pago de Orden de Servicio') {
       this.tipoPagos = TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value));
@@ -110,6 +122,36 @@ export class ModificarTipoPagoComponent implements OnInit {
   }
 
   guardar(): void {
+    const solicitud: SolicitudModificacionPago = this.generarSolicitud();
+    this.realizarPagoService.modificarMetodoPago(solicitud).subscribe({
+      next: (): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago modificado correctamente');
+        this.ref.close();
+        this.actualizarPagina();
+      },
+      error: (error: HttpErrorResponse): void => {
+        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+        console.log(error);
+      }
+    });
+  }
 
+  generarSolicitud(): SolicitudModificacionPago {
+    return {
+      cambioMetPago: this.tipoPago === this.config.data.metodoPago,
+      descBanco: this.tipoPagoForm.get('nombreBanco')?.value,
+      idMetodoPago: this.tipoPagoForm.get('tipoPago')?.value,
+      idPagoDetalle: this.idPagoDetalle,
+      importePago: this.tipoPagoForm.get('importe')?.value,
+      numAutorizacion: this.tipoPagoForm.get('noAutorizacion')?.value
+    }
+  }
+
+  actualizarPagina(): void {
+    const currentUrl: string = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+      void this.router.navigate([currentUrl]);
+    });
   }
 }

@@ -55,7 +55,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
   modificarTipoPago(): void {
     const data = {
       metodoPago: this.pagoSeleccionado.metodoPago, importe: this.pagoSeleccionado.importe,
-      tipoPago: this.registroPago.tipoPago
+      tipoPago: this.registroPago.tipoPago, idPagoDetalle: this.pagoSeleccionado.idPagoDetalle
     };
     const MODIFICAR_TIPO_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Modificar pago",

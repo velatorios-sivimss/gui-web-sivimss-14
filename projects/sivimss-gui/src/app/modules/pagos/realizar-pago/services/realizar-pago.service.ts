@@ -18,6 +18,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _prevFunFolios: string = 'consultar-folios-prevFun-pagos';
   private readonly _renPrevFunFolios: string = 'consultar-folios-renPrevFun-pagos';
   private readonly _eliminarPago: string = 'eliminar-pagos';
+  private readonly _modificarPago: string = 'actualizar-pagos';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "crear_pagos", "",
@@ -100,5 +101,9 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   cancelarMetodoPago(idPagoDetalle: number): Observable<HttpRespuesta<any>> {
     const body = {idPagoDetalle};
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._eliminarPago}`, body)
+  }
+
+  modificarMetodoPago(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
   }
 }
