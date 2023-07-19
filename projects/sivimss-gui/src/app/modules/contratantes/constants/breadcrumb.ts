@@ -3,10 +3,10 @@ import {ElementoBreadcrumb} from "../../../shared/breadcrumb/models/elemento-bre
 export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   {
     icono: 'imagen-icono-operacion-sivimss.svg',
-    titulo: 'Administrar'
+    titulo: 'Administración de catálogos'
   },
   {
     icono: '',
-    titulo: 'Contratantes'
+    titulo: 'Administrar usuarios contratantes'
   }
 ]

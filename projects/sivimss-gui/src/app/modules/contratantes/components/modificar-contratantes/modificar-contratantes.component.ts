@@ -81,7 +81,6 @@ export class ModificarContratantesComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
       });
     }
@@ -191,7 +190,7 @@ export class ModificarContratantesComponent implements OnInit {
   }
 
   validarEmail() {
-    if (this.dgf.correoElectronico.invalid) {
+    if (this.dgf.correo.invalid) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'Tu correo electrónico no es válido.');
     }
   }
