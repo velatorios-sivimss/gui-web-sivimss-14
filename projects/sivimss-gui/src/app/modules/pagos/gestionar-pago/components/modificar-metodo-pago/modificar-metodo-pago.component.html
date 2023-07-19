@@ -1,1 +1,50 @@
-<p>modificar-metodo-pago works!</p>
+<app-table-panel>
+  <div class="row table-panel-row">
+    <div class="col-md-3" *ngIf="registroPago.numAutorizacion">
+      <div class="table-panel-column">
+        <label>Folio de autorización</label>
+        <span>{{registroPago.numAutorizacion}}</span>
+      </div>
+    </div>
+    <div class="col-md-3" *ngIf="registroPago.desBanco">
+      <div class="table-panel-column">
+        <label>Banco</label>
+        <span>{{registroPago.desBanco}}</span>
+      </div>
+    </div>
+    <div class="col-md-3" *ngIf="registroPago.fecPago">
+      <div class="table-panel-column">
+        <label>Fecha</label>
+        <span>{{registroPago.fecPago}}</span>
+      </div>
+    </div>
+    <div class="col-md-3" *ngIf="registroPago.importe">
+      <div class="table-panel-column">
+        <label>Importe</label>
+        <span>{{registroPago.importe | currency}}</span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+<form [formGroup]="modificarPagoForm">
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <label class="control-label" for="motivoModificacion">Motivo de la modificación<span class="req">*</span>:</label>
+      <textarea rows="5" cols="30" id="motivoModificacion" class="control-label" formControlName="motivoModificacion"
+                pInputTextarea [maxlength]="100" placeholder="Ingresa el motivo de la modificación"></textarea>
+      <span class="campo-obligatorio"
+            *ngIf="pm?.motivoModificacion?.errors?.required && (pm?.motivoModificacion?.dirty || pm?.motivoModificacion?.touched)">Este campo es obligatorio *.</span>
+    </div>
+  </div>
+  <div class="row mb-4 mt-4">
+    <div class="col-md-12 control-label">
+      <span>*Campos obligatorios</span>
+    </div>
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-gold btn-md ml-5" (click)="ref.close()">Cancelar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="modificarPagoForm.invalid">Aceptar</button>
+    </div>
+  </div>
+</form>

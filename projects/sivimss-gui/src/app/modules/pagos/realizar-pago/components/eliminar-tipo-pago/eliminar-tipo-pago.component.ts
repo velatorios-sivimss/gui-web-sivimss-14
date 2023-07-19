@@ -4,7 +4,7 @@ import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 
 interface MetodoPago {
   fechaPago: string
@@ -20,7 +20,7 @@ interface MetodoPago {
   templateUrl: './eliminar-tipo-pago.component.html',
   styleUrls: ['./eliminar-tipo-pago.component.scss']
 })
-export class EliminarTipoPagoComponent implements OnInit {
+export class EliminarTipoPagoComponent {
 
   registroMetodoPago!: MetodoPago;
   total!: number;
@@ -37,8 +37,6 @@ export class EliminarTipoPagoComponent implements OnInit {
     this.total = this.config.data.total;
   }
 
-  ngOnInit(): void {
-  }
 
   guardar(): void {
     this.realizarPagoService.cancelarMetodoPago(this.registroMetodoPago.idPagoDetalle).subscribe({
