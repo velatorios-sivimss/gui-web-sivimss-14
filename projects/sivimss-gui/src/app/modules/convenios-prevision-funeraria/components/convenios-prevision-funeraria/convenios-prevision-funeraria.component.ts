@@ -212,7 +212,7 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   paginar(event: LazyLoadEvent): void {
-    //if (!validarAlMenosUnCampoConValor(this.filtroForm.value)) return;
+    if (!validarAlMenosUnCampoConValor(this.filtroForm.value)) return;
     if (event?.first !== undefined && event.rows !== undefined) {
       this.numPaginaActual.tablaConvenios = Math.floor(event.first / event.rows);
     } else {
@@ -550,7 +550,7 @@ export class ConsultaConveniosComponent implements OnInit {
   modificarConvenio(): void {
     // localStorage.setItem('datosConvenio', JSON.stringify({ convenio: this.convenioSeleccionado }));
     this.router.navigate(['./modificar-nuevo-convenio'], {
-      queryParams:{
+      queryParams: {
         folio: this.convenioSeleccionado.folioConvenio,
         fecha: this.convenioSeleccionado.fechaContratacion
       },
@@ -570,5 +570,18 @@ export class ConsultaConveniosComponent implements OnInit {
         this.paginar_()
       }
     });
+  }
+
+  obtenerDescGenero(genero: number): string {
+    switch (genero) {
+      case 1:
+        return 'Masculino';
+      case 2:
+        return 'Femenino';
+      case 3:
+        return 'Otro';
+      default:
+        return '';
+    }
   }
 }
