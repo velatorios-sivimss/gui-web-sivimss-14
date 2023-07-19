@@ -16,12 +16,16 @@ import { DetalleGestionPagoComponent } from './components/detalle-gestion-pago/d
 import {CustomTemplateModule} from "../../../shared/custom-template/custom-template.module";
 import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 import {AccordionModule} from "primeng/accordion";
+import { ModificarMetodoPagoComponent } from './components/modificar-metodo-pago/modificar-metodo-pago.component';
+import { CancelarMetodoPagoComponent } from './components/cancelar-metodo-pago/cancelar-metodo-pago.component';
 
 
 @NgModule({
   declarations: [
     GestionarPagoComponent,
-    DetalleGestionPagoComponent
+    DetalleGestionPagoComponent,
+    ModificarMetodoPagoComponent,
+    CancelarMetodoPagoComponent
   ],
   imports: [
     CommonModule,
