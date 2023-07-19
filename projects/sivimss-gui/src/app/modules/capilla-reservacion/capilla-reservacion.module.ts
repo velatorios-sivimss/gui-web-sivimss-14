@@ -54,7 +54,7 @@ import {PdfViewerModule} from "ng2-pdf-viewer";
     TableModule,
     ValidaRolModule,
     UtileriaModule,
-    PdfViewerModule
+    PdfViewerModule,
   ],
   providers:[
     CapillaReservacionService

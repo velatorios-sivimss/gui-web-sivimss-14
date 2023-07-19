@@ -25,7 +25,7 @@
           <div class="col-md-4">
             <label class="control-label" for="rfcCurp">RFC o CURP</label>
             <input id="rfcCurp" class="form-control" formControlName="rfcCurp" placeholder="Ingresa el RFC o CURP"
-                   maxlength="18" alphanumericOnly (blur)="consultaRFCCURP()">
+                   maxlength="18" alphanumericOnly (blur)="consultaRFCCURP()" (keyup)="convertirMayusculas(0)">
             <span class="campo-obligatorio"
                   *ngIf="ff.rfcCurp?.errors?.required && (ff.rfcCurp?.dirty || ff.rfcCurp?.touched)">
                               Campo obligatorio</span>
@@ -61,6 +61,7 @@
         <app-por-persona [folioConvenio]="folioConvenioPersona"
                          [confirmacionGuardado]="confirmarGuardadoPersona"
                          [consultarFormularioValido]="consultarFormularioValido"
+                         [escenario]="'agregar'"
                          (formularioValido)="validarFormularioPersona($event)"
                          (formularioPersona)="datosFormularioPersona($event)"
         ></app-por-persona>
@@ -69,6 +70,7 @@
         <app-por-empresa [folioEmpresa]="folioEmpresa"
                          [confirmacionGuardado]="confirmacionGuardadoEmpresa"
                          [consultarFormularioValido]="consultarFormularioValido"
+                         [escenario]="'agregar'"
                          [existePersona]="existePersona"
                          (guardarFormularioPrincipal)="guardarFormularioLocalStorage($event)"
                          (formularioValido)="validarFormularioEmpresa($event)"
@@ -130,6 +132,7 @@
                                  [objetoDetallePersona]="modeloGuardarPersona"
                                  [confirmarGuardarPersona]="banderaGuardarPersona"
                                  [confirmarGuardarEmpresa]="banderaGuardarEmpresa"
+                                 [escenario]="'agregar'"
     ></app-detalle-guarda-convenio>
     <div class="flex mt-4 justify-content-center">
       <div class="col-md-12">

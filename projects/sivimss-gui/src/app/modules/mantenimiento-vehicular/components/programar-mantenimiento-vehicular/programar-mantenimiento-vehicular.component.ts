@@ -44,6 +44,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  realizoBusqueda: boolean = false;
   paginacionConFiltrado: boolean = false;
   modificarModal: boolean = false;
   detalleModal: boolean = false;
@@ -69,6 +70,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   readonly POSICION_CATALOGOS_PLACAS: number = 3;
 
   usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -159,51 +161,84 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   paginar(): void {
     if (!localStorage.getItem('sivimss_token')) return;
-    this.loaderService.activar();
-    const filtros: FiltrosMantenimientoVehicular = this.crearSolicitudFiltros();
-    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
-      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.vehiculos = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
+    const filtros: FiltrosMantenimientoVehicular | null = this.crearSolicitudFiltrosPorNivel();
+    if (filtros) {
+      if (!Object.values(filtros).some(v => (v))) {
+        return;
+      }
+      this.loaderService.activar();
+      this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.vehiculos = respuesta.datos.content;
+            this.totalElementos = respuesta.datos.totalElements;
+            this.realizoBusqueda = true;
 
-          const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-          if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
-            this.vehiculoSeleccionado = this.vehiculos[0];
-            this.abrirModalnuevaVerificacion();
-            this.once = false;
+            const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+            if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
+              this.vehiculoSeleccionado = this.vehiculos[0];
+              this.abrirModalnuevaVerificacion();
+              this.once = false;
+            }
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+            this.mensajesSistemaService.mostrarMensajeError(error);
           }
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+        });
+    }
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosMantenimientoVehicular = this.crearSolicitudFiltros();
-    if (!Object.values(filtros).some(v => (v))) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+    const filtros: FiltrosMantenimientoVehicular | null = this.crearSolicitudFiltrosPorNivel();
+    if (filtros) {
+      if (!Object.values(filtros).some(v => (v))) {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+        return;
+      }
+      this.loaderService.activar();
+      this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.vehiculos = respuesta.datos.content;
+            this.totalElementos = respuesta.datos.totalElements;
+            this.realizoBusqueda = true;
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+            this.mensajesSistemaService.mostrarMensajeError(error);
+          }
+        });
     }
-    this.loaderService.activar();
-    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
-      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.vehiculos = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
   }
 
   buscar(): void {
     this.numPaginaActual = 0;
     this.paginacionConFiltrado = true;
     this.paginarConFiltros();
+  }
+
+  crearSolicitudFiltrosPorNivel(): FiltrosMantenimientoVehicular | null {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    switch (+usuario.idOficina) {
+      case 1:
+        return {
+          delegacion: this.f.delegacion.getRawValue() === '' ? null : this.f.delegacion.getRawValue(),
+          velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
+          placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+        }
+      case 2:
+        return {
+          velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
+          placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+        }
+      case 3:
+        return {
+          placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+        }
+      default:
+        return null;
+    }
   }
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
@@ -216,6 +251,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   limpiar(): void {
+    this.realizoBusqueda = false;
     this.filtroFormProgramarMantenimiento.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idOficina);
@@ -231,7 +267,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     }
     this.obtenerPlacas();
     this.cargarVelatorios(true);
-    this.paginar();
+    this.vehiculos = [];
+    this.totalElementos = 0;
   }
 
   abrirModalnuevaVerificacion(): void {
@@ -337,7 +374,15 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
         this.mostrarModalConfirmacion = true;
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        if (mensaje) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+        }
       },
     });
   }

@@ -9,7 +9,10 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
-type DetalleUsuario = Required<Usuario> & { oficina: string, rol: string, delegacion: string, velatorio: string };
+type DetalleUsuario = Required<Usuario> & {
+  oficina: string, rol: string, delegacion: string, velatorio: string,
+  contrasenia: string, desEdoNacimiento: string
+};
 
 @Component({
   selector: 'app-ver-detalle-usuario',
@@ -53,6 +56,7 @@ export class VerDetalleUsuarioComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.usuarioSeleccionado = respuesta.datos[0];
+          this.usuarioSeleccionado.contrasenia = '*'.repeat(this.usuarioSeleccionado.contrasenia.length);
           this.estatus = !!this.usuarioSeleccionado.estatus;
         },
         error: (error: HttpErrorResponse): void => {

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
@@ -20,12 +20,13 @@ import {Empresa} from "../../models/empresa.interface";
   templateUrl: './por-empresa.component.html',
   styleUrls: ['./por-empresa.component.scss']
 })
-export class PorEmpresaComponent implements OnInit, OnChanges {
+export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
 
   @Input() existePersona: boolean = false;
   @Input() folioEmpresa!: any;
   @Input() confirmacionGuardado!: boolean;
-  @Input() @Input() consultarFormularioValido!: boolean;
+  @Input() escenario!: string;
+  @Input()  consultarFormularioValido!: boolean;
   @Output() guardarFormularioPrincipal = new EventEmitter<boolean>();
   @Output() formularioValido = new EventEmitter<boolean>();
   @Output() formularioEmpresa = new EventEmitter<any>();
@@ -112,6 +113,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
       (respuesta: HttpRespuesta<any>) => {
         this.fe.estado.setValue(respuesta.datos[0]?.estado);
         this.fe.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fe.colonia.setValue(respuesta.datos[0]?.colonia);
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -146,6 +148,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
       personas: this.personasConvenio
     }
     localStorage.setItem('empresaForm',JSON.stringify(this.empresaFormTempora));
+    localStorage.setItem('flujo',this.escenario)
 
     // localStorage.setItem('personasAgregadas',JSON.stringify(this.personasConvenio));
     this.guardarFormularioPrincipal.emit(true);
@@ -197,20 +200,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   }
 
   validarFormularioVacio(formularioPrincipalValido?: boolean, origen?: string): void {
-    this.empresaForm.valid ? this.formularioValido.emit(true):this.formularioValido.emit(false)
-    // if(this.empresaForm.valid && formularioPrincipalValido && origen?.includes('externo')){
-    //   this.formularioValido.emit({origen:origen,valido:true})
-    //   return;
-    // }
-    //
-    // if(this.empresaForm.valid && formularioPrincipalValido == false && origen?.includes('local')){
-    //   this.formularioValido.emit({origen:origen,valido:true})
-    //   return;
-    // }
-    //
-    // this.formularioValido.emit({origen:'',valido:false})
-
-
+    (this.empresaForm.valid && this.personasConvenio.length > 0) ? this.formularioValido.emit(true):this.formularioValido.emit(false)
   }
 
   get fe() {
@@ -248,4 +238,23 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     if(this.folioEmpresa === "")return;
       this.consultarFolio("onChanges");
   }
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.fe.rfc]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirMinusculas(posicion:number): void {
+    const formularios = [this.fe.correoElectronico]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toLowerCase()
+    )
+  }
+
+  ngAfterViewInit(): void {
+    this.validarFormularioVacio();
+  }
+
 }

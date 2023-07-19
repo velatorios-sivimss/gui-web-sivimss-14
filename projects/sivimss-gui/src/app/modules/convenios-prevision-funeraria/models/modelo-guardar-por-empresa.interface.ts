@@ -6,6 +6,7 @@ export interface ModeloGuardarPorEmpresa {
   indTipoContratacion?:number,
   idPromotor?:string,
   numeroConvenio?: string,
+  folioConvenio?: string,
   rfcCurp?: string,
   empresa?:{
     nombreEmpresa?:string,

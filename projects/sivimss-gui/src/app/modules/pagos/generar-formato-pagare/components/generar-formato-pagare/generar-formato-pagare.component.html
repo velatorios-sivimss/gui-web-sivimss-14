@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="Generar Formato Pagare"></app-titulo-principal>
+<app-titulo-principal titulo="Generar Formato Pagaré"></app-titulo-principal>
 <div class="border-panel">
     <form [formGroup]="filtroForm" (ngSubmit)="buscar()">
         <div class="row mb-3">
@@ -37,7 +37,7 @@
                 </p-calendar>
             </div>
             <div class="col-md-3">
-                <label class="control-label" for="fechaInicial">Fecha final:</label>
+                <label class="control-label" for="fechaFinal">Fecha final:</label>
                 <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" [minDate]="filtroForm.get('fechaInicial')?.value">
                 </p-calendar>
             </div>

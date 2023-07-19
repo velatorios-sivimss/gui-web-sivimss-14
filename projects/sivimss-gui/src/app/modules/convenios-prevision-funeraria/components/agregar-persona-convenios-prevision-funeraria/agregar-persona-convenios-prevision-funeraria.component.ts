@@ -76,6 +76,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   detalleTipoPaquete!: any;
   infoPaqueteSeleccionado!: any;
   respuesta: any;
+  flujo!: any;
 
 
   constructor(
@@ -91,6 +92,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   }
 
   ngOnInit(): void {
+    this.flujo = localStorage.getItem('flujo');
     this.respuesta = this.route.snapshot.data['respuesta'];
     this.estado = this.respuesta[this.POSICION_ESTADOS]!.map(
       (estado: TipoDropdown) => (
@@ -196,6 +198,8 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       (respuesta: HttpRespuesta<any>) => {
         this.fp.estado.setValue(respuesta.datos[0]?.estado);
         this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fp.colonia.setValue(respuesta.datos[0]?.colonia);
+        this.fp.pais.setValue(119);
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -208,17 +212,23 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     personasAgregadas = this.objectoConfirmacion
     // personasAgregadas.push(this.objectoConfirmacion);
     localStorage.setItem('persona',JSON.stringify(personasAgregadas));
+    if(this.flujo.includes('modificar')){
+      this.router.navigate(['convenios-prevision-funeraria/modificar-nuevo-convenio']);
+      return
+    }
     this.router.navigate(['convenios-prevision-funeraria/ingresar-nuevo-convenio']);
   }
 
   cambioEnfermedadPrexistente(): void {
     this.otroTipoEnferemdad = false;
+    this.fp.otraEnferdedad.disable();
+    this.fp.otraEnferdedad.clearValidators();
     if(this.fp.enfermedadPrexistente.value == 4){
       this.otroTipoEnferemdad = true
-      this.fp.otraEnferdedad.setValidators(Validators.required);
+      this.fp.otraEnferdedad.enable();
       this.fp.otraEnferdedad.patchValue(null);
-    }else{
-      this.fp.otraEnferdedad.clearValidators();
+      this.fp.otraEnferdedad.setValidators(Validators.required);
+      this.fp.otraEnferdedad.updateValueAndValidity();
     }
   }
 
@@ -235,7 +245,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     if(!this.fp.curp.value)return;
     if (this.personaForm.controls.curp?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
-      this.limpiarCampos("curp");
+      this.limpiarDatosCurpRFC(1);
       return;
     }
     this.loaderService.activar();
@@ -243,9 +253,25 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        // this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
+        // this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
+        // this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+        if(respuesta.mensaje === ""){
+          this.fp.nombre.setValue(respuesta.datos.nomPersona);
+          this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
+          this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
+          // this.fp.idPersona.setValue(respuesta.datos.idPersona)
+          return
+        }
         this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
         this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
         this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+        // this.fp.idPersona.setValue(respuesta.datos[0].idPersona)
+        this.fp.rfc.setValue(respuesta.datos[0].rfc)
+        this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
+        this.fp.telefono.setValue(respuesta.datos[0].telefono)
+
+
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -257,23 +283,34 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     if(!this.fp.rfc.value){return}
     if (this.personaForm.controls.rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
-      this.limpiarCampos("rfc");
       return;
     }
 
+    /*
     this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC(this.fp.rfc.value,"").pipe(
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        if(respuesta.mensaje === ""){
+          this.fp.nombre.setValue(respuesta.datos.nomPersona);
+          this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
+          this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
+          this.fp.idPersona.setValue(respuesta.datos.idPersona)
+          return
+        }
         this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
         this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
         this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+        this.fp.curp.setValue(respuesta.datos[0].curp)
+        this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
+        this.fp.telefono.setValue(respuesta.datos[0].telefono)
       },
       (error:HttpErrorResponse) => {
         console.log(error);
       }
     )
+     */
   }
 
   consultarMatricula(): void {
@@ -293,21 +330,23 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     )
   }
 
+  limpiarDatosCurpRFC(posicion:number): void {
+    this.fp.nombre.patchValue(null)
+    this.fp.primerApellido.patchValue(null)
+    this.fp.segundoApellido.patchValue(null)
+    // this.fp.idPersona.patchValue(null)
+    if(posicion == 1)this.fp.rfc.patchValue(null)
+    if(posicion == 2)this.fp.curp.patchValue(null)
+    this.fp.correoElectronico.patchValue(null)
+    this.fp.telefono.patchValue(null)
+  }
+
   validarCorreoElectornico(): void {
     if(!this.fp.correoElectronico.value){return}
     if (this.personaForm.controls.correoElectronico?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
     }
   }
-
-  limpiarCampos(origen: string): void {
-    if(origen.includes("curp") || origen.includes("rfc")){
-      this.fp.nombre.patchValue(null);
-      this.fp.primerApellido.patchValue(null);
-      this.fp.segundoApellido.patchValue(null);
-    }
-  }
-
 
   siguiente(): void {
     this.indice++;
@@ -363,8 +402,20 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.indice--;
   }
 
-  cancelar(): void {
-    console.log("Se comenta método para que no marque error en Sonar");
+
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.fp.curp,this.fp.rfc]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirMinusculas(posicion: number): void {
+    const formularios = [this.fp.correoElectronico]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toLowerCase()
+    )
   }
 
   get fp() {

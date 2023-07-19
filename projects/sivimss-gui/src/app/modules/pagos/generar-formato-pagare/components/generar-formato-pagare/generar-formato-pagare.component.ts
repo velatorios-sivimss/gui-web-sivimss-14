@@ -22,6 +22,7 @@ import {DescargaArchivosService} from "../../../../../services/descarga-archivos
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import * as moment from "moment/moment";
 
 type ListadoFormato = Required<FormatoPagare> & { idODS: string }
 
@@ -155,7 +156,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       );
   }
@@ -167,15 +168,18 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   crearSolicitudFiltros(): FiltrosFormatoPagare {
+    const fechaInicial = this.filtroForm.get('fechaInicial')?.value !== null ? moment(this.filtroForm.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
+    const fechaFinal = this.filtroForm.get('fechaFinal')?.value !== null ?  moment(this.filtroForm.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
+    const folio = this.filtroForm.get("folioODS")?.value !== null ?  this.filtroForm.get("folioODS")?.value.label : null;
     return {
       idOficina: this.filtroForm.get("oficina")?.value,
       idNivel: this.filtroForm.get("nivel")?.value,
       idDelegacion: this.filtroForm.get("delegacion")?.value,
       idVelatorio: this.filtroForm.get("velatorio")?.value,
-      folioODS: this.filtroForm.get("folioODS")?.value.label,
+      folioODS: folio,
       nomContratante: this.filtroForm.get("nomContratante")?.value,
-      fecIniODS: this.filtroForm.get("fechaInicial")?.value,
-      fecFinODS: this.filtroForm.get("fechaFinal")?.value,
+      fecIniODS: fechaInicial,
+      fecFinODS: fechaFinal,
       tipoReporte:"pdf"
     }
   }
@@ -192,12 +196,10 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
 
   obtenerFoliosGenerados(): void {
-    const idDelegacion = this.filtroForm.get('delegacion')?.value;
     const idVelatorio = this.filtroForm.get('velatorio')?.value;
     this.foliosGenerados = [];
-    this.filtroForm.get('folioODS')?.patchValue(null);
     if (!idVelatorio) return;
-    this.generarFormatoService.obtenerFoliosODS(idDelegacion,idVelatorio).subscribe({
+    this.generarFormatoService.obtenerFoliosODS(idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.foliosGenerados = mapearArregloTipoDropdown(respuesta.datos, "nombre", "id");
       },

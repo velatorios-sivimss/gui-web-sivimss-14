@@ -7,9 +7,9 @@
   <ng-template appCustomTemplate="right-header">
     <div class="table-panel-header-column">
       <div class="flex flex-column">
-        <span class="ml-5">Estatus</span>
+        <span class="ml-5 font-14">Estatus</span>
         <div class="contenedor-inputswitch">
-          <span class="font-bold">{{registroPago.estatusPago}}</span>
+          <span class="font-bold font-14">{{registroPago.estatusPago}}</span>
         </div>
       </div>
       <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)">
@@ -22,32 +22,15 @@
   <app-table-panel class="pb-3 bg-g">
     <div class="row grid mt-2 mb-2">
       <div class="col">
-        <span class="ml-5">Número de autorización</span>
-        <div class="contenedor-inputswitch">
-          <span class="font-bold"></span>
-        </div>
-      </div>
-      <div class="col">
         <span class="ml-5">Tipo de pago</span>
         <div class="contenedor-inputswitch">
           <span class="font-bold">{{registroPago.tipoPago}}</span>
         </div>
       </div>
-      <div class="col">
-        <span class="ml-5">Fecha</span>
-        <div class="contenedor-inputswitch">
-          <span class="font-bold"></span>
-        </div>
-      </div>
-      <div class="col">
-        <span class="ml-5">Estatus ODS </span>
-        <div class="contenedor-inputswitch">
-          <span class="font-bold"></span>
-        </div>
-      </div>
     </div>
   </app-table-panel>
 </div>
+
 <h2 class="subtitulo pt-4 pb-4">Métodos de pago</h2>
 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor">
   <p-accordionTab *ngFor="let pago of registroPago.metodosPago">
@@ -97,7 +80,7 @@
 </p-accordion>
 <div class="row flex mb-4">
   <div class="col-md-8 font-17 ">
-    Total a pagar para cubrir el total de la ODS:
+    Total a pagar para cubrir el total de {{tipoPago}}:
     <span class="font-bold activo">{{ registroPago.totalPorCubrir | currency }}</span>
   </div>
   <div class="col-md-4">
@@ -125,10 +108,11 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagada'"
+      <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagado'"
                                 (click)="redireccionPago()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Modificar" *ngIf="registroPago.estatusPago === 'Pagada'"
+      <app-overlay-panel-opcion class="text-center" titulo="Modificar método de pago"
+                                *ngIf="registroPago.estatusPago === 'Pagado'"
                                 [routerLink]="['../../modificar-metodo-de-pago', idPagoBitacora]">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>

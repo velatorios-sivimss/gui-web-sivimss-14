@@ -41,6 +41,10 @@ export class EstatusConvenioPrevisionFunerariaComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        let idMensaje:number;
+        estatus ? idMensaje = 69 : idMensaje = 19
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(idMensaje);
+        this.alertaService.mostrar(TipoAlerta.Exito, errorMsg);
         this.ref.close(true);
       },
       (error: HttpErrorResponse) => {

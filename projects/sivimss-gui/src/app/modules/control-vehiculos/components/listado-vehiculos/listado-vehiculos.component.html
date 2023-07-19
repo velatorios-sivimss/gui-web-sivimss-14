@@ -17,8 +17,8 @@
           {{controlVehiculo.disponible === 1 ? 'Disponible' : 'Ocupada'}}
         </td>
         <td>
-          <button type="button" class="btn btn-primary btn-md" (click)="registrarActividad(controlVehiculo)">
-            Registrar {{ controlVehiculo.disponible === 1 ? 'salida' : 'entrada'}}
+          <button type="button" class="btn btn-primary btn-md" *appValidaRol="['DISPONIBILIDAD_VEHICULOS','ALTA']"
+            (click)="registrarActividad(controlVehiculo)"> Registrar {{ controlVehiculo.disponible === 1 ? 'salida' : 'entrada'}}
           </button>
         </td>
       </tr>

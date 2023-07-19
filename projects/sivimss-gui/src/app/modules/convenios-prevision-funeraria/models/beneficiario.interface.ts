@@ -1,7 +1,7 @@
 export interface BeneficiarioInterface {
   velatorio?: number;
   descVelatorio?: string;
-  fechaNacimiento?: string;
+  fechaNacimiento?: any;
   edad?: number;
   nombre?: string;
   primerApellido?: string;
@@ -14,7 +14,10 @@ export interface BeneficiarioInterface {
   correoElectronico?: string;
   telefono?: number;
 
-  documentacion?: any,
+  documentacion?:{
+    validaActaNacimientoBeneficiario?: boolean
+    validaIneBeneficiario?: boolean
+  } ,
 
   matricula?: string,
   nss?: string,
@@ -32,4 +35,6 @@ export interface BeneficiarioInterface {
   pais?: string,
   enfermedadPreexistente?: string,
   otraEnfermedad?: string,
+  validaActaNacimientoBeneficiario?:boolean,
+  validaIneBeneficiario?:boolean,
 }

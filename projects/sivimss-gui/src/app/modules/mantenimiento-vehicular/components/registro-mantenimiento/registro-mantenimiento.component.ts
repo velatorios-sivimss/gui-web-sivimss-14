@@ -299,7 +299,6 @@ export class RegistroMantenimientoComponent implements OnInit {
       this.solicitudMantenimientoForm.get("modalidad")?.addValidators([Validators.required]);
       this.solicitudMantenimientoForm.get("matPreventivo")?.setValue(null);
       this.solicitudMantenimientoForm.get("matPreventivo")?.addValidators([Validators.required]);
-
       const modalidad: number = +this.solicitudMantenimientoForm.get("modalidad")?.value;
       if ([1, 2, 3].includes(modalidad)) {
         this.obtenerCatalogoMtto(modalidad);

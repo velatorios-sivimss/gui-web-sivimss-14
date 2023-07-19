@@ -15,12 +15,12 @@
   </ng-template>
   <ng-template pTemplate="body" let-pago>
     <tr>
-      <td>{{pago.fechaPago}}</td>
+      <td>{{pago.fechaPago | date:'dd/MM/YYYY'}}</td>
       <td>{{pago.folio}}</td>
       <td>{{pago.tipoPago}}</td>
-      <td>{{pago.total}}</td>
-      <td>{{pago.totalPagado}}</td>
-      <td>{{pago.diferenciasTotales}}</td>
+      <td class="font-bold">{{pago.total | currency}}</td>
+      <td class="font-bold">{{pago.totalPagado | currency}}</td>
+      <td class="font-bold">{{pago.diferenciasTotales | currency}}</td>
       <td>
         <div class="contenedor-celda-iconos">
           <a (click)="abrirPanel($event,pago)">
@@ -45,7 +45,7 @@
   <ng-template pTemplate="paginatorright">
   </ng-template>
 </p-table>
-<div class="flex mt-4 justify-content-end">
+<div class="flex mt-4 mb-4 justify-content-end">
   <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./..'">
     Regresar
   </button>
@@ -54,9 +54,11 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar" (click)="registrarPago()"
+      <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"
                                 onCloseOnNavigation></app-overlay-panel-opcion>
-      <!--      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>-->
+      <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago"
+                                [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

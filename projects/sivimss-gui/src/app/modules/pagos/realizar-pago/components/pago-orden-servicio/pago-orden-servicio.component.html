@@ -45,7 +45,7 @@
   <ng-template pTemplate="paginatorright">
   </ng-template>
 </p-table>
-<div class="flex  mb-4 justify-content-end">
+<div class="flex mb-4 justify-content-end">
   <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./..'">
     Regresar
   </button>
@@ -54,9 +54,19 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"
-                                onCloseOnNavigation></app-overlay-panel-opcion>
-      <!--      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>-->
+      <app-overlay-panel-opcion
+        titulo="Registrar pago" (click)="registrarPago()"
+        *ngIf="pagoSeleccionado.estatusPago === 'Generado' ||
+        (pagoSeleccionado.estatusPago === 'Pendiente' && !pagoSeleccionado.generarPagare)"
+        onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion
+        *ngIf="pagoSeleccionado.estatusPago === 'Pendiente' && !!pagoSeleccionado.generarPagare"
+        titulo="Generar pagaré"
+        [routerLink]="['./../../generar-formato-pagare/formato-pagare', pagoSeleccionado.idRegistro]">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago"
+                                [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

@@ -239,11 +239,11 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   redireccionPago(): void {
-    if (this.pagoSeleccionado.tipoPago === 'Orden de Servicio') {
+    if (this.pagoSeleccionado.tipoPago === 'Pago de Orden de Servicio') {
       void this.router.navigate(["./pago-orden-servicio"], {relativeTo: this.activatedRoute});
       return;
     }
-    if (this.pagoSeleccionado.tipoPago === 'Nuevos Convenios de Previsión Funeraria') {
+    if (this.pagoSeleccionado.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
       void this.router.navigate(["./pago-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
       return;
     }

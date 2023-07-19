@@ -7,14 +7,18 @@ export const funcionalidades: { [valor: string]: string } = {
   'SERVICIOS': '7',
   'VELATORIOS': '8',
   'SALAS_RESERVACION': '9',
+  'CONTRATANTES': '11',
   'GENERAR_RECIBO_PAGO': '23',
   'CAPILLA_RESERVACION': '31',
+  'REALIZAR_PAGO': '36',
   'MANTENIMIENTO_VEHICULAR': '40',
   'GENERAR_NOTA_REMISION': '54',
   'VALE_SALIDA': '58',
   'GESTIONAR_DONACIONES': '59',
   'DISPONIBILIDAD_VEHICULOS': '60',
-  'CONSULTAR_DONADOS': '64',//Agregar los que falten.
+  'CONSULTAR_DONADOS': '64',
+  'CONSULTAR_ODS': '24'
+  //Agregar los que falten.
 }
 export const permisos: { [valor: string]: string } = {
   'ALTA': '1',
@@ -24,7 +28,3 @@ export const permisos: { [valor: string]: string } = {
   'APROBACION': '5',
   'IMPRIMIR': '6'
 }
-
-
-
-

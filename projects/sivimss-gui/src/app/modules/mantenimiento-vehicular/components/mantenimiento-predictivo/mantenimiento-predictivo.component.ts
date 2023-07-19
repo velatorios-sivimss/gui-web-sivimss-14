@@ -50,6 +50,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
   catalogoPeriodo: TipoDropdown[] = [];
   tipoMantenimientos: TipoDropdown[] = [];
   titulos: string[] = ['Aceite', 'Agua', 'Calibración Neumáticos', 'Combustible', 'Código de Falla', 'Batería'];
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
   titulosSeleccionados: string[] = [];
   velatorio: string = '';
   niveles: any =
@@ -222,7 +223,15 @@ export class MantenimientoPredictivoComponent implements OnInit {
         this.mostrarModalConfirmacion = true;
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        if (mensaje) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+        }
       },
     });
   }
