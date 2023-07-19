@@ -74,7 +74,9 @@ export class CancelarOrdenServicioComponent implements OnInit {
   guardar() {
     const objetoCancelacion ={
       idOrdenServicio: this.ODSSeleccionada.idOrdenServicio,
-      motivoCancelacion: this.f.motivoCancelacion.value
+      costoCancelacion: Number(this.precioCancelacionODS),
+      numeroFolio: this.ODSSeleccionada.numeroFolio,
+      motivoCancelacion: this.f.motivoCancelacion.value,
     }
     this.ref.close(objetoCancelacion);
   }
