@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="Realizar pago"></app-titulo-principal>
+<app-titulo-principal titulo="Modificar Método de pago"></app-titulo-principal>
 <app-table-panel>
   <ng-template appCustomTemplate="left-header">
     <div class="table-panel-header-column">
@@ -6,6 +6,18 @@
     </div>
   </ng-template>
 </app-table-panel>
+<div class="bg-g">
+  <app-table-panel class="pb-3 bg-g">
+    <div class="row grid mt-2 mb-2">
+      <div class="col">
+        <span class="ml-5">Tipo de pago</span>
+        <div class="contenedor-inputswitch">
+          <span class="font-bold">{{registroPago.tipoPago}}</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+</div>
 
 <h2 class="subtitulo pt-4 pb-4">Métodos de pago</h2>
 <p-accordion styleClass="sivimss-accordion sivimss-accordionColor">
@@ -20,7 +32,7 @@
             <span>Importe</span>
             <b>{{pago.importe | currency}}</b>
           </div>
-          <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event)">
+          <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event, pago)">
             <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
           </a>
         </div>
@@ -87,7 +99,7 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Cancelar">
+      <app-overlay-panel-opcion titulo="Cancelar" (click)="cancelarTipoPago()">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar" (click)="modificarTipoPago()">
       </app-overlay-panel-opcion>

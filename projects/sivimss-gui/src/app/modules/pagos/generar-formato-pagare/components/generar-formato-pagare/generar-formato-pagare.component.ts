@@ -170,12 +170,13 @@ export class GenerarFormatoPagareComponent implements OnInit {
   crearSolicitudFiltros(): FiltrosFormatoPagare {
     const fechaInicial = this.filtroForm.get('fechaInicial')?.value !== null ? moment(this.filtroForm.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroForm.get('fechaFinal')?.value !== null ?  moment(this.filtroForm.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
+    const folio = this.filtroForm.get("folioODS")?.value !== null ?  this.filtroForm.get("folioODS")?.value.label : null;
     return {
       idOficina: this.filtroForm.get("oficina")?.value,
       idNivel: this.filtroForm.get("nivel")?.value,
       idDelegacion: this.filtroForm.get("delegacion")?.value,
       idVelatorio: this.filtroForm.get("velatorio")?.value,
-      folioODS: this.filtroForm.get("folioODS")?.value,
+      folioODS: folio,
       nomContratante: this.filtroForm.get("nomContratante")?.value,
       fecIniODS: fechaInicial,
       fecFinODS: fechaFinal,
@@ -197,7 +198,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
   obtenerFoliosGenerados(): void {
     const idVelatorio = this.filtroForm.get('velatorio')?.value;
     this.foliosGenerados = [];
-    this.filtroForm.get('folioODS')?.patchValue(null);
     if (!idVelatorio) return;
     this.generarFormatoService.obtenerFoliosODS(idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -245,6 +245,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
+    this.obtenerFoliosGenerados();
   }
 
   get f() {

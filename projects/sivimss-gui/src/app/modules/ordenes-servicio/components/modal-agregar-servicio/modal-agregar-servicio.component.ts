@@ -235,6 +235,37 @@ export class ModalAgregarServicioComponent
     this.consultarProveeedorServicio();
   }
 
+  consultarKilometrajePaquete(): void {
+
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService.consultarKilometrajePaquete(1,1).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+
+      },
+      (error: HttpErrorResponse) => {
+
+      }
+    )
+  }
+
+  consultarKilometrajeServicio(): void {
+
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService.consultarKilometrajeServicio(1,1).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+
+      },
+      (error: HttpErrorResponse) => {
+
+      }
+    )
+  }
+
+
   seleccionaProveedor(dd: Dropdown): void {
     this.proveedor = dd.selectedOption.label;
     this.idProveedor = Number(dd.selectedOption.value);
