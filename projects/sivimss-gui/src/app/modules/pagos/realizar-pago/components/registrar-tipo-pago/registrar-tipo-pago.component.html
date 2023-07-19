@@ -20,7 +20,7 @@
       </div>
       <div class="row mb-3" *ngIf="!pagosDeshabilitados.includes(idPago)">
         <div class="col-md-6" *ngIf="!recibeFolio.includes(idPago)">
-          <label class="control-label" for="noAutorizacion">No. de autorización<span class="req">*</span>:</label>
+          <label class="control-label" for="noAutorizacion">Número de autorización<span class="req">*</span>:</label>
           <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
                  placeholder="Ingresa número" [maxlength]="10">
           <span class="campo-obligatorio"
@@ -118,13 +118,13 @@
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Importe</label>
-            <span>{{ resumenSolicitud.importe }}</span>
+            <span>{{resumenSolicitud.importe | currency}}</span>
           </div>
         </div>
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Total a pagar</label>
-            <span>{{total}}</span>
+            <span>{{total | currency}}</span>
           </div>
         </div>
       </div>

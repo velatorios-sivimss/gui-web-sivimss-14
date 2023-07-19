@@ -1,48 +1,5 @@
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
-export const REGISTROS_PAGOS_ODS = [
-  {
-    fechaPago: '10/08/2021',
-    folioODS: 'DOC-000001',
-    tipoPago: 'Pago de Orden de Servicio',
-    totalPagar: '$25000',
-    totalPagado: '$10000',
-    diferenciasTotales: '$15000'
-  },
-  {
-    fechaPago: '10/08/2021',
-    folioODS: 'DOC-000001',
-    tipoPago: 'Pago de Orden de Servicio',
-    totalPagar: '$25000',
-    totalPagado: '$10000',
-    diferenciasTotales: '$15000'
-  },
-  {
-    fechaPago: '10/08/2021',
-    folioODS: 'DOC-000001',
-    tipoPago: 'Pago de Orden de Servicio',
-    totalPagar: '$25000',
-    totalPagado: '$10000',
-    diferenciasTotales: '$15000'
-  },
-  {
-    fechaPago: '10/08/2021',
-    folioODS: 'DOC-000001',
-    tipoPago: 'Pago de Orden de Servicio',
-    totalPagar: '$25000',
-    totalPagado: '$10000',
-    diferenciasTotales: '$15000'
-  },
-  {
-    fechaPago: '10/08/2021',
-    folioODS: 'DOC-000001',
-    tipoPago: 'Pago de Orden de Servicio',
-    totalPagar: '$25000',
-    totalPagado: '$10000',
-    diferenciasTotales: '$15000'
-  },
-];
-
 export const TIPO_PAGO_CATALOGOS_ODS: any[] = [
   {
     value: 1,

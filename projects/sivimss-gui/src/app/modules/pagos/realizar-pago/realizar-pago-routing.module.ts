@@ -18,6 +18,12 @@ const routes: Routes = [
   {
     path: '',
     component: RealizarPagoComponent,
+    data: {
+      validaRol: {
+        funcionalidad: 'REALIZAR_PAGO',
+        permiso: 'CONSULTA'
+      }
+    },
     resolve: {
       respuesta: RealizarPagoResolver
     }
