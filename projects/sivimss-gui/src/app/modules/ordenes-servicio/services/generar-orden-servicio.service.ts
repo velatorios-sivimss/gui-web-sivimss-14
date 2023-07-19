@@ -264,4 +264,13 @@ export class GenerarOrdenServicioService extends BaseService<
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-orden-servicio-generada`,
       {idOrdenServicio:idOrdenServicio,estatus:estatus,tipoReporte:'pdf'});
   }
+
+  consultarKilometrajePaquete(idPaquete:number,idProveedor:number):Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/orden-paquete-kilometraje`,
+      {idPaquete:idPaquete,idProveedor});
+  }
+  consultarKilometrajeServicio(idServicio:number,idProveedor:number):Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/orden-servicio-kilometraje`,
+      {idServicio:idServicio,idProveedor:idProveedor});
+  }
 }
