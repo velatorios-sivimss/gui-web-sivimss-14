@@ -1,0 +1,143 @@
+<app-table-panel *ngIf="solicitudPagoSeleccionado">
+    <ng-template appCustomTemplate="left-header">
+        <div class="table-panel-header-column">
+            <span class="font-bold">Folio {{solicitudPagoSeleccionado.folio2}}</span>
+        </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+        <div class="table-panel-header-column">
+            <div class="flex flex-column">
+                <span class="ml-5">Estatus</span>
+                <div class="contenedor-inputswitch">
+
+                    <span class="activo">Activo</span>
+                </div>
+            </div>
+            <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)" *appValidaRol="['USUARIOS','MODIFICAR']" onCloseOnNavigation>
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+        </div>
+    </ng-template>
+    <div class="row table-panel-row">
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Tipo de solicitud de pago</label>
+                <span>{{solicitudPagoSeleccionado.tipoSolicitud}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Ejercicio Fiscal</label>
+                <span>{{solicitudPagoSeleccionado.ejerciFiscal2}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Folio fiscal de la factura de gastos</label>
+                <span>{{solicitudPagoSeleccionado.folioFiscal2}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Fecha de elaboración</label>
+                <span>{{solicitudPagoSeleccionado.fechaElaboracion2}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row mx-6 mb-3">
+        <p-table styleClass="mb-8" [value]="partidaPresupuestal" [pageLinks]="3">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th scope="col">Partida Presupuestal</th>
+                    <th scope="col">Cuentas contables</th>
+                    <th scope="col">Importe total</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-partida>
+                <tr>
+                    <td> {{partida.partidaPresupuestal}} </td>
+                    <td> {{partida.cuentasContables}} </td>
+                    <td> {{partida.importeTotal}} </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Unidad operativa</label>
+                <span>{{solicitudPagoSeleccionado.unidadOpe}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Solicitado por</label>
+                <span>{{solicitudPagoSeleccionado.solicitadoPor}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Referencia DT</label>
+                <span>{{solicitudPagoSeleccionado.referenciaTD2}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Beneficiario</label>
+                <span>{{solicitudPagoSeleccionado.beneficiario2}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Nombre del destinatario</label>
+                <span>{{solicitudPagoSeleccionado.nombreDestinatario2}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Nombre del remitente (De)</label>
+                <span>{{solicitudPagoSeleccionado.nomRemitente2}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Concepto</label>
+                <span>{{solicitudPagoSeleccionado.concepto2}}</span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="table-panel-column">
+                <label>Cantidad letra</label>
+                <span>{{solicitudPagoSeleccionado.cantidadLetra2}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row table-panel-row">
+        <div class="col-md-12">
+            <div class="table-panel-column">
+                <label>Observaciones</label>
+                <span>{{solicitudPagoSeleccionado.observ2}}</span>
+            </div>
+        </div>
+    </div>
+</app-table-panel>
+<div class="flex justify-content-end mt-4 mb-3">
+    <button class="ml-4 btn btn-primary btn-md" (click)="aceptar()">
+    Aceptar
+  </button>
+</div>
+<p-overlayPanel #overlayPanel>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Aceptar" (click)="abrirModalAceptar()"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
+</p-overlayPanel>
