@@ -12,6 +12,8 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _odsFolios: string = 'genpago-ods';
   private readonly _prevFunFolios: string = 'genpago-pf';
   private readonly _renPrevFunFolios: string = 'genpago-rpf';
+  private readonly _modificarPago: string = 'genpago-modifica';
+  private readonly _eliminarPago: string = 'genpago-cancela';
 
   body = {velatorio: null}
 
@@ -35,6 +37,13 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
   obtenerDetallePago(idPago: number, idFlujo: number): Observable<HttpRespuesta<any>> {
     const body = {idPago, idFlujo};
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._detalle}`, body);
+  }
 
+  cancelarMetodoPago(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.put<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._eliminarPago}`, body)
+  }
+
+  modificarMetodoPago(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.put<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
   }
 }
