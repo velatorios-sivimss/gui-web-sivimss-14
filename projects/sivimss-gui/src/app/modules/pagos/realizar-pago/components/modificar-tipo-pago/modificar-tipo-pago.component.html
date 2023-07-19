@@ -12,7 +12,7 @@
         <div class="col-md-6">
           <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span></label>
           <p-dropdown appendTo="body" id="tipoPago" class="form-control" formControlName="tipoPago"
-                      [options]="tipoPago" placeholder="Seleccionar tipo" (select)="seleccionarId()" >
+                      [options]="tipoPagos" placeholder="Seleccionar tipo" (onChange)="seleccionarId()">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="pf?.tipoPago?.errors?.required && (pf?.tipoPago?.dirty || pf?.tipoPago?.touched)">Este campo es obligatorio *.</span>
@@ -88,12 +88,24 @@
     </form>
   </ng-container>
   <ng-container *ngSwitchCase="RESUMEN_DE_PAGO">
+    <h2 class="subtitulo pt-4 pb-4">Tipo de pago anterior</h2>
     <app-table-panel>
       <div class="row table-panel-row">
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Tipo de pago</label>
-            <span>{{ resumenSolicitud.tipoPago }}</span>
+            <span>{{ config.data.metodoPago }}</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <h2 class="subtitulo pt-4 pb-4">Nuevo tipo de pago</h2>
+    <app-table-panel>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Tipo de pago</label>
+            <span>{{ tipoPago }}</span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
@@ -133,14 +145,13 @@
       </div>
     </app-table-panel>
     <div class="mb-3 mt-3 row text-center">
-      ¿Estás seguro que deseas registrar este pago?
+      ¿Estás seguro que deseas modificar este pago?
     </div>
     <div class="row mt-6">
-      <div class="col-md-12 flex justify-content-center">
+      <div class="col-md-12 flex justify-content-end">
         <button type="submit" class="btn btn-default btn-md" (click)="pasoModificarPago = CAPTURA_DE_PAGO">Regresar
         </button>
-        <!--        <button type="submit" class="btn btn-gold btn-md ml-5" (click)="cancelar()">Cancelar</button>-->
-        <!--        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar</button>-->
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar</button>
       </div>
     </div>
   </ng-container>

@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
+import {RealizarPagoService} from "../../services/realizar-pago.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {AlertaService} from "../../../../../shared/alerta/services/alerta.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-modificar-tipo-pago',
@@ -20,13 +24,18 @@ export class ModificarTipoPagoComponent implements OnInit {
   pasoModificarPago: number = 1;
 
   tipoPagoForm!: FormGroup;
-  tipoPago: any[] = [];
+  tipoPagos: any[] = [];
+  tipoPago: string = '';
   resumenSolicitud!: any;
 
   constructor(
     private formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
+    private realizarPagoService: RealizarPagoService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService,
+    private router: Router,
   ) {
   }
 
@@ -47,7 +56,7 @@ export class ModificarTipoPagoComponent implements OnInit {
   inicializarTipoPagoForm(): void {
     this.tipoPagoForm = this.formBuilder.group({
       tipoPagoAnterior: [{value: '', disabled: true}],
-      tipoPago: [{value: '', disabled: false}],
+      tipoPago: [{value: '', disabled: false}, [Validators.required]],
       fecha: [{value: null, disabled: false}, [Validators.required]],
       noAutorizacion: [{value: null, disabled: false}, [Validators.required]],
       nombreBanco: [{value: null, disabled: false}, [Validators.required]],
@@ -59,32 +68,48 @@ export class ModificarTipoPagoComponent implements OnInit {
     this.tipoPagoForm.get('tipoPagoAnterior')?.patchValue(this.config.data.metodoPago);
     this.total = this.config.data.importe;
     if (this.config.data.tipoPago === 'Pago de Orden de Servicio') {
-      this.tipoPago = TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value));
-      console.log(this.tipoPago)
+      this.tipoPagos = TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value));
       return;
     }
-    this.tipoPago = TIPO_PAGO_CATALOGOS_CONVENIO;
+    this.tipoPagos = TIPO_PAGO_CATALOGOS_CONVENIO;
   }
 
   seleccionarId(): void {
     this.idPago = +this.tipoPagoForm.get('tipoPago')?.value;
+    this.tipoPago = this.tipoPagos.find(tP => tP.value === this.idPago).label;
     this.validarCamposRequeridos(this.idPago);
   }
 
   validarCamposRequeridos(id: number): void {
-    if (this.fechasDeshabilitadas.includes(id)) {
+    this.tipoPagoForm.get('importe')?.patchValue(null);
+    this.tipoPagoForm.get('fecha')?.patchValue(null);
+    this.tipoPagoForm.get('noAutorizacion')?.patchValue(null);
+    this.tipoPagoForm.get('nombreBanco')?.patchValue(null);
+    this.tipoPagoForm.get('importe')?.clearValidators();
+    this.tipoPagoForm.get('importe')?.addValidators([Validators.required]);
+    this.tipoPagoForm.get('fecha')?.addValidators([Validators.required]);
+    this.tipoPagoForm.get('noAutorizacion')?.addValidators([Validators.required]);
+    this.tipoPagoForm.get('nombreBanco')?.addValidators([Validators.required]);
+    if (this.fechasDeshabilitadas.includes(+id)) {
       this.tipoPagoForm.get('fecha')?.clearValidators();
+      this.tipoPagoForm.get('fecha')?.updateValueAndValidity();
     }
-    if (this.pagosDeshabilitados.includes(id)) {
+    if (this.pagosDeshabilitados.includes(+id)) {
       this.tipoPagoForm.get('noAutorizacion')?.clearValidators();
+      this.tipoPagoForm.get('noAutorizacion')?.updateValueAndValidity();
       this.tipoPagoForm.get('nombreBanco')?.clearValidators();
+      this.tipoPagoForm.get('nombreBanco')?.updateValueAndValidity();
     }
-    if (id === 8) {
+    if (+id === 8) {
       this.tipoPagoForm.get('importe')?.addValidators([Validators.max(this.total), Validators.min(this.total)]);
     }
   }
 
   get pf() {
     return this.tipoPagoForm?.controls
+  }
+
+  guardar(): void {
+
   }
 }

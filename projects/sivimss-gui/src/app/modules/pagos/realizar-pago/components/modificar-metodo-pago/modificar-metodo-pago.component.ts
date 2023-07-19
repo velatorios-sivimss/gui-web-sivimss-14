@@ -50,7 +50,6 @@ export class ModificarMetodoPagoComponent implements OnInit {
     event.stopPropagation();
     this.overlayPanel.toggle(event);
     this.pagoSeleccionado = pago;
-    console.log(this.pagoSeleccionado);
   }
 
   modificarTipoPago(): void {
