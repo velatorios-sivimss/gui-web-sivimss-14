@@ -170,7 +170,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   crearSolicitudFiltros(): FiltrosFormatoPagare {
     const fechaInicial = this.filtroForm.get('fechaInicial')?.value !== null ? moment(this.filtroForm.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroForm.get('fechaFinal')?.value !== null ?  moment(this.filtroForm.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
-    const folio = this.filtroForm.get("folioODS")?.value.label;
+    const folio = this.filtroForm.get("folioODS")?.value !== null ?  this.filtroForm.get("folioODS")?.value.label : null;
     return {
       idOficina: this.filtroForm.get("oficina")?.value,
       idNivel: this.filtroForm.get("nivel")?.value,
