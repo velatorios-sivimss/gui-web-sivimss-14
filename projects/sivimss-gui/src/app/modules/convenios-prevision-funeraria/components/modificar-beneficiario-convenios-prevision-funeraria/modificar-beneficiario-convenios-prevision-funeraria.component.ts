@@ -44,13 +44,19 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
 
   ngOnInit(): void {
     this.datosBeneficiario = this.config.data;
-    let [anio,mes,dia] = this.datosBeneficiario.fechaNacimiento.split('-');
-    dia = dia.substr(0,2);
+    let fecha;
+    if(typeof this.datosBeneficiario.fechaNacimiento == "string"){
+      let [anio,mes,dia] = this.datosBeneficiario.fechaNacimiento.split('-');
+      dia = dia.substr(0,2);
+      fecha = new Date(anio+"/"+mes+"/"+dia);
+    }else{
+      fecha = this.datosBeneficiario.fechaNacimiento
+    }
 
     let respuesta = this.route.snapshot.data['respuesta'];
     this.parentesco = respuesta[this.POSICION_PARENTESCO]!.map((parentesco: TipoDropdown) => (
       {label: parentesco.label, value: parentesco.value} )) || [];
-    this.inicializarBeneficiarioForm(new Date(anio+"/"+mes+"/"+dia));
+    this.inicializarBeneficiarioForm(fecha);
     this.consultaVelatorio();
     if(+this.f.edad.value < 18){
       this.f.validaActaNacimientoBeneficiario.enable();
@@ -59,9 +65,27 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
       this.f.validaActaNacimientoBeneficiario.disable();
       this.f.validaIneBeneficiario.disable();
     }
+    this.validarEdad()
   }
 
   inicializarBeneficiarioForm(fecha: Date): void {
+    let ineCheck: boolean = false;
+    let actaCheck: boolean = false;
+
+
+    if(typeof this.datosBeneficiario?.documentacion.validaActaNacimientoBeneficiario == "string"){
+        this.datosBeneficiario?.documentacion.validaActaNacimientoBeneficiario.includes('true') ? actaCheck = true : actaCheck = false;
+    }else{
+      actaCheck = this.datosBeneficiario?.documentacion.validaActaNacimientoBeneficiario;
+    }
+
+
+    if(typeof this.datosBeneficiario?.documentacion.validaIneBeneficiario == "string"){
+        this.datosBeneficiario?.documentacion.validaIneBeneficiario.includes('true') ? ineCheck = true : ineCheck = false;
+    }else{
+      ineCheck = this.datosBeneficiario?.documentacion.validaIneBeneficiario
+    }
+
     this.beneficiarioForm = this.formBuilder.group({
                              velatorio: [{value: this.datosBeneficiario.velatorio, disabled: true}, [Validators.required]],
                        fechaNacimiento: [{value: fecha, disabled: false}, [Validators.required]],
@@ -75,8 +99,8 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
                         actaNacimiento: [{value: this.datosBeneficiario.actaNacimiento, disabled: false}, [Validators.required]],
                      correoElectronico: [{value: this.datosBeneficiario.correoElectronico, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
                               telefono: [{value: this.datosBeneficiario.telefono, disabled: false}, [Validators.required]],
-      validaActaNacimientoBeneficiario: [{value: this.datosBeneficiario.documentacion?.validaActaNacimientoBeneficiario ?? false, disabled: false}],
-                 validaIneBeneficiario: [{value: this.datosBeneficiario.documentacion?.validaIneBeneficiario ?? false, disabled: true}],
+      validaActaNacimientoBeneficiario: [{value: actaCheck, disabled: false}],
+                 validaIneBeneficiario: [{value: ineCheck, disabled: true}],
 
       matricula:[{value:'',disabled:true}],
       nss:[{value:'',disabled:true}],

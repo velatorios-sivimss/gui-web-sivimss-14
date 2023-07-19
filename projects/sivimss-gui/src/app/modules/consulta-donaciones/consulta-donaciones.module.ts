@@ -67,7 +67,6 @@ import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
     CheckboxModule,
     UtileriaModule,
     ValidaRolModule,
-    ValidaRolModule,
     BtnRegresarModule,
   ],
   providers: [

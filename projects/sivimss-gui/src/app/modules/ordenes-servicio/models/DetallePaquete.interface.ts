@@ -10,5 +10,6 @@ export interface DetallePaqueteInterface {
   idProveedor: number | null;
   importeMonto: number | null;
   totalPaquete: number | null;
+  idCategoriaPaquete: number | null;
   servicioDetalleTraslado: ServicioDetalleTrasladotoInterface | null;
 }

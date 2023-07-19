@@ -106,7 +106,7 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Órdenes de servicio</h2>
-    <button type="button" class="btn btn-primary btn-lg" routerLink="generar-orden-de-servicio">Generar orden de
+    <button *appValidaRol="['CONSULTAR_ODS','ALTA']" type="button" class="btn btn-primary btn-lg" routerLink="generar-orden-de-servicio">Generar orden de
       servicio
     </button>
   </div>
@@ -164,7 +164,7 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
+      <div class="paginator-template" *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
@@ -181,13 +181,18 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar Orden complementaria" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')" titulo="Modificar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarContratoServInmediatos()" titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden') || ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarOrdenServicio()" titulo="Descargar Orden de servicio"></app-overlay-panel-opcion>
-<!--      <app-overlay-panel-opcion titulo="Ver tarjeta de identificación" (click)="abrirModalVerTarjetaIdent()"></app-overlay-panel-opcion>-->
+      <app-overlay-panel-opcion *appValidaRol="['CONSULTAR_ODS','ALTA']" titulo="Generar Orden complementaria" onCloseOnNavigation (click)="ordenComplementaria()"></app-overlay-panel-opcion>
+      <div *appValidaRol="['CONSULTAR_ODS','MODIFICAR']">
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')" (click)="modificarODS()" titulo="Modificar"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
+      </div>
+      <div *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
+        <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarContratoServInmediatos()" titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden') || ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarOrdenServicio()" titulo="Descargar Orden de servicio"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="mostrarDescargaEntradas" titulo="Generar reporte aceptación de donación" (click)="descargarEntradas()"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="mostrarDescagaSalidas" titulo="Generar reporte control de salida de donación" (click)="descargarSalidas()"></app-overlay-panel-opcion>
+      </div>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

@@ -12,7 +12,7 @@
             <span>Estado de mantenimiento</span>
             <b [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</b>
           </div>
-          <a (click)="abrirPanel($event)">
+          <a (click)="abrirPanel($event)" *appValidaRol="['MANTENIMIENTO_VEHICULAR','MODIFICAR']">
             <i class="fs fs-barras-horizontales"></i>
           </a>
         </div>

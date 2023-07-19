@@ -128,7 +128,6 @@ export class DatosContratanteComponent implements OnInit {
 
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.gestionarEtapasService.datosEtapaContratante$
-      .asObservable()
       .subscribe((datosEtapaContratante) =>
         this.inicializarForm(datosEtapaContratante)
       );
@@ -322,7 +321,32 @@ export class DatosContratanteComponent implements OnInit {
     formName[posicion].setValue(formName[posicion].value.trimStart());
   }
 
+  limpiarFormularioConsultaRfcCurp(origen:string): void{
+      if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
+      if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
+      this.datosContratante.nombre.patchValue(null)
+      this.datosContratante.primerApellido.patchValue(null)
+      this.datosContratante.segundoApellido.patchValue(null)
+      this.datosContratante.fechaNacimiento.patchValue(null)
+      this.datosContratante.sexo.patchValue(null)
+      this.datosContratante.otroTipoSexo.patchValue(null)
+      this.datosContratante.nacionalidad.patchValue(null)
+      this.datosContratante.lugarNacimiento.patchValue(null)
+      this.datosContratante.paisNacimiento.patchValue(null)
+      this.datosContratante.telefono.patchValue(null)
+      this.datosContratante.correoElectronico.patchValue(null)
+      this.datosContratante.parentesco.patchValue(null)
+      this.direccion.calle.patchValue(null)
+      this.direccion.noExterior.patchValue(null)
+      this.direccion.noInterior.patchValue(null)
+      this.direccion.cp.patchValue(null)
+      this.direccion.colonia.patchValue(null)
+      this.direccion.municipio.patchValue(null)
+      this.direccion.estado.patchValue(null)
+  }
+
   consultarCURP(): void {
+    this.limpiarFormularioConsultaRfcCurp("curp")
     if (!this.datosContratante.curp.value) {
       return;
     }
@@ -343,6 +367,10 @@ export class DatosContratanteComponent implements OnInit {
           if (respuesta.datos) {
             console.log('curp', respuesta);
             if (respuesta.mensaje.includes('Externo')) {
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
 
@@ -364,10 +392,9 @@ export class DatosContratanteComponent implements OnInit {
               if (respuesta.datos.sexo.includes('MUJER')) {
                 this.datosContratante.sexo.setValue(1);
               }
-
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
@@ -415,8 +442,8 @@ export class DatosContratanteComponent implements OnInit {
               this.direccion.cp.setValue(datos.cp);
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.calle.setValue(datos.calle);
-              this.direccion.noInterior.setValue(datos.numExterior);
-              this.direccion.noExterior.setValue(datos.numInterior);
+              this.direccion.noInterior.setValue(datos.numInterior);
+              this.direccion.noExterior.setValue(datos.numExterior);
               this.idDomicilio = datos.idDomicilio;
             }
             return;
@@ -436,6 +463,7 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   consultarRFC(): void {
+    this.limpiarFormularioConsultaRfcCurp("rfc")
     if (!this.datosContratante.rfc.value) {
       return;
     }
@@ -504,10 +532,10 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.direccion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))

@@ -15,7 +15,7 @@
   </div>
   <div class="row">
     <div class="col-md-4">
-      <label class="control-label" for="ataudes">Ataudes<span class="req">*</span>:</label>
+      <label class="control-label" for="ataudes">Ataúdes<span class="req">*</span>:</label>
       <p-dropdown  id="ataudes" class="form-control" [(ngModel)]="ataudSeleccionado" placeholder="Selecciona un ataúd"
         [options]="listaAtaudes" (onChange)="buscarProveedor()" [filter]="true" filterBy="label" appendTo="body" ></p-dropdown>
     </div>
@@ -26,9 +26,9 @@
         (onChange)="buscarAtaudInventario(dd)" [filter]="true" filterBy="label"appendTo="body" ></p-dropdown>
     </div>
     <div class="col-md-4">
-      <label class="control-label" for="ataudesInentario">Ataudes Inventario<span class="req">*</span>:</label>
-      <p-dropdown #dd id="ataudesInentario" class5="form-control" [(ngModel)]="selectAtaudInventario"
-        placeholder="Selecciona un proveedor" [options]="listaAtaudesInventario"
+      <label class="control-label" for="ataudesInentario">Ataúdes Inventario<span class="req">*</span>:</label>
+      <p-dropdown #dd id="ataudesInentario" class="form-control" [(ngModel)]="selectAtaudInventario"
+        placeholder="Selecciona un ataúd" [options]="listaAtaudesInventario"
         (onChange)="onchangeInventario(dd)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
     </div>
   </div>

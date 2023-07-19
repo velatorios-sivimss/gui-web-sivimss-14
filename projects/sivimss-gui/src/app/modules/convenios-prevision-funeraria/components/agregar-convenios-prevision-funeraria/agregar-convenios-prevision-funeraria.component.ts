@@ -105,6 +105,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     this.inicializarDocumentacionForm();
     this.validarEscenarioPorEmpresa();
     this.consultaVelatorio();
+    this.validarFormularioVacio();
   }
 
   actualizarBreadcrumb(): void {
@@ -131,20 +132,27 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   consultaRFCCURP(): void {
-    if(!this.ff.rfcCurp.value){return}
     const tipo = this.ff.rfcCurp.value;
     let rfc = "";
     let curp = "";
     tipo.length <= 13 ? rfc = tipo : curp = tipo;
+    if(!this.ff.rfcCurp.value){return}
+
+
     this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC(rfc,curp).pipe(
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+
       },
       (error: HttpErrorResponse) => {
         console.log(error);
-        this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+        if(tipo.length <= 13){
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
+        }else{
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+        }
       }
     )
   }
@@ -167,7 +175,8 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     if(this.ff.tipoContratacion.value == 1){
       this.folioConvenioPersona="";
       if(this.ff.numeroConvenio.value){
-        this.folioConvenioPersona=this.ff.numeroConvenio.value;
+        this.folioConvenioPersona = this.ff.numeroConvenio.value;
+        this.consultarFolioPersona();
       }
     }
     else{
@@ -176,6 +185,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
         this.deshabilitarBtnGuardarEmpresa = true;
         return;
       }else{
+        this.consultarFolioEmpresa();
         if(this.filtroForm.valid && this.formularioEmpresaValido){
           this.deshabilitarBtnGuardarEmpresa = false;
         }
@@ -183,6 +193,57 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       }
     }
   }
+  consultarFolioEmpresa(): void {
+    this.loaderService.activar()
+    this.existePromotor(false);
+    this.ff.promotor.patchValue(null);
+    this.ff.rfcCurp.patchValue(null);
+    this.ff.listaPromotor.patchValue(null);
+
+    this.agregarConvenioPFService.consultarFolioConvenioEmpresa(this.ff.numeroConvenio.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        //TODO agregar id promotor
+        if(!respuesta.datos)return;
+        this.ff.rfcCurp.setValue(respuesta.datos[0].rfc);
+        if(respuesta.datos[0]?.idPromotor){
+          this.ff.promotor.setValue(true);
+          this.existePromotor(true)
+          this.ff.listaPromotor.setValue(+respuesta.datos[0].idPromotor);
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error.error);
+      }
+    )
+  }
+
+  consultarFolioPersona(): void {
+    this.loaderService.activar()
+    this.existePromotor(false);
+    this.ff.promotor.patchValue(null);
+    this.ff.rfcCurp.patchValue(null);
+    this.ff.listaPromotor.patchValue(null);
+
+    this.agregarConvenioPFService.consultarFolioPersona(this.ff.numeroConvenio.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        if(!respuesta.datos)return;
+        this.ff.rfcCurp.setValue(respuesta.datos.datosContratante.curp);
+        if(respuesta.datos.datosContratante.idPromotor){
+          this.ff.promotor.setValue(true);
+          this.existePromotor(true)
+          this.ff.listaPromotor.setValue(+respuesta.datos.datosContratante.idPromotor);
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error.error);
+      }
+    )
+  }
+
 
   validarTipoContratacion(): void{
     localStorage.removeItem('persona');
@@ -216,6 +277,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     if(existePromotor){
       this.ff.listaPromotor.enable();
       this.ff.listaPromotor.setValidators(Validators.required);
+      this.ff.listaPromotor.updateValueAndValidity()
       this.deshabilitarBtnGuardarEmpresa = true;
       this.deshabilitarBtnGuardarPersona = true;
       this.validarFormularioVacio();
@@ -308,9 +370,10 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
        nombreVelatorio: this.velatorioDescripcion,
        indTipoContratacion: this.ff.tipoContratacion.value,
        idPromotor: this.ff.listaPromotor?.value ?? "",
-       // numeroConvenio: this.ff.numeroConvenio.value,
-       // rfcCurp: this.ff.rfcCurp?.value ?? "",
+       numeroConvenio: this.ff.numeroConvenio.value,
+       rfcCurp: this.ff.rfcCurp?.value ?? "",
        empresa:{
+
          nombreEmpresa: event.nombre,
          razonSocial: event.razonSocial,
          rfc: event.nombre,
@@ -389,6 +452,14 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       this.filtroForm.valid ? this.consultarFormularioValido = true: this.consultarFormularioValido = false;
     }
     if(this.ff.tipoContratacion.value == 2){
+      if(this.ff.promotor.value){
+        this.ff.listaPromotor.enable();
+        this.ff.listaPromotor.setValidators(Validators.required);
+      }else{
+        this.ff.listaPromotor.disable();
+        this.ff.listaPromotor.patchValue(null)
+        this.ff.listaPromotor.updateValueAndValidity();
+      }
       this.filtroForm.valid ? this.consultarFormularioValido = true: this.consultarFormularioValido = false;
     }
   }
@@ -466,6 +537,14 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
         }
       }
     }
+  }
+
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.ff.rfcCurp]
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
   }
 
 }

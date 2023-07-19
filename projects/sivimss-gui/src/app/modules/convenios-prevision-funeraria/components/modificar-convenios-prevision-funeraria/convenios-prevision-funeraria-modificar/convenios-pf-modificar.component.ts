@@ -64,6 +64,8 @@ export class ConveniosPfModificarComponent implements OnInit {
   velatorioUsuario!: string;
   fecha!: string;
   escenario: string = "modificar"
+  siguienteSeccion!: boolean;
+  idPersona!: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,18 +76,21 @@ export class ConveniosPfModificarComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private router: Router,
+    private rutaActiva: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
 
-    const datosConvneio = JSON.parse(localStorage.getItem('datosConvenio') as string);
+    // let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
+    let flujoLocal = false;
     localStorage.removeItem('datosConvenio');
-    this.folioUnicoDelConvenio = datosConvneio?.convenio.folioConvenio;
+    this.folioUnicoDelConvenio = this.rutaActiva.snapshot.queryParams.folio;
     this.velatorioUsuario= "";
-    this.fecha= datosConvneio?.convenio.fechaContratacion;
+    this.fecha = this.rutaActiva.snapshot.queryParams.fecha;
 
     this.inicializarModeloGuardarPersona();
     const formularioPrevio = JSON.parse(localStorage.getItem('fomularioPrincipal') as string);
+    if(formularioPrevio)flujoLocal = true;
     localStorage.removeItem('fomularioPrincipal')
 
     this.personasAgregadas = JSON.parse(localStorage.getItem('persona') as string) || [];
@@ -106,6 +111,9 @@ export class ConveniosPfModificarComponent implements OnInit {
     this.inicializarDocumentacionForm();
     this.validarEscenarioPorEmpresa();
     this.consultaVelatorio();
+    if(!flujoLocal)this.consultarTipoContratacion();
+
+    // this.consultarConvenio(this.folioUnicoDelConvenio);
   }
 
   inicializarFiltroForm(formularioPrevio: any): void {
@@ -200,6 +208,7 @@ export class ConveniosPfModificarComponent implements OnInit {
     if(!this.ff.numeroConvenio.value && !this.ff.tipoContratacion.value)return;
     this.validarFormularioVacio();
     this.consultarConvenio();
+    this.consultarTipoContratacion();
     // this.ff.tipoContratacion.value == 1 ? this.consultarConvenioPersona() : this.consultarConvenio();
 
   }
@@ -282,20 +291,6 @@ export class ConveniosPfModificarComponent implements OnInit {
     }
   }
 
-  consultarConvenioPersona(): void {
-    if(!this.ff.numeroConvenio.value)return;
-    this.loaderService.activar();
-    this.agregarConvenioPFService.consultarFolioPersona(this.ff.numeroConvenio.value).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-      },
-      (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
-      }
-    );
-  }
-
 
   validarFormularioPersona(event: any): void {
     this.deshabilitarBtnGuardarPersona = true;
@@ -315,11 +310,11 @@ export class ConveniosPfModificarComponent implements OnInit {
       folioConvenio: this.ff.numeroConvenio.value,
       idVelatorio: datosUsuario.idVelatorio,
       nombreVelatorio: this.velatorioDescripcion,
-      indTipoContratacion: this.ff.tipoContratacion.value.toString(),
       idPromotor: this.ff.listaPromotor.value ? this.ff.listaPromotor.value.toString() : "",
-      idPersona :event?.idPersona.toString() ?? null,
+      idPersona : event.idPersona ? event?.idPersona.toString() : null,
       idDomicilio :null,
       idContratante :null,
+      indTipoContratacion: this.ff.tipoContratacion.value.toString(),
 
       // numeroConvenio: this.ff.numeroConvenio.value,
       // rfcCurp: this.ff.rfcCurp.value,
@@ -355,6 +350,7 @@ export class ConveniosPfModificarComponent implements OnInit {
   siguiente(): void {
     if(this.indice == 0){
       this.confirmarGuardadoPersona = false;
+      this.siguienteSeccion = true;
       this.confirmarGuardarPersona()
       return;
     }
@@ -374,6 +370,57 @@ export class ConveniosPfModificarComponent implements OnInit {
     this.confirmarGuardadoPersona = true;
   }
 
+  consultarTipoContratacion(): void {
+    this.ff.numeroConvenio.setValue(this.folioUnicoDelConvenio)
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultarFolioConvenioEmpresa(this.folioUnicoDelConvenio).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        if(respuesta.datos[0].nombreEmpresa){
+          this.ff.promotor.setValue(true);
+          this.existePromotor(true)
+          this.ff.listaPromotor.setValue(+respuesta.datos[0].idPromotor);
+          this.ff.tipoContratacion.setValue(2);
+          this.consultarConvenio();
+        }else{
+          this.ff.tipoContratacion.setValue(1);
+          this.consultarConvenioPersona();
+        }
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error)
+      }
+    )
+  }
+
+  consultarConvenioPersona(): void {
+    if(!this.ff.numeroConvenio.value)return;
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultarFolioPersona(this.ff.numeroConvenio.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        this.velatorioUsuario = respuesta.datos.datosContratante.nombreVelatorio
+        this.ff.rfcCurp.setValue(respuesta.datos.datosContratante.curp);
+        this.idPersona = respuesta.datos.datosContratante.idPersona
+        if(respuesta.datos.datosContratante.idPromotor){
+          this.ff.promotor.setValue(true);
+          this.existePromotor(true)
+          this.ff.listaPromotor.setValue(+respuesta.datos.datosContratante.idPromotor);
+        }
+
+
+        this.consultarConvenio();
+      },
+      (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+      }
+    );
+  }
+
+
+
   get ff() {
     return this.filtroForm.controls;
   }
@@ -389,7 +436,7 @@ export class ConveniosPfModificarComponent implements OnInit {
       nombreVelatorio: "",
       indTipoContratacion: "",
       idPromotor: "",
-      idPersona: null,
+      idPersona: this.idPersona ? this.idPersona : null,
       idDomicilio: null,
       idContratante: null,
       persona: {

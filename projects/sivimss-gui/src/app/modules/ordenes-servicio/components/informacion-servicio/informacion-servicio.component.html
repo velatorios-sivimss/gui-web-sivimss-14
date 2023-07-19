@@ -198,12 +198,12 @@
         <div class="flex">
           <div class="flex align-items-center mx-2">
             <p-radioButton [inputId]="'Si'" name="gestionadoPorPromotor" [value]="true"
-              (onChange)="changePromotor('si')" formControlName="gestionadoPorPromotor"></p-radioButton>
+              (onClick)="changePromotor('si')" formControlName="gestionadoPorPromotor"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'Si'">'Si'</label>
           </div>
           <div class="flex align-items-center mx-2">
             <p-radioButton [inputId]="'No'" name="gestionadoPorPromotor" [value]="false"
-              (onChange)="changePromotor('no')" formControlName="gestionadoPorPromotor"></p-radioButton>
+              (onClick)="changePromotor('no')" formControlName="gestionadoPorPromotor"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'No'">'No'</label>
           </div>
         </div>

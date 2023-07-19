@@ -81,7 +81,7 @@ export class ModalAgregarPanteonComponent implements OnInit {
       municipio: [
         {
           value: null,
-          disabled: false
+          disabled: true
         },
         [
           Validators.required
@@ -90,7 +90,7 @@ export class ModalAgregarPanteonComponent implements OnInit {
       estado: [
         {
           value: null,
-          disabled: false
+          disabled: true
         },
         [
           Validators.required
@@ -212,7 +212,35 @@ export class ModalAgregarPanteonComponent implements OnInit {
     )
   }
 
-
+  consultarCP(): void {
+    if (!this.f.cp.value) {
+      return;
+    }
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService
+      .consutaCP(this.f.cp.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          if (respuesta) {
+            this.f.colonia.setValue(respuesta.datos[0].nombre);
+            this.f.municipio.setValue(
+              respuesta.datos[0].localidad.municipio.nombre
+            );
+            this.f.estado.setValue(
+              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+            );
+            return;
+          }
+          this.f.colonia.patchValue(null);
+          this.f.municipio.patchValue(null);
+          this.f.estado.patchValue(null);
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      );
+  }
 
 
   cerrarModal() {

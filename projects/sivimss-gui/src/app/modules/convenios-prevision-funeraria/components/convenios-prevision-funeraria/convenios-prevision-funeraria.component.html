@@ -6,7 +6,7 @@
       <div class="col-md-6">
         <label class="control-label" for="folioConvenio">Folio convenio:</label>
         <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
-          placeholder="Ingresa el no. de folio" maxlength="12" trimmer alphanumericOnly>
+          placeholder="Ingresa el no. de folio" maxlength="12" trimmer folioOdsAlphanumeric>
         <span class="campo-obligatorio"
           *ngIf="ff.folioConvenio?.errors?.required && (ff.folioConvenio?.dirty || ff.folioConvenio?.touched)">
           Campo obligatorio</span>
@@ -73,10 +73,10 @@
     </form>
   </div>
 
-  <p-table #tablaConvenio appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [(selection)]="selectedConvenioPrevision" (onRowSelect)="onRowSelect($event)" [value]="convenioPrevision"
-    [paginator]="convenioPrevision.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
-    [totalRecords]="totalElementos.tablaConvenios" [pageLinks]="3" [(first)]="numPaginaActual.tablaConvenios"
-    (onLazyLoad)="paginar($event)" [globalFilterFields]="['folioConvenio']">
+  <p-table #tablaConvenio appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [(selection)]="selectedConvenioPrevision"
+    (onRowSelect)="onRowSelect($event)" [value]="convenioPrevision" [paginator]="convenioPrevision.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos.tablaConvenios" [pageLinks]="3"
+    [(first)]="numPaginaActual.tablaConvenios" (onLazyLoad)="paginar($event)" [globalFilterFields]="['folioConvenio']">
     <ng-template pTemplate="header">
       <tr>
         <th style="width: 4rem"></th>
@@ -88,7 +88,7 @@
         <th scope="col">Situación</th>
         <th scope="col">Factura</th>
         <th scope="col">Importe convenio</th>
-        <th scope="col">Estatus</th>
+        <th scope="col">Estatus del convenio</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-convenioPrevision>
@@ -102,25 +102,27 @@
         <td>{{convenioPrevision.fechaVigenciaFin | date: 'dd/MM/yyyy'}}</td>
         <td>{{convenioPrevision.cantidadBeneficiarios}}</td>
         <td>{{convenioPrevision.situacion}}</td>
-        <td>{{convenioPrevision.factura}}</td>
+        <td>{{convenioPrevision.factura === 0 ? 'Sin factura' : 'Con factura'}}</td>
         <td>{{convenioPrevision.importeConvenio}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-inputswitch">
-              <span class="activo" *ngIf="convenioPrevision.estatus == 0">Activa</span>
-              <span class="activo" *ngIf="convenioPrevision.estatus == 1">Cerrada</span>
-              <span class="activo" *ngIf="convenioPrevision.estatus == 2">Cancelada</span>
+              {{convenioPrevision.estatusConvenio}}
             </div>
             <div class="contenedor-celda-iconos">
-              <a (click)="abrirModalDetalleConvenio(convenioPrevision)">
-                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-              </a>
               <a (click)="abrirPanel($event,convenioPrevision)">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
             </div>
           </div>
         </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr *ngIf="busquedaRealizada">
+        <th colspan="12" class="p-2 text-center font-bold text-xl" id="reporte_convenio_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="paginatorleft">
@@ -133,8 +135,10 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" (click)="descargarPDF()" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" (click)="descargarExcel()" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" (click)="descargarPDF()" src="assets/images/imagen-icono-pdf.svg"
+              alt="exportar pdf">
+            <img class="icon-export-table" (click)="descargarExcel()" src="assets/images/imagen-icono-excel.svg"
+              alt="exportar excel">
           </div>
         </div>
       </div>
@@ -146,14 +150,16 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Renovar"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar" (click)="modificarConvenio()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('2')" (click)="cambiarEstatusConvenio()" titulo="Desactivar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('3')" (click)="cambiarEstatusConvenio()" titulo="Activar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('2')"
+        (click)="cambiarEstatusConvenio()" titulo="Desactivar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('3')"
+        (click)="cambiarEstatusConvenio()" titulo="Activar"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Convenio PF anterior"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Hoja de afiliación"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-<section  *ngIf="mostrarAcordiones">
+<section *ngIf="mostrarAcordiones">
   <p-accordion styleClass="sivimss-accordion">
     <p-accordionTab>
       <ng-template pTemplate="header">Datos del afiliado</ng-template>
@@ -186,13 +192,15 @@
           </ng-template>
           <ng-template pTemplate="body" let-datosAfiliado>
             <tr>
-              <td> {{datosAfiliado.descVelatorio}} </td>
-              <td> {{datosAfiliado.afiliado}} </td>
+              <td> {{datosAfiliado.nombreVelatorio}} </td>
+              <td> {{datosAfiliado.nombreAfiliado}} </td>
               <td> {{datosAfiliado.rfcTitular}} </td>
-              <td> {{datosAfiliado.fechaNacimiento | date: 'dd/MM/yyyy'}} </td>
+              <td> {{datosAfiliado.fechaNacimiento}} </td>
               <td> {{datosAfiliado.edad}} </td>
-              <td> {{datosAfiliado.genero}} </td>
-              <td> {{datosAfiliado.correoElectronico}} </td>
+              <td *ngIf="datosAfiliado.genero === 1"> Masculino </td>
+              <td *ngIf="datosAfiliado.genero === 2"> Femenino </td>
+              <td *ngIf="datosAfiliado.genero === 3"> Otro </td>
+              <td> {{datosAfiliado.correo}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -227,9 +235,9 @@
           <ng-template pTemplate="body" let-vigenciaConvenio>
             <tr>
               <td> {{vigenciaConvenio.folioConvenio}} </td>
-              <td> {{vigenciaConvenio.fechaInicio | date: 'dd/MM/yyyy'}} </td>
-              <td> {{vigenciaConvenio.fechaFin | date: 'dd/MM/yyyy'}} </td>
-              <td> {{vigenciaConvenio.fechaRenovacion | date: 'dd/MM/yyyy'}} </td>
+              <td> {{vigenciaConvenio.fechaInicio}} </td>
+              <td> {{vigenciaConvenio.fechaFin}} </td>
+              <td> {{vigenciaConvenio.fechaRenovacion}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -268,7 +276,7 @@
             <tr>
               <td> {{facturaConvenio.factura}} </td>
               <td> {{facturaConvenio.uuid}} </td>
-              <td> {{facturaConvenio.fecha | date: 'dd/MM/yyyy'}} </td>
+              <td> {{facturaConvenio.fecha}} </td>
               <td> {{facturaConvenio.rfc}} </td>
               <td> {{facturaConvenio.cliente}} </td>
               <td> {{facturaConvenio.total}} </td>
@@ -312,7 +320,7 @@
           <ng-template pTemplate="body" let-beneficiario>
             <tr>
               <td> {{beneficiario.nombreBeneficiario}} {{beneficiario.primerApellido}} </td>
-              <td> {{beneficiario.fechaNacimiento | date: 'dd/MM/yyyy'}} </td>
+              <td> {{beneficiario.fechaNacimiento}} </td>
               <td> {{beneficiario.edad}} </td>
               <td> {{beneficiario.descripcionParentesco}} </td>
             </tr>
