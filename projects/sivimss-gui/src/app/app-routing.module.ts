@@ -206,6 +206,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'solicitudes-pago',
+    loadChildren: () => import('./modules/solicitudes-pago/solicitudes-pago.module').then(m => m.SolicitudesPagoModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: '**',
     component: PaginaNoEncontradaComponent,
   },
