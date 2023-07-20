@@ -478,6 +478,7 @@ export class ModificarDatosFinadoComponent
               }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
+              this.idPersona = null;
               this.datosFinado.nombre.setValue(respuesta.datos.nombre);
               this.datosFinado.primerApellido.setValue(
                 respuesta.datos.apellido1
@@ -501,7 +502,9 @@ export class ModificarDatosFinadoComponent
                 this.datosFinado.nacionalidad.setValue(2);
               }
             } else {
+              let datos = respuesta.datos[0];
               let [anio, mes, dia] = respuesta.datos[0].fechaNac.split('-');
+              this.idPersona = datos.idPersona;
               dia = dia.substr(0, 2);
               const fecha = new Date(anio + '/' + mes + '/' + dia);
               this.datosFinado.nombre.setValue(respuesta.datos[0].nombre);
