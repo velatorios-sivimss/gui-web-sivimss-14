@@ -96,18 +96,18 @@
         <td>
           <p-tableRadioButton [value]="convenioPrevision"></p-tableRadioButton>
         </td>
-        <td>{{convenioPrevision.folioConvenio}}</td>
-        <td>{{convenioPrevision.fechaContratacion | date: 'dd/MM/yyyy'}}</td>
-        <td>{{convenioPrevision.fechaVigenciaInicio | date: 'dd/MM/yyyy'}}</td>
-        <td>{{convenioPrevision.fechaVigenciaFin | date: 'dd/MM/yyyy'}}</td>
-        <td>{{convenioPrevision.cantidadBeneficiarios}}</td>
-        <td>{{convenioPrevision.situacion}}</td>
-        <td>{{convenioPrevision.factura === 0 ? 'Sin factura' : 'Con factura'}}</td>
-        <td>{{convenioPrevision.importeConvenio}}</td>
+        <td>{{convenioPrevision?.folioConvenio}}</td>
+        <td>{{convenioPrevision?.fechaContratacion}}</td>
+        <td>{{convenioPrevision?.fechaVigenciaInicio}}</td>
+        <td>{{convenioPrevision?.fechaVigenciaFin}}</td>
+        <td>{{convenioPrevision?.cantidadBeneficiarios}}</td>
+        <td>{{convenioPrevision?.situacion}}</td>
+        <td>{{convenioPrevision?.factura === 0 ? 'Sin factura' : 'Con factura'}}</td>
+        <td>{{convenioPrevision?.importeConvenio}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-inputswitch">
-              {{convenioPrevision.estatusConvenio}}
+              {{convenioPrevision?.estatusConvenio}}
             </div>
             <div class="contenedor-celda-iconos">
               <a (click)="abrirPanel($event,convenioPrevision)">
@@ -186,21 +186,19 @@
               <th scope="col">RFC titular</th>
               <th scope="col">Fecha de nacimiento</th>
               <th scope="col">Edad</th>
-              <th scope="col">Genero</th>
+              <th scope="col">Género</th>
               <th scope="col">Correo electrónico</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-datosAfiliado>
             <tr>
-              <td> {{datosAfiliado.nombreVelatorio}} </td>
-              <td> {{datosAfiliado.nombreAfiliado}} </td>
-              <td> {{datosAfiliado.rfcTitular}} </td>
-              <td> {{datosAfiliado.fechaNacimiento}} </td>
-              <td> {{datosAfiliado.edad}} </td>
-              <td *ngIf="datosAfiliado.genero === 1"> Masculino </td>
-              <td *ngIf="datosAfiliado.genero === 2"> Femenino </td>
-              <td *ngIf="datosAfiliado.genero === 3"> Otro </td>
-              <td> {{datosAfiliado.correo}} </td>
+              <td> {{datosAfiliado?.nombreVelatorio}} </td>
+              <td> {{datosAfiliado?.nombreAfiliado}} </td>
+              <td> {{datosAfiliado?.rfcTitular}} </td>
+              <td> {{datosAfiliado?.fechaNacimiento}} </td>
+              <td> {{datosAfiliado?.edad}} </td>
+              <td> {{obtenerDescGenero(datosAfiliado?.genero)}} </td>
+              <td> {{datosAfiliado?.correo}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -234,10 +232,10 @@
           </ng-template>
           <ng-template pTemplate="body" let-vigenciaConvenio>
             <tr>
-              <td> {{vigenciaConvenio.folioConvenio}} </td>
-              <td> {{vigenciaConvenio.fechaInicio}} </td>
-              <td> {{vigenciaConvenio.fechaFin}} </td>
-              <td> {{vigenciaConvenio.fechaRenovacion}} </td>
+              <td> {{vigenciaConvenio?.folioConvenio}} </td>
+              <td> {{vigenciaConvenio?.fechaInicio}} </td>
+              <td> {{vigenciaConvenio?.fechaFin}} </td>
+              <td> {{vigenciaConvenio?.fechaRenovacion}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -274,12 +272,12 @@
           </ng-template>
           <ng-template pTemplate="body" let-facturaConvenio>
             <tr>
-              <td> {{facturaConvenio.factura}} </td>
-              <td> {{facturaConvenio.uuid}} </td>
-              <td> {{facturaConvenio.fecha}} </td>
-              <td> {{facturaConvenio.rfc}} </td>
-              <td> {{facturaConvenio.cliente}} </td>
-              <td> {{facturaConvenio.total}} </td>
+              <td> {{facturaConvenio?.factura}} </td>
+              <td> {{facturaConvenio?.uuid}} </td>
+              <td> {{facturaConvenio?.fecha}} </td>
+              <td> {{facturaConvenio?.rfc}} </td>
+              <td> {{facturaConvenio?.cliente}} </td>
+              <td> {{facturaConvenio?.total}} </td>
               <td>
                 <div class="contenedor-inputswitch">
                   <span class="activo" *ngIf="facturaConvenio.estatus">Activo</span>
@@ -319,10 +317,10 @@
           </ng-template>
           <ng-template pTemplate="body" let-beneficiario>
             <tr>
-              <td> {{beneficiario.nombreBeneficiario}} {{beneficiario.primerApellido}} </td>
-              <td> {{beneficiario.fechaNacimiento}} </td>
-              <td> {{beneficiario.edad}} </td>
-              <td> {{beneficiario.descripcionParentesco}} </td>
+              <td> {{beneficiario?.nombreBeneficiario}} {{beneficiario?.primerApellido}} </td>
+              <td> {{beneficiario?.fechaNacimiento}} </td>
+              <td> {{beneficiario?.edad}} </td>
+              <td> {{beneficiario?.descripcionParentesco}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -360,14 +358,14 @@
           </ng-template>
           <ng-template pTemplate="body" let-siniestro>
             <tr>
-              <td> {{siniestro.descVelatorio}} </td>
-              <td> {{siniestro.fechaSiniestro | date: 'dd/MM/yyyy'}} </td>
-              <td> {{siniestro.folio}} </td>
-              <td> {{siniestro.nota}} </td>
-              <td> {{siniestro.finado}} </td>
-              <td> {{siniestro.descParentesco}} </td>
-              <td> {{siniestro.descVelatorioOrigen}} </td>
-              <td> {{siniestro.importe}} </td>
+              <td> {{siniestro?.velatorioOrigen}} </td>
+              <td> {{siniestro?.fechaSiniestro}} </td>
+              <td> {{siniestro?.folioSiniestro}} </td>
+              <td> {{siniestro?.nota}} </td>
+              <td> {{siniestro?.nombreFinado}} </td>
+              <td> {{siniestro?.descripcionParentesco}} </td>
+              <td> {{siniestro?.velatorioOrigen}} </td>
+              <td> {{siniestro?.importe}} </td>
             </tr>
           </ng-template>
         </p-table>

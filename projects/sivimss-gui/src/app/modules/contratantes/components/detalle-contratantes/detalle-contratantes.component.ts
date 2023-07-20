@@ -76,7 +76,7 @@ export class DetalleContratantesComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+          this.ref.close({ estatus: false });
         }
       });
     }
@@ -118,7 +118,6 @@ export class DetalleContratantesComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
@@ -127,7 +126,7 @@ export class DetalleContratantesComponent implements OnInit {
     this.ref.close({ estatus: false });
     document.body.style.overflow = 'hidden';
     this.modificarRef = this.dialogService.open(ModificarContratantesComponent, {
-      header: "Modificar contratante",
+      header: "Modificar datos generales",
       width: "920px",
       data: { contratante: this.contratante, origen: "modificar" },
     });
