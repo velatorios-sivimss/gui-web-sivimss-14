@@ -19,6 +19,7 @@ import {AccordionModule} from "primeng/accordion";
 import {ModificarMetodoPagoComponent} from './components/modificar-metodo-pago/modificar-metodo-pago.component';
 import {CancelarMetodoPagoComponent} from './components/cancelar-metodo-pago/cancelar-metodo-pago.component';
 import {InputTextareaModule} from "primeng/inputtextarea";
+import { IrAPagoComponent } from './components/ir-a-pago/ir-a-pago.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {InputTextareaModule} from "primeng/inputtextarea";
     GestionarPagoComponent,
     DetalleGestionPagoComponent,
     ModificarMetodoPagoComponent,
-    CancelarMetodoPagoComponent
+    CancelarMetodoPagoComponent,
+    IrAPagoComponent
   ],
   imports: [
     CommonModule,
