@@ -96,9 +96,11 @@ export class SolicitudesPagoComponent implements OnInit {
       nivel: [{value: +usuario.idOficina, disabled: true}],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
       velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
-      promotores: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
+      ejercFiscal: [{value: null, disabled: false}],
+      tipoSolic: [{value: null, disabled: false}],
+      folio: [{value: null, disabled: false}],
     });
   }
 
@@ -125,45 +127,23 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   paginar(): void {
-    const filtros = {
-      idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
-      idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
-      idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
-    }
-    this.solicitudesPago = [
-      {  
-        id: 1,
-        idVelatorio: 1,
-        folio: '000001',
-        ejercFiscal: 'TASASL12107034Y',
-        fechaElaboracion: 'Jorge',
-        tipoSolic: 'Sanchez',
-        estatus: 'Prado',
-      },
-      {
-        id: 2,
-        idVelatorio: 2,
-        folio: '000002',
-        ejercFiscal: 'TASASL12107034Y',
-        fechaElaboracion: 'Edwin',
-        tipoSolic: 'Ruiz',
-        estatus: 'Cardenas',
-      },
-      {
-        id: 3,
-        idVelatorio: 3,
-        folio: '000003',
-        ejercFiscal: 'TASASL12107034Y',
-        fechaElaboracion: 'Nataly',
-        tipoSolic: 'Sanchez',
-        estatus: 'Hernandez',
-      },
-    ];
-    this.totalElementos=10;
+    debugger
+    this.cargadorService.activar();
+    this.solicitudesPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe(
+        (respuesta) => {
+          this.solicitudesPago = respuesta!.datos;
+          this.totalElementos = respuesta!.datos.totalElements;
+        },
+        (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      );
   }
 
   abrirPanel(event: MouseEvent, solicitudPagoSeleccionado: ListadoSolicitudPago): void {
-    debugger
     this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
     this.overlayPanel.toggle(event);
   }
@@ -182,7 +162,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalGenerarSolicitudPago(): void {
-    debugger
     this.cancelarRef = this.dialogService.open(
       SolicitarSolicitudPagoComponent,
       {
@@ -193,7 +172,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalCancelarSolicitudPago(): void {
-    debugger
     this.cancelarRef = this.dialogService.open(
       CancelarSolicitudPagoComponent,
       {
@@ -204,7 +182,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalRechazarSolicitudPago(): void {
-    debugger
     this.cancelarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
       {
@@ -237,15 +214,18 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   crearSolicitudFiltros(): FiltrosSolicitudPago {
+    const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
+    const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ?  moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
+    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ?  this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
     return {
       idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
       idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
       idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
-      fecIniODS: this.filtroFormSolicitudesPago.get("fechaInicial")?.value,
-      fecFinODS: this.filtroFormSolicitudesPago.get("fechaFinal")?.value,
-      ejercFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
-      tipoSolic: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
-      folio: this.filtroFormSolicitudesPago.get("folio")?.value,
+      fecIniODS:  fechaInicial,
+      fecFinODS: fechaFinal,
+      ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
+      idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
+      folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value,
       rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
       tipoReporte: "pdf"
     }

@@ -11,14 +11,14 @@ import { AutenticacionService } from '../../../services/autenticacion.service';
 @Injectable()
 export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 23, "consultar-rec-pagos", "", "");
+    super(_http, `${environment.api.mssivimss}`, "agregar-solipagos", "", 65, "consultar-solipagos", "detalle-solipagos", "");
   }
 
   private readonly _folios: string = 'consultar-folios-rec-pagos';
   private readonly _derechos: string = 'consultar-derechos-rec-pagos';
   private readonly _tramites: string = 'consultar-tramites-rec-pagos';
   private readonly _recibo_detalle: string = 'consultar-porId-rec-pagos';
-  private readonly _filtros: string = 'rec-pagos-filtros';
+  private readonly _filtros: string = 'buscar-solipagos';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -63,7 +63,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   }
 
   obtenerDetalleComision(idValeSalida: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `58/${idValeSalida}?servicio=consultar-vale-salida-detalle`);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._detalle}`, {idValeSalida});
   }
 
 }

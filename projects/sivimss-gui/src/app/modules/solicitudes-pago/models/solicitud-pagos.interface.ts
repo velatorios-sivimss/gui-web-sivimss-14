@@ -1,11 +1,12 @@
 export interface SolicitudPago {
   id: number;
-  idVelatorio: number;
-  folio: string;
-  ejercFiscal: string,
-  fechaElaboracion: string;
-  tipoSolic: string;
-  estatus: string;
+  desVelatorio: string;
+  cveFolio: string;
+  ejercicioFiscal: string,
+  fecElaboracion: string;
+  idTipoSolicitid: string;
+  desTipoSolicitud: string;
+  idEstatus: string;
 }
 
 export interface SolicitarSolicitudPago {

@@ -63,23 +63,23 @@
 
         <ng-template pTemplate="header">
             <tr>
-                <th id="columna_velatorio">Velatorio</th>
-                <th id="columna_folio">Folio de la solicitud de pago</th>
-                <th id="columna_ejercicio">Ejercicio fiscal</th>
-                <th id="columna_fecha">Fecha de elaboración</th>
-                <th id="columna_tipo">Tipo de solicitud</th>
-                <th id="columna_estatus">Estatus</th>
+                <th id="columna">Velatorio</th>
+                <th id="columna">Folio de la solicitud de pago</th>
+                <th id="columna">Ejercicio fiscal</th>
+                <th id="columna">Fecha de elaboración</th>
+                <th id="columna">Tipo de solicitud</th>
+                <th id="columna">Estatus</th>
                 <th id="columna"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-solicitud>
             <tr>
-                <td>{{solicitud.idVelatorio}}</td>
-                <td>{{solicitud.folio}} </td>
-                <td>{{solicitud.ejercFiscal}} </td>
-                <td>{{solicitud.fechaElaboracion}}</td>
-                <td>{{solicitud.tipoSolic}}</td>
-                <td>{{solicitud.estatus}}</td>
+                <td>{{solicitud.desVelatorio}}</td>
+                <td>{{solicitud.cveFolio}} </td>
+                <td>{{solicitud.ejercicioFiscal}} </td>
+                <td>{{solicitud.fecElaboracion}}</td>
+                <td>{{solicitud.desTipoSolicitud}}</td>
+                <td>{{solicitud.desEstatusSolicitud}}</td>
                 <td>
                     <div class="contenedor-celda-iconos">
                         <a (click)="abrirDetalleSolicitudPago(solicitud)">
