@@ -1,7 +1,7 @@
 <app-table-panel *ngIf="solicitudPagoSeleccionado">
     <ng-template appCustomTemplate="left-header">
         <div class="table-panel-header-column">
-            <span class="font-bold">Folio {{solicitudPagoSeleccionado.folio2}}</span>
+            <span class="font-bold">Folio {{solicitudPagoSeleccionado.cveFolioGastos}}</span>
         </div>
     </ng-template>
     <ng-template appCustomTemplate="right-header">
@@ -10,7 +10,7 @@
                 <span class="ml-5">Estatus</span>
                 <div class="contenedor-inputswitch">
 
-                    <span class="activo">Activo</span>
+                    <span class="activo">{{solicitudPagoSeleccionado.desEstatusSolicitud}}</span>
                 </div>
             </div>
             <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)" *appValidaRol="['USUARIOS','MODIFICAR']" onCloseOnNavigation>
@@ -22,13 +22,13 @@
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Tipo de solicitud de pago</label>
-                <span>{{solicitudPagoSeleccionado.tipoSolicitud}}</span>
+                <span>{{solicitudPagoSeleccionado.desTipoSolicitud}}</span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Ejercicio Fiscal</label>
-                <span>{{solicitudPagoSeleccionado.ejerciFiscal2}}</span>
+                <span>{{solicitudPagoSeleccionado.ejercicioFiscal}}</span>
             </div>
         </div>
     </div>
@@ -36,13 +36,13 @@
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Folio fiscal de la factura de gastos</label>
-                <span>{{solicitudPagoSeleccionado.folioFiscal2}}</span>
+                <span>{{solicitudPagoSeleccionado.cveFolioGastos}}</span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Fecha de elaboración</label>
-                <span>{{solicitudPagoSeleccionado.fechaElaboracion2}}</span>
+                <span>{{solicitudPagoSeleccionado.fecElaboracion}}</span>
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Unidad operativa</label>
-                <span>{{solicitudPagoSeleccionado.unidadOpe}}</span>
+                <span>{{solicitudPagoSeleccionado.unidadMedica}}</span>
             </div>
         </div>
         <div class="col-md-6">
@@ -82,13 +82,13 @@
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Referencia DT</label>
-                <span>{{solicitudPagoSeleccionado.referenciaTD2}}</span>
+                <span>12133576</span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Beneficiario</label>
-                <span>{{solicitudPagoSeleccionado.beneficiario2}}</span>
+                <span>{{solicitudPagoSeleccionado.nomBeneficiario}}</span>
             </div>
         </div>
     </div>
@@ -96,13 +96,13 @@
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Nombre del destinatario</label>
-                <span>{{solicitudPagoSeleccionado.nombreDestinatario2}}</span>
+                <span>Edwin Ruiz Cardenas</span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Nombre del remitente (De)</label>
-                <span>{{solicitudPagoSeleccionado.nomRemitente2}}</span>
+                <span>Ricardo Quintero</span>
             </div>
         </div>
     </div>
@@ -110,13 +110,13 @@
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Concepto</label>
-                <span>{{solicitudPagoSeleccionado.concepto2}}</span>
+                <span>Gasto primario</span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Cantidad letra</label>
-                <span>{{solicitudPagoSeleccionado.cantidadLetra2}}</span>
+                <span>Venticinco mil quinientos pesos</span>
             </div>
         </div>
     </div>
@@ -124,7 +124,7 @@
         <div class="col-md-12">
             <div class="table-panel-column">
                 <label>Observaciones</label>
-                <span>{{solicitudPagoSeleccionado.observ2}}</span>
+                <span>No se presentan problemas de ningun tipo</span>
             </div>
         </div>
     </div>

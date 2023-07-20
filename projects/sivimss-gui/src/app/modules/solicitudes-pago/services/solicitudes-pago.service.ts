@@ -20,16 +20,18 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   private readonly _recibo_detalle: string = 'consultar-porId-rec-pagos';
   private readonly _filtros: string = 'buscar-solipagos';
 
-  obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
-    return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
+  obtenerCatalogoEjercicios(): Observable<HttpRespuesta<any>> {
+    const servicio =  "ejercicios-solipagos";
+    const params = new HttpParams().append("servicio", servicio);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, { params });
   }
 
-  obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
-    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+  obtenerCatalogoTipoSolicitud(): Observable<HttpRespuesta<any>> {
+    const servicio =  "tipsolic-solipagos";
+    const params = new HttpParams().append("servicio", servicio);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, { params });
   }
-
+  
   obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body: { idDelegacion: string | null } = {idDelegacion: delegacion}
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
@@ -43,27 +45,9 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
       {params});
   }
 
-  buscarDatosReportePagos(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
-    const body: { idPagoBitacora: number } = {idPagoBitacora}
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/datos-rec-pagos`, body);
-  }
-
-  descargarReporte<T>(body: T): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-
-    return this._http.post<any>(this._base + `${this._funcionalidad}/plantilla-rec-pagos/generarDocumento/pdf`, body,
-      {headers, responseType: 'blob' as 'json'})
-  }
-
-  obtenerFoliosODS(idVelatorio: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._folios}`, {idVelatorio});
-  }
-
-  obtenerDetalleComision(idValeSalida: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._detalle}`, {idValeSalida});
+  detalleSolicitudPago(idSolicitud: number): Observable<HttpRespuesta<any>> {
+    const body = {idSolicitud}
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._detalle}`, body);
   }
 
 }
