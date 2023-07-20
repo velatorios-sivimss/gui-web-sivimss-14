@@ -7,6 +7,13 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {HttpErrorResponse} from "@angular/common/http";
 
+interface SolicitudCancelacion {
+  idFlujo: number,
+  idPago: number,
+  idPagoDetalle: number,
+  motivoCancela: string
+}
+
 @Component({
   selector: 'app-cancelar-metodo-pago',
   templateUrl: './cancelar-metodo-pago.component.html',
@@ -50,6 +57,15 @@ export class CancelarMetodoPagoComponent implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  generarSolicitudCancelacion(): SolicitudCancelacion {
+    return {
+      idFlujo: 0,
+      idPago: 0,
+      idPagoDetalle: 0,
+      motivoCancela: ""
+    }
   }
 
   get pc() {
