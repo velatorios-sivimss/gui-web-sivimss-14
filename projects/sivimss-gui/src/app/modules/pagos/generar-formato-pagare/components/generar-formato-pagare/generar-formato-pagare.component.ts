@@ -94,6 +94,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     this.obtenerVelatorios();
+    this.obtenerFoliosGenerados();
   }
 
   abrirPanel(event: MouseEvent, formatoPagareSeleccionado: ListadoFormato): void {
@@ -210,10 +211,11 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
 
   obtenerFoliosGenerados(): void {
+    const idDelegacion= this.filtroForm.get('delegacion')?.value;
     const idVelatorio = this.filtroForm.get('velatorio')?.value;
     this.foliosGenerados = [];
     if (!idVelatorio) return;
-    this.generarFormatoService.obtenerFoliosODS(idVelatorio).subscribe({
+    this.generarFormatoService.obtenerFoliosODS(idDelegacion,idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.foliosGenerados = mapearArregloTipoDropdown(respuesta.datos, "nombre", "id");
       },
@@ -249,6 +251,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   obtenerVelatorios(): void {
     this.foliosGenerados = [];
+    this.catalogoVelatorios = [];
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.generarFormatoService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
@@ -259,7 +262,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
-    this.obtenerFoliosGenerados();
   }
 
   get f() {
@@ -296,6 +298,8 @@ export class GenerarFormatoPagareComponent implements OnInit {
         console.log(error)
       },
     })
+  }
+  ngAfterViewInit() {
   }
 
 }
