@@ -14,10 +14,6 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
     super(_http, `${environment.api.mssivimss}`, "agregar-solipagos", "", 65, "consultar-solipagos", "detalle-solipagos", "");
   }
 
-  private readonly _folios: string = 'consultar-folios-rec-pagos';
-  private readonly _derechos: string = 'consultar-derechos-rec-pagos';
-  private readonly _tramites: string = 'consultar-tramites-rec-pagos';
-  private readonly _recibo_detalle: string = 'consultar-porId-rec-pagos';
   private readonly _filtros: string = 'buscar-solipagos';
 
   obtenerCatalogoEjercicios(): Observable<HttpRespuesta<any>> {

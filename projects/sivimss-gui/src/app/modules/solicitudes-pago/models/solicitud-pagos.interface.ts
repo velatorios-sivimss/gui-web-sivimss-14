@@ -72,6 +72,26 @@ export interface SolicitarSolicitudPago {
   
 }
 
+export interface CrearSolicitudPago {
+  idTipoSolic: number;
+  cveFolioGastos: string;
+  cveFolioConsignados: string;
+  idUnidadMedica: number;
+  idDelegacion: number;
+  nomDestinatario: string; 
+  nomRemitente: string; 
+  numReferencia: number;
+  idContratBenef: number;
+  fechaInicial: string; 
+  fechaFinal: string; 
+  concepto: string; 
+  observaciones: string;
+  idVelatorio: number;
+  ejercicioFiscal: number;
+  idEstatusSol: number;
+}
+
+
 export interface PartidaPresupuestal {
   idPartida: number;
   partidaPresupuestal: string;

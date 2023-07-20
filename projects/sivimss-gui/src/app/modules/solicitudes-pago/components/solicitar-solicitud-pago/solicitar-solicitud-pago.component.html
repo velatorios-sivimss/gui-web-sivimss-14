@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <label class="control-label" for="tipoSolicitud">Tipo de solicitud de pago<span
               class="req">*</span>:</label>
-                <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud" [options]="catalogotipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
+                <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
                 </p-dropdown>
                 <span class="campo-obligatorio" *ngIf="ref.tipoSolicitud?.errors?.required && (ref.tipoSolicitud?.dirty || ref.tipoSolicitud?.touched)">Este campo es obligatorio *.</span>
             </div>
@@ -186,22 +186,22 @@
         <ng-container *ngIf="opcion3 == true">
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="control-label" for="folioFiscal3">Folio fiscal de la factura de consignados<span class="req">*</span>:</label>
-                    <input id="folioFiscal3" class="form-control" formControlName="folioFiscal3" placeholder="Ingresa folio">
-                    <span class="campo-obligatorio" *ngIf="ref?.folioFiscal3?.errors?.required && (ref?.folioFiscal3?.dirty || ref?.folioFiscal3?.touched)">Este campo es obligatorio *.</span>
+                    <label class="control-label" for="folioGastos">Folio fiscal de la factura de gastos<span class="req">*</span>:</label>
+                    <input id="folioGastos" class="form-control" formControlName="folioGastos" placeholder="Ingresa folio">
+                    <span class="campo-obligatorio" *ngIf="ref?.folioGastos?.errors?.required && (ref?.folioGastos?.dirty || ref?.folioGastos?.touched)">Este campo es obligatorio *.</span>
                 </div>
                 <div class="col-md-6">
                     <label class="control-label" for="fechaElaboracion3">Importe Total<span class="req">*</span>:</label>
-                    <label class="control-label" for="folioFiscal3">Folio fiscal de la factura de consignados<span class="req">*</span>:</label>
-                    <input id="folioFiscal3" class="form-control" formControlName="folioFiscal3" placeholder="Ingresa folio">
-                    <span class="campo-obligatorio" *ngIf="ref?.folioFiscal3?.errors?.required && (ref?.folioFiscal3?.dirty || ref?.folioFiscal3?.touched)">Este campo es obligatorio *.</span>
+                    <label class="control-label" for="folioConsig">Folio fiscal de la factura de consignados<span class="req">*</span>:</label>
+                    <input id="folioConsig" class="form-control" formControlName="folioConsig" placeholder="Ingresa folio">
+                    <span class="campo-obligatorio" *ngIf="ref?.folioConsig?.errors?.required && (ref?.folioConsig?.dirty || ref?.folioConsig?.touched)">Este campo es obligatorio *.</span>
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="control-label" for="unidadOpe3">Unidad operativa/administrativa<span
                         class="req">*</span>:</label>
-                    <p-dropdown id="unidadOpe3" class="form-control" formControlName="unidadOpe3" [options]="catalogotipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
+                    <p-dropdown id="unidadOpe3" class="form-control" formControlName="unidadOpe3" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
                     </p-dropdown>
                     <span class="campo-obligatorio" *ngIf="ref.unidadOpe3?.errors?.required && (ref.unidadOpe3?.dirty || ref.unidadOpe3?.touched)">Este campo es obligatorio *.</span>
                 </div>
@@ -345,7 +345,7 @@
     <div class="row mb-3">
         <div class="col-md-12 flex justify-content-end align-items-center">
             <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-            <button class="ml-6 btn btn-md btn-primary" [disabled]="solicitarPagoForm.invalid" (click)="solicitarPago();">Aceptar</button>
+            <button class="ml-6 btn btn-md btn-primary" (click)="crearSolicitudPago();">Aceptar</button>
         </div>
     </div>
 </section>

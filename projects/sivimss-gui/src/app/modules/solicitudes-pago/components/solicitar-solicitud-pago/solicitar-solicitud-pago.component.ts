@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TipoDropdown } from '../../../../models/tipo-dropdown';
+import {finalize} from "rxjs/operators";
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { SolicitudesPagoService } from '../../services/solicitudes-pago.service';
-import { SolicitarSolicitudPago, PartidaPresupuestal } from '../../models/solicitud-pagos.interface';
+import { SolicitarSolicitudPago, PartidaPresupuestal, CrearSolicitudPago } from '../../models/solicitud-pagos.interface';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { AlertaService , TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
+import {HttpErrorResponse} from "@angular/common/http";
+import * as moment from "moment/moment";
 
 @Component({
   selector: 'app-solicitar-solicitud-pago',
@@ -22,51 +29,33 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   opcion5: boolean = false;
   ShowUnidadOpe: boolean = false;
   ShowUnidadAdmi: boolean = false;
+  nuevoSolicitudPago!: CrearSolicitudPago;
   
 
   fechaActual: Date = new Date();
   opcionesSolicitud: number = 0;
   partidaPresupuestal: PartidaPresupuestal [] = [];
-  catalogotipoSolicitud: TipoDropdown[] = [
-    {
-      value: 1,
-      label: 'Solicitud de bienes y servicios por comprobar',
-    },
-    {
-      value: 2,
-      label: 'Solicitud de comprobación de bienes y servicios',
-    },
-    {
-      value: 3,
-      label: 'Solicitud de reembolso de fondo fijo revolvente',
-    },
-    {
-      value: 4,
-      label: 'Solicitud de pago',
-    },
-    {
-      value: 5,
-      label: 'Solicitud de pago a consignantes',
-    },
-    {
-      value: 6,
-      label: 'Solicitud de pago por contrato',
-    }
-  ];
+  readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
+  catatalogoTipoSolicitud: TipoDropdown[] = [];
+
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     public config: DynamicDialogConfig,
+    private cargadorService: LoaderService,
     private formBulder: FormBuilder,
     private readonly referencia: DynamicDialogRef,
-    private balanceCajaService: SolicitudesPagoService,
+    private solicitudesPagoService: SolicitudesPagoService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService
   ) { }
 
   ngOnInit(): void {
-    if (this.config?.data) {
-      this.pagoSeleccionado = this.config.data.pagoSeleccionado;
-    }
-    this.inicializarModificarPagoForm();
+    debugger
+    this.inicializarSolicitarPagoForm();
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catatalogoTipoSolicitud =  mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD].datos, "desTipoSolicitud", "tipoSolicitud");
     this.partidaPresupuestal = [
       {  
         idPartida: 1,
@@ -83,7 +72,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     ];
   }
 
-  inicializarModificarPagoForm(): void {
+  inicializarSolicitarPagoForm(): void {
     this.solicitarPagoForm = this.formBulder.group({
       tipoSolicitud: [{ value: null, disabled: false }, [ Validators.required]],
       unidadOpe: [{value:null, disabled: false}],
@@ -136,6 +125,45 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       this.opcion3 = false;
       this.opcion4 = true;
     }
+  }
+
+  generarSolicitudPago(): CrearSolicitudPago {
+    return {
+      idTipoSolic: this.solicitarPagoForm.get("tipoSolicitud")?.value,
+      cveFolioGastos: this.solicitarPagoForm.get("folioGastos")?.value,
+      cveFolioConsignados: this.solicitarPagoForm.get("folioConsig")?.value,
+      idUnidadMedica: this.solicitarPagoForm.get("unidadOpe3")?.value,
+      idDelegacion: 1, 
+      nomDestinatario: this.solicitarPagoForm.get("nombreDestinatario3")?.value,
+      nomRemitente: this.solicitarPagoForm.get("nomRemitente3")?.value,
+      numReferencia: this.solicitarPagoForm.get("referenciaTD3")?.value,
+      idContratBenef: this.solicitarPagoForm.get("beneficiario3")?.value,
+      fechaInicial: "10/07/2023",
+      fechaFinal: "12/07/2023",
+      concepto: this.solicitarPagoForm.get("concepto3")?.value,
+      observaciones: this.solicitarPagoForm.get("observ3")?.value,
+      idVelatorio: 1,
+      ejercicioFiscal:2022,
+      idEstatusSol: 1
+    };
+  }
+
+  
+  crearSolicitudPago(): void {
+    this.cargadorService.activar();
+    const solicitudGuardar: CrearSolicitudPago = this.generarSolicitudPago();
+    this.solicitudesPagoService.guardar(solicitudGuardar).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud de pago generada correctamente')
+        void this.router.navigate(['../../'], {relativeTo: this.route});
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error, "Error al guardar la información de la solicitud de pago. Intenta nuevamente.");
+      }
+    });
   }
 
   get ref() {
