@@ -27,6 +27,7 @@ export class ReciboFormatoPagareComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.formatoPagare = this.route.snapshot.data["respuesta"].datos[0];
+    this.formatoPagare.idODS = this.route.snapshot.params.idODS;
     this.formatoPagare.tipoReporte = "pdf";
     this.obtenerImporteLetra(this.formatoPagare.importe);
     this.inicializarFiltroForm();
@@ -59,6 +60,7 @@ export class ReciboFormatoPagareComponent implements OnInit {
 
   crearNuevoPagare(): any {
     return {
+      idODS : this.formatoPagare.idODS,
       importe : this.formatoPagare.importe,
       redito: this.formatoPagare.redito
     };

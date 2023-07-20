@@ -1,4 +1,4 @@
-import {ElementoBreadcrumb} from "../../../shared/breadcrumb/models/elemento-breadcrumb.interface";
+import {ElementoBreadcrumb} from "projects/sivimss-gui/src/app/shared/breadcrumb/models/elemento-breadcrumb.interface";
 
 export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   {
@@ -7,6 +7,6 @@ export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   },
   {
     icono: '',
-    titulo: 'Administrar usuarios contratantes'
+    titulo: 'Solicitudes de pago'
   }
 ]

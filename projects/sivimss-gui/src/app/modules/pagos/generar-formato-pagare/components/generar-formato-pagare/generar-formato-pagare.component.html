@@ -1,119 +1,138 @@
 <app-titulo-principal titulo="Generar Formato Pagaré"></app-titulo-principal>
 <div class="border-panel">
-    <form [formGroup]="filtroForm" (ngSubmit)="buscar()">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="nivel">Nivel:</label>
-                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles" placeholder="Selecciona el nivel">
-                </p-dropdown>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" for="delegacion">Delegación:</label>
-                <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
-                </p-dropdown>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="velatorio">Velatorio:</label>
-                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" (onChange)="obtenerFoliosGenerados()">
-                </p-dropdown>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" for="folioODS">Folio de la ODS<span class="req">*</span>:</label>
-                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados" (onChange)="obtenerContratanteGeneradoPorfolio()" optionLabel="label" placeholder="Selecciona el folio" [filter]="true">
-                </p-dropdown>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="nombreContratante">Nombre del contratante:<span class="req">*</span>:</label>
-                <p-dropdown id="nombreContratante" class="form-control" formControlName="nombreContratante" [options]="contratantesGenerados" optionLabel="label" placeholder="Selecciona el nombre del contratante" [filter]="true">
-                </p-dropdown>
-            </div>
-            <div class="col-md-3">
-                <label class="control-label" for="fechaInicial">Fecha inicial:</label>
-                <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true" placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="filtroForm.get('fechaFinal')?.value">
-                </p-calendar>
-            </div>
-            <div class="col-md-3">
-                <label class="control-label" for="fechaFinal">Fecha final:</label>
-                <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" [minDate]="filtroForm.get('fechaInicial')?.value">
-                </p-calendar>
-            </div>
-        </div>
-        <div class="row mt-6">
-            <div class="col-md-12 flex justify-content-end">
-                <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-                <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
-            </div>
-        </div>
-    </form>
+  <form [formGroup]="filtroForm" (ngSubmit)="buscar()">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+                    placeholder="Selecciona el nivel">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones"
+                    placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+                    placeholder="Selecciona el velatorio" [filter]="true" (onChange)="obtenerFoliosGenerados()">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="folioODS">Folio de la ODS<span class="req">*</span>:</label>
+        <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados"
+                    (onChange)="obtenerContratanteGeneradoPorfolio()" optionLabel="label"
+                    placeholder="Selecciona el folio" [filter]="true">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nombreContratante">Nombre del contratante:<span class="req">*</span>:</label>
+        <p-dropdown id="nombreContratante" class="form-control" formControlName="nombreContratante"
+                    [options]="contratantesGenerados" optionLabel="label"
+                    placeholder="Selecciona el nombre del contratante" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="fechaInicial">Fecha inicial:</label>
+        <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true"
+                    placeholder="Fecha inicial" dateFormat="dd/mm/yy"
+                    (onSelect)="validarMismaFechaInicioFin()"
+                    [maxDate]="filtroForm.get('fechaFinal')?.value || fechaAnterior">
+        </p-calendar>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="fechaFinal">Fecha final:</label>
+        <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true"
+                    placeholder="Fecha final" dateFormat="dd/mm/yy" (onSelect)="validarMismaFechaInicioFin()"
+                    [minDate]="filtroForm.get('fechaInicial')?.value"
+                    [maxDate]="fechaActual">
+        </p-calendar>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+      </div>
+    </div>
+  </form>
 </div>
 
 <section class="mt-5">
-    <div class="flex justify-content-between align-items-center">
-        <h2 class="subtitulo">Órdenes de servicio</h2>
-    </div>
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Órdenes de servicio</h2>
+  </div>
 
-    <p-table styleClass="mt-5 mb-8" [value]="formatoPagare" [paginator]="formatoPagare.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
+  <p-table styleClass="mt-5 mb-8" [value]="formatoPagare" [paginator]="formatoPagare.length > 0"
+           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+           [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
 
-        <ng-template pTemplate="header">
-            <tr>
-                <th scope="col">Fecha</th>
-                <th scope="col">Folio ODS</th>
-                <th scope="col">Nombre contratante</th>
-                <th scope="col">Estatus de la ODS</th>
-                <th scope="col">Estatus del pago</th>
-                <th scope="col"></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-formatoPagare>
-            <tr>
-                <td> {{formatoPagare.fechaODS}} </td>
-                <td> {{formatoPagare.folioODS}} </td>
-                <td> {{formatoPagare.nomContratante}} </td>
-                <td> {{formatoPagare.estatusODS}} </td>
-                <td> {{formatoPagare.estatusPago}} </td>
-                <td>
-                    <div class="contenedor-celda-iconos">
-                        <a (click)="abrirPanel($event,formatoPagare)">
-                            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <th colspan="5" class="p-2 text-center font-bold text-xl">
-                    No se encontro información relacionada a tu búsqueda
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorleft">
-            <div class="paginator-template">
-                <span class="total-elements"> {{formatoPagare.length}} de {{totalElementos}} </span>
-            </div>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-            <div class="paginator-template">
-                <div class="export-table">
-                    <span class="export-table-text">Exportar tabla</span>
-                    <div class="export-table-icons">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf" (click)="guardarListadoPagaresPDF();">
-                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel" (click)="guardarListadoPagaresExcel();">
-                    </div>
-                </div>
-            </div>
-        </ng-template>
-    </p-table>
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Fecha</th>
+        <th scope="col">Folio ODS</th>
+        <th scope="col">Nombre contratante</th>
+        <th scope="col">Estatus de la ODS</th>
+        <th scope="col">Estatus del pago</th>
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-formatoPagare>
+      <tr>
+        <td> {{formatoPagare.fechaODS}} </td>
+        <td> {{formatoPagare.folioODS}} </td>
+        <td> {{formatoPagare.nomContratante}} </td>
+        <td> {{formatoPagare.estatusODS}} </td>
+        <td> {{formatoPagare.estatusPago}} </td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirPanel($event,formatoPagare)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="6" class="p-2 text-center font-bold text-xl" id="generar_pagare_pago_sin_resultados">
+          No se encontró información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements"> {{formatoPagare.length}} de {{totalElementos}} </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                 (click)="guardarListadoPagaresPDF();">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                 (click)="guardarListadoPagaresExcel();">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
 </section>
 
 <p-overlayPanel #overlayPanel>
-    <ng-template pTemplate="content">
-        <app-overlay-panel-opciones>
-            <app-overlay-panel-opcion titulo="Generar pagaré" [routerLink]="['./formato-pagare', formatoPagareSeleccionado.id]" routerLinkActive></app-overlay-panel-opcion>
-        </app-overlay-panel-opciones>
-    </ng-template>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Generar pagaré"
+                                [routerLink]="['./formato-pagare', formatoPagareSeleccionado.id]"
+                                routerLinkActive></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
 </p-overlayPanel>
