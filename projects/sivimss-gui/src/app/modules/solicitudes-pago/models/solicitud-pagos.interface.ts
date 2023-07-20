@@ -34,13 +34,14 @@ export interface SolicitarSolicitudPago {
   cantidad1: string;
   observ1: string;
 
-  folio2: string;
-  folioFiscal2: string;
-  estatus2: string;
-  ejerciFiscal2: string;
+  folioGastos2: string;
   fechaElaboracion2: string;
-  unidadOpe : string;
-  solicitadoPor  : string;
+  unidadOpe2 : string;
+  unidadAdmi2 : string;
+  refeUnidadOpe2: string;
+  solicitadoOpePor2  : string;
+  refeUnidadAdmi2: string;
+  solicitadoAdmiPor2  : string;
   nombreDestinatario2: string;
   nomRemitente2: string;
   referenciaTD2: string;

@@ -20,7 +20,10 @@ import * as moment from "moment/moment";
 })
 export class SolicitarSolicitudPagoComponent implements OnInit {
 
-  solicitarPagoForm!: FormGroup;
+  solicitarPagoForm1!: FormGroup;
+  solicitarPagoForm2!: FormGroup;
+  solicitarPagoForm3!: FormGroup;
+  solicitarPagoForm4!: FormGroup;
   pagoSeleccionado: any = {}
   opcion1: boolean = false;
   opcion2: boolean = false;
@@ -72,8 +75,26 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     ];
   }
 
-  inicializarSolicitarPagoForm(): void {
-    this.solicitarPagoForm = this.formBulder.group({
+  inicializarSolicitarPagoForm1(): void {
+    this.solicitarPagoForm1 = this.formBulder.group({
+      tipoSolicitud: [{ value: null, disabled: false }, [ Validators.required]],
+      unidadOpe: [{value:null, disabled: false}],
+      unidadAdmi: [{value:null, disabled: false}],
+      fechaElaboracion1: [{ value: null, disabled: false }, [ Validators.required]],
+      nomDestinatario1: [{ value: null, disabled: false }, [ Validators.required]],
+      nomRemitente1: [{ value: null, disabled: false }, [ Validators.required]],
+      referenciaTD1: [{ value: null, disabled: false }, [ Validators.required]],
+      beneficiario1: [{ value: null, disabled: false }, [ Validators.required]],
+      concepto1: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(60)]],
+      importeTotal1: [{ value: null, disabled: false }, [ Validators.required]],
+      cantidad1: [{ value: null, disabled: false }, [ Validators.required]],
+      observ1: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(100)]],
+    });
+  }
+
+  
+  inicializarSolicitarPagoForm2(): void {
+    this.solicitarPagoForm2 = this.formBulder.group({
       tipoSolicitud: [{ value: null, disabled: false }, [ Validators.required]],
       unidadOpe: [{value:null, disabled: false}],
       unidadAdmi: [{value:null, disabled: false}],
@@ -99,7 +120,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   validaTipoSolicitud(): void {
     debugger
-    const idTipo = this.solicitarPagoForm.get('tipoSolicitud')?.value;
+    const idTipo = this.solicitarPagoForm1.get('tipoSolicitud')?.value;
 
     if (idTipo === 1) {
       this.opcion1 = true;
@@ -129,19 +150,19 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   generarSolicitudPago(): CrearSolicitudPago {
     return {
-      idTipoSolic: this.solicitarPagoForm.get("tipoSolicitud")?.value,
-      cveFolioGastos: this.solicitarPagoForm.get("folioGastos")?.value,
-      cveFolioConsignados: this.solicitarPagoForm.get("folioConsig")?.value,
-      idUnidadMedica: this.solicitarPagoForm.get("unidadOpe3")?.value,
+      idTipoSolic: this.solicitarPagoForm1.get("tipoSolicitud")?.value,
+      cveFolioGastos: this.solicitarPagoForm1.get("folioGastos")?.value,
+      cveFolioConsignados: this.solicitarPagoForm1.get("folioConsig")?.value,
+      idUnidadMedica: this.solicitarPagoForm1.get("unidadOpe3")?.value,
       idDelegacion: 1, 
-      nomDestinatario: this.solicitarPagoForm.get("nombreDestinatario3")?.value,
-      nomRemitente: this.solicitarPagoForm.get("nomRemitente3")?.value,
-      numReferencia: this.solicitarPagoForm.get("referenciaTD3")?.value,
-      idContratBenef: this.solicitarPagoForm.get("beneficiario3")?.value,
+      nomDestinatario: this.solicitarPagoForm1.get("nombreDestinatario3")?.value,
+      nomRemitente: this.solicitarPagoForm1.get("nomRemitente3")?.value,
+      numReferencia: this.solicitarPagoForm1.get("referenciaTD3")?.value,
+      idContratBenef: this.solicitarPagoForm1.get("beneficiario3")?.value,
       fechaInicial: "10/07/2023",
       fechaFinal: "12/07/2023",
-      concepto: this.solicitarPagoForm.get("concepto3")?.value,
-      observaciones: this.solicitarPagoForm.get("observ3")?.value,
+      concepto: this.solicitarPagoForm1.get("concepto3")?.value,
+      observaciones: this.solicitarPagoForm1.get("observ3")?.value,
       idVelatorio: 1,
       ejercicioFiscal:2022,
       idEstatusSol: 1
@@ -167,11 +188,11 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   get ref() {
-    return this.solicitarPagoForm.controls;
+    return this.solicitarPagoForm1.controls;
   }
 
   get fa() {
-    return this.solicitarPagoForm.controls;
+    return this.solicitarPagoForm1.controls;
   }
 
   unidad(tipo:number): void {
