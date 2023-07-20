@@ -6,7 +6,5 @@ export interface FiltrosSolicitudPago {
   fecFinODS: any,
   ejercicioFiscal: string,
   idTipoSolicitud: string,
-  folioSolicitud: string,
-  rutaNombreReporte: string,
-  tipoReporte: string
+  folioSolicitud: string
 }

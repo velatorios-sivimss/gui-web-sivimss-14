@@ -11,8 +11,8 @@ export class SolicitudesPagoResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const niveles$: Observable<TipoDropdown[]> = this.solicitudesPagoService.obtenerCatalogoNiveles();
-    const delegaciones$: Observable<TipoDropdown[]> = this.solicitudesPagoService.obtenerCatalogoDelegaciones();
-    return forkJoin([niveles$, delegaciones$])
+    const ejercicios$ = this.solicitudesPagoService.obtenerCatalogoEjercicios();
+    const tipoSolicitudes$ = this.solicitudesPagoService.obtenerCatalogoTipoSolicitud();
+    return forkJoin([ejercicios$, tipoSolicitudes$])
   }
 }

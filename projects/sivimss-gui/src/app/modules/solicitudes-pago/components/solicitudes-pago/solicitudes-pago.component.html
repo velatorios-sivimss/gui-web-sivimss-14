@@ -24,12 +24,12 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label class="control-label" for="ejercFiscal">Ejercicio fiscal:</label>
-                <p-dropdown id="ejercFiscal" class="form-control" formControlName="ejercFiscal" [options]="catalogoNiveles" placeholder="Selecciona el ejercicio fiscal">
+                <p-dropdown id="ejercFiscal" class="form-control" formControlName="ejercFiscal" [options]="catalogoEjercicios" placeholder="Selecciona el ejercicio fiscal">
                 </p-dropdown>
             </div>
             <div class="col-md-6">
                 <label class="control-label" for="tipoSolic">Tipo de solicitud de pago:</label>
-                <p-dropdown id="tipoSolic" class="form-control" formControlName="tipoSolic" [options]="opciones" placeholder="Selecciona el tipo de solicitud" [filter]="true">
+                <p-dropdown id="tipoSolic" class="form-control" formControlName="tipoSolic" [options]="catatalogoTipoSolicitudes" placeholder="Selecciona el tipo de solicitud" [filter]="true">
                 </p-dropdown>
             </div>
         </div>

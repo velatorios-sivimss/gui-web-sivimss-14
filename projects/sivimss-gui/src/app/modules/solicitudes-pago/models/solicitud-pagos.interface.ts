@@ -1,5 +1,5 @@
 export interface SolicitudPago {
-  id: number;
+  idSolicitud: number;
   desVelatorio: string;
   cveFolio: string;
   ejercicioFiscal: string,
@@ -10,7 +10,19 @@ export interface SolicitudPago {
 }
 
 export interface SolicitarSolicitudPago {
-  id: number;
+  idSolicitud: number;
+  cveFolioGastos: string;
+  fecElaboracion: string;
+  ejercicioFiscal: number;
+  idDelegacion: number;
+  unidadMedica: number;
+  idTipoSolicitid: number;
+  desEstatusSolicitud: string;
+  desVelatorio: string;
+  nomBeneficiario: string;
+  desTipoSolicitud: string;
+  idEstatusSol: number;
+
   tipoSolicitud: string;
   fechaElaboracion1: string;
   nomDestinatario1: string;

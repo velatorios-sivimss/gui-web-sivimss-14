@@ -51,8 +51,8 @@ export class SolicitudesPagoComponent implements OnInit {
   detalleRef!: DynamicDialogRef;
   cancelarRef!: DynamicDialogRef;
 
-  catalogoNiveles: TipoDropdown[] = [];
-  catatalogoDelegaciones: TipoDropdown[] = [];
+  catalogoEjercicios: TipoDropdown[] = [];
+  catatalogoTipoSolicitudes: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
   fechaActual: Date = new Date();
@@ -60,8 +60,8 @@ export class SolicitudesPagoComponent implements OnInit {
 
   paginacionConFiltrado: boolean = false;
 
-  readonly POSICION_CATALOGO_NIVELES: number = 0;
-  readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGO_EJERCICIOS: number = 0;
+  readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -85,8 +85,8 @@ export class SolicitudesPagoComponent implements OnInit {
 
   private cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
-    this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    this.catalogoEjercicios = respuesta[this.POSICION_CATALOGO_EJERCICIOS].datos;
+    this.catatalogoTipoSolicitudes =  mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD].datos, "desTipoSolicitud", "tipoSolicitud");
     this.obtenerVelatorios();
   }
 
@@ -127,7 +127,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   paginar(): void {
-    debugger
     this.cargadorService.activar();
     this.solicitudesPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
@@ -156,7 +155,7 @@ export class SolicitudesPagoComponent implements OnInit {
       {
         header: 'Solicitud de comprobación de bienes y servicios',
         width: '880px',
-        data: solicitudPagoSeleccionado.id
+        data: solicitudPagoSeleccionado.idSolicitud
       },
     )
   }
@@ -225,9 +224,7 @@ export class SolicitudesPagoComponent implements OnInit {
       fecFinODS: fechaFinal,
       ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
       idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
-      folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value,
-      rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
-      tipoReporte: "pdf"
+      folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value
     }
   }
 
