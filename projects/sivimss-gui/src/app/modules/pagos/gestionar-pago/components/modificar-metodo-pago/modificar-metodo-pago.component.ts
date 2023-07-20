@@ -29,8 +29,8 @@ export class ModificarMetodoPagoComponent implements OnInit {
               private gestionarPagoService: GestionarPagoService,
               private mensajesSistemaService: MensajesSistemaService,
               private alertaService: AlertaService,
-  private router: Router,
-  private readonly activatedRoute: ActivatedRoute,
+              private router: Router,
+              private readonly activatedRoute: ActivatedRoute,
   ) {
     this.inicializarTipoPagoForm();
   }

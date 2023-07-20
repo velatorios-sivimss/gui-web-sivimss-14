@@ -6,6 +6,7 @@ import {GestionarPagoService} from "../../services/gestionar-pago.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {ActivatedRoute, Router} from "@angular/router";
 
 interface SolicitudCancelacion {
   idFlujo: number,
@@ -23,6 +24,8 @@ export class CancelarMetodoPagoComponent implements OnInit {
 
   registroPago!: MetodoPagoGestion;
   cancelarPagoForm!: FormGroup;
+  idFlujo!: number;
+  idPago!: number;
 
   constructor(private formBuilder: FormBuilder,
               public config: DynamicDialogConfig,
@@ -30,6 +33,8 @@ export class CancelarMetodoPagoComponent implements OnInit {
               private gestionarPagoService: GestionarPagoService,
               private mensajesSistemaService: MensajesSistemaService,
               private alertaService: AlertaService,
+              private router: Router,
+              private readonly activatedRoute: ActivatedRoute,
   ) {
     this.inicializarTipoPagoForm();
   }
@@ -41,15 +46,26 @@ export class CancelarMetodoPagoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.registroPago = this.config.data;
+    this.registroPago = this.config.data.pago;
+    this.idPago = this.config.data.flujo;
+    this.idFlujo = this.config.data.idFlujo;
   }
 
   guardar(): void {
-    const solicitud = {};
+    const solicitud: SolicitudCancelacion = this.generarSolicitudCancelacion();
     this.gestionarPagoService.cancelarMetodoPago(solicitud).subscribe({
       next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago modificado correctamente');
+        this.alertaService.mostrar(TipoAlerta.Exito, 'El motivo de la cancelación será registrado');
+        if (this.idFlujo === 1) {
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus de la ODS a Generada');
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus del nuevo convenio a “Generado');
+        }
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Cambio de estatus de la renovación del convenio se mantendrá como “Vigente”, mientras se encuentre en periodo de renovación');
+        this.alertaService.mostrar(TipoAlerta.Exito, 'El sistema actualizará el registro del pago realizado, a fin de tener que cubrir nuevamente el total mediante los métodos de pago disponibles');
+        this.alertaService.mostrar(TipoAlerta.Exito, 'El sistema permitirá generar nuevamente pagaré');
         this.ref.close();
+        void this.router.navigate(["../../../"], {relativeTo: this.activatedRoute});
       },
       error: (error: HttpErrorResponse): void => {
         const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
@@ -61,10 +77,10 @@ export class CancelarMetodoPagoComponent implements OnInit {
 
   generarSolicitudCancelacion(): SolicitudCancelacion {
     return {
-      idFlujo: 0,
-      idPago: 0,
-      idPagoDetalle: 0,
-      motivoCancela: ""
+      idFlujo: this.idFlujo,
+      idPago: this.idPago,
+      idPagoDetalle: this.registroPago.idPagoDetalle,
+      motivoCancela: this.cancelarPagoForm.get('motivoCancelacion')?.value
     }
   }
 

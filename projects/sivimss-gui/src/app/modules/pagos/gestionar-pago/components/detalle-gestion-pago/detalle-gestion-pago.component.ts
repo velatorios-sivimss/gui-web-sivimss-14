@@ -52,7 +52,11 @@ export class DetalleGestionPagoComponent implements OnInit {
     const CANCELAR_TIPO_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Cancelar pago",
       width: MAX_WIDTH,
-      data: this.pagoSeleccionado
+      data: {
+        pago: this.pagoSeleccionado,
+        flujo: this.registroPago.idFlujo,
+        idPago: this.registroPago.idPagoBitacora
+      }
     };
     this.dialogService.open(CancelarMetodoPagoComponent, CANCELAR_TIPO_PAGO_CONFIG);
   }
