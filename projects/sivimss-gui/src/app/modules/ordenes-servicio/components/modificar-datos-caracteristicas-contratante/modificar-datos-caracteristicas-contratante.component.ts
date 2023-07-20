@@ -134,6 +134,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
   paqueteSeleccionadoDD!:Dropdown;
   valorPrevioDD: number = 0;
   confCambiarPaquete:boolean = false;
+  costoServiciosPorPaquete!: number;
 
 
   constructor(
@@ -209,6 +210,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   inicializarForm(datos: any): void {
+    debugger
     this.paqueteSeleccionado =
       datos.paqueteSeleccionado == null
         ? null
@@ -281,7 +283,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   confirmarCambioPaquete(dd:Dropdown): void {
-    //this.paqueteSeleccionado = this.valorPrevioDD;
+    if(this.valorPrevioDD == null){
+      this.paqueteSeleccionadoDD = dd;
+      this.detallePaqueteFunction();
+      return
+    }
     this.confCambiarPaquete = true;
     this.paqueteSeleccionadoDD = dd.selectedOption;
   }
@@ -306,7 +312,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.datosPresupuesto = [];
     this.elementosEliminadosPaquete = [];
     this.elementosEliminadosPresupuesto = [];
-
+    this.total = 0;
     this.loaderService.activar();
     this.buscarTipoAsignacion();
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
@@ -330,6 +336,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
             return;
           }
           this.datosPaquetes = datos;
+          this.costoServiciosPorPaquete = datos[0].totalPaquete;
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -632,6 +639,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
         fila: this.fila,
         proviene: 'traslados',
         idServicio: this.idServicio,
+        paqueteSeleccionado: this.paqueteSeleccionado,
+        filaSeleccionada: this.datosPaquetes,
         //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });
@@ -653,6 +662,21 @@ export class ModificarDatosCaracteristicasContratanteComponent
           datos.bloquearRadioButton = false;
         }
       });
+      debugger
+      let totalImporte =  respuesta.costoExtraKilometros + this.datosPaquetes[0].importe;
+      let totalPaquete = respuesta.costoExtraKilometros + this.datosPaquetes[0].totalPaquete;
+      /*Reiniciar los costos de tabla paquete*/
+      this.datosPaquetes.forEach((precio:any) => {
+        precio.importe = this.costoServiciosPorPaquete;
+        precio.totalPaquete = this.costoServiciosPorPaquete;
+      });
+      /*Ingresar nuevo costo de tabla paquete si el kilometraje excede los previstos por promotor*/
+      if(respuesta.costoExtraKilometros > 0) {
+        this.datosPaquetes.forEach((datoPaquete: any) => {
+          datoPaquete.importe = totalImporte;
+          datoPaquete.totalPaquete = totalPaquete
+        });
+      }
     });
   }
 
@@ -781,6 +805,18 @@ export class ModificarDatosCaracteristicasContratanteComponent
   validacionFormulario(): boolean {
     let banderaPaquete = false;
     let banderaPresupuesto = false;
+
+    this.selecionaTipoOtorgamiento;
+    this.paqueteSeleccionadoDD?.label;
+    if(this.tipoOrden == 1 || this.tipoOrden == 2){
+      if(this.paqueteSeleccionadoDD){
+        if(this.paqueteSeleccionadoDD.label.includes("Paquete social")){
+          if(this.selecionaTipoOtorgamiento == null){
+            return true;
+          }
+        }
+      }
+    }
 
     if (this.tipoOrden == 1) {
       this.datosPresupuesto.forEach(function (datos) {
