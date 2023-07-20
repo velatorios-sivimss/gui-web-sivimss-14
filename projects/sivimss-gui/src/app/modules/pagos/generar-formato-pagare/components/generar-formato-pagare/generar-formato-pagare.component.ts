@@ -299,5 +299,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       },
     })
   }
+  ngAfterViewInit() {
+  }
 
 }
