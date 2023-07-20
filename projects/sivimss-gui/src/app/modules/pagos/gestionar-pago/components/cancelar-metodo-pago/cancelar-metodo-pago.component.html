@@ -26,7 +26,7 @@
     </div>
   </div>
 </app-table-panel>
-<form [formGroup]="cancelarPagoForm">
+<form [formGroup]="cancelarPagoForm" (ngSubmit)="guardar()">
   <div class="row mt-4">
     <div class="col-md-12">
       <label class="control-label" for="motivoCancelacion">Motivo de la cancelación<span class="req">*</span>:</label>

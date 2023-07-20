@@ -18,11 +18,14 @@ import {PagoGestion} from "../../models/pagoGestion.interface";
 import {OverlayPanel} from "primeng/overlaypanel";
 import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 
 @Component({
   selector: 'app-gestionar-pago',
   templateUrl: './gestionar-pago.component.html',
-  styleUrls: ['./gestionar-pago.component.scss']
+  styleUrls: ['./gestionar-pago.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class GestionarPagoComponent implements OnInit {
 
@@ -60,6 +63,7 @@ export class GestionarPagoComponent implements OnInit {
               private router: Router,
               private readonly activatedRoute: ActivatedRoute,
               private alertaService: AlertaService,
+              private descargaArchivosService: DescargaArchivosService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -172,4 +176,33 @@ export class GestionarPagoComponent implements OnInit {
   }
 
 
+  guardarPDF(): void {
+    this.cargadorService.activar();
+    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado()).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta)
+      },
+      (error) => {
+        console.log(error)
+      },
+    )
+  }
+
+  guardarExcel(): void {
+    this.cargadorService.activar();
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListadoExcel(),
+      configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta)
+      },
+      (error) => {
+        console.log(error)
+      },
+    )
+  }
 }

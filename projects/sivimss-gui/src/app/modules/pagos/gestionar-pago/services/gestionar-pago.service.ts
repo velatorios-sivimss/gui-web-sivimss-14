@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from "../../../../utils/base-service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 import {environment} from "../../../../../environments/environment";
 import {Observable} from "rxjs";
@@ -14,6 +14,7 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _renPrevFunFolios: string = 'genpago-rpf';
   private readonly _modificarPago: string = 'genpago-modifica';
   private readonly _eliminarPago: string = 'genpago-cancela';
+  private readonly _imprimirPago: string = 'genpago-docto';
 
   body = {velatorio: null}
 
@@ -45,5 +46,25 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
   modificarMetodoPago(body: any): Observable<HttpRespuesta<any>> {
     return this._http.put<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
+  }
+
+  descargarListado(): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    const body = {tipoReporte: "pdf"}
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
+  }
+
+  descargarListadoExcel(): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    const body = {tipoReporte: "xls"}
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
   }
 }
