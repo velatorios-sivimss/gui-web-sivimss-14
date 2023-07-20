@@ -53,7 +53,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'Esta selección no implicará cambios en los estatus del registro o en el stock, por lo que no es una cancelación');
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'Esta opción permitirá modificar los métodos de pago utilizados o los montos, debiendo de cumplir con el total');
         this.ref.close();
-        void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
+        void this.router.navigate(["../../../"], {relativeTo: this.activatedRoute});
       },
       error: (error: HttpErrorResponse): void => {
         const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
