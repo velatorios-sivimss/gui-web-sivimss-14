@@ -196,6 +196,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'reporte-orden-servicio',
+    loadChildren:() => import ('./modules/reporte-orden-servicio/reporte-orden-servicio.module').then(m=> m.ReporteOrdenServicioModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: '**',
     component: PaginaNoEncontradaComponent,
   },
