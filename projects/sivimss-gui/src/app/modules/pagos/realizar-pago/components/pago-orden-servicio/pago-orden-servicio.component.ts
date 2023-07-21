@@ -16,6 +16,7 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -51,6 +52,7 @@ export class PagoOrdenServicioComponent implements OnInit {
   pagoODSModal: boolean = false;
   tipoPago: any[] = TIPO_PAGO_CATALOGOS_ODS;
   pagoForm!: FormGroup;
+  rol!: number;
 
   constructor(private formBuilder: FormBuilder,
               public dialogService: DialogService,
@@ -58,6 +60,8 @@ export class PagoOrdenServicioComponent implements OnInit {
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService,
   ) {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {

@@ -161,23 +161,8 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'pagos/generar-recibo-pago',
-    loadChildren: () => import('./modules/pagos/generar-recibo-pago/generar-recibo-pago.module').then(m => m.GenerarReciboModule),
-    canActivate: [PermiteUsuarioLogueadoGuard]
-  },
-  {
-    path: 'pagos/generar-formato-pagare',
-    loadChildren: () => import('./modules/pagos/generar-formato-pagare/generar-formato-pagare.module').then(m => m.GenerarFormatoPagareModule),
-    canActivate: [PermiteUsuarioLogueadoGuard]
-  },
-  {
-    path: 'pagos/facturacion',
-    loadChildren: () => import('./modules/pagos/facturacion/facturacion.module').then(m => m.FacturacionModule),
-    canActivate: [PermiteUsuarioLogueadoGuard]
-  },
-  {
-    path: 'pagos/realizar-pago',
-    loadChildren: () => import('./modules/pagos/realizar-pago/realizar-pago.module').then(m => m.RealizarPagoModule),
+    path: 'pagos',
+    loadChildren: () => import('./modules/pagos/pagos.module').then(m => m.PagosModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {

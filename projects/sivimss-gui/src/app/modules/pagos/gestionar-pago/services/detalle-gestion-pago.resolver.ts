@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
 import {Observable} from 'rxjs';
-import {RealizarPagoService} from "./realizar-pago.service";
+import {GestionarPagoService} from "./gestionar-pago.service";
 
 @Injectable()
-export class DetallePagoResolver implements Resolve<any> {
+export class DetalleGestionPagoResolver implements Resolve<boolean> {
 
-  constructor(private realizarPagoService: RealizarPagoService,
-  ) {
+  constructor(private gestionarPagoService: GestionarPagoService) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const idPagoBitacora: number = route.paramMap.get('idPagoBitacora') as unknown as number;
-    return this.realizarPagoService.consultarDetallePago(idPagoBitacora);
+    const idFlujo: number = route.paramMap.get('idFlujo') as unknown as number;
+    return this.gestionarPagoService.obtenerDetallePago(idPagoBitacora, idFlujo);
   }
 }
