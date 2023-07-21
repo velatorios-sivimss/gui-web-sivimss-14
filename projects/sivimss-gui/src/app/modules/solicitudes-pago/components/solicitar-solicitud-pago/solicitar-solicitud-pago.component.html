@@ -1,12 +1,14 @@
 <ng-container>
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <label class="control-label" for="tipoSolicitud">Tipo de solicitud de pago<span
+    <form [formGroup]="tipoSolicitudForm">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="control-label" for="tipoSolicitud">Tipo de solicitud de pago<span
               class="req">*</span>:</label>
-            <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
-            </p-dropdown>
+                <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
+                </p-dropdown>
+            </div>
         </div>
-    </div>
+    </form>
     <ng-container *ngIf="opcion1 == true">
         <form [formGroup]="solicitarPagoForm1">
             <div class="row mb-3">
@@ -186,152 +188,156 @@
         </form>
     </ng-container>
     <ng-container *ngIf="opcion3 == true">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="folioGastos">Folio fiscal de la factura de gastos<span class="req">*</span>:</label>
-                <input id="folioGastos" class="form-control" formControlName="folioGastos" placeholder="Ingresa folio">
-                <span class="campo-obligatorio" *ngIf="ref?.folioGastos?.errors?.required && (ref?.folioGastos?.dirty || ref?.folioGastos?.touched)">Este campo es obligatorio *.</span>
+        <form [formGroup]="solicitarPagoForm3">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="folioGastos3">Folio fiscal de la factura de gastos<span class="req">*</span>:</label>
+                    <input id="folioGastos3" class="form-control" formControlName="folioGastos3" placeholder="Ingresa folio">
+                    <span class="campo-obligatorio" *ngIf="ref?.folioGastos3?.errors?.required && (ref?.folioGastos3?.dirty || ref?.folioGastos3?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="fechaElaboracion3">Importe Total<span class="req">*</span>:</label>
+                    <label class="control-label" for="folioConsig">Folio fiscal de la factura de consignados<span class="req">*</span>:</label>
+                    <input id="folioConsig" class="form-control" formControlName="folioConsig" placeholder="Ingresa folio">
+                    <span class="campo-obligatorio" *ngIf="ref?.folioConsig?.errors?.required && (ref?.folioConsig?.dirty || ref?.folioConsig?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="control-label" for="fechaElaboracion3">Importe Total<span class="req">*</span>:</label>
-                <label class="control-label" for="folioConsig">Folio fiscal de la factura de consignados<span class="req">*</span>:</label>
-                <input id="folioConsig" class="form-control" formControlName="folioConsig" placeholder="Ingresa folio">
-                <span class="campo-obligatorio" *ngIf="ref?.folioConsig?.errors?.required && (ref?.folioConsig?.dirty || ref?.folioConsig?.touched)">Este campo es obligatorio *.</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="unidadOpe3">Unidad operativa/administrativa<span
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="unidadOpe3">Unidad operativa/administrativa<span
                         class="req">*</span>:</label>
-                <p-dropdown id="unidadOpe3" class="form-control" formControlName="unidadOpe3" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
-                </p-dropdown>
-                <span class="campo-obligatorio" *ngIf="ref.unidadOpe3?.errors?.required && (ref.unidadOpe3?.dirty || ref.unidadOpe3?.touched)">Este campo es obligatorio *.</span>
+                    <p-dropdown id="unidadOpe3" class="form-control" formControlName="unidadOpe3" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
+                    </p-dropdown>
+                    <span class="campo-obligatorio" *ngIf="ref.unidadOpe3?.errors?.required && (ref.unidadOpe3?.dirty || ref.unidadOpe3?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="fechaElaboracion3">Fecha de elaboración<span class="req">*</span>:</label>
+                    <p-calendar id="fechaElaboracion3" formControlName="fechaElaboracion3" styleClass="form-control" [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="fechaActual">
+                    </p-calendar>
+                    <span class="campo-obligatorio" *ngIf="ref?.fechaElaboracion3?.errors?.required && (ref?.fechaElaboracion3?.dirty || ref?.fechaElaboracion3?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="control-label" for="fechaElaboracion3">Fecha de elaboración<span class="req">*</span>:</label>
-                <p-calendar id="fechaElaboracion3" formControlName="fechaElaboracion3" styleClass="form-control" [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="fechaActual">
-                </p-calendar>
-                <span class="campo-obligatorio" *ngIf="ref?.fechaElaboracion3?.errors?.required && (ref?.fechaElaboracion3?.dirty || ref?.fechaElaboracion3?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="nombreDestinatario3">Nombre del destinatario (Para)<span class="req">*</span>:</label>
+                    <input id="nombreDestinatario3" class="form-control" formControlName="nombreDestinatario3" placeholder="Inserta el primer apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.nombreDestinatario3?.errors?.required && (ref?.nombreDestinatario3?.dirty || ref?.nombreDestinatario3?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="nomRemitente3">Nombre del remitente (De)<span class="req">*</span>:</label>
+                    <input id="nomRemitente3" class="form-control" formControlName="nomRemitente3" placeholder="Inserta el segundo apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.nomRemitente3?.errors?.required && (ref?.nomRemitente3?.dirty || ref?.nomRemitente3?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="nombreDestinatario3">Nombre del destinatario (Para)<span class="req">*</span>:</label>
-                <input id="nombreDestinatario3" class="form-control" formControlName="nombreDestinatario3" placeholder="Inserta el primer apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.nombreDestinatario3?.errors?.required && (ref?.nombreDestinatario3?.dirty || ref?.nombreDestinatario3?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="referenciaTD3">Referencia DT<span class="req">*</span>:</label>
+                    <input id="referenciaTD3" class="form-control" formControlName="referenciaTD3" placeholder="Inserta el primer apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.referenciaTD3?.errors?.required && (ref?.referenciaTD3?.dirty || ref?.referenciaTD3?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="beneficiario3">Beneficiario<span class="req">*</span>:</label>
+                    <input id="beneficiario3" class="form-control" formControlName="beneficiario3" placeholder="Inserta el segundo apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.beneficiario3?.errors?.required && (ref?.beneficiario3?.dirty || ref?.beneficiario3?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="control-label" for="nomRemitente3">Nombre del remitente (De)<span class="req">*</span>:</label>
-                <input id="nomRemitente3" class="form-control" formControlName="nomRemitente3" placeholder="Inserta el segundo apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.nomRemitente3?.errors?.required && (ref?.nomRemitente3?.dirty || ref?.nomRemitente3?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="concepto3">Concepto<span class="req">*</span>:</label>
+                    <input id="concepto3" class="form-control" formControlName="concepto3" placeholder="Inserta el primer apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.concepto3?.errors?.required && (ref?.concepto3?.dirty || ref?.concepto3?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="concepto3">Periodo<span class="req">*</span>:</label>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="referenciaTD3">Referencia DT<span class="req">*</span>:</label>
-                <input id="referenciaTD3" class="form-control" formControlName="referenciaTD3" placeholder="Inserta el primer apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.referenciaTD3?.errors?.required && (ref?.referenciaTD3?.dirty || ref?.referenciaTD3?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="cantidadLetra3">Cantidad letra<span class="req">*</span>:</label>
+                    <input id="cantidadLetra3" class="form-control" formControlName="cantidadLetra3" placeholder="Inserta el segundo apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.cantidadLetra3?.errors?.required && (ref?.cantidadLetra3?.dirty || ref?.cantidadLetra3?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="control-label" for="beneficiario3">Beneficiario<span class="req">*</span>:</label>
-                <input id="beneficiario3" class="form-control" formControlName="beneficiario3" placeholder="Inserta el segundo apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.beneficiario3?.errors?.required && (ref?.beneficiario3?.dirty || ref?.beneficiario3?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="control-label" for="observ3">Observaciones<span class="req">*</span>:</label>
+                    <input id="observ3" class="form-control" formControlName="observ3" placeholder="Inserta el primer apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.observ3?.errors?.required && (ref?.observ3?.dirty || ref?.observ3?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="concepto3">Concepto<span class="req">*</span>:</label>
-                <input id="concepto3" class="form-control" formControlName="concepto3" placeholder="Inserta el primer apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.concepto3?.errors?.required && (ref?.concepto3?.dirty || ref?.concepto3?.touched)">Este campo es obligatorio *.</span>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" for="concepto3">Periodo<span class="req">*</span>:</label>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="cantidadLetra3">Cantidad letra<span class="req">*</span>:</label>
-                <input id="cantidadLetra3" class="form-control" formControlName="cantidadLetra3" placeholder="Inserta el segundo apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.cantidadLetra3?.errors?.required && (ref?.cantidadLetra3?.dirty || ref?.cantidadLetra3?.touched)">Este campo es obligatorio *.</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <label class="control-label" for="observ3">Observaciones<span class="req">*</span>:</label>
-                <input id="observ3" class="form-control" formControlName="observ3" placeholder="Inserta el primer apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.observ3?.errors?.required && (ref?.observ3?.dirty || ref?.observ3?.touched)">Este campo es obligatorio *.</span>
-            </div>
-        </div>
+        </form>
     </ng-container>
 
     <ng-container *ngIf="opcion4 == true">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="folioFiscal4">Folio fiscal de la factura de consignados<span class="req">*</span>:</label>
-                <input id="folioFiscal4" class="form-control" formControlName="folioFiscal4" placeholder="Ingresa folio">
-                <span class="campo-obligatorio" *ngIf="ref?.folioFiscal4?.errors?.required && (ref?.folioFiscal4?.dirty || ref?.folioFiscal4?.touched)">Este campo es obligatorio *.</span>
+        <form [formGroup]="solicitarPagoForm4">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="folioGastos4">Folio fiscal de la factura de gastos<span class="req">*</span>:</label>
+                    <input id="folioGastos4" class="form-control" formControlName="folioGastos4" placeholder="Ingresa folio">
+                    <span class="campo-obligatorio" *ngIf="ref?.folioGastos4?.errors?.required && (ref?.folioGastos4?.dirty || ref?.folioGastos4?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="fechaElaboracion4">Importe Total<span class="req">*</span>:</label>
+                    <label class="control-label" for="folioConsig4">Folio fiscal de la factura de consignados<span class="req">*</span>:</label>
+                    <input id="folioConsig4" class="form-control" formControlName="folioConsig4" placeholder="Ingresa folio">
+                    <span class="campo-obligatorio" *ngIf="ref?.folioConsig4?.errors?.required && (ref?.folioConsig4?.dirty || ref?.folioConsig4?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="control-label" for="fechaElaboracion4">Importe Total<span class="req">*</span>:</label>
-                <label class="control-label" for="folioFiscal4">Folio fiscal de la factura de consignados<span class="req">*</span>:</label>
-                <input id="folioFiscal4" class="form-control" formControlName="folioFiscal4" placeholder="Ingresa folio">
-                <span class="campo-obligatorio" *ngIf="ref?.folioFiscal4?.errors?.required && (ref?.folioFiscal4?.dirty || ref?.folioFiscal4?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="fechaElaboracion4">Fecha de elaboración<span class="req">*</span>:</label>
+                    <p-calendar id="fechaElaboracion4" formControlName="fechaElaboracion4" styleClass="form-control" [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="fechaActual">
+                    </p-calendar>
+                    <span class="campo-obligatorio" *ngIf="ref?.fechaElaboracion4?.errors?.required && (ref?.fechaElaboracion4?.dirty || ref?.fechaElaboracion4?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="nombreDestinatario4">Nombre del destinatario (Para)<span class="req">*</span>:</label>
+                    <input id="nombreDestinatario4" class="form-control" formControlName="nombreDestinatario4" placeholder="Inserta el primer apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.nombreDestinatario4?.errors?.required && (ref?.nombreDestinatario4?.dirty || ref?.nombreDestinatario4?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="fechaElaboracion4">Fecha de elaboración<span class="req">*</span>:</label>
-                <p-calendar id="fechaElaboracion4" formControlName="fechaElaboracion4" styleClass="form-control" [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="fechaActual">
-                </p-calendar>
-                <span class="campo-obligatorio" *ngIf="ref?.fechaElaboracion4?.errors?.required && (ref?.fechaElaboracion4?.dirty || ref?.fechaElaboracion4?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="nomRemitente4">Nombre del remitente (De)<span class="req">*</span>:</label>
+                    <input id="nomRemitente4" class="form-control" formControlName="nomRemitente4" placeholder="Inserta el segundo apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.nomRemitente4?.errors?.required && (ref?.nomRemitente4?.dirty || ref?.nomRemitente4?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="referenciaTD4">Referencia DT<span class="req">*</span>:</label>
+                    <input id="referenciaTD4" class="form-control" formControlName="referenciaTD4" placeholder="Inserta el primer apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.referenciaTD4?.errors?.required && (ref?.referenciaTD4?.dirty || ref?.referenciaTD4?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="control-label" for="nombreDestinatario4">Nombre del destinatario (Para)<span class="req">*</span>:</label>
-                <input id="nombreDestinatario4" class="form-control" formControlName="nombreDestinatario4" placeholder="Inserta el primer apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.nombreDestinatario4?.errors?.required && (ref?.nombreDestinatario4?.dirty || ref?.nombreDestinatario4?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="beneficiario4">Beneficiario<span class="req">*</span>:</label>
+                    <input id="beneficiario4" class="form-control" formControlName="beneficiario4" placeholder="Inserta el segundo apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.beneficiario4?.errors?.required && (ref?.beneficiario4?.dirty || ref?.beneficiario4?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="concepto4">Concepto<span class="req">*</span>:</label>
+                    <input id="concepto4" class="form-control" formControlName="concepto4" placeholder="Inserta el primer apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.concepto4?.errors?.required && (ref?.concepto4?.dirty || ref?.concepto4?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="nomRemitente4">Nombre del remitente (De)<span class="req">*</span>:</label>
-                <input id="nomRemitente4" class="form-control" formControlName="nomRemitente4" placeholder="Inserta el segundo apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.nomRemitente4?.errors?.required && (ref?.nomRemitente4?.dirty || ref?.nomRemitente4?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="control-label" for="cantidadLetra4">Cantidad letra<span class="req">*</span>:</label>
+                    <input id="cantidadLetra4" class="form-control" formControlName="cantidadLetra4" placeholder="Inserta el segundo apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.cantidadLetra4?.errors?.required && (ref?.cantidadLetra4?.dirty || ref?.cantidadLetra4?.touched)">Este campo es obligatorio *.</span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label" for="concepto3">Periodo<span class="req">*</span>:</label>
+                </div>
             </div>
-            <div class="col-md-6">
-                <label class="control-label" for="referenciaTD4">Referencia DT<span class="req">*</span>:</label>
-                <input id="referenciaTD4" class="form-control" formControlName="referenciaTD4" placeholder="Inserta el primer apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.referenciaTD4?.errors?.required && (ref?.referenciaTD4?.dirty || ref?.referenciaTD4?.touched)">Este campo es obligatorio *.</span>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="control-label" for="observ4">Observaciones<span class="req">*</span>:</label>
+                    <input id="observ4" class="form-control" formControlName="observ4" placeholder="Inserta el primer apellido">
+                    <span class="campo-obligatorio" *ngIf="ref?.observ4?.errors?.required && (ref?.observ4?.dirty || ref?.observ4?.touched)">Este campo es obligatorio *.</span>
+                </div>
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="beneficiario4">Beneficiario<span class="req">*</span>:</label>
-                <input id="beneficiario4" class="form-control" formControlName="beneficiario4" placeholder="Inserta el segundo apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.beneficiario4?.errors?.required && (ref?.beneficiario4?.dirty || ref?.beneficiario4?.touched)">Este campo es obligatorio *.</span>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" for="concepto4">Concepto<span class="req">*</span>:</label>
-                <input id="concepto4" class="form-control" formControlName="concepto4" placeholder="Inserta el primer apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.concepto4?.errors?.required && (ref?.concepto4?.dirty || ref?.concepto4?.touched)">Este campo es obligatorio *.</span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="cantidadLetra4">Cantidad letra<span class="req">*</span>:</label>
-                <input id="cantidadLetra4" class="form-control" formControlName="cantidadLetra4" placeholder="Inserta el segundo apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.cantidadLetra4?.errors?.required && (ref?.cantidadLetra4?.dirty || ref?.cantidadLetra4?.touched)">Este campo es obligatorio *.</span>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" for="concepto3">Periodo<span class="req">*</span>:</label>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <label class="control-label" for="observ4">Observaciones<span class="req">*</span>:</label>
-                <input id="observ4" class="form-control" formControlName="observ4" placeholder="Inserta el primer apellido">
-                <span class="campo-obligatorio" *ngIf="ref?.observ4?.errors?.required && (ref?.observ4?.dirty || ref?.observ4?.touched)">Este campo es obligatorio *.</span>
-            </div>
-        </div>
+        </form>
     </ng-container>
 
     <div class="row mb-3">
