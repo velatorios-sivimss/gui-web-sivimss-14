@@ -260,10 +260,6 @@ export class RealizarPagoComponent implements OnInit {
     this.filtroForm.get('periodoFin')?.patchValue(null);
   }
 
-  get fP() {
-    return this.filtroForm?.controls;
-  }
-
   modificarPago(): void {
     void this.router.navigate(["./modificar-metodo-de-pago", this.pagoSeleccionado.idPagoBitacora],
       {relativeTo: this.activatedRoute});
