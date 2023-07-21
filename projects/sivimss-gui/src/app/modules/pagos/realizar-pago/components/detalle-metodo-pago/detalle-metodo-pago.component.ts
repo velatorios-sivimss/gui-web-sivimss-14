@@ -1,24 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-
-interface DetallePago {
-  folio: string,
-  metodosPago: MetodoPago[],
-  totalAPagar: number
-  totalPagado: number
-  totalPorCubrir: number,
-  estatusPago: string,
-  tipoPago: string
-}
-
-interface MetodoPago {
-  fechaPago: string
-  idPagoDetalle: number
-  importe: number
-  metodoPago: string
-  nomBanco: string
-  numAutorizacion: string
-}
+import {DetallePago} from "../../modelos/detallePago.interface";
 
 @Component({
   selector: 'app-detalle-metodo-pago',
