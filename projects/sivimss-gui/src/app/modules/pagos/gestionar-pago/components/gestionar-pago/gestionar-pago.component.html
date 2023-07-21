@@ -91,7 +91,7 @@
         <td>{{pago.total | currency}}</td>
         <td>{{pago.desEstatus}}</td>
         <td>{{pago.desEstatusPago}}</td>
-        <td>{{pago.desMetodoPago | titlecase}}</td>
+        <td>{{pago.metodosPago | titlecase}}</td>
         <td>
           <div class="contenedor-celda-iconos">
             <a (click)="abrirPanel($event,pago)">
