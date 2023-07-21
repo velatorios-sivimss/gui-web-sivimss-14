@@ -59,6 +59,7 @@ export class ReciboFormatoPagareComponent implements OnInit {
   }
 
   crearNuevoPagare(): any {
+    this.formatoPagare.redito = this.filtroForm.get("redito")?.value !== '' ?  this.filtroForm.get("redito")?.value : 0;
     return {
       idODS : this.formatoPagare.idODS,
       importe : this.formatoPagare.importe,
