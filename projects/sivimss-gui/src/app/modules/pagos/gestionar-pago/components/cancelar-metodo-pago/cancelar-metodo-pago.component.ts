@@ -47,7 +47,7 @@ export class CancelarMetodoPagoComponent implements OnInit {
 
   ngOnInit(): void {
     this.registroPago = this.config.data.pago;
-    this.idPago = this.config.data.flujo;
+    this.idPago = this.config.data.idPago;
     this.idFlujo = this.config.data.idFlujo;
   }
 

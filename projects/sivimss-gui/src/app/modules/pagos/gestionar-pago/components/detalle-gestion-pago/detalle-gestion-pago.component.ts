@@ -54,7 +54,7 @@ export class DetalleGestionPagoComponent implements OnInit {
       width: MAX_WIDTH,
       data: {
         pago: this.pagoSeleccionado,
-        flujo: this.registroPago.idFlujo,
+        idFlujo: this.registroPago.idFlujo,
         idPago: this.registroPago.idPagoBitacora
       }
     };
