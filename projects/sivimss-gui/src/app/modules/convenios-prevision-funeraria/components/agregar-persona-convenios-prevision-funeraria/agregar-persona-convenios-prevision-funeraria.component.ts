@@ -406,6 +406,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
 
   convertirMayusculas(posicion: number): void {
     const formularios = [this.fp.curp,this.fp.rfc]
+    if(!formularios[posicion].value)return;
     formularios[posicion].setValue(
       formularios[posicion].value.toUpperCase()
     )
@@ -413,6 +414,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
 
   convertirMinusculas(posicion: number): void {
     const formularios = [this.fp.correoElectronico]
+    if(!formularios[posicion].value)return;
     formularios[posicion].setValue(
       formularios[posicion].value.toLowerCase()
     )

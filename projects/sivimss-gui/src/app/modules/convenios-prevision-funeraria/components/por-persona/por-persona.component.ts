@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
@@ -34,7 +34,7 @@ import {TipoPaquete} from "../../models/tipo-paquete.interface";
   styleUrls: ['./por-persona.component.scss'],
   providers: [DialogService]
 })
-export class PorPersonaComponent implements OnInit,OnChanges {
+export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
 
   @Input() folioConvenio!: string;
   @Input() consultarFormularioValido!: boolean;
@@ -118,7 +118,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
           correoElectronico: [{value:null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
                    telefono: [{value:null, disabled: false}, [Validators.required]],
       enfermedadPrexistente: [{value:null, disabled: false}, [Validators.required]],
-             otraEnferdedad: [{value:null, disabled: false}],
+             otraEnfermedad: [{value:null, disabled: false}],
                 tipoPaquete: [{value:null, disabled: false}, [Validators.required]],
     })
   }
@@ -144,13 +144,13 @@ export class PorPersonaComponent implements OnInit,OnChanges {
   cambioEnfermedadPrexistente(): void {
     this.otroTipoEnferemdad = false;
 
-    this.fp.otraEnferdedad.disable();
-    this.fp.otraEnferdedad.clearValidators();
+    this.fp.otraEnfermedad.disable();
+    this.fp.otraEnfermedad.clearValidators();
     if(this.fp.enfermedadPrexistente.value == 4){
       this.otroTipoEnferemdad = true
-      this.fp.otraEnferdedad.enable();
-      this.fp.otraEnferdedad.setValidators(Validators.required);
-      this.fp.otraEnferdedad.updateValueAndValidity();
+      this.fp.otraEnfermedad.enable();
+      this.fp.otraEnfermedad.setValidators(Validators.required);
+      this.fp.otraEnfermedad.updateValueAndValidity();
     }
     this.validarFormularioVacio(false,'local');
   }
@@ -371,7 +371,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
           // this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
           // this.fp.pais.setValue(respuesta.datos.datosContratante.pais);
           // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
-          // this.fp.otraEnferdedad.setValue(respuesta.datos.datosContratante.otraEnferdedad);
+          // this.fp.otraEnfermedad.setValue(respuesta.datos.datosContratante.otraEnfermedad);
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
@@ -391,15 +391,19 @@ export class PorPersonaComponent implements OnInit,OnChanges {
 
   validarFormularioVacio(formularioPrincipalValido?: boolean, origen?:string): void{
 
-    if(this.personaForm.valid && formularioPrincipalValido && origen?.includes('externo')){
-      this.formularioValido.emit({origen:origen,valido:true})
-      return
-    }
-    if(this.personaForm.valid && formularioPrincipalValido == false && origen?.includes('local')){
-      this.formularioValido.emit({origen:origen,valido:true})
-      return
-    }
-    this.formularioValido.emit({origen:'',valido:false})
+    setTimeout(()=> {
+      if(this.personaForm.valid && formularioPrincipalValido && origen?.includes('externo')){
+        this.formularioValido.emit({origen:origen,valido:true})
+        return
+      }
+      if(this.personaForm.valid && formularioPrincipalValido == false && origen?.includes('local')){
+        this.formularioValido.emit({origen:origen,valido:true})
+        return
+      }
+      this.formularioValido.emit({origen:'',valido:false})
+    },500)
+
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -436,7 +440,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
           correoElectronico:this.fp.correoElectronico.value.toString(),
           telefono:this.fp.telefono.value.toString(),
           enfermedadPreexistente:this.fp.enfermedadPrexistente.value.toString(),
-          otraEnfermedad:this.fp.otraEnfermedad?.value.toString() ?? "",
+          otraEnfermedad:this.fp.otraEnfermedad?.value,
           paquete:this.fp.tipoPaquete.value.toString(),
           beneficiarios: this.beneficiarios,
           documentacion:{
@@ -457,6 +461,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
 
   convertirMayusculas(posicion: number): void {
     const formularios = [this.fp.curp,this.fp.rfc]
+    if(!formularios[posicion].value)return;
     formularios[posicion].setValue(
       formularios[posicion].value.toUpperCase()
     )
@@ -464,6 +469,7 @@ export class PorPersonaComponent implements OnInit,OnChanges {
 
   convertirMinusculas(posicion:number): void {
     const formularios = [this.fp.correoElectronico]
+    if(!formularios[posicion].value)return;
     formularios[posicion].setValue(
       formularios[posicion].value.toLowerCase()
     )
@@ -471,6 +477,12 @@ export class PorPersonaComponent implements OnInit,OnChanges {
 
   get fp() {
     return this.personaForm.controls;
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(()=> {
+      this.validarFormularioVacio(false,'local');
+    },800)
   }
 }
 
