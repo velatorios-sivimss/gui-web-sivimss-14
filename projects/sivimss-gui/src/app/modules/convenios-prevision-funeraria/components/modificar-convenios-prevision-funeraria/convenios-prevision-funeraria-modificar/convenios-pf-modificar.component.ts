@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MenuItem} from "primeng/api";
 import {MENU_STEPPER} from "../../../constants/menu-steppers";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -23,7 +23,7 @@ import {ModeloGuardarPorEmpresa} from "../../../models/modelo-guardar-por-empres
   templateUrl: './convenios-pf-modificar.component.html',
   styleUrls: ['./convenios-pf-modificar.component.scss']
 })
-export class ConveniosPfModificarComponent implements OnInit {
+export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
 
   readonly POSICION_PROMOTOR:number = 4;
 
@@ -378,6 +378,8 @@ export class ConveniosPfModificarComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(respuesta.datos[0].nombreEmpresa){
+
+          this.velatorioUsuario = respuesta.datos[0].desVelatorio
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
           this.ff.listaPromotor.setValue(+respuesta.datos[0].idPromotor);
@@ -408,6 +410,9 @@ export class ConveniosPfModificarComponent implements OnInit {
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
           this.ff.listaPromotor.setValue(+respuesta.datos.datosContratante.idPromotor);
+        }else{
+          this.ff.promotor.setValue(false);
+          this.existePromotor(false)
         }
 
 
@@ -419,7 +424,11 @@ export class ConveniosPfModificarComponent implements OnInit {
     );
   }
 
-
+  ngAfterViewInit(): void {
+    setTimeout(()=> {
+      this.validarFormularioVacio();
+    },400)
+  }
 
   get ff() {
     return this.filtroForm.controls;

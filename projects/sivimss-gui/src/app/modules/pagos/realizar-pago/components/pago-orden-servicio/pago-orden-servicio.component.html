@@ -64,9 +64,11 @@
         titulo="Generar pagaré"
         [routerLink]="['./../../generar-formato-pagare/formato-pagare', pagoSeleccionado.idRegistro]">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago"
-                                [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
-      </app-overlay-panel-opcion>
+      <ng-container *ngIf="rol === 13">
+        <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago"
+                                  [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
+        </app-overlay-panel-opcion>
+      </ng-container>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
