@@ -55,15 +55,15 @@ export class CancelarMetodoPagoComponent implements OnInit {
     const solicitud: SolicitudCancelacion = this.generarSolicitudCancelacion();
     this.gestionarPagoService.cancelarMetodoPago(solicitud).subscribe({
       next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'El motivo de la cancelación será registrado');
+        this.alertaService.mostrarMultiple(TipoAlerta.Exito, 'El motivo de la cancelación será registrado');
         if (this.idFlujo === 1) {
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus de la ODS a Generada');
+          this.alertaService.mostrarMultiple(TipoAlerta.Exito, 'Cambio de estatus de la ODS a Generada');
         } else {
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus del nuevo convenio a “Generado');
+          this.alertaService.mostrarMultiple(TipoAlerta.Exito, 'Cambio de estatus del nuevo convenio a “Generado');
         }
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Cambio de estatus de la renovación del convenio se mantendrá como “Vigente”, mientras se encuentre en periodo de renovación');
-        this.alertaService.mostrar(TipoAlerta.Exito, 'El sistema actualizará el registro del pago realizado, a fin de tener que cubrir nuevamente el total mediante los métodos de pago disponibles');
-        this.alertaService.mostrar(TipoAlerta.Exito, 'El sistema permitirá generar nuevamente pagaré');
+        this.alertaService.mostrarMultiple(TipoAlerta.Precaucion, 'Cambio de estatus de la renovación del convenio se mantendrá como “Vigente”, mientras se encuentre en periodo de renovación');
+        this.alertaService.mostrarMultiple(TipoAlerta.Exito, 'El sistema actualizará el registro del pago realizado, a fin de tener que cubrir nuevamente el total mediante los métodos de pago disponibles');
+        this.alertaService.mostrarMultiple(TipoAlerta.Exito, 'El sistema permitirá generar nuevamente pagaré');
         this.ref.close();
         void this.router.navigate(["../../../"], {relativeTo: this.activatedRoute});
       },

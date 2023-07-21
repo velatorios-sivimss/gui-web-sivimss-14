@@ -49,9 +49,9 @@ export class ModificarMetodoPagoComponent implements OnInit {
     const solicitud: SolicitudModificacion = this.generarSolicitudModificacion();
     this.gestionarPagoService.modificarMetodoPago(solicitud).subscribe({
       next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'El motivo de la modificación será registrado');
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Esta selección no implicará cambios en los estatus del registro o en el stock, por lo que no es una cancelación');
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Esta opción permitirá modificar los métodos de pago utilizados o los montos, debiendo de cumplir con el total');
+        this.alertaService.mostrarMultiple(TipoAlerta.Exito, 'El motivo de la modificación será registrado');
+        this.alertaService.mostrarMultiple(TipoAlerta.Precaucion, 'Esta selección no implicará cambios en los estatus del registro o en el stock, por lo que no es una cancelación');
+        this.alertaService.mostrarMultiple(TipoAlerta.Precaucion, 'Esta opción permitirá modificar los métodos de pago utilizados o los montos, debiendo de cumplir con el total');
         this.ref.close();
         void this.router.navigate(["../../../"], {relativeTo: this.activatedRoute});
       },
