@@ -1,19 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {Router} from "@angular/router";
-
-interface MetodoPago {
-  fechaPago: string
-  idPagoDetalle: number
-  importe: number
-  metodoPago: string
-  nomBanco: string
-  numAutorizacion: string
-}
+import {MetodoPago} from "../../modelos/detallePago.interface";
 
 @Component({
   selector: 'app-eliminar-tipo-pago',
@@ -55,7 +47,7 @@ export class EliminarTipoPagoComponent {
 
   actualizarPagina(): void {
     const currentUrl: string = this.router.url;
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then((): void => {
       void this.router.navigate([currentUrl]);
     });
   }

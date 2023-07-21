@@ -5,5 +5,9 @@ export interface PagoEspecifico {
   idPagoBitacora: number
   tipoPago: string
   total: number
-  totalPagado: number
+  totalPagado: number,
+  idFlujoPago: number,
+  idRegistro: number,
+  estatusPago?: string,
+  generarPagare?: number
 }

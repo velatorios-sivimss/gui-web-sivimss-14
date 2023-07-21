@@ -51,7 +51,7 @@ export class PagoConvenioComponent implements OnInit {
   pagoForm!: FormGroup;
 
   pagos: PagoEspecifico[] = [];
-  pagoSeleccionado: any;
+  pagoSeleccionado!: PagoEspecifico;
   rol!: number;
 
   constructor(private formBuilder: FormBuilder,

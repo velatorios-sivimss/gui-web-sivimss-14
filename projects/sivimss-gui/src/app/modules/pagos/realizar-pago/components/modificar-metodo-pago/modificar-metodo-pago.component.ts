@@ -5,24 +5,18 @@ import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {MAX_WIDTH} from "../../../../../utils/constantes";
 import {ModificarTipoPagoComponent} from "../modificar-tipo-pago/modificar-tipo-pago.component";
 import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pago.component";
+import {DetallePago, MetodoPago} from "../../modelos/detallePago.interface";
 
-interface DetallePago {
-  folio: string,
-  metodosPago: MetodoPago[],
-  totalAPagar: number
-  totalPagado: number
-  totalPorCubrir: number,
-  estatusPago: string,
-  tipoPago: string
+interface ParametrosModificar {
+  metodoPago: string,
+  tipoPago: string,
+  importe: number,
+  idPagoDetalle: number
 }
 
-interface MetodoPago {
-  fechaPago: string
-  idPagoDetalle: number
-  importe: number
-  metodoPago: string
-  nomBanco: string
-  numAutorizacion: string
+interface ParametrosCancelar {
+  pago: MetodoPago,
+  total: number
 }
 
 @Component({
@@ -53,7 +47,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
   }
 
   modificarTipoPago(): void {
-    const data = {
+    const data: ParametrosModificar = {
       metodoPago: this.pagoSeleccionado.metodoPago, importe: this.pagoSeleccionado.importe,
       tipoPago: this.registroPago.tipoPago, idPagoDetalle: this.pagoSeleccionado.idPagoDetalle
     };
@@ -70,7 +64,7 @@ export class ModificarMetodoPagoComponent implements OnInit {
   }
 
   cancelarTipoPago(): void {
-    const data = {
+    const data: ParametrosCancelar = {
       pago: this.pagoSeleccionado,
       total: this.registroPago.totalAPagar
     };
