@@ -17,17 +17,18 @@ import {SelectButtonModule} from "primeng/selectbutton";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {CheckboxModule} from "primeng/checkbox";
 
+import { RenovarConvenioBeneficiariosComponent } from './components/renovar-convenios-beneficiarios/renovar-convenio-beneficiarios.component';
 import {RenovarConvenioPfComponent} from "./components/renovar-convenios-pf/renovar-convenio-pf.component";
 import {RenovarConvenioPfRoutingModule} from "./renovar-convenio-pf-routing.module";
 import {RenovarConvenioPfService} from "./services/renovar-convenio-pf.service";
 import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
-
-
-
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { AccordionModule } from 'primeng/accordion';
 
 @NgModule({
   declarations: [
-    RenovarConvenioPfComponent
+    RenovarConvenioPfComponent,
+    RenovarConvenioBeneficiariosComponent
   ],
   imports: [
     CommonModule,
@@ -45,6 +46,8 @@ import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
     OverlayPanelOpcionesModule,
     TablePanelModule,
     CheckboxModule,
+    RadioButtonModule,
+    AccordionModule,
   ],
   providers: [
     RenovarConvenioPfService

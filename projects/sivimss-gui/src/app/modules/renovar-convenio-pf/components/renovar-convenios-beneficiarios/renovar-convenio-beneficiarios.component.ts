@@ -16,11 +16,11 @@ import { OverlayPanel } from "primeng/overlaypanel";
 import { MENU_STEPPER } from '../../constants/menu-steppers';
 
 @Component({
-  selector: 'app-renovar-convenio-pf',
-  templateUrl: './renovar-convenio-pf.component.html',
-  styleUrls: ['./renovar-convenio-pf.component.scss']
+  selector: 'app-renovar-convenio-beneficiarios',
+  templateUrl: './renovar-convenio-beneficiarios.component.html',
+  styleUrls: ['./renovar-convenio-beneficiarios.component.scss']
 })
-export class RenovarConvenioPfComponent implements OnInit {
+export class RenovarConvenioBeneficiariosComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;

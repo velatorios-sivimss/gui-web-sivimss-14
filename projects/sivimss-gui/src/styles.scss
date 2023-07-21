@@ -96,7 +96,7 @@ body {
   display: inline-block;
   margin-left: 10px;
 
-  & > *:not(span) {
+  &>*:not(span) {
     transform: translateY(3px);
   }
 
@@ -145,7 +145,7 @@ body {
     width: 100%;
   }
 
-  a + a {
+  a+a {
     margin-left: 1.75rem;
   }
 
@@ -297,7 +297,7 @@ h1.subtitulo-base-lg {
 }
 
 .sivimss-accordionColor.p-accordion .p-accordion-header .p-accordion-header-link {
- background-color: #F3F3F3;
+  background-color: #F3F3F3;
 }
 
 .sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
@@ -307,6 +307,7 @@ h1.subtitulo-base-lg {
 .sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
   background-color: #F3F3F3;
 }
+
 .sivimss-accordionColor.p-accordion .p-accordion-header:hover(.p-disabled).p-highlight .p-accordion-header-link {
   background-color: #F3F3F3;
 }
@@ -314,12 +315,15 @@ h1.subtitulo-base-lg {
 .sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
   background-color: #F3F3F3;
 }
+
 .sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
   background-color: #F3F3F3;
 }
+
 .sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link {
   background-color: #F3F3F3;
 }
+
 .p-autocomplete {
   height: 40px;
   width: 100%;
@@ -337,17 +341,17 @@ h1.subtitulo-base-lg {
 }
 
 .input-autocomplete {
-  font-size : 14px;
-  font-style : normal;
-  font-weight : 400;
-  width : 100%,
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  width: 100%,
 }
 
 .input-autocomplete-error {
   border: 1px solid #E10000;
 }
 
-.circle{
+.circle {
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -390,3 +394,20 @@ h1.subtitulo-base-lg {
   text-align: center;
   width: 100%;
 }
+
+// .accordion-custom-pf.p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon.pi-chevron-right {
+//   position: absolute;
+//   right: 0.5em;
+// }
+
+.accordion-custom-pf.p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+  position: absolute;
+  right: 0.5em;
+}
+
+// .ui-accordion .ui-accordion-header .ui-icon {
+//   margin-top: -8px;
+//   position: absolute;
+//   right: 0.5em;
+//   top: 50%;
+// }
