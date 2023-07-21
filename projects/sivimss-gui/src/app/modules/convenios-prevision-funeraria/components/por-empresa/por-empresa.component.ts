@@ -168,7 +168,6 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
   }
 
   consultarFolio(origen: string): void {
-    console.log(this.empresaFormTempora)
     //origen.includes("onChanges") &&
     if(!this.folioEmpresa)return;
     this.loaderService.activar();
@@ -200,6 +199,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
   }
 
   validarFormularioVacio(formularioPrincipalValido?: boolean, origen?: string): void {
+    if(!this.empresaForm)return;
     (this.empresaForm.valid && this.personasConvenio.length > 0) ? this.formularioValido.emit(true):this.formularioValido.emit(false)
   }
 
@@ -241,6 +241,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
 
   convertirMayusculas(posicion: number): void {
     const formularios = [this.fe.rfc]
+    if(!formularios[posicion].value)return;
     formularios[posicion].setValue(
       formularios[posicion].value.toUpperCase()
     )
@@ -248,13 +249,16 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
 
   convertirMinusculas(posicion:number): void {
     const formularios = [this.fe.correoElectronico]
+    if(!formularios[posicion].value)return;
     formularios[posicion].setValue(
       formularios[posicion].value.toLowerCase()
     )
   }
 
   ngAfterViewInit(): void {
-    this.validarFormularioVacio();
+    setTimeout(()=> {
+      this.validarFormularioVacio();
+    },300)
   }
 
 }

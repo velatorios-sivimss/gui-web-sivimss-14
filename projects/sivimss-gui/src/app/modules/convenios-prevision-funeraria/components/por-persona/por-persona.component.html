@@ -143,11 +143,11 @@
       </p-dropdown>
     </div>
     <div class="col-md-3" *ngIf="otroTipoEnferemdad">
-      <label class="control-label" for="otraEnferdedad">Otro <span class="req">*</span>:</label>
-      <input id="otraEnferdedad" class="form-control" formControlName="otraEnferdedad" placeholder="Otro"
+      <label class="control-label" for="otraEnfermedad">Otro <span class="req">*</span>:</label>
+      <input id="otraEnfermedad" class="form-control" formControlName="otraEnfermedad" placeholder="Otro"
              maxlength="35" (change)="validarFormularioVacio(false,'local')">
       <span class="campo-obligatorio"
-            *ngIf="fp.otraEnferdedad?.errors?.required && (fp.otraEnferdedad?.dirty || fp.otraEnferdedad?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="fp.otraEnfermedad?.errors?.required && (fp.otraEnfermedad?.dirty || fp.otraEnfermedad?.touched)">Este campo es obligatorio *.</span>
     </div>
   </div>
 </form>

@@ -103,9 +103,9 @@
           <span>Enfermedad preexistente:</span><br/>
           <label> {{detalleEnfermedad[0].label}} </label>
         </div>
-        <div class="col-md-3" *ngIf="this.objetoDetallePersona.persona?.enfermedadPreexistente == 4">
+        <div class="col-md-3" *ngIf="objetoDetallePersona.persona?.enfermedadPreexistente == 4">
           <span>Otro:</span><br/>
-          <label> {{this.objetoDetallePersona.persona?.otraEnfermedad}} </label>
+          <label> {{objetoDetallePersona.persona?.otraEnfermedad}} </label>
         </div>
       </div>
   </div>
@@ -168,7 +168,7 @@
             <span>RFC o CURP:</span><br/>
             <label> {{objetoDetalleEmpresa.rfcCurp}} </label>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-3" *ngIf="descripcionPromotor[0].label">
             <span>Promotor:</span><br/>
             <label> {{descripcionPromotor[0].label }} </label>
           </div>
