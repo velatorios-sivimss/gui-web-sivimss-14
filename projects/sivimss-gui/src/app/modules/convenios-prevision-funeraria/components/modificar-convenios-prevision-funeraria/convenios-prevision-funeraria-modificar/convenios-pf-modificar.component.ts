@@ -378,12 +378,17 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(respuesta.datos[0].nombreEmpresa){
-
           this.velatorioUsuario = respuesta.datos[0].desVelatorio
-          this.ff.promotor.setValue(true);
           this.existePromotor(true)
-          this.ff.listaPromotor.setValue(+respuesta.datos[0].idPromotor);
-          this.ff.tipoContratacion.setValue(2);
+            this.ff.tipoContratacion.setValue(2);
+          if(respuesta.datos[0].idPromotor != ""){
+            this.ff.promotor.setValue(true);
+            this.ff.listaPromotor.setValue(+respuesta.datos[0].idPromotor);
+            this.existePromotor(true)
+          }else{
+            this.existePromotor(false)
+            this.ff.promotor.setValue(false);
+          }
           this.consultarConvenio();
         }else{
           this.ff.tipoContratacion.setValue(1);
