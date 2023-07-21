@@ -55,6 +55,24 @@
             <span class="texto-base">{{pago.desBanco}}</span>
           </div>
         </div>
+        <ng-container *ngIf="pago.motivoModifica">
+          <hr>
+          <div class="row grid">
+            <div class="col">
+              <span class="flex flex-column etiqueta-base font-bold">Motivo de modificación:</span>
+              <span class="texto-base">{{pago.motivoModifica}}</span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="pago.motivoCancela">
+          <hr>
+          <div class="row grid">
+            <div class="col">
+              <span class="flex flex-column etiqueta-base font-bold">Motivo de cancelación:</span>
+              <span class="texto-base">{{pago.motivoCancela}}</span>
+            </div>
+          </div>
+        </ng-container>
       </ng-template>
     </p-accordionTab>
   </p-accordion>
