@@ -56,7 +56,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   ngOnInit(): void {
     debugger
-    this.inicializarSolicitarPagoForm();
+    this.inicializarSolicitarPagoForm1();
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catatalogoTipoSolicitud =  mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD].datos, "desTipoSolicitud", "tipoSolicitud");
     this.partidaPresupuestal = [
