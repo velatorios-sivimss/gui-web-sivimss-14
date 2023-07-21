@@ -56,7 +56,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    debugger
     this.inicializarTipoSolicitud();
     this.inicializarSolicitarPagoForm1();
     const respuesta = this.route.snapshot.data["respuesta"];
@@ -160,7 +159,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validaTipoSolicitud(): void {
-    debugger
     const idTipo = this.tipoSolicitudForm.get('tipoSolicitud')?.value;
 
     if (idTipo === 1) {
@@ -196,7 +194,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       cveFolioConsignados: "null",
       fechaElaboracion: "null",
       idUnidadMedica:1,
-      idDelegacion: 1, 
+      idDelegacion: 40, 
       nomDestinatario: this.solicitarPagoForm1.get("nomDestinatario1")?.value,
       nomRemitente: this.solicitarPagoForm1.get("nomRemitente1")?.value,
       numReferencia: this.solicitarPagoForm1.get("referenciaTD1")?.value,
@@ -219,7 +217,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       fechaElaboracion: this.solicitarPagoForm2.get("fechaElaboracion2")?.value,
       cveFolioConsignados: "null",
       idUnidadMedica: this.solicitarPagoForm2.get("unidadOpe2")?.value,
-      idDelegacion: 1, 
+      idDelegacion: 40, 
       nomDestinatario: this.solicitarPagoForm2.get("nombreDestinatario2")?.value,
       nomRemitente: this.solicitarPagoForm2.get("nomRemitente2")?.value,
       numReferencia: this.solicitarPagoForm2.get("referenciaTD2")?.value,
@@ -242,7 +240,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       cveFolioConsignados: this.solicitarPagoForm3.get("folioConsig3")?.value,
       fechaElaboracion: this.solicitarPagoForm3.get("fechaElaboracion3")?.value,
       idUnidadMedica: 1,
-      idDelegacion: 1, 
+      idDelegacion: 40, 
       nomDestinatario: this.solicitarPagoForm3.get("nombreDestinatario3")?.value,
       nomRemitente: this.solicitarPagoForm3.get("nomRemitente3")?.value,
       numReferencia: this.solicitarPagoForm3.get("referenciaTD3")?.value,
@@ -265,7 +263,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       cveFolioConsignados: this.solicitarPagoForm4.get("folioConsig4")?.value,
       fechaElaboracion: this.solicitarPagoForm4.get("fechaElaboracion4")?.value,
       idUnidadMedica: 1,
-      idDelegacion: 1, 
+      idDelegacion: 40, 
       nomDestinatario: this.solicitarPagoForm4.get("nombreDestinatario4")?.value,
       nomRemitente: this.solicitarPagoForm4.get("nomRemitente4")?.value,
       numReferencia: this.solicitarPagoForm4.get("referenciaTD4")?.value,
