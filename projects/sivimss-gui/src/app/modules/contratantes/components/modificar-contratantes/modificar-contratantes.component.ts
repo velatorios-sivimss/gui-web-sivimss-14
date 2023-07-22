@@ -105,7 +105,7 @@ export class ModificarContratantesComponent implements OnInit {
       idEstado: [{ value: contratante.idEstado, disabled: false }, []],
       idPais: [{ value: contratante.idPais, disabled: false }, []],
       telefono: [{ value: contratante.telefono, disabled: false }, [Validators.maxLength(10)]],
-      correo: [{ value: contratante.correo, disabled: false }, [Validators.email]]
+      correo: [{ value: contratante.correo, disabled: false }, [Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}')]]
     });
     if (this.dgf.nacionalidad.value === 1) {
       this.obtenerEstadosPaises(this.ID_CATALOGO_ESTADOS);
