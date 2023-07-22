@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <label class="control-label" for="tipoSolicitud">Tipo de solicitud de pago<span
               class="req">*</span>:</label>
-                <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()">
+                <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" (onChange)="validaTipoSolicitud()" appendTo="body">
                 </p-dropdown>
             </div>
         </div>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="control-label" for="referenciaTD1">Referencia DT<span class="req">*</span>:</label>
-                    <input id="referenciaTD1" class="form-control" formControlName="referenciaTD1" placeholder="Inserta el segundo apellido">
+                    <input id="referenciaTD1" class="form-control" formControlName="referenciaTD1" numbersOnly placeholder="Inserta el segundo apellido">
                     <span class="campo-obligatorio" *ngIf="ref?.referenciaTD1?.errors?.required && (ref?.referenciaTD1?.dirty || ref?.referenciaTD1?.touched)">Este campo es obligatorio *.</span>
                 </div>
             </div>

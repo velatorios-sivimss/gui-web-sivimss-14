@@ -147,17 +147,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     });
   }
 
-  
-
-
-  solicitarPago(): void {
-    this.referencia.close(false);
-  }
-
-  cancelar(): void {
-    this.referencia.close(false);
-  }
-
   validaTipoSolicitud(): void {
     const idTipo = this.tipoSolicitudForm.get('tipoSolicitud')?.value;
 
@@ -199,8 +188,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       nomRemitente: this.solicitarPagoForm1.get("nomRemitente1")?.value,
       numReferencia: this.solicitarPagoForm1.get("referenciaTD1")?.value,
       idContratBenef: 1,
-      fechaInicial: "null",
-      fechaFinal: "null",
+      fechaInicial: "10/07/2023",
+      fechaFinal: "23/07/2023",
       beneficiario: this.solicitarPagoForm1.get("beneficiario1")?.value,
       concepto: this.solicitarPagoForm1.get("concepto1")?.value,
       observaciones: this.solicitarPagoForm1.get("observ1")?.value,
@@ -222,8 +211,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       nomRemitente: this.solicitarPagoForm2.get("nomRemitente2")?.value,
       numReferencia: this.solicitarPagoForm2.get("referenciaTD2")?.value,
       idContratBenef: 1,
-      fechaInicial: "null",
-      fechaFinal: "null",
+      fechaInicial: "10/07/2023",
+      fechaFinal: "23/07/2023",
       beneficiario: this.solicitarPagoForm2.get("beneficiario2")?.value,
       concepto: this.solicitarPagoForm2.get("concepto2")?.value,
       observaciones: this.solicitarPagoForm2.get("observ2")?.value,
@@ -246,7 +235,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       numReferencia: this.solicitarPagoForm3.get("referenciaTD3")?.value,
       idContratBenef: this.solicitarPagoForm3.get("beneficiario3")?.value,
       fechaInicial: "10/07/2023",
-      fechaFinal: "12/07/2023",
+      fechaFinal: "23/07/2023",
       beneficiario: "null",
       concepto: this.solicitarPagoForm3.get("concepto3")?.value,
       observaciones: this.solicitarPagoForm3.get("observ3")?.value,
@@ -269,7 +258,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       numReferencia: this.solicitarPagoForm4.get("referenciaTD4")?.value,
       idContratBenef: this.solicitarPagoForm4.get("beneficiario4")?.value,
       fechaInicial: "10/07/2023",
-      fechaFinal: "12/07/2023",
+      fechaFinal: "23/07/2023",
       beneficiario: "null",
       concepto: this.solicitarPagoForm4.get("concepto4")?.value,
       observaciones: this.solicitarPagoForm4.get("observ4")?.value,
@@ -308,7 +297,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     ).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud de pago generada correctamente')
-        void this.router.navigate(['../../'], {relativeTo: this.route});
+        this.referencia.close(false);
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -325,18 +314,27 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     return this.solicitarPagoForm1.controls;
   }
 
+  get fa2() {
+    return this.solicitarPagoForm2.controls;
+  }
+
   unidad(tipo:number): void {
     if(tipo){
       this.ShowUnidadAdmi = true;
       this.ShowUnidadOpe = false;
-      this.fa.unidadOpe.setValue(false);
+      this.fa2.unidadOpe.setValue(false);
       return;
     }
-    this.fa.unidadAdmi.setValue(false);
+    this.fa2.unidadAdmi.setValue(false);
       this.ShowUnidadAdmi = false;
       this.ShowUnidadOpe = true;
 
   }
+
+  cancelar(): void {
+    this.referencia.close(false);
+  }
+
 
   ngAfterViewInit() {
   }
