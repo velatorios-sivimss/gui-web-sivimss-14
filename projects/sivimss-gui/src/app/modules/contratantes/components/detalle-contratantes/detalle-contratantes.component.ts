@@ -118,6 +118,7 @@ export class DetalleContratantesComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
