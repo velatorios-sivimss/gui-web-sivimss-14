@@ -187,6 +187,7 @@ export class ModificarInformacionServicioComponent
 
   llenarFormulario(datos: any): void {
     this.idPanteon = datos.idPanteon;
+    let fechaVelacion;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio,mes,dia] = fechaActual.split('-')
     // let horaVelacion:string;
@@ -197,6 +198,12 @@ export class ModificarInformacionServicioComponent
     if(typeof datos.horaVelacion == "string"){
       const [horas,minutos] = datos.horaVelacion.split(':')
       datos.horaVelacion = new Date(+anio,+mes,+dia,+horas,+minutos)
+    }
+    if(typeof datos.fechaVelacion == "string"){
+      const [dia,mes,anio] = datos.fechaVelacion.split('/')
+      fechaVelacion = new Date(+anio + '/' + +mes + '/' + +dia);
+    }else{
+      fechaVelacion = datos.fechaVelacion;
     }
 
 
@@ -209,7 +216,7 @@ export class ModificarInformacionServicioComponent
           [Validators.required],
         ],
         fecha: [
-          { value: datos.fechaVelacion, disabled: false },
+          { value: fechaVelacion , disabled: false },
           [Validators.required],
         ],
         hora: [
@@ -252,8 +259,7 @@ export class ModificarInformacionServicioComponent
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          { value: null, disabled: false },
-          [Validators.required],
+          { value: null, disabled: false }
         ],
       }),
       recoger: this.formBuilder.group({

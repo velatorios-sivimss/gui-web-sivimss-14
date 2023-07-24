@@ -117,7 +117,7 @@ export class RealizarPagoComponent implements OnInit {
       this.filtroForm.reset();
       this.tipoFolio = null;
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroForm.get('nivel')?.patchValue(+usuario.idRol);
+      this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
       this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
     }
     this.numPaginaActual = 0;
@@ -258,10 +258,6 @@ export class RealizarPagoComponent implements OnInit {
     this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
     this.filtroForm.get('periodoInicio')?.patchValue(null);
     this.filtroForm.get('periodoFin')?.patchValue(null);
-  }
-
-  get fP() {
-    return this.filtroForm?.controls;
   }
 
   modificarPago(): void {

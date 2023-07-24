@@ -15,6 +15,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -50,7 +51,8 @@ export class PagoConvenioComponent implements OnInit {
   pagoForm!: FormGroup;
 
   pagos: PagoEspecifico[] = [];
-  pagoSeleccionado: any;
+  pagoSeleccionado!: PagoEspecifico;
+  rol!: number;
 
   constructor(private formBuilder: FormBuilder,
               public dialogService: DialogService,
@@ -58,6 +60,8 @@ export class PagoConvenioComponent implements OnInit {
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService
   ) {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {

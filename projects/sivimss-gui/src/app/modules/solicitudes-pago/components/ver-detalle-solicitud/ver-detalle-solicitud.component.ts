@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { SolicitarSolicitudPago, PartidaPresupuestal } from '../../models/solicitud-pagos.interface';
+import { DetalleSolicitudPago, PartidaPresupuestal } from '../../models/solicitud-pagos.interface';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import { SolicitudesPagoService } from '../../services/solicitudes-pago.service';
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -8,7 +8,7 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 
-type DetalleSolicPago = Required<SolicitarSolicitudPago> & { id: string }
+type DetalleSolicPago = Required<DetalleSolicitudPago> & { id: string }
 
 @Component({
   selector: 'app-ver-detalle-solicitud',
@@ -17,8 +17,8 @@ type DetalleSolicPago = Required<SolicitarSolicitudPago> & { id: string }
 })
 export class VerDetalleSolicitudPagoComponent implements OnInit {
 
-  solicitarSolicitudPago: SolicitarSolicitudPago[] = [];
-  solicitudPagoSeleccionado!: SolicitarSolicitudPago;
+  solicitarSolicitudPago: DetalleSolicitudPago[] = [];
+  solicitudPagoSeleccionado!: DetalleSolicitudPago;
   idSolicitud!: number;
   partidaPresupuestal: PartidaPresupuestal [] = [];
 

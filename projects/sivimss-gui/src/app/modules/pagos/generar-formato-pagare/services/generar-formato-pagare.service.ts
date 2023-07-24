@@ -76,28 +76,27 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
       {headers, responseType: 'blob' as 'json'})
   }
 
-  descargarListadoPagaresPDF(): Observable<Blob> {
+  descargarListadoPagaresPDF(body: any): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body: PeticionDescarga = { tipoReporte: "pdf"}
     return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
-  descargarListadoPagaresExcel(): Observable<Blob> {
+  descargarListadoPagaresExcel(body: any): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body: PeticionDescarga = { tipoReporte: "xls"}
-    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/pdf`
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odspagare/generarDocumento/xls`
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
-  obtenerFoliosODS(idVelatorio: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-pag`, {idVelatorio});
+  obtenerFoliosODS(idDelegacion: string, idVelatorio: string): Observable<HttpRespuesta<any>> {
+    const body = { "idDelegacion": idDelegacion, "idVelatorio": idVelatorio  }
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-pag`, body);
   }
 
   buscarContratantesGeneradosPorfolio(id: number): Observable<HttpRespuesta<any>> {

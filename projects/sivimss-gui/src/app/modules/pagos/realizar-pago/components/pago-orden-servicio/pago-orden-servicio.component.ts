@@ -16,6 +16,8 @@ import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.s
 import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
 import {TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -47,10 +49,11 @@ export class PagoOrdenServicioComponent implements OnInit {
   totalElementos: number = 0;
 
   pagos: PagoEspecifico[] = [];
-  pagoSeleccionado: any;
+  pagoSeleccionado!: PagoEspecifico;
   pagoODSModal: boolean = false;
-  tipoPago: any[] = TIPO_PAGO_CATALOGOS_ODS;
+  tipoPago: TipoDropdown[] = TIPO_PAGO_CATALOGOS_ODS;
   pagoForm!: FormGroup;
+  rol!: number;
 
   constructor(private formBuilder: FormBuilder,
               public dialogService: DialogService,
@@ -58,6 +61,8 @@ export class PagoOrdenServicioComponent implements OnInit {
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService,
   ) {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {
@@ -93,7 +98,7 @@ export class PagoOrdenServicioComponent implements OnInit {
     });
   }
 
-  abrirPanel(event: MouseEvent, pago: any): void {
+  abrirPanel(event: MouseEvent, pago: PagoEspecifico): void {
     this.overlayPanel.toggle(event);
     this.pagoSeleccionado = pago;
   }
@@ -134,7 +139,7 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   abrirModalPago(idPago: string): void {
-    const tipoPago = this.tipoPago.find(tp => tp.value === idPago).label;
+    const tipoPago: string = this.tipoPago.find(tp => tp.value === idPago)?.label ?? '';
     const data: RegistroModal = {
       tipoPago, idPago,
       total: this.pagoSeleccionado.diferenciasTotales,

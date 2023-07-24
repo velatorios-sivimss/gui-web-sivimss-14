@@ -1,26 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {RealizarPagoService} from "../../services/realizar-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
-import {ActivatedRoute, Router} from "@angular/router";
-
-interface MetodoPago {
-  fechaPago: string
-  idPagoDetalle: number
-  importe: number
-  metodoPago: string
-  nomBanco: string
-  numAutorizacion: string
-}
+import {Router} from "@angular/router";
+import {MetodoPago} from "../../modelos/detallePago.interface";
 
 @Component({
   selector: 'app-eliminar-tipo-pago',
   templateUrl: './eliminar-tipo-pago.component.html',
   styleUrls: ['./eliminar-tipo-pago.component.scss']
 })
-export class EliminarTipoPagoComponent implements OnInit {
+export class EliminarTipoPagoComponent {
 
   registroMetodoPago!: MetodoPago;
   total!: number;
@@ -37,8 +29,6 @@ export class EliminarTipoPagoComponent implements OnInit {
     this.total = this.config.data.total;
   }
 
-  ngOnInit(): void {
-  }
 
   guardar(): void {
     this.realizarPagoService.cancelarMetodoPago(this.registroMetodoPago.idPagoDetalle).subscribe({
@@ -57,7 +47,7 @@ export class EliminarTipoPagoComponent implements OnInit {
 
   actualizarPagina(): void {
     const currentUrl: string = this.router.url;
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then((): void => {
       void this.router.navigate([currentUrl]);
     });
   }

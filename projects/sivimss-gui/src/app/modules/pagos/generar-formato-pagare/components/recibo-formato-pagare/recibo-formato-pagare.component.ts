@@ -5,8 +5,9 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
 import {FormBuilder, FormGroup} from '@angular/forms';
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import {FormatoPagare} from '../../models/formato-pagare.interface';
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-recibo-formato-pagare',
@@ -24,7 +25,8 @@ export class ReciboFormatoPagareComponent implements OnInit {
     private generarFormatoPagareService: GenerarFormatoPagareService,
     private cargadorService: LoaderService,
     private alertaService: AlertaService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private location: Location
   ) {
     this.formatoPagare = this.route.snapshot.data["respuesta"].datos[0];
     this.formatoPagare.idODS = this.route.snapshot.params.idODS;
@@ -34,15 +36,15 @@ export class ReciboFormatoPagareComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
   }
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      redito: [{ value: this.formatoPagare.redito, disabled: false }],
+      redito: [{value: this.formatoPagare.redito, disabled: false}],
     });
   }
-  
+
   obtenerImporteLetra(importe: number): void {
     this.cargadorService.activar();
     this.generarFormatoPagareService.obtenerImporteLetra(importe).pipe(
@@ -59,9 +61,10 @@ export class ReciboFormatoPagareComponent implements OnInit {
   }
 
   crearNuevoPagare(): any {
+    this.formatoPagare.redito = this.filtroForm.get("redito")?.value !== '' ? this.filtroForm.get("redito")?.value : 0;
     return {
-      idODS : this.formatoPagare.idODS,
-      importe : this.formatoPagare.importe,
+      idODS: this.formatoPagare.idODS,
+      importe: this.formatoPagare.importe,
       redito: this.formatoPagare.redito
     };
   }
@@ -121,21 +124,24 @@ export class ReciboFormatoPagareComponent implements OnInit {
     return {
       id: this.formatoPagare.id,
       idODS: this.formatoPagare.idODS,
-      fechaODS:  this.formatoPagare.fechaODS,
-      folioODS:  this.formatoPagare.folioODS,
-      nomContratante:  this.formatoPagare.nomContratante,
-      hora:  this.formatoPagare.hora,
-      nomAgente:  this.formatoPagare.nomAgente,
+      fechaODS: this.formatoPagare.fechaODS,
+      folioODS: this.formatoPagare.folioODS,
+      nomContratante: this.formatoPagare.nomContratante,
+      hora: this.formatoPagare.hora,
+      nomAgente: this.formatoPagare.nomAgente,
       domContratante: this.formatoPagare.domContratante,
-      fechaPago:  this.formatoPagare.fechaPago,
-      fechaPagare:  this.formatoPagare.fechaPagare,
+      fechaPago: this.formatoPagare.fechaPago,
+      fechaPagare: this.formatoPagare.fechaPagare,
       importe: this.formatoPagare.importe,
-      redito:  this.formatoPagare.redito,
-      folioPagare:  this.formatoPagare.folioPagare,
-      cantidad:  this.importeLetra,
-      nomUsuario:  this.formatoPagare.nomUsuario,
+      redito: this.formatoPagare.redito,
+      folioPagare: this.formatoPagare.folioPagare,
+      cantidad: this.importeLetra,
+      nomUsuario: this.formatoPagare.nomUsuario,
       tipoReporte: "pdf"
     }
   }
 
+  regresarPaginaPrevia(): void {
+    this.location.back();
+  }
 }
