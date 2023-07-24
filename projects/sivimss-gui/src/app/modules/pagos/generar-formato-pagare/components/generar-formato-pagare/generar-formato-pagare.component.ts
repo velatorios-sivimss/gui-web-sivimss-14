@@ -160,7 +160,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros("pdf");
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
@@ -182,7 +182,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-  crearSolicitudFiltros(): FiltrosFormatoPagare {
+  crearSolicitudFiltros(tipoReporte: string): FiltrosFormatoPagare {
     const fechaInicial = this.filtroForm.get('fechaInicial')?.value !== null ? moment(this.filtroForm.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroForm.get('fechaFinal')?.value !== null ? moment(this.filtroForm.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
     const folio = this.filtroForm.get("folioODS")?.value !== null ? this.filtroForm.get("folioODS")?.value.label : null;
@@ -195,7 +195,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       nomContratante: this.filtroForm.get("nomContratante")?.value,
       fecIniODS: fechaInicial,
       fecFinODS: fechaFinal,
-      tipoReporte: "pdf"
+      tipoReporte: tipoReporte
     }
   }
 
@@ -203,8 +203,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
-    this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.obtenerVelatorios();
     this.paginar();
   }
@@ -270,8 +268,9 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   guardarListadoPagaresPDF() {
     this.cargadorService.activar();
-    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
-    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresPDF()).pipe(
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros("pdf");
+    const solicitudFiltros = JSON.stringify(filtros);
+    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresPDF(solicitudFiltros)).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
       (respuesta) => {
@@ -285,9 +284,10 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   guardarListadoPagaresExcel() {
     this.cargadorService.activar();
-    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros("xls");
+    const solicitudFiltros = JSON.stringify(filtros);
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
-    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresExcel(),
+    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresExcel(solicitudFiltros),
       configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
