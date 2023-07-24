@@ -127,6 +127,7 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Aprobar solicitud de pago"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Cancelar solicitud de pago" (click)="abrirModalCancelarSolicitudPago()"
                                 routerLinkActive></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Rechazar solicitud de pago" (click)="abrirModalRechazarSolicitudPago()"
