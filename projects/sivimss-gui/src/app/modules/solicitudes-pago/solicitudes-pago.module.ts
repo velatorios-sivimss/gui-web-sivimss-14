@@ -31,6 +31,7 @@ import {RechazarSolicitudPagoComponent} from "./components/rechazar-solicitud-pa
 import {VerDetalleSolicitudPagoComponent} from './components/ver-detalle-solicitud/ver-detalle-solicitud.component';
 import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 import {AceptarSolicitudPagoComponent} from "./components/aceptar-solicitud-pago/aceptar-solicitud-pago.component";
+import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directive";
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {AceptarSolicitudPagoComponent} from "./components/aceptar-solicitud-pago
     CancelarSolicitudPagoComponent,
     RechazarSolicitudPagoComponent,
     VerDetalleSolicitudPagoComponent,
-    AceptarSolicitudPagoComponent
+    AceptarSolicitudPagoComponent,
+    RegexFolioFiscalDirective
   ],
   imports: [
     CalendarModule,
