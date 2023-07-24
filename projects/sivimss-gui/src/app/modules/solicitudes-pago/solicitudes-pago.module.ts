@@ -32,6 +32,8 @@ import {VerDetalleSolicitudPagoComponent} from './components/ver-detalle-solicit
 import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 import {AceptarSolicitudPagoComponent} from "./components/aceptar-solicitud-pago/aceptar-solicitud-pago.component";
 import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directive";
+import {PanelModule} from "primeng/panel";
+import {RadioButtonModule} from "primeng/radiobutton";
 
 @NgModule({
   declarations: [
@@ -65,6 +67,8 @@ import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directi
     UtileriaModule,
     CheckboxModule,
     CeldaStickyModule,
+    PanelModule,
+    RadioButtonModule
   ],
   providers: [SolicitudesPagoService]
 })

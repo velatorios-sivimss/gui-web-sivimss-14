@@ -21,14 +21,14 @@
       <div class="col-md-6">
         <label class="control-label" for="fechaElaboracion">Fecha de elaboración<span class="req">*</span>:</label>
         <p-calendar id="fechaElaboracion" formControlName="fechaElaboracion" styleClass="form-control"
-                    [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd/mm/yy"
+                    [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd-mm-yy"
                     appendTo="body"
                     [maxDate]="fechaActual">
         </p-calendar>
       </div>
     </div>
     <div class="row mx-1 mb-3" *ngIf="incluyeFolioFecha.includes(solicitudPagoForm.get('tipoSolicitud')?.value)">
-      <p-table styleClass="mb-8" [value]="partidaPresupuestal" [pageLinks]="3">
+      <p-table [value]="partidaPresupuestal" [pageLinks]="3">
         <ng-template pTemplate="header">
           <tr>
             <th scope="col" class="font-bold">Partida presupuestal</th>
@@ -44,6 +44,34 @@
           </tr>
         </ng-template>
       </p-table>
+    </div>
+    <div class="row mx-1 mb-3"
+         *ngIf="incluyeUnidadOperativaAdmon.includes(solicitudPagoForm.get('tipoSolicitud')?.value)">
+      <p-panel>
+        <ng-template pTemplate="header">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="flex flex-wrap gap-3">
+                <div class="flex align-items-center">
+                  <p-radioButton value="1" id="unidadOperativa" formControlName="unidadSeleccionada"
+                                 inputId="unidadOperativa"></p-radioButton>
+                  <label for="unidadOperativa" class="ml-2">Unidad operativa</label>
+                </div>
+                <div class="flex align-items-center">
+                  <p-radioButton value="2" id="unidadAdmon" formControlName="unidadSeleccionada"
+                                 inputId="unidadAdmon"></p-radioButton>
+                  <label for="unidadAdmon" class="ml-2">Unidad administrativa</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template pTemplate="body">
+            <div class="row">
+
+            </div>
+          </ng-template>
+        </ng-template>
+      </p-panel>
     </div>
   </ng-container>
 </form>
@@ -138,7 +166,7 @@
         <div class="col-md-6">
           <label class="control-label" for="fechaElaboracion2">Fecha de elaboración<span class="req">*</span>:</label>
           <p-calendar id="fechaElaboracion2" formControlName="fechaElaboracion2" styleClass="form-control"
-                      [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
+                      [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd-mm-yy" appendTo="body"
                       [maxDate]="fechaActual">
           </p-calendar>
           <span class="campo-obligatorio"

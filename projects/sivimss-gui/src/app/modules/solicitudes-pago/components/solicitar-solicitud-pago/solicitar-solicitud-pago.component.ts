@@ -21,7 +21,10 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   solicitudPagoForm!: FormGroup;
 
-  incluyeFolioFecha: number[] = [2, 3, 4, 6];
+  incluyeFolioFecha: number[] = [2, 4];
+  incluyeUnidadOperativaAdmon: number[] = [2];
+
+  unidadSeleccionada!: number;
 
   solicitarPagoForm1!: FormGroup;
   solicitarPagoForm2!: FormGroup;
@@ -84,6 +87,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       tipoSolicitud: [{value: null, disabled: false}, [Validators.required]],
       folioFiscal: [{value: null, disabled: false}, [Validators.required]],
       fechaElaboracion: [{value: null, disabled: false}, [Validators.required]],
+      unidadSeleccionada: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
