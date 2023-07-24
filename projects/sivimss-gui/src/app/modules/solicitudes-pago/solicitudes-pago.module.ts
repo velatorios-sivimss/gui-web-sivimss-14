@@ -18,15 +18,16 @@ import {CheckboxModule} from "primeng/checkbox";
 
 import {CalendarModule} from 'primeng/calendar';
 import {AccordionModule} from 'primeng/accordion';
-import { SolicitudesPagoComponent } from './components/solicitudes-pago/solicitudes-pago.component'; 
+import { SolicitudesPagoComponent } from './components/solicitudes-pago/solicitudes-pago.component';
 import { SolicitudesPagoService } from './services/solicitudes-pago.service';
 import { SolicitudesPagoRoutingModule } from './solicitudes-pago.routing.module';
 import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
-import { SolicitarSolicitudPagoComponent } from './components/solicitar-solicitud-pago/solicitar-solicitud-pago.component'; 
-import { CancelarSolicitudPagoComponent } from "./components/cancelar-solicitud-pago/cancelar-solicitud-pago.component";  
-import { RechazarSolicitudPagoComponent } from "./components/rechazar-solicitud-pago/rechazar-solicitud-pago.component";  
+import { SolicitarSolicitudPagoComponent } from './components/solicitar-solicitud-pago/solicitar-solicitud-pago.component';
+import { CancelarSolicitudPagoComponent } from "./components/cancelar-solicitud-pago/cancelar-solicitud-pago.component";
+import { RechazarSolicitudPagoComponent } from "./components/rechazar-solicitud-pago/rechazar-solicitud-pago.component";
 import { VerDetalleSolicitudPagoComponent } from './components/ver-detalle-solicitud/ver-detalle-solicitud.component';
+import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 
 @NgModule({
   declarations: [
@@ -36,28 +37,29 @@ import { VerDetalleSolicitudPagoComponent } from './components/ver-detalle-solic
     RechazarSolicitudPagoComponent,
     VerDetalleSolicitudPagoComponent
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    SolicitudesPagoRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    AutoCompleteModule,
-    ValidaRolModule,
-    UtileriaModule,
-    CheckboxModule,
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        SolicitudesPagoRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        AutoCompleteModule,
+        ValidaRolModule,
+        UtileriaModule,
+        CheckboxModule,
+        CeldaStickyModule,
+    ],
   providers: [SolicitudesPagoService]
 })
 export class SolicitudesPagoModule {
