@@ -71,9 +71,20 @@ export interface Beneficiario {
   parentesco?: string;
   curp?: string;
   rfc?: string;
-  actaNacimiento?: string;
   email?: string;
   telefono?: string;
+  tipoConvenioDesc?: string | null;
+  actaNacimiento?: boolean | null;
+  ineBeneficiario?: boolean | null;
+  comprobanteEstudios?: boolean | null;
+  actaMatrimonio?: boolean | null;
+  declaracionConcubinato?: boolean | null;
+}
+
+export interface BusquedaListBeneficiarios {
+  idConvenio?: number;
+  idContratanteConvenioPf?: number;
+  beneficiarios?: Beneficiario[];
 }
 
 export interface BuscarConvenioPlanAnterior {
@@ -145,7 +156,7 @@ export interface ReporteAnexoDiez {
 
 export interface BeneficiarioContratante {
   idContratanteConvenioPf?: number;
-  idParentesco?: number;
+  idParentesco?: number | null;
   indActa?: number;
   indIne?: number;
 }

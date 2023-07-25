@@ -30,6 +30,7 @@ import { RenovarConvenioDesactivarBeneficiarioComponent } from './components/ren
 import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
+import { UsuarioService } from '../usuarios/services/usuario.service';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { DialogModule } from 'primeng/dialog';
     DialogModule,
   ],
   providers: [
-    RenovarConvenioPfService
+    RenovarConvenioPfService,
+    UsuarioService
   ]
 
 })

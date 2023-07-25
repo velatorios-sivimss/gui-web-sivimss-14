@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ActualizarBeneficiario, Beneficiario, BusquedaConvenio, CatalogoDatosGenerales, GuardarBeneficiario } from '../../models/convenio.interface';
+import { ActualizarBeneficiario, Beneficiario, BusquedaConvenio, BusquedaListBeneficiarios, CatalogoDatosGenerales, GuardarBeneficiario } from '../../models/convenio.interface';
 import { Accordion } from 'primeng/accordion';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { ActivatedRoute } from '@angular/router';
 import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-renovar-convenio-beneficiarios',
@@ -14,6 +15,9 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./renovar-convenio-beneficiarios.component.scss']
 })
 export class RenovarConvenioBeneficiariosComponent implements OnInit {
+  readonly POSICION_BENEFICIARIOS: number = 1;
+  readonly POSICION_DATOS_GRALES: number = 2;
+
   @ViewChild('accordion') accordion: Accordion | undefined;
 
   mode: 'listado' | 'crear' | 'modificar' | 'desactivar' = 'listado';
@@ -27,6 +31,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
   numBeneficiario: number = 0;
   activeIndex: number | null = null;
   datosGenerales!: CatalogoDatosGenerales;
+  busquedaListBeneficiarios!: BusquedaListBeneficiarios;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,9 +42,11 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
       if (params) {
         this.convenio.folio = params.folio;
       }
-    })
-    this.beneficiarios = this.route.snapshot.data["respuesta"][1].datos;
-    this.datosGenerales = this.route.snapshot.data["respuesta"][2].datos[0];
+    });
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.busquedaListBeneficiarios = respuesta[this.POSICION_BENEFICIARIOS].datos;
+    this.beneficiarios = this.busquedaListBeneficiarios.beneficiarios || [];
+    this.datosGenerales = respuesta[this.POSICION_DATOS_GRALES].datos[0];
   }
 
   ngOnInit(): void { }
@@ -78,15 +85,13 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
   }
 
   crearBeneficiario(beneficiario: Beneficiario | null) {
-    console.log(beneficiario);
-
     if (!beneficiario) {
       this.mode = 'listado';
     } else {
-      this.renovarConvenioPfService.crearBeneficiario(this.datosGuardarBeneficiarios(beneficiario)).subscribe({
+      this.renovarConvenioPfService.crearBeneficiario(this.datosCrearBeneficiario(beneficiario)).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos) {
-            this.alertaService.mostrar(TipoAlerta.Exito, 'Nuevo registro de los Beneficiarios del Folio 1');
+            this.alertaService.mostrar(TipoAlerta.Exito, `Nuevo registro de los Beneficiarios del Folio ${this.convenio.folio}`);
             this.mode = 'listado';
           }
         },
@@ -104,7 +109,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
       this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario: 18, estatusBenefic: false }).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos) {
-            this.alertaService.mostrar(TipoAlerta.Exito, 'Modificado correctamente los Beneficiarios del Folio 1');
+            this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);
             this.mode = 'listado';
           }
         },
@@ -119,10 +124,10 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     if (!beneficiario) {
       this.mode = 'listado';
     } else {
-      this.renovarConvenioPfService.actualizarBeneficiario(this.datosActualizarBeneficiarios(beneficiario)).subscribe({
+      this.renovarConvenioPfService.actualizarBeneficiario(this.datosActualizarBeneficiario(beneficiario)).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos) {
-            this.alertaService.mostrar(TipoAlerta.Exito, 'Modificado correctamente los Beneficiarios del Folio 1');
+            this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);
             this.mode = 'listado';
           }
         },
@@ -135,38 +140,59 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
 
   handleActiveBeneficiario(beneficiario: Beneficiario) {
     this.beneficiarioSeleccionado = beneficiario;
+    this.beneficiarioSeleccionado.tipoConvenioDesc = this.convenio.tipoConvenioDesc;
   }
 
   activeIndexChange(index: number) {
     this.activeIndex = index;
   }
 
-
-  datosGuardarBeneficiarios(beneficiario: Beneficiario): GuardarBeneficiario {
+  datosCrearBeneficiario(beneficiario: Beneficiario): GuardarBeneficiario {
     return {
       nombre: beneficiario.nombre,
       apellidoP: beneficiario.primerApellido,
       apellidoM: beneficiario.segundoApellido,
-      fechaNac: "",
+      fechaNac: moment().subtract(beneficiario.edad, 'years').format('DD-MM-YYYY'),
       curp: beneficiario.curp,
       rfc: beneficiario.rfc,
       correoE: beneficiario.email,
       tel: beneficiario.telefono,
+      beneficiario: {
+        idContratanteConvenioPf: this.busquedaListBeneficiarios?.idContratanteConvenioPf,
+        idParentesco: beneficiario.parentesco ? +beneficiario.parentesco : null,
+        indActa: beneficiario.actaNacimiento ? 1 : 0,
+        indIne: beneficiario.ineBeneficiario ? 1 : 0,
+      },
+      docPlanAnterior: {
+        indComprobanteEstudios: beneficiario.comprobanteEstudios ? 1 : 0,
+        indActaMatrimonio: beneficiario.actaMatrimonio ? 1 : 0,
+        indDeclaracionConcubinato: beneficiario.declaracionConcubinato ? 1 : 0,
+      }
     }
   }
 
-  datosActualizarBeneficiarios(beneficiario: Beneficiario): ActualizarBeneficiario {
+  datosActualizarBeneficiario(beneficiario: Beneficiario): ActualizarBeneficiario {
     return {
       idBeneficiario: beneficiario.idBeneficiario,
       idPersona: beneficiario.idPersona,
       nombre: beneficiario.nombre,
       apellidoP: beneficiario.primerApellido,
       apellidoM: beneficiario.segundoApellido,
-      fechaNac: "",
+      fechaNac: moment().subtract(beneficiario.edad, 'years').format('DD-MM-YYYY'),
       curp: beneficiario.curp,
       rfc: beneficiario.rfc,
       correoE: beneficiario.email,
       tel: beneficiario.telefono,
+      beneficiario: {
+        idParentesco: beneficiario.parentesco ? +beneficiario.parentesco : null,
+        indActa: beneficiario.actaNacimiento ? 1 : 0,
+        indIne: beneficiario.ineBeneficiario ? 1 : 0,
+      },
+      docPlanAnterior: {
+        indComprobanteEstudios: beneficiario.comprobanteEstudios ? 1 : 0,
+        indActaMatrimonio: beneficiario.actaMatrimonio ? 1 : 0,
+        indDeclaracionConcubinato: beneficiario.declaracionConcubinato ? 1 : 0,
+      }
     }
   }
 }

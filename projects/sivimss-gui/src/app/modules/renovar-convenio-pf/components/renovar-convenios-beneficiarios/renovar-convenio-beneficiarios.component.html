@@ -69,7 +69,7 @@
   </div>
 </ng-container>
 
-<div class="row my-6" *ngIf="mode === 'listado'">
+<div class="row my-6" *ngIf="mode === 'listado' && beneficiarios.length > 0">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-default btn-md ml-5" (click)="desactivar();">Desactivar</button>
     <button type="button" class="btn btn-primary btn-md ml-5" (click)="modificar();">Modificar</button>

@@ -42,9 +42,13 @@ export class RenovarConvenioDesactivarBeneficiarioComponent implements OnInit {
       parentesco: [{ value: null, disabled: true }, []],
       curp: [{ value: null, disabled: true }, [Validators.required]],
       rfc: [{ value: null, disabled: true }, []],
-      actaNacimiento: [{ value: null, disabled: true }, []],
       email: [{ value: null, disabled: true }, []],
       telefono: [{ value: null, disabled: true }, []],
+      actaNacimiento: [{ value: null, disabled: true }, []],
+      ineBeneficiario: [{ value: null, disabled: true }, []],
+      comprobanteEstudios: [{ value: null, disabled: true }, []],
+      actaMatrimonio: [{ value: null, disabled: true }, []],
+      declaracionConcubinato: [{ value: null, disabled: true }, []],
     });
 
     this.desactivarBeneficiarioForm.patchValue({

@@ -65,11 +65,10 @@
                 Campo obligatorio</span>
             </div>
             <div class="col-md-4">
-              <label class="control-label" for="actaNacimiento">Acta de nacimiento:</label>
-              <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento"
-                placeholder="Ingresa acta nacimiento ">
+              <label class="control-label" for="telefono">Teléfono:</label>
+              <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono">
               <span class="campo-obligatorio"
-                *ngIf="dbf.actaNacimiento?.errors?.required && (dbf.actaNacimiento?.dirty || dbf.actaNacimiento?.touched)">
+                *ngIf="dbf.telefono?.errors?.required && (dbf.telefono?.dirty || dbf.telefono?.touched)">
                 Campo obligatorio</span>
             </div>
             <div class="col-md-4">
@@ -82,12 +81,56 @@
           </div>
 
           <div class="row mb-3">
-            <div class="col-md-4">
-              <label class="control-label" for="telefono">Teléfono:</label>
-              <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono">
-              <span class="campo-obligatorio"
-                *ngIf="dbf.telefono?.errors?.required && (dbf.telefono?.dirty || dbf.telefono?.touched)">
-                Campo obligatorio</span>
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="actaNacimiento" formControlName="actaNacimiento" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'actaNacimiento'" class="control-label"><strong>Copia acta de nacimiento del beneficiario
+                    si es
+                    menor de edad</strong></label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="ineBeneficiario" formControlName="ineBeneficiario" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'ineBeneficiario'" class="control-label"><strong>Copias del INE del beneficiario si es
+                    mayor de
+                    edad</strong></label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="comprobanteEstudios" formControlName="comprobanteEstudios" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'comprobanteEstudios'" class="control-label"><strong>Comprobante de estudios del
+                    beneficiario si es
+                    mayor de 18 años y estudia</strong></label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="actaMatrimonio" formControlName="actaMatrimonio" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'actaMatrimonio'" class="control-label"><strong>Acta de matrimonio (Beneficiario
+                    Espos@)</strong></label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="declaracionConcubinato" formControlName="declaracionConcubinato" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'declaracionConcubinato'" class="control-label"><strong>Declaración de
+                    concubinato</strong></label>
+              </div>
             </div>
           </div>
 
