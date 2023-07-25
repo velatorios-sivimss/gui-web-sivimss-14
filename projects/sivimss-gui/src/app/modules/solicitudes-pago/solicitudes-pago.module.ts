@@ -34,6 +34,7 @@ import {AceptarSolicitudPagoComponent} from "./components/aceptar-solicitud-pago
 import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directive";
 import {PanelModule} from "primeng/panel";
 import {RadioButtonModule} from "primeng/radiobutton";
+import {TransformarNumeroPalabraPipe} from "./pipes/transformar-numero-palabra.pipe";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import {RadioButtonModule} from "primeng/radiobutton";
     RechazarSolicitudPagoComponent,
     VerDetalleSolicitudPagoComponent,
     AceptarSolicitudPagoComponent,
-    RegexFolioFiscalDirective
+    RegexFolioFiscalDirective,
+    TransformarNumeroPalabraPipe
   ],
   imports: [
     CalendarModule,

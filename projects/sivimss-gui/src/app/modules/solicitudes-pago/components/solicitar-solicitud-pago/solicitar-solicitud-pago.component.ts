@@ -73,7 +73,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       tipoSolicitud: [{value: null, disabled: false}, [Validators.required]],
       folioFiscal: [{value: null, disabled: false}, [Validators.required]],
       fechaElaboracion: [{value: null, disabled: false}, [Validators.required]],
-      unidadSeleccionada: [{value: null, disabled: false}, [Validators.required]],
+      unidadSeleccionada: [{value: 1, disabled: false}, [Validators.required]],
       referenciaUnidad: [{value: null, disabled: true}],
       solicitadoPor: [{value: null, disabled: true}],
       nombreDestinatario: [{value: null, disabled: false}, [Validators.required]],
