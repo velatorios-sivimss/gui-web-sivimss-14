@@ -12,7 +12,7 @@
     <div class="col-md-4">
       <label class="control-label" for="cantidad">Cantidad<span class="req">*</span>:</label>
       <input id="cantidad" type="text" class="form-control" formControlName="cantidad" placeholder="Ingresa la cantidad"
-        maxlength="3" lettersOnly>
+        maxlength="3" numbersOnly>
       <span class="campo-obligatorio"
         *ngIf="f.cantidad?.errors?.required && (f.cantidad?.dirty || f.cantidad?.touched)">Este campo es obligatorio *.</span>
     </div>
