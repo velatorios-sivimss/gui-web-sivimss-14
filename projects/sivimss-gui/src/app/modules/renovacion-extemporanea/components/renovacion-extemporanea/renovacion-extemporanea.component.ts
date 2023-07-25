@@ -47,7 +47,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     public dialogService: DialogService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.inicializarFiltroForm();
@@ -60,6 +60,10 @@ export class RenovacionExtemporaneaComponent implements OnInit {
       folioConvenio: [{ value: null, disabled: false }, [Validators.required]],
       rfcAfiliado: [{ value: null, disabled: false }, [Validators.required]],
     });
+  }
+
+  abrirPanel(event: MouseEvent, convenioPrevisionSeleccionado: any): void {
+    this.overlayPanel.toggle(event);
   }
 
   paginar(event: LazyLoadEvent): void {
@@ -141,7 +145,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
 
   abrirModalHabilitarRenovacion(): void {
     this.creacionRef = this.dialogService.open(HabilitarRenovacionComponent, {
-      header: 'Convenio de previsión funeraria',
+      header: 'Convenio de Previsión Funeraria',
       width: '920px',
       data: { servicio: this.convenioSeleccionado, origen: 'agregar' },
     });
@@ -154,14 +158,6 @@ export class RenovacionExtemporaneaComponent implements OnInit {
         );
       }
     });
-  }
-
-  abrirPanel(
-    event: MouseEvent,
-    articuloSeleccionado: ConveniosPrevision,
-  ): void {
-    this.convenioSeleccionado = articuloSeleccionado;
-    this.overlayPanel.toggle(event);
   }
 
   mostrarModalTitularFallecido(): void {
