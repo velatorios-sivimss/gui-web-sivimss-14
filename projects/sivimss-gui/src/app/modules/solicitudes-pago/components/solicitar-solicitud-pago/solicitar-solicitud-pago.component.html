@@ -5,7 +5,7 @@
         class="req">*</span>:</label>
       <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud"
                   [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true"
-                  filterBy="label" (onChange)="validaTipoSolicitud()" appendTo="body">
+                  filterBy="label" appendTo="body">
       </p-dropdown>
     </div>
   </div>
@@ -307,9 +307,7 @@
 </form>
 <div class="row mb-3">
   <div class="col-md-12">
-            <span class="mensaje-inferior-campo-obligatorio">
-            *Campos obligatorios
-          </span>
+    <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>
   </div>
 </div>
 <section>

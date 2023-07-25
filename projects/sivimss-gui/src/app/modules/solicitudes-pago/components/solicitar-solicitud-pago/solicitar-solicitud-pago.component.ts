@@ -20,23 +20,14 @@ import {HttpErrorResponse} from "@angular/common/http";
 export class SolicitarSolicitudPagoComponent implements OnInit {
 
   solicitudPagoForm!: FormGroup;
+  catatalogoTipoSolicitud: TipoDropdown[] = [];
 
-  solicitarPagoForm1!: FormGroup;
-  solicitarPagoForm2!: FormGroup;
-  solicitarPagoForm3!: FormGroup;
-  solicitarPagoForm4!: FormGroup;
+
   pagoSeleccionado: any = {}
-  opcion1: boolean = false;
-  opcion2: boolean = false;
-  opcion3: boolean = false;
-  opcion4: boolean = false;
   datosSolicitudPago!: CrearSolicitudPago;
-
-
   fechaActual: Date = new Date();
   partidaPresupuestal: PartidaPresupuestal [] = [];
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
-  catatalogoTipoSolicitud: TipoDropdown[] = [];
 
 
   constructor(
@@ -53,10 +44,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.obtenerCatalogos();
     this.inicializarTipoSolicitud();
-    this.inicializarSolicitarPagoForm1();
-    const respuesta = this.route.snapshot.data["respuesta"];
-    this.catatalogoTipoSolicitud = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD].datos, "desTipoSolicitud", "tipoSolicitud");
     this.partidaPresupuestal = [
       {
         idPartida: 1,
@@ -71,6 +60,12 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
         importeTotal: '000001',
       }
     ];
+  }
+
+  obtenerCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    const catalogoTipoSolicitud = respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD];
+    this.catatalogoTipoSolicitud = mapearArregloTipoDropdown(catalogoTipoSolicitud.datos, "desTipoSolicitud", "tipoSolicitud");
   }
 
   inicializarTipoSolicitud(): void {
@@ -97,165 +92,9 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     });
   }
 
-  inicializarSolicitarPagoForm1(): void {
-    this.solicitarPagoForm1 = this.formBulder.group({
-      fechaElaboracion1: [{value: null, disabled: false}],
-      nomDestinatario1: [{value: null, disabled: false}, [Validators.required]],
-      nomRemitente1: [{value: null, disabled: false}, [Validators.required]],
-      referenciaTD1: [{value: null, disabled: false}, [Validators.required]],
-      beneficiario1: [{value: null, disabled: false}, [Validators.required]],
-      concepto1: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(60)]],
-      importeTotal1: [{value: null, disabled: false}, [Validators.required]],
-      cantidad1: [{value: null, disabled: false}, [Validators.required]],
-      observ1: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(100)]],
-    });
-  }
-
-  validaTipoSolicitud(): void {
-    const idTipo = this.solicitudPagoForm.get('tipoSolicitud')?.value;
-
-    if (idTipo === 1) {
-      this.opcion1 = true;
-      this.opcion2 = false;
-      this.opcion3 = false;
-      this.opcion4 = false;
-    }
-    if (idTipo === 2 || idTipo === 3 || idTipo === 4) {
-      this.opcion2 = true;
-      this.opcion1 = false;
-      this.opcion3 = false;
-      this.opcion4 = false;
-    }
-    if (idTipo === 5) {
-      this.opcion1 = false;
-      this.opcion2 = false;
-      this.opcion3 = true;
-      this.opcion4 = false;
-    }
-    if (idTipo === 6) {
-      this.opcion1 = false;
-      this.opcion2 = false;
-      this.opcion3 = false;
-      this.opcion4 = true;
-    }
-  }
-
-  generarSolicitudPago1(): CrearSolicitudPago {
-    return {
-      idTipoSolic: this.solicitudPagoForm.get('tipoSolicitud')?.value,
-      cveFolioGastos: "null",
-      cveFolioConsignados: "null",
-      fechaElaboracion: "null",
-      idUnidadMedica: 1,
-      idDelegacion: 40,
-      nomDestinatario: this.solicitarPagoForm1.get("nomDestinatario1")?.value,
-      nomRemitente: this.solicitarPagoForm1.get("nomRemitente1")?.value,
-      numReferencia: this.solicitarPagoForm1.get("referenciaTD1")?.value,
-      idContratBenef: 1,
-      fechaInicial: "10/07/2023",
-      fechaFinal: "23/07/2023",
-      beneficiario: this.solicitarPagoForm1.get("beneficiario1")?.value,
-      concepto: this.solicitarPagoForm1.get("concepto1")?.value,
-      observaciones: this.solicitarPagoForm1.get("observ1")?.value,
-      idVelatorio: 1,
-      ejercicioFiscal: 2022,
-      idEstatusSol: 1
-    };
-  }
-
-  generarSolicitudPago234(): CrearSolicitudPago {
-    return {
-      idTipoSolic: this.solicitudPagoForm.get('tipoSolicitud')?.value,
-      cveFolioGastos: this.solicitarPagoForm2.get("folioGastos2")?.value,
-      fechaElaboracion: this.solicitarPagoForm2.get("fechaElaboracion2")?.value,
-      cveFolioConsignados: "null",
-      idUnidadMedica: this.solicitarPagoForm2.get("unidadOpe2")?.value,
-      idDelegacion: 40,
-      nomDestinatario: this.solicitarPagoForm2.get("nombreDestinatario2")?.value,
-      nomRemitente: this.solicitarPagoForm2.get("nomRemitente2")?.value,
-      numReferencia: this.solicitarPagoForm2.get("referenciaTD2")?.value,
-      idContratBenef: 1,
-      fechaInicial: "10/07/2023",
-      fechaFinal: "23/07/2023",
-      beneficiario: this.solicitarPagoForm2.get("beneficiario2")?.value,
-      concepto: this.solicitarPagoForm2.get("concepto2")?.value,
-      observaciones: this.solicitarPagoForm2.get("observ2")?.value,
-      idVelatorio: 1,
-      ejercicioFiscal: 2022,
-      idEstatusSol: 1
-    };
-  }
-
-  generarSolicitudPago5(): CrearSolicitudPago {
-    return {
-      idTipoSolic: this.solicitudPagoForm.get('tipoSolicitud')?.value,
-      cveFolioGastos: this.solicitarPagoForm3.get("folioGastos3")?.value,
-      cveFolioConsignados: this.solicitarPagoForm3.get("folioConsig3")?.value,
-      fechaElaboracion: this.solicitarPagoForm3.get("fechaElaboracion3")?.value,
-      idUnidadMedica: 1,
-      idDelegacion: 40,
-      nomDestinatario: this.solicitarPagoForm3.get("nombreDestinatario3")?.value,
-      nomRemitente: this.solicitarPagoForm3.get("nomRemitente3")?.value,
-      numReferencia: this.solicitarPagoForm3.get("referenciaTD3")?.value,
-      idContratBenef: this.solicitarPagoForm3.get("beneficiario3")?.value,
-      fechaInicial: "10/07/2023",
-      fechaFinal: "23/07/2023",
-      beneficiario: "null",
-      concepto: this.solicitarPagoForm3.get("concepto3")?.value,
-      observaciones: this.solicitarPagoForm3.get("observ3")?.value,
-      idVelatorio: 1,
-      ejercicioFiscal: 2022,
-      idEstatusSol: 1
-    };
-  }
-
-  generarSolicitudPago6(): CrearSolicitudPago {
-    return {
-      idTipoSolic: this.solicitudPagoForm.get('tipoSolicitud')?.value,
-      cveFolioGastos: this.solicitarPagoForm4.get("folioGastos4")?.value,
-      cveFolioConsignados: this.solicitarPagoForm4.get("folioConsig4")?.value,
-      fechaElaboracion: this.solicitarPagoForm4.get("fechaElaboracion4")?.value,
-      idUnidadMedica: 1,
-      idDelegacion: 40,
-      nomDestinatario: this.solicitarPagoForm4.get("nombreDestinatario4")?.value,
-      nomRemitente: this.solicitarPagoForm4.get("nomRemitente4")?.value,
-      numReferencia: this.solicitarPagoForm4.get("referenciaTD4")?.value,
-      idContratBenef: this.solicitarPagoForm4.get("beneficiario4")?.value,
-      fechaInicial: "10/07/2023",
-      fechaFinal: "23/07/2023",
-      beneficiario: "null",
-      concepto: this.solicitarPagoForm4.get("concepto4")?.value,
-      observaciones: this.solicitarPagoForm4.get("observ4")?.value,
-      idVelatorio: 1,
-      ejercicioFiscal: 2022,
-      idEstatusSol: 1
-    };
-  }
-
   crearSolicitudPago(): void {
     this.cargadorService.activar();
     const idTipo = this.solicitudPagoForm.get('tipoSolicitud')?.value;
-
-    switch (idTipo) {
-      case 1:
-        this.datosSolicitudPago = this.generarSolicitudPago1();
-        break;
-      case 2:
-        this.datosSolicitudPago = this.generarSolicitudPago234();
-        break;
-      case 3:
-        this.datosSolicitudPago = this.generarSolicitudPago234();
-        break;
-      case 4:
-        this.datosSolicitudPago = this.generarSolicitudPago234();
-        break;
-      case 5:
-        this.datosSolicitudPago = this.generarSolicitudPago5();
-        break;
-      case 6:
-        this.datosSolicitudPago = this.generarSolicitudPago6();
-        break;
-    }
     this.solicitudesPagoService.guardar(this.datosSolicitudPago).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
@@ -268,14 +107,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error, "Error al guardar la información de la solicitud de pago. Intenta nuevamente.");
       }
     });
-  }
-
-  get ref() {
-    return this.solicitarPagoForm1.controls;
-  }
-
-  get fa() {
-    return this.solicitarPagoForm1.controls;
   }
 
   cancelar(): void {
