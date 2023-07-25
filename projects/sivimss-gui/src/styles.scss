@@ -395,14 +395,13 @@ h1.subtitulo-base-lg {
   width: 100%;
 }
 
-// .accordion-custom-pf.p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon.pi-chevron-right {
-//   position: absolute;
-//   right: 0.5em;
-// }
-
 .accordion-custom-pf.p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
   position: absolute;
   right: 0.5em;
+}
+
+.check-beneficiario .p-checkbox .p-checkbox-box {
+  border-color: #ced4da;
 }
 
 // .ui-accordion .ui-accordion-header .ui-icon {

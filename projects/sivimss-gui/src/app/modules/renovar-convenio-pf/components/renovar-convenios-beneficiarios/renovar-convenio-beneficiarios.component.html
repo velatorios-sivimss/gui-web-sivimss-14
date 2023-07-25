@@ -6,20 +6,20 @@
       <p-accordion styleClass="sivimss-accordion">
         <p-accordionTab>
           <ng-template pTemplate="header">
-            <span>Convenio &nbsp;</span><b>DOC-000001</b>
+            <span>Convenio &nbsp;</span><b>{{convenio.folio}}</b>
           </ng-template>
           <ng-template pTemplate="content">
             <div class="row">
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Velatorio:</label>
-                  <span>{{convenio.tipoPF}}</span>
+                  <span>{{datosGenerales.velatorio}}</span>
                 </div>
               </div>
               <div class="col-md-3">
                 <div class="table-panel-column">
                   <label>Fecha:</label>
-                  <span>{{convenio.tipoPaquete}}</span>
+                  <span>{{datosGenerales.fecha}}</span>
                 </div>
               </div>
             </div>
@@ -27,52 +27,52 @@
         </p-accordionTab>
       </p-accordion>
     </form>
-    <!--  -->
-    <div class="mt-7">
-      <p-accordion styleClass="sivimss-accordion accordion-custom-pf">
-        <p-accordionTab>
+
+    <div class="row my-6" *ngIf="mode === 'listado'">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="nuevo();">Nuevo</button>
+      </div>
+    </div>
+
+    <div class="mt-7" *ngIf="mode === 'listado'">
+      <p-accordion styleClass="sivimss-accordion accordion-custom-pf" #accordion [activeIndex]="activeIndex"
+        (activeIndexChange)="activeIndexChange($event)">
+        <p-accordionTab *ngFor="let beneficiario of beneficiarios; index as i">
           <ng-template pTemplate="header">
-            <p-checkbox inputId="ineAfiliado" styleClass="mr-3" [binary]="true"></p-checkbox>
-            <span>Convenio &nbsp;</span><b>OK</b>
+            <p-checkbox class="check-beneficiario" styleClass="mr-3" (click)="handleActiveBeneficiario(beneficiario)"
+              [(ngModel)]="i === activeIndex" [binary]="true"></p-checkbox>
+            <span>Beneficiario {{i + 1}}</span>
           </ng-template>
           <ng-template pTemplate="content">
-            <!-- <div class="row">
-              <div class="col-md-3">
-                <div class="table-panel-column">
-                  <label>Tipo previsión funeraria:</label>
-                  <span>{{convenio.tipoPF}}</span>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="table-panel-column">
-                  <label>Tipo de paquete:</label>
-                  <span>{{convenio.tipoPaquete}}</span>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="table-panel-column">
-                  <label>Datos bancarios:</label>
-                  <span>{{convenio.datosBancarios}}</span>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="table-panel-column">
-                  <label>Cuota de recuperación:</label>
-                  <span>{{convenio.cuotaRecuperacion}}</span>
-                </div>
-              </div>
-            </div> -->
           </ng-template>
         </p-accordionTab>
       </p-accordion>
     </div>
+
+    <div class="mt-7" *ngIf="mode === 'crear'">
+      <app-renovar-convenio-crear-beneficiario [beneficiario]="beneficiarioSeleccionado"
+        [numBeneficiario]="numBeneficiario" (crearBeneficiario)="crearBeneficiario($event)">
+      </app-renovar-convenio-crear-beneficiario>
+    </div>
+
+    <div class="mt-7" *ngIf="mode === 'modificar'">
+      <app-renovar-convenio-modificar-beneficiario [beneficiario]="beneficiarioSeleccionado"
+        [numBeneficiario]="numBeneficiario" (actualizarBeneficiario)="actualizarBeneficiario($event)">
+      </app-renovar-convenio-modificar-beneficiario>
+    </div>
+
+    <div class="mt-7" *ngIf="mode === 'desactivar'">
+      <app-renovar-convenio-desactivar-beneficiario [beneficiario]="beneficiarioSeleccionado"
+        [numBeneficiario]="numBeneficiario" (desactivarBeneficiario)="activarDesactivarBeneficiario($event)">
+      </app-renovar-convenio-desactivar-beneficiario>
+    </div>
   </div>
 </ng-container>
 
-<div class="row my-6">
+<div class="row my-6" *ngIf="mode === 'listado'">
   <div class="col-md-12 flex justify-content-end">
-    <button type="submit" class="btn btn-danger btn-md ml-5">Desactivar</button>
-    <button type="submit" class="btn btn-primary btn-md ml-5">Modificar</button>
+    <button type="button" class="btn btn-default btn-md ml-5" (click)="desactivar();">Desactivar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="modificar();">Modificar</button>
   </div>
 </div>
 <p-overlayPanel #overlayPanel>

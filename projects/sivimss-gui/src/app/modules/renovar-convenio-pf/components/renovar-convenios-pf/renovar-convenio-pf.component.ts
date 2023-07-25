@@ -1,19 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { LazyLoadEvent, MenuItem } from "primeng/api";
-
+import { MenuItem } from "primeng/api";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { CATALOGOS_DUMMIES } from "../../../convenios-prevision-funeraria/constants/dummies";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { Convenio } from "../../models/convenio.interface";
-import {
-  ConveniosPrevisionFunerariaInterface
-} from "../../../convenios-prevision-funeraria/models/convenios-prevision-funeraria.interface";
-import { OverlayPanel } from "primeng/overlaypanel";
+import { BuscarConvenioPlanAnterior, BuscarConvenioPlanNuevo, BusquedaConvenio, Convenio, ObtenerCatalogo, RenovarPlan, VerificarDocumentacion } from "../../models/convenio.interface";
 import { MENU_STEPPER } from '../../constants/menu-steppers';
+import { Router } from '@angular/router';
+import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
+import * as moment from 'moment';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-renovar-convenio-pf',
@@ -21,46 +22,44 @@ import { MENU_STEPPER } from '../../constants/menu-steppers';
   styleUrls: ['./renovar-convenio-pf.component.scss']
 })
 export class RenovarConvenioPfComponent implements OnInit {
-
-  @ViewChild(OverlayPanel)
-  overlayPanel!: OverlayPanel;
-
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
-  numPaginaActual: number = 0;
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
-  totalElementos: number = 0;
-
+  idValidacionDoc: number = 0;
   busquedaTipoConvenioForm!: FormGroup;
   resultadoBusquedaForm!: FormGroup;
   documentacionForm!: FormGroup;
+  habilitarRenovacion: boolean = true;
+  mostrarModalConfirmacion: boolean = false;
+  mensajeBusqueda: string = "";
 
   tipoConvenio: TipoDropdown[] = [
     { label: 'Plan anterior', value: '0' },
     { label: 'Plan nuevo', value: '1' },
   ];
 
+  estatusConvenio = ['Facturado', 'Facturado', 'Vigente'];
+
   tipoPrevisionFuneraria: TipoDropdown[] = CATALOGOS_DUMMIES;
   tipoPaquete: TipoDropdown[] = CATALOGOS_DUMMIES;
-
-  convenios: Convenio[] = [];
-  convenio: Convenio = {};
-  convenioSeleccionado!: ConveniosPrevisionFunerariaInterface;
+  convenio!: BusquedaConvenio | null;
 
   constructor(
     private breadcrumbService: BreadcrumbService,
+    private renovarConvenioPfService: RenovarConvenioPfService,
+    private alertaService: AlertaService,
     private formBuilder: FormBuilder,
+    private readonly router: Router,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
     this.inicializarFormBusquedaTipoConvenio();
     this.inicializarFormPlanAnterior();
-    // this.inicializarDocumentacionForm();
+    this.inicializarDocumentacionForm();
   }
 
   actualizarBreadcrumb(): void {
-    /*Cambiar la imagen de Administración de catálogos*/
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
@@ -69,77 +68,224 @@ export class RenovarConvenioPfComponent implements OnInit {
       tipoConvenio: [{ value: true, disabled: false }, []],
       numConvenio: [{ value: null, disabled: false }, []],
       nombreContratante: [{ value: null, disabled: false }, []],
+      folio: [{ value: null, disabled: false }, []],
+      rfc: [{ value: null, disabled: false }, []],
     });
   }
 
   inicializarFormPlanAnterior(): void {
     this.resultadoBusquedaForm = this.formBuilder.group({
-      tipoPrevisionFuneraria: [{ value: null, disabled: true }, []],
+      tipoPrevision: [{ value: null, disabled: true }, []],
       tipoPaquete: [{ value: null, disabled: true }, []],
-      datosBancarios: [{ value: null, disabled: false }, []],
+      datosBancarios: [{ value: null, disabled: false }, [Validators.maxLength(30)]],
       costoRenovacion: [{ value: null, disabled: true }, []],
     });
   }
 
   inicializarDocumentacionForm(): void {
     this.documentacionForm = this.formBuilder.group({
-      ineAfiliado: [{ value: null, disabled: false }, [Validators.required]],
-      copiaCURP: [{ value: null, disabled: false }, [Validators.required]],
-      copiaRFC: [{ value: null, disabled: false }, [Validators.required]],
-      convenioAnterior: [{ value: null, disabled: false }, [Validators.required]],
-      copiaActaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
-      copiaINE: [{ value: null, disabled: false }, [Validators.required]],
-      comprobanteEstudios: [{ value: null, disabled: false }, [Validators.required]],
-      actaMatrimonio: [{ value: null, disabled: false }, [Validators.required]],
-      declaracionConcubinato: [{ value: null, disabled: false }, [Validators.required]]
+      ineAfiliado: [{ value: null, disabled: false }, []],
+      curp: [{ value: null, disabled: false }, []],
+      rfc: [{ value: null, disabled: false }, []],
+      convenioAnterior: [{ value: null, disabled: false }, []],
+      cartaPoder: [{ value: null, disabled: false }, []],
+      ineTestigo: [{ value: null, disabled: false }, []],
     });
   }
 
-  paginar(event: LazyLoadEvent): void {
-    setTimeout(() => {
-      this.convenios = [
-        {
-          folioConvenio: "123456789",
-          rfc: "12345678",
-          numeroINE: 123456789,
-          matriculaIMSS: 123456789,
-          nombre: "Fransisco",
-          primerApellido: "Napeles",
-          segundoApellido: "Alucín",
-          tipoPF: 1,
-          descTipoPF: "Nuevo plan",
-          tipoPaquete: 1,
-          descTipoPaquete: "Paquete económico",
-          estatusConvenio: true,
-          cuotaRecuperacion: 5852.23,
-          fechaInicioVigencia: "18/01/2023",
-          fechaFinVigencia: "25/05/2023",
-          calle: "Napoles",
-          numeroInterior: "1",
-          numeroExterior: "1",
-          cp: 55998,
-          estado: 1,
-          descEstado: "Estado de México",
-          municipio: "San Teodoro",
-          telefonoContacto: 5621568456,
-          correoElectronico: "napa_alucin@gmail.com",
-          beneficiarios: 2,
-        },
-      ];
-      this.totalElementos = this.convenios.length;
-    }, 0)
-  }
-  abrirPanel(event: MouseEvent, convenio: ConveniosPrevisionFunerariaInterface): void {
-    this.convenioSeleccionado = convenio;
-    this.overlayPanel.toggle(event);
+  siguiente(): void {
+    this.obtenerCatalogoDatosGrales();
   }
 
-  siguiente(): void {
-    this.indice++;
+  aceptar(): void {
+    void this.router.navigate([`/renovar-convenio-pf/beneficiarios/${this.convenio?.idConvenio}`],
+      { queryParams: { folio: this.convenio?.folio } });
+  }
+
+  limpiar(): void {
+    this.busquedaTipoConvenioForm.reset();
+    this.btcf.tipoConvenio.setValue(true);
   }
 
   regresar(): void {
     this.indice--;
+  }
+
+  guardar() {
+    this.verificarDocumentacion();
+  }
+
+  verificarDocumentacion() {
+    this.renovarConvenioPfService.verificarDocumentacion(this.datosVerificarDocumentacion()).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.codigo === 200) {
+          this.renovarPlan();
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.procesarErrorResponse(error);
+      }
+    });
+  }
+
+  renovarPlan() {
+    this.renovarConvenioPfService.renovarPlan(this.datosRenovarPlan()).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos) { }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.procesarErrorResponse(error);
+      }
+    });
+  }
+
+  procesarErrorResponse(error: HttpErrorResponse) {
+    console.error(error);
+    let folio: string = '';
+    if (this.convenio) {
+      folio = this.convenio.tipoConvenioDesc === 'ConvenioNuevo' ? this.btcf.folio.value : this.btcf.numConvenio.value;
+    }
+    this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información. Intenta nuevamente del convenio con folio ${folio}`);
+  }
+
+  obtenerCatalogoDatosGrales() {
+    if (this.convenio && this.convenio?.idConvenio) {
+      this.renovarConvenioPfService.obtenerCatalogo(this.datosObtenerCatalogo(1, +this.convenio.idConvenio)).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta?.datos?.length > 0 && this.convenio) {
+            this.convenio.velatorio = respuesta.datos[0].velatorio;
+            this.idValidacionDoc = respuesta.datos[0].idValidacionDoc;
+            this.convenio.fecha = moment().format('DD-MM-YYYY');
+            this.convenio.datosBancarios = this.rbf.datosBancarios.value;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      }).add(() => {
+        this.indice++;
+        window.scrollTo(0, 0);
+      });
+    }
+  }
+
+  buscar(): void {
+    if (this.btcf.tipoConvenio.value) {
+      let datosPlanAnterior = this.datosPlanAnterior();
+      if (validarAlMenosUnCampoConValor(datosPlanAnterior)) {
+        this.buscarPlanAnterior(datosPlanAnterior);
+      } else {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+      }
+    } else {
+      let datosPlanNuevo = this.datosPlanNuevo();
+      if (validarAlMenosUnCampoConValor(datosPlanNuevo)) {
+        this.buscarPlanNuevo(datosPlanNuevo);
+      } else {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+      }
+    }
+  }
+
+  buscarPlanNuevo(datosPlanNuevo: BuscarConvenioPlanNuevo) {
+    this.renovarConvenioPfService.buscarConvenioPlanNuevo(datosPlanNuevo).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.convenio = null;
+        if (respuesta.datos) {
+          if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+            this.habilitarRenovacion = false;
+          }
+          this.convenio = respuesta.datos;
+          if (this.convenio) this.convenio.tipoConvenioDesc = 'ConvenioNuevo';
+          this.resultadoBusquedaForm.patchValue({
+            ...this.convenio
+          });
+        } else {
+          this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanNuevo.folio}`;
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        // this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
+      }
+    });
+  }
+
+  buscarPlanAnterior(datosPlanAnterior: BuscarConvenioPlanAnterior) {
+    this.renovarConvenioPfService.buscarConvenioPlanAnterior(datosPlanAnterior).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.convenio = null;
+        if (respuesta.datos) {
+          if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+            this.habilitarRenovacion = false;
+          }
+          this.convenio = respuesta.datos;
+          if (this.convenio) this.convenio.tipoConvenioDesc = 'ConvenioAnterior';
+          this.resultadoBusquedaForm.patchValue({
+            ...this.convenio
+          });
+        } else {
+          this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanAnterior.numeroConvenio}`;
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        // this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
+      }
+    });
+  }
+
+  datosRenovarPlan(): RenovarPlan {
+    return {
+      datosBancarios: this.convenio?.datosBancarios,
+      idConvenioPf: this.convenio?.idConvenio,
+      folio: this.convenio?.folio,
+      vigencia: moment().format('DD-MM-YYYY'),
+      indRenovacion: this.convenio?.tipoConvenioDesc === 'ConvenioAnterior' ? 1 : 0,
+    }
+  }
+
+  datosVerificarDocumentacion(): VerificarDocumentacion {
+    return {
+      idValidacionDoc: this.idValidacionDoc,
+      ineAfiliado: this.df.ineAfiliado.value ? 1 : null,
+      curp: this.df.curp.value ? 1 : null,
+      rfc: this.df.rfc.value ? 1 : null,
+      renovarDoc: {
+        convenioAnterior: this.df.convenioAnterior.value ? 1 : null,
+        cartaPoder: this.df.cartaPoder.value ? 1 : null,
+        ineTestigo: this.df.ineTestigo.value ? 1 : null,
+        ineTestigoDos: null,
+      }
+    }
+  }
+
+  datosObtenerCatalogo(idCatalogo: number, idConvenio: number): ObtenerCatalogo {
+    return {
+      idCatalogo,
+      idConvenio,
+    }
+  }
+
+  datosPlanNuevo(): BuscarConvenioPlanNuevo {
+    return {
+      folio: this.btcf.folio.value,
+      rfc: this.btcf.rfc.value,
+    }
+  }
+
+
+  datosPlanAnterior(): BuscarConvenioPlanAnterior {
+    return {
+      numeroContratante: this.btcf.nombreContratante.value,
+      numeroConvenio: this.btcf.numConvenio.value,
+    }
   }
 
   get btcf() {
@@ -148,5 +294,9 @@ export class RenovarConvenioPfComponent implements OnInit {
 
   get rbf() {
     return this.resultadoBusquedaForm.controls;
+  }
+
+  get df() {
+    return this.documentacionForm.controls;
   }
 }

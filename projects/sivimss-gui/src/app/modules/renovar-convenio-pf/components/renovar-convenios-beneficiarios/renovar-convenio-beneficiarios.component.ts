@@ -1,19 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-
-import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { LazyLoadEvent, MenuItem } from "primeng/api";
-
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { CATALOGOS_DUMMIES } from "../../../convenios-prevision-funeraria/constants/dummies";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { Convenio } from "../../models/convenio.interface";
-import {
-  ConveniosPrevisionFunerariaInterface
-} from "../../../convenios-prevision-funeraria/models/convenios-prevision-funeraria.interface";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { MENU_STEPPER } from '../../constants/menu-steppers';
+import { ActualizarBeneficiario, Beneficiario, BusquedaConvenio, CatalogoDatosGenerales, GuardarBeneficiario } from '../../models/convenio.interface';
+import { Accordion } from 'primeng/accordion';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { ActivatedRoute } from '@angular/router';
+import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-renovar-convenio-beneficiarios',
@@ -21,132 +14,160 @@ import { MENU_STEPPER } from '../../constants/menu-steppers';
   styleUrls: ['./renovar-convenio-beneficiarios.component.scss']
 })
 export class RenovarConvenioBeneficiariosComponent implements OnInit {
+  @ViewChild('accordion') accordion: Accordion | undefined;
 
-  @ViewChild(OverlayPanel)
-  overlayPanel!: OverlayPanel;
-
-  menuStep: MenuItem[] = MENU_STEPPER;
-  indice: number = 0;
-  numPaginaActual: number = 0;
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
-  totalElementos: number = 0;
-
-  busquedaTipoConvenioForm!: FormGroup;
-  resultadoBusquedaForm!: FormGroup;
+  mode: 'listado' | 'crear' | 'modificar' | 'desactivar' = 'listado';
+  altaBeneficiarioForm!: FormGroup;
+  modificarBeneficiarioForm!: FormGroup;
+  beneficiarioForm!: FormGroup;
   documentacionForm!: FormGroup;
-
-  tipoConvenio: TipoDropdown[] = [
-    { label: 'Plan anterior', value: '0' },
-    { label: 'Plan nuevo', value: '1' },
-  ];
-
-  tipoPrevisionFuneraria: TipoDropdown[] = CATALOGOS_DUMMIES;
-  tipoPaquete: TipoDropdown[] = CATALOGOS_DUMMIES;
-
-  convenios: Convenio[] = [];
-  convenio: Convenio = {};
-  convenioSeleccionado!: ConveniosPrevisionFunerariaInterface;
+  convenio: BusquedaConvenio = {};
+  beneficiarioSeleccionado!: Beneficiario;
+  beneficiarios: Beneficiario[] = [];
+  numBeneficiario: number = 0;
+  activeIndex: number | null = null;
+  datosGenerales!: CatalogoDatosGenerales;
 
   constructor(
-    private breadcrumbService: BreadcrumbService,
-    private formBuilder: FormBuilder,
-  ) { }
-
-  ngOnInit(): void {
-    this.actualizarBreadcrumb();
-    this.inicializarFormBusquedaTipoConvenio();
-    this.inicializarFormPlanAnterior();
-    // this.inicializarDocumentacionForm();
+    private route: ActivatedRoute,
+    private alertaService: AlertaService,
+    private renovarConvenioPfService: RenovarConvenioPfService,
+  ) {
+    this.route.queryParams.subscribe(params => {
+      if (params) {
+        this.convenio.folio = params.folio;
+      }
+    })
+    this.beneficiarios = this.route.snapshot.data["respuesta"][1].datos;
+    this.datosGenerales = this.route.snapshot.data["respuesta"][2].datos[0];
   }
 
-  actualizarBreadcrumb(): void {
-    /*Cambiar la imagen de Administración de catálogos*/
-    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
+  ngOnInit(): void { }
+
+  nuevo() {
+    this.activeIndex = null;
+    this.numBeneficiario = this.beneficiarios.length + 1;
+    this.mode = 'crear';
   }
 
-  inicializarFormBusquedaTipoConvenio(): void {
-    this.busquedaTipoConvenioForm = this.formBuilder.group({
-      tipoConvenio: [{ value: true, disabled: false }, []],
-      numConvenio: [{ value: null, disabled: false }, []],
-      nombreContratante: [{ value: null, disabled: false }, []],
+  desactivar() {
+    if (this.activeIndex !== null && this.activeIndex >= 0) {
+      this.numBeneficiario = this.activeIndex + 1;
+      this.mode = 'desactivar';
+    }
+  }
+
+  modificar() {
+    if (this.activeIndex !== null && this.activeIndex >= 0) {
+      this.numBeneficiario = this.activeIndex + 1;
+      this.mode = 'modificar';
+    }
+  }
+
+  obtenerDetalleBeneficiario(idBeneficiario: number) {
+    this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario }).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta?.datos) {
+          console.log(respuesta?.datos);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+      }
     });
   }
 
-  inicializarFormPlanAnterior(): void {
-    this.resultadoBusquedaForm = this.formBuilder.group({
-      tipoPrevisionFuneraria: [{ value: null, disabled: true }, []],
-      tipoPaquete: [{ value: null, disabled: true }, []],
-      datosBancarios: [{ value: null, disabled: false }, []],
-      costoRenovacion: [{ value: null, disabled: true }, []],
-    });
-  }
+  crearBeneficiario(beneficiario: Beneficiario | null) {
+    console.log(beneficiario);
 
-  inicializarDocumentacionForm(): void {
-    this.documentacionForm = this.formBuilder.group({
-      ineAfiliado: [{ value: null, disabled: false }, [Validators.required]],
-      copiaCURP: [{ value: null, disabled: false }, [Validators.required]],
-      copiaRFC: [{ value: null, disabled: false }, [Validators.required]],
-      convenioAnterior: [{ value: null, disabled: false }, [Validators.required]],
-      copiaActaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
-      copiaINE: [{ value: null, disabled: false }, [Validators.required]],
-      comprobanteEstudios: [{ value: null, disabled: false }, [Validators.required]],
-      actaMatrimonio: [{ value: null, disabled: false }, [Validators.required]],
-      declaracionConcubinato: [{ value: null, disabled: false }, [Validators.required]]
-    });
-  }
-
-  paginar(event: LazyLoadEvent): void {
-    setTimeout(() => {
-      this.convenios = [
-        {
-          folioConvenio: "123456789",
-          rfc: "12345678",
-          numeroINE: 123456789,
-          matriculaIMSS: 123456789,
-          nombre: "Fransisco",
-          primerApellido: "Napeles",
-          segundoApellido: "Alucín",
-          tipoPF: 1,
-          descTipoPF: "Nuevo plan",
-          tipoPaquete: 1,
-          descTipoPaquete: "Paquete económico",
-          estatusConvenio: true,
-          cuotaRecuperacion: 5852.23,
-          fechaInicioVigencia: "18/01/2023",
-          fechaFinVigencia: "25/05/2023",
-          calle: "Napoles",
-          numeroInterior: "1",
-          numeroExterior: "1",
-          cp: 55998,
-          estado: 1,
-          descEstado: "Estado de México",
-          municipio: "San Teodoro",
-          telefonoContacto: 5621568456,
-          correoElectronico: "napa_alucin@gmail.com",
-          beneficiarios: 2,
+    if (!beneficiario) {
+      this.mode = 'listado';
+    } else {
+      this.renovarConvenioPfService.crearBeneficiario(this.datosGuardarBeneficiarios(beneficiario)).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta?.datos) {
+            this.alertaService.mostrar(TipoAlerta.Exito, 'Nuevo registro de los Beneficiarios del Folio 1');
+            this.mode = 'listado';
+          }
         },
-      ];
-      this.totalElementos = this.convenios.length;
-    }, 0)
-  }
-  abrirPanel(event: MouseEvent, convenio: ConveniosPrevisionFunerariaInterface): void {
-    this.convenioSeleccionado = convenio;
-    this.overlayPanel.toggle(event);
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
+    }
   }
 
-  siguiente(): void {
-    this.indice++;
+  activarDesactivarBeneficiario(beneficiario: Beneficiario | null) {
+    if (!beneficiario) {
+      this.mode = 'listado';
+    } else {
+      this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario: 18, estatusBenefic: false }).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta?.datos) {
+            this.alertaService.mostrar(TipoAlerta.Exito, 'Modificado correctamente los Beneficiarios del Folio 1');
+            this.mode = 'listado';
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
+    }
   }
 
-  regresar(): void {
-    this.indice--;
+  actualizarBeneficiario(beneficiario: Beneficiario | null) {
+    if (!beneficiario) {
+      this.mode = 'listado';
+    } else {
+      this.renovarConvenioPfService.actualizarBeneficiario(this.datosActualizarBeneficiarios(beneficiario)).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta?.datos) {
+            this.alertaService.mostrar(TipoAlerta.Exito, 'Modificado correctamente los Beneficiarios del Folio 1');
+            this.mode = 'listado';
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
+    }
   }
 
-  get btcf() {
-    return this.busquedaTipoConvenioForm.controls;
+  handleActiveBeneficiario(beneficiario: Beneficiario) {
+    this.beneficiarioSeleccionado = beneficiario;
   }
 
-  get rbf() {
-    return this.resultadoBusquedaForm.controls;
+  activeIndexChange(index: number) {
+    this.activeIndex = index;
+  }
+
+
+  datosGuardarBeneficiarios(beneficiario: Beneficiario): GuardarBeneficiario {
+    return {
+      nombre: beneficiario.nombre,
+      apellidoP: beneficiario.primerApellido,
+      apellidoM: beneficiario.segundoApellido,
+      fechaNac: "",
+      curp: beneficiario.curp,
+      rfc: beneficiario.rfc,
+      correoE: beneficiario.email,
+      tel: beneficiario.telefono,
+    }
+  }
+
+  datosActualizarBeneficiarios(beneficiario: Beneficiario): ActualizarBeneficiario {
+    return {
+      idBeneficiario: beneficiario.idBeneficiario,
+      idPersona: beneficiario.idPersona,
+      nombre: beneficiario.nombre,
+      apellidoP: beneficiario.primerApellido,
+      apellidoM: beneficiario.segundoApellido,
+      fechaNac: "",
+      curp: beneficiario.curp,
+      rfc: beneficiario.rfc,
+      correoE: beneficiario.email,
+      tel: beneficiario.telefono,
+    }
   }
 }
+

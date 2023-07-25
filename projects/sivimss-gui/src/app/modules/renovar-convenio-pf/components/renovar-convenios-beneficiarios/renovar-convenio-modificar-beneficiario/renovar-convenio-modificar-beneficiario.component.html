@@ -1,0 +1,115 @@
+<div class="mt-7">
+  <p-accordion styleClass="sivimss-accordion accordion-custom-pf" activeIndex="0">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <span>Beneficiario {{numBeneficiario}}</span>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <form class="mt-5" [formGroup]="modificarBeneficiarioForm">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="nombre">Nombre:</label>
+              <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre"
+                lettersOnly trimmer>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.nombre?.errors?.required && (mbf.nombre?.dirty || mbf.nombre?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="primerApellido">Primer apellido:</label>
+              <input id="primerApellido" class="form-control" formControlName="primerApellido" lettersOnly trimmer
+                placeholder="Ingresa el primer apellido">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.primerApellido?.errors?.required && (mbf.primerApellido?.dirty || mbf.primerApellido?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="segundoApellido">Segundo apellido:</label>
+              <input id="segundoApellido" class="form-control" formControlName="segundoApellido" lettersOnly trimmer
+                placeholder="Ingresa el primer apellido">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.segundoApellido?.errors?.required && (mbf.segundoApellido?.dirty || mbf.segundoApellido?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="edad">Edad:</label>
+              <input id="edad" class="form-control" formControlName="edad" placeholder="Ingresa la edad" minlength="2"
+                maxlength="2" numbersOnly trimmer>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.edad?.errors?.required && (mbf.edad?.dirty || mbf.edad?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="parentesco">Parentesco:</label>
+              <p-dropdown id="parentesco" class="form-control" formControlName="parentesco"
+                placeholder="Selecciona parentesco" [options]="catParentesco"></p-dropdown>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.parentesco?.errors?.required && (mbf.parentesco?.dirty || mbf.parentesco?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="curp">Curp:</label>
+              <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa la curp" maxlength="18"
+                alphanumericOnly trimmer>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.curp?.errors?.required && (mbf.curp?.dirty || mbf.curp?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="rfc">RFC:</label>
+              <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el rfc" trimmer
+                folioOdsAlphanumeric maxlength="13">
+              <span class="campo-obligatorio" *ngIf="mbf.rfc?.errors?.required && (mbf.rfc?.dirty || mbf.rfc?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="actaNacimiento">Acta de nacimiento:</label>
+              <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento" alphanumericOnly trimmer
+                placeholder="Ingresa acta nacimiento">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.actaNacimiento?.errors?.required && (mbf.actaNacimiento?.dirty || mbf.actaNacimiento?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="email">Correo electrónico:</label>
+              <input id="email" class="form-control" formControlName="email" placeholder="Ingresa el correo"
+                maxlength="45" alphanumericOnly trimmer>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.email?.errors?.required && (mbf.email?.dirty || mbf.email?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="telefono">Teléfono:</label>
+              <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono"
+                numbersOnly trimmer maxlength="11">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.telefono?.errors?.required && (mbf.telefono?.dirty || mbf.telefono?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-12">
+              <span>*Campos obligatorios</span>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+    </p-accordionTab>
+  </p-accordion>
+  <div class="row my-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-gold btn-md ml-5" (click)="cancelar();">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar();">Guardar</button>
+    </div>
+  </div>
+</div>

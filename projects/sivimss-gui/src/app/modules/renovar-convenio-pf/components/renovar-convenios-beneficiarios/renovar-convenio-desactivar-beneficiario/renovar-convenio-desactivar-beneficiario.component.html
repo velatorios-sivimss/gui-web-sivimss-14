@@ -1,0 +1,118 @@
+<div class="mt-7">
+  <p-accordion styleClass="sivimss-accordion accordion-custom-pf">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <span>Beneficiario {{numBeneficiario}}</span>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <form class="mt-5" [formGroup]="desactivarBeneficiarioForm">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="nombre">Nombre:</label>
+              <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre">
+              <span class="campo-obligatorio"
+                *ngIf="dbf.nombre?.errors?.required && (dbf.nombre?.dirty || dbf.nombre?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="primerApellido">Primer apellido:</label>
+              <input id="primerApellido" class="form-control" formControlName="primerApellido"
+                placeholder="Ingresa el primer apellido">
+              <span class="campo-obligatorio"
+                *ngIf="dbf.primerApellido?.errors?.required && (dbf.primerApellido?.dirty || dbf.primerApellido?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="segundoApellido">Segundo apellido:</label>
+              <input id="segundoApellido" class="form-control" formControlName="segundoApellido"
+                placeholder="Ingresa el primer apellido">
+              <span class="campo-obligatorio"
+                *ngIf="dbf.segundoApellido?.errors?.required && (dbf.segundoApellido?.dirty || dbf.segundoApellido?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="edad">Edad:</label>
+              <input id="edad" class="form-control" formControlName="edad" placeholder="Ingresa la edad">
+              <span class="campo-obligatorio"
+                *ngIf="dbf.edad?.errors?.required && (dbf.edad?.dirty || dbf.edad?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="parentesco">Parentesco:</label>
+              <p-dropdown id="parentesco" class="form-control" formControlName="parentesco"
+                placeholder="Selecciona parentesco" [options]="catParentesco"></p-dropdown>
+              <span class="campo-obligatorio"
+                *ngIf="dbf.parentesco?.errors?.required && (dbf.parentesco?.dirty || dbf.parentesco?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="curp">Curp:</label>
+              <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa la curp">
+              <span class="campo-obligatorio"
+                *ngIf="dbf.curp?.errors?.required && (dbf.curp?.dirty || dbf.curp?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="rfc">RFC:</label>
+              <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el rfc">
+              <span class="campo-obligatorio" *ngIf="dbf.rfc?.errors?.required && (dbf.rfc?.dirty || dbf.rfc?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="actaNacimiento">Acta de nacimiento:</label>
+              <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento"
+                placeholder="Ingresa acta nacimiento ">
+              <span class="campo-obligatorio"
+                *ngIf="dbf.actaNacimiento?.errors?.required && (dbf.actaNacimiento?.dirty || dbf.actaNacimiento?.touched)">
+                Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="email">Correo electrónico:</label>
+              <input id="email" class="form-control" formControlName="email" placeholder="Ingresa el correo">
+              <span class="campo-obligatorio"
+                *ngIf="dbf.email?.errors?.required && (dbf.email?.dirty || dbf.email?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="telefono">Teléfono:</label>
+              <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono">
+              <span class="campo-obligatorio"
+                *ngIf="dbf.telefono?.errors?.required && (dbf.telefono?.dirty || dbf.telefono?.touched)">
+                Campo obligatorio</span>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-12">
+              <span>*Campos obligatorios</span>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+    </p-accordionTab>
+  </p-accordion>
+
+  <ng-container>
+    <div class="flex justify-content-center">
+      <div class="mt-4 col-md-7">
+        ¿Estás seguro de Desactivar a este Beneficiario?
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="row my-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-gold btn-md ml-5" (click)="cancelar();">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar();">Guardar</button>
+    </div>
+  </div>
+</div>
