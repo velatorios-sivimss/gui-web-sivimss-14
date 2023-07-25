@@ -29,14 +29,14 @@
     </form>
 
     <div class="row my-6" *ngIf="mode === 'listado'">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="nuevo();">Nuevo</button>
+      <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','ALTA']">
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="nuevo();">Nuevo</button>
       </div>
     </div>
 
     <div class="mt-7" *ngIf="mode === 'listado'">
       <p-accordion styleClass="sivimss-accordion accordion-custom-pf" #accordion [activeIndex]="activeIndex"
-        (activeIndexChange)="activeIndexChange($event)">
+        *appValidaRol="['RENOVAR_CONVENIO_PF','CONSULTA']" (activeIndexChange)="activeIndexChange($event)">
         <p-accordionTab *ngFor="let beneficiario of beneficiarios; index as i">
           <ng-template pTemplate="header">
             <p-checkbox class="check-beneficiario" styleClass="mr-3" (click)="handleActiveBeneficiario(beneficiario)"
@@ -70,7 +70,7 @@
 </ng-container>
 
 <div class="row my-6" *ngIf="mode === 'listado' && beneficiarios.length > 0">
-  <div class="col-md-12 flex justify-content-end">
+  <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','MODIFICAR']">
     <button type="button" class="btn btn-default btn-md ml-5" (click)="desactivar();">Desactivar</button>
     <button type="button" class="btn btn-primary btn-md ml-5" (click)="modificar();">Modificar</button>
   </div>

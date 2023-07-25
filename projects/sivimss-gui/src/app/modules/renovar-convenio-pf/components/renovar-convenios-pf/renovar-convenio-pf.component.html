@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <div class="row mt-6">
+      <div class="row mt-6" *appValidaRol="['RENOVAR_CONVENIO_PF','CONSULTA']">
         <div class="col-md-12 flex justify-content-end">
           <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
           <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
@@ -370,78 +370,20 @@
             </div>
           </div>
         </div>
-        <!-- <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaActaNacimiento" formControlName="copiaActaNacimiento" styleClass="mr-3"
-                [binary]="true"></p-checkbox>
-              <label [for]="'copiaActaNacimiento'" class="control-label">
-                <strong>Copia acta de nacimiento del beneficiario si es menor de edad</strong>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaINE" formControlName="copiaINE" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaINE'" class="control-label"><strong>Copias del INE del beneficiario si es mayor de
-                  edad</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="comprobanteEstudios" formControlName="comprobanteEstudios" styleClass="mr-3"
-                [binary]="true"></p-checkbox>
-              <label [for]="'comprobanteEstudios'" class="control-label">
-                <strong>Comprobante de estudios del beneficiario si es mayor de 18 años y estudia</strong>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="actaMatrimonio" formControlName="actaMatrimonio" styleClass="mr-3"
-                [binary]="true"></p-checkbox>
-              <label [for]="'actaMatrimonio'" class="control-label"><strong>Acta de matrimonio (Beneficiario
-                  Espos@)</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="declaracionConcubinato" formControlName="declaracionConcubinato" styleClass="mr-3"
-                [binary]="true"></p-checkbox>
-              <label [for]="'declaracionConcubinato'" class="control-label"><strong>Declaración de concubinato
-                </strong></label>
-            </div>
-          </div>
-        </div> -->
       </app-table-panel>
     </form>
-    <!-- <div class="row">
-      <div class="col-md-12">
-        <span class="etiqueta-base">
-          *Campos obligatorios
-        </span>
-      </div>
-    </div> -->
   </div>
 </ng-container>
 
 <div class="row my-6" *ngIf="indice === 0 && convenio && habilitarRenovacion">
-  <div class="col-md-12 flex justify-content-end">
+  <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','MODIFICAR']">
     <button type="button" class="btn btn-danger btn-md ml-5" (click)="siguiente()">Cancelar</button>
     <button type="button" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
   </div>
 </div>
 
 <div class="row my-6" *ngIf="indice === 1 && convenio">
-  <div class="col-md-12 flex justify-content-end">
+  <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','MODIFICAR']">
     <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar()">Generar renovación</button>
   </div>
 </div>
