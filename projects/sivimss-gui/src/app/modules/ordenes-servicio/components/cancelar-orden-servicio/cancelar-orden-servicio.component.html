@@ -171,7 +171,7 @@
             <textarea  id="motivoCancelacion" lettersOnly (keyup.space)="quitarEspacioInicio()" formControlName="motivoCancelacion" class="form-control" rows="4"
                       placeholder="Inserta el motivo de la cancelación"></textarea>
             <span class="campo-obligatorio"
-                  *ngIf="f.motivoCancelacion?.errors?.required && (f.motivoCancelacion?.dirty || f.motivoCancelacion?.touched)">Campo obligatorio</span>
+                  *ngIf="f.motivoCancelacion?.errors?.required && (f.motivoCancelacion?.dirty || f.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mt-3">

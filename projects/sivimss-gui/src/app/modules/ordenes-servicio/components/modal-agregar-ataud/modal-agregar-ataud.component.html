@@ -5,8 +5,7 @@
       <p-dropdown #dd id="ataud" class="form-control" formControlName="ataud" placeholder="Selecciona ataúd"
         appendTo="body" [options]="ataudes" (onChange)="selecionarAtaud(dd)"
         [filter]="true" filterBy="label" ></p-dropdown>
-      <span class="campo-obligatorio" *ngIf="f.ataud?.errors?.required && (f.ataud?.dirty || f.ataud?.touched)">Campo
-        obligatorio</span>
+      <span class="campo-obligatorio" *ngIf="f.ataud?.errors?.required && (f.ataud?.dirty || f.ataud?.touched)">Este campo es obligatorio *.</span>
     </div>
 
   </div>

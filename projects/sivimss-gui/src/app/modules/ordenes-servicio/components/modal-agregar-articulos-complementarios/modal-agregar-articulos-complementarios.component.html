@@ -6,8 +6,7 @@
         placeholder="Selecciona un articulos" appendTo="body" [options]="articulos" (onChange)="selecionararticulos(dd)"
         [filter]="true" filterBy="label"></p-dropdown>
       <span class="campo-obligatorio"
-        *ngIf="f.articulos?.errors?.required && (f.articulos?.dirty || f.articulos?.touched)">Campo
-        obligatorio</span>
+        *ngIf="f.articulos?.errors?.required && (f.articulos?.dirty || f.articulos?.touched)">Este campo es obligatorio *.</span>
     </div>
 
     <div class="col-md-4">
@@ -15,8 +14,7 @@
       <input id="cantidad" type="text" class="form-control" formControlName="cantidad" placeholder="Ingresa la cantidad"
         maxlength="3" lettersOnly>
       <span class="campo-obligatorio"
-        *ngIf="f.cantidad?.errors?.required && (f.cantidad?.dirty || f.cantidad?.touched)">Campo
-        obligatorio</span>
+        *ngIf="f.cantidad?.errors?.required && (f.cantidad?.dirty || f.cantidad?.touched)">Este campo es obligatorio *.</span>
     </div>
 
 

@@ -6,16 +6,14 @@
       <p-dropdown id="contratante" class="form-control" formControlName="contratante"
                   placeholder="Selecciona tipo de orden" appendTo="body" [options]="contratantes" (onChange)="consultarBeneficiarios()"></p-dropdown>
       <span class="campo-obligatorio"
-            *ngIf="formulario.contratante?.errors?.required && (formulario.contratante?.dirty || formulario.contratante?.touched)">Campo
-          obligatorio</span>
+            *ngIf="formulario.contratante?.errors?.required && (formulario.contratante?.dirty || formulario.contratante?.touched)">Este campo es obligatorio *.</span>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="contratante">Beneficiario:</label>
       <p-dropdown id="beneficiario" class="form-control" formControlName="beneficiario"
                   placeholder="Selecciona tipo de orden" appendTo="body" [options]="beneficiarios"></p-dropdown>
       <span class="campo-obligatorio"
-            *ngIf="formulario.beneficiario?.errors?.required && (formulario.beneficiario?.dirty || formulario.beneficiario?.touched)">Campo
-          obligatorio</span>
+            *ngIf="formulario.beneficiario?.errors?.required && (formulario.beneficiario?.dirty || formulario.beneficiario?.touched)">Este campo es obligatorio *.</span>
     </div>
   </div>
   <div class="row mb-3">
