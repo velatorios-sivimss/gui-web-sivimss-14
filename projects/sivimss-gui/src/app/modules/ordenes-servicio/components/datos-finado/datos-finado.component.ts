@@ -849,6 +849,7 @@ export class DatosFinadoComponent implements OnInit {
 
   esObito(validacion: boolean): void {
     //curp nss matricula se bloquean
+    if(this.datosFinado.esParaExtremidad)return;
     let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
     if (validacion) {
