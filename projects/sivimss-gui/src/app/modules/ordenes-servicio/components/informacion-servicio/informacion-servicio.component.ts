@@ -455,6 +455,7 @@ export class InformacionServicioComponent implements OnInit {
       if (val) {
         this.idPanteon = val
         this.inhumacion.agregarPanteon.disable();
+        this.alertaService.mostrar(TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(99))
         return
       }
       this.inhumacion.agregarPanteon.setValue(false);

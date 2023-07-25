@@ -110,7 +110,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
 
     if (Number(estatus) == 1) {
       this.estatusValida = 1;
-      this.titulo = 'ACTUALIZAR ORDEN DE SERVICIO';
+      this.titulo = 'MODIFICAR ORDEN DE SERVICIO';
     } else {
       this.titulo = 'GENERAR ORDEN COMPLEMENTARIA';
     }
