@@ -139,6 +139,14 @@ export const idsModulos: DatoModulo = {
     ruta: '/pagos/generar-formato-pagare',
     icono: 'default-icon.svg'
   },
+  '136': {
+    ruta: '/pagos/realizar-pago',
+    icono: 'default-icon.svg'
+  },
+  '166': {
+    ruta: '/pagos/gestionar-pago',
+    icono: 'default-icon.svg'
+  },
 };
 
 
