@@ -725,6 +725,7 @@ export class ModificarDatosFinadoComponent
   async esExtremidad(validacion: boolean) {
     const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
 
+    this.datosFinado.esParaExtremidad.setValue(validacion);
     if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
       this.datosFinado.velatorioPrevision.disable();
       this.desabilitarTodo();
@@ -762,6 +763,7 @@ export class ModificarDatosFinadoComponent
     //curp nss matricula se bloquean
     let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
+    this.datosFinado.esObito.setValue(validacion);
     if (validacion) {
       this.datosFinado.matricula.disable();
       this.datosFinado.nss.disable();

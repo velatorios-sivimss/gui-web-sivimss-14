@@ -813,6 +813,7 @@ export class DatosFinadoComponent implements OnInit {
   esExtremidad(validacion: boolean): void {
     const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
 
+    this.datosFinado.esParaExtremidad.setValue(validacion);
     if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
       this.datosFinado.velatorioPrevision.disable();
       this.desabilitarTodo();
@@ -849,7 +850,8 @@ export class DatosFinadoComponent implements OnInit {
 
   esObito(validacion: boolean): void {
     //curp nss matricula se bloquean
-    if(this.datosFinado.esParaExtremidad)return;
+    if(this.datosFinado.esParaExtremidad.value)return;
+    this.datosFinado.esObito.setValue(validacion);
     let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
     if (validacion) {
