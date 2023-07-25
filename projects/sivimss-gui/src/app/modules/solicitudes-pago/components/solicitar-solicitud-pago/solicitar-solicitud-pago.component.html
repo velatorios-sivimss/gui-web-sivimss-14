@@ -84,7 +84,8 @@
     <div class="row mb-3" *ngIf="[3].includes(tipoSolicitud)">
       <div class="col-md-12">
         <label class="control-label" for="importeCol12">Importe Total<span class="req">*</span>:</label>
-        <input id="importeCol12" class="form-control" formControlName="importe" placeholder="Importe Total">
+        <input id="importeCol12" class="form-control" formControlName="importe" placeholder="Importe Total"
+               (change)="convertirImporte()" [maxlength]="7" numbersOnly>
       </div>
     </div>
     <div class="row mx-1 mb-3">
@@ -228,12 +229,12 @@
       </div>
       <div class="col-md-6 mb-3" *ngIf="[1].includes(tipoSolicitud)">
         <label class="control-label" for="importecol6">Importe Total<span class="req">*</span>:</label>
-        <input id="importecol6" class="form-control" formControlName="importe"
-               placeholder="Importe Total">
+        <input id="importecol6" class="form-control" formControlName="importe" (change)="convertirImporte()"
+               placeholder="Importe Total" [maxlength]="7" numbersOnly>
       </div>
       <div class="col-md-12 mb-3" *ngIf="[1].includes(tipoSolicitud)">
         <label class="control-label" for="cantidadLetraCol12">Cantidad con letra<span class="req">*</span>:</label>
-        <input id="cantidadLetraCol12" class="form-control" formControlName="cantidadLetra"
+        <input id="cantidadLetraCol12" class="form-control" formControlName="importeLetra"
                placeholder="Cantidad con letra">
       </div>
       <div class="col-md-12 mb-3" *ngIf="[5,6].includes(tipoSolicitud)">
@@ -267,7 +268,7 @@
       </div>
       <div class="col-md-6 mb-3" *ngIf="[5,6].includes(tipoSolicitud)">
         <label class="control-label" for="cantidadLetra2">Cantidad con letra<span class="req">*</span>:</label>
-        <input id="cantidadLetra2" class="form-control" formControlName="cantidadLetra"
+        <input id="cantidadLetra2" class="form-control" formControlName="importeLetra"
                placeholder="Cantidad con letra">
       </div>
       <div class="col-md-12 mb-3" *ngIf="[5].includes(tipoSolicitud)">

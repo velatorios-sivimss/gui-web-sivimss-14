@@ -11,6 +11,7 @@ import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/func
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
 import {HttpErrorResponse} from "@angular/common/http";
+import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 
 @Component({
   selector: 'app-solicitar-solicitud-pago',
@@ -81,7 +82,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       referenciaTD: [{value: null, disabled: true}],
       beneficiario: [{value: null, disabled: false}, [Validators.required]],
       concepto: [{value: null, disabled: false}, [Validators.required]],
-      cantidadLetra: [{value: null, disabled: true}],
+      importe: [{value: null, disabled: false}],
+      importeLetra: [{value: null, disabled: true}],
       observaciones: [{value: null, disabled: false}, [Validators.required]],
       numeroContrato: [{value: null, disabled: false}, [Validators.required]],
       banco: [{value: null, disabled: false}, [Validators.required]],
@@ -117,4 +119,11 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     return this.solicitudPagoForm.get('tipoSolicitud')?.value
   }
 
+  convertirImporte(): void {
+    const importe = this.solicitudPagoForm.get('importe')?.value;
+    console.log(importe)
+    const importeLetra: string = convertirNumeroPalabra(+importe);
+    console.log(importeLetra)
+    this.solicitudPagoForm.get('importeLetra')?.patchValue(importeLetra);
+  }
 }
