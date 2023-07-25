@@ -21,11 +21,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   solicitudPagoForm!: FormGroup;
 
-  incluyeFolioFecha: number[] = [2, 4];
-  incluyeUnidadOperativaAdmon: number[] = [2];
-
-  unidadSeleccionada!: number;
-
   solicitarPagoForm1!: FormGroup;
   solicitarPagoForm2!: FormGroup;
   solicitarPagoForm3!: FormGroup;
@@ -35,14 +30,10 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   opcion2: boolean = false;
   opcion3: boolean = false;
   opcion4: boolean = false;
-  opcion5: boolean = false;
-  ShowUnidadOpe: boolean = false;
-  ShowUnidadAdmi: boolean = false;
   datosSolicitudPago!: CrearSolicitudPago;
 
 
   fechaActual: Date = new Date();
-  opcionesSolicitud: number = 0;
   partidaPresupuestal: PartidaPresupuestal [] = [];
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
   catatalogoTipoSolicitud: TipoDropdown[] = [];
@@ -88,6 +79,21 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       folioFiscal: [{value: null, disabled: false}, [Validators.required]],
       fechaElaboracion: [{value: null, disabled: false}, [Validators.required]],
       unidadSeleccionada: [{value: null, disabled: false}, [Validators.required]],
+      referenciaUnidad: [{value: null, disabled: true}],
+      solicitadoPor: [{value: null, disabled: true}],
+      nombreDestinatario: [{value: null, disabled: false}, [Validators.required]],
+      nomRemitente: [{value: null, disabled: false}, [Validators.required]],
+      referenciaTD: [{value: null, disabled: true}],
+      beneficiario: [{value: null, disabled: false}, [Validators.required]],
+      concepto: [{value: null, disabled: false}, [Validators.required]],
+      cantidadLetra: [{value: null, disabled: true}],
+      observaciones: [{value: null, disabled: false}, [Validators.required]],
+      numeroContrato: [{value: null, disabled: false}, [Validators.required]],
+      banco: [{value: null, disabled: false}, [Validators.required]],
+      cuenta: [{value: null, disabled: false}, [Validators.required]],
+      claveBancaria: [{value: null, disabled: false}, [Validators.required]],
+      fechaInicial: [{value: null, disabled: false}, [Validators.required]],
+      fechaFinal: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
@@ -102,57 +108,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       importeTotal1: [{value: null, disabled: false}, [Validators.required]],
       cantidad1: [{value: null, disabled: false}, [Validators.required]],
       observ1: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(100)]],
-    });
-  }
-
-  inicializarSolicitarPagoForm234(): void {
-    this.solicitarPagoForm2 = this.formBulder.group({
-      folioGastos2: [{value: null, disabled: false}, [Validators.required]],
-      fechaElaboracion2: [{value: null, disabled: false}],
-      unidadOpe2: [{value: null, disabled: false}],
-      unidadAdmi2: [{value: null, disabled: false}, [Validators.required]],
-      refeUnidadOpe2: [{value: null, disabled: false}, [Validators.required]],
-      solicitadoOpePor2: [{value: null, disabled: false}, [Validators.required]],
-      refeUnidadAdmi2: [{value: null, disabled: false}, [Validators.required]],
-      solicitadoAdmiPor2: [{value: null, disabled: false}, [Validators.required]],
-      nombreDestinatario2: [{value: null, disabled: false}, [Validators.required]],
-      nomRemitente2: [{value: null, disabled: false}, [Validators.required]],
-      referenciaTD2: [{value: null, disabled: false}, [Validators.required]],
-      beneficiario2: [{value: null, disabled: false}, [Validators.required]],
-      concepto2: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(60)]],
-      cantidadLetra2: [{value: null, disabled: false}, [Validators.required]],
-      observ2: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(100)]],
-    });
-  }
-
-  inicializarSolicitarPagoForm5(): void {
-    this.solicitarPagoForm3 = this.formBulder.group({
-      folioGastos3: [{value: null, disabled: false}],
-      folioConsig3: [{value: null, disabled: false}],
-      unidadOpe3: [{value: null, disabled: false}, [Validators.required]],
-      fechaElaboracion3: [{value: null, disabled: false}, [Validators.required]],
-      nombreDestinatario3: [{value: null, disabled: false}, [Validators.required]],
-      nomRemitente3: [{value: null, disabled: false}, [Validators.required]],
-      referenciaTD3: [{value: null, disabled: false}, [Validators.required]],
-      beneficiario3: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(60)]],
-      concepto3: [{value: null, disabled: false}, [Validators.required]],
-      cantidadLetra3: [{value: null, disabled: false}, [Validators.required]],
-      observ3: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(100)]],
-    });
-  }
-
-  inicializarSolicitarPagoForm6(): void {
-    this.solicitarPagoForm4 = this.formBulder.group({
-      folioGastos4: [{value: null, disabled: false}],
-      folioConsig4: [{value: null, disabled: false}],
-      fechaElaboracion4: [{value: null, disabled: false}, [Validators.required]],
-      nombreDestinatario4: [{value: null, disabled: false}, [Validators.required]],
-      nomRemitente4: [{value: null, disabled: false}, [Validators.required]],
-      referenciaTD4: [{value: null, disabled: false}, [Validators.required]],
-      beneficiario4: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(60)]],
-      concepto4: [{value: null, disabled: false}, [Validators.required]],
-      cantidadLetra4: [{value: null, disabled: false}, [Validators.required]],
-      observ4: [{value: null, disabled: false}, [Validators.required, Validators.maxLength(100)]],
     });
   }
 
@@ -323,25 +278,12 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     return this.solicitarPagoForm1.controls;
   }
 
-  get fa2() {
-    return this.solicitarPagoForm2.controls;
-  }
-
-  unidad(tipo: number): void {
-    if (tipo) {
-      this.ShowUnidadAdmi = true;
-      this.ShowUnidadOpe = false;
-      this.fa2.unidadOpe.setValue(false);
-      return;
-    }
-    this.fa2.unidadAdmi.setValue(false);
-    this.ShowUnidadAdmi = false;
-    this.ShowUnidadOpe = true;
-
-  }
-
   cancelar(): void {
     this.referencia.close(false);
+  }
+
+  get tipoSolicitud(): number {
+    return this.solicitudPagoForm.get('tipoSolicitud')?.value
   }
 
 }
