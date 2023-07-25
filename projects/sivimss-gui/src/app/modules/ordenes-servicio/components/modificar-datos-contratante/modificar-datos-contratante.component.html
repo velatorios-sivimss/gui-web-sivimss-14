@@ -102,11 +102,11 @@
             *ngIf="datosContratante.lugarNacimiento?.errors?.required && (datosContratante.lugarNacimiento?.dirty || datosContratante.lugarNacimiento?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-3" *ngIf="datosContratante.nacionalidad.value == 2">
-          <label class="control-label" for="paisNacimiento">País de nacimiento<span class="req">*</span>:</label>
+          <label class="control-label" for="paisNacimiento">País de nacimiento:</label>
           <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
             placeholder="Ingresa país de nacimiento" [options]="pais" [filter]="true" filterBy="label"></p-dropdown>
-          <span class="campo-obligatorio"
-            *ngIf="datosContratante.paisNacimiento?.errors?.required && (datosContratante.paisNacimiento?.dirty || datosContratante.paisNacimiento?.touched)">Este campo es obligatorio *.</span>
+<!--          <span class="campo-obligatorio"-->
+<!--            *ngIf="datosContratante.paisNacimiento?.errors?.required && (datosContratante.paisNacimiento?.dirty || datosContratante.paisNacimiento?.touched)">Este campo es obligatorio *.</span>-->
         </div>
 
       </div>
@@ -121,7 +121,7 @@
         <div class="col-md-6">
           <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
           <input id="correoElectronico" type="text" class="form-control" formControlName="correoElectronico"
-            placeholder="Ingresa correo electrónico">
+            placeholder="Ingresa correo electrónico"  (keyup)="convertirAMinusculas()" (blur)="validarCorreoElectronico()">
           <span class="campo-obligatorio"
             *ngIf="datosContratante.correoElectronico?.errors?.required && (datosContratante.correoElectronico?.dirty || datosContratante.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           <span class="campo-obligatorio"
