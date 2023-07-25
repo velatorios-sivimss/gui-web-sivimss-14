@@ -266,8 +266,7 @@ export class ModificarDatosContratanteComponent
           {
             value: null,
             disabled: false,
-          },
-          [Validators.required],
+          }
         ],
         lugarNacimiento: [
           {

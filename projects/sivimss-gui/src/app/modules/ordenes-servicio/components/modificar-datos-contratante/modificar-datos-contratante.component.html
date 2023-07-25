@@ -88,11 +88,11 @@
             *ngIf="datosContratante.otroTipoSexo?.errors?.required && (datosContratante.otroTipoSexo?.dirty || datosContratante.otroTipoSexo?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-3">
-          <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
+          <label class="control-label" for="nacionalidad">Nacionalidad:</label>
           <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
             placeholder="Ingresa nacionalidad" [options]="nacionalidad" (onChange)="cambiarNacionalidad()" [filter]="true" filterBy="label"></p-dropdown>
-          <span class="campo-obligatorio"
-            *ngIf="datosContratante.nacionalidad?.errors?.required && (datosContratante.nacionalidad?.dirty || datosContratante.nacionalidad?.touched)">Este campo es obligatorio *.</span>
+<!--          <span class="campo-obligatorio"-->
+<!--            *ngIf="datosContratante.nacionalidad?.errors?.required && (datosContratante.nacionalidad?.dirty || datosContratante.nacionalidad?.touched)">Este campo es obligatorio *.</span>-->
         </div>
         <div class="col-md-3" *ngIf="datosContratante.nacionalidad.value == 1">
           <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
