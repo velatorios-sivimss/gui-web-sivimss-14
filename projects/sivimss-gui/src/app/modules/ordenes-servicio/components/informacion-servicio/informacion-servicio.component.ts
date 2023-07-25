@@ -85,6 +85,7 @@ export class InformacionServicioComponent implements OnInit {
   fechaActual= new Date();
   servicioExtremidad: boolean = false;
   confirmarGuardado: boolean = false;
+  confirmarPreOrden:boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,

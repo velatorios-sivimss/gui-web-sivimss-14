@@ -234,7 +234,7 @@
 </div>
 <div class="row my-4 flex align-items-center">
   <div class="col-md-3">
-    <button type="button" (click)="preorden()" [disabled]="form.invalid" class="btn btn-lg btn-primary">Guardar
+    <button type="button" (click)="confirmarPreOrden = true" [disabled]="form.invalid" class="btn btn-lg btn-primary">Guardar
       pre-orden</button>
   </div>
   <div class="col-md-9" *ngIf="ocultarFolioEstatus">
@@ -253,3 +253,20 @@
       orden de servicio</button>
   </div>
 </div>
+<p-dialog [(visible)]="confirmarPreOrden" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">
+        ¿Estás seguro de querer guardar como pre-orden?
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="confirmarPreOrden = false">Cancelar</button>
+      <button class="btn btn-primary btn-md" (click)="preorden()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

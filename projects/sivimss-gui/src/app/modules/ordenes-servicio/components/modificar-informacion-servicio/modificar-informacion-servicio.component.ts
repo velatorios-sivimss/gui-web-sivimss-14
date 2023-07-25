@@ -116,6 +116,8 @@ export class ModificarInformacionServicioComponent
   fechaActual = new Date();
   estatusUrl:number = 0;
   servicioExtremidad: boolean = false;
+  confirmarPreOrden:boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
