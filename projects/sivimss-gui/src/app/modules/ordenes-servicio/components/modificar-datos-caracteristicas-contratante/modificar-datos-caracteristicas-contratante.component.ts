@@ -135,6 +135,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
   valorPrevioDD: number = 0;
   confCambiarPaquete:boolean = false;
   costoServiciosPorPaquete!: number;
+  confQuitarPresupuesto: boolean = false;
 
 
   constructor(
@@ -210,7 +211,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   inicializarForm(datos: any): void {
-    debugger
     this.paqueteSeleccionado =
       datos.paqueteSeleccionado == null
         ? null
@@ -662,7 +662,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
           datos.bloquearRadioButton = false;
         }
       });
-      debugger
       let totalImporte =  respuesta.costoExtraKilometros + this.datosPaquetes[0].importe;
       let totalPaquete = respuesta.costoExtraKilometros + this.datosPaquetes[0].totalPaquete;
       /*Reiniciar los costos de tabla paquete*/
@@ -728,6 +727,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   quitarPresupuesto(): void {
+    this.confQuitarPresupuesto = false
     this.elementosEliminadosPresupuesto.push(this.valorFila);
     let nuevoArray = this.datosPresupuesto.filter(
       (item) => this.valorFila.fila !== item.fila

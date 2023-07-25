@@ -117,7 +117,8 @@
       <div class="col-md-6">
         <div class="flex align-items-center">
           <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon"
-            (onChange)="abrirModalAgregarPanteon()" [binary]="true" onCloseOnNavigation></p-checkbox>
+            (onChange)="abrirModalAgregarPanteon()" [binary]="true" onCloseOnNavigation
+          [disabled]="tipoOrden == 3 || servicioExtremidad"></p-checkbox>
           <label class="control-label" [for]="'agregarPanteon'">Agregar panteón</label>
         </div>
         <span class="campo-obligatorio"
@@ -248,7 +249,25 @@
   <div class="col-md-12 flex justify-content-end align-items-center">
     <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
     <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-    <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="form.invalid" (click)="generada()">Generar
+    <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="form.invalid" (click)="confirmarGuardado = true">Generar
       orden de servicio</button>
   </div>
 </div>
+
+<p-dialog [(visible)]="confirmarGuardado" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">
+        ¿Estás seguro de agregar este nuevo registro?
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="confirmarGuardado = false">Cancelar</button>
+      <button class="btn btn-primary btn-md" (click)="generada()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -590,10 +590,10 @@ export class ModificarDatosContratanteComponent
   }
 
   consultarCURP(): void {
-    this.limpiarFormularioConsultaRfcCurp('curp');
     if (!this.datosContratante.curp.value) {
       return;
     }
+    this.limpiarFormularioConsultaRfcCurp('curp');
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
@@ -728,10 +728,10 @@ export class ModificarDatosContratanteComponent
   }
 
   consultarRFC(): void {
-    this.limpiarFormularioConsultaRfcCurp('rfc');
     if (!this.datosContratante.rfc.value) {
       return;
     }
+    this.limpiarFormularioConsultaRfcCurp('rfc');
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)

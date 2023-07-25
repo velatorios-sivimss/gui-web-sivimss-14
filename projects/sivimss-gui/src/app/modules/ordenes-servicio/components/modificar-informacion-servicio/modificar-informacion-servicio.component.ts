@@ -115,6 +115,7 @@ export class ModificarInformacionServicioComponent
   tipoOrden: number = 0;
   fechaActual = new Date();
   estatusUrl:number = 0;
+  servicioExtremidad: boolean = false;
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -305,6 +306,7 @@ export class ModificarInformacionServicioComponent
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
     if(Number(this.altaODS.finado.idTipoOrden) < 3){

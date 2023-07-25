@@ -130,7 +130,8 @@
         <div class="col-md-6">
           <div class="flex align-items-center">
             <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon"
-              (onChange)="abrirModalAgregarPanteon()" [binary]="true" onCloseOnNavigation></p-checkbox>
+              (onChange)="abrirModalAgregarPanteon()" [binary]="true" onCloseOnNavigation
+              [disabled]="tipoOrden == 3"></p-checkbox>
             <label class="control-label" [for]="'agregarPanteon'">Agregar panteón</label>
           </div>
           <span class="campo-obligatorio"

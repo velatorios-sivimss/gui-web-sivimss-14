@@ -346,10 +346,10 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   consultarCURP(): void {
-    this.limpiarFormularioConsultaRfcCurp("curp")
     if (!this.datosContratante.curp.value) {
       return;
     }
+    this.limpiarFormularioConsultaRfcCurp("curp")
     if (this.datosContratante.curp?.errors?.pattern) {
       this.alertaService.mostrar(
         TipoAlerta.Precaucion,
@@ -463,10 +463,10 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   consultarRFC(): void {
-    this.limpiarFormularioConsultaRfcCurp("rfc")
     if (!this.datosContratante.rfc.value) {
       return;
     }
+    this.limpiarFormularioConsultaRfcCurp("rfc")
     if (this.datosContratante.rfc?.errors?.pattern) {
       this.alertaService.mostrar(
         TipoAlerta.Precaucion,
