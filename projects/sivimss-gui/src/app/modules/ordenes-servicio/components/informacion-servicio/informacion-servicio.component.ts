@@ -693,10 +693,17 @@ export class InformacionServicioComponent implements OnInit {
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(respuesta.mensaje)
             );
-          this.alertaService.mostrar(
-            TipoAlerta.Exito,
-            ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
-          );
+          if(this.altaODS.idEstatus == 2){
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
+            );
+          }else{
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+            );
+          }
           this.router.navigate(["ordenes-de-servicio"]);
         },
         (error: HttpErrorResponse) => {
