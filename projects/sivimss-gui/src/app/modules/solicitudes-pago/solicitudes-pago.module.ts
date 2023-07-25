@@ -35,6 +35,7 @@ import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directi
 import {PanelModule} from "primeng/panel";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {TransformarNumeroPalabraPipe} from "./pipes/transformar-numero-palabra.pipe";
+import {SinCaracteresEspecialesDirective} from "./directives/sin-caracteres-especiales.directive";
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import {TransformarNumeroPalabraPipe} from "./pipes/transformar-numero-palabra.p
     VerDetalleSolicitudPagoComponent,
     AceptarSolicitudPagoComponent,
     RegexFolioFiscalDirective,
+    SinCaracteresEspecialesDirective,
     TransformarNumeroPalabraPipe
   ],
   imports: [
