@@ -11,21 +11,21 @@ import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import { FiltrosSolicitudPago } from '../../models/filtros-solicitud-pagos.interface';
+import {FiltrosSolicitudPago} from '../../models/filtros-solicitud-pagos.interface';
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
-import { CATALOGOS_DUMMIES, CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
-import { SolicitarSolicitudPagoComponent } from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
-import { CancelarSolicitudPagoComponent } from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
-import { RechazarSolicitudPagoComponent } from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
-import { VerDetalleSolicitudPagoComponent } from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
+import {CATALOGOS_DUMMIES, CATALOGO_NIVEL} from '../../../articulos/constants/dummies';
+import {SolicitarSolicitudPagoComponent} from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
+import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
+import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
+import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
 
@@ -86,7 +86,7 @@ export class SolicitudesPagoComponent implements OnInit {
   private cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoEjercicios = respuesta[this.POSICION_CATALOGO_EJERCICIOS].datos;
-    this.catatalogoTipoSolicitudes =  mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD].datos, "desTipoSolicitud", "tipoSolicitud");
+    this.catatalogoTipoSolicitudes = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD].datos, "desTipoSolicitud", "tipoSolicitud");
     this.obtenerVelatorios();
   }
 
@@ -147,7 +147,7 @@ export class SolicitudesPagoComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
-  
+
   abrirDetalleSolicitudPago(solicitudPagoSeleccionado: ListadoSolicitudPago): void {
     this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
     this.cancelarRef = this.dialogService.open(
@@ -176,6 +176,7 @@ export class SolicitudesPagoComponent implements OnInit {
       {
         header: 'Cancelar solicitud de pago',
         width: '880px',
+        data: this.solicitudPagoSeleccionado
       },
     )
   }
@@ -186,6 +187,7 @@ export class SolicitudesPagoComponent implements OnInit {
       {
         header: 'Rechazar solicitud de pago',
         width: '880px',
+        data: this.solicitudPagoSeleccionado
       },
     )
   }
@@ -214,13 +216,13 @@ export class SolicitudesPagoComponent implements OnInit {
 
   crearSolicitudFiltros(): FiltrosSolicitudPago {
     const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
-    const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ?  moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
-    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ?  this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
+    const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
+    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
     return {
       idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
       idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
       idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
-      fecIniODS:  fechaInicial,
+      fecIniODS: fechaInicial,
       fecFinODS: fechaFinal,
       ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
       idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
