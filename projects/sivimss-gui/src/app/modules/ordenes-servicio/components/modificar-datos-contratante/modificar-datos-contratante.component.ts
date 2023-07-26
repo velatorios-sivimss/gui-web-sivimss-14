@@ -181,9 +181,6 @@ export class ModificarDatosContratanteComponent
     this.gestionarEtapasService.datosConsultaODS$
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
-
-    this.inicializarEtapas(Number(estatus));
-
   }
 
 

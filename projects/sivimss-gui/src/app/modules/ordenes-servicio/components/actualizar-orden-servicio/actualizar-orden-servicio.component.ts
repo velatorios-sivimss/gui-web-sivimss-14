@@ -29,64 +29,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
   titulo: string = '';
 
   subscription!: Subscription;
-  // etapas: Etapa[] = [
-  //   {
-  //     idEtapa: 0,
-  //     estado: EtapaEstado.Activo,
-  //     textoInterior: '1',
-  //     textoExterior: 'Datos del contratante',
-  //     lineaIzquierda: {
-  //       mostrar: false,
-  //       estilo: "solid"
-  //     },
-  //     lineaDerecha: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     }
-  //   },
-  //   {
-  //     idEtapa: 1,
-  //     estado: EtapaEstado.Inactivo,
-  //     textoInterior: '2',
-  //     textoExterior: 'Datos del finado',
-  //     lineaIzquierda: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     },
-  //     lineaDerecha: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     }
-  //   },
-  //   {
-  //     idEtapa: 2,
-  //     estado: EtapaEstado.Inactivo,
-  //     textoInterior: '3',
-  //     textoExterior: 'Características del presupuesto',
-  //     lineaIzquierda: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     },
-  //     lineaDerecha: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     }
-  //   },
-  //   {
-  //     idEtapa: 3,
-  //     estado: EtapaEstado.Inactivo,
-  //     textoInterior: '4',
-  //     textoExterior: 'Información del servicio',
-  //     lineaIzquierda: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     },
-  //     lineaDerecha: {
-  //       mostrar: false,
-  //       estilo: "solid"
-  //     }
-  //   }
-  // ];
+  etapas: Etapa[] = [];
 
   idEtapaSeleccionada: number = 0;
   estatusValida: number = 0;
@@ -104,8 +47,6 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.gestionarEtapasService.etapas$.next(this.etapas);
-    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
 
     if (Number(estatus) == 1) {
@@ -114,6 +55,66 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
     } else {
       this.titulo = 'GENERAR ORDEN COMPLEMENTARIA';
     }
+
+    this.etapas = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Completado,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: "solid"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Completado,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: "dashed"
+        }
+      },
+      {
+        idEtapa: 2,
+        estado: (Number(estatus) == 1) ? EtapaEstado.Completado : EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: "dashed"
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: (Number(estatus) == 1) ? "dashed" : "solid"
+        }
+      },
+      {
+        idEtapa: 3,
+        estado: (Number(estatus) == 1) ? EtapaEstado.Completado : EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: (Number(estatus) == 1) ? "dashed" : "solid"
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: (Number(estatus) == 1) ? "dashed" : "solid"
+        }
+      }
+    ];
+    this.gestionarEtapasService.etapas$.next(this.etapas);
   }
 
   buscarDetalle(idODS: number) {
