@@ -109,7 +109,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validaTipoSolicitud(): void {
-    debugger
     const idTipo = this.solicitarPagoForm.get('tipoSolicitud')?.value;
 
     if (idTipo === 1) {

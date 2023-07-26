@@ -567,11 +567,11 @@ export class DatosFinadoComponent implements OnInit {
         textoInterior: '1',
         textoExterior: 'Datos del contratante',
         lineaIzquierda: {
-          mostrar: true,
-          estilo: 'solid',
+          mostrar: false,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
+          mostrar: true,
           estilo: 'dashed',
         },
       },
@@ -581,12 +581,12 @@ export class DatosFinadoComponent implements OnInit {
         textoInterior: '2',
         textoExterior: 'Datos del finado',
         lineaIzquierda: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
       },
       {
@@ -813,9 +813,11 @@ export class DatosFinadoComponent implements OnInit {
   esExtremidad(validacion: boolean): void {
     const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
 
+    this.datosFinado.esParaExtremidad.setValue(validacion);
     if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
       this.datosFinado.velatorioPrevision.disable();
       this.desabilitarTodo();
+      this.datosFinado.esObito.patchValue(null)
       this.datosFinado.esObito.disable();
 
       this.datosFinado.velatorioPrevision.disable();
@@ -849,6 +851,8 @@ export class DatosFinadoComponent implements OnInit {
 
   esObito(validacion: boolean): void {
     //curp nss matricula se bloquean
+    if(this.datosFinado.esParaExtremidad.value)return;
+    this.datosFinado.esObito.setValue(validacion);
     let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
     if (validacion) {

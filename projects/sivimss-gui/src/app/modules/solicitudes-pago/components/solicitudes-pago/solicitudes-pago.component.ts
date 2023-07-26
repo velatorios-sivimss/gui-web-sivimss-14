@@ -163,7 +163,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirPanel(event: MouseEvent, solicitudPagoSeleccionado: ListadoSolicitudPago): void {
-    debugger
     this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
     this.overlayPanel.toggle(event);
   }
@@ -182,7 +181,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalGenerarSolicitudPago(): void {
-    debugger
     this.cancelarRef = this.dialogService.open(
       SolicitarSolicitudPagoComponent,
       {
@@ -193,7 +191,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalCancelarSolicitudPago(): void {
-    debugger
     this.cancelarRef = this.dialogService.open(
       CancelarSolicitudPagoComponent,
       {
@@ -204,7 +201,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalRechazarSolicitudPago(): void {
-    debugger
     this.cancelarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
       {

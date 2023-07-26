@@ -181,8 +181,6 @@ export class ModificarDatosContratanteComponent
     this.gestionarEtapasService.datosConsultaODS$
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
-
-
   }
 
 
@@ -266,8 +264,7 @@ export class ModificarDatosContratanteComponent
           {
             value: null,
             disabled: false,
-          },
-          [Validators.required],
+          }
         ],
         lugarNacimiento: [
           {
@@ -301,7 +298,6 @@ export class ModificarDatosContratanteComponent
             value: null,
             disabled: false,
           },
-          [Validators.required],
         ],
       }),
       direccion: this.formBuilder.group({
@@ -590,10 +586,10 @@ export class ModificarDatosContratanteComponent
   }
 
   consultarCURP(): void {
-    this.limpiarFormularioConsultaRfcCurp('curp');
     if (!this.datosContratante.curp.value) {
       return;
     }
+    this.limpiarFormularioConsultaRfcCurp('curp');
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
@@ -728,10 +724,10 @@ export class ModificarDatosContratanteComponent
   }
 
   consultarRFC(): void {
-    this.limpiarFormularioConsultaRfcCurp('rfc');
     if (!this.datosContratante.rfc.value) {
       return;
     }
+    this.limpiarFormularioConsultaRfcCurp('rfc');
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)
@@ -1086,6 +1082,89 @@ export class ModificarDatosContratanteComponent
     };
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
   }
+
+  convertirAMinusculas(): void {
+    this.datosContratante.correoElectronico.setValue(
+      this.datosContratante.correoElectronico.value.toLowerCase()
+    );
+  }
+
+  validarCorreoElectronico(): void {
+    if (this.datosContratante.correoElectronico?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(50)
+      );
+    }
+  }
+
+
+  inicializarEtapas(estatusODS: number): void {
+    let etapaPrecarga: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Completado,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: 'dashed',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'dashed',
+        },
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Completado,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'dashed',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'dashed',
+        },
+      },
+      {
+        idEtapa: 2,
+        estado: estatusODS == 1 ? EtapaEstado.Completado : EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 3,
+        estado: estatusODS == 1 ? EtapaEstado.Completado : EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: 'solid',
+        },
+      },
+    ];
+
+    window.scrollTo(0, 0);
+    this.gestionarEtapasService.etapas$.next(etapaPrecarga);
+    this.seleccionarEtapa.emit(0);
+  }
+
+
 
   get datosContratante() {
     return (this.form.controls['datosContratante'] as FormGroup).controls;

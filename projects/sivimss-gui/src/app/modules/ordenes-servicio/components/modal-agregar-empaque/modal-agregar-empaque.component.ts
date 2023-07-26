@@ -91,6 +91,10 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
           });
 
           this.empaqueCompletos = arregloEmpaqueTemporal;
+          if(this.empaqueCompletos.length == 0){
+            const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
+            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+          }
           this.empaque = mapearArregloTipoDropdown(
             arregloEmpaqueTemporal,
             'nombreArticulo',

@@ -115,6 +115,9 @@ export class ModificarInformacionServicioComponent
   tipoOrden: number = 0;
   fechaActual = new Date();
   estatusUrl:number = 0;
+  servicioExtremidad: boolean = false;
+  confirmarPreOrden:boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -305,6 +308,7 @@ export class ModificarInformacionServicioComponent
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
     if(Number(this.altaODS.finado.idTipoOrden) < 3){
@@ -681,14 +685,25 @@ export class ModificarInformacionServicioComponent
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
           );
-          const ExitoMsg: string =
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-              parseInt(respuesta.mensaje)
+
+
+          if(this.altaODS.idEstatus == 2){
+            const ExitoMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                parseInt(respuesta.mensaje)
+              );
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
             );
-          this.alertaService.mostrar(
-            TipoAlerta.Exito,
-            ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
-          );
+          }else{
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+            );
+          }
+
+
           this.router.navigate(['ordenes-de-servicio']);
         },
         (error: HttpErrorResponse) => {

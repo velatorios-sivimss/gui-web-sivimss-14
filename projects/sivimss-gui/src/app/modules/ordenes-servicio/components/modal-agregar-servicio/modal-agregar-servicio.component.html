@@ -9,7 +9,7 @@
           appendTo="body" [options]="servicios" [filter]="true" filterBy="label"
           (onChange)="seleccionaServicio(dd)"></p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="f.servicio?.errors?.required && (f.servicio?.dirty || f.servicio?.touched)">Campo obligatorio</span>
+          *ngIf="f.servicio?.errors?.required && (f.servicio?.dirty || f.servicio?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
@@ -17,7 +17,7 @@
           placeholder="Selecciona proveedor" [options]="listaproveedor" (onChange)="seleccionaProveedor(dd)"
           [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Campo obligatorio</span>
+          *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
 <!--     *ngIf="ocultarMapa"-->
@@ -32,7 +32,7 @@
           <i class="pi pi-times limpiar-input" (click)="limpiarInput('origen')"></i>
         </div>
         <span class="campo-obligatorio"
-          *ngIf="f.origen?.errors?.required && (f.origen?.dirty || f.origen?.touched)">Campo obligatorio</span>
+          *ngIf="f.origen?.errors?.required && (f.origen?.dirty || f.origen?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
 <!--    *ngIf="ocultarMapa"-->
@@ -47,7 +47,7 @@
           <i class="pi pi-times limpiar-input" (click)="limpiarInput('destino')"></i>
         </div>
         <span class="campo-obligatorio"
-          *ngIf="f.destino?.errors?.required && (f.destino?.dirty || f.destino?.touched)">Campo obligatorio</span>
+          *ngIf="f.destino?.errors?.required && (f.destino?.dirty || f.destino?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
 <!--    -->
@@ -59,12 +59,11 @@
           placeholder="kilometraje">
 
         <span class="campo-obligatorio"
-          *ngIf="f.kilometraje?.errors?.required && (f.kilometraje?.dirty || f.kilometraje?.touched)">Campo
-          obligatorio</span>
+          *ngIf="f.kilometraje?.errors?.required && (f.kilometraje?.dirty || f.kilometraje?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-12 flex justify-content-end" *ngIf="botonPresupuesto" [hidden]="ocultarMapa">
         <button type="button" class="btn btn-gold btn-md"  (click)="cerrarModal()">Cancelar</button>
-        <button type="button" class="ml-5 btn btn-primary btn-md" [hidden]="ocultarMapa" [disabled]="form.invalid" (click)="aceptarModal()">Aceptar
+          <button type="button" class="ml-5 btn btn-primary btn-md" [hidden]="ocultarMapa" [disabled]="form.invalid" (click)="aceptarModal()">Agregar
         </button>
       </div>
     </div>
@@ -72,7 +71,7 @@
     <div class="row mb-3" *ngIf="ocultarBtn">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-        <button type="button" class="ml-5 btn btn-primary btn-md" [disabled]="form.invalid" (click)="aceptarModal()">Aceptar
+          <button type="button" class="ml-5 btn btn-primary btn-md" [disabled]="form.invalid" (click)="aceptarModal()">Agregar
         </button>
       </div>
     </div>
@@ -138,7 +137,7 @@
   <div class="row">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-gold btn-md" (click)="mostrarSeccionCreacion = true">Cancelar</button>
-      <button type="button" class="ml-5 btn btn-primary btn-md" [disabled]="form.invalid" (click)="aceptarModal()">Aceptar 3</button>
+      <button type="button" class="ml-5 btn btn-primary btn-md" [disabled]="form.invalid" (click)="aceptarModal()">Agregar</button>
     </div>
   </div>
 </ng-template>
