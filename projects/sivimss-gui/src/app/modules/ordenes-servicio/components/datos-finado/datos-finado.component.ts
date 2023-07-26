@@ -694,7 +694,7 @@ export class DatosFinadoComponent implements OnInit {
     this.finado.procedenciaFinado = null;
     this.finado.idTipoPension = null;
     this.finado.idContratoPrevision = this.idContratoPrevision;
-    this.finado.idVelatorioContratoPrevision = null;
+    this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
     this.finado.cp = null;
     this.finado.idPersona = this.idPersona;
     this.altaODS.idContratantePf = this.idContratante;
@@ -1030,6 +1030,7 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.segundoApellido.setValue(persona.finado.segundoApellido);
       this.datosFinado.fechaNacimiento.setValue(fecha);
       this.datosFinado.sexo.setValue(persona.finado?.sexo);
+      this.datosFinado.velatorioPrevision.setValue(persona.nombreVelatorio);
       if (Number(persona.finado.idPais) == 119) {
         this.datosFinado.nacionalidad.setValue(1);
         this.datosFinado.lugarNacimiento.setValue(Number(persona.finado.idEstado));
