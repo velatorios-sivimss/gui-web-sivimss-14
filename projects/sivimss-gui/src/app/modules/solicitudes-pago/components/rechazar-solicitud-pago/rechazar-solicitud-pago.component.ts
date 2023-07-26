@@ -61,8 +61,7 @@ export class RechazarSolicitudPagoComponent implements OnInit {
     ).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'La solicitud de pago ha sido rechazada exitosamente.');
-        this.referencia.close();
-        this.actualizarPagina();
+        this.referencia.close(true);
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -85,13 +84,6 @@ export class RechazarSolicitudPagoComponent implements OnInit {
 
   get ref() {
     return this.rechazarPagoForm.controls;
-  }
-
-  actualizarPagina(): void {
-    const currentUrl: string = this.router.url;
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-      void this.router.navigate([currentUrl]);
-    });
   }
 
 }

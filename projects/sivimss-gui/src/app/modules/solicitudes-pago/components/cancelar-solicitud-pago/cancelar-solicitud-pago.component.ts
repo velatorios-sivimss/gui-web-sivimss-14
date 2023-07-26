@@ -56,13 +56,12 @@ export class CancelarSolicitudPagoComponent implements OnInit {
   confirmarCancelacionPago(): void {
     this.cargadorService.activar();
     const solicitud: SolicitudCancelacion = this.generarSolicitud();
-    this.solicitudesPagoService.rechazarSolicitudPago(solicitud).pipe(
+    this.solicitudesPagoService.cancelarSolicitudPago(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Tu solicitud de pago ha sido cancelada exitosamente.');
-        this.referencia.close();
-        this.actualizarPagina();
+        this.referencia.close(true);
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -78,7 +77,7 @@ export class CancelarSolicitudPagoComponent implements OnInit {
   generarSolicitud(): SolicitudCancelacion {
     return {
       idSolicitud: this.pagoSeleccionado.idSolicitud,
-      motivo: this.cancelarPagoForm.get('motivoRechazo')?.value
+      motivo: this.cancelarPagoForm.get('motivo')?.value
     }
   }
 
@@ -86,11 +85,5 @@ export class CancelarSolicitudPagoComponent implements OnInit {
     return this.cancelarPagoForm.controls;
   }
 
-  actualizarPagina(): void {
-    const currentUrl: string = this.router.url;
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-      void this.router.navigate([currentUrl]);
-    });
-  }
 
 }
