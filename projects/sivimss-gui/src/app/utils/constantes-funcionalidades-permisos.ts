@@ -10,6 +10,7 @@ export const funcionalidades: { [valor: string]: string } = {
   'CONTRATANTES': '11',
   'GENERAR_RECIBO_PAGO': '23',
   'CONSULTAR_ODS': '24',
+  'RENOVAR_CONVENIO_PF': '29',
   'CAPILLA_RESERVACION': '31',
   'REALIZAR_PAGO': '36',
   'MANTENIMIENTO_VEHICULAR': '40',

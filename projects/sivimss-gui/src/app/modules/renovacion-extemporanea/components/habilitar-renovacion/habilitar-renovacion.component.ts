@@ -29,47 +29,47 @@ export class HabilitarRenovacionComponent implements OnInit {
     public dialogService: DialogService,
     private alertaService: AlertaService) { }
 
-ngOnInit(): void {
-//Escenario selección ícono 'ojo' detalle o cambio estatus vista rápida
-this.inicializarAgregarServicioForm();
-if(this.config?.data){
-this.convenioSeleccionado = this.config.data.servicio;
-this.origen = this.config.data.origen;
-}
-}
+  ngOnInit(): void {
+    //Escenario selección ícono 'ojo' detalle o cambio estatus vista rápida
+    this.inicializarAgregarServicioForm();
+    if (this.config?.data) {
+      this.convenioSeleccionado = this.config.data.servicio;
+      this.origen = this.config.data.origen;
+    }
+  }
 
 
-inicializarAgregarServicioForm():void{
+  inicializarAgregarServicioForm(): void {
     this.habilitarRenobacionForm = this.formBuilder.group({
-      justificacion: [{value:null,disabled:false},[Validators.required]],
+      justificacion: [{ value: null, disabled: false }, [Validators.required]],
     });
-}
+  }
 
-aceptar():void {
+  aceptar(): void {
     this.ref.close();
-}
+  }
 
-continuarHabilitacion(){
-  this.abrirHabilitar = true;
-  console.log('habilitarrenobacion');
-}
+  continuarHabilitacion() {
+    this.abrirHabilitar = true;
+    console.log('habilitarrenobacion');
+  }
 
-regresar(): void{
-  this.confirmacionAceptar.emit({estatus:true,origen:"regresar"});
-}
+  regresar(): void {
+    this.confirmacionAceptar.emit({ estatus: true, origen: "regresar" });
+  }
 
-cerrar(): void {
-  this.ref.close();
-}
+  cerrar(): void {
+    this.ref.close();
+  }
 
-realizarCombenio(){
-       this.alertaService.mostrar(TipoAlerta.Exito, 'Renovación habilitada correctamente');
-      this.ref.close();
-    this.confirmacionAceptar.emit({estatus:true,origen:this.origen});
-}
+  realizarCombenio() {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Renovación habilitada correctamente');
+    this.ref.close();
+    this.confirmacionAceptar.emit({ estatus: true, origen: this.origen });
+  }
 
-get hrf(){
-  return this.habilitarRenobacionForm?.controls;
-}
+  get hrf() {
+    return this.habilitarRenobacionForm?.controls;
+  }
 
 }
