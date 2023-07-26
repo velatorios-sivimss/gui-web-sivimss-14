@@ -40,7 +40,8 @@
       </div>
       <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
         <label class="control-label" for="importe">Importe Total<span class="req">*</span>:</label>
-        <input id="importe" class="form-control" formControlName="importe" placeholder="Importe Total">
+        <input id="importe" class="form-control" formControlName="importe" placeholder="Importe Total"
+               (change)="convertirImporte()" [maxlength]="7" numbersOnly>
       </div>
     </div>
     <div class="row mx-1 mb-3" *ngIf="[2,4].includes(tipoSolicitud)">
@@ -139,12 +140,12 @@
         <label class="control-label" for="nombreDestinatario">Nombre del destinatario (Para)<span
           class="req">*</span>:</label>
         <input id="nombreDestinatario" class="form-control" formControlName="nombreDestinatario"
-               placeholder="Ingresar nombre del destinatario" [maxlength]="50">
+               placeholder="Ingresar nombre del destinatario" [maxlength]="50" appSinCaracteresEspeciales>
       </div>
       <div class="col-md-6 mb-3">
         <label class="control-label" for="nomRemitente">Nombre del remitente (De)<span class="req">*</span>:</label>
         <input id="nomRemitente" class="form-control" formControlName="nomRemitente"
-               placeholder="Ingresar nombre del remitente" [maxlength]="50">
+               placeholder="Ingresar nombre del remitente" [maxlength]="50" appSinCaracteresEspeciales>
       </div>
       <div class="col-md-6 mb-3">
         <label class="control-label" for="referenciaTD">Referencia DT<span class="req">*</span>:</label>
@@ -186,7 +187,7 @@
       <div class="col-md-12 mb-3" *ngIf="[1].includes(tipoSolicitud)">
         <label class="control-label" for="beneficiarioCol12">Beneficiario<span class="req">*</span>:</label>
         <input id="beneficiarioCol12" class="form-control" formControlName="beneficiario"
-               placeholder="Ingresar beneficiario" [maxlength]="80">
+               placeholder="Ingresar beneficiario" [maxlength]="80" appSinCaracteresEspeciales>
       </div>
       <div class="col-md-12 mb-3" *ngIf="[1,4].includes(tipoSolicitud)">
         <p-panel>
@@ -215,7 +216,7 @@
       <div class="col-md-6 mb-3" *ngIf="[1,2,3,4].includes(tipoSolicitud)">
         <label class="control-label" for="concepto">Concepto<span class="req">*</span>:</label>
         <input id="concepto" class="form-control" formControlName="concepto"
-               placeholder="Ingresar concepto" [maxlength]="60">
+               placeholder="Ingresar concepto" [maxlength]="60" appSinCaracteresEspeciales>
       </div>
       <div class="col-md-6 mb-3" *ngIf="[2,3,4].includes(tipoSolicitud)">
         <label class="control-label" for="cantidadLetra">Cantidad con letra<span class="req">*</span>:</label>
@@ -301,7 +302,7 @@
       <div class="col-md-12 mb-3">
         <label class="control-label" for="observaciones">Observaciones<span class="req">*</span>:</label>
         <input id="observaciones" class="form-control" formControlName="observaciones"
-               placeholder="Ingresar observaciones" [maxlength]="100">
+               placeholder="Ingresar observaciones" [maxlength]="100" appSinCaracteresEspeciales>
       </div>
     </div>
   </ng-container>
