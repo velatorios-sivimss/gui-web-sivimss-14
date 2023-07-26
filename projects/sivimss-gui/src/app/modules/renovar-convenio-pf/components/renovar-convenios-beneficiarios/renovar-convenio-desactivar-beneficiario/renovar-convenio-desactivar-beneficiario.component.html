@@ -49,7 +49,7 @@
                 Campo obligatorio</span>
             </div>
             <div class="col-md-4">
-              <label class="control-label" for="curp">Curp:</label>
+              <label class="control-label" for="curp">CURP:</label>
               <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa la curp">
               <span class="campo-obligatorio"
                 *ngIf="dbf.curp?.errors?.required && (dbf.curp?.dirty || dbf.curp?.touched)">
@@ -96,7 +96,7 @@
               <div class="flex">
                 <p-checkbox inputId="ineBeneficiario" formControlName="ineBeneficiario" styleClass="mr-3"
                   [binary]="true"></p-checkbox>
-                <label [for]="'ineBeneficiario'" class="control-label"><strong>Copias del INE del beneficiario si es
+                <label [for]="'ineBeneficiario'" class="control-label"><strong>Copia del INE del beneficiario si es
                     mayor de
                     edad</strong></label>
               </div>
@@ -146,7 +146,7 @@
 
   <ng-container>
     <div class="flex justify-content-center">
-      <div class="mt-4 col-md-7">
+      <div class="mt-4 col-md-7 flex justify-content-center align-items-cente">
         ¿Estás seguro de Desactivar a este Beneficiario?
       </div>
     </div>

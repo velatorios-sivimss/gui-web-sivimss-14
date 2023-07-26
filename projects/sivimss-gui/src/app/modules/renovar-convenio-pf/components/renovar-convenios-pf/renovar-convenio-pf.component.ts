@@ -246,7 +246,7 @@ export class RenovarConvenioPfComponent implements OnInit {
       datosBancarios: this.convenio?.datosBancarios,
       idConvenioPf: this.convenio?.idConvenio,
       folio: this.convenio?.folio,
-      vigencia: moment().format('DD-MM-YYYY'),
+      vigencia: this.convenio?.fecVigencia,
       indRenovacion: this.convenio?.tipoConvenioDesc === 'ConvenioAnterior' ? 1 : 0,
     }
   }

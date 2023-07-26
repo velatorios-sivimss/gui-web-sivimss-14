@@ -31,6 +31,7 @@ import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../usuarios/services/usuario.service';
+import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { UsuarioService } from '../usuarios/services/usuario.service';
     UtileriaModule,
     ConfirmDialogModule,
     DialogModule,
+    ValidaRolModule,
   ],
   providers: [
     RenovarConvenioPfService,

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { Beneficiario } from '../../../models/convenio.interface';
+import { Beneficiario, BeneficiarioSeleccionado } from '../../../models/convenio.interface';
 
 @Component({
   selector: 'app-renovar-convenio-desactivar-beneficiario',
@@ -10,7 +10,7 @@ import { Beneficiario } from '../../../models/convenio.interface';
   styleUrls: ['./renovar-convenio-desactivar-beneficiario.component.scss']
 })
 export class RenovarConvenioDesactivarBeneficiarioComponent implements OnInit {
-  @Input() beneficiario!: Beneficiario;
+  @Input() beneficiarioSeleccionado!: BeneficiarioSeleccionado;
 
   @Input() numBeneficiario: number = 0;
 
@@ -52,7 +52,14 @@ export class RenovarConvenioDesactivarBeneficiarioComponent implements OnInit {
     });
 
     this.desactivarBeneficiarioForm.patchValue({
-      ...this.beneficiario
+      ...this.beneficiarioSeleccionado,
+      email: this.beneficiarioSeleccionado.correo,
+      telefono: this.beneficiarioSeleccionado.tel,
+      actaNacimiento: this.beneficiarioSeleccionado.indActa,
+      ineBeneficiario: this.beneficiarioSeleccionado.indIne,
+      comprobanteEstudios: this.beneficiarioSeleccionado.comprobEstudios,
+      actaMatrimonio: this.beneficiarioSeleccionado.actaMatrimonio,
+      declaracionConcubinato: this.beneficiarioSeleccionado.declaracionConcubinato,
     });
   }
 

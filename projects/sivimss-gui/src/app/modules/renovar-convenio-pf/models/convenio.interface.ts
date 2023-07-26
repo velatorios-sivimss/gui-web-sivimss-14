@@ -62,17 +62,17 @@ export interface BusquedaConvenio {
 }
 
 export interface Beneficiario {
-  idBeneficiario?: number;
-  idPersona?: number;
-  nombre?: string;
-  primerApellido?: string;
-  segundoApellido?: string;
-  edad?: string;
-  parentesco?: string;
+  idBeneficiario?: number | null;
+  idPersona?: number | null;
+  nombre?: string | null;
+  primerApellido?: string | null;
+  segundoApellido?: string | null;
+  edad?: string | null;
+  parentesco?: string | null;
   curp?: string;
-  rfc?: string;
-  email?: string;
-  telefono?: string;
+  rfc?: string | null;
+  email?: string | null;
+  telefono?: string | null;
   tipoConvenioDesc?: string | null;
   actaNacimiento?: boolean | null;
   ineBeneficiario?: boolean | null;
@@ -81,10 +81,37 @@ export interface Beneficiario {
   declaracionConcubinato?: boolean | null;
 }
 
+export interface BeneficiarioSeleccionado {
+  primerApellido?: string | null;
+  indIne?: boolean | null;
+  segundoApellido?: string | null;
+  declaracionConcubinato?: boolean | null;
+  nombre?: string | null;
+  edad?: number | null;
+  indActa?: boolean | null;
+  rfc?: string | null;
+  estatus?: boolean | null;
+  idBenef?: number;
+  parentesco?: string | null;
+  comprobEstudios?: boolean | null;
+  correo?: string | null;
+  tel?: string | null;
+  actaMatrimonio?: boolean | null;
+  idConvenio?: number | null;
+  curp?: string;
+  idPersona?: number | null;
+  tipoConvenioDesc?: string | null;
+}
+
+export interface BusquedaBeneficiarios {
+  id?: number;
+  idpersona?: number;
+  nombreBeneficiario?: string;
+}
 export interface BusquedaListBeneficiarios {
   idConvenio?: number;
   idContratanteConvenioPf?: number;
-  beneficiarios?: Beneficiario[];
+  beneficiarios?: BusquedaBeneficiarios[];
 }
 
 export interface BuscarConvenioPlanAnterior {
@@ -157,40 +184,40 @@ export interface ReporteAnexoDiez {
 export interface BeneficiarioContratante {
   idContratanteConvenioPf?: number;
   idParentesco?: number | null;
-  indActa?: number;
-  indIne?: number;
+  indActa?: number | null;
+  indIne?: number | null;
 }
 
 export interface DocPlanAnterior {
-  indComprobanteEstudios?: number;
-  indActaMatrimonio?: number;
-  indDeclaracionConcubinato?: number;
+  indComprobanteEstudios?: number | null;
+  indActaMatrimonio?: number | null;
+  indDeclaracionConcubinato?: number | null;
 }
 
 export interface GuardarBeneficiario {
-  nombre?: string;
-  apellidoP?: string;
-  apellidoM?: string;
-  fechaNac?: string;
+  nombre?: string | null;
+  apellidoP?: string | null;
+  apellidoM?: string | null;
+  fechaNac?: string | null;
   curp?: string;
-  rfc?: string;
-  correoE?: string;
-  tel?: string;
+  rfc?: string | null;
+  correoE?: string | null;
+  tel?: string | null;
   beneficiario?: BeneficiarioContratante;
   docPlanAnterior?: DocPlanAnterior;
 }
 
 export interface ActualizarBeneficiario {
-  idBeneficiario?: number;
-  idPersona?: number;
-  nombre?: string;
-  apellidoP?: string;
-  apellidoM?: string;
-  fechaNac?: string;
+  idBeneficiario?: number | null;
+  idPersona?: number | null;
+  nombre?: string | null;
+  apellidoP?: string | null;
+  apellidoM?: string | null;
+  fechaNac?: string | null;
   curp?: string;
-  rfc?: string;
-  correoE?: string;
-  tel?: string;
+  rfc?: string | null;
+  correoE?: string | null;
+  tel?: string | null;
   beneficiario?: BeneficiarioContratante;
   docPlanAnterior?: DocPlanAnterior;
 }
