@@ -127,10 +127,13 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Aprobar solicitud de pago"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar solicitud de pago" (click)="abrirModalCancelarSolicitudPago()"
+      <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Pendiente'"
+                                titulo="Aprobar solicitud de pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Rechazada'"
+                                titulo="Cancelar solicitud de pago" (click)="abrirModalCancelarSolicitudPago()"
                                 routerLinkActive></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Rechazar solicitud de pago" (click)="abrirModalRechazarSolicitudPago()"
+      <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Pendiente'"
+                                titulo="Rechazar solicitud de pago" (click)="abrirModalRechazarSolicitudPago()"
                                 routerLinkActive></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

@@ -240,7 +240,6 @@
     text-transform: none;
     line-height: 1;
     letter-spacing: 0;
-    -ms-font-feature-settings: "liga" 1;
     font-feature-settings: "liga", normal, "dlig";
     font-variant-ligatures: discretionary-ligatures;
     -webkit-font-smoothing: antialiased;
@@ -400,7 +399,7 @@ p-dropdown.p-inputwrapper[ng-reflect-disabled="true"] {
 
 .p-dropdown-panel.p-component {
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.15));
-  border-radius: 0px 0px 10px 10px;
+  border-radius: 0 0 10px 10px;
   overflow: hidden;
 }
 
@@ -451,7 +450,6 @@ p-dropdown.p-inputwrapper[ng-reflect-disabled="true"] {
       text-transform: none;
       line-height: 1;
       letter-spacing: 0;
-      -ms-font-feature-settings: "liga" 1;
       font-feature-settings: "liga", normal, "dlig";
       font-variant-ligatures: discretionary-ligatures;
       -webkit-font-smoothing: antialiased;

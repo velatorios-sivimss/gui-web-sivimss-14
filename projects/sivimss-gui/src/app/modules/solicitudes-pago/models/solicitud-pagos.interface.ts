@@ -1,4 +1,5 @@
 export interface SolicitudPago {
+  desEstatusSolicitud: string;
   idSolicitud: number;
   desVelatorio: string;
   cveFolio: string;
@@ -72,24 +73,24 @@ export interface DetalleSolicitudPago {
   concepto4: string;
   cantidadLetra4: string;
   observ4: string;
-  
+
 }
 
 export interface CrearSolicitudPago {
   idTipoSolic: number;
   cveFolioGastos: string;
   cveFolioConsignados: string;
-  fechaElaboracion: string; 
+  fechaElaboracion: string;
   idUnidadMedica: number;
   idDelegacion: number;
-  nomDestinatario: string; 
-  nomRemitente: string; 
+  nomDestinatario: string;
+  nomRemitente: string;
   numReferencia: number;
   idContratBenef: number;
-  fechaInicial: string; 
-  fechaFinal: string; 
-  beneficiario: string; 
-  concepto: string; 
+  fechaInicial: string;
+  fechaFinal: string;
+  beneficiario: string;
+  concepto: string;
   observaciones: string;
   idVelatorio: number;
   ejercicioFiscal: number;
