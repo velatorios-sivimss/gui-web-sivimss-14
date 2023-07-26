@@ -96,14 +96,15 @@
             <div class="col-md-12">
               <div class="flex flex-wrap gap-3">
                 <div class="flex align-items-center">
-                  <p-radioButton value="1" id="unidadOperativa" formControlName="unidadSeleccionada"
+                  <p-radioButton class="white-button" value="1" id="unidadOperativa"
+                                 formControlName="unidadSeleccionada"
                                  inputId="unidadOperativa"></p-radioButton>
-                  <label for="unidadOperativa" class="ml-2">Unidad operativa</label>
+                  <label for="unidadOperativa" class="ml-2 label-radio-button">Unidad operativa</label>
                 </div>
                 <div class="flex align-items-center">
-                  <p-radioButton value="2" id="unidadAdmon" formControlName="unidadSeleccionada"
+                  <p-radioButton class="white-button" value="2" id="unidadAdmon" formControlName="unidadSeleccionada"
                                  inputId="unidadAdmon"></p-radioButton>
-                  <label for="unidadAdmon" class="ml-2">Unidad administrativa</label>
+                  <label for="unidadAdmon" class="ml-2 label-radio-button">Unidad administrativa</label>
                 </div>
               </div>
             </div>
@@ -160,7 +161,7 @@
       <div class="col-md-12 mb-3" *ngIf="[3].includes(tipoSolicitud)">
         <p-panel>
           <ng-template pTemplate="header">
-            <label class="ml-2">Periodo:</label>
+            <label class="ml-2 control-label">Periodo:</label>
           </ng-template>
           <ng-template pTemplate="body">
             <div class="row">
@@ -192,7 +193,7 @@
       <div class="col-md-12 mb-3" *ngIf="[1,4].includes(tipoSolicitud)">
         <p-panel>
           <ng-template pTemplate="header">
-            <label class="ml-2">Datos bancarios:</label>
+            <label class="ml-2 control-label">Datos bancarios:</label>
           </ng-template>
           <ng-template pTemplate="body">
             <div class="row">
@@ -241,7 +242,7 @@
       <div class="col-md-12 mb-3" *ngIf="[5,6].includes(tipoSolicitud)">
         <p-panel>
           <ng-template pTemplate="header">
-            <label class="ml-2">Datos bancarios:</label>
+            <label class="ml-2 control-label">Datos bancarios:</label>
           </ng-template>
           <ng-template pTemplate="body">
             <div class="row">
@@ -275,7 +276,7 @@
       <div class="col-md-12 mb-3" *ngIf="[5].includes(tipoSolicitud)">
         <p-panel>
           <ng-template pTemplate="header">
-            <label class="ml-2">Periodo:</label>
+            <label class="ml-2 control-label">Periodo:</label>
           </ng-template>
           <ng-template pTemplate="body">
             <div class="row">
