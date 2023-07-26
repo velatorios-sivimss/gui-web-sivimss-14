@@ -1,4 +1,5 @@
 export interface SolicitudPago {
+  motRechazo?: string;
   desEstatusSolicitud: string;
   idSolicitud: number;
   desVelatorio: string;
@@ -37,12 +38,12 @@ export interface DetalleSolicitudPago {
 
   folioGastos2: string;
   fechaElaboracion2: string;
-  unidadOpe2 : string;
-  unidadAdmi2 : string;
+  unidadOpe2: string;
+  unidadAdmi2: string;
   refeUnidadOpe2: string;
-  solicitadoOpePor2  : string;
+  solicitadoOpePor2: string;
   refeUnidadAdmi2: string;
-  solicitadoAdmiPor2  : string;
+  solicitadoAdmiPor2: string;
   nombreDestinatario2: string;
   nomRemitente2: string;
   referenciaTD2: string;
@@ -104,12 +105,3 @@ export interface PartidaPresupuestal {
   cuentasContables: string;
   importeTotal: string;
 }
-
-export interface CancelarSolicitudPago {
-  motivo: string;
-}
-
-export interface RechazarSolicitudPago {
-  motivoRechazo: string;
-}
-
