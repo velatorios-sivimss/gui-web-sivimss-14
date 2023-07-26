@@ -48,35 +48,35 @@ export class GestionarEtapasActualizacionService {
   etapas: Etapa[] = [
     {
       idEtapa: 0,
-      estado: EtapaEstado.Activo,
+      estado: EtapaEstado.Completado,
       textoInterior: '1',
       textoExterior: 'Datos del contratante',
       lineaIzquierda: {
         mostrar: false,
-        estilo: 'solid',
+        estilo: 'dashed',
       },
       lineaDerecha: {
         mostrar: true,
-        estilo: 'solid',
+        estilo: 'dashed',
       },
     },
     {
       idEtapa: 1,
-      estado: EtapaEstado.Inactivo,
+      estado: EtapaEstado.Completado,
       textoInterior: '2',
       textoExterior: 'Datos del finado',
       lineaIzquierda: {
         mostrar: true,
-        estilo: 'solid',
+        estilo: 'dashed',
       },
       lineaDerecha: {
         mostrar: true,
-        estilo: 'solid',
+        estilo: 'dashed',
       },
     },
     {
       idEtapa: 2,
-      estado: EtapaEstado.Inactivo,
+      estado: EtapaEstado.Completado,
       textoInterior: '3',
       textoExterior: 'Características del presupuesto',
       lineaIzquierda: {
@@ -90,7 +90,7 @@ export class GestionarEtapasActualizacionService {
     },
     {
       idEtapa: 3,
-      estado: EtapaEstado.Inactivo,
+      estado: EtapaEstado.Completado,
       textoInterior: '4',
       textoExterior: 'Información del servicio',
       lineaIzquierda: {

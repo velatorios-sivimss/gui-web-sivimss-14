@@ -28,6 +28,7 @@ export class ModalConvenioPfComponent implements OnInit {
   idVelatorio!: number;
   idPersona!: number;
   existeSiniestro:boolean = false;
+  nombreVelatorio: string = "";
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -66,6 +67,7 @@ export class ModalConvenioPfComponent implements OnInit {
         }
         this.idContrato = respuesta.datos.idContratoPF;
         this.idVelatorio = respuesta.datos.idVelatorio
+        this.nombreVelatorio = respuesta.datos.nombreVelatorio;
         this.consultarContratantes();
       },
       (error: HttpErrorResponse) => {
@@ -137,7 +139,8 @@ export class ModalConvenioPfComponent implements OnInit {
           finado:respuesta.datos[0],
           idContrato:this.idContrato,
           idVelacion:this.idVelatorio,
-          idContratantePf: this.formulario.contratante.value
+          idContratantePf: this.formulario.contratante.value,
+          nombreVelatorio: this.nombreVelatorio
         });
       },
       (error: HttpErrorResponse) => {

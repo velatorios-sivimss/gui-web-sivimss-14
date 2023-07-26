@@ -5,8 +5,7 @@
       <p-dropdown #dd id="urna" class="form-control" formControlName="urna" placeholder="Selecciona una urna"
         appendTo="body" [options]="urnas" (onChange)="selecionarUrna(dd)"
       [filter]="true" filterBy="label"></p-dropdown>
-      <span class="campo-obligatorio" *ngIf="f.urna?.errors?.required && (f.urna?.dirty || f.urna?.touched)">Campo
-        obligatorio</span>
+      <span class="campo-obligatorio" *ngIf="f.urna?.errors?.required && (f.urna?.dirty || f.urna?.touched)">Este campo es obligatorio *.</span>
     </div>
   </div>
   <div class="row mb-3">

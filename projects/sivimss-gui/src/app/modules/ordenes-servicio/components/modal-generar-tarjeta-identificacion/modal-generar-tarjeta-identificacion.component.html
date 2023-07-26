@@ -9,7 +9,7 @@
                     placeholder="Selecciona el operador" [filter]="true" filterBy="label"
                     [options]="operadores"></p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="f.nombreOperador?.errors?.required && (f.nombreOperador?.dirty || f.nombreOperador?.touched)">Campo obligatorio</span>
+              *ngIf="f.nombreOperador?.errors?.required && (f.nombreOperador?.dirty || f.nombreOperador?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row">

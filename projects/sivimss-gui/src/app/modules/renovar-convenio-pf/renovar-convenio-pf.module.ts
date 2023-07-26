@@ -9,25 +9,36 @@ import { TituloPrincipalModule } from "../../shared/titulo-principal/titulo-prin
 
 import { TablePanelModule } from "projects/sivimss-gui/src/app/shared/table-panel/table-panel.module";
 
-import {DropdownModule} from "primeng/dropdown";
-import {DynamicDialogModule} from "primeng/dynamicdialog";
-import {TableModule} from "primeng/table";
-import {StepsModule} from "primeng/steps";
-import {SelectButtonModule} from "primeng/selectbutton";
-import {OverlayPanelModule} from "primeng/overlaypanel";
-import {CheckboxModule} from "primeng/checkbox";
+import { DropdownModule } from "primeng/dropdown";
+import { DynamicDialogModule } from "primeng/dynamicdialog";
+import { TableModule } from "primeng/table";
+import { StepsModule } from "primeng/steps";
+import { SelectButtonModule } from "primeng/selectbutton";
+import { OverlayPanelModule } from "primeng/overlaypanel";
+import { CheckboxModule } from "primeng/checkbox";
 
-import {RenovarConvenioPfComponent} from "./components/renovar-convenios-pf/renovar-convenio-pf.component";
-import {RenovarConvenioPfRoutingModule} from "./renovar-convenio-pf-routing.module";
-import {RenovarConvenioPfService} from "./services/renovar-convenio-pf.service";
-import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
-
-
-
+import { RenovarConvenioModificarBeneficiarioComponent } from './components/renovar-convenios-beneficiarios/renovar-convenio-modificar-beneficiario/renovar-convenio-modificar-beneficiario.component';
+import { RenovarConvenioBeneficiariosComponent } from './components/renovar-convenios-beneficiarios/renovar-convenio-beneficiarios.component';
+import { RenovarConvenioPfComponent } from "./components/renovar-convenios-pf/renovar-convenio-pf.component";
+import { RenovarConvenioPfRoutingModule } from "./renovar-convenio-pf-routing.module";
+import { RenovarConvenioPfService } from "./services/renovar-convenio-pf.service";
+import { CeldaStickyModule } from "../../shared/celda-sticky/celda-sticky.module";
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { AccordionModule } from 'primeng/accordion';
+import { RenovarConvenioCrearBeneficiarioComponent } from './components/renovar-convenios-beneficiarios/renovar-convenio-crear-beneficiario/renovar-convenio-crear-beneficiario.component';
+import { RenovarConvenioDesactivarBeneficiarioComponent } from './components/renovar-convenios-beneficiarios/renovar-convenio-desactivar-beneficiario/renovar-convenio-desactivar-beneficiario.component';
+import { UtileriaModule } from '../../shared/utileria/utileria.module';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { UsuarioService } from '../usuarios/services/usuario.service';
 
 @NgModule({
   declarations: [
-    RenovarConvenioPfComponent
+    RenovarConvenioPfComponent,
+    RenovarConvenioBeneficiariosComponent,
+    RenovarConvenioModificarBeneficiarioComponent,
+    RenovarConvenioCrearBeneficiarioComponent,
+    RenovarConvenioDesactivarBeneficiarioComponent
   ],
   imports: [
     CommonModule,
@@ -45,13 +56,19 @@ import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
     OverlayPanelOpcionesModule,
     TablePanelModule,
     CheckboxModule,
+    RadioButtonModule,
+    AccordionModule,
+    UtileriaModule,
+    ConfirmDialogModule,
+    DialogModule,
   ],
   providers: [
-    RenovarConvenioPfService
+    RenovarConvenioPfService,
+    UsuarioService
   ]
 
 })
 
 
 
-export class RenovarConvenioPfModule {}
+export class RenovarConvenioPfModule { }
