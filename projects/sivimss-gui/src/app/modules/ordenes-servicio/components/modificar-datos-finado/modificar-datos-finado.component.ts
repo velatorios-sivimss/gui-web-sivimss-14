@@ -179,8 +179,12 @@ export class ModificarDatosFinadoComponent
       this.cambiarValidacionNSS();
       this.changeTipoOrden(true);
       this.cambiarTipoSexo();
+      // this.datosFinado.esParaExtremidad.value;
+    },600)
 
-    },300)
+    setTimeout(()=> {
+      this.esExtremidad(this.datosFinado.esParaExtremidad.value);
+    },700)
 
 
 
@@ -438,7 +442,7 @@ export class ModificarDatosFinadoComponent
       }
 
 
-    },500)
+    },400)
 
     if (datosEtapaFinado.datosFinado.esObito != null)
       this.esObito(esObito);
@@ -725,9 +729,11 @@ export class ModificarDatosFinadoComponent
   async esExtremidad(validacion: boolean) {
     const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
 
+    this.datosFinado.esParaExtremidad.setValue(validacion);
     if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
       this.datosFinado.velatorioPrevision.disable();
       this.desabilitarTodo();
+      this.datosFinado.esObito.patchValue(null)
       this.datosFinado.esObito.disable();
 
       this.datosFinado.velatorioPrevision.disable();
@@ -760,8 +766,10 @@ export class ModificarDatosFinadoComponent
 
   async esObito(validacion: boolean) {
     //curp nss matricula se bloquean
+    if(this.datosFinado.esParaExtremidad.value)return;
     let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
+    this.datosFinado.esObito.setValue(validacion);
     if (validacion) {
       this.datosFinado.matricula.disable();
       this.datosFinado.nss.disable();
@@ -886,11 +894,11 @@ export class ModificarDatosFinadoComponent
         textoInterior: '1',
         textoExterior: 'Datos del contratante',
         lineaIzquierda: {
-          mostrar: true,
-          estilo: 'solid',
+          mostrar: false,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
+          mostrar: true,
           estilo: 'dashed',
         },
       },
@@ -900,12 +908,12 @@ export class ModificarDatosFinadoComponent
         textoInterior: '2',
         textoExterior: 'Datos del finado',
         lineaIzquierda: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
       },
       {

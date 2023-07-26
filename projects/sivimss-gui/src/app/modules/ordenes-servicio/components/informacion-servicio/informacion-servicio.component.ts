@@ -83,6 +83,9 @@ export class InformacionServicioComponent implements OnInit {
   validaDomicilio: boolean = false;
   tipoOrden: number = 0;
   fechaActual= new Date();
+  servicioExtremidad: boolean = false;
+  confirmarGuardado: boolean = false;
+  confirmarPreOrden:boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -144,6 +147,7 @@ export class InformacionServicioComponent implements OnInit {
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
     if(Number(this.altaODS.finado.idTipoOrden) < 3){
@@ -452,6 +456,7 @@ export class InformacionServicioComponent implements OnInit {
       if (val) {
         this.idPanteon = val
         this.inhumacion.agregarPanteon.disable();
+        this.alertaService.mostrar(TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(99))
         return
       }
       this.inhumacion.agregarPanteon.setValue(false);
@@ -676,8 +681,8 @@ export class InformacionServicioComponent implements OnInit {
                 parseInt(respuesta.mensaje)
               );
             this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+              TipoAlerta.Error,
+              errorMsg || 'Error al guardar la información. Intenta nuevamente.'
             );
 
             return;
@@ -688,10 +693,17 @@ export class InformacionServicioComponent implements OnInit {
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(respuesta.mensaje)
             );
-          this.alertaService.mostrar(
-            TipoAlerta.Exito,
-            ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
-          );
+          if(this.altaODS.idEstatus == 2){
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
+            );
+          }else{
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+            );
+          }
           this.router.navigate(["ordenes-de-servicio"]);
         },
         (error: HttpErrorResponse) => {
@@ -701,15 +713,15 @@ export class InformacionServicioComponent implements OnInit {
                 parseInt(error.error.mensaje)
               );
             this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+              TipoAlerta.Error,
+              errorMsg || 'Error al guardar la información. Intenta nuevamente.'
             );
           } catch (error) {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
             this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+              TipoAlerta.Error,
+              errorMsg || 'Error al guardar la información. Intenta nuevamente.'
             );
           }
         }
