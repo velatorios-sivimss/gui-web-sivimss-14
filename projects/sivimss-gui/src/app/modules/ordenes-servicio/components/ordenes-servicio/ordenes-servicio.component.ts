@@ -522,9 +522,7 @@ export class OrdenesServicioComponent implements OnInit {
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
     this.consultarOrdenServicioService.generarArchivoEntradaDonaciones(
-      this.ordenServicioSeleccionada.idDonacion,
-      this.ordenServicioSeleccionada.idAtaudDonacion,
-      tipoConsulta
+      this.ordenServicioSeleccionada.idOrdenServicio,tipoConsulta
     ).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
