@@ -220,8 +220,7 @@ export class DatosContratanteComponent implements OnInit {
           {
             value: datosEtapaContratante.datosContratante.nacionalidad,
             disabled: false,
-          },
-          [Validators.required],
+          }
         ],
         lugarNacimiento: [
           {

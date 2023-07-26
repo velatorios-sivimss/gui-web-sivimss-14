@@ -82,7 +82,6 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
 
             return;
           }
-          debugger
           arregloEmpaqueTemporal = datos;
 
           this.inventarioSeleccionado.forEach((elemento:any) => {

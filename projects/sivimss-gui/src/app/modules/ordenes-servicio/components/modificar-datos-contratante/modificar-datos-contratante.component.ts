@@ -182,6 +182,7 @@ export class ModificarDatosContratanteComponent
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
 
+    this.inicializarEtapas(Number(estatus));
 
   }
 
@@ -300,7 +301,6 @@ export class ModificarDatosContratanteComponent
             value: null,
             disabled: false,
           },
-          [Validators.required],
         ],
       }),
       direccion: this.formBuilder.group({
@@ -1100,6 +1100,73 @@ export class ModificarDatosContratanteComponent
       );
     }
   }
+
+
+  inicializarEtapas(estatusODS: number): void {
+    let etapaPrecarga: Etapa[] = [
+      {
+        idEtapa: 0,
+        estado: EtapaEstado.Completado,
+        textoInterior: '1',
+        textoExterior: 'Datos del contratante',
+        lineaIzquierda: {
+          mostrar: false,
+          estilo: 'dashed',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'dashed',
+        },
+      },
+      {
+        idEtapa: 1,
+        estado: EtapaEstado.Completado,
+        textoInterior: '2',
+        textoExterior: 'Datos del finado',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'dashed',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'dashed',
+        },
+      },
+      {
+        idEtapa: 2,
+        estado: estatusODS == 1 ? EtapaEstado.Completado : EtapaEstado.Inactivo,
+        textoInterior: '3',
+        textoExterior: 'Características del presupuesto',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+      },
+      {
+        idEtapa: 3,
+        estado: estatusODS == 1 ? EtapaEstado.Completado : EtapaEstado.Inactivo,
+        textoInterior: '4',
+        textoExterior: 'Información del servicio',
+        lineaIzquierda: {
+          mostrar: true,
+          estilo: 'solid',
+        },
+        lineaDerecha: {
+          mostrar: false,
+          estilo: 'solid',
+        },
+      },
+    ];
+
+    window.scrollTo(0, 0);
+    this.gestionarEtapasService.etapas$.next(etapaPrecarga);
+    this.seleccionarEtapa.emit(0);
+  }
+
 
 
   get datosContratante() {

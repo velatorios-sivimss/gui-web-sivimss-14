@@ -15,7 +15,7 @@
     <ng-container formGroupName="datosFinado">
       <h2 class="subtitulo-base">Datos del finado</h2>
       <div class="row mb-2 flex align-content-between">
-        <div class="col-md-3">
+        <div class="col-md-4">
           <label class="control-label" for="tipoOrden">Tipo de orden<span class="req">*</span>:</label>
           <p-dropdown id="tipoOrden" class="form-control" formControlName="tipoOrden"
             placeholder="Selecciona tipo de orden" [options]="tipoOrden" (onChange)="changeTipoOrden()" [filter]="true"
@@ -23,14 +23,14 @@
           <span class="campo-obligatorio"
             *ngIf="datosFinado.tipoOrden?.errors?.required && (datosFinado.tipoOrden?.dirty || datosFinado.tipoOrden?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <div class="col-md-2">
-          <label class="control-label" for="noContrato">Número de contrato<span class="req">*</span>:</label>
+        <div class="col-md-4">
+          <label class="control-label" for="noContrato">Numero de contrato / convenio PF<span class="req">*</span>:</label>
           <input id="noContrato" type="text" class="form-control" formControlName="noContrato"
             placeholder="Ingresa número de contrato" maxlength="10" (blur)="consultarFolioPf($event)">
           <span class="campo-obligatorio"
             *ngIf="datosFinado.noContrato?.errors?.required && (datosFinado.noContrato?.dirty || datosFinado.noContrato?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-4">
           <label class="control-label" for="velatorioPrevision">Velatorio - previsión<span class="req">*</span>:</label>
           <input id="velatorioPrevision" type="text" class="form-control" formControlName="velatorioPrevision"
             placeholder="Ingresa velatorio - previsión">

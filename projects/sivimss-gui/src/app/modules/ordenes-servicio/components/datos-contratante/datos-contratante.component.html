@@ -74,11 +74,11 @@
           *ngIf="datosContratante.otroTipoSexo?.errors?.required && (datosContratante.otroTipoSexo?.dirty || datosContratante.otroTipoSexo?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
-        <label class="control-label" for="nacionalidad">Nacionalidad<span class="req">*</span>:</label>
+        <label class="control-label" for="nacionalidad">Nacionalidad:</label>
         <p-dropdown id="nacionalidad" class="form-control" formControlName="nacionalidad"
           placeholder="Ingresa nacionalidad" [options]="nacionalidad" (onChange)="cambiarNacionalidad()" [filter]="true" filterBy="label"></p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="datosContratante.nacionalidad?.errors?.required && (datosContratante.nacionalidad?.dirty || datosContratante.nacionalidad?.touched)">Este campo es obligatorio *.</span>
+<!--        <span class="campo-obligatorio"-->
+<!--          *ngIf="datosContratante.nacionalidad?.errors?.required && (datosContratante.nacionalidad?.dirty || datosContratante.nacionalidad?.touched)">Este campo es obligatorio *.</span>-->
       </div>
       <div class="col-md-3" *ngIf="datosContratante.nacionalidad.value == 1">
         <label class="control-label" for="lugarNacimiento">Lugar de nacimiento<span class="req">*</span>:</label>
@@ -88,11 +88,11 @@
           *ngIf="datosContratante.lugarNacimiento?.errors?.required && (datosContratante.lugarNacimiento?.dirty || datosContratante.lugarNacimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3" *ngIf="datosContratante.nacionalidad.value == 2">
-        <label class="control-label" for="paisNacimiento">País de nacimiento<span class="req">*</span>:</label>
+        <label class="control-label" for="paisNacimiento">País de nacimiento:</label>
         <p-dropdown id="paisNacimiento" class="form-control" formControlName="paisNacimiento"
           placeholder="Ingresa país de nacimiento" [options]="pais" [filter]="true" filterBy="label"></p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="datosContratante.paisNacimiento?.errors?.required && (datosContratante.paisNacimiento?.dirty || datosContratante.paisNacimiento?.touched)">Este campo es obligatorio *.</span>
+<!--        <span class="campo-obligatorio"-->
+<!--          *ngIf="datosContratante.paisNacimiento?.errors?.required && (datosContratante.paisNacimiento?.dirty || datosContratante.paisNacimiento?.touched)">Este campo es obligatorio *.</span>-->
       </div>
 
     </div>
@@ -114,11 +114,11 @@
           *ngIf="datosContratante.correoElectronico?.errors?.pattern && (datosContratante.correoElectronico?.dirty || datosContratante.correoElectronico?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
-        <label class="control-label" for="parentesco">Parentesco<span class="req">*</span>:</label>
+        <label class="control-label" for="parentesco">Parentesco:</label>
         <p-dropdown id="parentesco" class="form-control" formControlName="parentesco"
           placeholder="Ingresa el parentesco" [options]="parentesco" [filter]="true" filterBy="label"></p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="datosContratante.parentesco?.errors?.required && (datosContratante.parentesco?.dirty || datosContratante.parentesco?.touched)">Este campo es obligatorio *.</span>
+<!--        <span class="campo-obligatorio"-->
+<!--          *ngIf="datosContratante.parentesco?.errors?.required && (datosContratante.parentesco?.dirty || datosContratante.parentesco?.touched)">Este campo es obligatorio *.</span>-->
       </div>
     </div>
   </ng-container>
@@ -140,7 +140,7 @@
           *ngIf="direccion.noExterior?.errors?.required && (direccion.noExterior?.dirty || direccion.noExterior?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
-        <label class="control-label" for="noInterior">No. interior</label>
+        <label class="control-label" for="noInterior">No. interior:</label>
         <input id="noInterior" type="text" class="form-control" formControlName="noInterior"
           placeholder="Ingresa no. interior" maxlength="10">
       </div>

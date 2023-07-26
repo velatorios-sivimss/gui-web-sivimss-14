@@ -817,6 +817,7 @@ export class DatosFinadoComponent implements OnInit {
     if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
       this.datosFinado.velatorioPrevision.disable();
       this.desabilitarTodo();
+      this.datosFinado.esObito.patchValue(null)
       this.datosFinado.esObito.disable();
 
       this.datosFinado.velatorioPrevision.disable();

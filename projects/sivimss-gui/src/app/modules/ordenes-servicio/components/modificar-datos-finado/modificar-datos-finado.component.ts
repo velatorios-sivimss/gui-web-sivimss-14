@@ -179,8 +179,12 @@ export class ModificarDatosFinadoComponent
       this.cambiarValidacionNSS();
       this.changeTipoOrden(true);
       this.cambiarTipoSexo();
+      // this.datosFinado.esParaExtremidad.value;
+    },600)
 
-    },300)
+    setTimeout(()=> {
+      this.esExtremidad(this.datosFinado.esParaExtremidad.value);
+    },700)
 
 
 
@@ -438,7 +442,7 @@ export class ModificarDatosFinadoComponent
       }
 
 
-    },500)
+    },400)
 
     if (datosEtapaFinado.datosFinado.esObito != null)
       this.esObito(esObito);
@@ -729,6 +733,7 @@ export class ModificarDatosFinadoComponent
     if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
       this.datosFinado.velatorioPrevision.disable();
       this.desabilitarTodo();
+      this.datosFinado.esObito.patchValue(null)
       this.datosFinado.esObito.disable();
 
       this.datosFinado.velatorioPrevision.disable();

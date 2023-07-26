@@ -184,7 +184,7 @@
       <app-overlay-panel-opcion *appValidaRol="['CONSULTAR_ODS','ALTA']" titulo="Generar Orden complementaria" onCloseOnNavigation (click)="ordenComplementaria()"></app-overlay-panel-opcion>
       <div *appValidaRol="['CONSULTAR_ODS','MODIFICAR']">
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')" (click)="modificarODS()" titulo="Modificar"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada') && ordenServicioSeleccionada.tiempoGeneracionODSHrs <= 24" (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
       </div>
       <div *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
         <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
