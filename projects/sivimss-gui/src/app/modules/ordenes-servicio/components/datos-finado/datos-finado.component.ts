@@ -567,11 +567,11 @@ export class DatosFinadoComponent implements OnInit {
         textoInterior: '1',
         textoExterior: 'Datos del contratante',
         lineaIzquierda: {
-          mostrar: true,
-          estilo: 'solid',
+          mostrar: false,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
+          mostrar: true,
           estilo: 'dashed',
         },
       },
@@ -581,12 +581,12 @@ export class DatosFinadoComponent implements OnInit {
         textoInterior: '2',
         textoExterior: 'Datos del finado',
         lineaIzquierda: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
       },
       {

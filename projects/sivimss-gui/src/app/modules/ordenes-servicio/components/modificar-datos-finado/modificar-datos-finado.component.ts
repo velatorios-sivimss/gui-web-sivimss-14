@@ -761,6 +761,7 @@ export class ModificarDatosFinadoComponent
 
   async esObito(validacion: boolean) {
     //curp nss matricula se bloquean
+    if(this.datosFinado.esParaExtremidad.value)return;
     let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
     this.datosFinado.esObito.setValue(validacion);
@@ -888,11 +889,11 @@ export class ModificarDatosFinadoComponent
         textoInterior: '1',
         textoExterior: 'Datos del contratante',
         lineaIzquierda: {
-          mostrar: true,
-          estilo: 'solid',
+          mostrar: false,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
+          mostrar: true,
           estilo: 'dashed',
         },
       },
@@ -902,12 +903,12 @@ export class ModificarDatosFinadoComponent
         textoInterior: '2',
         textoExterior: 'Datos del finado',
         lineaIzquierda: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
       },
       {
