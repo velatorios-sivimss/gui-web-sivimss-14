@@ -233,7 +233,9 @@
       <div class="col-md-3">
         <div class="table-panel-column">
           <span>Beneficiarios:</span>
-          <label>{{convenio.beneficiarios}}</label>
+          <label *ngFor="let beneficiario of convenio.beneficiarios; index as i">
+            {{beneficiario.nombreBeneficiario}}
+          </label>
         </div>
       </div>
     </div>

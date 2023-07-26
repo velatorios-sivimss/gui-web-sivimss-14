@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { Beneficiario } from '../../../models/convenio.interface';
+import { Beneficiario, BeneficiarioSeleccionado } from '../../../models/convenio.interface';
 import { PATRON_CORREO, PATRON_CURP, PATRON_RFC } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
@@ -17,7 +17,7 @@ import { finalize } from 'rxjs';
   styleUrls: ['./renovar-convenio-modificar-beneficiario.component.scss']
 })
 export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
-  @Input() beneficiario!: Beneficiario;
+  @Input() beneficiarioSeleccionado!: BeneficiarioSeleccionado;
 
   @Input() numBeneficiario: number = 0;
 
@@ -63,7 +63,15 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
     });
 
     this.modificarBeneficiarioForm.patchValue({
-      ...this.beneficiario
+      ...this.beneficiarioSeleccionado,
+      parentesco: this.beneficiarioSeleccionado.idParentesco,
+      email: this.beneficiarioSeleccionado.correo,
+      telefono: this.beneficiarioSeleccionado.tel,
+      actaNacimiento: this.beneficiarioSeleccionado.indActa,
+      ineBeneficiario: this.beneficiarioSeleccionado.indIne,
+      comprobanteEstudios: this.beneficiarioSeleccionado.comprobEstudios,
+      actaMatrimonio: this.beneficiarioSeleccionado.actaMatrimonio,
+      declaracionConcubinato: this.beneficiarioSeleccionado.declaracionConcubinato,
     });
   }
 
@@ -74,6 +82,8 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
   guardar() {
     if (this.modificarBeneficiarioForm.valid) {
       this.actualizarBeneficiario.emit(this.modificarBeneficiarioForm.value);
+    } else {
+      this.modificarBeneficiarioForm.markAllAsTouched();
     }
   }
 

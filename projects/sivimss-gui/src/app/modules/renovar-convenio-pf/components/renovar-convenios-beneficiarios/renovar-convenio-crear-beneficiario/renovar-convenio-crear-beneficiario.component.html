@@ -71,7 +71,7 @@
             <div class="col-md-4">
               <label class="control-label" for="email">Correo electrónico:</label>
               <input id="email" class="form-control" formControlName="email" placeholder="Ingresa el correo"
-                maxlength="45" (blur)="validarEmail()" alphanumericOnly trimmer>
+                maxlength="45" (blur)="validarEmail()" trimmer>
               <span class="campo-obligatorio"
                 *ngIf="cbf.email?.errors?.required && (cbf.email?.dirty || cbf.email?.touched)">
                 Campo obligatorio</span>
@@ -99,7 +99,7 @@
             <div class="col-md-8">
               <div class="flex">
                 <p-checkbox inputId="ineBeneficiario" formControlName="ineBeneficiario" styleClass="mr-3" [binary]="true"></p-checkbox>
-                <label [for]="'ineBeneficiario'" class="control-label"><strong>Copias del INE del beneficiario si es mayor de
+                <label [for]="'ineBeneficiario'" class="control-label"><strong>Copia del INE del beneficiario si es mayor de
                     edad</strong></label>
               </div>
             </div>

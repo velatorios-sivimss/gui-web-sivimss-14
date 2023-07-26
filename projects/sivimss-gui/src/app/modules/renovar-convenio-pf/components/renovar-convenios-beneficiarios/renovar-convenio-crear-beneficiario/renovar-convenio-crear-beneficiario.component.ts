@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { Beneficiario } from '../../../models/convenio.interface';
+import { Beneficiario, BeneficiarioSeleccionado } from '../../../models/convenio.interface';
 import { PATRON_CORREO, PATRON_CURP, PATRON_RFC } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { UsuarioService } from '../../../../usuarios/services/usuario.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
@@ -17,7 +17,7 @@ import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/a
   styleUrls: ['./renovar-convenio-crear-beneficiario.component.scss']
 })
 export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
-  @Input() beneficiario!: Beneficiario;
+  @Input() beneficiarioSeleccionado!: BeneficiarioSeleccionado;
 
   @Input() numBeneficiario: number = 0;
 
@@ -70,6 +70,8 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
   guardar() {
     if (this.crearBeneficiarioForm.valid) {
       this.crearBeneficiario.emit(this.crearBeneficiarioForm.value);
+    } else {
+      this.crearBeneficiarioForm.markAllAsTouched();
     }
   }
 
