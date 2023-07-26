@@ -851,7 +851,7 @@ export class ModificarDatosContratanteComponent
     this.datosContratante.lugarNacimiento.clearValidators();
     this.datosContratante.lugarNacimiento.reset();
     this.datosContratante.paisNacimiento.enable();
-    this.datosContratante.paisNacimiento.setValidators(Validators.required);
+    // this.datosContratante.paisNacimiento.setValidators(Validators.required);
   }
 
   continuar() {
