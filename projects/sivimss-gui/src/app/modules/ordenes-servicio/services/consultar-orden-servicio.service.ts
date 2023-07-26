@@ -119,14 +119,14 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
       {idOrdenServicio: idOrdenServicio, estatus: estatus, tipoReporte: 'pdf'});
   }
 
-  generarArchivoEntradaDonaciones(idDonacion: number, idAtaudDonacion: number): Observable<HttpRespuesta<any>> {
+  generarArchivoEntradaDonaciones(idDonacion: number, idAtaudDonacion: number, generaReporte:number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/generarDocumentoEntrada`,
-      {idDonacion: idDonacion, idAtaudDonacion: idAtaudDonacion, tipoReporte: 'pdf'});
+      {idDonacion: idDonacion, idAtaudDonacion: idAtaudDonacion, generaReporte:generaReporte, tipoReporte: 'pdf'});
   }
 
-  generarArchivoSalidaDonaciones(idSalidaDona: number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/generarDocumentoSalida`,
-      {idSalidaDona: idSalidaDona, tipoReporte: 'pdf'});
+  generarArchivoSalidaDonaciones(idOrdenServicio: number,generaReporte:number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-salida-donacion`,
+      {idOrdenServicio: idOrdenServicio, generaReporte:generaReporte, tipoReporte: 'pdf'});
   }
 
 
