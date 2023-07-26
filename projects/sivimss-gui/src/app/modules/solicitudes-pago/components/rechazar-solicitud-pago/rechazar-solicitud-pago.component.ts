@@ -68,7 +68,7 @@ export class RechazarSolicitudPagoComponent implements OnInit {
         console.error(error);
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
-    })
+    });
   }
 
   cancelar(): void {
