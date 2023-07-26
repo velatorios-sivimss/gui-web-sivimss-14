@@ -125,7 +125,7 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
   }
 
   generarArchivoSalidaDonaciones(idOrdenServicio: number,generaReporte:number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/reporte-salida-donacion/generarDocumento/pdf`,
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-salida-donacion`,
       {idOrdenServicio: idOrdenServicio, generaReporte:generaReporte, tipoReporte: 'pdf'});
   }
 
