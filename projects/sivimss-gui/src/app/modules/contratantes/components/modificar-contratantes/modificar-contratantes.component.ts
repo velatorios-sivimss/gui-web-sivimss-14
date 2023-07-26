@@ -140,6 +140,7 @@ export class ModificarContratantesComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (idCatalogo === 2) {
+            this.dgf.idPais.setValue(119);
             this.catalogoEstados = mapearArregloTipoDropdown(respuesta.datos, "estado", "id");
           } else {
             this.catalogoPaises = mapearArregloTipoDropdown(respuesta.datos, "pais", "id");
@@ -229,8 +230,11 @@ export class ModificarContratantesComponent implements OnInit {
       ...this.contratante,
       ...this.datosGeneralesForm.getRawValue(),
       ...this.domicilioForm.getRawValue(),
-      nacionalidad: this.contratante.nacionalidad,
-      lugarNacimiento: this.catalogoEstados.find(item => item.value === this.dgf.idEstado.value)?.label ?? "",
+      pais: this.dgf.nacionalidad.value === 2 ?
+        this.catalogoPaises.find(item => item.value === this.dgf.idPais.value)?.label ?? "" : null,
+      nacionalidad: this.dgf.nacionalidad.value === 2 ? 'Extranjera' : 'Mexicana',
+      lugarNacimiento: this.dgf.nacionalidad.value === 1 ?
+        this.catalogoEstados.find(item => item.value === this.dgf.idEstado.value)?.label ?? "" : null,
     };
   }
 
