@@ -93,6 +93,7 @@ export interface BeneficiarioSeleccionado {
   estatus?: boolean | null;
   idBenef?: number;
   parentesco?: string | null;
+  idParentesco?: number | null;
   comprobEstudios?: boolean | null;
   correo?: string | null;
   tel?: string | null;

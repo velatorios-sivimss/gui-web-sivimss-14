@@ -53,6 +53,7 @@ export class RenovarConvenioDesactivarBeneficiarioComponent implements OnInit {
 
     this.desactivarBeneficiarioForm.patchValue({
       ...this.beneficiarioSeleccionado,
+      parentesco: this.beneficiarioSeleccionado.idParentesco,
       email: this.beneficiarioSeleccionado.correo,
       telefono: this.beneficiarioSeleccionado.tel,
       actaNacimiento: this.beneficiarioSeleccionado.indActa,
