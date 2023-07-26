@@ -517,12 +517,14 @@ export class OrdenesServicioComponent implements OnInit {
   }
 
   descargarEntradas(): void {
+    let tipoConsulta = this.ordenServicioSeleccionada.estatus == "Preorden" ? 0 : 1;
     this.loaderService.activar()
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
     this.consultarOrdenServicioService.generarArchivoEntradaDonaciones(
       this.ordenServicioSeleccionada.idDonacion,
       this.ordenServicioSeleccionada.idAtaudDonacion,
+      tipoConsulta
     ).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
@@ -548,11 +550,12 @@ export class OrdenesServicioComponent implements OnInit {
   }
 
   descargarSalidas(): void {
+    let tipoConsulta = this.ordenServicioSeleccionada.estatus == "Preorden" ? 0 : 1;
     this.loaderService.activar()
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
     this.consultarOrdenServicioService.generarArchivoSalidaDonaciones(
-      this.ordenServicioSeleccionada.idSalidaDona,
+      this.ordenServicioSeleccionada.idOrdenServicio,tipoConsulta
     ).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
