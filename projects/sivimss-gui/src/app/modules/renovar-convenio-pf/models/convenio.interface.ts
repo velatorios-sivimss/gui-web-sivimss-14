@@ -50,7 +50,7 @@ export interface BusquedaConvenio {
   idPaquete?: number;
   cp?: number;
   rfc?: string;
-  beneficiarios?: Beneficiario[];
+  beneficiarios?: BusquedaBeneficiarios[];
   tipoPaquete?: string;
   folio?: string;
   matricula?: string;

@@ -5,7 +5,14 @@ import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadc
 import { MenuItem } from "primeng/api";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { CATALOGOS_DUMMIES } from "../../../convenios-prevision-funeraria/constants/dummies";
-import { BuscarConvenioPlanAnterior, BuscarConvenioPlanNuevo, BusquedaConvenio, Convenio, ObtenerCatalogo, RenovarPlan, VerificarDocumentacion } from "../../models/convenio.interface";
+import {
+  BuscarConvenioPlanAnterior,
+  BuscarConvenioPlanNuevo,
+  BusquedaConvenio,
+  ObtenerCatalogo,
+  RenovarPlan,
+  VerificarDocumentacion
+} from "../../models/convenio.interface";
 import { MENU_STEPPER } from '../../constants/menu-steppers';
 import { Router } from '@angular/router';
 import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';

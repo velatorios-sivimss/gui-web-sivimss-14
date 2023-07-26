@@ -58,6 +58,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     this.busquedaListBeneficiarios = respuesta[this.POSICION_BENEFICIARIOS].datos;
     this.beneficiarios = this.busquedaListBeneficiarios.beneficiarios || [];
     this.datosGenerales = respuesta[this.POSICION_DATOS_GRALES].datos[0];
+    this.datosGenerales.fecha = moment().format('DD-MM-YYYY');
   }
 
   ngOnInit(): void { }
