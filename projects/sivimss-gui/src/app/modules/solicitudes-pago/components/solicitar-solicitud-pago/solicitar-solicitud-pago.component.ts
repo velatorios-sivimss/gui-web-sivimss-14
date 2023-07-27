@@ -33,9 +33,7 @@ interface RegistroUnidadOperativa {
 })
 export class SolicitarSolicitudPagoComponent implements OnInit {
 
-  Validaciones = {
-    1: () => this.validacionesBienesServiciosPorComprobar()
-  }
+  validaciones: Map<number, any> = new Map();
 
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
   readonly POSICION_CATALOGO_VELATORIO: number = 2;
@@ -53,6 +51,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   beneficiarios: TipoDropdown[] = [];
   catalogoVelatorios: RegistroVelatorio[] = [];
   catalogoUnidades: RegistroUnidadOperativa[] = [];
+  catalogoProveedores: any[] = [];
 
   constructor(
     private router: Router,
@@ -60,11 +59,17 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     public config: DynamicDialogConfig,
     private cargadorService: LoaderService,
     private formBulder: FormBuilder,
-    private readonly referencia: DynamicDialogRef,
+    public referencia: DynamicDialogRef,
     private solicitudesPagoService: SolicitudesPagoService,
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService
   ) {
+    this.validaciones.set(1, () => this.validacionesBienesServiciosPorComprobar())
+    this.validaciones.set(2, () => this.validacionesComprobacionBienesServicios())
+    this.validaciones.set(3, () => this.validacionesSolicitudRembolso())
+    this.validaciones.set(4, () => this.validacionesSolicitudPago())
+    this.validaciones.set(5, () => this.validacionesSolicitudConsignantes())
+    this.validaciones.set(6, () => this.validacionesPagoContrato())
   }
 
   ngOnInit(): void {
@@ -92,6 +97,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.catatalogoTipoSolicitud = mapearArregloTipoDropdown(catalogoTipoSolicitud.datos, "desTipoSolicitud", "tipoSolicitud");
     this.catalogoVelatorios = respuesta[this.POSICION_CATALOGO_VELATORIO].datos;
     this.catalogoUnidades = respuesta[this.POSICION_CATALOGO_UNIDAD].datos;
+    this.catalogoProveedores = respuesta[this.POSICION_CATALOGO_BANCO].datos;
     this.unidades = this.recuperarUnidadesOperacionales();
   }
 
@@ -112,12 +118,18 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       importeLetra: [{value: null, disabled: true}],
       observaciones: [{value: null, disabled: false}],
       numeroContrato: [{value: null, disabled: false}],
-      banco: [{value: null, disabled: false}],
-      cuenta: [{value: null, disabled: false}],
-      claveBancaria: [{value: null, disabled: false}],
+      banco: [{value: null, disabled: true}],
+      cuenta: [{value: null, disabled: true}],
+      claveBancaria: [{value: null, disabled: true}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
     });
+  }
+
+  seleccionarValidaciones(): void {
+    const tipoSolicitud: number = this.solicitudPagoForm.get('tipoSolicitud')?.value as number;
+    if (!this.validaciones.has(tipoSolicitud)) return;
+    this.validaciones.get(tipoSolicitud)();
   }
 
   crearSolicitudPago(): void {
@@ -184,6 +196,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   convertirImporte(): void {
+    this.solicitudPagoForm.get('importeLetra')?.patchValue('');
     const importe = this.solicitudPagoForm.get('importe')?.value;
     const importeLetra: string = convertirNumeroPalabra(+importe);
     this.solicitudPagoForm.get('importeLetra')?.patchValue(importeLetra[0].toUpperCase() + importeLetra.substring(1));
@@ -210,6 +223,21 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required])
     this.solicitudPagoForm.get('importe')?.setValidators([Validators.required])
     this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required])
+  }
+
+  validacionesComprobacionBienesServicios(): void {
+  }
+
+  validacionesSolicitudRembolso(): void {
+  }
+
+  validacionesSolicitudPago(): void {
+  }
+
+  validacionesSolicitudConsignantes(): void {
+  }
+
+  validacionesPagoContrato(): void {
   }
 
   get fc() {
