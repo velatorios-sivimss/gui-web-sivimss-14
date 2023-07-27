@@ -165,7 +165,6 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
           if (respuesta?.datos) {
             this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);
             this.mode = 'listado';
-            debugger
             if (this.beneficiarioSeleccionado.idBenef) {
               this.obtenerDetalleBeneficiario(this.beneficiarioSeleccionado.idBenef);
             }
