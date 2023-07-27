@@ -98,12 +98,12 @@
                 <div class="flex align-items-center">
                   <p-radioButton class="white-button" value="1" id="unidadOperativa"
                                  formControlName="unidadSeleccionada"
-                                 inputId="unidadOperativa"></p-radioButton>
+                                 inputId="unidadOperativa" (onClick)="cambiarTipoUnidad(1)"></p-radioButton>
                   <label for="unidadOperativa" class="ml-2 label-radio-button">Unidad operativa</label>
                 </div>
                 <div class="flex align-items-center">
                   <p-radioButton class="white-button" value="2" id="unidadAdmon" formControlName="unidadSeleccionada"
-                                 inputId="unidadAdmon"></p-radioButton>
+                                 inputId="unidadAdmon" (onClick)="cambiarTipoUnidad(2)"></p-radioButton>
                   <label for="unidadAdmon" class="ml-2 label-radio-button">Unidad administrativa</label>
                 </div>
               </div>
@@ -115,8 +115,10 @@
             <div class="col-md-6">
               <label class="control-label" for="referenciaUnidad">Referencia unidad operativa/Administrativa<span
                 class="req">*</span>:</label>
-              <input id="referenciaUnidad" class="form-control" formControlName="referenciaUnidad"
-                     placeholder="Unidad operativa/administrativa">
+              <p-dropdown appendTo="body" id="referenciaUnidad" class="form-control" formControlName="referenciaUnidad"
+                          [options]="unidades" (onChange)="seleccionarResponsable()"
+                          placeholder="Unidad operativa/administrativa">
+              </p-dropdown>
             </div>
             <div class="col-md-6">
               <label class="control-label" for="solicitadoPor">Solicitado por<span

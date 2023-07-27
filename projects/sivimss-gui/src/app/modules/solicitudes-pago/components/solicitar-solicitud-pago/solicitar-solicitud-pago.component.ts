@@ -13,6 +13,19 @@ import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/aler
 import {HttpErrorResponse} from "@angular/common/http";
 import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 
+interface RegistroVelatorio {
+  desVelatorio: string,
+  idVelatorio: number,
+  nomResponsable: string
+}
+
+interface RegistroUnidadOperativa {
+  idSubdireccion: number,
+  nomResponsable: string,
+  nomSubdireccion: string,
+  referencia: string
+}
+
 @Component({
   selector: 'app-solicitar-solicitud-pago',
   templateUrl: './solicitar-solicitud-pago.component.html',
@@ -21,10 +34,9 @@ import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 export class SolicitarSolicitudPagoComponent implements OnInit {
 
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
-  readonly POSICION_CATALOGO_VELATORIO: number = 1;
-  readonly POSICION_CATALOGO_UNIDAD: number = 1;
-  readonly POSICION_CATALOGO_BANCO: number = 1;
-
+  readonly POSICION_CATALOGO_VELATORIO: number = 2;
+  readonly POSICION_CATALOGO_UNIDAD: number = 3;
+  readonly POSICION_CATALOGO_BANCO: number = 4;
 
   solicitudPagoForm!: FormGroup;
   catatalogoTipoSolicitud: TipoDropdown[] = [];
@@ -33,6 +45,9 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   fechaActual: Date = new Date();
   partidaPresupuestal: PartidaPresupuestal [] = [];
 
+  unidades: TipoDropdown[] = [];
+  catalogoVelatorios: RegistroVelatorio[] = [];
+  catalogoUnidades: RegistroUnidadOperativa[] = [];
 
   constructor(
     private router: Router,
@@ -70,6 +85,9 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     const catalogoTipoSolicitud = respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD];
     this.catatalogoTipoSolicitud = mapearArregloTipoDropdown(catalogoTipoSolicitud.datos, "desTipoSolicitud", "tipoSolicitud");
+    this.catalogoVelatorios = respuesta[this.POSICION_CATALOGO_VELATORIO].datos;
+    this.catalogoUnidades = respuesta[this.POSICION_CATALOGO_UNIDAD].datos;
+    this.unidades = this.recuperarUnidadesOperacionales();
   }
 
   inicializarTipoSolicitud(): void {
@@ -78,7 +96,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       folioFiscal: [{value: null, disabled: false}, [Validators.required]],
       fechaElaboracion: [{value: null, disabled: false}, [Validators.required]],
       unidadSeleccionada: [{value: 1, disabled: false}, [Validators.required]],
-      referenciaUnidad: [{value: null, disabled: true}],
+      referenciaUnidad: [{value: null, disabled: false}, [Validators.required]],
       solicitadoPor: [{value: null, disabled: true}],
       nombreDestinatario: [{value: null, disabled: false}, [Validators.required]],
       nomRemitente: [{value: null, disabled: false}, [Validators.required]],
@@ -114,6 +132,24 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     });
   }
 
+  recuperarUnidadesAdministrativas(): TipoDropdown[] {
+    return this.catalogoVelatorios.map(({desVelatorio, idVelatorio}) => {
+      return {label: `${desVelatorio}-${idVelatorio}`, value: idVelatorio}
+    });
+  }
+
+  recuperarUnidadesOperacionales(): TipoDropdown[] {
+    return this.catalogoUnidades.map(({referencia, idSubdireccion}) => {
+      return {label: `${referencia}-${idSubdireccion}`, value: idSubdireccion}
+    });
+  }
+
+  cambiarTipoUnidad(tipoUnidad: number): void {
+    this.solicitudPagoForm.get('referenciaUnidad')?.patchValue(null);
+    this.solicitudPagoForm.get('solicitadoPor')?.patchValue(null);
+    this.unidades = tipoUnidad === 1 ? this.recuperarUnidadesOperacionales() : this.recuperarUnidadesAdministrativas();
+  }
+
   cancelar(): void {
     this.referencia.close(false);
   }
@@ -146,5 +182,17 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     const importe = this.solicitudPagoForm.get('importe')?.value;
     const importeLetra: string = convertirNumeroPalabra(+importe);
     this.solicitudPagoForm.get('importeLetra')?.patchValue(importeLetra);
+  }
+
+  seleccionarResponsable(): void {
+    const tipoUnidad = this.solicitudPagoForm.get('unidadSeleccionada')?.value;
+    const idUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value;
+    if (tipoUnidad === 1) {
+      const responsable = this.catalogoUnidades.find(cu => cu.idSubdireccion === idUnidad)?.nomResponsable ?? '';
+      this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
+      return;
+    }
+    const responsable = this.catalogoVelatorios.find(cu => cu.idVelatorio === idUnidad)?.nomResponsable ?? '';
+    this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
   }
 }
