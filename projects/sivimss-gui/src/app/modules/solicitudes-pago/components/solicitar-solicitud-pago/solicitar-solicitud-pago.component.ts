@@ -26,6 +26,13 @@ interface RegistroUnidadOperativa {
   referencia: string
 }
 
+interface RegistroProveedor {
+  cveBancaria: number,
+  nomProveedor: string,
+  cuenta: string,
+  banco: string
+}
+
 @Component({
   selector: 'app-solicitar-solicitud-pago',
   templateUrl: './solicitar-solicitud-pago.component.html',
@@ -51,7 +58,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   beneficiarios: TipoDropdown[] = [];
   catalogoVelatorios: RegistroVelatorio[] = [];
   catalogoUnidades: RegistroUnidadOperativa[] = [];
-  catalogoProveedores: any[] = [];
+  catalogoProveedores: RegistroProveedor[] = [];
 
   constructor(
     private router: Router,
@@ -98,6 +105,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.catalogoVelatorios = respuesta[this.POSICION_CATALOGO_VELATORIO].datos;
     this.catalogoUnidades = respuesta[this.POSICION_CATALOGO_UNIDAD].datos;
     this.catalogoProveedores = respuesta[this.POSICION_CATALOGO_BANCO].datos;
+    this.beneficiarios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_BANCO].datos, "nomProveedor", "nomProveedor");
     this.unidades = this.recuperarUnidadesOperacionales();
   }
 

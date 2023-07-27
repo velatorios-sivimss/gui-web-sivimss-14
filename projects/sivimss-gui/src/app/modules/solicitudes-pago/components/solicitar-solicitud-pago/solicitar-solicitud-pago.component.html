@@ -141,8 +141,7 @@
         <label class="control-label" for="fechaElaboracionSec2">Fecha de elaboración<span class="req">*</span>:</label>
         <p-calendar id="fechaElaboracionSec2" formControlName="fechaElaboracion" styleClass="form-control"
                     [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd-mm-yy"
-                    appendTo="body"
-                    [maxDate]="fechaActual">
+                    appendTo="body" [maxDate]="fechaActual">
         </p-calendar>
         <span class="campo-obligatorio"
               *ngIf="fc?.fechaElaboracion?.errors?.required && (fc?.fechaElaboracion?.dirty || fc?.fechaElaboracion?.touched)">Este campo es obligatorio *.</span>
@@ -338,7 +337,7 @@
   </div>
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end align-items-center">
-      <button class="ml-4 btn btn-danger btn-md" (click)="referencia.close()">Cancelar</button>
+      <button class="ml-4 btn btn-danger btn-md" type="button" (click)="referencia.close()">Cancelar</button>
       <button class="ml-6 btn btn-md btn-primary" (click)="crearSolicitudPago();"
               [disabled]="solicitudPagoForm.invalid">Aceptar
       </button>
