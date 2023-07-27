@@ -12,7 +12,7 @@ export class SinCaracteresEspecialesDirective {
 
   @HostListener('input', ['$event']) onInputChange(event: any): void {
     const initalValue = this._el.nativeElement.value;
-    let newValue = initalValue.replace(/^[a-zA-Z0-9!¡?"=)(&%$#|¬*¨}\]\[{^<>+¿'_@:;.-]+$/g, '');
+    let newValue = initalValue.replace(/^[^a-zA-Z0-9!¡?"=)(&%$#|¬*¨}\][{^<>+¿'_@:;.-]+$/g, '');
     newValue = newValue.replace(/\s+/g, ' ');
     this._el.nativeElement.value = newValue;
     this.valueChange.emit(newValue);
