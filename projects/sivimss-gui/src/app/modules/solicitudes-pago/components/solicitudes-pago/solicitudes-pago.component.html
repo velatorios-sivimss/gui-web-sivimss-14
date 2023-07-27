@@ -100,7 +100,8 @@
             <a (click)="abrirDetalleSolicitudPago(solicitud)">
               <img src="assets/images/imagen-icono-ver.svg" alt="Ver">
             </a>
-            <a (click)="abrirPanel($event,solicitud)">
+            <a (click)="abrirPanel($event,solicitud)"
+               *ngIf="['Pendiente','Rechazada','Aprobada'].includes(solicitud.desEstatusSolicitud)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
