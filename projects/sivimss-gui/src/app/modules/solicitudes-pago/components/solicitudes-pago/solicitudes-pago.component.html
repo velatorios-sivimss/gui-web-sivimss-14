@@ -131,10 +131,14 @@
                                 titulo="Aprobar solicitud de pago"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Rechazada'"
                                 titulo="Cancelar solicitud de pago" (click)="abrirModalCancelarSolicitudPago()"
-                                routerLinkActive></app-overlay-panel-opcion>
+      ></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Pendiente'"
                                 titulo="Rechazar solicitud de pago" (click)="abrirModalRechazarSolicitudPago()"
-                                routerLinkActive></app-overlay-panel-opcion>
+      ></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Aprobada'"
+                                titulo="Exportar a PDF"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Aprobada'"
+                                titulo="Exportar a Excel"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
