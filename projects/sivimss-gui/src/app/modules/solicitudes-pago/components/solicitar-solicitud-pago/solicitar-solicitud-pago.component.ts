@@ -6,7 +6,7 @@ import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
-import {PartidaPresupuestal, CrearSolicitudPago, SolicitudPago} from '../../models/solicitud-pagos.interface';
+import {PartidaPresupuestal, CrearSolicitudPago} from '../../models/solicitud-pagos.interface';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
@@ -20,13 +20,18 @@ import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 })
 export class SolicitarSolicitudPagoComponent implements OnInit {
 
+  readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
+  readonly POSICION_CATALOGO_VELATORIO: number = 1;
+  readonly POSICION_CATALOGO_UNIDAD: number = 1;
+  readonly POSICION_CATALOGO_BANCO: number = 1;
+
+
   solicitudPagoForm!: FormGroup;
   catatalogoTipoSolicitud: TipoDropdown[] = [];
 
   datosSolicitudPago!: CrearSolicitudPago;
   fechaActual: Date = new Date();
   partidaPresupuestal: PartidaPresupuestal [] = [];
-  readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
 
 
   constructor(
@@ -117,7 +122,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     return this.solicitudPagoForm.get('tipoSolicitud')?.value
   }
 
-  generarSolicitudPago(): SolicitudPago {
+  generarSolicitudPago(): CrearSolicitudPago {
     return {
       concepto: "",
       cveFolioConsignados: "",
