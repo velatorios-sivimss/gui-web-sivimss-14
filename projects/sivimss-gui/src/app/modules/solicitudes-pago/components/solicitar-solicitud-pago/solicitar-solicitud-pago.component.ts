@@ -283,6 +283,14 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validacionesSolicitudConsignantes(): void {
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaInicial')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaFinal')?.setValidators([Validators.required]);
   }
 
   validacionesPagoContrato(): void {
