@@ -13,66 +13,36 @@ export interface SolicitudPago {
 export interface DetalleSolicitudPago {
   idSolicitud: number;
   cveFolioGastos: string;
+  desEstatusSolicitud: string;
+  desTipoSolicitud: string;
   fecElaboracion: string;
   ejercicioFiscal: number;
   idDelegacion: number;
   unidadMedica: number;
-  idTipoSolicitid: number;
-  desEstatusSolicitud: string;
-  desVelatorio: string;
-  nomBeneficiario: string;
-  desTipoSolicitud: string;
+  unidadAdmi: number;
+  idTipoSolicitud: number;
+  desVelatorio  : string;
   idEstatusSol: number;
+  idUnidadOperativa: number;
+  idVelatorio: number;
+  nomBeneficiario : string;
+  importeTotal: string;
 
-
-  fechaElaboracion1: string;
-  nomDestinatario1: string;
-  nomRemitente1: string;
-  referenciaTD1: string;
-  beneficiario1: string;
-  concepto1: string;
-  importeTotal1: string;
-  cantidad1: string;
-  observ1: string;
-
-  folioGastos2: string;
-  fechaElaboracion2: string;
-  unidadOpe2 : string;
-  unidadAdmi2 : string;
-  refeUnidadOpe2: string;
-  solicitadoOpePor2  : string;
-  refeUnidadAdmi2: string;
-  solicitadoAdmiPor2  : string;
-  nombreDestinatario2: string;
-  nomRemitente2: string;
-  referenciaTD2: string;
-  beneficiario2: string;
-  concepto2: string;
-  cantidadLetra2: string;
-  observ2: string;
-
-  folioGastos3: string;
-  folioConsig3: string;
-  unidadOpe3: string;
-  fechaElaboracion3: string;
-  nombreDestinatario3: string;
-  nomRemitente3: string;
-  referenciaTD3: string;
-  beneficiario3: string;
-  concepto3: string;
-  cantidadLetra3: string;
-  observ3: string;
-
-  folioGastos4: string;
-  folioConsig4: string;
-  fechaElaboracion4: string;
-  nombreDestinatario4: string;
-  nomRemitente4: string;
-  referenciaTD4: string;
-  beneficiario4: string;
-  concepto4: string;
-  cantidadLetra4: string;
-  observ4: string;
+  refeUnidadOpe: string;
+  solicitadoPor  : string;
+  nomDestinatario: string;
+  nomRemitente: string;
+  referenciaTD: string;
+  beneficiario: string;
+  fehaInicial: string;
+  fechaFinal: string;
+  banco: string;
+  cuenta: string;
+  claveBancaria: string;
+  concepto: string;
+  cantidadLetra: string;
+  numContrato: string;
+  observ: string;
 
 }
 

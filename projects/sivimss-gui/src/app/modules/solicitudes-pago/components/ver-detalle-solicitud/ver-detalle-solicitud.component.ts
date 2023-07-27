@@ -58,6 +58,10 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     this.ref.close();
   }
 
+  get tipoSolicitud(): number {
+    return this.solicitudPagoSeleccionado.idTipoSolicitud;
+  }
+
   obtenerSolicPago(idSolicitud: number): void {
     this.cargadorService.activar();
     this.solicitudesPagoService.detalleSolicitudPago(idSolicitud)
@@ -71,6 +75,6 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
           this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
-
   }
+
 }

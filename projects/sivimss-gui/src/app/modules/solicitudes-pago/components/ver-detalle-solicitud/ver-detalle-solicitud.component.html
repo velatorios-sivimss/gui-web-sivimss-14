@@ -9,135 +9,283 @@
             <div class="flex flex-column">
                 <span class="ml-5">Estatus</span>
                 <div class="contenedor-inputswitch">
-
                     <span class="activo">{{solicitudPagoSeleccionado.desEstatusSolicitud}}</span>
                 </div>
             </div>
-            <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)" *appValidaRol="['USUARIOS','MODIFICAR']" onCloseOnNavigation>
-                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-            </a>
         </div>
     </ng-template>
-    <div class="row table-panel-row">
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Tipo de solicitud de pago</label>
-                <span>{{solicitudPagoSeleccionado.desTipoSolicitud}}</span>
+    <ng-container *ngIf="tipoSolicitud">
+        <div class="row table-panel-row">
+            <div class="col-md-6" *ngIf="[2,3,4,6].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Folio fiscal de la factura de gastos</label>
+                    <span>{{solicitudPagoSeleccionado.cveFolioGastos}}</span>
+                </div>
+            </div>
+            <div class="col-md-6" *ngIf="[5].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Folio fiscal de la factura de gastos</label>
+                    <span>{{solicitudPagoSeleccionado.fecElaboracion}}</span>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Ejercicio Fiscal</label>
-                <span>{{solicitudPagoSeleccionado.ejercicioFiscal}}</span>
+        <div class="row table-panel-row">
+            <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Fecha de elaboración</label>
+                    <span>{{solicitudPagoSeleccionado.fecElaboracion}}</span>
+                </div>
+            </div>
+            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Importe Total</label>
+                    <span>{{solicitudPagoSeleccionado.importeTotal}}</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row table-panel-row">
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Folio fiscal de la factura de gastos</label>
-                <span>{{solicitudPagoSeleccionado.cveFolioGastos}}</span>
+        <div class="row mx-1 mb-3" *ngIf="[2,4].includes(tipoSolicitud)">
+            <p-table [value]="partidaPresupuestal" [pageLinks]="3">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th scope="col" class="font-bold">Partida presupuestal</th>
+                        <th scope="col" class="font-bold">Cuentas contables</th>
+                        <th scope="col" class="font-bold">Importe Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-partida>
+                    <tr>
+                        <td> {{partida.partidaPresupuestal}} </td>
+                        <td> {{partida.cuentasContables}} </td>
+                        <td> {{partida.importeTotal}} </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="row mx-1 mb-3" *ngIf="[3,6].includes(tipoSolicitud)">
+            <p-table [value]="partidaPresupuestal" [pageLinks]="3">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th scope="col" class="font-bold">Partida presupuestal</th>
+                        <th scope="col" class="font-bold">Cuentas contables</th>
+                        <th scope="col" class="font-bold"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-partida>
+                    <tr>
+                        <td> {{partida.partidaPresupuestal}} </td>
+                        <td> {{partida.cuentasContables}} </td>
+
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="row table-panel-row" *ngIf="[3].includes(tipoSolicitud)">
+            <div class="col-md-12">
+                <div class="table-panel-column">
+                    <label>Importe Total</label>
+                    <span>{{solicitudPagoSeleccionado.importeTotal}}</span>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Fecha de elaboración</label>
-                <span>{{solicitudPagoSeleccionado.fecElaboracion}}</span>
+        <div class="row table-panel-row">
+            <div class="row ml-6">
+                <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
+                <label>Unidad operativa / administrativa</label>
+            </div>
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Referencia unidad operativa / administrativa</label>
+                    <span>ADM-01</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Solicitado por</label>
+                    <span>Isaac Aguirre</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row mx-6 mb-3">
-        <p-table styleClass="mb-8" [value]="partidaPresupuestal" [pageLinks]="3">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th scope="col">Partida Presupuestal</th>
-                    <th scope="col">Cuentas contables</th>
-                    <th scope="col">Importe total</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-partida>
-                <tr>
-                    <td> {{partida.partidaPresupuestal}} </td>
-                    <td> {{partida.cuentasContables}} </td>
-                    <td> {{partida.importeTotal}} </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
-    <div class="row table-panel-row">
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Unidad operativa</label>
-                <span>{{solicitudPagoSeleccionado.unidadMedica}}</span>
+        <div class="row table-panel-row">
+            <div class="col-md-6" *ngIf="[1,5,6].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Fecha de elaboración</label>
+                    <span>{{solicitudPagoSeleccionado.fecElaboracion}}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Nombre del destinatario (Para)</label>
+                    <span>Edwin Ruiz Cardenas</span>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Solicitado por</label>
-                <span>1234</span>
+        <div class="row table-panel-row">
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Nombre del remitente (De)</label>
+                    <span>Ricardo Quintero</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Referencia DT</label>
+                    <span>12133576</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row table-panel-row">
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Referencia DT</label>
-                <span>12133576</span>
+        <div class="row table-panel-row">
+            <div class="col-md-6" *ngIf="[2,3,4,5,6].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Beneficiario</label>
+                    <span>{{solicitudPagoSeleccionado.nomBeneficiario}}</span>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Beneficiario</label>
-                <span>{{solicitudPagoSeleccionado.nomBeneficiario}}</span>
+        <div class="row table-panel-row" *ngIf="[3].includes(tipoSolicitud)">
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Fecha Inicial</label>
+                    <span>01/07/2023</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Fecha Final</label>
+                    <span>12/07/2023</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row table-panel-row">
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Nombre del destinatario</label>
-                <span>Edwin Ruiz Cardenas</span>
+        <div class="row table-panel-row" *ngIf="[1].includes(tipoSolicitud)">
+            <div class="col-md-12">
+                <div class="table-panel-column">
+                    <label>Beneficiario</label>
+                    <span>{{solicitudPagoSeleccionado.nomBeneficiario}}</span>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Nombre del remitente (De)</label>
-                <span>Ricardo Quintero</span>
+        <div class="row table-panel-row" *ngIf="[1,4].includes(tipoSolicitud)">
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Banco</label>
+                    <span>{{solicitudPagoSeleccionado.unidadMedica}}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Cuenta</label>
+                    <span>1234</span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="table-panel-column">
+                    <label>Clave bancaria</label>
+                    <span>1234</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row table-panel-row">
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Concepto</label>
-                <span>Gasto primario</span>
+
+        <div class="row table-panel-row">
+            <div class="col-md-6" *ngIf="[1,2,3,4].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Concepto</label>
+                    <span>Gasto primario</span>
+                </div>
+            </div>
+            <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Cantidad con letra</label>
+                    <span>Venticinco mil quinientos pesos</span>
+                </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Número de contrato</label>
+
+                </div>
+            </div>
+            <div class="col-md-6" *ngIf="[1].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Importe Total</label>
+                    <span>{{solicitudPagoSeleccionado.importeTotal}}</span>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="table-panel-column">
-                <label>Cantidad letra</label>
-                <span>Venticinco mil quinientos pesos</span>
+        <div class="row table-panel-row">
+            <div class="col-md-12" *ngIf="[1].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Cantidad con letra</label>
+                    <span>Venticinco mil quinientos pesos</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row table-panel-row">
-        <div class="col-md-12">
-            <div class="table-panel-column">
-                <label>Observaciones</label>
-                <span>No se presentan problemas de ningun tipo</span>
+        <div class="row table-panel-row" *ngIf="[5,6].includes(tipoSolicitud)">
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Banco</label>
+                    <span>{{solicitudPagoSeleccionado.unidadMedica}}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="table-panel-column">
+                    <label>Cuenta</label>
+                    <span>1234</span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="table-panel-column">
+                    <label>Clave bancaria</label>
+                    <span>123234567894</span>
+                </div>
+            </div>
+
+        </div>
+        <div class="row table-panel-row">
+
+            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Concepto</label>
+                    <span>Gasto primario</span>
+                </div>
+            </div>
+            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+                <div class="table-panel-column">
+                    <label>Cantidad con letra</label>
+                    <span>Venticinco mil quinientos pesos</span>
+                </div>
             </div>
         </div>
-    </div>
+        <div class="row table-panel-row">
+            <div class="col-md-12" *ngIf="[5].includes(tipoSolicitud)">
+                <div class="row table-panel-row">
+                    <div class="col-md-6">
+                        <div class="table-panel-column">
+                            <label>Fecha Inicial</label>
+                            <span>01/07/2023</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="table-panel-column">
+                            <label>Fecha Final</label>
+                            <span>12/07/2023</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row table-panel-row">
+            <div class="col-md-12">
+                <div class="table-panel-column">
+                    <label>Observaciones</label>
+                    <span>No se presentan problemas de ningun tipo</span>
+                </div>
+            </div>
+        </div>
+
+    </ng-container>
 </app-table-panel>
-<div class="flex justify-content-end mt-4 mb-3">
+<div class="flex justify-content-end mt-4">
     <button class="ml-4 btn btn-primary btn-md" (click)="aceptar()">
     Aceptar
   </button>
 </div>
-<p-overlayPanel #overlayPanel>
-    <ng-template pTemplate="content">
-        <app-overlay-panel-opciones>
-            <app-overlay-panel-opcion titulo="Aceptar" (click)="abrirModalAceptar()"></app-overlay-panel-opcion>
-        </app-overlay-panel-opciones>
-    </ng-template>
-</p-overlayPanel>
