@@ -59,6 +59,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   catalogoVelatorios: RegistroVelatorio[] = [];
   catalogoUnidades: RegistroUnidadOperativa[] = [];
   catalogoProveedores: RegistroProveedor[] = [];
+  mensajeConfirmacion: boolean = false;
 
   constructor(
     private router: Router,
@@ -138,6 +139,14 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     const tipoSolicitud: number = this.solicitudPagoForm.get('tipoSolicitud')?.value as number;
     if (!this.validaciones.has(tipoSolicitud)) return;
     this.validaciones.get(tipoSolicitud)();
+  }
+
+  seleccionarBeneficiario(): void {
+    const beneficiario = this.solicitudPagoForm.get('beneficiario')?.value;
+    const registro = this.catalogoProveedores.find(r => r.nomProveedor === beneficiario);
+    this.solicitudPagoForm.get('banco')?.patchValue(registro?.banco);
+    this.solicitudPagoForm.get('cuenta')?.patchValue(registro?.cuenta);
+    this.solicitudPagoForm.get('claveBancaria')?.patchValue(registro?.cveBancaria);
   }
 
   crearSolicitudPago(): void {

@@ -201,7 +201,8 @@
       <div class="col-md-12 mb-3" *ngIf="[1].includes(tipoSolicitud)">
         <label class="control-label" for="beneficiarioCol12">Beneficiario<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="beneficiarioCol12" class="form-control" formControlName="beneficiario"
-                    [options]="beneficiarios" placeholder="Ingresar beneficiario">
+                    [options]="beneficiarios" placeholder="Ingresar beneficiario"
+                    (onChange)="seleccionarBeneficiario()">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="fc?.beneficiario?.errors?.required && (fc?.beneficiario?.dirty || fc?.beneficiario?.touched)">Este campo es obligatorio *.</span>
@@ -329,17 +330,24 @@
       </div>
     </div>
   </ng-container>
-
   <div class="row mb-3">
     <div class="col-md-12">
       <span class="control-label">*Campos obligatorios</span>
     </div>
   </div>
+  <div class="mb-3 mt-3 row text-center" *ngIf="mensajeConfirmacion">
+    ¿Estás seguro de generar la solicitud de pago?
+  </div>
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end align-items-center">
       <button class="ml-4 btn btn-danger btn-md" type="button" (click)="referencia.close()">Cancelar</button>
-      <button class="ml-6 btn btn-md btn-primary" (click)="crearSolicitudPago();"
-              [disabled]="solicitudPagoForm.invalid">Aceptar
+      <button class="ml-6 btn btn-md btn-primary" *ngIf="!mensajeConfirmacion"
+              (click)="mensajeConfirmacion = !mensajeConfirmacion"
+              [disabled]="solicitudPagoForm.invalid">Generar solicitud
+      </button>
+      <button class="ml-6 btn btn-md btn-primary" *ngIf="mensajeConfirmacion"
+              (click)="crearSolicitudPago();">
+        Aceptar
       </button>
     </div>
   </div>
