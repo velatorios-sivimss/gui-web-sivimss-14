@@ -7,6 +7,8 @@
                   [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true"
                   filterBy="label" appendTo="body">
       </p-dropdown>
+      <span class="campo-obligatorio"
+            *ngIf="fc?.tipoSolicitud?.errors?.required && (fc?.tipoSolicitud?.dirty || fc?.tipoSolicitud?.touched)">Este campo es obligatorio *.</span>
     </div>
   </div>
   <ng-container *ngIf="tipoSolicitud">
@@ -309,17 +311,18 @@
       </div>
     </div>
   </ng-container>
-</form>
-<div class="row mb-3">
-  <div class="col-md-12">
-    <span class="control-label">*Campos obligatorios</span>
+
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <span class="control-label">*Campos obligatorios</span>
+    </div>
   </div>
-</div>
-<section>
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end align-items-center">
       <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-      <button class="ml-6 btn btn-md btn-primary" (click)="crearSolicitudPago();">Aceptar</button>
+      <button class="ml-6 btn btn-md btn-primary" (click)="crearSolicitudPago();"
+              [disabled]="solicitudPagoForm.invalid">Aceptar
+      </button>
     </div>
   </div>
-</section>
+</form>

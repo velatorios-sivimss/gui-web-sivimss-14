@@ -33,6 +33,10 @@ interface RegistroUnidadOperativa {
 })
 export class SolicitarSolicitudPagoComponent implements OnInit {
 
+  Validaciones = {
+    1: () => this.validacionesBienesServiciosPorComprobar()
+  }
+
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
   readonly POSICION_CATALOGO_VELATORIO: number = 2;
   readonly POSICION_CATALOGO_UNIDAD: number = 3;
@@ -46,6 +50,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   partidaPresupuestal: PartidaPresupuestal [] = [];
 
   unidades: TipoDropdown[] = [];
+  beneficiarios: TipoDropdown[] = [];
   catalogoVelatorios: RegistroVelatorio[] = [];
   catalogoUnidades: RegistroUnidadOperativa[] = [];
 
@@ -93,25 +98,25 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   inicializarTipoSolicitud(): void {
     this.solicitudPagoForm = this.formBulder.group({
       tipoSolicitud: [{value: null, disabled: false}, [Validators.required]],
-      folioFiscal: [{value: null, disabled: false}, [Validators.required]],
-      fechaElaboracion: [{value: null, disabled: false}, [Validators.required]],
-      unidadSeleccionada: [{value: 1, disabled: false}, [Validators.required]],
-      referenciaUnidad: [{value: null, disabled: false}, [Validators.required]],
+      folioFiscal: [{value: null, disabled: false}],
+      fechaElaboracion: [{value: null, disabled: false}],
+      unidadSeleccionada: [{value: 1, disabled: false}],
+      referenciaUnidad: [{value: null, disabled: false}],
       solicitadoPor: [{value: null, disabled: true}],
-      nombreDestinatario: [{value: null, disabled: false}, [Validators.required]],
-      nomRemitente: [{value: null, disabled: false}, [Validators.required]],
+      nombreDestinatario: [{value: null, disabled: false}],
+      nomRemitente: [{value: null, disabled: false}],
       referenciaTD: [{value: null, disabled: true}],
-      beneficiario: [{value: null, disabled: false}, [Validators.required]],
-      concepto: [{value: null, disabled: false}, [Validators.required]],
+      beneficiario: [{value: null, disabled: false}],
+      concepto: [{value: null, disabled: false}],
       importe: [{value: null, disabled: false}],
       importeLetra: [{value: null, disabled: true}],
-      observaciones: [{value: null, disabled: false}, [Validators.required]],
-      numeroContrato: [{value: null, disabled: false}, [Validators.required]],
-      banco: [{value: null, disabled: false}, [Validators.required]],
-      cuenta: [{value: null, disabled: false}, [Validators.required]],
-      claveBancaria: [{value: null, disabled: false}, [Validators.required]],
-      fechaInicial: [{value: null, disabled: false}, [Validators.required]],
-      fechaFinal: [{value: null, disabled: false}, [Validators.required]],
+      observaciones: [{value: null, disabled: false}],
+      numeroContrato: [{value: null, disabled: false}],
+      banco: [{value: null, disabled: false}],
+      cuenta: [{value: null, disabled: false}],
+      claveBancaria: [{value: null, disabled: false}],
+      fechaInicial: [{value: null, disabled: false}],
+      fechaFinal: [{value: null, disabled: false}],
     });
   }
 
@@ -181,7 +186,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   convertirImporte(): void {
     const importe = this.solicitudPagoForm.get('importe')?.value;
     const importeLetra: string = convertirNumeroPalabra(+importe);
-    this.solicitudPagoForm.get('importeLetra')?.patchValue(importeLetra);
+    this.solicitudPagoForm.get('importeLetra')?.patchValue(importeLetra[0].toUpperCase() + importeLetra.substring(1));
   }
 
   seleccionarResponsable(): void {
@@ -194,5 +199,20 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     }
     const responsable = this.catalogoVelatorios.find(cu => cu.idVelatorio === idUnidad)?.nomResponsable ?? '';
     this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
+  }
+
+  validacionesBienesServiciosPorComprobar(): void {
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('importe')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required])
+  }
+
+  get fc() {
+    return this.solicitudPagoForm.controls;
   }
 }
