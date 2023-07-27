@@ -38,13 +38,13 @@
                   *ngIf="fp.nombre?.errors?.required && (fp.nombre?.dirty || fp.nombre?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="primerApellido">Primer apellido <span class="req">*</span>:</label>
+            <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
             <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa primer apellido">
             <span class="campo-obligatorio"
                   *ngIf="fp.primerApellido?.errors?.required && (fp.primerApellido?.dirty || fp.primerApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span></label>
+            <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
             <input id="segundoApellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa nombre">
             <span class="campo-obligatorio"
                   *ngIf="fp.segundoApellido?.errors?.required && (fp.segundoApellido?.dirty || fp.segundoApellido?.touched)">Este campo es obligatorio *.</span>
@@ -128,7 +128,7 @@
         <hr class="hr-accordion-content">
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="control-label" for="tipoPaquete">Tipo de paquete <span class="req">*</span>:</label>
+            <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
             <p-dropdown id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
                         placeholder="Selecciona tipo de paquete" [options]="tipoPaquete"
                         (onChange)="mostrarModalTipoPaquete()" [filter]="true" filterBy="label"> </p-dropdown>
@@ -144,7 +144,7 @@
                   *ngIf="fp.enfermedadPrexistente?.errors?.required && (fp.enfermedadPrexistente?.dirty || fp.enfermedadPrexistente?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="otroTipoEnferemdad">
-            <label class="control-label" for="otraEnferdedad">Otro <span class="req">*</span>:</label>
+            <label class="control-label" for="otraEnferdedad">Otro<span class="req">*</span>:</label>
             <input id="otraEnferdedad" class="form-control" formControlName="otraEnferdedad" placeholder="Otro"
                    maxlength="35">
             <span class="campo-obligatorio"
