@@ -3,7 +3,7 @@
   <h2 class="subtitulo">Datos personales</h2>
   <div class="row mb-3">
     <div class="col-md-4">
-      <label class="control-label" for="curp">CURP <span class="req">*</span>:</label>
+      <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
       <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP" alphanumericOnly
              maxlength="18" (blur)="consultaCURP()" (keyup)="convertirMayusculas(0)">
       <span class="campo-obligatorio"
@@ -29,14 +29,14 @@
             *ngIf="fp.nombre?.errors?.required && (fp.nombre?.dirty || fp.nombre?.touched)">Este campo es obligatorio *.</span>
     </div>
     <div class="col-md-4">
-      <label class="control-label" for="primerApellido">Primer apellido <span class="req">*</span>:</label>
+      <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
       <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa el primer apellido"
              maxlength="20" (change)="validarFormularioVacio(false,'local')">
       <span class="campo-obligatorio"
             *ngIf="fp.primerApellido?.errors?.required && (fp.primerApellido?.dirty || fp.primerApellido?.touched)">Este campo es obligatorio *.</span>
     </div>
     <div class="col-md-4">
-      <label class="control-label" for="segundoApellido">Segundo apellido <span class="req">*</span></label>
+      <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
       <input id="segundoApellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa el segundo apellido"
              maxlength="20" (change)="validarFormularioVacio(false,'local')">
       <span class="campo-obligatorio"
@@ -129,7 +129,7 @@
   <hr class="hr-accordion-content">
   <div class="row mb-3">
     <div class="col-md-3" >
-      <label class="control-label" for="tipoPaquete">Tipo de paquete <span class="req">*</span>:</label>
+      <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
       <p-dropdown id="tipoPaquete" class="form-control" formControlName="tipoPaquete" [options]="tipoPaquete"
                   placeholder="Selecciona el paquete" (onChange)="mostrarModalTipoPaquete()" [filter]="true" filterBy="label">
       </p-dropdown>
@@ -143,7 +143,7 @@
       </p-dropdown>
     </div>
     <div class="col-md-3" *ngIf="otroTipoEnferemdad">
-      <label class="control-label" for="otraEnfermedad">Otro <span class="req">*</span>:</label>
+      <label class="control-label" for="otraEnfermedad">Otro<span class="req">*</span>:</label>
       <input id="otraEnfermedad" class="form-control" formControlName="otraEnfermedad" placeholder="Otro"
              maxlength="35" (change)="validarFormularioVacio(false,'local')">
       <span class="campo-obligatorio"
