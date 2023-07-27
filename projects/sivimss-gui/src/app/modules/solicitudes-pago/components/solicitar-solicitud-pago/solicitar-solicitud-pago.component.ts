@@ -233,28 +233,39 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validacionesBienesServiciosPorComprobar(): void {
-    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('importe')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('importe')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
   }
 
   validacionesComprobacionBienesServicios(): void {
-    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required])
-    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required])
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
   }
 
   validacionesSolicitudRembolso(): void {
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaInicial')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaFinal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.disable();
+    this.solicitudPagoForm.get('importe')?.disable();
   }
 
   validacionesSolicitudPago(): void {
