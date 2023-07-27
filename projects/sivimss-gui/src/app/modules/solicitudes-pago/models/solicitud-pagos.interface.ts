@@ -1,14 +1,19 @@
 export interface SolicitudPago {
-  motRechazo?: string;
-  desEstatusSolicitud: string;
-  idSolicitud: number;
-  desVelatorio: string;
-  cveFolio: string;
-  ejercicioFiscal: string,
-  fecElaboracion: string;
-  idTipoSolicitid: string;
-  desTipoSolicitud: string;
-  idEstatus: string;
+  "idTipoSolic": number,
+  "cveFolioGastos": string,
+  "cveFolioConsignados" : string,
+  "idUnidadOperativa" : number,
+  "nomDestinatario" : string,
+  "nomRemitente" : string,
+  "numReferencia" : number,
+  "idContratBenef" : number,
+  "fechaInicial" : string,
+  "fechaFinal" : string,
+  "concepto" : string,
+  "observaciones" : string,
+  "idVelatorio" : number,
+  "ejercicioFiscal" : number,
+  "idEstatusSol" : number
 }
 
 export interface DetalleSolicitudPago {

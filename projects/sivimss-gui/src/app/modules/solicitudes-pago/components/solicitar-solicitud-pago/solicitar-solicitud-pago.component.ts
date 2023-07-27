@@ -6,7 +6,7 @@ import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
-import {PartidaPresupuestal, CrearSolicitudPago} from '../../models/solicitud-pagos.interface';
+import {PartidaPresupuestal, CrearSolicitudPago, SolicitudPago} from '../../models/solicitud-pagos.interface';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
@@ -23,8 +23,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   solicitudPagoForm!: FormGroup;
   catatalogoTipoSolicitud: TipoDropdown[] = [];
 
-
-  pagoSeleccionado: any = {}
   datosSolicitudPago!: CrearSolicitudPago;
   fechaActual: Date = new Date();
   partidaPresupuestal: PartidaPresupuestal [] = [];
@@ -119,11 +117,29 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     return this.solicitudPagoForm.get('tipoSolicitud')?.value
   }
 
+  generarSolicitudPago(): SolicitudPago {
+    return {
+      concepto: "",
+      cveFolioConsignados: "",
+      cveFolioGastos: "",
+      ejercicioFiscal: 0,
+      fechaFinal: "",
+      fechaInicial: "",
+      idContratBenef: 0,
+      idEstatusSol: 0,
+      idTipoSolic: 0,
+      idUnidadOperativa: 0,
+      idVelatorio: 0,
+      nomDestinatario: "",
+      nomRemitente: "",
+      numReferencia: 0,
+      observaciones: ""
+    }
+  }
+
   convertirImporte(): void {
     const importe = this.solicitudPagoForm.get('importe')?.value;
-    console.log(importe)
     const importeLetra: string = convertirNumeroPalabra(+importe);
-    console.log(importeLetra)
     this.solicitudPagoForm.get('importeLetra')?.patchValue(importeLetra);
   }
 }
