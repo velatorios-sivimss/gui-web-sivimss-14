@@ -87,7 +87,7 @@ export class ModificarContratantesComponent implements OnInit {
   }
 
   incializarDatosGeneralesForm(contratante: UsuarioContratante): void {
-    let fechaNacimiento = moment(contratante.fecNacimiento, 'DD-MM-YYYY').format('YYYY-MM-DD');
+    let fechaNacimiento = contratante.fecNacimiento ? moment(contratante.fecNacimiento, 'DD-MM-YYYY').format('YYYY-MM-DD') : null;
     this.datosGeneralesForm = this.formBuilder.group({
       curp: [{ value: contratante.curp, disabled: true }, []],
       rfc: [{ value: contratante.rfc, disabled: false }, [Validators.maxLength(13)]],
@@ -97,7 +97,7 @@ export class ModificarContratantesComponent implements OnInit {
       materno: [{ value: contratante.materno, disabled: false }, [Validators.maxLength(30)]],
       numSexo: [{ value: this.contratante.numSexo, disabled: false }, []],
       otroSexo: [{ value: this.contratante.sexo, disabled: false }, [Validators.maxLength(15)]],
-      fecNacimiento: [{ value: new Date(this.diferenciaUTC(fechaNacimiento)), disabled: false }, []],
+      fecNacimiento: [{ value: fechaNacimiento ? new Date(this.diferenciaUTC(fechaNacimiento)) : null, disabled: false }, []],
       nacionalidad: [{
         value: String(contratante.nacionalidad).toLocaleLowerCase() === 'mexicana' ? 1 : 2,
         disabled: false
@@ -247,7 +247,7 @@ export class ModificarContratantesComponent implements OnInit {
       rfc: this.contratanteModificado.rfc,
       numSexo: this.contratanteModificado.numSexo,
       otroSexo: this.contratanteModificado.otroSexo,
-      fecNacimiento: moment(this.contratanteModificado.fecNacimiento).format('DD-MM-YYYY'),
+      fecNacimiento: this.contratanteModificado.fecNacimiento ? moment(this.contratanteModificado.fecNacimiento).format('DD-MM-YYYY') : null,
       idPais: this.contratanteModificado.idPais,
       idLugarNac: this.contratanteModificado.idEstado,
       tel: this.contratanteModificado.telefono,
