@@ -36,9 +36,9 @@
             Campo obligatorio</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="nombreContratante">Nombre de contratante:</label>
+          <label class="control-label" for="nombreContratante">Número de Contratante:</label>
           <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
-            placeholder="Ingresa nombre" alphanumericOnly trimmer>
+            placeholder="Ingresa número" alphanumericOnly trimmer>
           <span class="campo-obligatorio"
             *ngIf="btcf.nombreContratante?.errors?.required && (btcf.nombreContratante?.dirty || btcf.nombreContratante?.touched)">
             Campo obligatorio</span>
@@ -48,7 +48,7 @@
       <div class="row mb-3" *ngIf="!btcf.tipoConvenio.value">
         <div class="col-md-6">
           <label class="control-label" for="folio">Folio:</label>
-          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa folio" alphanumericOnly
+          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa folio" folioOdsAlphanumeric
             trimmer>
           <span class="campo-obligatorio"
             *ngIf="btcf.folio.errors?.required && (btcf.folio.dirty || btcf.folio.touched)">
