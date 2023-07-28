@@ -136,7 +136,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   seleccionarValidaciones(): void {
-    this.limpiarFormulario();
     const tipoSolicitud: number = this.solicitudPagoForm.get('tipoSolicitud')?.value as number;
     if (!this.validaciones.has(tipoSolicitud)) return;
     this.validaciones.get(tipoSolicitud)();
@@ -233,6 +232,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validacionesBienesServiciosPorComprobar(): void {
+    this.limpiarFormulario();
     this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
@@ -246,6 +246,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validacionesComprobacionBienesServicios(): void {
+    this.limpiarFormulario();
     this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
@@ -258,6 +259,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validacionesSolicitudRembolso(): void {
+    this.limpiarFormulario();
     this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
@@ -297,6 +299,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   limpiarFormulario(): void {
+    this.mensajeConfirmacion = false;
     this.solicitudPagoForm.get('folioFiscal')?.patchValue(null);
     this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
     this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
