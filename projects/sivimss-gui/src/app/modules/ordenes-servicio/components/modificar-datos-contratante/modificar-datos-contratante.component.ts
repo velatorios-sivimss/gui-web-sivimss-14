@@ -181,8 +181,6 @@ export class ModificarDatosContratanteComponent
     this.gestionarEtapasService.datosConsultaODS$
       .asObservable()
       .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
-
-
   }
 
 
@@ -266,8 +264,7 @@ export class ModificarDatosContratanteComponent
           {
             value: null,
             disabled: false,
-          },
-          [Validators.required],
+          }
         ],
         lugarNacimiento: [
           {
@@ -301,7 +298,6 @@ export class ModificarDatosContratanteComponent
             value: null,
             disabled: false,
           },
-          [Validators.required],
         ],
       }),
       direccion: this.formBuilder.group({
@@ -590,10 +586,10 @@ export class ModificarDatosContratanteComponent
   }
 
   consultarCURP(): void {
-    this.limpiarFormularioConsultaRfcCurp('curp');
     if (!this.datosContratante.curp.value) {
       return;
     }
+    this.limpiarFormularioConsultaRfcCurp('curp');
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
@@ -728,10 +724,10 @@ export class ModificarDatosContratanteComponent
   }
 
   consultarRFC(): void {
-    this.limpiarFormularioConsultaRfcCurp('rfc');
     if (!this.datosContratante.rfc.value) {
       return;
     }
+    this.limpiarFormularioConsultaRfcCurp('rfc');
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)
@@ -855,7 +851,7 @@ export class ModificarDatosContratanteComponent
     this.datosContratante.lugarNacimiento.clearValidators();
     this.datosContratante.lugarNacimiento.reset();
     this.datosContratante.paisNacimiento.enable();
-    this.datosContratante.paisNacimiento.setValidators(Validators.required);
+    // this.datosContratante.paisNacimiento.setValidators(Validators.required);
   }
 
   continuar() {
@@ -1086,6 +1082,25 @@ export class ModificarDatosContratanteComponent
     };
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
   }
+
+  convertirAMinusculas(): void {
+    this.datosContratante.correoElectronico.setValue(
+      this.datosContratante.correoElectronico.value.toLowerCase()
+    );
+  }
+
+  validarCorreoElectronico(): void {
+    if (this.datosContratante.correoElectronico?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(50)
+      );
+    }
+  }
+
+
+
+
 
   get datosContratante() {
     return (this.form.controls['datosContratante'] as FormGroup).controls;

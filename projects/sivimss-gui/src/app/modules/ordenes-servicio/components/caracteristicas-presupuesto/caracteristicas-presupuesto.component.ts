@@ -131,6 +131,7 @@ export class CaracteristicasPresupuestoComponent
   confCambiarPaquete:boolean = false;
   tablaPaqueteSeleccion!: any;
   costoServiciosPorPaquete!: number;
+  confQuitarPresupuesto: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -714,6 +715,7 @@ export class CaracteristicasPresupuestoComponent
   }
 
   quitarPresupuesto(): void {
+    this.confQuitarPresupuesto = false
     let nuevoArray = this.datosPresupuesto.filter(
       (item) => this.valorFila.fila !== item.fila
     );

@@ -201,6 +201,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'orden-entrada',
+    loadChildren:() => import ('./modules/orden-entrada/orden-entrada.module').then(m=> m.OrdenEntradaModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: '**',
     component: PaginaNoEncontradaComponent,
   },

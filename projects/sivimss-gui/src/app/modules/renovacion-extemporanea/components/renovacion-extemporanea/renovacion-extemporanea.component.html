@@ -29,7 +29,7 @@
           obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="rfcAfiliado">RFC afiliado:</label>
+        <label class="control-label" for="rfcAfiliado">RFC del afiliado:</label>
         <input id="rfcAfiliado" class="form-control" formControlName="rfcAfiliado" placeholder="Ingresa el articulo"
           (keyup)="consultaServicioEspecifico()">
         <span class="campo-obligatorio"
@@ -47,12 +47,9 @@
   </form>
 </div>
 <section class="mt-5">
-  <div class="flex justify-content-between align-items-center">
-    <h2 class="subtitulo">Convenios de previsión funeraria</h2>
-  </div>
-  <p-table styleClass="mt-5 mb-8" [value]="conveniosPrevicion"
-    [paginator]="conveniosPrevicion.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
-    [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+  <p-table styleClass="mt-5 mb-8" [value]="conveniosPrevicion" [paginator]="conveniosPrevicion.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
         <th scope="col">Velatorio origen</th>
@@ -61,7 +58,11 @@
         <th scope="col">Nombre</th>
         <th scope="col">Primer apellido</th>
         <th scope="col">Segundo apellido</th>
-        <th scope="col">Estatus</th>
+        <th scope="col">Tipo de Prevención Funeraria</th>
+        <th scope="col">Tipo de Paquete</th>
+        <th scope="col">Cuota de Recuperación</th>
+        <th scope="col">Fecha Inicio de Vigencia</th>
+        <th scope="col">Fecha Fin de Vigencia</th>
         <th scope="col"></th>
       </tr>
     </ng-template>
@@ -73,17 +74,17 @@
         <td> {{convenioPrevision.nombre}} </td>
         <td> {{convenioPrevision.primerApellido}} </td>
         <td> {{convenioPrevision.segundoApellido}} </td>
-        <td>
-          <span class="activo" *ngIf="convenioPrevision.estatus">Abierto</span>
-          <span class="inactivo" *ngIf="!convenioPrevision.estatus">Cerrado</span>
-        </td>
+        <td> {{convenioPrevision.tipoPrevencion}} </td>
+        <td> {{convenioPrevision.tipoPaquete}} </td>
+        <td> {{convenioPrevision.cuotaRecuperacion}} </td>
+        <td> {{convenioPrevision.fechaInicioVigencia}} </td>
+        <td> {{convenioPrevision.fechaFinVigencia}} </td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetalleRenovacion(convenioPrevision)">
-              <img src="../../../../../assets/images/imagen-icono-ver.svg" alt="icono ver">
-            </a>
-            <a (click)="abrirPanel($event,convenioPrevision)">
-              <img src="../../../../../assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            <a (click)="abrirPanel($event, convenioPrevision)">
+              <img
+                src="assets/images/imagen-icono-barras-horizontales.svg"
+                alt="icono barras horizontales">
             </a>
           </div>
         </td>
@@ -100,7 +101,8 @@
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-excel.svg"
+              alt="exportar excel">
           </div>
         </div>
       </div>
@@ -137,3 +139,11 @@
     </div>
   </ng-template>
 </p-dialog>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Habilitar renovación"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

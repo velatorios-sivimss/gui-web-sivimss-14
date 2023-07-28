@@ -91,6 +91,11 @@ export class ModalAgregarUrnaComponent implements OnInit {
 
 
           this.urnasCompletos = arregloUrnaTemporal;
+          if(this.urnasCompletos.length == 0){
+            const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
+            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+          }
+
           this.urnas = mapearArregloTipoDropdown(
             arregloUrnaTemporal,
             'nombreArticulo',

@@ -169,9 +169,9 @@
             <label for="motivoCancelacion" class="control-label">Motivo de la cancelación <span
               class="req">*</span>:</label>
             <textarea  id="motivoCancelacion" lettersOnly (keyup.space)="quitarEspacioInicio()" formControlName="motivoCancelacion" class="form-control" rows="4"
-                      placeholder="Inserta el motivo de la cancelación"></textarea>
+                      placeholder="Inserta el motivo de la cancelación" maxlength="100"></textarea>
             <span class="campo-obligatorio"
-                  *ngIf="f.motivoCancelacion?.errors?.required && (f.motivoCancelacion?.dirty || f.motivoCancelacion?.touched)">Campo obligatorio</span>
+                  *ngIf="f.motivoCancelacion?.errors?.required && (f.motivoCancelacion?.dirty || f.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mt-3">
@@ -191,7 +191,7 @@
         <div class="row">
           <div class="col-md-12 flex justify-content-end align-items-center">
             <button type="button" class="btn btn-md btn-gold" (click)="cancelar()">Cancelar</button>
-            <button type="button" class="ml-6 btn btn-md btn-primary" [disabled]="form.invalid || horasExcedidas" (click)="guardar()">Guardar</button>
+            <button type="button" class="ml-6 btn btn-md btn-primary" [disabled]="form.invalid" (click)="guardar()">Guardar</button>
           </div>
         </div>
       </form>

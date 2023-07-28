@@ -25,14 +25,14 @@
                    (blur)="consultaRFC()" (keyup)="convertirMayusculas(1)">
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="matricula">Matrícula :</label>
+            <label class="control-label" for="matricula">Matrícula:</label>
             <input id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula" numbersOnly
             maxlength="10" (blur)="consultarMatricula()">
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-md-4">
-            <label class="control-label" for="nombre">Nombres (s)<span class="req">*</span>:</label>
+            <label class="control-label" for="nombre">Nombres(s)<span class="req">*</span>:</label>
             <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
             <span class="campo-obligatorio"
                   *ngIf="fp.nombre?.errors?.required && (fp.nombre?.dirty || fp.nombre?.touched)">Este campo es obligatorio *.</span>
@@ -110,14 +110,14 @@
                   *ngIf="fp.municipio?.errors?.required && (fp.municipio?.dirty || fp.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="estado">Estado <span class="req">*</span>:</label>
+            <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
             <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado"
                    maxlength="35">
             <span class="campo-obligatorio"
                   *ngIf="fp.estado?.errors?.required && (fp.estado?.dirty || fp.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="pais">País <span class="req">*</span>:</label>
+            <label class="control-label" for="pais">País<span class="req">*</span>:</label>
             <p-dropdown id="pais" class="form-control" formControlName="pais" [options]="pais"
                         placeholder="Selecciona el pais" [filter]="true" filterBy="label">
             </p-dropdown>
@@ -144,7 +144,7 @@
                   *ngIf="fp.enfermedadPrexistente?.errors?.required && (fp.enfermedadPrexistente?.dirty || fp.enfermedadPrexistente?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="otroTipoEnferemdad">
-            <label class="control-label" for="otraEnferdedad">Otro <span class="req">*</span>:</label>
+            <label class="control-label" for="otraEnferdedad">Otro<span class="req">*</span>:</label>
             <input id="otraEnferdedad" class="form-control" formControlName="otraEnferdedad" placeholder="Otro"
                    maxlength="35">
             <span class="campo-obligatorio"

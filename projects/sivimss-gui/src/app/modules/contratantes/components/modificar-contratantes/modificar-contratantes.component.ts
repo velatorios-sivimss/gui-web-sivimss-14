@@ -87,7 +87,7 @@ export class ModificarContratantesComponent implements OnInit {
   }
 
   incializarDatosGeneralesForm(contratante: UsuarioContratante): void {
-    let fechaNacimiento = moment(contratante.fecNacimiento, 'DD-MM-YYYY').format('YYYY-MM-DD');
+    let fechaNacimiento = contratante.fecNacimiento ? moment(contratante.fecNacimiento, 'DD-MM-YYYY').format('YYYY-MM-DD') : null;
     this.datosGeneralesForm = this.formBuilder.group({
       curp: [{ value: contratante.curp, disabled: true }, []],
       rfc: [{ value: contratante.rfc, disabled: false }, [Validators.maxLength(13)]],
@@ -97,7 +97,7 @@ export class ModificarContratantesComponent implements OnInit {
       materno: [{ value: contratante.materno, disabled: false }, [Validators.maxLength(30)]],
       numSexo: [{ value: this.contratante.numSexo, disabled: false }, []],
       otroSexo: [{ value: this.contratante.sexo, disabled: false }, [Validators.maxLength(15)]],
-      fecNacimiento: [{ value: new Date(this.diferenciaUTC(fechaNacimiento)), disabled: false }, []],
+      fecNacimiento: [{ value: fechaNacimiento ? new Date(this.diferenciaUTC(fechaNacimiento)) : null, disabled: false }, []],
       nacionalidad: [{
         value: String(contratante.nacionalidad).toLocaleLowerCase() === 'mexicana' ? 1 : 2,
         disabled: false
@@ -140,6 +140,7 @@ export class ModificarContratantesComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (idCatalogo === 2) {
+            this.dgf.idPais.setValue(119);
             this.catalogoEstados = mapearArregloTipoDropdown(respuesta.datos, "estado", "id");
           } else {
             this.catalogoPaises = mapearArregloTipoDropdown(respuesta.datos, "pais", "id");
@@ -198,7 +199,7 @@ export class ModificarContratantesComponent implements OnInit {
   validarRfc() {
     const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/);
     if (!regex.test(this.dgf.rfc.value)) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C.no valido.');
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C.no válido.');
       this.dgf.rfc.setErrors({ 'incorrect': true });
     } else {
       this.dgf.rfc.setErrors(null);
@@ -229,8 +230,11 @@ export class ModificarContratantesComponent implements OnInit {
       ...this.contratante,
       ...this.datosGeneralesForm.getRawValue(),
       ...this.domicilioForm.getRawValue(),
-      nacionalidad: this.contratante.nacionalidad,
-      lugarNacimiento: this.catalogoEstados.find(item => item.value === this.dgf.idEstado.value)?.label ?? "",
+      pais: this.dgf.nacionalidad.value === 2 ?
+        this.catalogoPaises.find(item => item.value === this.dgf.idPais.value)?.label ?? "" : null,
+      nacionalidad: this.dgf.nacionalidad.value === 2 ? 'Extranjera' : 'Mexicana',
+      lugarNacimiento: this.dgf.nacionalidad.value === 1 ?
+        this.catalogoEstados.find(item => item.value === this.dgf.idEstado.value)?.label ?? "" : null,
     };
   }
 
@@ -243,7 +247,7 @@ export class ModificarContratantesComponent implements OnInit {
       rfc: this.contratanteModificado.rfc,
       numSexo: this.contratanteModificado.numSexo,
       otroSexo: this.contratanteModificado.otroSexo,
-      fecNacimiento: moment(this.contratanteModificado.fecNacimiento).format('DD-MM-YYYY'),
+      fecNacimiento: this.contratanteModificado.fecNacimiento ? moment(this.contratanteModificado.fecNacimiento).format('DD-MM-YYYY') : null,
       idPais: this.contratanteModificado.idPais,
       idLugarNac: this.contratanteModificado.idEstado,
       tel: this.contratanteModificado.telefono,
