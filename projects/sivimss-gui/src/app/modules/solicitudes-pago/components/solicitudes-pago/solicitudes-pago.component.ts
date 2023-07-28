@@ -26,6 +26,7 @@ import {SolicitarSolicitudPagoComponent} from '../solicitar-solicitud-pago/solic
 import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
 import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
+import { AceptarSolicitudPagoComponent } from '../aceptar-solicitud-pago/aceptar-solicitud-pago.component';
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
 
@@ -50,6 +51,7 @@ export class SolicitudesPagoComponent implements OnInit {
   creacionRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
   cancelarRef!: DynamicDialogRef;
+  aceptarRef!: DynamicDialogRef;
 
   catalogoEjercicios: TipoDropdown[] = [];
   catatalogoTipoSolicitudes: TipoDropdown[] = [];
@@ -181,6 +183,17 @@ export class SolicitudesPagoComponent implements OnInit {
     )
   }
 
+  abrirModalAceptarSolicitudPago(): void {
+    this.aceptarRef = this.dialogService.open(
+      AceptarSolicitudPagoComponent,
+      {
+        header: 'Aprobación de solicitud de pago',
+        width: '880px',
+        data: this.solicitudPagoSeleccionado
+      },
+    )
+  }
+
   abrirModalRechazarSolicitudPago(): void {
     this.cancelarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
@@ -191,6 +204,7 @@ export class SolicitudesPagoComponent implements OnInit {
       },
     )
   }
+
 
   paginarConFiltros(): void {
     const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros();
