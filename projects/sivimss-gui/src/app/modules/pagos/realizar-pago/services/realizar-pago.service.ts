@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from "../../../../utils/base-service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 import {environment} from "../../../../../environments/environment";
 import {Observable, of} from "rxjs";
@@ -19,6 +19,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _renPrevFunFolios: string = 'consultar-folios-renPrevFun-pagos';
   private readonly _eliminarPago: string = 'eliminar-pagos';
   private readonly _modificarPago: string = 'actualizar-pagos';
+  private readonly _imprimirPago: string = 'generar-pdf-tabla-pagos';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "crear_pagos", "",
@@ -105,5 +106,25 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
   modificarMetodoPago(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
+  }
+
+  descargarListado(): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    const body = {tipoReporte: "pdf"}
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}`
+      , body, {headers, responseType: 'blob' as 'json'});
+  }
+
+  descargarListadoExcel(): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    const body = {tipoReporte: "xls"}
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}`
+      , body, {headers, responseType: 'blob' as 'json'});
   }
 }

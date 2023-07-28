@@ -19,6 +19,8 @@ import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface
 import {ActivatedRoute, Router} from "@angular/router";
 import * as moment from "moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 
 @Component({
   selector: 'app-realizar-pago',
@@ -69,6 +71,7 @@ export class RealizarPagoComponent implements OnInit {
               private router: Router,
               private readonly activatedRoute: ActivatedRoute,
               private alertaService: AlertaService,
+              private descargaArchivosService: DescargaArchivosService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -150,11 +153,32 @@ export class RealizarPagoComponent implements OnInit {
   }
 
   guardarPDF(): void {
-    console.log();
+    this.cargadorService.activar();
+    this.descargaArchivosService.descargarArchivo(this.realizarPagoService.descargarListado()).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: boolean): void => {
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        console.log(error)
+      },
+    });
   }
 
   guardarExcel(): void {
-    console.log();
+    this.cargadorService.activar();
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    this.descargaArchivosService.descargarArchivo(this.realizarPagoService.descargarListadoExcel(), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: boolean): void => {
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        console.log(error)
+      },
+    });
   }
 
   paginarConFiltros(): void {
