@@ -5,6 +5,7 @@ import {NgModule} from "@angular/core";
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {CalendarModule} from "primeng/calendar";
 import {DialogModule} from "primeng/dialog";
+import {DialogService} from "primeng/dynamicdialog";
 import {DropdownModule} from "primeng/dropdown";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {SelectButtonModule} from "primeng/selectbutton";
@@ -55,7 +56,8 @@ import { ConsultaStockComponent } from './components/consulta-stock/consulta-sto
     OrdenEntradaRoutingModule,
   ],
   providers: [
-    OrdenEntradaService
+    OrdenEntradaService,
+    DialogService
   ]
 })
 export class OrdenEntradaModule{}
