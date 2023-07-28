@@ -23,19 +23,20 @@ import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interfac
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 
 interface SolicitudDescargaArchivo {
-    folio: string,
+    folio: string | null,
     fechaFin: string,
     fechaInicio: string,
     idVelatorio: number,
     nomContratante: string,
-    idFlujoPagos: number,
+    idFlujoPagos: number | null,
     tipoReporte: string
 }
 
 @Component({
     selector: 'app-realizar-pago',
     templateUrl: './realizar-pago.component.html',
-    styleUrls: ['./realizar-pago.component.scss']
+    styleUrls: ['./realizar-pago.component.scss'],
+    providers: [DescargaArchivosService]
 })
 export class RealizarPagoComponent implements OnInit {
 
@@ -194,8 +195,12 @@ export class RealizarPagoComponent implements OnInit {
     }
 
     crearSolicituDescarga(tipoReporte: string = 'pdf'): SolicitudDescargaArchivo {
-        let folio: string = this.filtroForm.get('folioOrden')?.value;
-        let idFlujoPagos: number = 1;
+        let folio: string | null = null;
+        let idFlujoPagos: number | null = null;
+        if (this.filtroForm.get('folioOrden')?.value) {
+            folio = this.filtroForm.get('folioOrden')?.value;
+            idFlujoPagos = 1;
+        }
         if (this.filtroForm.get('folioConvenio')?.value) {
             folio = this.filtroForm.get('folioConvenio')?.value;
             idFlujoPagos = 2;
