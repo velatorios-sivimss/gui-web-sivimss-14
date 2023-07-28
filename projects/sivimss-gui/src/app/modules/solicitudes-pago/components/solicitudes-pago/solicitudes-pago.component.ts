@@ -132,7 +132,7 @@ export class SolicitudesPagoComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          this.solicitudesPago = respuesta.datos;
+          this.solicitudesPago = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
         },
         error: (error: HttpErrorResponse): void => {
