@@ -113,7 +113,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}`
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
