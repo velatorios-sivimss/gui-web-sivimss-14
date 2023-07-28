@@ -7,6 +7,8 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Panteon} from "../../models/Panteon.interface";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-modal-agregar-panteon',
@@ -19,10 +21,12 @@ export class ModalAgregarPanteonComponent implements OnInit {
   panteonServicioFiltrados: string[] = [];
 
   constructor(
+    private alertaService: AlertaService,
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
     private readonly config: DynamicDialogConfig,
     private loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
   ) {
   }
@@ -166,7 +170,8 @@ export class ModalAgregarPanteonComponent implements OnInit {
         this.ref.close(respuesta.datos[0].idPanteon);
       },
       (error:HttpErrorResponse) => {
-        console.log(error)
+
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
       }
     )
   }

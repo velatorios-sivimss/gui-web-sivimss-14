@@ -150,11 +150,11 @@ export class InformacionServicioComponent implements OnInit {
     this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
-    if(Number(this.altaODS.finado.idTipoOrden) < 3){
-      this.cortejo.gestionadoPorPromotor.disable();
-    }else{
-      this.cortejo.gestionadoPorPromotor.enable();
-    }
+    // if(Number(this.altaODS.finado.idTipoOrden) < 3){
+    //   this.cortejo.gestionadoPorPromotor.disable();
+    // }else{
+    //   this.cortejo.gestionadoPorPromotor.enable();
+    // }
   }
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
