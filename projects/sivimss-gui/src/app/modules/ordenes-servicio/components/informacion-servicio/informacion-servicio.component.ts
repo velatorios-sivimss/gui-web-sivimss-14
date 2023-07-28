@@ -162,6 +162,7 @@ export class InformacionServicioComponent implements OnInit {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
     datosPresupuesto.forEach((datos: any) => {
+
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
