@@ -10,7 +10,7 @@ export const CATALOGO_ENFERMEDAD_PREEXISTENTE: TipoDropdown[] =[
     value: 2
   },
   {
-    label: 'Hipertension',
+    label: 'Hipertensión',
     value: 3
   },
   {
