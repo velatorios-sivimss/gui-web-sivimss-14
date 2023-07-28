@@ -589,7 +589,7 @@ export class ModificarDatosContratanteComponent
     if (!this.datosContratante.curp.value) {
       return;
     }
-    this.limpiarFormularioConsultaRfcCurp('curp');
+    // this.limpiarFormularioConsultaRfcCurp('curp');
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
@@ -676,7 +676,7 @@ export class ModificarDatosContratanteComponent
             }
             return;
           }
-          this.limpiarConsultaDatosPersonales();
+          // this.limpiarConsultaDatosPersonales();
           this.alertaService.mostrar(
             TipoAlerta.Precaucion,
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -700,8 +700,8 @@ export class ModificarDatosContratanteComponent
   }
 
   limpiarFormularioConsultaRfcCurp(origen:string): void{
-    if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
-    if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
+    // if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
+    // if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
     this.datosContratante.nombre.patchValue(null)
     this.datosContratante.primerApellido.patchValue(null)
     this.datosContratante.segundoApellido.patchValue(null)
@@ -727,7 +727,7 @@ export class ModificarDatosContratanteComponent
     if (!this.datosContratante.rfc.value) {
       return;
     }
-    this.limpiarFormularioConsultaRfcCurp('rfc');
+    // this.limpiarFormularioConsultaRfcCurp('rfc');
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)
@@ -779,7 +779,7 @@ export class ModificarDatosContratanteComponent
 
             return;
           }
-          this.limpiarConsultaDatosPersonales();
+          // this.limpiarConsultaDatosPersonales();
         },
         (error: HttpErrorResponse) => {
           console.log(error);
