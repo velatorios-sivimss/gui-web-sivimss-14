@@ -108,23 +108,13 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
   }
 
-  descargarListado(): Observable<Blob> {
+  descargarListado(body: any): Observable<Blob> {
     const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body = {tipoReporte: "pdf"}
     return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}`
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
-  descargarListadoExcel(): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    const body = {tipoReporte: "xls"}
-    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}`
-      , body, {headers, responseType: 'blob' as 'json'});
-  }
 }
