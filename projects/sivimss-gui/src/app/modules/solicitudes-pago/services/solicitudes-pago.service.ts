@@ -15,6 +15,9 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   private readonly _filtros: string = 'buscar-solipagos';
   private readonly _cancelar: string = 'cancelar-solipagos';
   private readonly _rechazar: string = 'rechazar-solipagos';
+  private readonly _catVelatorios: string = 'velatorios-solipagos';
+  private readonly _catUnidad: string = 'unidadope-solipagos';
+  private readonly _catBanco: string = 'datosbanco-solipagos';
 
   obtenerCatalogoEjercicios(): Observable<HttpRespuesta<any>> {
     const servicio = "ejercicios-solipagos";
@@ -52,6 +55,21 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
 
   cancelarSolicitudPago(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._cancelar}`, body);
+  }
+
+  obtenerCatalogoVelatorios(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams().append("servicio", this._catVelatorios);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/0`, {params});
+  }
+
+  obtenerCatalogoUnidadesAdmon(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams().append("servicio", this._catUnidad);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/0`, {params});
+  }
+
+  obtenerCatalogoDatosBanco(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams().append("servicio", this._catBanco);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/0`, {params});
   }
 
 }

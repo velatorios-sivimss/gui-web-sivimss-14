@@ -2,7 +2,7 @@ import {SolicitudPago} from '../../models/solicitud-pagos.interface';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
-import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
@@ -130,16 +130,16 @@ export class SolicitudesPagoComponent implements OnInit {
     this.cargadorService.activar();
     this.solicitudesPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
-          this.solicitudesPago = respuesta!.datos;
-          this.totalElementos = respuesta!.datos.totalElements;
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.solicitudesPago = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
   }
 
   abrirPanel(event: MouseEvent, solicitudPagoSeleccionado: ListadoSolicitudPago): void {
@@ -161,11 +161,11 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalGenerarSolicitudPago(): void {
-    this.cancelarRef = this.dialogService.open(
+    this.creacionRef = this.dialogService.open(
       SolicitarSolicitudPagoComponent,
       {
         header: 'Generar solicitud de pago',
-        width: '880px',
+        width: MAX_WIDTH,
       },
     )
   }

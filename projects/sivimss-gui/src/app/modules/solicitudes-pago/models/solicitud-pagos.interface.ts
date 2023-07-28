@@ -1,4 +1,5 @@
 export interface SolicitudPago {
+  motRechazo?: string;
   desEstatusSolicitud: string;
   idSolicitud: number;
   desVelatorio: string;
@@ -47,24 +48,21 @@ export interface DetalleSolicitudPago {
 }
 
 export interface CrearSolicitudPago {
-  idTipoSolic: number;
-  cveFolioGastos: string;
-  cveFolioConsignados: string;
-  fechaElaboracion: string;
-  idUnidadMedica: number;
-  idDelegacion: number;
-  nomDestinatario: string;
-  nomRemitente: string;
-  numReferencia: number;
-  idContratBenef: number;
-  fechaInicial: string;
-  fechaFinal: string;
-  beneficiario: string;
-  concepto: string;
-  observaciones: string;
-  idVelatorio: number;
-  ejercicioFiscal: number;
-  idEstatusSol: number;
+  idTipoSolic: number,
+  cveFolioGastos: string,
+  cveFolioConsignados: string,
+  idUnidadOperativa: number,
+  nomDestinatario: string,
+  nomRemitente: string,
+  numReferencia: number,
+  idContratBenef: number,
+  fechaInicial: string,
+  fechaFinal: string,
+  concepto: string,
+  observaciones: string,
+  idVelatorio: number,
+  ejercicioFiscal: number,
+  idEstatusSol: number
 }
 
 
@@ -74,12 +72,3 @@ export interface PartidaPresupuestal {
   cuentasContables: string;
   importeTotal: string;
 }
-
-export interface CancelarSolicitudPago {
-  motivo: string;
-}
-
-export interface RechazarSolicitudPago {
-  motivoRechazo: string;
-}
-
