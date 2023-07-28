@@ -77,8 +77,10 @@
     </div>
   </form>
 </ng-template>
-<!--*ngIf="ocultarMapa"-->
-<div id="map" [hidden]="ocultarMapa" ></div>
+<div [hidden]="ocultarMapa">
+  <div [style.height]="heightMap"  id="map" ></div>
+</div>
+
 
 <p-overlayPanel #opResultadosBusquedas [dismissable]="true" [showCloseIcon]="true">
   <ng-template pTemplate>

@@ -115,20 +115,20 @@
       <div class="row mb-2">
         <div class="col-md-4">
           <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span>:</label>
-          <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre">
+          <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre" lettersOnly (keyup.space)="noEspacioPrincipal(0)">
           <span class="campo-obligatorio"
             *ngIf="datosFinado.nombre?.errors?.required && (datosFinado.nombre?.dirty || datosFinado.nombre?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
           <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
-          <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
+          <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido" lettersOnly (keyup.space)="noEspacioPrincipal(1)"
             placeholder="Ingresa el primer apellido">
           <span class="campo-obligatorio"
             *ngIf="datosFinado.primerApellido?.errors?.required && (datosFinado.primerApellido?.dirty || datosFinado.primerApellido?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
           <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
-          <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
+          <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido" lettersOnly (keyup.space)="noEspacioPrincipal(2)"
             placeholder="Ingresa el segundo apellido">
           <span class="campo-obligatorio"
             *ngIf="datosFinado.segundoApellido?.errors?.required && (datosFinado.segundoApellido?.dirty || datosFinado.segundoApellido?.touched)">Este campo es obligatorio *.</span>
@@ -222,7 +222,7 @@
           <label class="control-label" for="clinicaAdscripcion">Clínica de adscripción<span
               class="req">*</span>:</label>
           <p-dropdown id="clinicaAdscripcion" class="form-control" formControlName="clinicaAdscripcion"
-            (onChange)="changeClinica()" placeholder="Selecciona clínica de adscripción" [options]="unidadesMedicas"
+             placeholder="Selecciona clínica de adscripción" [options]="unidadesMedicas"
             [filter]="true" filterBy="label"></p-dropdown>
           <span class="campo-obligatorio"
             *ngIf="datosFinado.clinicaAdscripcion?.errors?.required && (datosFinado.clinicaAdscripcion?.dirty || datosFinado.clinicaAdscripcion?.touched)">Este campo es obligatorio *.</span>
@@ -239,8 +239,8 @@
       <div class="row mb-2">
         <div class="col-md-6">
           <label class="control-label" for="procedenciaFinado">Procedencia del finado<span class="req">*</span>:</label>
-          <input id="procedenciaFinado" type="text" class="form-control" formControlName="procedenciaFinado"
-            [readOnly]="radonlyEstremidad" placeholder="Ingresa procedencia del finado" maxlength="50">
+          <input id="procedenciaFinado" type="text" class="form-control" formControlName="procedenciaFinado" lettersOnly
+            [readOnly]="radonlyEstremidad" (change)="changeProcedenciaFinado()" placeholder="Ingresa procedencia del finado" maxlength="50" (keyup.space)="noEspacioPrincipal(3)">
           <span class="campo-obligatorio"
             *ngIf="datosFinado.procedenciaFinado?.errors?.required && (datosFinado.procedenciaFinado?.dirty || datosFinado.procedenciaFinado?.touched)">Este campo es obligatorio *.</span>
         </div>

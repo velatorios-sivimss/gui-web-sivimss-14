@@ -798,18 +798,21 @@ export class DatosFinadoComponent implements OnInit {
     }
   }
 
-  changeClinica(): void {
-    this.datosFinado.unidadProcedencia.setValue(null);
-    this.datosFinado.unidadProcedencia.clearValidators();
-    this.datosFinado.unidadProcedencia.updateValueAndValidity();
-    console.log(this.form);
-  }
 
   changeUnidad(): void {
-    this.datosFinado.clinicaAdscripcion.setValue(null);
-    this.datosFinado.clinicaAdscripcion.clearValidators();
-    this.datosFinado.clinicaAdscripcion.updateValueAndValidity();
+    this.datosFinado.procedenciaFinado.setValue(null);
+    this.datosFinado.procedenciaFinado.clearValidators();
+    this.datosFinado.procedenciaFinado.updateValueAndValidity();
+    this.datosFinado.unidadProcedencia.setValidators(Validators.required);
   }
+
+  changeProcedenciaFinado(): void {
+    this.datosFinado.unidadProcedencia.reset();
+    this.datosFinado.unidadProcedencia.clearValidators();
+    this.datosFinado.unidadProcedencia.updateValueAndValidity();
+    this.datosFinado.procedenciaFinado.setValidators(Validators.required);
+  }
+
   esExtremidad(validacion: boolean): void {
     const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
 
@@ -1051,6 +1054,18 @@ export class DatosFinadoComponent implements OnInit {
   }
   convertirAMayusculas(): void {
     this.datosFinado.curp.setValue(this.datosFinado.curp.value.toUpperCase());
+  }
+
+  noEspacioPrincipal(posicion:number): void {
+    let formularios = [
+      this.datosFinado.nombre,
+      this.datosFinado.primerApellido,
+      this.datosFinado.segundoApellido,
+      this.datosFinado.procedenciaFinado
+    ];
+    if(formularios[posicion].value.charAt(0).includes(' ')){
+      formularios[posicion].setValue(formularios[posicion].value.trimStart());
+    }
   }
 
   validarBotonAceptar(): boolean {
