@@ -254,7 +254,6 @@ export class DatosContratanteComponent implements OnInit {
             value: datosEtapaContratante.datosContratante.parentesco,
             disabled: false,
           },
-          [Validators.required],
         ],
       }),
       direccion: this.formBuilder.group({
@@ -599,7 +598,7 @@ export class DatosContratanteComponent implements OnInit {
     this.datosContratante.lugarNacimiento.clearValidators();
     this.datosContratante.lugarNacimiento.reset();
     this.datosContratante.paisNacimiento.enable();
-    this.datosContratante.paisNacimiento.setValidators(Validators.required);
+    // this.datosContratante.paisNacimiento.setValidators(Validators.required);
   }
 
   limpiarConsultaDatosPersonales(): void {

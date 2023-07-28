@@ -59,7 +59,7 @@ export class DetalleContratantesComponent implements OnInit {
         this.obtenerDetalleContratante();
       }
     }
-    if (this.origen == "modificar") {
+    if (this.origen == "modificar") {      
       this.mensaje = this.tipoMensaje[2];
       this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo || 1];
     }

@@ -1,13 +1,23 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ActualizarBeneficiario, Beneficiario, BusquedaConvenio, BusquedaListBeneficiarios, CatalogoDatosGenerales, GuardarBeneficiario } from '../../models/convenio.interface';
+import { FormGroup } from "@angular/forms";
+import {
+  ActualizarBeneficiario,
+  Beneficiario,
+  BeneficiarioSeleccionado,
+  BusquedaBeneficiarios,
+  BusquedaConvenio,
+  BusquedaListBeneficiarios,
+  CatalogoDatosGenerales,
+  GuardarBeneficiario
+} from '../../models/convenio.interface';
 import { Accordion } from 'primeng/accordion';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as moment from 'moment';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-renovar-convenio-beneficiarios',
@@ -26,8 +36,8 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
   beneficiarioForm!: FormGroup;
   documentacionForm!: FormGroup;
   convenio: BusquedaConvenio = {};
-  beneficiarioSeleccionado!: Beneficiario;
-  beneficiarios: Beneficiario[] = [];
+  beneficiarioSeleccionado!: BeneficiarioSeleccionado;
+  beneficiarios: BusquedaBeneficiarios[] = [];
   numBeneficiario: number = 0;
   activeIndex: number | null = null;
   datosGenerales!: CatalogoDatosGenerales;
@@ -37,6 +47,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     private route: ActivatedRoute,
     private alertaService: AlertaService,
     private renovarConvenioPfService: RenovarConvenioPfService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
     this.route.queryParams.subscribe(params => {
       if (params) {
@@ -47,6 +58,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     this.busquedaListBeneficiarios = respuesta[this.POSICION_BENEFICIARIOS].datos;
     this.beneficiarios = this.busquedaListBeneficiarios.beneficiarios || [];
     this.datosGenerales = respuesta[this.POSICION_DATOS_GRALES].datos[0];
+    this.datosGenerales.fecha = moment().format('DD-MM-YYYY');
   }
 
   ngOnInit(): void { }
@@ -71,11 +83,30 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     }
   }
 
+  consultarListadoBeneficiarios() {
+    if (this.busquedaListBeneficiarios.idConvenio) {
+      this.renovarConvenioPfService.buscarBeneficiarios(this.busquedaListBeneficiarios.idConvenio).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta?.datos) {
+            this.beneficiarios = respuesta?.datos?.beneficiarios;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      }).add(() => {
+        this.activeIndex = null;
+        this.mode = 'listado';
+      });
+    }
+  }
+
   obtenerDetalleBeneficiario(idBeneficiario: number) {
-    this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario }).subscribe({
+    this.renovarConvenioPfService.obtenerDetalleBeneficiario(idBeneficiario).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta?.datos) {
-          console.log(respuesta?.datos);
+        if (respuesta?.datos && respuesta?.datos.length > 0) {
+          this.beneficiarioSeleccionado = respuesta?.datos[0];
+          this.beneficiarioSeleccionado.tipoConvenioDesc = this.convenio.tipoConvenioDesc;
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -93,10 +124,12 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
           if (respuesta?.datos) {
             this.alertaService.mostrar(TipoAlerta.Exito, `Nuevo registro de los Beneficiarios del Folio ${this.convenio.folio}`);
             this.mode = 'listado';
+            this.consultarListadoBeneficiarios();
           }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información. Intenta nuevamente. del convenio con folio ${this.convenio.folio}`);
         }
       });
     }
@@ -106,15 +139,18 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     if (!beneficiario) {
       this.mode = 'listado';
     } else {
-      this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario: 18, estatusBenefic: false }).subscribe({
+      this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario: this.beneficiarioSeleccionado.idBenef, estatusBenefic: false }).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos) {
             this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);
-            this.mode = 'listado';
+            this.consultarListadoBeneficiarios();
+          } else {
+            this.alertaService.mostrar(TipoAlerta.Error, `Error al guardar la información. Intenta nuevamente. del convenio con folio ${this.convenio.folio}`);
           }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información. Intenta nuevamente. del convenio con folio ${this.convenio.folio}`);
         }
       });
     }
@@ -129,18 +165,23 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
           if (respuesta?.datos) {
             this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);
             this.mode = 'listado';
+            if (this.beneficiarioSeleccionado.idBenef) {
+              this.obtenerDetalleBeneficiario(this.beneficiarioSeleccionado.idBenef);
+            }
           }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información. Intenta nuevamente. del convenio con folio ${this.convenio.folio}`);
         }
       });
     }
   }
 
-  handleActiveBeneficiario(beneficiario: Beneficiario) {
-    this.beneficiarioSeleccionado = beneficiario;
-    this.beneficiarioSeleccionado.tipoConvenioDesc = this.convenio.tipoConvenioDesc;
+  handleActiveBeneficiario(beneficiario: BusquedaBeneficiarios, active: boolean) {
+    if (active && beneficiario?.id) {
+      this.obtenerDetalleBeneficiario(beneficiario.id);
+    }
   }
 
   activeIndexChange(index: number) {
@@ -152,7 +193,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
       nombre: beneficiario.nombre,
       apellidoP: beneficiario.primerApellido,
       apellidoM: beneficiario.segundoApellido,
-      fechaNac: moment().subtract(beneficiario.edad, 'years').format('DD-MM-YYYY'),
+      fechaNac: beneficiario.edad ? moment().subtract(beneficiario.edad, 'years').format('YYYY-MM-DD') : null,
       curp: beneficiario.curp,
       rfc: beneficiario.rfc,
       correoE: beneficiario.email,
@@ -173,12 +214,12 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
 
   datosActualizarBeneficiario(beneficiario: Beneficiario): ActualizarBeneficiario {
     return {
-      idBeneficiario: beneficiario.idBeneficiario,
-      idPersona: beneficiario.idPersona,
+      idBeneficiario: this.beneficiarioSeleccionado.idBenef,
+      idPersona: this.beneficiarioSeleccionado.idPersona,
       nombre: beneficiario.nombre,
       apellidoP: beneficiario.primerApellido,
       apellidoM: beneficiario.segundoApellido,
-      fechaNac: moment().subtract(beneficiario.edad, 'years').format('DD-MM-YYYY'),
+      fechaNac: moment().subtract(beneficiario.edad, 'years').format('YYYY-MM-DD'),
       curp: beneficiario.curp,
       rfc: beneficiario.rfc,
       correoE: beneficiario.email,
