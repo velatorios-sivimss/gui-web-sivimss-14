@@ -1,4 +1,5 @@
 export interface SolicitudPago {
+  motRechazo?: string;
   desEstatusSolicitud: string;
   idSolicitud: number;
   desVelatorio: string;
