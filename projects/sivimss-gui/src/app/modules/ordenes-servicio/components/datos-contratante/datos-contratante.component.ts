@@ -320,8 +320,8 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   limpiarFormularioConsultaRfcCurp(origen:string): void{
-      if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
-      if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
+      // if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
+      // if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
       this.datosContratante.nombre.patchValue(null)
       this.datosContratante.primerApellido.patchValue(null)
       this.datosContratante.segundoApellido.patchValue(null)
@@ -347,7 +347,7 @@ export class DatosContratanteComponent implements OnInit {
     if (!this.datosContratante.curp.value) {
       return;
     }
-    this.limpiarFormularioConsultaRfcCurp("curp")
+    // this.limpiarFormularioConsultaRfcCurp("curp")
     if (this.datosContratante.curp?.errors?.pattern) {
       this.alertaService.mostrar(
         TipoAlerta.Precaucion,
@@ -446,7 +446,7 @@ export class DatosContratanteComponent implements OnInit {
             }
             return;
           }
-          this.limpiarConsultaDatosPersonales();
+          // this.limpiarConsultaDatosPersonales();
           this.alertaService.mostrar(
             TipoAlerta.Precaucion,
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -464,7 +464,7 @@ export class DatosContratanteComponent implements OnInit {
     if (!this.datosContratante.rfc.value) {
       return;
     }
-    this.limpiarFormularioConsultaRfcCurp("rfc")
+    // this.limpiarFormularioConsultaRfcCurp("rfc")
     if (this.datosContratante.rfc?.errors?.pattern) {
       this.alertaService.mostrar(
         TipoAlerta.Precaucion,
@@ -478,7 +478,6 @@ export class DatosContratanteComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           if (respuesta.datos.length > 0) {
             let datos = respuesta.datos[0];
             this.idPersona = datos.idPersona;
@@ -521,7 +520,7 @@ export class DatosContratanteComponent implements OnInit {
 
             return;
           }
-          this.limpiarConsultaDatosPersonales();
+          // this.limpiarConsultaDatosPersonales();
         },
         (error: HttpErrorResponse) => {
           console.log(error);

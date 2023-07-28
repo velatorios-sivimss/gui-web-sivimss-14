@@ -86,6 +86,7 @@ export class InformacionServicioComponent implements OnInit {
   servicioExtremidad: boolean = false;
   confirmarGuardado: boolean = false;
   confirmarPreOrden:boolean = false;
+  confirmarGuardarPanteon: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -150,11 +151,11 @@ export class InformacionServicioComponent implements OnInit {
     this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
-    if(Number(this.altaODS.finado.idTipoOrden) < 3){
-      this.cortejo.gestionadoPorPromotor.disable();
-    }else{
-      this.cortejo.gestionadoPorPromotor.enable();
-    }
+    // if(Number(this.altaODS.finado.idTipoOrden) < 3){
+    //   this.cortejo.gestionadoPorPromotor.disable();
+    // }else{
+    //   this.cortejo.gestionadoPorPromotor.enable();
+    // }
   }
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
@@ -275,7 +276,7 @@ export class InformacionServicioComponent implements OnInit {
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          { value: datos.gestionadoPorPromotor, disabled: false },
+          { value: datos.gestionadoPorPromotor ? datos.gestionadoPorPromotor : false, disabled: false },
           [Validators.required],
         ],
         promotor: [
@@ -456,7 +457,7 @@ export class InformacionServicioComponent implements OnInit {
       if (val) {
         this.idPanteon = val
         this.inhumacion.agregarPanteon.disable();
-        this.alertaService.mostrar(TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(99))
+        this.confirmarGuardarPanteon = true
         return
       }
       this.inhumacion.agregarPanteon.setValue(false);
