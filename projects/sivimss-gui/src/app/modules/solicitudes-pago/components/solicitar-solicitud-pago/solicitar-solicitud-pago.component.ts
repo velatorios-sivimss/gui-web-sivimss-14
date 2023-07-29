@@ -30,7 +30,8 @@ interface RegistroProveedor {
     cveBancaria: number,
     nomProveedor: string,
     cuenta: string,
-    banco: string
+    banco: string,
+    idProveedor: number
 }
 
 @Component({
@@ -50,7 +51,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     solicitudPagoForm!: FormGroup;
     catatalogoTipoSolicitud: TipoDropdown[] = [];
 
-    datosSolicitudPago!: CrearSolicitudPago;
     fechaActual: Date = new Date();
     partidaPresupuestal: PartidaPresupuestal [] = [];
 
@@ -106,7 +106,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
         this.catalogoVelatorios = respuesta[this.POSICION_CATALOGO_VELATORIO].datos;
         this.catalogoUnidades = respuesta[this.POSICION_CATALOGO_UNIDAD].datos;
         this.catalogoProveedores = respuesta[this.POSICION_CATALOGO_BANCO].datos;
-        this.beneficiarios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_BANCO].datos, "nomProveedor", "nomProveedor");
+        this.beneficiarios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_BANCO].datos, "nomProveedor", "idProveedor");
         this.unidades = this.recuperarUnidadesOperacionales();
     }
 
@@ -143,7 +143,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
     seleccionarBeneficiario(): void {
         const beneficiario = this.solicitudPagoForm.get('beneficiario')?.value;
-        const registro = this.catalogoProveedores.find(r => r.nomProveedor === beneficiario);
+        const registro = this.catalogoProveedores.find(r => r.idProveedor === beneficiario);
         this.solicitudPagoForm.get('banco')?.patchValue(registro?.banco);
         this.solicitudPagoForm.get('cuenta')?.patchValue(registro?.cuenta);
         this.solicitudPagoForm.get('claveBancaria')?.patchValue(registro?.cveBancaria);
@@ -193,7 +193,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
         return this.solicitudPagoForm.get('tipoSolicitud')?.value
     }
 
-    generarSolicitudPago(): CrearSolicitudPago {
+    generarSolicitudPago(): { fechaInicial: any; numReferencia: any; fechaFinal: any; idEstatusSol: number; idTipoSolic: any; impTotal: any; idContratBenef: null; idVelatorio: any; cveFolioGastos: null; ejercicioFiscal: null; idUnidadOperativa: any; idProveedor: any; concepto: any; nomDestinatario: any; observaciones: any; cveFolioConsignados: null; nomRemitente: any; fechaElabora: any } {
         const unidadSeleccionada = this.solicitudPagoForm.get('unidadSeleccionada')?.value
         const referenciaUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value
         return {
@@ -203,17 +203,18 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
             ejercicioFiscal: null,
             fechaFinal: this.solicitudPagoForm.get('fechaFinal')?.value,
             fechaInicial: this.solicitudPagoForm.get('fechaInicial')?.value,
-            idContratBenef: this.solicitudPagoForm.get('beneficiario')?.value,
+            idContratBenef: null,
             idEstatusSol: 1,
             idTipoSolic: this.solicitudPagoForm.get('tipoSolicitud')?.value,
-            idUnidadOperativa: unidadSeleccionada === 1 ? referenciaUnidad : null,
-            idVelatorio: unidadSeleccionada === 2 ? referenciaUnidad : null,
+            idUnidadOperativa: +unidadSeleccionada === 1 ? referenciaUnidad : null,
+            idVelatorio: +unidadSeleccionada === 2 ? referenciaUnidad : null,
             nomDestinatario: this.solicitudPagoForm.get('nombreDestinatario')?.value,
             nomRemitente: this.solicitudPagoForm.get('nomRemitente')?.value,
-            numReferencia: this.solicitudPagoForm.get('referenciaTD')?.value,
+            numReferencia: this.solicitudPagoForm.get('referenciaTD')?.value ?? '1',
             fechaElabora: this.solicitudPagoForm.get('fechaElaboracion')?.value,
             impTotal: this.solicitudPagoForm.get('importe')?.value,
-            observaciones: this.solicitudPagoForm.get('observaciones')?.value
+            observaciones: this.solicitudPagoForm.get('observaciones')?.value,
+            idProveedor : this.solicitudPagoForm.get('beneficiario')?.value,
         }
     }
 

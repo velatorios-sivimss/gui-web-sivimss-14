@@ -55,7 +55,7 @@ export interface CrearSolicitudPago {
     nomDestinatario: string,
     nomRemitente: string,
     numReferencia: number,
-    idContratBenef: number,
+    idContratBenef: number | null,
     fechaElabora: string,
     fechaInicial: string,
     fechaFinal: string,
@@ -64,7 +64,8 @@ export interface CrearSolicitudPago {
     idVelatorio: number | null,
     ejercicioFiscal: number | null,
     impTotal: number,
-    idEstatusSol: number
+    idEstatusSol: number,
+    idProveedor: number
 }
 
 
