@@ -1,4 +1,4 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {BaseService} from 'projects/sivimss-gui/src/app/utils/base-service';
@@ -75,6 +75,24 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   obtenerCatalogoDatosBanco(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams().append("servicio", this._catBanco);
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/0`, {params});
+  }
+
+  descargarListadoSolicitudesPDF(body: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/gendocto-solipagos/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
+  }
+
+  descargarListadoSolicitudesExcel(body: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/gendocto-solipagos/generarDocumento/xls`
+      , body, {headers, responseType: 'blob' as 'json'});
   }
 
 }

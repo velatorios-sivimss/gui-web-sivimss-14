@@ -27,6 +27,7 @@ import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancela
 import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
 import { AceptarSolicitudPagoComponent } from '../aceptar-solicitud-pago/aceptar-solicitud-pago.component';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
 
@@ -64,6 +65,7 @@ export class SolicitudesPagoComponent implements OnInit {
 
   readonly POSICION_CATALOGO_EJERCICIOS: number = 0;
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
+  readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
   constructor(
     private route: ActivatedRoute,
@@ -74,6 +76,7 @@ export class SolicitudesPagoComponent implements OnInit {
     private solicitudesPagoService: SolicitudesPagoService,
     private router: Router,
     private cargadorService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
@@ -207,7 +210,7 @@ export class SolicitudesPagoComponent implements OnInit {
 
 
   paginarConFiltros(): void {
-    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros();
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
     this.cargadorService.activar();
     this.solicitudesPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -228,7 +231,7 @@ export class SolicitudesPagoComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-  crearSolicitudFiltros(): FiltrosSolicitudPago {
+  crearSolicitudFiltros(tipoReporte: string): FiltrosSolicitudPago {
     const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
     const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
@@ -240,7 +243,8 @@ export class SolicitudesPagoComponent implements OnInit {
       fecFinODS: fechaFinal,
       ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
       idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
-      folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value
+      folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value,
+      tipoReporte: tipoReporte
     }
   }
 
@@ -265,6 +269,40 @@ export class SolicitudesPagoComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
+  }
+
+  generarListadoSolicitudesPDF() {
+    this.cargadorService.activar();
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
+    const solicitudFiltros = JSON.stringify(filtros);
+    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesPDF(solicitudFiltros)).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta)
+      },
+      (error) => {
+        console.log(error)
+      },
+    )
+  }
+
+  generarListadoSolicitudesExcel() {
+    this.cargadorService.activar();
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("xls");
+    const solicitudFiltros = JSON.stringify(filtros);
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesExcel(solicitudFiltros),
+      configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta): void => {
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
+        console.log(error)
+      },
+    })
   }
 
   get f() {
