@@ -446,7 +446,6 @@ export class ModificarDatosFinadoComponent
       this.esObito(esObito);
     if (datosEtapaFinado.datosFinado.esParaExtremidad != null)
       this.esExtremidad(extremidad);
-    debugger
     if (datosEtapaFinado.datosFinado.noContrato == null) {
       this.datosFinado.noContrato.disable();
       this.datosFinado.velatorioPrevision.disable();
@@ -694,7 +693,6 @@ export class ModificarDatosFinadoComponent
   }
 
   async changeTipoOrden(modificacion?: boolean) {
-    debugger
     const idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     if(!modificacion)this.form.reset();
     if (idTipoOden == 1) {

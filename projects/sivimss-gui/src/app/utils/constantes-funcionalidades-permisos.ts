@@ -19,6 +19,7 @@ export const funcionalidades: { [valor: string]: string } = {
   'GESTIONAR_DONACIONES': '59',
   'DISPONIBILIDAD_VEHICULOS': '60',
   'CONSULTAR_DONADOS': '64',
+  'SOLICITAR_PAGO': '65',
   'GESTIONAR_PAGO': '66',
   //Agregar los que falten.
 }
