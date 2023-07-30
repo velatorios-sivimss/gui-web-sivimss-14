@@ -1,3 +1,4 @@
+import { AprobacionSolicitudPagoComponent } from "projects/sivimss-gui/src/app/modules/solicitudes-pago/components/aprobacion-solicitud-pago/aprobacion-solicitud-pago.component";
 import {SolicitudPago} from '../../models/solicitud-pagos.interface';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
@@ -131,7 +132,7 @@ export class SolicitudesPagoComponent implements OnInit {
       idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
     }
     this.solicitudesPago = [
-      {  
+      {
         id: 1,
         idVelatorio: 1,
         folio: '000001',
@@ -167,15 +168,26 @@ export class SolicitudesPagoComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
-  
+
   abrirDetalleSolicitudPago(solicitudPagoSeleccionado: ListadoSolicitudPago): void {
     this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
     this.cancelarRef = this.dialogService.open(
       VerDetalleSolicitudPagoComponent,
       {
-        header: 'Solicitud de comprobación de bienes y servicios',
+        header: 'Detalle de la solicitud de pago',
         width: '880px',
         data: solicitudPagoSeleccionado.id
+      },
+    )
+  }
+
+  abrirModalAprobacionSolicitudPago(): void {
+    this.cancelarRef = this.dialogService.open(
+      AprobacionSolicitudPagoComponent,
+      {
+        header: 'Aprobación de solicitud de pago',
+        width: '880px',
+        data:  this.solicitudPagoSeleccionado.id
       },
     )
   }
