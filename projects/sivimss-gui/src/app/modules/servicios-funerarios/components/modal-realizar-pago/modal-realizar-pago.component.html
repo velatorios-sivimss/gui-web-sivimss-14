@@ -1,0 +1,177 @@
+<div class="border-panel mb-4 p-4 shadow-2">
+
+  <div class="row mb-3">
+    <div class="col-md-4 flex flex-column">
+      <span class="etiqueta-base">Fecha de pago</span>
+      <span class="texto-base">24-12-2021</span>
+    </div>
+    <div class="col-md-4 flex flex-column">
+      <span class="etiqueta-base">Folio Plan SFPA</span>
+      <span class="texto-base">DOC-000001</span>
+    </div>
+    <div class="col-md-4 flex flex-column">
+      <span class="etiqueta-base">Tipo de pago</span>
+      <span class="texto-base">Transferencia</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 flex flex-column">
+      <span class="etiqueta-base">Número de pago</span>
+      <span class="texto-base">2/3</span>
+    </div>
+    <div class="col-md-4 flex flex-column">
+      <span class="etiqueta-base">Total a cubrir</span>
+      <span class="texto-base">$50,000.00</span>
+    </div>
+    <div class="col-md-4 flex flex-column">
+      <span class="etiqueta-base">Monto mensual a cubrir</span>
+      <span class="texto-base">$5,000.00</span>
+    </div>
+  </div>
+</div>
+<div class="row mb-3">
+  <div class="col-md-6">
+    <label class="control-label" for="metodoPago">Método de pago</label>
+    <p-dropdown appendTo="body" id="metodoPago" class="form-control"
+                [options]="[{id:1,label:'Tarjeta de débito'},{id:2,label:'Tarjeta de crédito'},{id:3,label:'Transferencia'},{id:4,label:'Depósito'}]"
+                placeholder="Selecciona método de pago">
+    </p-dropdown>
+
+  </div>
+  <div class="col-md-6">
+    <label class="control-label" for="nombreBanco">Nombre del banco:</label>
+    <input id="nombreBanco" class="form-control"
+           placeholder="Ingresa el nombre del banco">
+  </div>
+</div>
+<div class="row mb-3">
+  <div class="col-md-6">
+    <label class="control-label" for="numeroAutorizacion">Número de autorización</label>
+    <input id="numeroAutorizacion" class="form-control"
+           placeholder="Ingresa el no. de autorización">
+
+  </div>
+  <div class="col-md-6">
+    <label class="control-label" for="importe">Importe:</label>
+    <input id="importe" class="form-control"
+           placeholder="Ingresa el importe">
+  </div>
+</div>
+
+<ng-container *ngIf="true">
+  <app-table-panel class="mb-6 block">
+
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha de pago</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Folio Plan SFPA</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Tipo de pago</label>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Número de pago</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Total a cubrir</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Monto mensual a cubrir</label>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Método de pago</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Folio de autorización</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Banco</label>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Método de pago</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Folio de autorización</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Banco</label>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Importe</label>
+          <span></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Total pagado</label>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+</ng-container>
+
+<div class="row mt-2">
+  <div class="col-md-12 flex justify-content-end">
+    <button type="button" class="btn btn-default btn-md" (click)="cerrarModal()">Cancelar</button>
+    <button type="button" class="btn btn-gold btn-md ml-3" (click)="cerrarModal()">Cancelar</button>
+    <button type="button" class="btn btn-primary btn-md ml-3" (click)="cerrarModal()">Registrar</button>
+  </div>
+</div>

@@ -117,6 +117,7 @@ export class ModificarInformacionServicioComponent
   estatusUrl:number = 0;
   servicioExtremidad: boolean = false;
   confirmarPreOrden:boolean = false;
+  confirmarGuardarPanteon: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -617,6 +618,7 @@ export class ModificarInformacionServicioComponent
       if (val) {
         this.idPanteon = val;
         this.inhumacion.agregarPanteon.disable();
+        this.confirmarGuardarPanteon = true
         return;
       }
       this.inhumacion.agregarPanteon.setValue(false);

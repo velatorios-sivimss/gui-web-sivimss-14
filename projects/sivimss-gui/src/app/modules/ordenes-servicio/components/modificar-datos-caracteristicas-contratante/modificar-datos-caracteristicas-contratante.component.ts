@@ -1064,7 +1064,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
         traslado.latitudInicial = null;
         traslado.longitudFinal = null;
         traslado.latitudFinal = null;
-        if (cordenadas != null) {
+        if (cordenadas != null && !isNaN(cordenadas)) {
           traslado.longitudInicial = Number(datos.coordOrigen[0]);
           traslado.latitudInicial = Number(datos.coordOrigen[1]);
           traslado.longitudFinal = Number(datos.coordDestino[0]);

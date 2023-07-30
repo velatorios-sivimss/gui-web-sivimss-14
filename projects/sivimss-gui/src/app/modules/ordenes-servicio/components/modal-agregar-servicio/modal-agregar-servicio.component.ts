@@ -90,6 +90,8 @@ export class ModalAgregarServicioComponent
   costoPorKilometraje!: number;
   costoExtraKilometros:number = 0;
   serviciosPaquete!: any[];
+  heightMap = "0px"
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -124,6 +126,8 @@ export class ModalAgregarServicioComponent
       this.ocultarProveedor = false;
       this.ocultarBtn = false;
       this.consultarKilometraje = true;
+      this.heightMap = "400px"
+      this.inicializarMapa();
     } else if (this.proviene == 'proveedor') {
       this.disableddMapa = true;
       this.ocultarMapa = true;
@@ -218,6 +222,8 @@ export class ModalAgregarServicioComponent
       this.f.origen.updateValueAndValidity();
       this.f.destino.setValidators(Validators.required);
       this.f.destino.updateValueAndValidity();
+      this.heightMap = "400px"
+      this.inicializarMapa();
       this.consultarKilometraje = true;
       // kilometraje: [{ value: null, disabled: false }, validacionMapa],
 
@@ -395,27 +401,32 @@ export class ModalAgregarServicioComponent
   }
 
   inicializarMapa(): void {
-    try {
-      L.Icon.Default.imagePath = 'assets/images/leaflet/';
 
-      this.map = L.map('map').setView([19.4326296, -99.1331785], 13);
+    setTimeout(()=> {
+      try {
+        L.Icon.Default.imagePath = 'assets/images/leaflet/';
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
-      }).addTo(this.map);
+        this.map = L.map('map').setView([19.4326296, -99.1331785], 13);
 
-      let geoCoderOptions = {
-        collapsed: false,
-        placeholder: 'Buscar dirección',
-        geocoder: L.Control.Geocoder.nominatim({
-          geocodingQueryParams: {
-            countrycodes: 'mx',
-          },
-        }),
-      };
-    } catch (error) {
-      console.log(error);
-    }
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap',
+        }).addTo(this.map);
+
+        let geoCoderOptions = {
+          collapsed: false,
+          placeholder: 'Buscar dirección',
+          geocoder: L.Control.Geocoder.nominatim({
+            geocodingQueryParams: {
+              countrycodes: 'mx',
+            },
+          }),
+        };
+      } catch (error) {
+        console.log(error);
+      }
+
+    },400)
+
   }
 
   buscar(event: Event, direccion: any, nombreInput: string) {
@@ -550,7 +561,7 @@ export class ModalAgregarServicioComponent
   }
 
   ngAfterViewInit(): void {
-    this.inicializarMapa();
+    // this.inicializarMapa();
     if(this.proviene == "traslados"){
       this.serviciosPaquete.forEach((data:any) => {
         if(data.grupo.includes("TRASLADO")){

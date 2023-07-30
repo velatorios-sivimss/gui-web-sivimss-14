@@ -4,9 +4,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {DropdownModule} from 'primeng/dropdown';
 import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import { RadioButtonModule } from "primeng/radiobutton";
 import {TableModule} from 'primeng/table';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
+import { AprobacionSolicitudPagoComponent } from "projects/sivimss-gui/src/app/modules/solicitudes-pago/components/aprobacion-solicitud-pago/aprobacion-solicitud-pago.component";
 
 import { TituloPrincipalModule } from '../../shared/titulo-principal/titulo-principal.module';
 import { TablePanelModule } from '../../shared/table-panel/table-panel.module';
@@ -18,14 +20,14 @@ import {CheckboxModule} from "primeng/checkbox";
 
 import {CalendarModule} from 'primeng/calendar';
 import {AccordionModule} from 'primeng/accordion';
-import { SolicitudesPagoComponent } from './components/solicitudes-pago/solicitudes-pago.component'; 
+import { SolicitudesPagoComponent } from './components/solicitudes-pago/solicitudes-pago.component';
 import { SolicitudesPagoService } from './services/solicitudes-pago.service';
 import { SolicitudesPagoRoutingModule } from './solicitudes-pago.routing.module';
 import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
-import { SolicitarSolicitudPagoComponent } from './components/solicitar-solicitud-pago/solicitar-solicitud-pago.component'; 
-import { CancelarSolicitudPagoComponent } from "./components/cancelar-solicitud-pago/cancelar-solicitud-pago.component";  
-import { RechazarSolicitudPagoComponent } from "./components/rechazar-solicitud-pago/rechazar-solicitud-pago.component";  
+import { SolicitarSolicitudPagoComponent } from './components/solicitar-solicitud-pago/solicitar-solicitud-pago.component';
+import { CancelarSolicitudPagoComponent } from "./components/cancelar-solicitud-pago/cancelar-solicitud-pago.component";
+import { RechazarSolicitudPagoComponent } from "./components/rechazar-solicitud-pago/rechazar-solicitud-pago.component";
 import { VerDetalleSolicitudPagoComponent } from './components/ver-detalle-solicitud/ver-detalle-solicitud.component';
 
 @NgModule({
@@ -34,7 +36,8 @@ import { VerDetalleSolicitudPagoComponent } from './components/ver-detalle-solic
     SolicitarSolicitudPagoComponent,
     CancelarSolicitudPagoComponent,
     RechazarSolicitudPagoComponent,
-    VerDetalleSolicitudPagoComponent
+    VerDetalleSolicitudPagoComponent,
+    AprobacionSolicitudPagoComponent
   ],
   imports: [
     CalendarModule,
@@ -57,6 +60,7 @@ import { VerDetalleSolicitudPagoComponent } from './components/ver-detalle-solic
     ValidaRolModule,
     UtileriaModule,
     CheckboxModule,
+    RadioButtonModule,
   ],
   providers: [SolicitudesPagoService]
 })

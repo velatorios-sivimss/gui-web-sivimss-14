@@ -69,9 +69,6 @@ export class ModalAgregarPanteonComponent implements OnInit {
           value: null,
           disabled: false
         },
-        [
-          Validators.required
-        ]
       ],
       colonia: [
         {
@@ -130,10 +127,21 @@ export class ModalAgregarPanteonComponent implements OnInit {
     });
   }
 
-  sinEspacioInicial(): void {
-    this.f.nombrePanteon.setValue(
-      this.f.nombrePanteon.value.trimStart()
-    )
+  validarNombre(posicion: number): void {
+    let formularios = [this.f.nombrePanteon];
+    let value = formularios[posicion].value;
+    let nuevoValor =  value.replace(/[^a-zA-Z0-9ñÑ\s]+/g, '');
+    nuevoValor = nuevoValor.replace(/\s+/g, ' ');
+    formularios[posicion].setValue(nuevoValor)
+
+
+  }
+
+  sinEspacioInicial(posicion:number): void {
+    let formularios = [this.f.nombrePanteon]
+    if(formularios[posicion].value.charAt(posicion).includes(' ')){
+      formularios[posicion].setValue(formularios[posicion].value.trimStart());
+    }
   }
 
   seleccionaPanteon(event:any){
@@ -143,15 +151,25 @@ export class ModalAgregarPanteonComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         respuesta.datos.forEach((datosPanteon: any) => {
+
           this.f.calle.setValue(respuesta.datos[0]?.desCalle)
+          this.f.calle.disable();
           this.f.noExterior.setValue(respuesta.datos[0]?.numExterior)
+          this.f.noExterior.disable();
           this.f.noInterior.setValue(respuesta.datos[0]?.numInterior)
+          this.f.noInterior.disable();
           this.f.colonia.setValue(respuesta.datos[0]?.desColonia)
+          this.f.colonia.disable();
           this.f.municipio.setValue(respuesta.datos[0]?.desMunicipio)
+          this.f.municipio.disable();
           this.f.estado.setValue(respuesta.datos[0]?.desEstado)
+          this.f.estado.disable();
           this.f.cp.setValue(respuesta.datos[0]?.codigoPostal)
+          this.f.cp.disable();
           this.f.contacto.setValue(respuesta.datos[0]?.nombreContacto)
+          this.f.contacto.disable();
           this.f.telefono.setValue(respuesta.datos[0]?.numTelefono)
+          this.f.telefono.disable();
         });
       },
       (error: HttpErrorResponse) => {
@@ -159,6 +177,8 @@ export class ModalAgregarPanteonComponent implements OnInit {
       }
     )
   }
+
+
 
   guardarPanteon(): void {
     this.loaderService.activar();
