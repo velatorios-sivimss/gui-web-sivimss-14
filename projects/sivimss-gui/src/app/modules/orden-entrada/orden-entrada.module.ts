@@ -24,12 +24,14 @@ import {OrdenEntradaComponent} from "./components/orden-entrada/orden-entrada.co
 import {OrdenEntradaService} from "./services/orden-entrada.service";
 import { ConsultaOrdenEntradaComponent } from './components/consulta-orden-entrada/consulta-orden-entrada.component';
 import { ConsultaStockComponent } from './components/consulta-stock/consulta-stock.component';
+import { GenerarOdeComponent } from './components/generar-ode/generar-ode.component';
 
 @NgModule({
   declarations: [
     OrdenEntradaComponent,
     ConsultaOrdenEntradaComponent,
-    ConsultaStockComponent
+    ConsultaStockComponent,
+    GenerarOdeComponent
   ],
   imports: [
     FormsModule,

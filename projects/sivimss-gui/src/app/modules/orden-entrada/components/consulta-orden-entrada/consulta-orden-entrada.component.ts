@@ -11,6 +11,8 @@ import {OrdenEntradaService} from "../../services/orden-entrada.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {PaginadoConsultaOrdenEntrada} from "../../models/paginado-consulta-orden-entrada.interface";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {DialogService} from "primeng/dynamicdialog";
+import {GenerarOdeComponent} from "../generar-ode/generar-ode.component";
 
 @Component({
   selector: 'app-consulta-orden-entrada',
@@ -87,6 +89,7 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
 
   constructor(
     private alertaService: AlertaService,
+    private readonly dialogService: DialogService,
     private formBuilder: FormBuilder,
     public ordenEntradaService: OrdenEntradaService
   ) { }
@@ -134,6 +137,14 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
 
   abrirModalCerrarODE(): void {
 
+  }
+
+  abrirModalGenerarODE(): void {
+    const ref = this.dialogService.open(GenerarOdeComponent, {
+      header: 'Generar ODE',
+      style: { maxWidth: '876px', width: '100%' },
+      data:{}
+    })
   }
 
   get f() {
