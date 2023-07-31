@@ -36,7 +36,8 @@ export class RenovarConvenioPfComponent implements OnInit {
   busquedaTipoConvenioForm!: FormGroup;
   resultadoBusquedaForm!: FormGroup;
   documentacionForm!: FormGroup;
-  habilitarRenovacion: boolean = true;
+  // habilitarRenovacion: boolean = true;
+  confirmarModificarBeneficiarios: boolean = false;
   mostrarModalConfirmacion: boolean = false;
   mensajeBusqueda: string = "";
 
@@ -44,8 +45,6 @@ export class RenovarConvenioPfComponent implements OnInit {
     { label: 'Plan anterior', value: '0' },
     { label: 'Plan nuevo', value: '1' },
   ];
-
-  estatusConvenio = ['Facturado', 'Facturado', 'Vigente'];
 
   tipoPrevisionFuneraria: TipoDropdown[] = CATALOGOS_DUMMIES;
   tipoPaquete: TipoDropdown[] = CATALOGOS_DUMMIES;
@@ -122,11 +121,16 @@ export class RenovarConvenioPfComponent implements OnInit {
     this.indice--;
   }
 
-  guardar() {
-    this.verificarDocumentacion();
+  cancelar() {
+    void this.router.navigate(["/inicio"]);
   }
 
-  verificarDocumentacion() {
+  guardar() {
+    this.confirmarModificarBeneficiarios = true;
+  }
+
+  generarRenovacion() {
+    this.loaderService.activar();
     this.renovarConvenioPfService.verificarDocumentacion(this.datosVerificarDocumentacion()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200) {
@@ -135,6 +139,7 @@ export class RenovarConvenioPfComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.procesarErrorResponse(error);
+        this.loaderService.desactivar();
       }
     });
   }
@@ -142,12 +147,16 @@ export class RenovarConvenioPfComponent implements OnInit {
   renovarPlan() {
     this.renovarConvenioPfService.renovarPlan(this.datosRenovarPlan()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos) { }
+        if (respuesta.datos) {
+          this.limpiar();
+          this.indice = 0;
+          this.confirmarModificarBeneficiarios = false;
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.procesarErrorResponse(error);
       }
-    });
+    }).add(() => this.loaderService.desactivar());
   }
 
   procesarErrorResponse(error: HttpErrorResponse) {
@@ -216,7 +225,6 @@ export class RenovarConvenioPfComponent implements OnInit {
           if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
             const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
             this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
-            this.habilitarRenovacion = false;
           } else {
             this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanNuevo.folio || ''}`;
             this.mostrarModalConfirmacion = true;
@@ -225,7 +233,6 @@ export class RenovarConvenioPfComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
-        // this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
@@ -246,7 +253,6 @@ export class RenovarConvenioPfComponent implements OnInit {
           if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
             const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
             this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
-            this.habilitarRenovacion = false;
           } else {
             this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanAnterior.numeroConvenio || ''}`;
             this.mostrarModalConfirmacion = true;
@@ -255,7 +261,6 @@ export class RenovarConvenioPfComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
-        // this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
@@ -265,8 +270,8 @@ export class RenovarConvenioPfComponent implements OnInit {
       datosBancarios: this.convenio?.datosBancarios,
       idConvenioPf: this.convenio?.idConvenio,
       folio: this.convenio?.folio,
-      vigencia: this.convenio?.fecVigencia,
-      indRenovacion: this.convenio?.tipoConvenioDesc === 'ConvenioAnterior' ? 1 : 0,
+      vigencia: moment(this.convenio?.fecVigencia, 'DD/MM/YYYY').format('DD-MM-YYYY'),
+      indRenovacion: this.convenio?.indRenovacion,
     }
   }
 

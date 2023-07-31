@@ -10,6 +10,7 @@ import { finalize } from 'rxjs';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-renovar-convenio-crear-beneficiario',
@@ -35,6 +36,7 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
     private usuarioService: UsuarioService,
     private loaderService: LoaderService,
     private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
@@ -55,11 +57,23 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
       rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
       email: [{ value: null, disabled: false }, [Validators.pattern(PATRON_CORREO)]],
       telefono: [{ value: null, disabled: false }, [Validators.maxLength(11)]],
-      actaNacimiento: [{ value: null, disabled: false }, []],
+      actaNacimiento: [{ value: null, disabled: true }, []],
       ineBeneficiario: [{ value: null, disabled: false }, []],
       comprobanteEstudios: [{ value: null, disabled: false }, []],
       actaMatrimonio: [{ value: null, disabled: false }, []],
       declaracionConcubinato: [{ value: null, disabled: false }, []],
+    });
+
+    this.verificarActaNacimiento();
+  }
+
+  verificarActaNacimiento() {
+    this.crearBeneficiarioForm.get('edad')?.valueChanges.subscribe((value) => {
+      this.cbf.actaNacimiento.setValue(false);
+      this.cbf.actaNacimiento.disable();
+      if (value >= 0 && value < 18) {
+        this.cbf.actaNacimiento.enable();
+      }
     });
   }
 
@@ -72,6 +86,8 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
       this.crearBeneficiario.emit(this.crearBeneficiarioForm.value);
     } else {
       this.crearBeneficiarioForm.markAllAsTouched();
+      const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(24);
+      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
     }
   }
 
