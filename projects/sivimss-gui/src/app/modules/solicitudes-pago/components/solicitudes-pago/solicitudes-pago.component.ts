@@ -21,12 +21,12 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
-import {CATALOGOS_DUMMIES, CATALOGO_NIVEL} from '../../../articulos/constants/dummies';
+import {CATALOGOS_DUMMIES} from '../../../articulos/constants/dummies';
 import {SolicitarSolicitudPagoComponent} from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
 import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
 import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
-import { AprobarSolicitudPagoComponent } from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
+import {AprobarSolicitudPagoComponent} from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
@@ -46,13 +46,13 @@ export class SolicitudesPagoComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
 
-    solicitudesPago: SolicitudPago[] = [];
-    solicitudPagoSeleccionado!: SolicitudPago;
-    filtroFormSolicitudesPago!: FormGroup;
-    creacionRef!: DynamicDialogRef;
-    detalleRef!: DynamicDialogRef;
-    cancelarRef!: DynamicDialogRef;
-    rechazarRef!: DynamicDialogRef;
+  solicitudesPago: SolicitudPago[] = [];
+  solicitudPagoSeleccionado!: SolicitudPago;
+  filtroFormSolicitudesPago!: FormGroup;
+  creacionRef!: DynamicDialogRef;
+  detalleRef!: DynamicDialogRef;
+  cancelarRef!: DynamicDialogRef;
+  rechazarRef!: DynamicDialogRef;
   aceptarRef!: DynamicDialogRef;
 
   catalogoEjercicios: TipoDropdown[] = [];
@@ -166,56 +166,68 @@ export class SolicitudesPagoComponent implements OnInit {
     )
   }
 
-    abrirModalGenerarSolicitudPago(): void {
-        this.creacionRef = this.dialogService.open(
-            SolicitarSolicitudPagoComponent,
-            {
-                header: 'Generar solicitud de pago',
-                width: MAX_WIDTH,
-            },
-        );
-        this.creacionRef.onClose.subscribe(() => this.limpiar())
-    }
+  abrirModalGenerarSolicitudPago(): void {
+    this.creacionRef = this.dialogService.open(
+      SolicitarSolicitudPagoComponent,
+      {
+        header: 'Generar solicitud de pago',
+        width: MAX_WIDTH,
+      },
+    );
+    this.creacionRef.onClose.subscribe(() => this.limpiar())
+  }
 
-    abrirModalCancelarSolicitudPago(): void {
-        this.cancelarRef = this.dialogService.open(
-            CancelarSolicitudPagoComponent,
-            {
-                header: 'Cancelar solicitud de pago',
-                width: '880px',
-                data: this.solicitudPagoSeleccionado
-            },
-        );
-        this.cancelarRef.onClose.subscribe(() => this.limpiar())
-    }
+  abrirModalCancelarSolicitudPago(): void {
+    this.cancelarRef = this.dialogService.open(
+      CancelarSolicitudPagoComponent,
+      {
+        header: 'Cancelar solicitud de pago',
+        width: '880px',
+        data: this.solicitudPagoSeleccionado
+      },
+    );
+    this.cancelarRef.onClose.subscribe(() => this.limpiar())
+  }
 
-    abrirModalRechazarSolicitudPago(): void {
-        this.rechazarRef = this.dialogService.open(
-            RechazarSolicitudPagoComponent,
-            {
-                header: 'Rechazar solicitud de pago',
-                width: '880px',
-                data: this.solicitudPagoSeleccionado
-            },
-        );
-        this.rechazarRef.onClose.subscribe(() => this.limpiar())
-    }
+  abrirModalAprobarSolicitudPago(): void {
+    this.aceptarRef = this.dialogService.open(
+      AprobarSolicitudPagoComponent,
+      {
+        header: 'Aprobación de solicitud de pago',
+        width: '880px',
+        data: this.solicitudPagoSeleccionado
+      },
+    );
+  }
 
-    paginarConFiltros(): void {
-        const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros();
-        this.cargadorService.activar();
-        this.solicitudesPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
-            .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
-            next: (respuesta: HttpRespuesta<any>): void => {
-                this.solicitudesPago = respuesta.datos.content;
-                this.totalElementos = respuesta.datos.totalElements;
-            },
-            error: (error: HttpErrorResponse): void => {
-                console.error(error);
-                this.mensajesSistemaService.mostrarMensajeError(error);
-            }
-        });
-    }
+
+  abrirModalRechazarSolicitudPago(): void {
+    this.rechazarRef = this.dialogService.open(
+      RechazarSolicitudPagoComponent,
+      {
+        header: 'Rechazar solicitud de pago',
+        width: '880px',
+        data: this.solicitudPagoSeleccionado
+      },
+    );
+    this.rechazarRef.onClose.subscribe(() => this.limpiar())
+  }
+
+  paginarConFiltros(): void {
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
+    this.cargadorService.activar();
+    this.solicitudesPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.solicitudesPago = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
 
   buscar(): void {
     this.numPaginaActual = 0;
@@ -223,21 +235,22 @@ export class SolicitudesPagoComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-    crearSolicitudFiltros(): FiltrosSolicitudPago {
-        const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
-        const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
-        const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
-        return {
-            idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
-            idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
-            idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
-            fecIniODS: fechaInicial,
-            fecFinODS: fechaFinal,
-            ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
-            idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
-            folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value
-        }
+  crearSolicitudFiltros(tipoReporte: string): FiltrosSolicitudPago {
+    const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
+    const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
+    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
+    return {
+      idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
+      idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
+      idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
+      fecIniODS: fechaInicial,
+      fecFinODS: fechaFinal,
+      ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
+      idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
+      folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value,
+      tipoReporte: tipoReporte
     }
+  }
 
   limpiar(): void {
     this.filtroFormSolicitudesPago.reset();
@@ -300,10 +313,11 @@ export class SolicitudesPagoComponent implements OnInit {
     return this.filtroFormSolicitudesPago?.controls;
   }
 
-    ngOnDestroy(): void {
-        this.rechazarRef.destroy();
-        this.creacionRef.destroy();
-        this.cancelarRef.destroy();
-    }
+  ngOnDestroy(): void {
+    this.rechazarRef.destroy();
+    this.creacionRef.destroy();
+    this.cancelarRef.destroy();
+    this.aceptarRef.destroy();
+  }
 
 }

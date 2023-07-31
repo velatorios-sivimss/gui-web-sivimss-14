@@ -1,4 +1,4 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {BaseService} from 'projects/sivimss-gui/src/app/utils/base-service';
@@ -21,6 +21,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   private readonly _folioFactura: string = 'factura-solipagos';
   private readonly _tipoSolicitud: string = 'tipsolic-solipagos';
   private readonly _ejerciciosPagos: string = 'ejercicios-solipagos';
+  private readonly _aprobar: string = 'aprobar-solipagos';
 
   obtenerCatalogoEjercicios(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams().append("servicio", this._ejerciciosPagos);
