@@ -40,20 +40,7 @@ interface RegistroProveedor {
 })
 export class SolicitarSolicitudPagoComponent implements OnInit {
 
-<<<<<<< HEAD
   validaciones: Map<number, any> = new Map();
-=======
-  solicitarPagoForm!: FormGroup;
-  pagoSeleccionado: any = {}
-  opcion1: boolean = false;
-  opcion2: boolean = false;
-  opcion3: boolean = false;
-  opcion4: boolean = false;
-  opcion5: boolean = false;
-  ShowUnidadOpe: boolean = false;
-  ShowUnidadAdmi: boolean = false;
-
->>>>>>> 509912eddfd2b925a4bae07753680d0a916109fa
 
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
   readonly POSICION_CATALOGO_VELATORIO: number = 2;
@@ -112,7 +99,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     ];
   }
 
-<<<<<<< HEAD
   obtenerCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     const catalogoTipoSolicitud = respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD];
@@ -146,33 +132,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       claveBancaria: [{value: null, disabled: true}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
-=======
-  inicializarModificarPagoForm(): void {
-    this.solicitarPagoForm = this.formBulder.group({
-      folioFiscal2: [{ value: null, disabled: false }, [ Validators.required]],
-      ejercFiscal: [{ value: null, disabled: false }, [ Validators.required]],
-      tipoSolic: [{ value: null, disabled: false }, [ Validators.required]],
-      folio: [{ value: null, disabled: false }, [ Validators.required]],
-      nombreDestinatario2: [{ value: null, disabled: false }, [ Validators.required]],
-      nomRemitente2: [{ value: null, disabled: false }, [ Validators.required]],
-      beneficiario2: [{ value: null, disabled: false }, [ Validators.required]],
-      concepto2: [{ value: null, disabled: false }, [ Validators.required]],
-      observ2: [{ value: null, disabled: false }, [ Validators.required]],
-      fechaElaboracion2:[{ value: null, disabled: false }, [ Validators.required]],
-      tipoSolicitud: [{ value: null, disabled: false }, [ Validators.required]],
-      unidad:[{value:null, disabled: false}],
-      unidadOpe: [{value:null, disabled: false}],
-      unidadAdmi: [{value:null, disabled: false}],
-      fechaElaboracion1: [{ value: null, disabled: false }, [ Validators.required]],
-      nomDestinatario1: [{ value: null, disabled: false }, [ Validators.required]],
-      nomRemitente1: [{ value: null, disabled: false }, [ Validators.required]],
-      referenciaTD1: [{ value: null, disabled: false }, [ Validators.required]],
-      beneficiario1: [{ value: null, disabled: false }, [ Validators.required]],
-      concepto1: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(60)]],
-      importeTotal1: [{ value: null, disabled: false }, [ Validators.required]],
-      cantidad1: [{ value: null, disabled: false }, [ Validators.required]],
-      observ1: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(100)]],
->>>>>>> 509912eddfd2b925a4bae07753680d0a916109fa
     });
   }
 
@@ -233,7 +192,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     return this.solicitudPagoForm.get('tipoSolicitud')?.value
   }
 
-<<<<<<< HEAD
   generarSolicitudPago(): CrearSolicitudPago {
     return {
       concepto: "",
@@ -251,37 +209,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       nomRemitente: "",
       numReferencia: 0,
       observaciones: ""
-=======
-    if (idTipo === 1) {
-      this.opcion1 = true;
-      this.opcion2 = false;
-      this.opcion3 = false;
-      this.opcion4 = false;
-    }
-    if (idTipo === 2 ) {
-      this.opcion1 = false;
-      this.opcion2 = true;
-      this.opcion3 = false;
-      this.opcion4 = false;
-    }
-    if (idTipo === 3 ) {
-      this.opcion1 = false;
-      this.opcion2 = false;
-      this.opcion3 = true;
-      this.opcion4 = false;
-    }
-    if (idTipo === 5) {
-      this.opcion1 = false;
-      this.opcion2 = false;
-      this.opcion3 = true;
-      this.opcion4 = false;
-    }
-    if (idTipo === 6) {
-      this.opcion1 = false;
-      this.opcion2 = false;
-      this.opcion3 = false;
-      this.opcion4 = true;
->>>>>>> 509912eddfd2b925a4bae07753680d0a916109fa
     }
   }
 
@@ -304,7 +231,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
   }
 
-<<<<<<< HEAD
   validacionesBienesServiciosPorComprobar(): void {
     this.limpiarFormulario();
     this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
@@ -437,6 +363,4 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   get fc() {
     return this.solicitudPagoForm.controls;
   }
-=======
->>>>>>> 509912eddfd2b925a4bae07753680d0a916109fa
 }

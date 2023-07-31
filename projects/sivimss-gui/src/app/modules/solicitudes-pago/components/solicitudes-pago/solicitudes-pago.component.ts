@@ -172,7 +172,7 @@ export class SolicitudesPagoComponent implements OnInit {
       {
         header: 'Aprobación de solicitud de pago',
         width: '880px',
-        data:  this.solicitudPagoSeleccionado.id
+        data:  this.solicitudPagoSeleccionado.idSolicitud
       },
     )
   }
