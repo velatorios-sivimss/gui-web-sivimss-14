@@ -161,32 +161,26 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
 
   paginar(): void {
     if (!localStorage.getItem('sivimss_token')) return;
-    const filtros: FiltrosMantenimientoVehicular | null = this.crearSolicitudFiltrosPorNivel();
-    if (filtros) {
-      if (!Object.values(filtros).some(v => (v))) {
-        return;
-      }
-      this.loaderService.activar();
-      this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
-        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-          next: (respuesta: HttpRespuesta<any>): void => {
-            this.vehiculos = respuesta.datos.content;
-            this.totalElementos = respuesta.datos.totalElements;
-            this.realizoBusqueda = true;
+    this.loaderService.activar();
+    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.crearSolicitudFiltros())
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.vehiculos = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+          this.realizoBusqueda = true;
 
-            const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-            if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
-              this.vehiculoSeleccionado = this.vehiculos[0];
-              this.abrirModalnuevaVerificacion();
-              this.once = false;
-            }
-          },
-          error: (error: HttpErrorResponse): void => {
-            console.error(error);
-            this.mensajesSistemaService.mostrarMensajeError(error);
+          const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+          if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
+            this.vehiculoSeleccionado = this.vehiculos[0];
+            this.abrirModalnuevaVerificacion();
+            this.once = false;
           }
-        });
-    }
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
   }
 
   paginarConFiltros(): void {
@@ -269,6 +263,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.cargarVelatorios(true);
     this.vehiculos = [];
     this.totalElementos = 0;
+    this.paginar();
   }
 
   abrirModalnuevaVerificacion(): void {
