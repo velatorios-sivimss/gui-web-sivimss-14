@@ -13,7 +13,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {PagoGestion} from "../../models/pagoGestion.interface";
 import {OverlayPanel} from "primeng/overlaypanel";
 import * as moment from "moment/moment";
@@ -60,7 +60,6 @@ export class GestionarPagoComponent implements OnInit {
               private gestionarPagoService: GestionarPagoService,
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService,
-              private router: Router,
               private readonly activatedRoute: ActivatedRoute,
               private alertaService: AlertaService,
               private descargaArchivosService: DescargaArchivosService
@@ -180,29 +179,28 @@ export class GestionarPagoComponent implements OnInit {
     this.cargadorService.activar();
     this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado()).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: boolean): void => {
         console.log(respuesta)
       },
-      (error) => {
+      error: (error): void => {
         console.log(error)
       },
-    )
+    });
   }
 
   guardarExcel(): void {
     this.cargadorService.activar();
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
-    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListadoExcel(),
-      configuracionArchivo).pipe(
+    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListadoExcel(), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta: boolean): void => {
         console.log(respuesta)
       },
-      (error) => {
+      error: (error): void => {
         console.log(error)
       },
-    )
+    });
   }
 }

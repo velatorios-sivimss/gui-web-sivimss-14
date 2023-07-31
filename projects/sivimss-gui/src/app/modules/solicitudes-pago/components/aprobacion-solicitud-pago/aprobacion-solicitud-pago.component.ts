@@ -8,11 +8,11 @@ import {MensajesSistemaService} from "../../../../services/mensajes-sistema.serv
 type DetalleSolicPago = Required<SolicitarSolicitudPago> & { id: string }
 
 @Component({
-  selector: 'app-ver-detalle-solicitud',
-  templateUrl: './ver-detalle-solicitud.component.html',
-  styleUrls: ['./ver-detalle-solicitud.component.scss']
+  selector: 'app-aprobacion-solicitud-pago',
+  templateUrl: './aprobacion-solicitud-pago.component.html',
+  styleUrls: ['./aprobacion-solicitud-pago.component.scss']
 })
-export class VerDetalleSolicitudPagoComponent implements OnInit {
+export class AprobacionSolicitudPagoComponent implements OnInit {
 
   solicitarSolicitudPago: SolicitarSolicitudPago[] = [];
   solicitudPagoSeleccionado!: any;

@@ -22,7 +22,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   opcion5: boolean = false;
   ShowUnidadOpe: boolean = false;
   ShowUnidadAdmi: boolean = false;
-  
+
 
   fechaActual: Date = new Date();
   opcionesSolicitud: number = 0;
@@ -68,13 +68,13 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     }
     this.inicializarModificarPagoForm();
     this.partidaPresupuestal = [
-      {  
+      {
         idPartida: 1,
         partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
         cuentasContables: '000001',
         importeTotal: '000001',
       },
-      {  
+      {
         idPartida: 2,
         partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
         cuentasContables: '000001',
@@ -85,7 +85,18 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   inicializarModificarPagoForm(): void {
     this.solicitarPagoForm = this.formBulder.group({
+      folioFiscal2: [{ value: null, disabled: false }, [ Validators.required]],
+      ejercFiscal: [{ value: null, disabled: false }, [ Validators.required]],
+      tipoSolic: [{ value: null, disabled: false }, [ Validators.required]],
+      folio: [{ value: null, disabled: false }, [ Validators.required]],
+      nombreDestinatario2: [{ value: null, disabled: false }, [ Validators.required]],
+      nomRemitente2: [{ value: null, disabled: false }, [ Validators.required]],
+      beneficiario2: [{ value: null, disabled: false }, [ Validators.required]],
+      concepto2: [{ value: null, disabled: false }, [ Validators.required]],
+      observ2: [{ value: null, disabled: false }, [ Validators.required]],
+      fechaElaboracion2:[{ value: null, disabled: false }, [ Validators.required]],
       tipoSolicitud: [{ value: null, disabled: false }, [ Validators.required]],
+      unidad:[{value:null, disabled: false}],
       unidadOpe: [{value:null, disabled: false}],
       unidadAdmi: [{value:null, disabled: false}],
       fechaElaboracion1: [{ value: null, disabled: false }, [ Validators.required]],
@@ -117,10 +128,16 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       this.opcion3 = false;
       this.opcion4 = false;
     }
-    if (idTipo === 2 || idTipo === 3 || idTipo === 4) {
-      this.opcion2 = true;
+    if (idTipo === 2 ) {
       this.opcion1 = false;
+      this.opcion2 = true;
       this.opcion3 = false;
+      this.opcion4 = false;
+    }
+    if (idTipo === 3 ) {
+      this.opcion1 = false;
+      this.opcion2 = false;
+      this.opcion3 = true;
       this.opcion4 = false;
     }
     if (idTipo === 5) {

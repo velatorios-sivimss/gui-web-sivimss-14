@@ -86,6 +86,7 @@ export class InformacionServicioComponent implements OnInit {
   servicioExtremidad: boolean = false;
   confirmarGuardado: boolean = false;
   confirmarPreOrden:boolean = false;
+  confirmarGuardarPanteon: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -161,6 +162,7 @@ export class InformacionServicioComponent implements OnInit {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
     datosPresupuesto.forEach((datos: any) => {
+
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
@@ -275,7 +277,7 @@ export class InformacionServicioComponent implements OnInit {
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          { value: datos.gestionadoPorPromotor, disabled: false },
+          { value: datos.gestionadoPorPromotor ? datos.gestionadoPorPromotor : false, disabled: false },
           [Validators.required],
         ],
         promotor: [
@@ -456,7 +458,7 @@ export class InformacionServicioComponent implements OnInit {
       if (val) {
         this.idPanteon = val
         this.inhumacion.agregarPanteon.disable();
-        this.alertaService.mostrar(TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(99))
+        this.confirmarGuardarPanteon = true
         return
       }
       this.inhumacion.agregarPanteon.setValue(false);

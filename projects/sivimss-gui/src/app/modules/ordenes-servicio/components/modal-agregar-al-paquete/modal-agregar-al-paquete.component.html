@@ -27,15 +27,15 @@
     </div>
     <div class="col-md-4">
       <label class="control-label" for="ataudesInentario">Ataúdes Inventario<span class="req">*</span>:</label>
-      <p-dropdown #dd id="ataudesInentario" class="form-control" [(ngModel)]="selectAtaudInventario"
+      <p-dropdown #ddAtaud id="ataudesInentario" class="form-control" [(ngModel)]="selectAtaudInventario"
         placeholder="Selecciona un ataúd" [options]="listaAtaudesInventario"
-        (onChange)="onchangeInventario(dd)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
+        (onChange)="onchangeInventario(ddAtaud)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
     </div>
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
       <button class="btn btn-default btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
-      <button class="ml-4 btn btn-primary btn-md" type="button" (click)="aceptarModal()">Agregar</button>
+      <button class="ml-4 btn btn-primary btn-md" type="button" [disabled]="!ddAtaud.value" (click)="aceptarModal()">Agregar</button>
     </div>
   </div>
 </div>
