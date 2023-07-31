@@ -4,22 +4,19 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import { SolicitudesPagoService } from '../../services/solicitudes-pago.service';
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpErrorResponse} from "@angular/common/http";
 
 type DetalleSolicPago = Required<DetalleSolicitudPago> & { id: string }
 
 @Component({
-  selector: 'app-ver-detalle-solicitud',
-  templateUrl: './ver-detalle-solicitud.component.html',
-  styleUrls: ['./ver-detalle-solicitud.component.scss']
+  selector: 'app-aprobacion-solicitud-pago',
+  templateUrl: './aprobacion-solicitud-pago.component.html',
+  styleUrls: ['./aprobacion-solicitud-pago.component.scss']
 })
-export class VerDetalleSolicitudPagoComponent implements OnInit {
+export class AprobacionSolicitudPagoComponent implements OnInit {
 
   solicitarSolicitudPago: DetalleSolicitudPago[] = [];
-  solicitudPagoSeleccionado!: DetalleSolicitudPago;
-  idSolicitud!: number;
+  solicitudPagoSeleccionado!: any;
+  id!: number;
   partidaPresupuestal: PartidaPresupuestal [] = [];
 
   constructor(
@@ -32,8 +29,8 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.idSolicitud = this.config.data;
-    this.obtenerSolicPago(this.idSolicitud);
+    this.id = this.config.data;
+    this.obtenerSolicPago(this.id);
     this.partidaPresupuestal = [
       {
         idPartida: 1,
@@ -58,23 +55,26 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     this.ref.close();
   }
 
-  get tipoSolicitud(): number {
-    return this.solicitudPagoSeleccionado.idTipoSolicitud;
-  }
+  obtenerSolicPago(id: number): void {
+    this.solicitudPagoSeleccionado =
+      {
+        folio2: '000001',
+        tipoSolicitud: 'Solicitud de comprobación de bienes y servicios',
+        folioFiscal2: '000001',
+        estatus2: 'Pendiente',
+        ejerciFiscal2: '2021',
+        fechaElaboracion2: '01/07/2023',
+        unidadOpe: 'Referencia unidad operativa/administrativa',
+        solicitadoPor: 'Jorge Sanchez Prado',
+        referenciaTD2: '12133576',
+        beneficiario2: 'Soluciones industriales',
+        nombreDestinatario2: 'Edwin Ruiz Cardenas',
+        nomRemitente2: 'Ricardo Quintero',
+        concepto2: 'Gasto primario',
+        cantidadLetra2: 'Venticinco mil quinientos pesos',
+        observ2: 'No se presentan problemas de ningun tipo'
+      }
+    ;
 
-  obtenerSolicPago(idSolicitud: number): void {
-    this.cargadorService.activar();
-    this.solicitudesPagoService.detalleSolicitudPago(idSolicitud)
-      .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.solicitudPagoSeleccionado = respuesta.datos[0];
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
   }
-
 }

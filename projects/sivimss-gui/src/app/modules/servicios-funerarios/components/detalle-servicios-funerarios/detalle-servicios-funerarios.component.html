@@ -15,7 +15,7 @@
           </div>
         </div>
         <a class="ml-5 cursor-pointer" (click)="overlayPanelHeader.toggle($event)">
-<!--        <a class="ml-5 cursor-pointer" (click)="abrirPanelHeader($event)">-->
+          <!--        <a class="ml-5 cursor-pointer" (click)="abrirPanelHeader($event)">-->
           <img
             src="assets/images/imagen-icono-barras-horizontales.svg"
             alt="icono barras horizontales">
@@ -25,18 +25,18 @@
   </app-table-panel>
   <app-table-panel>
     <ng-template appCustomTemplate="header">
-      <div class="table-panel-header-column">
-        <div class="col-md-12">
+      <div class="table-panel-header-column w-full">
+        <div class="col-md-3">
           <div class="flex flex-column">
             <div class="col-md">
-              <span>Afiliado</span>
+              <span>Nombre(s) del contratante</span>
             </div>
             <div class="col-md">
               <span class="font-bold">Heriberto Sánchez Maldonado</span>
             </div>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-3">
           <div class="flex flex-column">
             <div class="col-md">
               <span>Estado</span>
@@ -46,7 +46,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-3">
           <div class="flex flex-column">
             <div class="col-md">
               <span>Correo electrónico</span>
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-3">
           <div class="flex flex-column">
             <div class="col-md">
               <span>Paquete</span>
@@ -66,37 +66,6 @@
             </div>
           </div>
         </div>
-        <div class="col-md-12">
-          <div class="flex flex-column">
-            <div class="col-md">
-              <span>No. de pagos</span>
-            </div>
-            <div class="col-md">
-              <span class="font-bold">3</span>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div class="flex flex-column">
-            <div class="col-md">
-              <span>Fecha contrato</span>
-            </div>
-            <div class="col-md">
-              <span class="font-bold">01/01/2022</span>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div class="flex flex-column">
-            <div class="col-md">
-              <span>Estatus</span>
-            </div>
-            <div class="col-md">
-              <span class="font-bold">Generado</span>
-            </div>
-          </div>
-        </div>
-
       </div>
     </ng-template>
     <div class="row table-panel-row mb-2">
@@ -129,7 +98,7 @@
             <td>
               <div class="contenedor-celda-iconos">
                 <a class="ml-5 cursor-pointer" (click)="overlayPanelBody.toggle($event)">
-<!--                <a (click)="abrirPanelBody($event,detallePago)">-->
+                  <!--                <a (click)="abrirPanelBody($event,detallePago)">-->
                   <img
                     src="assets/images/imagen-icono-barras-horizontales.svg"
                     alt="icono barras horizontales">
@@ -141,7 +110,8 @@
       </p-table>
       <div class="row ml-5">
         <div class="col-md-7 mt-6">
-          <span>Aún debes pagar esta cantidad para cubrir el total del plan SPFA <span class="font-bold">$ 22,000.00</span></span>
+          <span>Aún debes pagar esta cantidad para cubrir el total del plan SPFA <span
+            class="font-bold">$ 22,000.00</span></span>
         </div>
         <div class="col-md-5">
           <div class="flex justify-content-end">
@@ -172,7 +142,7 @@
   </div>
   <div class="row mb-6">
     <div class="flex mt-4 justify-content-end">
-      <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../../" >Regresar</button>
+      <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../../">Regresar</button>
     </div>
   </div>
 </section>
@@ -188,8 +158,9 @@
 <p-overlayPanel #overlayPanelBody>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Modificar pago"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Ver recibo de pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Realizar pago" (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar método" ></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Eliminar método" (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
