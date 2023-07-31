@@ -59,17 +59,40 @@
     <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
-          <label>Tipo de prevención funeraria</label>
-          <span> {{convenioSeleccionado.tipoPrevencionFuneraria}} </span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
           <label>Tipo de paquete </label>
           <span> {{convenioSeleccionado.tipoPaquete}} </span>
         </div>
       </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Tipo de prevención funeraria</label>
+          <span> {{convenioSeleccionado.tipoPrevencionFuneraria}} </span>
+        </div>
+      </div>
     </div>
+
+
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Cuota de recuperación</label>
+          <span> {{convenioSeleccionado.cuotaRecuperacion}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha inicio de vigencia</label>
+          <span> {{convenioSeleccionado.fechaInicioVigencia}} </span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha fin de vigencia</label>
+          <span> {{convenioSeleccionado.fechaFinVigencia}} </span>
+        </div>
+      </div>
+    </div>
+
     <div class="row table-panel-row">
       <div class="col-md-4">
         <div class="table-panel-column">
@@ -90,26 +113,6 @@
         </div>
       </div>
     </div>
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Fecha inicio de vigencia</label>
-          <span> {{convenioSeleccionado.fechaInicioVigencia}} </span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Fecha fin de vigencia</label>
-          <span> {{convenioSeleccionado.fechaFinVigencia}} </span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Cuota de recuperación</label>
-          <span> {{convenioSeleccionado.cuotaRecuperacion}} </span>
-        </div>
-      </div>
-    </div>
   </app-table-panel>
   <ng-container *ngIf="origen == 'agregar'">
     <div class="flex justify-content-end">
@@ -121,12 +124,6 @@
       </button>
     </div>
   </ng-container>
-  <p-overlayPanel #overlayPanel>
-    <ng-template pTemplate="content">
-      <app-overlay-panel-opciones>
-      </app-overlay-panel-opciones>
-    </ng-template>
-  </p-overlayPanel>
 </ng-container>
   <ng-container *ngIf="abrirHabilitar">
     <form [formGroup]="habilitarRenobacionForm">
@@ -143,6 +140,9 @@
           <span>*Campos obligatorios</span>
         </div>
       </div>
+      <p class="text-center">
+        ¿Estás seguro de habilitar el tiempo de renovación para este convenio?
+      </p>
     </form>
     <div class="flex justify-content-end">
       <button class="btn btn-default btn-md" (click)="cerrar()">Cancelar</button>

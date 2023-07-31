@@ -58,7 +58,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     this.busquedaListBeneficiarios = respuesta[this.POSICION_BENEFICIARIOS].datos;
     this.beneficiarios = this.busquedaListBeneficiarios.beneficiarios || [];
     this.datosGenerales = respuesta[this.POSICION_DATOS_GRALES].datos[0];
-    this.datosGenerales.fecha = moment().format('DD-MM-YYYY');
+    this.datosGenerales.fecha = moment().format('DD/MM/YYYY');
   }
 
   ngOnInit(): void { }
@@ -89,13 +89,19 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos) {
             this.beneficiarios = respuesta?.datos?.beneficiarios;
+            const found = this.beneficiarios.find((item: BusquedaBeneficiarios) => item.id === this.beneficiarioSeleccionado?.idBenef)
+            if (this.beneficiarioSeleccionado?.idBenef && found) {
+              this.obtenerDetalleBeneficiario(this.beneficiarioSeleccionado.idBenef);
+            } else {
+              this.activeIndex = null;    
+            }
           }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
+          this.activeIndex = null;
         }
       }).add(() => {
-        this.activeIndex = null;
         this.mode = 'listado';
       });
     }
@@ -104,10 +110,12 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
   obtenerDetalleBeneficiario(idBeneficiario: number) {
     this.renovarConvenioPfService.obtenerDetalleBeneficiario(idBeneficiario).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        this.beneficiarioSeleccionado = {};
         if (respuesta?.datos && respuesta?.datos.length > 0) {
           this.beneficiarioSeleccionado = respuesta?.datos[0];
-          this.beneficiarioSeleccionado.tipoConvenioDesc = this.convenio.tipoConvenioDesc;
         }
+        this.beneficiarioSeleccionado.idBenef = idBeneficiario;
+        this.beneficiarioSeleccionado.tipoConvenioDesc = this.convenio.tipoConvenioDesc;
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
@@ -165,9 +173,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
           if (respuesta?.datos) {
             this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);
             this.mode = 'listado';
-            if (this.beneficiarioSeleccionado.idBenef) {
-              this.obtenerDetalleBeneficiario(this.beneficiarioSeleccionado.idBenef);
-            }
+            this.consultarListadoBeneficiarios();
           }
         },
         error: (error: HttpErrorResponse) => {

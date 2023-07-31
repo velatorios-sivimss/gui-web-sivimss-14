@@ -4,10 +4,10 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {DropdownModule} from 'primeng/dropdown';
 import {DynamicDialogModule} from 'primeng/dynamicdialog';
+import { RadioButtonModule } from "primeng/radiobutton";
 import {TableModule} from 'primeng/table';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
-
 import {TituloPrincipalModule} from '../../shared/titulo-principal/titulo-principal.module';
 import {TablePanelModule} from '../../shared/table-panel/table-panel.module';
 import {OverlayPanelOpcionesModule} from '../../shared/overlay-panel-opciones/overlay-panel-opciones.module';
@@ -30,10 +30,9 @@ import {CancelarSolicitudPagoComponent} from "./components/cancelar-solicitud-pa
 import {RechazarSolicitudPagoComponent} from "./components/rechazar-solicitud-pago/rechazar-solicitud-pago.component";
 import {VerDetalleSolicitudPagoComponent} from './components/ver-detalle-solicitud/ver-detalle-solicitud.component';
 import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
-import {AceptarSolicitudPagoComponent} from "./components/aceptar-solicitud-pago/aceptar-solicitud-pago.component";
+import {AprobarSolicitudPagoComponent} from "./components/aprobar-solicitud-pago/aprobar-solicitud-pago.component";
 import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directive";
 import {PanelModule} from "primeng/panel";
-import {RadioButtonModule} from "primeng/radiobutton";
 import {SinCaracteresEspecialesDirective} from "./directives/sin-caracteres-especiales.directive";
 
 @NgModule({
@@ -43,7 +42,7 @@ import {SinCaracteresEspecialesDirective} from "./directives/sin-caracteres-espe
     CancelarSolicitudPagoComponent,
     RechazarSolicitudPagoComponent,
     VerDetalleSolicitudPagoComponent,
-    AceptarSolicitudPagoComponent,
+    AprobarSolicitudPagoComponent,
     RegexFolioFiscalDirective,
     SinCaracteresEspecialesDirective,
   ],

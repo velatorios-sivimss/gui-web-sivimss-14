@@ -35,13 +35,13 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     this.idSolicitud = this.config.data;
     this.obtenerSolicPago(this.idSolicitud);
     this.partidaPresupuestal = [
-      {  
+      {
         idPartida: 1,
         partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
         cuentasContables: '000001',
         importeTotal: '000001',
       },
-      {  
+      {
         idPartida: 2,
         partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
         cuentasContables: '000001',
@@ -49,7 +49,7 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
       }
     ];
   }
- 
+
   aceptar(): void {
     this.ref.close();
   }

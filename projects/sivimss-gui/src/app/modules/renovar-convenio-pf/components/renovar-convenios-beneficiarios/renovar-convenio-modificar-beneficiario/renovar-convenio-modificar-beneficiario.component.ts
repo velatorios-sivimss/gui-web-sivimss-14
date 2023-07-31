@@ -10,6 +10,7 @@ import { UsuarioService } from '../../../../usuarios/services/usuario.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { finalize } from 'rxjs';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-renovar-convenio-modificar-beneficiario',
@@ -35,6 +36,7 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
     private usuarioService: UsuarioService,
     private loaderService: LoaderService,
     private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
@@ -62,6 +64,8 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
       declaracionConcubinato: [{ value: null, disabled: false }, []],
     });
 
+    this.verificarActaNacimiento();
+
     this.modificarBeneficiarioForm.patchValue({
       ...this.beneficiarioSeleccionado,
       parentesco: this.beneficiarioSeleccionado.idParentesco,
@@ -75,6 +79,16 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
     });
   }
 
+  verificarActaNacimiento() {
+    this.modificarBeneficiarioForm.get('edad')?.valueChanges.subscribe((value) => {
+      this.mbf.actaNacimiento.setValue(false);
+      this.mbf.actaNacimiento.disable();
+      if (value >= 0 && value < 18) {
+        this.mbf.actaNacimiento.enable();
+      }
+    });
+  }
+
   cancelar() {
     this.actualizarBeneficiario.emit(null);
   }
@@ -84,6 +98,8 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
       this.actualizarBeneficiario.emit(this.modificarBeneficiarioForm.value);
     } else {
       this.modificarBeneficiarioForm.markAllAsTouched();
+      const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(24);
+      this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
     }
   }
 

@@ -22,6 +22,7 @@ import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/a
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import * as moment from 'moment';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 
 @Component({
   selector: 'app-renovar-convenio-pf',
@@ -35,7 +36,8 @@ export class RenovarConvenioPfComponent implements OnInit {
   busquedaTipoConvenioForm!: FormGroup;
   resultadoBusquedaForm!: FormGroup;
   documentacionForm!: FormGroup;
-  habilitarRenovacion: boolean = true;
+  // habilitarRenovacion: boolean = true;
+  confirmarModificarBeneficiarios: boolean = false;
   mostrarModalConfirmacion: boolean = false;
   mensajeBusqueda: string = "";
 
@@ -43,8 +45,6 @@ export class RenovarConvenioPfComponent implements OnInit {
     { label: 'Plan anterior', value: '0' },
     { label: 'Plan nuevo', value: '1' },
   ];
-
-  estatusConvenio = ['Facturado', 'Facturado', 'Vigente'];
 
   tipoPrevisionFuneraria: TipoDropdown[] = CATALOGOS_DUMMIES;
   tipoPaquete: TipoDropdown[] = CATALOGOS_DUMMIES;
@@ -56,6 +56,7 @@ export class RenovarConvenioPfComponent implements OnInit {
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     private readonly router: Router,
+    private readonly loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
@@ -112,17 +113,24 @@ export class RenovarConvenioPfComponent implements OnInit {
   limpiar(): void {
     this.busquedaTipoConvenioForm.reset();
     this.btcf.tipoConvenio.setValue(true);
+    this.convenio = null;
+    this.resultadoBusquedaForm.reset();
   }
 
   regresar(): void {
     this.indice--;
   }
 
-  guardar() {
-    this.verificarDocumentacion();
+  cancelar() {
+    void this.router.navigate(["/inicio"]);
   }
 
-  verificarDocumentacion() {
+  guardar() {
+    this.confirmarModificarBeneficiarios = true;
+  }
+
+  generarRenovacion() {
+    this.loaderService.activar();
     this.renovarConvenioPfService.verificarDocumentacion(this.datosVerificarDocumentacion()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200) {
@@ -131,6 +139,7 @@ export class RenovarConvenioPfComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         this.procesarErrorResponse(error);
+        this.loaderService.desactivar();
       }
     });
   }
@@ -138,12 +147,16 @@ export class RenovarConvenioPfComponent implements OnInit {
   renovarPlan() {
     this.renovarConvenioPfService.renovarPlan(this.datosRenovarPlan()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos) { }
+        if (respuesta.datos) {
+          this.limpiar();
+          this.indice = 0;
+          this.confirmarModificarBeneficiarios = false;
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.procesarErrorResponse(error);
       }
-    });
+    }).add(() => this.loaderService.desactivar());
   }
 
   procesarErrorResponse(error: HttpErrorResponse) {
@@ -182,68 +195,72 @@ export class RenovarConvenioPfComponent implements OnInit {
       if (validarAlMenosUnCampoConValor(datosPlanAnterior)) {
         this.buscarPlanAnterior(datosPlanAnterior);
       } else {
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+        this.mensajeBusqueda = `Selecciona por favor un criterio de búsqueda.`;
+        this.mostrarModalConfirmacion = true;
       }
     } else {
       let datosPlanNuevo = this.datosPlanNuevo();
       if (validarAlMenosUnCampoConValor(datosPlanNuevo)) {
         this.buscarPlanNuevo(datosPlanNuevo);
       } else {
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+        this.mensajeBusqueda = `Selecciona por favor un criterio de búsqueda.`;
+        this.mostrarModalConfirmacion = true;
       }
     }
   }
 
   buscarPlanNuevo(datosPlanNuevo: BuscarConvenioPlanNuevo) {
+    this.loaderService.activar();
     this.renovarConvenioPfService.buscarConvenioPlanNuevo(datosPlanNuevo).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        this.loaderService.desactivar();
         this.convenio = null;
         if (respuesta.datos) {
-          if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
-            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-            this.alertaService.mostrar(TipoAlerta.Exito, msg);
-            this.habilitarRenovacion = false;
-          }
           this.convenio = respuesta.datos;
           if (this.convenio) this.convenio.tipoConvenioDesc = 'ConvenioNuevo';
           this.resultadoBusquedaForm.patchValue({
             ...this.convenio
           });
         } else {
-          this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanNuevo.folio}`;
-          this.mostrarModalConfirmacion = true;
+          if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+          } else {
+            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanNuevo.folio || ''}`;
+            this.mostrarModalConfirmacion = true;
+          }
         }
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
-        // this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
 
   buscarPlanAnterior(datosPlanAnterior: BuscarConvenioPlanAnterior) {
+    this.loaderService.activar();
     this.renovarConvenioPfService.buscarConvenioPlanAnterior(datosPlanAnterior).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        this.loaderService.desactivar();
         this.convenio = null;
         if (respuesta.datos) {
-          if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
-            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-            this.alertaService.mostrar(TipoAlerta.Exito, msg);
-            this.habilitarRenovacion = false;
-          }
           this.convenio = respuesta.datos;
           if (this.convenio) this.convenio.tipoConvenioDesc = 'ConvenioAnterior';
           this.resultadoBusquedaForm.patchValue({
             ...this.convenio
           });
         } else {
-          this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanAnterior.numeroConvenio}`;
-          this.mostrarModalConfirmacion = true;
+          if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+          } else {
+            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanAnterior.numeroConvenio || ''}`;
+            this.mostrarModalConfirmacion = true;
+          }
         }
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
-        // this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
@@ -253,8 +270,8 @@ export class RenovarConvenioPfComponent implements OnInit {
       datosBancarios: this.convenio?.datosBancarios,
       idConvenioPf: this.convenio?.idConvenio,
       folio: this.convenio?.folio,
-      vigencia: this.convenio?.fecVigencia,
-      indRenovacion: this.convenio?.tipoConvenioDesc === 'ConvenioAnterior' ? 1 : 0,
+      vigencia: moment(this.convenio?.fecVigencia, 'DD/MM/YYYY').format('DD-MM-YYYY'),
+      indRenovacion: this.convenio?.indRenovacion,
     }
   }
 
@@ -282,16 +299,16 @@ export class RenovarConvenioPfComponent implements OnInit {
 
   datosPlanNuevo(): BuscarConvenioPlanNuevo {
     return {
-      folio: this.btcf.folio.value,
-      rfc: this.btcf.rfc.value,
+      folio: this.btcf.folio.value ? this.btcf.folio.value : null,
+      rfc: this.btcf.rfc.value ? this.btcf.rfc.value : null,
     }
   }
 
 
   datosPlanAnterior(): BuscarConvenioPlanAnterior {
     return {
-      numeroContratante: this.btcf.nombreContratante.value,
-      numeroConvenio: this.btcf.numConvenio.value,
+      numeroContratante: this.btcf.nombreContratante.value ? this.btcf.nombreContratante.value : null,
+      numeroConvenio: this.btcf.numConvenio.value ? this.btcf.numConvenio.value : null,
     }
   }
 

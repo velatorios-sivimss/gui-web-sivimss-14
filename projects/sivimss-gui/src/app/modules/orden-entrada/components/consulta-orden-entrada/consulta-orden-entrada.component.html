@@ -23,7 +23,7 @@
     <div class="col-md-6">
   <!--                    (onSelect)="seleccionaPanteon($event)"  [suggestions]="panteonServicioFiltrados"-->
   <!--                    (completeMethod)="filtrarPateon($event)"-->
-      <label class="control-label" for="ordenEntrada">Orden de entrada (ODE):</label>
+      <label class="control-label" for="ordenEntrada">Orden de entrada:</label>
       <p-autoComplete id="ordenEntrada"  class="form-control" formControlName="ordenEntrada"
                       autocomplete="000000"
                       [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50"
@@ -73,15 +73,18 @@
   <div class="flex justify-content-between ">
     <h2 class="subtitulo">Órdenes de entrada</h2>
     <div class="col-md-4">
-      <button type="button" style="width:100%" class="btn btn-primary btn-md">Generar ODE</button>
+      <button type="button" style="width:100%" class="btn btn-primary btn-md"
+       (click)="abrirModalGenerarODE()">
+        Generar ODE
+      </button>
     </div>
   </div>
 </form>
 <section>
-  <p-table styleClass="mt-5 mb-8" [value]="ordenesEntrada"
-  [paginator]="ordenesEntrada.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
-  [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-  (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
+  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="ordenesEntrada"
+           [paginator]="ordenesEntrada.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
+           [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+            (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn scope="col">ID ODE</th>
@@ -89,14 +92,14 @@
         <th pResizableColumn scope="col">Contrato</th>
         <th pResizableColumn scope="col">Proveedor</th>
         <th pResizableColumn scope="col">Folio proveedor</th>
-        <th pResizableColumn scope="col">Categoría (Artículo)</th>
+        <th pResizableColumn scope="col">Categoría</th>
         <th pResizableColumn scope="col">Modelo</th>
         <th pResizableColumn scope="col">Velatorio</th>
         <th pResizableColumn scope="col">Costo</th>
         <th pResizableColumn scope="col">Precio</th>
         <th pResizableColumn scope="col">Número de artículos</th>
         <th pResizableColumn scope="col">Fecha ODE</th>
-        <th pResizableColumn scope="col">Estatus</th>
+        <th id="columna_orden_entrada_estatus">Estatus</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ordenesEntrada>
@@ -120,7 +123,7 @@
               <span class="activo mr-3" *ngIf="ordenesEntrada.estatus == 2">Cancelada</span>
               <span class="activo mr-3" *ngIf="ordenesEntrada.estatus == 3">Cerrada</span>
             </div>
-            <a (click)="abrirPanel($event,ordenesEntrada)" *appValidaRol="['USUARIOS','MODIFICAR']" onCloseOnNavigation>
+            <a (click)="abrirPanel($event,ordenesEntrada)" onCloseOnNavigation>
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>

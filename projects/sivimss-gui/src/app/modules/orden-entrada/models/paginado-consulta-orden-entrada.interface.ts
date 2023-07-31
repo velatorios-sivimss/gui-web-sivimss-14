@@ -1,4 +1,4 @@
-export interface Paginado {
+export interface PaginadoConsultaOrdenEntrada {
   idOde: null | number,
   folioOde: null | string,
   contrato: null | string,

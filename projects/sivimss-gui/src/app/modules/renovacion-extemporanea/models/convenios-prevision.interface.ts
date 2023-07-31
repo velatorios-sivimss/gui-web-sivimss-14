@@ -16,14 +16,9 @@ export interface ConveniosPrevision {
   correoElectronico?: string;
   cuotaRecuperacion?: string;
   estatus?: boolean;
-  }
+}
 
-  export interface ConfirmacionServicio {
-    estatus?: boolean;
-    origen?: string;
-  }
-
-
-
-
-
+export interface ConfirmacionServicio {
+  estatus?: boolean;
+  origen?: string;
+}

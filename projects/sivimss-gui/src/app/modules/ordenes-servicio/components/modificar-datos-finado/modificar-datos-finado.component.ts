@@ -177,14 +177,12 @@ export class ModificarDatosFinadoComponent
       this.cambiarValidacionMatricula();
       this.inicializarCalcularEdad();
       this.cambiarValidacionNSS();
-      this.changeTipoOrden(true);
+      // this.changeTipoOrden(true);
       this.cambiarTipoSexo();
       // this.datosFinado.esParaExtremidad.value;
-    },600)
+    },500)
 
-    setTimeout(()=> {
-      this.esExtremidad(this.datosFinado.esParaExtremidad.value);
-    },700)
+
 
 
 
@@ -435,14 +433,14 @@ export class ModificarDatosFinadoComponent
       }
 
 
-      if(datosEtapaFinado.datosFinado.clinicaAdscripcion){
-        this.changeClinica();
+      if(datosEtapaFinado.datosFinado.procedenciaFinado){
+        this.changeProcedenciaFinado();
       }else if(datosEtapaFinado.datosFinado.unidadProcedencia){
         this.changeUnidad();
       }
 
 
-    },400)
+    },2000)
 
     if (datosEtapaFinado.datosFinado.esObito != null)
       this.esObito(esObito);
@@ -585,16 +583,24 @@ export class ModificarDatosFinadoComponent
   }
 
   changeUnidad(): void {
-    this.datosFinado.clinicaAdscripcion.setValue(null);
-    this.datosFinado.clinicaAdscripcion.clearValidators();
-    this.datosFinado.clinicaAdscripcion.updateValueAndValidity();
+    this.datosFinado.procedenciaFinado.setValue(null);
+    this.datosFinado.procedenciaFinado.clearValidators();
+    this.datosFinado.procedenciaFinado.updateValueAndValidity();
+    this.datosFinado.unidadProcedencia.setValidators(Validators.required);
   }
 
-  changeClinica(): void {
-    this.datosFinado.unidadProcedencia.setValue(null);
+  changeProcedenciaFinado(): void {
+    this.datosFinado.unidadProcedencia.reset();
     this.datosFinado.unidadProcedencia.clearValidators();
     this.datosFinado.unidadProcedencia.updateValueAndValidity();
+    this.datosFinado.procedenciaFinado.setValidators(Validators.required);
   }
+
+  // changeClinica(): void {
+  //   this.datosFinado.unidadProcedencia.setValue(null);
+  //   this.datosFinado.unidadProcedencia.clearValidators();
+  //   this.datosFinado.unidadProcedencia.updateValueAndValidity();
+  // }
 
   convertirAMayusculas(): void {
     this.datosFinado.curp.setValue(this.datosFinado.curp.value.toUpperCase());
@@ -737,8 +743,7 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.esObito.patchValue(null)
       this.datosFinado.esObito.disable();
 
-      this.datosFinado.velatorioPrevision.disable();
-    } else if ((validacion || !validacion) && idTipoOrden == 3) {
+    } else if (idTipoOrden == 3) {
       this.desabilitarTodo();
       this.datosFinado.esObito.disable();
     } else {
@@ -885,6 +890,18 @@ export class ModificarDatosFinadoComponent
 
   get direccion() {
     return (this.form.controls['direccion'] as FormGroup).controls;
+  }
+
+  noEspacioPrincipal(posicion:number): void {
+    let formularios = [
+      this.datosFinado.nombre,
+      this.datosFinado.primerApellido,
+      this.datosFinado.segundoApellido,
+      this.datosFinado.procedenciaFinado
+    ];
+    if(formularios[posicion].value.charAt(0).includes(' ')){
+      formularios[posicion].setValue(formularios[posicion].value.trimStart());
+    }
   }
 
   continuar(): void {
