@@ -5,6 +5,7 @@ import {NgModule} from "@angular/core";
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {CalendarModule} from "primeng/calendar";
 import {DialogModule} from "primeng/dialog";
+import {DialogService} from "primeng/dynamicdialog";
 import {DropdownModule} from "primeng/dropdown";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {SelectButtonModule} from "primeng/selectbutton";
@@ -23,12 +24,14 @@ import {OrdenEntradaComponent} from "./components/orden-entrada/orden-entrada.co
 import {OrdenEntradaService} from "./services/orden-entrada.service";
 import { ConsultaOrdenEntradaComponent } from './components/consulta-orden-entrada/consulta-orden-entrada.component';
 import { ConsultaStockComponent } from './components/consulta-stock/consulta-stock.component';
+import { GenerarOdeComponent } from './components/generar-ode/generar-ode.component';
 
 @NgModule({
   declarations: [
     OrdenEntradaComponent,
     ConsultaOrdenEntradaComponent,
-    ConsultaStockComponent
+    ConsultaStockComponent,
+    GenerarOdeComponent
   ],
   imports: [
     FormsModule,
@@ -55,7 +58,8 @@ import { ConsultaStockComponent } from './components/consulta-stock/consulta-sto
     OrdenEntradaRoutingModule,
   ],
   providers: [
-    OrdenEntradaService
+    OrdenEntradaService,
+    DialogService
   ]
 })
 export class OrdenEntradaModule{}
