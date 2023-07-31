@@ -2,45 +2,56 @@
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="niveles"
-          placeholder="Selecciona el velatorio">
+      <div class="col-md-4">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+          placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
         </p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo obligatorio</span>
       </div>
-      <div class="col-md-6">
-        <label class="control-label" for="numeroConvenio">Número de convenio:</label>
-        <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio"
-          placeholder="Ingresa el número de convenio" (keyup)="consultaServicioEspecifico()">
-        <span class="campo-obligatorio"
-          *ngIf="f.numeroConvenio?.errors?.required && (f.numeroConvenio?.dirty || f.numeroConvenio?.touched)">Campo
-          obligatorio</span>
+      <div class="col-md-4">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+          placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)='obtenerVelatorios();'>
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
+        </p-dropdown>
       </div>
     </div>
+
     <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="folioConvenio">Folio de convenio:</label>
-        <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
-          placeholder="Ingresa el folio del convenio" (keyup)="consultaServicioEspecifico()">
+      <div class="col-md-4">
+        <label class="control-label" for="numeroConvenio">Número de Convenio:</label>
+        <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio" alphanumericOnly trimmer
+          placeholder="Ingresa el número de convenio">
         <span class="campo-obligatorio"
-          *ngIf="f.folioConvenio?.errors?.required && (f.folioConvenio?.dirty || f.folioConvenio?.touched)">Campo
-          obligatorio</span>
+          *ngIf="ff.numeroConvenio?.errors?.required && (ff.numeroConvenio?.dirty || ff.numeroConvenio?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
+        <label class="control-label" for="folioConvenio">Folio de Convenio:</label>
+        <input id="folioConvenio" class="form-control" formControlName="folioConvenio" folioOdsAlphanumeric trimmer
+          placeholder="Ingresa el folio del convenio">
+        <span class="campo-obligatorio"
+          *ngIf="ff.folioConvenio?.errors?.required && (ff.folioConvenio?.dirty || ff.folioConvenio?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-4">
         <label class="control-label" for="rfcAfiliado">RFC del afiliado:</label>
         <input id="rfcAfiliado" class="form-control" formControlName="rfcAfiliado" placeholder="Ingresa el articulo"
-          (keyup)="consultaServicioEspecifico()">
+          alphanumericOnly trimmer maxlength="13">
         <span class="campo-obligatorio"
-          *ngIf="f.rfcAfiliado?.errors?.required && (f.rfcAfiliado?.dirty || f.rfcAfiliado?.touched)">Campo
-          obligatorio</span>
+          *ngIf="ff.rfcAfiliado?.errors?.required && (ff.rfcAfiliado?.dirty || ff.rfcAfiliado?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
           (click)="mostrarModalTitularFallecido()">Buscar</button>
       </div>
     </div>
@@ -82,9 +93,7 @@
         <td>
           <div class="contenedor-celda-iconos">
             <a (click)="abrirPanel($event, convenioPrevision)">
-              <img
-                src="assets/images/imagen-icono-barras-horizontales.svg"
-                alt="icono barras horizontales">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
         </td>
@@ -100,7 +109,7 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-pdff.svg" alt="exportar pdf">
             <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-excel.svg"
               alt="exportar excel">
           </div>

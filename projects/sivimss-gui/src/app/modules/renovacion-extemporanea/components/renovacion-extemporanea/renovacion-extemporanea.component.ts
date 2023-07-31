@@ -1,7 +1,7 @@
 import { HabilitarRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/habilitar-renovacion/habilitar-renovacion.component'
 import { DetalleRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/detalle-renovacion/detalle-renovacion.component'
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { LazyLoadEvent } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { OverlayPanel } from 'primeng/overlaypanel'
@@ -14,6 +14,12 @@ import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrum
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes'
 import { CATALOGOS_DUMMIES } from 'projects/sivimss-gui/src/app/modules/proveedores/constants/dummies'
 import { ConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/models/convenios-prevision.interface'
+import { RenovacionExtemporaneaService } from '../../services/renovacion-extemporanea.service'
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface'
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones'
+import { HttpErrorResponse } from '@angular/common/http'
+import { ActivatedRoute } from '@angular/router'
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service'
 
 @Component({
   selector: 'app-renovacion-extemporanea',
@@ -22,6 +28,9 @@ import { ConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovac
   providers: [DialogService],
 })
 export class RenovacionExtemporaneaComponent implements OnInit {
+  readonly POSICION_CATALOGO_NIVELES = 0;
+  readonly POSICION_CATALOGO_DELEGACION = 1;
+
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
@@ -29,6 +38,9 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   filtroForm!: FormGroup;
+  catalogoNiveles: TipoDropdown[] = [];
+  catalogoDelegaciones: TipoDropdown[] = [];
+  catalogoVelatorios: TipoDropdown[] = [];
   conveniosPrevicion: ConveniosPrevision[] = [];
   convenioSeleccionado: ConveniosPrevision = {};
   creacionRef!: DynamicDialogRef;
@@ -39,26 +51,47 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   tipoServicio: TipoDropdown[] = CATALOGOS_DUMMIES;
   partidaPresupuestal: TipoDropdown[] = CATALOGOS_DUMMIES;
   cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES;
-  niveles: TipoDropdown[] = CATALOGOS_DUMMIES;
-  velatorios: TipoDropdown[] = CATALOGOS_DUMMIES;
+
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     public dialogService: DialogService,
+    private readonly loaderService: LoaderService,
+    private renovacionExtemporaneaService: RenovacionExtemporaneaService,
   ) { }
 
   ngOnInit(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION];
     this.inicializarFiltroForm();
   }
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      velatorio: [{ value: null, disabled: false }, [Validators.required]],
-      numeroConvenio: [{ value: null, disabled: false }, [Validators.required]],
-      folioConvenio: [{ value: null, disabled: false }, [Validators.required]],
-      rfcAfiliado: [{ value: null, disabled: false }, [Validators.required]],
+      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, []),
+      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
+      numeroConvenio: new FormControl({ value: null, disabled: false }, []),
+      folioConvenio: new FormControl({ value: null, disabled: false }, []),
+      rfcAfiliado: new FormControl({ value: null, disabled: false }, [Validators.maxLength(13)]),
+    });
+    this.obtenerVelatorios();
+  }
+
+  obtenerVelatorios() {
+    this.renovacionExtemporaneaService.obtenerVelatoriosPorDelegacion(this.ff.delegacion.value).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+        this.conveniosPrevicion = [];
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
     });
   }
 
@@ -164,15 +197,11 @@ export class RenovacionExtemporaneaComponent implements OnInit {
     this.mostrarModaltitularFallecido = true;
   }
 
-  consultaServicioEspecifico(): string {
-    return '';
-  }
-
   limpiar(): void {
     this.filtroForm.reset();
   }
 
-  get f() {
+  get ff() {
     return this.filtroForm?.controls;
   }
 }
