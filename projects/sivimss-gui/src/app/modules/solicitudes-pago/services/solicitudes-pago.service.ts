@@ -19,16 +19,16 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   private readonly _catUnidad: string = 'unidadope-solipagos';
   private readonly _catBanco: string = 'datosbanco-solipagos';
   private readonly _folioFactura: string = 'factura-solipagos';
+  private readonly _tipoSolicitud: string = 'tipsolic-solipagos';
+  private readonly _ejerciciosPagos: string = 'ejercicios-solipagos';
 
   obtenerCatalogoEjercicios(): Observable<HttpRespuesta<any>> {
-    const servicio = "ejercicios-solipagos";
-    const params: HttpParams = new HttpParams().append("servicio", servicio);
+    const params: HttpParams = new HttpParams().append("servicio", this._ejerciciosPagos);
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, {params});
   }
 
   obtenerCatalogoTipoSolicitud(): Observable<HttpRespuesta<any>> {
-    const servicio = "tipsolic-solipagos";
-    const params: HttpParams = new HttpParams().append("servicio", servicio);
+    const params: HttpParams = new HttpParams().append("servicio", this._tipoSolicitud);
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, {params});
   }
 
