@@ -141,7 +141,7 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
 
   abrirModalGenerarODE(): void {
     const ref = this.dialogService.open(GenerarOdeComponent, {
-      header: 'Generar ODE',
+      header: 'Orden de entrada',
       style: { maxWidth: '876px', width: '100%' },
       data:{}
     })
