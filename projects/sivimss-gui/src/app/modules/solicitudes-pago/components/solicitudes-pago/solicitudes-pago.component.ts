@@ -1,4 +1,3 @@
-import { AprobacionSolicitudPagoComponent } from "projects/sivimss-gui/src/app/modules/solicitudes-pago/components/aprobacion-solicitud-pago/aprobacion-solicitud-pago.component";
 import {SolicitudPago} from '../../models/solicitud-pagos.interface';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
@@ -27,7 +26,7 @@ import {SolicitarSolicitudPagoComponent} from '../solicitar-solicitud-pago/solic
 import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
 import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
-import { AceptarSolicitudPagoComponent } from '../aceptar-solicitud-pago/aceptar-solicitud-pago.component';
+import { AprobarSolicitudPagoComponent } from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
@@ -166,17 +165,6 @@ export class SolicitudesPagoComponent implements OnInit {
     )
   }
 
-  abrirModalAprobacionSolicitudPago(): void {
-    this.cancelarRef = this.dialogService.open(
-      AprobacionSolicitudPagoComponent,
-      {
-        header: 'Aprobación de solicitud de pago',
-        width: '880px',
-        data:  this.solicitudPagoSeleccionado.idSolicitud
-      },
-    )
-  }
-
   abrirModalGenerarSolicitudPago(): void {
     this.creacionRef = this.dialogService.open(
       SolicitarSolicitudPagoComponent,
@@ -198,9 +186,9 @@ export class SolicitudesPagoComponent implements OnInit {
     )
   }
 
-  abrirModalAceptarSolicitudPago(): void {
+  abrirModalAprobarSolicitudPago(): void {
     this.aceptarRef = this.dialogService.open(
-      AceptarSolicitudPagoComponent,
+      AprobarSolicitudPagoComponent,
       {
         header: 'Aprobación de solicitud de pago',
         width: '880px',

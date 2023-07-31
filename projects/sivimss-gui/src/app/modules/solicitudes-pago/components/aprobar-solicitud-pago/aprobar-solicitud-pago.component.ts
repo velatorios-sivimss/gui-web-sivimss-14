@@ -16,13 +16,13 @@ interface SolicitudCancelacion {
 }
 
 @Component({
-  selector: 'app-aceptar-solicitud-pago',
-  templateUrl: './aceptar-solicitud-pago.component.html',
-  styleUrls: ['./aceptar-solicitud-pago.component.scss']
+  selector: 'app-aprobar-solicitud-pago',
+  templateUrl: './aprobar-solicitud-pago.component.html',
+  styleUrls: ['./aprobar-solicitud-pago.component.scss']
 })
-export class AceptarSolicitudPagoComponent implements OnInit {
+export class AprobarSolicitudPagoComponent implements OnInit {
 
-  aceptarPagoForm!: FormGroup;
+  aprobarPagoForm!: FormGroup;
   solicitudPagoSeleccionado!: DetalleSolicitudPago;
   partidaPresupuestal: PartidaPresupuestal [] = [];
   mensajeConfirmacion: boolean = false;
@@ -58,11 +58,11 @@ export class AceptarSolicitudPagoComponent implements OnInit {
         importeTotal: '000001',
       }
     ];
-    this.inicializarAceptarPagoForm();
+    this.inicializarAprobarPagoForm();
   }
 
-  inicializarAceptarPagoForm(): void {
-    this.aceptarPagoForm = this.formBulder.group({
+  inicializarAprobarPagoForm(): void {
+    this.aprobarPagoForm = this.formBulder.group({
       cveFolioGastos: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
     });
   }
@@ -87,7 +87,7 @@ export class AceptarSolicitudPagoComponent implements OnInit {
   }
 
 
-  confirmarAceptacionPago(): void {
+  confirmarAprobacionPago(): void {
     this.cargadorService.activar();
     const solicitud: SolicitudCancelacion = this.generarSolicitud();
     this.solicitudesPagoService.aprobarSolicitudPago(solicitud).pipe(
@@ -115,6 +115,6 @@ export class AceptarSolicitudPagoComponent implements OnInit {
   }
 
   get ref() {
-    return this.aceptarPagoForm.controls;
+    return this.aprobarPagoForm.controls;
   }
 }
