@@ -86,14 +86,14 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.partidaPresupuestal = [
       {
         idPartida: 1,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
+        partidaPres: 'Solicitud de comprobación de bienes y servicios',
+        cuentaContable: '000001',
         importeTotal: '000001',
       },
       {
         idPartida: 2,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
+        partidaPres: 'Solicitud de comprobación de bienes y servicios',
+        cuentaContable: '000001',
         importeTotal: '000001',
       }
     ];
