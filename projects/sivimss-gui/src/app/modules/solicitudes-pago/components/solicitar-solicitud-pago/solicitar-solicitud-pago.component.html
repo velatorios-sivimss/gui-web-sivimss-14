@@ -203,7 +203,7 @@
         <span class="campo-obligatorio"
               *ngIf="fc?.beneficiario?.errors?.required && (fc?.beneficiario?.dirty || fc?.beneficiario?.touched)">Este campo es obligatorio *.</span>
       </div>
-      <div class="col-12 mb-3" *ngIf="[4].includes(tipoSolicitud)">
+      <div class="col-6 mb-3" *ngIf="[4].includes(tipoSolicitud)">
         <label class="control-label" for="beneficiarioCol6">Beneficiario<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="beneficiarioCol6" class="form-control" formControlName="beneficiario"
                     [options]="beneficiarios" placeholder="Ingresar beneficiario"

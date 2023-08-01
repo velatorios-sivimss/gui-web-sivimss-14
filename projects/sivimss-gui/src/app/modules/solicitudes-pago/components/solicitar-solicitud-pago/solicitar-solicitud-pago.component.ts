@@ -372,6 +372,9 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
           const ERROR: string = 'El folio fiscal de la factura de gastos no existe.\n' +
             'Verifica tu información.';
           this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
+          this.solicitudPagoForm.get('folioFiscal')?.patchValue(null);
+          this.solicitudPagoForm.get('importe')?.patchValue(null);
+          this.convertirImporte();
         }
         this.partidaPresupuestal = respuesta.datos;
         this.solicitudPagoForm.get('importe')?.patchValue(this.partidaPresupuestal[0].importeTotal);
