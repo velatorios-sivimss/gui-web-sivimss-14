@@ -99,9 +99,9 @@ export class SolicitudesPagoComponent implements OnInit {
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormSolicitudesPago = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
+      nivel: [{value: +usuario?.idOficina, disabled: true}],
+      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario.idOficina > 1}],
+      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
       ejercFiscal: [{value: null, disabled: false}],
@@ -314,10 +314,18 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.rechazarRef.destroy();
-    this.creacionRef.destroy();
-    this.cancelarRef.destroy();
-    this.aceptarRef.destroy();
+    if (this.rechazarRef) {
+      this.rechazarRef.destroy();
+    }
+    if (this.creacionRef) {
+      this.creacionRef.destroy();
+    }
+    if (this.cancelarRef) {
+      this.cancelarRef.destroy();
+    }
+    if (this.aceptarRef) {
+      this.aceptarRef.destroy();
+    }
   }
 
 }
