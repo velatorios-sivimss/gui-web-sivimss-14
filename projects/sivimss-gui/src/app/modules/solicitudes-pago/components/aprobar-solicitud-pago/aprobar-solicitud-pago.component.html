@@ -284,8 +284,22 @@
 
     </ng-container>
 </app-table-panel>
-<div class="flex justify-content-end mt-4">
-    <button class="ml-4 btn btn-primary btn-md" (click)="aceptar()">
-    Aceptar
-  </button>
+<div class="mb-3 mt-3 row text-center" *ngIf="mensajeConfirmacion">
+    ¿Estás seguro de aprobar la solicitud de pago?
 </div>
+<section>
+    <div class="row mb-3">
+        <div class="col-md-12 flex justify-content-end align-items-center">
+            <button class="ml-4 btn btn-danger btn-md" *ngIf="!mensajeConfirmacion" (click)="cancelar()">Cancelar</button>
+            <button class="ml-4 btn btn-default btn-md" *ngIf="!mensajeConfirmacion" (click)="cancelar()">Rechazar</button>
+            <button class="ml-4 btn btn-md btn-primary" *ngIf="!mensajeConfirmacion" (click)="mensajeConfirmacion = !mensajeConfirmacion">
+          Aprobar
+        </button>
+            <button class="ml-4 btn btn-md btn-primary" *ngIf="mensajeConfirmacion" (click)="cancelar()">Cancelar
+          </button>
+            <button class="ml-4 btn btn-md btn-primary" *ngIf="mensajeConfirmacion" (click)="confirmarAprobacionPago();">
+          Aceptar
+        </button>
+        </div>
+    </div>
+</section>

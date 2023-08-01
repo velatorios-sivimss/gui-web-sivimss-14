@@ -1,9 +1,8 @@
-import { AprobacionSolicitudPagoComponent } from "projects/sivimss-gui/src/app/modules/solicitudes-pago/components/aprobacion-solicitud-pago/aprobacion-solicitud-pago.component";
 import {SolicitudPago} from '../../models/solicitud-pagos.interface';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
-import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from 'projects/sivimss-gui/src/app/utils/constantes';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
@@ -12,21 +11,23 @@ import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import { FiltrosSolicitudPago } from '../../models/filtros-solicitud-pagos.interface';
+import {FiltrosSolicitudPago} from '../../models/filtros-solicitud-pagos.interface';
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
-import { CATALOGOS_DUMMIES, CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
-import { SolicitarSolicitudPagoComponent } from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
-import { CancelarSolicitudPagoComponent } from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
-import { RechazarSolicitudPagoComponent } from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
-import { VerDetalleSolicitudPagoComponent } from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
+import {CATALOGOS_DUMMIES, CATALOGO_NIVEL} from '../../../articulos/constants/dummies';
+import {SolicitarSolicitudPagoComponent} from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
+import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
+import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
+import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
+import { AprobarSolicitudPagoComponent } from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
 
@@ -51,18 +52,21 @@ export class SolicitudesPagoComponent implements OnInit {
   creacionRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
   cancelarRef!: DynamicDialogRef;
+  aceptarRef!: DynamicDialogRef;
 
-  catalogoNiveles: TipoDropdown[] = [];
-  catatalogoDelegaciones: TipoDropdown[] = [];
+  catalogoEjercicios: TipoDropdown[] = [];
+  catatalogoTipoSolicitudes: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
+  foliosGastos: TipoDropdown[] = [];
 
   paginacionConFiltrado: boolean = false;
 
-  readonly POSICION_CATALOGO_NIVELES: number = 0;
-  readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGO_EJERCICIOS: number = 0;
+  readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
+  readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
   constructor(
     private route: ActivatedRoute,
@@ -73,6 +77,7 @@ export class SolicitudesPagoComponent implements OnInit {
     private solicitudesPagoService: SolicitudesPagoService,
     private router: Router,
     private cargadorService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
@@ -86,8 +91,8 @@ export class SolicitudesPagoComponent implements OnInit {
 
   private cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
-    this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    this.catalogoEjercicios = respuesta[this.POSICION_CATALOGO_EJERCICIOS].datos;
+    this.catatalogoTipoSolicitudes = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD].datos, "desTipoSolicitud", "tipoSolicitud");
     this.obtenerVelatorios();
   }
 
@@ -97,9 +102,11 @@ export class SolicitudesPagoComponent implements OnInit {
       nivel: [{value: +usuario.idOficina, disabled: true}],
       delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
       velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
-      promotores: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
+      ejercFiscal: [{value: null, disabled: false}],
+      tipoSolic: [{value: null, disabled: false}],
+      folio: [{value: null, disabled: false}],
     });
   }
 
@@ -126,41 +133,19 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   paginar(): void {
-    const filtros = {
-      idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
-      idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
-      idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
-    }
-    this.solicitudesPago = [
-      {
-        id: 1,
-        idVelatorio: 1,
-        folio: '000001',
-        ejercFiscal: 'TASASL12107034Y',
-        fechaElaboracion: 'Jorge',
-        tipoSolic: 'Sanchez',
-        estatus: 'Prado',
-      },
-      {
-        id: 2,
-        idVelatorio: 2,
-        folio: '000002',
-        ejercFiscal: 'TASASL12107034Y',
-        fechaElaboracion: 'Edwin',
-        tipoSolic: 'Ruiz',
-        estatus: 'Cardenas',
-      },
-      {
-        id: 3,
-        idVelatorio: 3,
-        folio: '000003',
-        ejercFiscal: 'TASASL12107034Y',
-        fechaElaboracion: 'Nataly',
-        tipoSolic: 'Sanchez',
-        estatus: 'Hernandez',
-      },
-    ];
-    this.totalElementos=10;
+    this.cargadorService.activar();
+    this.solicitudesPagoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.solicitudesPago = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      });
   }
 
   abrirPanel(event: MouseEvent, solicitudPagoSeleccionado: ListadoSolicitudPago): void {
@@ -176,28 +161,17 @@ export class SolicitudesPagoComponent implements OnInit {
       {
         header: 'Detalle de la solicitud de pago',
         width: '880px',
-        data: solicitudPagoSeleccionado.id
-      },
-    )
-  }
-
-  abrirModalAprobacionSolicitudPago(): void {
-    this.cancelarRef = this.dialogService.open(
-      AprobacionSolicitudPagoComponent,
-      {
-        header: 'Aprobación de solicitud de pago',
-        width: '880px',
-        data:  this.solicitudPagoSeleccionado.id
+        data: solicitudPagoSeleccionado.idSolicitud
       },
     )
   }
 
   abrirModalGenerarSolicitudPago(): void {
-    this.cancelarRef = this.dialogService.open(
+    this.creacionRef = this.dialogService.open(
       SolicitarSolicitudPagoComponent,
       {
         header: 'Generar solicitud de pago',
-        width: '880px',
+        width: MAX_WIDTH,
       },
     )
   }
@@ -208,6 +182,18 @@ export class SolicitudesPagoComponent implements OnInit {
       {
         header: 'Cancelar solicitud de pago',
         width: '880px',
+        data: this.solicitudPagoSeleccionado
+      },
+    )
+  }
+
+  abrirModalAprobarSolicitudPago(): void {
+    this.aceptarRef = this.dialogService.open(
+      AprobarSolicitudPagoComponent,
+      {
+        header: 'Aprobación de solicitud de pago',
+        width: '880px',
+        data: this.solicitudPagoSeleccionado
       },
     )
   }
@@ -218,12 +204,14 @@ export class SolicitudesPagoComponent implements OnInit {
       {
         header: 'Rechazar solicitud de pago',
         width: '880px',
+        data: this.solicitudPagoSeleccionado
       },
     )
   }
 
+
   paginarConFiltros(): void {
-    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros();
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
     this.cargadorService.activar();
     this.solicitudesPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -244,18 +232,20 @@ export class SolicitudesPagoComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-  crearSolicitudFiltros(): FiltrosSolicitudPago {
+  crearSolicitudFiltros(tipoReporte: string): FiltrosSolicitudPago {
+    const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
+    const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
+    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
     return {
       idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
       idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
       idVelatorio: this.filtroFormSolicitudesPago.get("velatorio")?.value,
-      fecIniODS: this.filtroFormSolicitudesPago.get("fechaInicial")?.value,
-      fecFinODS: this.filtroFormSolicitudesPago.get("fechaFinal")?.value,
-      ejercFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
-      tipoSolic: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
-      folio: this.filtroFormSolicitudesPago.get("folio")?.value,
-      rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
-      tipoReporte: "pdf"
+      fecIniODS: fechaInicial,
+      fecFinODS: fechaFinal,
+      ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
+      idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
+      folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value,
+      tipoReporte: tipoReporte
     }
   }
 
@@ -281,6 +271,64 @@ export class SolicitudesPagoComponent implements OnInit {
       }
     });
   }
+
+  generarListadoSolicitudesPDF() {
+    this.cargadorService.activar();
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
+    const solicitudFiltros = JSON.stringify(filtros);
+    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesPDF(solicitudFiltros)).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe(
+      (respuesta) => {
+        console.log(respuesta)
+      },
+      (error) => {
+        console.log(error)
+      },
+    )
+  }
+
+  generarListadoSolicitudesExcel() {
+    this.cargadorService.activar();
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("xls");
+    const solicitudFiltros = JSON.stringify(filtros);
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesExcel(solicitudFiltros),
+      configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta): void => {
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
+        console.log(error)
+      },
+    })
+  }
+
+  obtenerFoliosGastos() {
+    const folio = this.f.folio.value;
+    this.solicitudesPagoService.buscarGastosPorfolio(folio).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        let filtrado: TipoDropdown[] = [];
+        if (respuesta?.datos.length > 0) {
+          respuesta?.datos.forEach((e: any) => {
+            filtrado.push({
+              label: e.cveFolio,
+              value: e.cveFolio,
+            });
+          });
+          this.foliosGastos = filtrado;
+        } else {
+          this.foliosGastos = [];
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+
 
   get f() {
     return this.filtroFormSolicitudesPago?.controls;

@@ -12,7 +12,7 @@ const routes: Route[] = [
     },
     data: {
       validaRol: {
-        funcionalidad: 'GENERAR_RECIBO_PAGO',
+        funcionalidad: 'GENERAR_SOLICITUD_PAGO',
         permiso: 'CONSULTA'
       }
     },
