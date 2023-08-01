@@ -307,7 +307,6 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   obtenerFoliosGastos() {
-    debugger
     const folio = this.f.folio.value;
     this.solicitudesPagoService.buscarGastosPorfolio(folio).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
