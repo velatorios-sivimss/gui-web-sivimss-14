@@ -12,7 +12,7 @@ import {
 } from '../../models/convenio.interface';
 import { Accordion } from 'primeng/accordion';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -61,7 +61,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     this.datosGenerales.fecha = moment().format('DD/MM/YYYY');
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { /* TODO document why this method 'ngOnInit' is empty */ }
 
   nuevo() {
     this.activeIndex = null;
@@ -93,7 +93,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
             if (this.beneficiarioSeleccionado?.idBenef && found) {
               this.obtenerDetalleBeneficiario(this.beneficiarioSeleccionado.idBenef);
             } else {
-              this.activeIndex = null;    
+              this.activeIndex = null;
             }
           }
         },
@@ -147,7 +147,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     if (!beneficiario) {
       this.mode = 'listado';
     } else {
-      this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario: this.beneficiarioSeleccionado.idBenef, estatusBenefic: false }).subscribe({
+      this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario: this.beneficiarioSeleccionado.idBenef, estatusBenefic: !this.beneficiarioSeleccionado.estatus, idContratanteConvenio: this.busquedaListBeneficiarios.idContratanteConvenioPf }).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos) {
             this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);
