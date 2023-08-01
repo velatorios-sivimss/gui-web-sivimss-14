@@ -34,6 +34,8 @@
                    placeholder="Ingresar folio" [maxlength]="36"
                    oninput="this.value = this.value.toUpperCase().trim()"
                    appRegexFolioFiscal>
+            <span class="campo-obligatorio"
+                  *ngIf="fc?.folioFiscal?.errors?.required && (fc?.folioFiscal?.dirty || fc?.folioFiscal?.touched)">Este campo es obligatorio *.</span>
           </div>
           <button class="btn btn-md btn-primary" type="button">Agregar</button>
         </div>
