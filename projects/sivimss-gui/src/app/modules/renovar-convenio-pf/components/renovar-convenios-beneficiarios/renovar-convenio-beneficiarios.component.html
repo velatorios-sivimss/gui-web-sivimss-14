@@ -28,7 +28,7 @@
 
     <div class="row my-6" *ngIf="mode === 'listado'">
       <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','ALTA']">
-        <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="beneficiarios.length >= 3" (click)="nuevo();">Nuevo</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="busquedaListBeneficiarios.tipoPlan === 2 && beneficiarios.length >= 3" (click)="nuevo();">Nuevo</button>
       </div>
     </div>
 

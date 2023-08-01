@@ -113,6 +113,8 @@ export interface BusquedaListBeneficiarios {
   idConvenio?: number;
   idContratanteConvenioPf?: number;
   beneficiarios?: BusquedaBeneficiarios[];
+  activos?: number;
+  tipoPlan?: number;
 }
 
 export interface BuscarConvenioPlanAnterior {
@@ -226,4 +228,5 @@ export interface ActualizarBeneficiario {
 export interface CambiarEstatus {
   idBeneficiario?: number;
   estatusBenefic?: boolean;
+  idContratanteConvenio?: number;
 }
