@@ -6,13 +6,14 @@ import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
-import {PartidaPresupuestal, CrearSolicitudPago} from '../../models/solicitud-pagos.interface';
+import {CrearSolicitudPago, PartidaPresupuestal} from '../../models/solicitud-pagos.interface';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
 import {HttpErrorResponse} from "@angular/common/http";
 import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 import * as moment from "moment/moment";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 interface RegistroVelatorio {
   desVelatorio: string,
@@ -34,6 +35,7 @@ interface RegistroProveedor {
   banco: string,
   idProveedor: number
 }
+
 
 @Component({
   selector: 'app-solicitar-solicitud-pago',
@@ -61,6 +63,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   catalogoUnidades: RegistroUnidadOperativa[] = [];
   catalogoProveedores: RegistroProveedor[] = [];
   mensajeConfirmacion: boolean = false;
+  partidaSeleccionada!: PartidaPresupuestal;
 
   constructor(
     private router: Router,
@@ -84,20 +87,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerCatalogos();
     this.inicializarTipoSolicitud();
-    this.partidaPresupuestal = [
-      {
-        idPartida: 1,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      },
-      {
-        idPartida: 2,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      }
-    ];
   }
 
   obtenerCatalogos(): void {
@@ -197,16 +186,17 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   generarSolicitudPago(): CrearSolicitudPago {
     const unidadSeleccionada = this.solicitudPagoForm.get('unidadSeleccionada')?.value
     const referenciaUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value
+    const tipoSolicitud = this.solicitudPagoForm.get('tipoSolicitud')?.value;
     return {
       concepto: this.solicitudPagoForm.get('concepto')?.value,
       cveFolioConsignados: null,
-      cveFolioGastos: null,
+      cveFolioGastos: this.solicitudPagoForm.get('folioFiscal')?.value,
       ejercicioFiscal: null,
       fechaFinal: this.solicitudPagoForm.get('fechaFinal')?.value,
       fechaInicial: this.solicitudPagoForm.get('fechaInicial')?.value,
       idContratBenef: null,
       idEstatusSol: 1,
-      idTipoSolic: this.solicitudPagoForm.get('tipoSolicitud')?.value,
+      idTipoSolic: tipoSolicitud,
       idUnidadOperativa: +unidadSeleccionada === 1 ? referenciaUnidad : null,
       idVelatorio: +unidadSeleccionada === 2 ? referenciaUnidad : null,
       nomDestinatario: this.solicitudPagoForm.get('nombreDestinatario')?.value,
@@ -215,7 +205,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       fechaElabora: this.validarFecha(this.solicitudPagoForm.get('fechaElaboracion')?.value),
       impTotal: this.solicitudPagoForm.get('importe')?.value,
       observaciones: this.solicitudPagoForm.get('observaciones')?.value,
-      idProveedor: this.solicitudPagoForm.get('beneficiario')?.value,
+      idProveedor: [1].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
     }
   }
 
@@ -382,7 +372,15 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudesPagoService.busquedaFolioFactura(folio).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (): void => {
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos.length === 0) {
+          const ERROR: string = 'El folio fiscal de la factura de gastos no existe.\n' +
+            'Verifica tu información.';
+          this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
+        }
+        this.partidaPresupuestal = respuesta.datos;
+        this.solicitudPagoForm.get('importe')?.patchValue(this.partidaPresupuestal[0].importeTotal);
+        this.convertirImporte();
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
