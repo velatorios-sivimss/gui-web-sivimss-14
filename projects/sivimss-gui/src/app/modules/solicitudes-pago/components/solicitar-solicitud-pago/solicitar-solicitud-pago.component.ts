@@ -234,7 +234,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validacionesBienesServiciosPorComprobar(): void {
-    this.limpiarFormulario();
     this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
@@ -248,7 +247,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validacionesComprobacionBienesServicios(): void {
-    this.limpiarFormulario();
     this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
@@ -261,7 +259,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   validacionesSolicitudRembolso(): void {
-    this.limpiarFormulario();
     this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
@@ -316,64 +313,47 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   limpiarFormulario(): void {
     this.mensajeConfirmacion = false;
-    this.solicitudPagoForm.get('folioFiscal')?.patchValue(null);
+    this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
     this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
-    this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('fechaElaboracion')?.patchValue(null);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValue(null);
     this.solicitudPagoForm.get('fechaElaboracion')?.clearValidators();
-    this.solicitudPagoForm.get('fechaElaboracion')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('unidadSeleccionada')?.patchValue(1);
+    this.solicitudPagoForm.get('unidadSeleccionada')?.setValue(1);
     this.solicitudPagoForm.get('unidadSeleccionada')?.clearValidators();
-    this.solicitudPagoForm.get('unidadSeleccionada')?.updateValueAndValidity();
-    this.unidades = this.recuperarUnidadesOperacionales();
-    this.solicitudPagoForm.get('referenciaUnidad')?.patchValue(null);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValue(null);
     this.solicitudPagoForm.get('referenciaUnidad')?.clearValidators();
-    this.solicitudPagoForm.get('referenciaUnidad')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('solicitadoPor')?.patchValue(null);
+    this.solicitudPagoForm.get('solicitadoPor')?.setValue(null);
     this.solicitudPagoForm.get('solicitadoPor')?.clearValidators();
-    this.solicitudPagoForm.get('solicitadoPor')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('nombreDestinatario')?.patchValue(null);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValue(null);
     this.solicitudPagoForm.get('nombreDestinatario')?.clearValidators();
-    this.solicitudPagoForm.get('nombreDestinatario')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('nomRemitente')?.patchValue(null);
+    this.solicitudPagoForm.get('nomRemitente')?.setValue(null);
     this.solicitudPagoForm.get('nomRemitente')?.clearValidators();
-    this.solicitudPagoForm.get('nomRemitente')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('referenciaTD')?.patchValue(null);
+    this.solicitudPagoForm.get('referenciaTD')?.setValue(null);
     this.solicitudPagoForm.get('referenciaTD')?.clearValidators();
-    this.solicitudPagoForm.get('referenciaTD')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('beneficiario')?.patchValue(null);
+    this.solicitudPagoForm.get('beneficiario')?.setValue(null);
     this.solicitudPagoForm.get('beneficiario')?.clearValidators();
-    this.solicitudPagoForm.get('beneficiario')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('concepto')?.patchValue(null);
+    this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('concepto')?.setValue(null);
     this.solicitudPagoForm.get('concepto')?.clearValidators();
-    this.solicitudPagoForm.get('concepto')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('importe')?.patchValue(null);
+    this.solicitudPagoForm.get('importe')?.setValue(null);
     this.solicitudPagoForm.get('importe')?.clearValidators();
-    this.solicitudPagoForm.get('importe')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('importeLetra')?.patchValue(null);
+    this.solicitudPagoForm.get('importeLetra')?.setValue(null);
     this.solicitudPagoForm.get('importeLetra')?.clearValidators();
-    this.solicitudPagoForm.get('importeLetra')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('observaciones')?.patchValue(null);
+    this.solicitudPagoForm.get('observaciones')?.setValue(null);
     this.solicitudPagoForm.get('observaciones')?.clearValidators();
-    this.solicitudPagoForm.get('observaciones')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('numeroContrato')?.patchValue(null);
+    this.solicitudPagoForm.get('numeroContrato')?.setValue(null);
     this.solicitudPagoForm.get('numeroContrato')?.clearValidators();
-    this.solicitudPagoForm.get('numeroContrato')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('banco')?.patchValue(null);
-    this.solicitudPagoForm.get('banco')?.clearValidators();
-    this.solicitudPagoForm.get('banco')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('cuenta')?.patchValue(null);
+    this.solicitudPagoForm.get('banco')?.setValue(null);
+    this.solicitudPagoForm.get('cuenta')?.setValue(null);
     this.solicitudPagoForm.get('cuenta')?.clearValidators();
-    this.solicitudPagoForm.get('cuenta')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('claveBancaria')?.patchValue(null);
+    this.solicitudPagoForm.get('banco')?.clearValidators();
+    this.solicitudPagoForm.get('claveBancaria')?.setValue(null);
     this.solicitudPagoForm.get('claveBancaria')?.clearValidators();
-    this.solicitudPagoForm.get('claveBancaria')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('fechaInicial')?.patchValue(null);
+    this.solicitudPagoForm.get('fechaInicial')?.setValue(null);
     this.solicitudPagoForm.get('fechaInicial')?.clearValidators();
-    this.solicitudPagoForm.get('fechaInicial')?.updateValueAndValidity();
-    this.solicitudPagoForm.get('fechaFinal')?.patchValue(null);
+    this.solicitudPagoForm.get('fechaFinal')?.setValue(null);
     this.solicitudPagoForm.get('fechaFinal')?.clearValidators();
-    this.solicitudPagoForm.get('fechaFinal')?.updateValueAndValidity();
+    this.unidades = this.recuperarUnidadesOperacionales();
+    this.seleccionarValidaciones();
   }
 
   get fc() {
