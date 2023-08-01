@@ -18,17 +18,18 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   private readonly _catVelatorios: string = 'velatorios-solipagos';
   private readonly _catUnidad: string = 'unidadope-solipagos';
   private readonly _catBanco: string = 'datosbanco-solipagos';
+  private readonly _folioFactura: string = 'factura-solipagos';
+  private readonly _tipoSolicitud: string = 'tipsolic-solipagos';
+  private readonly _ejerciciosPagos: string = 'ejercicios-solipagos';
   private readonly _aprobar: string = 'aprobar-solipagos';
 
   obtenerCatalogoEjercicios(): Observable<HttpRespuesta<any>> {
-    const servicio = "ejercicios-solipagos";
-    const params = new HttpParams().append("servicio", servicio);
+    const params: HttpParams = new HttpParams().append("servicio", this._ejerciciosPagos);
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, {params});
   }
 
   obtenerCatalogoTipoSolicitud(): Observable<HttpRespuesta<any>> {
-    const servicio = "tipsolic-solipagos";
-    const params = new HttpParams().append("servicio", servicio);
+    const params: HttpParams = new HttpParams().append("servicio", this._tipoSolicitud);
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/`, {params});
   }
 
@@ -78,7 +79,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   }
 
   descargarListadoSolicitudesPDF(body: any): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
@@ -87,7 +88,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   }
 
   descargarListadoSolicitudesExcel(body: any): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
@@ -105,5 +106,10 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/factura-solipagos`, body);
   }
 
+
+  busquedaFolioFactura(cveFolioGastos: string): Observable<HttpRespuesta<any>> {
+    const body = {cveFolioGastos};
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._folioFactura}`, body);
+  }
 
 }
