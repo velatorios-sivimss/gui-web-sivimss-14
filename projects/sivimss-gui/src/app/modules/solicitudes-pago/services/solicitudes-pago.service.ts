@@ -79,7 +79,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   }
 
   descargarListadoSolicitudesPDF(body: any): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
@@ -88,7 +88,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   }
 
   descargarListadoSolicitudesExcel(body: any): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
@@ -96,8 +96,8 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
-  busquedaFolioFactura(folio: string): Observable<HttpRespuesta<any>> {
-    const body = {folio};
+  busquedaFolioFactura(cveFolioGastos: string): Observable<HttpRespuesta<any>> {
+    const body = {cveFolioGastos};
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._folioFactura}`, body);
   }
 

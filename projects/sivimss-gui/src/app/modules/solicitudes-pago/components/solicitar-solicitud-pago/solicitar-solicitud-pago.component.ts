@@ -12,6 +12,7 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
 import {HttpErrorResponse} from "@angular/common/http";
 import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
+import * as moment from "moment/moment";
 
 interface RegistroVelatorio {
   desVelatorio: string,
@@ -193,26 +194,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     return this.solicitudPagoForm.get('tipoSolicitud')?.value
   }
 
-  generarSolicitudPago(): {
-    fechaInicial: any;
-    numReferencia: any;
-    fechaFinal: any;
-    idEstatusSol: number;
-    idTipoSolic: any;
-    impTotal: any;
-    idContratBenef: null;
-    idVelatorio: any;
-    cveFolioGastos: null;
-    ejercicioFiscal: null;
-    idUnidadOperativa: any;
-    idProveedor: any;
-    concepto: any;
-    nomDestinatario: any;
-    observaciones: any;
-    cveFolioConsignados: null;
-    nomRemitente: any;
-    fechaElabora: any
-  } {
+  generarSolicitudPago(): CrearSolicitudPago {
     const unidadSeleccionada = this.solicitudPagoForm.get('unidadSeleccionada')?.value
     const referenciaUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value
     return {
@@ -230,11 +212,16 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       nomDestinatario: this.solicitudPagoForm.get('nombreDestinatario')?.value,
       nomRemitente: this.solicitudPagoForm.get('nomRemitente')?.value,
       numReferencia: this.solicitudPagoForm.get('referenciaTD')?.value ?? '1',
-      fechaElabora: this.solicitudPagoForm.get('fechaElaboracion')?.value,
+      fechaElabora: this.validarFecha(this.solicitudPagoForm.get('fechaElaboracion')?.value),
       impTotal: this.solicitudPagoForm.get('importe')?.value,
       observaciones: this.solicitudPagoForm.get('observaciones')?.value,
       idProveedor: this.solicitudPagoForm.get('beneficiario')?.value,
     }
+  }
+
+  validarFecha(fecha: string): string {
+    if (!fecha) return '';
+    return moment(fecha).format('DD/MM/YYYY')
   }
 
   convertirImporte(): void {
@@ -248,11 +235,11 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     const tipoUnidad = this.solicitudPagoForm.get('unidadSeleccionada')?.value;
     const idUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value;
     if (tipoUnidad === 1) {
-      const responsable = this.catalogoUnidades.find(cu => cu.idSubdireccion === idUnidad)?.nomResponsable ?? '';
+      const responsable: string = this.catalogoUnidades.find(cu => cu.idSubdireccion === idUnidad)?.nomResponsable ?? '';
       this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
       return;
     }
-    const responsable = this.catalogoVelatorios.find(cu => cu.idVelatorio === idUnidad)?.nomResponsable ?? '';
+    const responsable: string = this.catalogoVelatorios.find(cu => cu.idVelatorio === idUnidad)?.nomResponsable ?? '';
     this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
   }
 
@@ -395,8 +382,12 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudesPagoService.busquedaFolioFactura(folio).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next:(): void => {},
-      error:(): void => {}
+      next: (): void => {
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
     })
   }
 }
