@@ -60,6 +60,7 @@ export class SolicitudesPagoComponent implements OnInit {
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
+  foliosGastos: TipoDropdown[] = [];
 
   paginacionConFiltrado: boolean = false;
 
@@ -304,6 +305,31 @@ export class SolicitudesPagoComponent implements OnInit {
       },
     })
   }
+
+  obtenerFoliosGastos() {
+    debugger
+    const folio = this.f.folio.value;
+    this.solicitudesPagoService.buscarGastosPorfolio(folio).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        let filtrado: TipoDropdown[] = [];
+        if (respuesta?.datos.length > 0) {
+          respuesta?.datos.forEach((e: any) => {
+            filtrado.push({
+              label: e.cveFolio,
+              value: e.cveFolio,
+            });
+          });
+          this.foliosGastos = filtrado;
+        } else {
+          this.foliosGastos = [];
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+
 
   get f() {
     return this.filtroFormSolicitudesPago?.controls;

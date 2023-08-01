@@ -41,7 +41,7 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <label class="control-label" for="folio">Folio de la solicitud de pago:</label>
-                <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="opciones" placeholder="Selecciona el folio" [filter]="true">
+                <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="foliosGastos" (onFocus)="obtenerFoliosGastos();" placeholder="Selecciona el folio" optionLabel="label" [filter]="true">
                 </p-dropdown>
             </div>
         </div>
