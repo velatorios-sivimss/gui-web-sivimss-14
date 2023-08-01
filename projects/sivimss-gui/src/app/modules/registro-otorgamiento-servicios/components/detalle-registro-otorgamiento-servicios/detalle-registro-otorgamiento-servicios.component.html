@@ -1,14 +1,14 @@
-<app-table-panel>
+<app-table-panel> 
   <ng-container *ngIf="origen=='situar'">
     <div class="row table-panel-row">
-      <div class="col-md-3">
+      <div class="col-md-6">
         <div class="table-panel-column">
           <label>Tipo de servicio</label>
-          <span>{{registroOtorgamientoSeleccionado.tipoServicio}}</span>
+          <span>{{registroOtorgamientoSeleccionado.servicio}}</span>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="inline-block mr-3" *ngIf="registroOtorgamientoSeleccionado.certificadoCremacion">
+      <div class="col-md-6 " *ngIf="registroOtorgamientoSeleccionado.indCertificado!=null && registroOtorgamientoSeleccionado.indCertificado">
+        <div class="inline-block mr-3 pt-3" >
           <i class="fs fs-check"></i>
         </div>
         <label>Certificado de cremación</label>
@@ -21,14 +21,14 @@
       <div class="col-md-6">
         <div class="table-panel-column">
           <label>Tipo de servicio</label>
-          <span>{{registroOtorgamientoSeleccionado.tipoServicio}}</span>
+          <span>{{registroOtorgamientoSeleccionado.servicio}}</span>
         </div>
       </div>
     </div>
 
     <div class="row table-panel-row">
       <div class="col-md-6">
-        <div class="inline-block mr-3" *ngIf="registroOtorgamientoSeleccionado.certificadoCremacion">
+        <div class="inline-block mr-3" *ngIf="registroOtorgamientoSeleccionado.indCertificado">
           <i class="fs fs-check"></i>
         </div>
         <label>Certificado de cremación</label>
@@ -39,7 +39,7 @@
     <div class="col-md-6">
       <div class="table-panel-column">
         <label>Fecha y hora</label>
-        <span> {{registroOtorgamientoSeleccionado.fecha}} - {{registroOtorgamientoSeleccionado.hora}}  </span>
+        <span> {{registroOtorgamientoSeleccionado.fechaMostrar}} </span>
       </div>
     </div>
   </div>
@@ -47,7 +47,7 @@
     <div class="col-md-6">
       <div class="table-panel-column">
         <label>Notas del servicio</label>
-        <span> {{registroOtorgamientoSeleccionado.notasServicio}} </span>
+        <span> {{registroOtorgamientoSeleccionado.desNotas}} </span>
       </div>
     </div>
   </div>

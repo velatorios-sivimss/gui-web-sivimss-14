@@ -2,38 +2,37 @@
   <form [formGroup]="form">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="tipoServicio">Tipo de servicio <span class="req">*:</span></label>
-        <p-dropdown appendTo="body" id="tipoServicio" class="form-control" formControlName="tipoServicio"
-                    [options]="tipoServicio"
-                    placeholder="Selecciona el tipo de servicio">
+        <label class="control-label" for="idTipoServicio">Tipo de servicio <span class="req">*:</span></label>
+        <p-dropdown #dd appendTo="body" id="idTipoServicio" class="form-control" formControlName="idTipoServicio"
+          [options]="listaServicios" placeholder="Selecciona el tipo de servicio" (onChange)="seleccionarServicio(dd)">
         </p-dropdown>
         <span class="campo-obligatorio"
-              *ngIf="f.tipoServicio?.errors?.required && (f.tipoServicio?.dirty || f.tipoServicio?.touched)">Campo obligatorio</span>
+          *ngIf="f.idTipoServicio?.errors?.required && (f.idTipoServicio?.dirty || f.idTipoServicio?.touched)">Campo
+          obligatorio</span>
       </div>
       <div class="col-md-6 pt-6">
-
-          <p-checkbox inputId="alta" formControlName="certificadoCremacion" styleClass="mr-3" [binary]="true"></p-checkbox>
-          <label [for]="'certificadoCremacion'" class="control-label mb-0">Certificado de cremación</label>
+        <p-checkbox inputId="alta" formControlName="indCertificado" styleClass="mr-3" [binary]="true"></p-checkbox>
+        <label [for]="'indCertificado'" class="control-label mb-0">Certificado de cremación</label>
 
       </div>
     </div>
 
     <div class="row">
       <div class="col-md-12">
-        <label class="control-label" for="tipoServicio">Fecha y hora <span class="req">*:</span></label><br>
+        <label class="control-label" for="idTipoServicio">Fecha y hora <span class="req">*:</span></label><br>
         <div class="row mb-2 mt-2">
-            <div class="col-md-3">
-              <label>{{fechaActual}} - {{registro | date:'shortTime'}}</label>
-            </div>
+          <div class="col-md-3">
+            <label>{{fechaActual}} - {{registro | date:'shortTime'}}</label>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="row">
       <div class="col-md-12">
-        <label class="control-label" for="notasServicio">Notas del servicio:</label>
-        <input id="notasServicio" class="form-control" formControlName="notasServicio"
-               placeholder="Ingresa las notas del servicio" maxlength="100" >
+        <label class="control-label" for="desNotas">Notas del servicio:</label>
+        <input id="desNotas" class="form-control" formControlName="desNotas"
+          placeholder="Ingresa las notas del servicio" maxlength="100">
       </div>
     </div>
     <div class="row  mt-2 mb-4">
@@ -43,8 +42,9 @@
     </div>
 
     <div class="flex justify-content-end">
-      <button class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button class="ml-4 btn btn-primary btn-md" [disabled]="form.invalid" (click)="confirmarAgregarOrderServicio()">
+      <button class="btn btn-default btn-md" (click)="cancelar()" type="button">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" [disabled]="form.invalid" (click)="confirmarAgregarOrderServicio()"
+        type="button">
         Registrar
       </button>
     </div>
@@ -52,8 +52,8 @@
 </ng-container>
 
 <ng-container *ngIf="confirmacionAgregar">
-  <app-detalle-registro-otorgamiento-servicios (regresarPantalla)="regresarPantalla($event)" [origen]="'situar'" [registroOtorgamientoSeleccionado]="registroOtorgamiento">
+  <app-detalle-registro-otorgamiento-servicios (regresarPantalla)="regresarPantalla($event)" [origen]="'situar'"
+    [registroOtorgamientoSeleccionado]="registroOtorgamiento">
 
   </app-detalle-registro-otorgamiento-servicios>
 </ng-container>
-
