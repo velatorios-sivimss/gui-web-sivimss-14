@@ -36,21 +36,6 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
   ngOnInit(): void {
     this.idSolicitud = this.config.data;
     this.obtenerSolicPago(this.idSolicitud);
-    /*
-    this.partidaPresupuestal = [
-      {
-        idPartida: 1,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      },
-      {
-        idPartida: 2,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      }
-    ];*/
   }
 
   aceptar(): void {
@@ -87,11 +72,10 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe(
         (respuesta) => {
-          this.partidaPresupuestal = respuesta!.datos.content;
+          this.partidaPresupuestal = respuesta!.datos;
         },
         (error: HttpErrorResponse) => {
           console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
       );
   }
