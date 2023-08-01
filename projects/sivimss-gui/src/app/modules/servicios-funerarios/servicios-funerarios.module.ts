@@ -30,6 +30,7 @@ import { CancelarServiciosFunerariosComponent } from './components/cancelar-serv
 import { ModificarServiciosFunerariosComponent } from './components/modificar-servicios-funerarios/modificar-servicios-funerarios.component';
 import { ModalRealizarPagoComponent } from './components/modal-realizar-pago/modal-realizar-pago.component';
 import { ModalEliminarPagoComponent } from './components/modal-eliminar-pago/modal-eliminar-pago.component';
+import {UtileriaModule} from "../../shared/utileria/utileria.module";
 
 @NgModule({
   declarations:[
@@ -41,7 +42,7 @@ import { ModalEliminarPagoComponent } from './components/modal-eliminar-pago/mod
     ModalRealizarPagoComponent,
     ModalEliminarPagoComponent
   ],
-  imports:[
+  imports: [
     CommonModule,
     ServiciosFunerariosRoutingModule,
     FormsModule,
@@ -61,6 +62,7 @@ import { ModalEliminarPagoComponent } from './components/modal-eliminar-pago/mod
     StepsModule,
     RadioButtonModule,
     AccordionModule,
+    UtileriaModule,
   ],
   providers:[
     ServiciosFunerariosService
