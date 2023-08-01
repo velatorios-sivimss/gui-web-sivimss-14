@@ -144,10 +144,18 @@
     </p-accordionTab>
   </p-accordion>
 
-  <ng-container>
+  <ng-container *ngIf="beneficiarioSeleccionado.estatus">
     <div class="flex justify-content-center">
       <div class="mt-4 col-md-7 flex justify-content-center align-items-cente">
         ¿Estás seguro de Desactivar a este Beneficiario?
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!beneficiarioSeleccionado.estatus">
+    <div class="flex justify-content-center">
+      <div class="mt-4 col-md-7 flex justify-content-center align-items-cente">
+        ¿Estás seguro de Activar a este Beneficiario?
       </div>
     </div>
   </ng-container>
