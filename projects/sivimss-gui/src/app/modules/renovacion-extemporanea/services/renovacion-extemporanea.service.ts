@@ -6,8 +6,9 @@ import { environment } from "projects/sivimss-gui/src/environments/environment";
 import { HttpRespuesta } from "../../../models/http-respuesta.interface";
 import { BaseService } from "../../../utils/base-service";
 import {
-  BuscarConveniosPrevision,
-  ConveniosPrevision
+  ConveniosPrevision,
+  FiltrosConveniosPrevision,
+  GenerarRenovacionConvenio
 } from "../models/convenios-prevision.interface";
 import { TipoDropdown } from "../../../models/tipo-dropdown";
 import { mapearArregloTipoDropdown } from "../../../utils/funciones";
@@ -19,7 +20,7 @@ export class RenovacionExtemporaneaService extends BaseService<HttpRespuesta<any
       "renovacion-ext", "detalle-renovacion-ext", "estatus");
   }
 
-  buscarPorFiltros(filtros: BuscarConveniosPrevision, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  buscarPorFiltros(pagina: number, tamanio: number, filtros: FiltrosConveniosPrevision,): Observable<HttpRespuesta<any>> {
     const params = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
@@ -33,7 +34,7 @@ export class RenovacionExtemporaneaService extends BaseService<HttpRespuesta<any
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar`, { params });
   }
 
-  habilitarRenovacion(filtros: ConveniosPrevision): Observable<HttpRespuesta<any>> {
+  renovarCovenio(filtros: GenerarRenovacionConvenio): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._agregar}`, filtros);
   }
 
