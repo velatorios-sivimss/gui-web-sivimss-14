@@ -49,20 +49,23 @@ export interface DetalleSolicitudPago {
 
 export interface CrearSolicitudPago {
   idTipoSolic: number,
-  cveFolioGastos: string,
-  cveFolioConsignados: string,
-  idUnidadOperativa: number,
+  cveFolioGastos: string | null,
+  cveFolioConsignados: string | null,
+  idUnidadOperativa: number | null,
   nomDestinatario: string,
   nomRemitente: string,
   numReferencia: number,
-  idContratBenef: number,
+  idContratBenef: number | null,
+  fechaElabora: string,
   fechaInicial: string,
   fechaFinal: string,
   concepto: string,
   observaciones: string,
-  idVelatorio: number,
-  ejercicioFiscal: number,
-  idEstatusSol: number
+  idVelatorio: number | null,
+  ejercicioFiscal: number | null,
+  impTotal: number,
+  idEstatusSol: number,
+  idProveedor: number
 }
 
 
