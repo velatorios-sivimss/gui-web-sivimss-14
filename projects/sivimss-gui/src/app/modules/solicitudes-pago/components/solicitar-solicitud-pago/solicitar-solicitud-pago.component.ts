@@ -368,6 +368,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   buscarFactura(): void {
     const folio = this.solicitudPagoForm.get("folioFiscal")?.value;
+    if (!folio) return;
     this.cargadorService.activar();
     this.solicitudesPagoService.busquedaFolioFactura(folio).pipe(
       finalize(() => this.cargadorService.desactivar())

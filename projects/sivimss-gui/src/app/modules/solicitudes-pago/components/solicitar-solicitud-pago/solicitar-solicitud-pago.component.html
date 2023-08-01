@@ -53,6 +53,8 @@
         <label class="control-label" for="importe">Importe Total<span class="req">*</span>:</label>
         <input id="importe" class="form-control" formControlName="importe" placeholder="Importe Total"
                (change)="convertirImporte()" [maxlength]="7" numbersOnly>
+        <span class="campo-obligatorio"
+              *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mx-1 mb-3" *ngIf="[2,4].includes(tipoSolicitud)">
@@ -98,6 +100,8 @@
         <label class="control-label" for="importeCol12">Importe Total<span class="req">*</span>:</label>
         <input id="importeCol12" class="form-control" formControlName="importe" placeholder="Importe Total"
                (change)="convertirImporte()" [maxlength]="7" numbersOnly>
+        <span class="campo-obligatorio"
+              *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mx-1 mb-3">
@@ -113,6 +117,8 @@
                                  (onClick)="cambiarTipoUnidad(1)"></p-radioButton>
                   <label for="unidadOperativa" class="ml-2 label-radio-button">Unidad
                     operativa</label>
+                  <span class="campo-obligatorio"
+                        *ngIf="fc?.unidadSeleccionada?.errors?.required && (fc?.unidadSeleccionada?.dirty || fc?.unidadSeleccionada?.touched)">Este campo es obligatorio *.</span>
                 </div>
                 <div class="flex align-items-center">
                   <p-radioButton class="white-button" value="2" id="unidadAdmon"
@@ -121,6 +127,8 @@
                                  (onClick)="cambiarTipoUnidad(2)"></p-radioButton>
                   <label for="unidadAdmon" class="ml-2 label-radio-button">Unidad
                     administrativa</label>
+                  <span class="campo-obligatorio"
+                        *ngIf="fc?.unidadSeleccionada?.errors?.required && (fc?.unidadSeleccionada?.dirty || fc?.unidadSeleccionada?.touched)">Este campo es obligatorio *.</span>
                 </div>
               </div>
             </div>
@@ -145,6 +153,8 @@
                 class="req">*</span>:</label>
               <input id="solicitadoPor" class="form-control" formControlName="solicitadoPor"
                      placeholder="Solicitado por">
+              <span class="campo-obligatorio"
+                    *ngIf="fc?.solicitadoPor?.errors?.required && (fc?.solicitadoPor?.dirty || fc?.solicitadoPor?.touched)">Este campo es obligatorio *.</span>
             </div>
           </div>
         </ng-template>
@@ -181,6 +191,8 @@
         <label class="control-label" for="referenciaTD">Referencia DT<span class="req">*</span>:</label>
         <input id="referenciaTD" class="form-control" formControlName="referenciaTD"
                placeholder="Referencia DT">
+        <span class="campo-obligatorio"
+              *ngIf="fc?.referenciaTD?.errors?.required && (fc?.referenciaTD?.dirty || fc?.referenciaTD?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-6 mb-3" *ngIf="[2,3,5,6].includes(tipoSolicitud)">
         <label class="control-label" for="beneficiario">Beneficiario<span class="req">*</span>:</label>
@@ -280,6 +292,8 @@
         <label class="control-label" for="numeroContrato">Número de contrato<span class="req">*</span>:</label>
         <input id="numeroContrato" class="form-control" formControlName="numeroContrato"
                placeholder="Número de contrato">
+        <span class="campo-obligatorio"
+              *ngIf="fc?.numeroContrato?.errors?.required && (fc?.numeroContrato?.dirty || fc?.numeroContrato?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-6 mb-3" *ngIf="[1].includes(tipoSolicitud)">
         <label class="control-label" for="importecol6">Importe Total<span class="req">*</span>:</label>
@@ -326,6 +340,8 @@
         <label class="control-label" for="concepto2">Concepto<span class="req">*</span>:</label>
         <input id="concepto2" class="form-control" formControlName="concepto"
                placeholder="Ingresar concepto" [maxlength]="60">
+        <span class="campo-obligatorio"
+              *ngIf="fc?.concepto?.errors?.required && (fc?.concepto?.dirty || fc?.concepto?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-6 mb-3" *ngIf="[5,6].includes(tipoSolicitud)">
         <label class="control-label" for="cantidadLetra2">Cantidad con letra<span class="req">*</span>:</label>
@@ -348,6 +364,8 @@
                             appendTo="body"
                             [maxDate]="fechaActual">
                 </p-calendar>
+                <span class="campo-obligatorio"
+                      *ngIf="fc?.fechaInicial?.errors?.required && (fc?.fechaInicial?.dirty || fc?.fechaInicial?.touched)">Este campo es obligatorio *.</span>
               </div>
               <div class="col-md-6 mb-3">
                 <label class="control-label" for="fechaFinalTabla2">Fecha Final<span
@@ -357,6 +375,8 @@
                             appendTo="body"
                             [maxDate]="fechaActual">
                 </p-calendar>
+                <span class="campo-obligatorio"
+                      *ngIf="fc?.fechaFinal?.errors?.required && (fc?.fechaFinal?.dirty || fc?.fechaFinal?.touched)">Este campo es obligatorio *.</span>
               </div>
             </div>
           </ng-template>
