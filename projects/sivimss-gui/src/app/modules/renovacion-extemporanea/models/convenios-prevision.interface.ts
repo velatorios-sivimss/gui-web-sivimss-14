@@ -22,3 +22,17 @@ export interface ConfirmacionServicio {
   estatus?: boolean;
   origen?: string;
 }
+
+export interface RenovarConvenio {
+  idConvenio?: number;
+  justificacion?: string;
+  indRenovacion?: number;
+}
+
+export interface BuscarConveniosPrevision {
+  idVelatorio?: number | null;
+  idDelegacion?: number | null;
+  numConvenio?: string | null;
+  folio?: string | null;
+  rfc?: string | null;
+}

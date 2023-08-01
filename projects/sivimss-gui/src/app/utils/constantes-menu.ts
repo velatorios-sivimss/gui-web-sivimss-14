@@ -151,6 +151,22 @@ export const idsModulos: DatoModulo = {
         ruta: '/pagos/gestionar-pago',
         icono: 'default-icon.svg'
     },
+    '29': {
+      ruta: '/registro-otorgamiento-servicios',
+      icono: 'default-icon.svg'
+    },
+    '30': {
+      ruta: '',
+      icono: 'default-icon.svg'
+    },
+    '31': {
+    ruta: '/servicios-funerarios/registrar-nuevo-plan-sfpa',
+    icono: 'default-icon.svg'
+    },
+    '32': {
+      ruta: '/servicios-funerarios',
+      icono: 'default-icon.svg'
+    }
 };
 
 
