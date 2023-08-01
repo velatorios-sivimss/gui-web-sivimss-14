@@ -102,8 +102,6 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("matPreventivo")?.valueChanges.subscribe((): void => {
       this.asignarOpcionesSemestrales();
     });
-
-    this.solicitudMantenimientoForm.markAllAsTouched();
   }
 
   agregar(): void {
