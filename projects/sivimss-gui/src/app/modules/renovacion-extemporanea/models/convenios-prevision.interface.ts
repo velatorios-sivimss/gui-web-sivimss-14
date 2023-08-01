@@ -16,9 +16,25 @@ export interface ConveniosPrevision {
   correoElectronico?: string;
   cuotaRecuperacion?: string;
   estatus?: boolean;
+  matriculaIMSS?: string;
+  fallecido?: boolean;
 }
 
 export interface ConfirmacionServicio {
   estatus?: boolean;
   origen?: string;
+}
+
+export interface GenerarRenovacionConvenio {
+  idConvenio?: number;
+  justificacion?: string;
+  indRenovacion?: number;
+}
+
+export interface FiltrosConveniosPrevision {
+  idDelegacion?: number | null;
+  idVelatorio?: number | null;
+  numConvenio?: string | null;
+  folio?: string | null;
+  rfc?: string | null;
 }

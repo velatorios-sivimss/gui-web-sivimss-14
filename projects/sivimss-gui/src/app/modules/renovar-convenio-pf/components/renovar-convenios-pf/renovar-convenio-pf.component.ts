@@ -169,7 +169,7 @@ export class RenovarConvenioPfComponent implements OnInit {
   }
 
   obtenerCatalogoDatosGrales() {
-    if (this.convenio && this.convenio?.idConvenio) {
+    if (this.convenio?.idConvenio) {
       this.renovarConvenioPfService.obtenerCatalogo(this.datosObtenerCatalogo(1, +this.convenio.idConvenio)).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos?.length > 0 && this.convenio) {

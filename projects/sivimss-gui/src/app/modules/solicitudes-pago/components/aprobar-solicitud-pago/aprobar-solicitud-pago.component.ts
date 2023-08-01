@@ -39,25 +39,10 @@ export class AprobarSolicitudPagoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    debugger
     if (this.config?.data) {
       this.solicitudPagoSeleccionado = this.config.data;
       this.obtenerSolicPago(this.solicitudPagoSeleccionado.idSolicitud);
     }
-    this.partidaPresupuestal = [
-      {  
-        idPartida: 1,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      },
-      {  
-        idPartida: 2,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      }
-    ];
     this.inicializarAprobarPagoForm();
   }
 
@@ -74,6 +59,7 @@ export class AprobarSolicitudPagoComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.solicitudPagoSeleccionado = respuesta.datos[0];
+          this.listaPartidaPresupuestal(this.solicitudPagoSeleccionado.cveFolioGastos);
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -82,10 +68,23 @@ export class AprobarSolicitudPagoComponent implements OnInit {
       });
   }
 
+  listaPartidaPresupuestal(folioGastos: string): void {
+    this.cargadorService.activar();
+    this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe(
+        (respuesta) => {
+          this.partidaPresupuestal = respuesta!.datos;
+        },
+        (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      );
+  }
+
   get tipoSolicitud(): number {
     return this.solicitudPagoSeleccionado.idTipoSolicitud;
   }
-
 
   confirmarAprobacionPago(): void {
     this.cargadorService.activar();

@@ -4,6 +4,7 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import { SolicitudesPagoService } from '../../services/solicitudes-pago.service';
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -27,6 +28,7 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     public ref: DynamicDialogRef,
     private solicitudesPagoService: SolicitudesPagoService,
     private cargadorService: LoaderService,
+    private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
   }
@@ -34,20 +36,6 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
   ngOnInit(): void {
     this.idSolicitud = this.config.data;
     this.obtenerSolicPago(this.idSolicitud);
-    this.partidaPresupuestal = [
-      {
-        idPartida: 1,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      },
-      {
-        idPartida: 2,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      }
-    ];
   }
 
   aceptar(): void {
@@ -69,6 +57,7 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.solicitudPagoSeleccionado = respuesta.datos[0];
+          this.listaPartidaPresupuestal(this.solicitudPagoSeleccionado.cveFolioGastos);
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -76,5 +65,20 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
         }
       });
   }
+
+  listaPartidaPresupuestal(folioGastos: string): void {
+    this.cargadorService.activar();
+    this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe(
+        (respuesta) => {
+          this.partidaPresupuestal = respuesta!.datos;
+        },
+        (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      );
+  }
+
 
 }

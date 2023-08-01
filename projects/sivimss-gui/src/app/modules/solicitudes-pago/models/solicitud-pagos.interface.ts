@@ -22,15 +22,15 @@ export interface DetalleSolicitudPago {
   unidadMedica: number;
   unidadAdmi: number;
   idTipoSolicitud: number;
-  desVelatorio: string;
+  desVelatorio  : string;
   idEstatusSol: number;
   idUnidadOperativa: number;
   idVelatorio: number;
-  nomBeneficiario: string;
+  nomBeneficiario : string;
   importeTotal: string;
 
   refeUnidadOpe: string;
-  solicitadoPor: string;
+  solicitadoPor  : string;
   nomDestinatario: string;
   nomRemitente: string;
   referenciaTD: string;
@@ -71,9 +71,7 @@ export interface CrearSolicitudPago {
 
 export interface PartidaPresupuestal {
   idPartida: number;
-  partidaPresupuestal: string;
-  cuentasContables: string;
-  partidaPres?: string;
-  cuentaContable?: string;
+  partidaPres: string;
+  cuentaContable: string;
   importeTotal: string;
 }

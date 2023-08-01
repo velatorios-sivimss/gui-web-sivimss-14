@@ -96,6 +96,17 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
+  buscarGastosPorfolio(folio: string): Observable<HttpRespuesta<any>> {
+    const body = { "folioSolicitud": folio }
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscafol-solipagos`, body);
+  }
+
+  buscarPartidaPresupuestal(folioGastos: string): Observable<HttpRespuesta<any>> {
+    const body = { "cveFolioGastos": folioGastos }
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/factura-solipagos`, body);
+  }
+
+
   busquedaFolioFactura(cveFolioGastos: string): Observable<HttpRespuesta<any>> {
     const body = {cveFolioGastos};
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._folioFactura}`, body);

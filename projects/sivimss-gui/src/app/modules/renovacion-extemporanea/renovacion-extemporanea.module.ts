@@ -21,6 +21,8 @@ import { RenovacionExtemporaneaService } from 'projects/sivimss-gui/src/app/modu
 import { RenovacionExtemporaneaComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/renovacion-extemporanea/renovacion-extemporanea.component';
 import { DetalleRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/detalle-renovacion/detalle-renovacion.component';
 import { HabilitarRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/habilitar-renovacion/habilitar-renovacion.component';
+import { UtileriaModule } from '../../shared/utileria/utileria.module';
+import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 
 //as
 @NgModule({
@@ -45,7 +47,9 @@ import { HabilitarRenovacionComponent } from 'projects/sivimss-gui/src/app/modul
     TablePanelModule,
     TituloPrincipalModule,
     StepsModule,
-    AccordionModule
+    AccordionModule,
+    UtileriaModule,
+    ValidaRolModule,
   ],
   providers: [RenovacionExtemporaneaService]
 })
