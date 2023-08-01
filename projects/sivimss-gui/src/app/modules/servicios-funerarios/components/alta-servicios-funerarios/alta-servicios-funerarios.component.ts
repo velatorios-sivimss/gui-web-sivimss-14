@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 
 import {MenuItem} from "primeng/api";
+import * as moment from "moment";
 
 import {ServiciosFunerariosService} from "../../services/servicios-funerarios.service";
 import {MENU_STEPPER} from "../../constants/menu-steppers";
@@ -52,7 +53,9 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   confirmarGuardado: boolean = false;
   confirmarAceptarPaquete: boolean= false;
+  confirmacionDatosExistentes: boolean = false;
   infoPaqueteSeleccionado!: any;
+  mensajeDatosExistentes: string = "";
 
   constructor(
     private alertaService: AlertaService,
@@ -83,7 +86,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.datosAfiliadoForm = this.formBuilder.group({
                    curp: [{value: null, disabled:false},[Validators.required, Validators.pattern(PATRON_CURP)]],
                     rfc: [{value: null, disabled:false},[Validators.required, Validators.pattern(PATRON_RFC)]],
-              matricula: [{value: null, disabled:false},[Validators.required]],
+              matricula: [{value: null, disabled:false}],
                     nss: [{value: null, disabled:false},[Validators.required]],
                  nombre: [{value: null, disabled:false},[Validators.required]],
          primerApellido: [{value: null, disabled:false},[Validators.required]],
@@ -91,14 +94,14 @@ export class AltaServiciosFunerariosComponent implements OnInit {
                    sexo: [{value: null, disabled:false},[Validators.required]],
                otroSexo: [{value: null, disabled:false}],
         fechaNacimiento: [{value: null, disabled:false},[Validators.required]],
-           nacionalidad: [{value: null, disabled:false},[Validators.required]],
+           nacionalidad: [{value: null, disabled:false}],
         lugarNacimiento: [{value: null, disabled:false},[Validators.required]],
-         paisNacimiento: [{value: null, disabled:false},[Validators.required]],
+         paisNacimiento: [{value: null, disabled:false}],
                telefono: [{value: null, disabled:false},[Validators.required]],
       correoElectronico: [{value: null, disabled:false},[Validators.required, Validators.pattern(PATRON_CORREO)]],
                      cp: [{value: null, disabled:false},[Validators.required]],
                   calle: [{value: null, disabled:false},[Validators.required]],
-         numeroInterior: [{value: null, disabled:false},[Validators.required]],
+         numeroInterior: [{value: null, disabled:false}],
          numeroExterior: [{value: null, disabled:false},[Validators.required]],
                 colonia: [{value: null, disabled:false},[Validators.required]],
               municipio: [{value: null, disabled:true},[Validators.required]],
@@ -113,7 +116,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
            datosIguales: [{value: null, disabled:false},[Validators.required]],
                    curp: [{value: null, disabled:false},[Validators.required, Validators.pattern(PATRON_CURP)]],
                     rfc: [{value: null, disabled:false},[Validators.required, Validators.pattern(PATRON_RFC)]],
-              matricula: [{value: null, disabled:false},[Validators.required]],
+              matricula: [{value: null, disabled:false}],
                     nss: [{value: null, disabled:false},[Validators.required]],
                  nombre: [{value: null, disabled:false},[Validators.required]],
          primerApellido: [{value: null, disabled:false},[Validators.required]],
@@ -121,14 +124,14 @@ export class AltaServiciosFunerariosComponent implements OnInit {
                    sexo: [{value: null, disabled:false},[Validators.required]],
                otroSexo: [{value: null, disabled:false}],
         fechaNacimiento: [{value: null, disabled:false},[Validators.required]],
-           nacionalidad: [{value: null, disabled:false},[Validators.required]],
+           nacionalidad: [{value: null, disabled:false}],
         lugarNacimiento: [{value: null, disabled:false},[Validators.required]],
-         paisNacimiento: [{value: null, disabled:false},[Validators.required]],
+         paisNacimiento: [{value: null, disabled:false}],
                telefono: [{value: null, disabled:false},[Validators.required]],
       correoElectronico: [{value: null, disabled:false},[Validators.required, Validators.pattern(PATRON_CORREO)]],
                      cp: [{value: null, disabled:false},[Validators.required]],
                   calle: [{value: null, disabled:false},[Validators.required]],
-         numeroInterior: [{value: null, disabled:false},[Validators.required]],
+         numeroInterior: [{value: null, disabled:false}],
          numeroExterior: [{value: null, disabled:false},[Validators.required]],
                 colonia: [{value: null, disabled:false},[Validators.required]],
               municipio: [{value: null, disabled:true},[Validators.required]],
@@ -140,6 +143,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     let formularios = [this.fda.curp, this.fda.rfc,this.fdc.curp, this.fdc.rfc];
     formularios[posicion].setValue(formularios[posicion].value.toUpperCase());
   }
+
   convertirMinusculas(posicion:number): void {
     let formularios = [this.fda.correoElectronico, this.fdc.correoElectronico];
     formularios[posicion].setValue(formularios[posicion].value.toLowerCase());
@@ -153,6 +157,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       return;
     }
     this.limpiarFormulario(posicion);
+    this.validarUsuarioAfiliado(formularioEnUso[posicion].curp.value,"","");
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarCURP(formularioEnUso[posicion].curp.value).pipe(
       finalize(()=> this.cargadorService.desactivar())
@@ -229,6 +234,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     }
     this.cargadorService.activar();
     this.limpiarFormulario(posicion);
+    this.validarUsuarioAfiliado("",formularioEnUso[posicion].rfc.value,"");
     this.serviciosFunerariosService.consultarRFC(formularioEnUso[posicion].rfc.value).pipe(
       finalize(()=> this.cargadorService.desactivar())
     ).subscribe(
@@ -240,7 +246,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
           formularioEnUso[posicion].primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno)
           formularioEnUso[posicion].segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno)
           formularioEnUso[posicion].sexo.setValue(respuesta.datos[0].numSexo)
-          // formularioEnUso[posicion].otroSexo.setValue(respuesta.datos[0].desMunicipio)
+          formularioEnUso[posicion].otroSexo.setValue(respuesta.datos[0]?.desOtroSexo)
           formularioEnUso[posicion].fechaNacimiento.setValue(fecha)
           formularioEnUso[posicion].telefono.setValue(respuesta.datos[0].desTelefono)
           formularioEnUso[posicion].correoElectronico.setValue(respuesta.datos[0].desCorreo)
@@ -276,6 +282,24 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
       }
     )
+  }
+
+  validarUsuarioAfiliado(curp: string,rfc:string,nss:string): void{
+    this.cargadorService.activar();
+    this.serviciosFunerariosService.validarAfiliado(curp,rfc,nss).pipe(
+      finalize(()=>this.cargadorService.desactivar())
+    ).subscribe({
+      next:(respuesta: HttpRespuesta<any>) =>{
+        if(respuesta.datos.length > 0){
+          this.confirmacionDatosExistentes = true;
+          this.mensajeDatosExistentes = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje)
+          // this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
+        }
+      },
+      error:(error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+      }
+    });
   }
 
   consultarCorreo(posicion: number): void {
@@ -366,6 +390,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       }
     }
   }
+
   consultarCodigoPostal(posicion: number): void {
     let formularios = [this.fda,this.fdc];
     if (!formularios[posicion].cp.value) {
@@ -396,7 +421,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       );
   }
 
-
   datosIguales(esIgual: boolean): void {
     if(!esIgual){
       this.datosContratanteForm.reset();
@@ -425,8 +449,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.fdc.colonia.setValue(this.fda.colonia.value);
     this.fdc.municipio.setValue(this.fda.municipio.value);
     this.fdc.estado.setValue(this.fda.estado.value);
-    this.fdc.tipoPaquete.setValue(this.fda.tipoPaquete.value);
-    this.fdc.numeroPago.setValue(this.fda.numeroPago.value);
   }
 
   limpiarFormulario(posicion: number):void{
@@ -458,80 +480,97 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.infoPaqueteSeleccionado = objetoPaquete[0].descPaquete;
     this.confirmarAceptarPaquete = true;
   }
+
   guardar(): void {
     this.confirmarGuardado = false;
-    let objetoGuardar:AgregarPlanSFPA
+    let objetoGuardar:AgregarPlanSFPA = this.generarObjetoPlanSFPA();
+    this.cargadorService.activar();
+    this.serviciosFunerariosService.insertarPlanSFPA(objetoGuardar).pipe(
+      finalize(()=>this.cargadorService.desactivar())
+    ).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+        this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
+      },
+      error:(error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+      }
+    })
   }
 
   generarObjetoPlanSFPA(): AgregarPlanSFPA {
 
-    return{
+    let objetoContratante = {
+      persona:'contratante', //Si es la misma persona no mandar este objeto
+      rfc: this.fdc.rfc.value,
+      curp: this.fdc.curp.value,
+      matricula: this.fdc.matricula?.value ?? "",
+      nss: this.fdc.nss.value,
+      nomPersona: this.fdc.nombre.value,
+      primerApellido: this.fdc.primerApellido.value,
+      segundoApellido: this.fdc.segundoApellido.value,
+      sexo: this.fdc.sexo.value,
+      otroSexo: this.fdc.otroSexo?.value ?? "",
+      fecNacimiento: moment(this.fdc.fechaNacimiento.value).format('yyyy-MM-DD'),
+      idPais: this.fdc.paisNacimiento?.value ?? 119,
+      idEstado: this.fdc.lugarNacimiento?.value ?? null,
+      telefono: this.fdc.telefono.value,
+      telefonoFijo: this.fdc.telefono.value,
+      correo: this.fdc.correoElectronico.value,
+      tipoPersona: "",
+      ine: "",
+      cp: {
+        desCalle: this.fdc.calle.value,
+        numExterior: this.fdc.numeroExterior.value,
+        numInterior: this.fdc.numeroInterior?.value ?? "",
+        codigoPostal: this.fdc.cp.value,
+        desColonia: this.fdc.colonia.value,
+        desMunicipio: this.fdc.municipio.value,
+        desEstado: this.fdc.estado.value,
+      }
+    }
+
+    let objetoPrincipal = {
       idTipoContratacion:1,
       idPaquete: this.fda.tipoPaquete.value,
       idTipoPagoMensual: this.fda.numeroPago.value,
-      indTitularSubstituto: null, //Cuando te vas a contratante SI 1 no 0
-      indModificarTitularSubstituto: null, //Cuando es alta se manda en 0 acualizar es 1
+      indTitularSubstituto: this.fdc.datosIguales.value ? 1:0, //Cuando te vas a contratante SI 1 no 0
+      indModificarTitularSubstituto: 0, //Cuando es alta se manda en 0 acualizar es 1
       titularesBeneficiarios: [
         {
           persona: 'afiliado',
-          rfc: null,
-          curp: null,
-          matricula: null,
-          nss: null,
-          nomPersona: null,
-          primerApellido: null,
-          segundoApellido: null,
-          sexo: null,
-          otroSexo: null,
-          fecNacimiento: null,
-          idPais: null,
-          idEstado: null,
-          telefono: null,
-          telefonoFijo: null,
-          correo: null,
-          tipoPersona: null,
-          ine: null,
+          rfc: this.fda.rfc.value,
+          curp: this.fda.curp.value,
+          matricula: this.fda.matricula?.value ?? "",
+          nss: this.fda.nss.value,
+          nomPersona: this.fda.nombre.value,
+          primerApellido: this.fda.primerApellido.value,
+          segundoApellido: this.fda.segundoApellido.value,
+          sexo: this.fda.sexo.value,
+          otroSexo: this.fda.otroSexo?.value ?? "",
+          fecNacimiento: moment(this.fda.fechaNacimiento.value).format('yyyy-MM-DD'),
+          idPais: this.fda.paisNacimiento?.value ?? 119,
+          idEstado: this.fda.lugarNacimiento?.value ?? null,
+          telefono: this.fda.telefono.value,
+          telefonoFijo: this.fda.telefono.value,
+          correo: this.fda.correoElectronico.value,
+          tipoPersona: "",
+          ine: "",
           cp: {
-            desCalle: null,
-            numExterior: null,
-            numInterior: null,
-            codigoPostal: null,
-            desColonia: null,
-            desMunicipio: null,
-            desEstado: null
-          }
-        },
-        {
-          persona:'contratante', //Si es la misma persona no mandar este objeto
-          rfc: null,
-          curp: null,
-          matricula: null,
-          nss: null,
-          nomPersona: null,
-          primerApellido: null,
-          segundoApellido: null,
-          sexo: null,
-          otroSexo: null,
-          fecNacimiento: null,
-          idPais: null,
-          idEstado: null,
-          telefono: null,
-          telefonoFijo: null,
-          correo: null,
-          tipoPersona: null,
-          ine: null,
-          cp: {
-            desCalle: null,
-            numExterior: null,
-            numInterior: null,
-            codigoPostal: null,
-            desColonia: null,
-            desMunicipio: null,
-            desEstado: null
+            desCalle: this.fda.calle.value,
+            numExterior: this.fda.numeroExterior.value,
+            numInterior: this.fda.numeroInterior?.value ?? "",
+            codigoPostal: this.fda.cp.value,
+            desColonia: this.fda.colonia.value,
+            desMunicipio: this.fda.municipio.value,
+            desEstado: this.fda.estado.value,
           }
         }
       ]
     }
+    if(objetoPrincipal.indTitularSubstituto == 0){
+      objetoPrincipal.titularesBeneficiarios.push(objetoContratante)
+    }
+    return objetoPrincipal;
   }
 
   regresar(): void {
