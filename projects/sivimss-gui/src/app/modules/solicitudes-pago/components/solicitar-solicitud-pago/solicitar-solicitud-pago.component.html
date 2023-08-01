@@ -1,968 +1,307 @@
-<ng-container>
-  <form [formGroup]="solicitarPagoForm">
+<form [formGroup]="solicitudPagoForm">
     <div class="row mb-3">
-      <div class="col-md-12">
-        <label class="control-label" for="tipoSolicitud">Tipo de solicitud de pago<span
+        <div class="col-md-12">
+            <label class="control-label" for="tipoSolicitud">Tipo de solicitud de pago<span
+        class="req">*</span>:</label>
+            <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud" [options]="catatalogoTipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true" filterBy="label" appendTo="body" (onChange)="seleccionarValidaciones()">
+            </p-dropdown>
+            <span class="campo-obligatorio" *ngIf="fc?.tipoSolicitud?.errors?.required && (fc?.tipoSolicitud?.dirty || fc?.tipoSolicitud?.touched)">Este campo es obligatorio *.</span>
+        </div>
+    </div>
+    <ng-container *ngIf="tipoSolicitud">
+        <div class="row mb-3">
+            <div class="col-md-6" *ngIf="[2,3,4,6].includes(tipoSolicitud)">
+                <label class="control-label" for="folioFiscal">Folio fiscal de la factura de gastos<span
           class="req">*</span>:</label>
-        <p-dropdown id="tipoSolicitud" class="form-control" formControlName="tipoSolicitud"
-                    [options]="catalogotipoSolicitud" placeholder="Seleccionar el tipo de solicitud" [filter]="true"
-                    filterBy="label" appendTo="body" (onChange)="validaTipoSolicitud()">
-        </p-dropdown>
-        <span class="campo-obligatorio"
-              *ngIf="ref.tipoSolicitud?.errors?.required && (ref.tipoSolicitud?.dirty || ref.tipoSolicitud?.touched)">Este campo es obligatorio *.</span>
-      </div>
-    </div>
-    <ng-container *ngIf="ref.tipoSolicitud.value === 1">
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <div class="flex">
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="1" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad operativa</label>
+                <input id="folioFiscal" class="form-control" formControlName="folioFiscal" placeholder="Ingresar folio" [maxlength]="36" oninput="this.value = this.value.toUpperCase().trim()" appRegexFolioFiscal>
+                <span class="campo-obligatorio" *ngIf="fc?.folioFiscal?.errors?.required && (fc?.folioFiscal?.dirty || fc?.folioFiscal?.touched)">Este campo es obligatorio *.</span>
             </div>
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="2" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad administrativa*</label>
+            <div class="col-md-6" *ngIf="[5].includes(tipoSolicitud)">
+                <label class="control-label" for="folioFiscalBtn">Folio fiscal de la factura de gastos<span
+          class="req">*</span>:</label>
+                <div class="formgroup-inline">
+                    <div class="field">
+                        <input id="folioFiscalBtn" class="form-control" formControlName="folioFiscal" placeholder="Ingresar folio" [maxlength]="36" oninput="this.value = this.value.toUpperCase().trim()" appRegexFolioFiscal>
+                    </div>
+                    <button class="btn btn-md btn-primary" type="button">Agregar</button>
+                </div>
             </div>
-          </div>
+            <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
+                <label class="control-label" for="fechaElaboracion">Fecha de elaboración<span class="req">*</span>:</label>
+                <p-calendar id="fechaElaboracion" formControlName="fechaElaboracion" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd-mm-yy" appendTo="body" [maxDate]="fechaActual">
+                </p-calendar>
+                <span class="campo-obligatorio" *ngIf="fc?.fechaElaboracion?.errors?.required && (fc?.fechaElaboracion?.dirty || fc?.fechaElaboracion?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
+                <label class="control-label" for="importe">Importe Total<span class="req">*</span>:</label>
+                <input id="importe" class="form-control" formControlName="importe" placeholder="Importe Total" (change)="convertirImporte()" [maxlength]="7" numbersOnly>
+            </div>
         </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Refencia Unidad operativa/administrativa<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="ADM-01">
+        <div class="row mx-1 mb-3" *ngIf="[2,4].includes(tipoSolicitud)">
+            <p-table [value]="partidaPresupuestal" [pageLinks]="3">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th scope="col" class="font-bold">Partida presupuestal</th>
+                        <th scope="col" class="font-bold">Cuentas contables</th>
+                        <th scope="col" class="font-bold">Importe Total</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-partida>
+                    <tr>
+                        <td> {{partida.partidaPres}} </td>
+                        <td> {{partida.cuentasContables}} </td>
+                        <td> {{partida.importeTotal}} </td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
-        <div class="col-md-6">
-          <label class="control-label">Solicitado por<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Jimena Jimenez Jojutla">
+        <div class="row mx-1 mb-3" *ngIf="[3,6].includes(tipoSolicitud)">
+            <p-table [value]="partidaPresupuestal" [pageLinks]="3">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th scope="col" class="font-bold">Partida presupuestal</th>
+                        <th scope="col" class="font-bold">Cuentas contables</th>
+                        <th scope="col" class="font-bold"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-partida>
+                    <tr>
+                        <td> {{partida.partidaPres}} </td>
+                        <td> {{partida.cuentaContable}} </td>
+                        <td>
+                            <button class="btn btn-md btn-primary" type="button">Agregar</button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="fechaElaboracion1">Fecha de elaboración:</label>
-          <p-calendar id="fechaElaboracion1" formControlName="fechaElaboracion1" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
+        <div class="row mb-3" *ngIf="[3].includes(tipoSolicitud)">
+            <div class="col-md-12">
+                <label class="control-label" for="importeCol12">Importe Total<span class="req">*</span>:</label>
+                <input id="importeCol12" class="form-control" formControlName="importe" placeholder="Importe Total" (change)="convertirImporte()" [maxlength]="7" numbersOnly>
+            </div>
         </div>
-        <div class="col-md-6">
-          <label class="control-label" for="nomDestinatario1">Nombre del destinatario (Para)<span class="req">*</span>:</label>
-          <input id="nomDestinatario1" class="form-control" formControlName="nomDestinatario1"
-                 placeholder="Ingresar nombre del destinatario">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nomDestinatario1?.errors?.required && (ref?.nomDestinatario1?.dirty || ref?.nomDestinatario1?.touched)">Este campo es obligatorio *.</span>
+        <div class="row mx-1 mb-3">
+            <p-panel>
+                <ng-template pTemplate="header">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="flex flex-wrap gap-3">
+                                <div class="flex align-items-center">
+                                    <p-radioButton class="white-button" value="1" id="unidadOperativa" formControlName="unidadSeleccionada" inputId="unidadOperativa" (onClick)="cambiarTipoUnidad(1)"></p-radioButton>
+                                    <label for="unidadOperativa" class="ml-2 label-radio-button">Unidad operativa</label>
+                                </div>
+                                <div class="flex align-items-center">
+                                    <p-radioButton class="white-button" value="2" id="unidadAdmon" formControlName="unidadSeleccionada" inputId="unidadAdmon" (onClick)="cambiarTipoUnidad(2)"></p-radioButton>
+                                    <label for="unidadAdmon" class="ml-2 label-radio-button">Unidad administrativa</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="control-label" for="referenciaUnidad">Referencia unidad operativa/Administrativa<span
+                class="req">*</span>:</label>
+                            <p-dropdown appendTo="body" id="referenciaUnidad" class="form-control" formControlName="referenciaUnidad" [options]="unidades" (onChange)="seleccionarResponsable()" placeholder="Unidad operativa/administrativa">
+                            </p-dropdown>
+                            <span class="campo-obligatorio" *ngIf="fc?.referenciaUnidad?.errors?.required && (fc?.referenciaUnidad?.dirty || fc?.referenciaUnidad?.touched)">Este campo es obligatorio *.</span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label" for="solicitadoPor">Solicitado por<span
+                class="req">*</span>:</label>
+                            <input id="solicitadoPor" class="form-control" formControlName="solicitadoPor" placeholder="Solicitado por">
+                        </div>
+                    </div>
+                </ng-template>
+            </p-panel>
         </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="nomRemitente1">Nombre del remitente (De)<span class="req">*</span>:</label>
-          <input id="nomRemitente1" class="form-control" formControlName="nomRemitente1"
-                 placeholder="Ingresar nombre del remitente">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nomRemitente1?.errors?.required && (ref?.nomRemitente1?.dirty || ref?.nomRemitente1?.touched)">Este campo es obligatorio *.</span>
+        <div class="grid mb-3 ">
+            <div class="col-6 mb-3" *ngIf="[1,5,6].includes(tipoSolicitud)">
+                <label class="control-label" for="fechaElaboracionSec2">Fecha de elaboración<span
+          class="req">*</span>:</label>
+                <p-calendar id="fechaElaboracionSec2" formControlName="fechaElaboracion" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd-mm-yy" appendTo="body" [maxDate]="fechaActual">
+                </p-calendar>
+                <span class="campo-obligatorio" *ngIf="fc?.fechaElaboracion?.errors?.required && (fc?.fechaElaboracion?.dirty || fc?.fechaElaboracion?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-6 mb-3">
+                <label class="control-label" for="nombreDestinatario">Nombre del destinatario (Para)<span
+          class="req">*</span>:</label>
+                <input id="nombreDestinatario" class="form-control" formControlName="nombreDestinatario" placeholder="Ingresar nombre del destinatario" [maxlength]="50" appSinCaracteresEspeciales>
+                <span class="campo-obligatorio" *ngIf="fc?.nombreDestinatario?.errors?.required && (fc?.nombreDestinatario?.dirty || fc?.nombreDestinatario?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-6 mb-3">
+                <label class="control-label" for="nomRemitente">Nombre del remitente (De)<span class="req">*</span>:</label>
+                <input id="nomRemitente" class="form-control" formControlName="nomRemitente" placeholder="Ingresar nombre del remitente" [maxlength]="50" appSinCaracteresEspeciales>
+                <span class="campo-obligatorio" *ngIf="fc?.nomRemitente?.errors?.required && (fc?.nomRemitente?.dirty || fc?.nomRemitente?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-6 mb-3">
+                <label class="control-label" for="referenciaTD">Referencia DT<span class="req">*</span>:</label>
+                <input id="referenciaTD" class="form-control" formControlName="referenciaTD" placeholder="Referencia DT">
+            </div>
+            <div class="col-6 mb-3" *ngIf="[2,3,4,5,6].includes(tipoSolicitud)">
+                <label class="control-label" for="beneficiario">Beneficiario<span class="req">*</span>:</label>
+                <input id="beneficiario" class="form-control" formControlName="beneficiario" placeholder="Ingresar beneficiario" [maxlength]="80">
+                <span class="campo-obligatorio" *ngIf="fc?.beneficiario?.errors?.required && (fc?.beneficiario?.dirty || fc?.beneficiario?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-12 mb-3" *ngIf="[3].includes(tipoSolicitud)">
+                <p-panel>
+                    <ng-template pTemplate="header">
+                        <label class="ml-2 control-label">Periodo:</label>
+                    </ng-template>
+                    <ng-template pTemplate="body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="control-label" for="fechaInicial">Fecha Inicial<span class="req">*</span>:</label>
+                                <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar fecha" dateFormat="dd-mm-yy" appendTo="body" [maxDate]="fechaActual">
+                                </p-calendar>
+                                <span class="campo-obligatorio" *ngIf="fc?.fechaInicial?.errors?.required && (fc?.fechaInicial?.dirty || fc?.fechaInicial?.touched)">Este campo es obligatorio *.</span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="control-label" for="fechaFinal">Fecha Final<span class="req">*</span>:</label>
+                                <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar fecha" dateFormat="dd-mm-yy" appendTo="body" [maxDate]="fechaActual">
+                                </p-calendar>
+                                <span class="campo-obligatorio" *ngIf="fc?.fechaFinal?.errors?.required && (fc?.fechaFinal?.dirty || fc?.fechaFinal?.touched)">Este campo es obligatorio *.</span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-panel>
+            </div>
+            <div class="col-12 mb-3" *ngIf="[1].includes(tipoSolicitud)">
+                <label class="control-label" for="beneficiarioCol12">Beneficiario<span class="req">*</span>:</label>
+                <p-dropdown appendTo="body" id="beneficiarioCol12" class="form-control" formControlName="beneficiario" [options]="beneficiarios" placeholder="Ingresar beneficiario" (onChange)="seleccionarBeneficiario()">
+                </p-dropdown>
+                <span class="campo-obligatorio" *ngIf="fc?.beneficiario?.errors?.required && (fc?.beneficiario?.dirty || fc?.beneficiario?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-12 mb-3" *ngIf="[1,4].includes(tipoSolicitud)">
+                <p-panel>
+                    <ng-template pTemplate="header">
+                        <label class="ml-2 control-label">Datos bancarios:</label>
+                    </ng-template>
+                    <ng-template pTemplate="body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="control-label" for="banco">Banco<span class="req">*</span>:</label>
+                                <input id="banco" class="form-control" formControlName="banco" placeholder="Banco">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="control-label" for="cuenta">Cuenta<span class="req">*</span>:</label>
+                                <input id="cuenta" class="form-control" formControlName="cuenta" placeholder="Cuenta">
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="control-label" for="claveBancaria">Clave bancaria<span class="req">*</span>:</label>
+                                <input id="claveBancaria" class="form-control" formControlName="claveBancaria" placeholder="Clave bancaria">
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-panel>
+            </div>
+            <div class="col-6 mb-3" *ngIf="[1,2,3,4].includes(tipoSolicitud)">
+                <label class="control-label" for="concepto">Concepto<span class="req">*</span>:</label>
+                <input id="concepto" class="form-control" formControlName="concepto" placeholder="Ingresar concepto" [maxlength]="60" appSinCaracteresEspeciales>
+                <span class="campo-obligatorio" *ngIf="fc?.concepto?.errors?.required && (fc?.concepto?.dirty || fc?.concepto?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-6 mb-3" *ngIf="[2,3,4].includes(tipoSolicitud)">
+                <label class="control-label" for="cantidadLetra">Cantidad con letra<span class="req">*</span>:</label>
+                <input id="cantidadLetra" class="form-control" formControlName="importeLetra" placeholder="Cantidad con letra">
+            </div>
+            <div class="col-6 mb-3" *ngIf="[5,6].includes(tipoSolicitud)">
+                <label class="control-label" for="numeroContrato">Número de contrato<span class="req">*</span>:</label>
+                <input id="numeroContrato" class="form-control" formControlName="numeroContrato" placeholder="Número de contrato">
+            </div>
+            <div class="col-6 mb-3" *ngIf="[1].includes(tipoSolicitud)">
+                <label class="control-label" for="importecol6">Importe Total<span class="req">*</span>:</label>
+                <input id="importecol6" class="form-control" formControlName="importe" (change)="convertirImporte()" placeholder="Importe Total" [maxlength]="7" numbersOnly>
+                <span class="campo-obligatorio" *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-12 mb-3" *ngIf="[1].includes(tipoSolicitud)">
+                <label class="control-label" for="cantidadLetraCol12">Cantidad con letra<span class="req">*</span>:</label>
+                <input id="cantidadLetraCol12" class="form-control" formControlName="importeLetra" placeholder="Cantidad con letra">
+            </div>
+            <div class="col-12 mb-3" *ngIf="[5,6].includes(tipoSolicitud)">
+                <p-panel>
+                    <ng-template pTemplate="header">
+                        <label class="ml-2 control-label">Datos bancarios:</label>
+                    </ng-template>
+                    <ng-template pTemplate="body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="control-label" for="bancoTabla2">Banco<span class="req">*</span>:</label>
+                                <input id="bancoTabla2" class="form-control" formControlName="banco" placeholder="Banco">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="control-label" for="cuentaTabla2">Cuenta<span class="req">*</span>:</label>
+                                <input id="cuentaTabla2" class="form-control" formControlName="cuenta" placeholder="Cuenta">
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="control-label" for="claveBancariaTabla2">Clave bancaria<span
+                  class="req">*</span>:</label>
+                                <input id="claveBancariaTabla2" class="form-control" formControlName="claveBancaria" placeholder="Clave bancaria">
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-panel>
+            </div>
+            <div class="col-6 mb-3" *ngIf="[5,6].includes(tipoSolicitud)">
+                <label class="control-label" for="concepto2">Concepto<span class="req">*</span>:</label>
+                <input id="concepto2" class="form-control" formControlName="concepto" placeholder="Ingresar concepto" [maxlength]="60">
+            </div>
+            <div class="col-6 mb-3" *ngIf="[5,6].includes(tipoSolicitud)">
+                <label class="control-label" for="cantidadLetra2">Cantidad con letra<span class="req">*</span>:</label>
+                <input id="cantidadLetra2" class="form-control" formControlName="importeLetra" placeholder="Cantidad con letra">
+            </div>
+            <div class="col-12 mb-3" *ngIf="[5].includes(tipoSolicitud)">
+                <p-panel>
+                    <ng-template pTemplate="header">
+                        <label class="ml-2 control-label">Periodo:</label>
+                    </ng-template>
+                    <ng-template pTemplate="body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="control-label" for="fechaInicialTabla2">Fecha Inicial<span class="req">*</span>:</label>
+                                <p-calendar id="fechaInicialTabla2" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar fecha" dateFormat="dd-mm-yy" appendTo="body" [maxDate]="fechaActual">
+                                </p-calendar>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="control-label" for="fechaFinalTabla2">Fecha Final<span class="req">*</span>:</label>
+                                <p-calendar id="fechaFinalTabla2" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar fecha" dateFormat="dd-mm-yy" appendTo="body" [maxDate]="fechaActual">
+                                </p-calendar>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-panel>
+            </div>
+            <div class="col-12 mb-3">
+                <label class="control-label" for="observaciones">Observaciones<span class="req">*</span>:</label>
+                <input id="observaciones" class="form-control" formControlName="observaciones" placeholder="Ingresar observaciones" [maxlength]="100" appSinCaracteresEspeciales>
+                <span class="campo-obligatorio" *ngIf="fc?.observaciones?.errors?.required && (fc?.observaciones?.dirty || fc?.observaciones?.touched)">Este campo es obligatorio *.</span>
+            </div>
         </div>
-        <div class="col-md-6">
-          <label class="control-label" for="referenciaTD1">Referencia DT<span class="req">*</span>:</label>
-          <input id="referenciaTD1" class="form-control" [disabled]="true"
-                 placeholder="Ingresar referencia DT">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.referenciaTD1?.errors?.required && (ref?.referenciaTD1?.dirty || ref?.referenciaTD1?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label">Beneficiario<span
-            class="req">*</span>:</label>
-          <p-dropdown class="form-control" [options]="[{id:1,label:'op1'},{id:2,label:'op2'}]"
-                      placeholder="Seleccionar beneficiario" [filter]="true" filterBy="label" appendTo="body"
-          >
-          </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="ref.tipoSolicitud?.errors?.required && (ref.tipoSolicitud?.dirty || ref.tipoSolicitud?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <label class="control-label">Datos bancarios</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Banco:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Banco">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Cuenta<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Cuenta">
-        </div>
-        <div class="col-md-12">
-          <label class="control-label">Clave bancaria<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Clave bancaria">
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="concepto1">Concepto<span class="req">*</span>:</label>
-          <input id="concepto1" class="form-control" formControlName="concepto1"
-                 placeholder="Ingresar concepto">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.concepto1?.errors?.required && (ref?.concepto1?.dirty || ref?.concepto1?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="importeTotal1">Importe total<span class="req">*</span>:</label>
-          <input id="importeTotal1" class="form-control" formControlName="importeTotal1"
-                 placeholder="Ingresar importe">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.importeTotal1?.errors?.required && (ref?.importeTotal1?.dirty || ref?.importeTotal1?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label" for="cantidad1">Cantidad con letra:</label>
-          <input id="cantidad1" class="form-control"
-                 placeholder="Cantidad con letra" [disabled]="true">
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label" for="observ1">Observaciones:</label>
-          <input id="observ1" class="form-control" formControlName="observ1" placeholder="Ingresar observaciones">
-        </div>
-      </div>
     </ng-container>
-    <ng-container *ngIf="ref.tipoSolicitud.value === 2">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label">Folio fiscal de la factura de gastos<span class="req">*</span>:</label>
-          <input class="form-control" formControlName="folioFiscal2" placeholder="Ingresa folio">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.folioFiscal2?.errors?.required && (ref?.folioFiscal2?.dirty || ref?.folioFiscal2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Fecha de elaboración<span class="req">*</span>:</label>
-          <p-calendar formControlName="fechaElaboracion2" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-          <span class="campo-obligatorio"
-                *ngIf="ref?.fechaElaboracion2?.errors?.required && (ref?.fechaElaboracion2?.dirty || ref?.fechaElaboracion2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-4">
-          <label class="control-label ">Partida presupuestal</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label ">Cuenta contables</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label ">Importe total</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <div class="flex">
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="1" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad operativa</label>
-            </div>
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="2" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad administrativa*</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Refencia Unidad operativa/administrativa<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="ADM-01">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Solicitado por<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Jimena Jimenez Jojutla">
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <ng-container *ngIf="ShowUnidadOpe == true">
-            <label class="control-label">Referencia unidad operativa/Administrativa<span class="req">*</span>:</label>
-            <input class="form-control" formControlName="folioFiscal2" placeholder="Ingresa folio">
-            <span class="campo-obligatorio"
-                  *ngIf="ref?.folioFiscal2?.errors?.required && (ref?.folioFiscal2?.dirty || ref?.folioFiscal2?.touched)">Este campo es obligatorio *.</span>
-
-            <label class="control-label">Solicitado por<span class="req">*</span>:</label>
-            <p-calendar formControlName="fechaElaboracion2" styleClass="form-control"
-                        [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                        [maxDate]="fechaActual">
-            </p-calendar>
-            <span class="campo-obligatorio"
-                  *ngIf="ref?.fechaElaboracion2?.errors?.required && (ref?.fechaElaboracion2?.dirty || ref?.fechaElaboracion2?.touched)">Este campo es obligatorio *.</span>
-          </ng-container>
-        </div>
-        <div class="col-md-6">
-          <ng-container *ngIf="ShowUnidadAdmi == true">
-            <label class="control-label" for="folioFiscal2">Referencia unidad operativa/Administrativa2<span
-              class="req">*</span>:</label>
-            <input id="folioFiscal2" class="form-control" formControlName="folioFiscal2" placeholder="Ingresa folio">
-            <span class="campo-obligatorio"
-                  *ngIf="ref?.folioFiscal2?.errors?.required && (ref?.folioFiscal2?.dirty || ref?.folioFiscal2?.touched)">Este campo es obligatorio *.</span>
-            <label class="control-label" for="fechaElaboracion2">Solicitado por2<span class="req">*</span>:</label>
-            <p-calendar id="fechaElaboracion2" formControlName="fechaElaboracion2" styleClass="form-control"
-                        [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                        [maxDate]="fechaActual">
-            </p-calendar>
-            <span class="campo-obligatorio"
-                  *ngIf="ref?.fechaElaboracion2?.errors?.required && (ref?.fechaElaboracion2?.dirty || ref?.fechaElaboracion2?.touched)">Este campo es obligatorio *.</span>
-          </ng-container>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="nombreDestinatario2">Nombre del destinatario (Para)<span
-            class="req">*</span>:</label>
-          <input id="nombreDestinatario2" class="form-control" formControlName="nombreDestinatario2"
-                 placeholder="Ingresar nombre del destinatario">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nombreDestinatario2?.errors?.required && (ref?.nombreDestinatario2?.dirty || ref?.nombreDestinatario2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="nomRemitente2">Nombre del remitente (De)<span class="req">*</span>:</label>
-          <input id="nomRemitente2" class="form-control" formControlName="nomRemitente2"
-                 placeholder="Ingresar nombre del remitente">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nomRemitente2?.errors?.required && (ref?.nomRemitente2?.dirty || ref?.nomRemitente2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="referenciaTD2">Referencia DT<span class="req">*</span>:</label>
-          <input id="referenciaTD2" class="form-control" [disabled]="true"
-                 placeholder="Referencia DT">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.referenciaTD2?.errors?.required && (ref?.referenciaTD2?.dirty || ref?.referenciaTD2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="beneficiario2">Beneficiario<span class="req">*</span>:</label>
-          <input id="beneficiario2" class="form-control" formControlName="beneficiario2"
-                 placeholder="Ingresar beneficiario">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.beneficiario2?.errors?.required && (ref?.beneficiario2?.dirty || ref?.beneficiario2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="concepto2">Concepto<span class="req">*</span>:</label>
-          <input id="concepto2" class="form-control" formControlName="concepto2"
-                 placeholder="Ingresar concepto">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.concepto2?.errors?.required && (ref?.concepto2?.dirty || ref?.concepto2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="cantidadLetra2">Cantidad con letra<span class="req">*</span>:</label>
-          <input id="cantidadLetra2" class="form-control" [disabled]="true"
-                 placeholder="Cantidad con letra">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.cantidadLetra2?.errors?.required && (ref?.cantidadLetra2?.dirty || ref?.cantidadLetra2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label" for="observ2">Observaciones<span class="req">*</span>:</label>
-          <input id="observ2" class="form-control" formControlName="observ2" placeholder="Ingresar observaciones">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.observ2?.errors?.required && (ref?.observ2?.dirty || ref?.observ2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="ref.tipoSolicitud.value === 3">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label">Folio fiscal de la factura de consignados<span
-            class="req">*</span>:</label>
-          <input class="form-control" formControlName="folioFiscal3" placeholder="Ingresa folio">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.folioFiscal3?.errors?.required && (ref?.folioFiscal3?.dirty || ref?.folioFiscal3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="fechaElaboracion3">Fecha de elaboración<span class="req">*</span>:</label>
-          <p-calendar id="fechaElaboracion3" formControlName="fechaElaboracion3" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-          <span class="campo-obligatorio"
-                *ngIf="ref?.fechaElaboracion3?.errors?.required && (ref?.fechaElaboracion3?.dirty || ref?.fechaElaboracion3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-4">
-          <label class="control-label ">Partida presupuestal</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label ">Cuentas contables</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label "></label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-        <div class="col-md-4 flex justify-content-end">
-          <button class="ml-6 btn btn-md btn-primary">
-            Agregar
-          </button>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label">Importe Total:</label>
-          <input class="form-control" placeholder="Importe total" [disabled]="true">
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <div class="flex">
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="1" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad operativa</label>
-            </div>
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="2" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad administrativa*</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Refencia Unidad operativa/administrativa<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="ADM-01">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Solicitado por<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Jimena Jimenez Jojutla">
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="nombreDestinatario3">Nombre del destinatario (Para)<span
-            class="req">*</span>:</label>
-          <input id="nombreDestinatario3" class="form-control" formControlName="nombreDestinatario3"
-                 placeholder="Ingresar nombre del destinatario">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nombreDestinatario3?.errors?.required && (ref?.nombreDestinatario3?.dirty || ref?.nombreDestinatario3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="nomRemitente3">Nombre del remitente (De)<span class="req">*</span>:</label>
-          <input id="nomRemitente3" class="form-control" formControlName="nomRemitente3"
-                 placeholder="Ingresar nombre del remitente">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nomRemitente3?.errors?.required && (ref?.nomRemitente3?.dirty || ref?.nomRemitente3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="referenciaTD3">Referencia DT<span class="req">*</span>:</label>
-          <input id="referenciaTD3" class="form-control"
-                 placeholder="Ingresar referencia DT" [disabled]="true">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.referenciaTD3?.errors?.required && (ref?.referenciaTD3?.dirty || ref?.referenciaTD3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="beneficiario3">Beneficiario<span class="req">*</span>:</label>
-          <input class="form-control" formControlName="beneficiario3"
-                 placeholder="Inserta beneficiario">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.beneficiario3?.errors?.required && (ref?.beneficiario3?.dirty || ref?.beneficiario3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <label class="control-label">Periodo<span class="req">*</span>:</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Fecha inicial:</label>
-          <p-calendar formControlName="fechaElaboracion3" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Fecha final:</label>
-          <p-calendar formControlName="fechaElaboracion3" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label">Concepto<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Ingresar el concepto">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.concepto3?.errors?.required && (ref?.concepto3?.dirty || ref?.concepto3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Cantidad con letra:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Ingresar cantidad con letra">
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label" for="observ3">Observaciones<span class="req">*</span>:</label>
-          <input id="observ3" class="form-control" formControlName="observ3" placeholder="Ingresa observaciones">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.observ3?.errors?.required && (ref?.observ3?.dirty || ref?.observ3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="ref.tipoSolicitud.value === 4">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="folioFiscal4">Folio fiscal de la factura de consignados<span
-            class="req">*</span>:</label>
-          <input id="folioFiscal4" class="form-control" formControlName="folioFiscal4" placeholder="Ingresa folio">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.folioFiscal4?.errors?.required && (ref?.folioFiscal4?.dirty || ref?.folioFiscal4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="fechaElaboracion4">Fecha de elaboración<span class="req">*</span>:</label>
-          <p-calendar id="fechaElaboracion4" formControlName="fechaElaboracion4" styleClass="form-control"
-                      [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-          <span class="campo-obligatorio"
-                *ngIf="ref?.fechaElaboracion4?.errors?.required && (ref?.fechaElaboracion4?.dirty || ref?.fechaElaboracion4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-4">
-          <label class="control-label ">Partida presupuestal</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label ">Cuenta contables</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label ">Importe total</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <div class="flex">
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="1" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad operativa</label>
-            </div>
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="2" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad administrativa*</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Refencia Unidad operativa/administrativa<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="ADM-01">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Solicitado por<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Jimena Jimenez Jojutla">
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="nombreDestinatario4">Nombre del destinatario (Para)<span
-            class="req">*</span>:</label>
-          <input id="nombreDestinatario4" class="form-control" formControlName="nombreDestinatario4"
-                 placeholder="Ingresa nombre del destinatario">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nombreDestinatario4?.errors?.required && (ref?.nombreDestinatario4?.dirty || ref?.nombreDestinatario4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="nomRemitente4">Nombre del remitente (De)<span class="req">*</span>:</label>
-          <input id="nomRemitente4" class="form-control" formControlName="nomRemitente4"
-                 placeholder="Ingresa nombre del remitente">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nomRemitente4?.errors?.required && (ref?.nomRemitente4?.dirty || ref?.nomRemitente4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="referenciaTD4">Referencia DT<span class="req">*</span>:</label>
-          <input id="referenciaTD4" class="form-control" [disabled]="true"
-                 placeholder="Referencia DTO">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.referenciaTD4?.errors?.required && (ref?.referenciaTD4?.dirty || ref?.referenciaTD4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Beneficiario<span
-            class="req">*</span>:</label>
-          <p-dropdown class="form-control" [options]="[{id:1,label:'op1'},{id:2,label:'op2'}]"
-                      placeholder="Seleccionar beneficiario" [filter]="true" filterBy="label" appendTo="body"
-          >
-          </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="ref.tipoSolicitud?.errors?.required && (ref.tipoSolicitud?.dirty || ref.tipoSolicitud?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <label class="control-label">Datos bancarios</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Banco:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Banco">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Cuenta<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Cuenta">
-        </div>
-        <div class="col-md-12">
-          <label class="control-label">Clave bancaria<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Clave bancaria">
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="concepto4">Concepto<span class="req">*</span>:</label>
-          <input id="concepto4" class="form-control" formControlName="concepto4"
-                 placeholder="Ingresar concepto">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.concepto4?.errors?.required && (ref?.concepto4?.dirty || ref?.concepto4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="cantidadLetra4">Cantidad letra:</label>
-          <input id="cantidadLetra4" class="form-control" [disabled]="true"
-                 placeholder="Cantidad con letra">
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label" for="observ4">Observaciones<span class="req">*</span>:</label>
-          <input id="observ4" class="form-control" formControlName="observ4" placeholder="Ingresar observaciones">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.observ4?.errors?.required && (ref?.observ4?.dirty || ref?.observ4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="ref.tipoSolicitud.value === 5">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="folioFiscal4">Folio fiscal de la factura de consignados<span
-            class="req">*</span>:</label>
-          <div class="flex justify-content-between">
-            <input class="form-control" formControlName="folioFiscal4" placeholder="Ingresa folio">
-            <button class="ml-6 btn btn-md btn-primary">
-              Agregar
-            </button>
-            <span class="campo-obligatorio"
-                  *ngIf="ref?.folioFiscal4?.errors?.required && (ref?.folioFiscal4?.dirty || ref?.folioFiscal4?.touched)">Este campo es obligatorio *.</span>
-          </div>
-
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="observ4">Importe Total:</label>
-          <input class="form-control" placeholder="Importe Total" [disabled]="true">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.observ4?.errors?.required && (ref?.observ4?.dirty || ref?.observ4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <label class="control-label">Unidad operativa/administrativa<span class="req">*</span>:</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Refencia de Velatorio<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="ADM-01">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Solicitado por<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Jimena Jimenez Jojutla">
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label">Fecha de elaboración<span class="req">*</span>:</label>
-          <p-calendar formControlName="fechaElaboracion2" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-          <span class="campo-obligatorio"
-                *ngIf="ref?.fechaElaboracion2?.errors?.required && (ref?.fechaElaboracion2?.dirty || ref?.fechaElaboracion2?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="nombreDestinatario4">Nombre del destinatario (Para)<span
-            class="req">*</span>:</label>
-          <input class="form-control" formControlName="nombreDestinatario4"
-                 placeholder="Ingresa nombre del destinatario">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nombreDestinatario4?.errors?.required && (ref?.nombreDestinatario4?.dirty || ref?.nombreDestinatario4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="nomRemitente4">Nombre del remitente (De)<span class="req">*</span>:</label>
-          <input class="form-control" formControlName="nomRemitente4"
-                 placeholder="Ingresa nombre del remitente">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nomRemitente4?.errors?.required && (ref?.nomRemitente4?.dirty || ref?.nomRemitente4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="referenciaTD4">Referencia DT<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Referencia DTO">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.referenciaTD4?.errors?.required && (ref?.referenciaTD4?.dirty || ref?.referenciaTD4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label">Beneficiario<span
-            class="req">*</span>:</label>
-          <p-dropdown class="form-control" [options]="[{id:1,label:'op1'},{id:2,label:'op2'}]"
-                      placeholder="Seleccionar beneficiario" [filter]="true" filterBy="label" appendTo="body"
-          >
-          </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="ref.tipoSolicitud?.errors?.required && (ref.tipoSolicitud?.dirty || ref.tipoSolicitud?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Número de contrato<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Número de contrato">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.referenciaTD4?.errors?.required && (ref?.referenciaTD4?.dirty || ref?.referenciaTD4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <label class="control-label">Datos bancarios</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Banco:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Banco">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Solicitado por<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Cuenta">
-        </div>
-        <div class="col-md-12">
-          <label class="control-label">Clave bancaria<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Clave bancaria">
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="concepto4">Concepto<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true" placeholder="Ingresar concepto">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.concepto4?.errors?.required && (ref?.concepto4?.dirty || ref?.concepto4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="cantidadLetra4">Cantidad con letra:</label>
-          <input class="form-control" [disabled]="true" placeholder="Cantidad con letra">
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <label class="control-label">Periodo<span class="req">*</span>:</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Fecha inicio:</label>
-          <p-calendar formControlName="fechaElaboracion3" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Fecha fin:</label>
-          <p-calendar formControlName="fechaElaboracion3" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label" for="observ4">Observaciones<span class="req">*</span>:</label>
-          <input class="form-control" formControlName="observ4" placeholder="Ingresar observaciones">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.observ4?.errors?.required && (ref?.observ4?.dirty || ref?.observ4?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="ref.tipoSolicitud.value === 6">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label">Folio fiscal de la factura de gastos<span
-            class="req">*</span>:</label>
-          <input class="form-control" formControlName="folioFiscal3" placeholder="Ingresa folio">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.folioFiscal3?.errors?.required && (ref?.folioFiscal3?.dirty || ref?.folioFiscal3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-4">
-          <label class="control-label ">Partida presupuestal</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label ">Cuentas contables</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label "></label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-        <div class="col-md-4">
-          <label class="control-label">------</label>
-        </div>
-        <div class="col-md-4 flex justify-content-end">
-          <button class="ml-6 btn btn-md btn-primary">
-            Agregar
-          </button>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label">Importe Total:</label>
-          <input class="form-control" placeholder="Importe total" [disabled]="true">
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <div class="flex">
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="1" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad operativa</label>
-            </div>
-            <div class="flex align-items-center mx-2">
-              <p-radioButton name="unidad" [value]="2" formControlName="unidad"></p-radioButton>
-              <label class="control-label m-0 mx-3">Unidad administrativa*</label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Refencia Unidad operativa/administrativa<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="ADM-01">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Solicitado por<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Jimena Jimenez Jojutla">
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="fechaElaboracion3">Fecha de elaboración<span class="req">*</span>:</label>
-          <p-calendar formControlName="fechaElaboracion3" styleClass="form-control"
-                      [showIcon]="true" placeholder="Seleccionar fecha de elaboración" dateFormat="dd/mm/yy"
-                      appendTo="body"
-                      [maxDate]="fechaActual">
-          </p-calendar>
-          <span class="campo-obligatorio"
-                *ngIf="ref?.fechaElaboracion3?.errors?.required && (ref?.fechaElaboracion3?.dirty || ref?.fechaElaboracion3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="nombreDestinatario3">Nombre del destinatario (Para)<span
-            class="req">*</span>:</label>
-          <input class="form-control" formControlName="nombreDestinatario3"
-                 placeholder="Ingresar nombre del destinatario">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nombreDestinatario3?.errors?.required && (ref?.nombreDestinatario3?.dirty || ref?.nombreDestinatario3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="nomRemitente3">Nombre del remitente (De)<span class="req">*</span>:</label>
-          <input class="form-control" formControlName="nomRemitente3"
-                 placeholder="Ingresar nombre del remitente">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.nomRemitente3?.errors?.required && (ref?.nomRemitente3?.dirty || ref?.nomRemitente3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Referencia DT<span class="req">*</span>:</label>
-          <input class="form-control"
-                 placeholder="Ingresar referencia DT" [disabled]="true">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.referenciaTD3?.errors?.required && (ref?.referenciaTD3?.dirty || ref?.referenciaTD3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label">Beneficiario<span
-            class="req">*</span>:</label>
-          <p-dropdown class="form-control" [options]="[{id:1,label:'op1'},{id:2,label:'op2'}]"
-                      placeholder="Seleccionar beneficiario" [filter]="true" filterBy="label" appendTo="body"
-          >
-          </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="ref.tipoSolicitud?.errors?.required && (ref.tipoSolicitud?.dirty || ref.tipoSolicitud?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Número de contrato<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Número de contrato">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.beneficiario3?.errors?.required && (ref?.beneficiario3?.dirty || ref?.beneficiario3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row surface-border border-2 m-0 py-3 px-1 surface-50">
-        <div class="col-md-12">
-          <label class="control-label">Datos bancarios</label>
-        </div>
-      </div>
-      <div class="row mb-3 surface-border border-2 m-0 py-4">
-        <div class="col-md-6">
-          <label class="control-label">Banco:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Banco">
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Cuenta<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Cuenta">
-        </div>
-        <div class="col-md-12">
-          <label class="control-label">Clave bancaria<span class="req">*</span>:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Clave bancaria">
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label">Concepto<span class="req">*</span>:</label>
-          <input class="form-control"
-                 placeholder="Ingresar el concepto">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.concepto3?.errors?.required && (ref?.concepto3?.dirty || ref?.concepto3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label">Cantidad con letra:</label>
-          <input class="form-control" [disabled]="true"
-                 placeholder="Ingresar cantidad con letra">
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-12">
-          <label class="control-label" for="observ3">Observaciones<span class="req">*</span>:</label>
-          <input id="observ3" class="form-control" formControlName="observ3" placeholder="Ingresa observaciones">
-          <span class="campo-obligatorio"
-                *ngIf="ref?.observ3?.errors?.required && (ref?.observ3?.dirty || ref?.observ3?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-    </ng-container>
-
-
     <div class="row mb-3">
-      <div class="col-md-12">
-                <span class="mensaje-inferior-campo-obligatorio">
-            *Campos obligatorios
-          </span>
-      </div>
+        <div class="col-md-12">
+            <span class="control-label">*Campos obligatorios</span>
+        </div>
     </div>
-  </form>
-</ng-container>
-
-
-<section>
-  <div class="row mb-3">
-    <div class="col-md-12 flex justify-content-end align-items-center">
-      <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-      <button class="ml-6 btn btn-md btn-primary" [disabled]="solicitarPagoForm.invalid" (click)="solicitarPago();">
+    <div class="mb-3 mt-3 row text-center" *ngIf="mensajeConfirmacion">
+        ¿Estás seguro de generar la solicitud de pago?
+    </div>
+    <div class="row mb-3" *ngIf="!mensajeConfirmacion">
+        <div class="col-md-12 flex justify-content-end align-items-center">
+            <button class="ml-4 btn btn-danger btn-md" type="button" (click)="referencia.close()">Cancelar</button>
+            <button class="ml-6 btn btn-md btn-primary" *ngIf="!mensajeConfirmacion" (click)="mensajeConfirmacion = !mensajeConfirmacion" [disabled]="solicitudPagoForm.invalid">Generar solicitud
+      </button>
+        </div>
+    </div>
+    <div class="row mb-3" *ngIf="mensajeConfirmacion">
+        <div class="col-md-12 flex justify-content-end align-items-center">
+            <button class="ml-4 btn btn-danger btn-md" type="button" (click)="mensajeConfirmacion = !mensajeConfirmacion">
+        Cancelar
+      </button>
+            <button class="ml-6 btn btn-md btn-primary" (click)="crearSolicitudPago();">
         Aceptar
       </button>
+        </div>
     </div>
-  </div>
-</section>
+</form>

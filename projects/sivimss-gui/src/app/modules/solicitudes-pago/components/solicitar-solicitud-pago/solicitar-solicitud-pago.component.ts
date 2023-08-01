@@ -1,10 +1,37 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { Router } from "@angular/router";
-import { TipoDropdown } from '../../../../models/tipo-dropdown';
-import { SolicitudesPagoService } from '../../services/solicitudes-pago.service';
-import { SolicitarSolicitudPago, PartidaPresupuestal } from '../../models/solicitud-pagos.interface';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {ActivatedRoute, Router} from "@angular/router";
+import {TipoDropdown} from '../../../../models/tipo-dropdown';
+import {finalize} from "rxjs/operators";
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
+import {PartidaPresupuestal, CrearSolicitudPago} from '../../models/solicitud-pagos.interface';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
+import {HttpErrorResponse} from "@angular/common/http";
+import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
+
+interface RegistroVelatorio {
+  desVelatorio: string,
+  idVelatorio: number,
+  nomResponsable: string
+}
+
+interface RegistroUnidadOperativa {
+  idSubdireccion: number,
+  nomResponsable: string,
+  nomSubdireccion: string,
+  referencia: string
+}
+
+interface RegistroProveedor {
+  cveBancaria: number,
+  nomProveedor: string,
+  cuenta: string,
+  banco: string
+}
 
 @Component({
   selector: 'app-solicitar-solicitud-pago',
@@ -13,166 +40,327 @@ import { SolicitarSolicitudPago, PartidaPresupuestal } from '../../models/solici
 })
 export class SolicitarSolicitudPagoComponent implements OnInit {
 
-  solicitarPagoForm!: FormGroup;
-  pagoSeleccionado: any = {}
-  opcion1: boolean = false;
-  opcion2: boolean = false;
-  opcion3: boolean = false;
-  opcion4: boolean = false;
-  opcion5: boolean = false;
-  ShowUnidadOpe: boolean = false;
-  ShowUnidadAdmi: boolean = false;
+  validaciones: Map<number, any> = new Map();
 
+  readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
+  readonly POSICION_CATALOGO_VELATORIO: number = 2;
+  readonly POSICION_CATALOGO_UNIDAD: number = 3;
+  readonly POSICION_CATALOGO_BANCO: number = 4;
 
+  solicitudPagoForm!: FormGroup;
+  catatalogoTipoSolicitud: TipoDropdown[] = [];
+
+  datosSolicitudPago!: CrearSolicitudPago;
   fechaActual: Date = new Date();
-  opcionesSolicitud: number = 0;
   partidaPresupuestal: PartidaPresupuestal [] = [];
-  catalogotipoSolicitud: TipoDropdown[] = [
-    {
-      value: 1,
-      label: 'Solicitud de bienes y servicios por comprobar',
-    },
-    {
-      value: 2,
-      label: 'Solicitud de comprobación de bienes y servicios',
-    },
-    {
-      value: 3,
-      label: 'Solicitud de reembolso de fondo fijo revolvente',
-    },
-    {
-      value: 4,
-      label: 'Solicitud de pago',
-    },
-    {
-      value: 5,
-      label: 'Solicitud de pago a consignantes',
-    },
-    {
-      value: 6,
-      label: 'Solicitud de pago por contrato',
-    }
-  ];
+
+  unidades: TipoDropdown[] = [];
+  beneficiarios: TipoDropdown[] = [];
+  catalogoVelatorios: RegistroVelatorio[] = [];
+  catalogoUnidades: RegistroUnidadOperativa[] = [];
+  catalogoProveedores: RegistroProveedor[] = [];
+  mensajeConfirmacion: boolean = false;
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     public config: DynamicDialogConfig,
+    private cargadorService: LoaderService,
     private formBulder: FormBuilder,
-    private readonly referencia: DynamicDialogRef,
-    private balanceCajaService: SolicitudesPagoService,
-  ) { }
+    public referencia: DynamicDialogRef,
+    private solicitudesPagoService: SolicitudesPagoService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService
+  ) {
+    this.validaciones.set(1, () => this.validacionesBienesServiciosPorComprobar())
+    this.validaciones.set(2, () => this.validacionesComprobacionBienesServicios())
+    this.validaciones.set(3, () => this.validacionesSolicitudRembolso())
+    this.validaciones.set(4, () => this.validacionesSolicitudPago())
+    this.validaciones.set(5, () => this.validacionesSolicitudConsignantes())
+    this.validaciones.set(6, () => this.validacionesPagoContrato())
+  }
 
   ngOnInit(): void {
-    if (this.config?.data) {
-      this.pagoSeleccionado = this.config.data.pagoSeleccionado;
-    }
-    this.inicializarModificarPagoForm();
+    this.obtenerCatalogos();
+    this.inicializarTipoSolicitud();
     this.partidaPresupuestal = [
       {
         idPartida: 1,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
+        partidaPres: 'Solicitud de comprobación de bienes y servicios',
+        cuentaContable: '000001',
         importeTotal: '000001',
       },
       {
         idPartida: 2,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
+        partidaPres: 'Solicitud de comprobación de bienes y servicios',
+        cuentaContable: '000001',
         importeTotal: '000001',
       }
     ];
   }
 
-  inicializarModificarPagoForm(): void {
-    this.solicitarPagoForm = this.formBulder.group({
-      folioFiscal2: [{ value: null, disabled: false }, [ Validators.required]],
-      ejercFiscal: [{ value: null, disabled: false }, [ Validators.required]],
-      tipoSolic: [{ value: null, disabled: false }, [ Validators.required]],
-      folio: [{ value: null, disabled: false }, [ Validators.required]],
-      nombreDestinatario2: [{ value: null, disabled: false }, [ Validators.required]],
-      nomRemitente2: [{ value: null, disabled: false }, [ Validators.required]],
-      beneficiario2: [{ value: null, disabled: false }, [ Validators.required]],
-      concepto2: [{ value: null, disabled: false }, [ Validators.required]],
-      observ2: [{ value: null, disabled: false }, [ Validators.required]],
-      fechaElaboracion2:[{ value: null, disabled: false }, [ Validators.required]],
-      tipoSolicitud: [{ value: null, disabled: false }, [ Validators.required]],
-      unidad:[{value:null, disabled: false}],
-      unidadOpe: [{value:null, disabled: false}],
-      unidadAdmi: [{value:null, disabled: false}],
-      fechaElaboracion1: [{ value: null, disabled: false }, [ Validators.required]],
-      nomDestinatario1: [{ value: null, disabled: false }, [ Validators.required]],
-      nomRemitente1: [{ value: null, disabled: false }, [ Validators.required]],
-      referenciaTD1: [{ value: null, disabled: false }, [ Validators.required]],
-      beneficiario1: [{ value: null, disabled: false }, [ Validators.required]],
-      concepto1: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(60)]],
-      importeTotal1: [{ value: null, disabled: false }, [ Validators.required]],
-      cantidad1: [{ value: null, disabled: false }, [ Validators.required]],
-      observ1: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(100)]],
+  obtenerCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    const catalogoTipoSolicitud = respuesta[this.POSICION_CATALOGO_TIPOSOLICITUD];
+    this.catatalogoTipoSolicitud = mapearArregloTipoDropdown(catalogoTipoSolicitud.datos, "desTipoSolicitud", "tipoSolicitud");
+    this.catalogoVelatorios = respuesta[this.POSICION_CATALOGO_VELATORIO].datos;
+    this.catalogoUnidades = respuesta[this.POSICION_CATALOGO_UNIDAD].datos;
+    this.catalogoProveedores = respuesta[this.POSICION_CATALOGO_BANCO].datos;
+    this.beneficiarios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_BANCO].datos, "nomProveedor", "nomProveedor");
+    this.unidades = this.recuperarUnidadesOperacionales();
+  }
+
+  inicializarTipoSolicitud(): void {
+    this.solicitudPagoForm = this.formBulder.group({
+      tipoSolicitud: [{value: null, disabled: false}, [Validators.required]],
+      folioFiscal: [{value: null, disabled: false}],
+      fechaElaboracion: [{value: null, disabled: false}],
+      unidadSeleccionada: [{value: 1, disabled: false}],
+      referenciaUnidad: [{value: null, disabled: false}],
+      solicitadoPor: [{value: null, disabled: true}],
+      nombreDestinatario: [{value: null, disabled: false}],
+      nomRemitente: [{value: null, disabled: false}],
+      referenciaTD: [{value: null, disabled: true}],
+      beneficiario: [{value: null, disabled: false}],
+      concepto: [{value: null, disabled: false}],
+      importe: [{value: null, disabled: false}],
+      importeLetra: [{value: null, disabled: true}],
+      observaciones: [{value: null, disabled: false}],
+      numeroContrato: [{value: null, disabled: false}],
+      banco: [{value: null, disabled: true}],
+      cuenta: [{value: null, disabled: true}],
+      claveBancaria: [{value: null, disabled: true}],
+      fechaInicial: [{value: null, disabled: false}],
+      fechaFinal: [{value: null, disabled: false}],
     });
   }
 
-  solicitarPago(): void {
-    this.referencia.close(false);
+  seleccionarValidaciones(): void {
+    const tipoSolicitud: number = this.solicitudPagoForm.get('tipoSolicitud')?.value as number;
+    if (!this.validaciones.has(tipoSolicitud)) return;
+    this.validaciones.get(tipoSolicitud)();
+  }
+
+  seleccionarBeneficiario(): void {
+    const beneficiario = this.solicitudPagoForm.get('beneficiario')?.value;
+    const registro = this.catalogoProveedores.find(r => r.nomProveedor === beneficiario);
+    this.solicitudPagoForm.get('banco')?.patchValue(registro?.banco);
+    this.solicitudPagoForm.get('cuenta')?.patchValue(registro?.cuenta);
+    this.solicitudPagoForm.get('claveBancaria')?.patchValue(registro?.cveBancaria);
+  }
+
+  crearSolicitudPago(): void {
+    this.cargadorService.activar();
+    const idTipo = this.solicitudPagoForm.get('tipoSolicitud')?.value;
+    this.solicitudesPagoService.guardar(this.datosSolicitudPago).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Solicitud de pago generada correctamente')
+        this.referencia.close(false);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error, "Error al guardar la información de la solicitud de pago. Intenta nuevamente.");
+      }
+    });
+  }
+
+  recuperarUnidadesAdministrativas(): TipoDropdown[] {
+    return this.catalogoVelatorios.map(({desVelatorio, idVelatorio}) => {
+      return {label: `${desVelatorio}-${idVelatorio}`, value: idVelatorio}
+    });
+  }
+
+  recuperarUnidadesOperacionales(): TipoDropdown[] {
+    return this.catalogoUnidades.map(({referencia, idSubdireccion}) => {
+      return {label: `${referencia}-${idSubdireccion}`, value: idSubdireccion}
+    });
+  }
+
+  cambiarTipoUnidad(tipoUnidad: number): void {
+    this.solicitudPagoForm.get('referenciaUnidad')?.patchValue(null);
+    this.solicitudPagoForm.get('solicitadoPor')?.patchValue(null);
+    this.unidades = tipoUnidad === 1 ? this.recuperarUnidadesOperacionales() : this.recuperarUnidadesAdministrativas();
   }
 
   cancelar(): void {
     this.referencia.close(false);
   }
 
-  validaTipoSolicitud(): void {
-    const idTipo = this.solicitarPagoForm.get('tipoSolicitud')?.value;
+  get tipoSolicitud(): number {
+    return this.solicitudPagoForm.get('tipoSolicitud')?.value
+  }
 
-    if (idTipo === 1) {
-      this.opcion1 = true;
-      this.opcion2 = false;
-      this.opcion3 = false;
-      this.opcion4 = false;
-    }
-    if (idTipo === 2 ) {
-      this.opcion1 = false;
-      this.opcion2 = true;
-      this.opcion3 = false;
-      this.opcion4 = false;
-    }
-    if (idTipo === 3 ) {
-      this.opcion1 = false;
-      this.opcion2 = false;
-      this.opcion3 = true;
-      this.opcion4 = false;
-    }
-    if (idTipo === 5) {
-      this.opcion1 = false;
-      this.opcion2 = false;
-      this.opcion3 = true;
-      this.opcion4 = false;
-    }
-    if (idTipo === 6) {
-      this.opcion1 = false;
-      this.opcion2 = false;
-      this.opcion3 = false;
-      this.opcion4 = true;
+  generarSolicitudPago(): CrearSolicitudPago {
+    return {
+      concepto: "",
+      cveFolioConsignados: "",
+      cveFolioGastos: "",
+      ejercicioFiscal: 0,
+      fechaFinal: "",
+      fechaInicial: "",
+      idContratBenef: 0,
+      idEstatusSol: 0,
+      idTipoSolic: 0,
+      idUnidadOperativa: 0,
+      idVelatorio: 0,
+      nomDestinatario: "",
+      nomRemitente: "",
+      numReferencia: 0,
+      observaciones: ""
     }
   }
 
-  get ref() {
-    return this.solicitarPagoForm.controls;
+  convertirImporte(): void {
+    this.solicitudPagoForm.get('importeLetra')?.patchValue('');
+    const importe = this.solicitudPagoForm.get('importe')?.value;
+    const importeLetra: string = convertirNumeroPalabra(+importe);
+    this.solicitudPagoForm.get('importeLetra')?.patchValue(importeLetra[0].toUpperCase() + importeLetra.substring(1));
   }
 
-  get fa() {
-    return this.solicitarPagoForm.controls;
-  }
-
-  unidad(tipo:number): void {
-    if(tipo){
-      this.ShowUnidadAdmi = true;
-      this.ShowUnidadOpe = false;
-      this.fa.unidadOpe.setValue(false);
+  seleccionarResponsable(): void {
+    const tipoUnidad = this.solicitudPagoForm.get('unidadSeleccionada')?.value;
+    const idUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value;
+    if (tipoUnidad === 1) {
+      const responsable = this.catalogoUnidades.find(cu => cu.idSubdireccion === idUnidad)?.nomResponsable ?? '';
+      this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
       return;
     }
-    this.fa.unidadAdmi.setValue(false);
-      this.ShowUnidadAdmi = false;
-      this.ShowUnidadOpe = true;
-
+    const responsable = this.catalogoVelatorios.find(cu => cu.idVelatorio === idUnidad)?.nomResponsable ?? '';
+    this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
   }
 
+  validacionesBienesServiciosPorComprobar(): void {
+    this.limpiarFormulario();
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('importe')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.enable();
+    this.solicitudPagoForm.get('importe')?.enable();
+  }
+
+  validacionesComprobacionBienesServicios(): void {
+    this.limpiarFormulario();
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.enable();
+  }
+
+  validacionesSolicitudRembolso(): void {
+    this.limpiarFormulario();
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaInicial')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaFinal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.disable();
+    this.solicitudPagoForm.get('importe')?.disable();
+  }
+
+  validacionesSolicitudPago(): void {
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('beneficiario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
+  }
+
+  validacionesSolicitudConsignantes(): void {
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaElaboracion')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nombreDestinatario')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('nomRemitente')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('observaciones')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaInicial')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('fechaFinal')?.setValidators([Validators.required]);
+  }
+
+  validacionesPagoContrato(): void {
+  }
+
+  limpiarFormulario(): void {
+    this.mensajeConfirmacion = false;
+    this.solicitudPagoForm.get('folioFiscal')?.patchValue(null);
+    this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
+    this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('fechaElaboracion')?.patchValue(null);
+    this.solicitudPagoForm.get('fechaElaboracion')?.clearValidators();
+    this.solicitudPagoForm.get('fechaElaboracion')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('unidadSeleccionada')?.patchValue(1);
+    this.solicitudPagoForm.get('unidadSeleccionada')?.clearValidators();
+    this.solicitudPagoForm.get('unidadSeleccionada')?.updateValueAndValidity();
+    this.unidades = this.recuperarUnidadesOperacionales();
+    this.solicitudPagoForm.get('referenciaUnidad')?.patchValue(null);
+    this.solicitudPagoForm.get('referenciaUnidad')?.clearValidators();
+    this.solicitudPagoForm.get('referenciaUnidad')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('solicitadoPor')?.patchValue(null);
+    this.solicitudPagoForm.get('solicitadoPor')?.clearValidators();
+    this.solicitudPagoForm.get('solicitadoPor')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('nombreDestinatario')?.patchValue(null);
+    this.solicitudPagoForm.get('nombreDestinatario')?.clearValidators();
+    this.solicitudPagoForm.get('nombreDestinatario')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('nomRemitente')?.patchValue(null);
+    this.solicitudPagoForm.get('nomRemitente')?.clearValidators();
+    this.solicitudPagoForm.get('nomRemitente')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('referenciaTD')?.patchValue(null);
+    this.solicitudPagoForm.get('referenciaTD')?.clearValidators();
+    this.solicitudPagoForm.get('referenciaTD')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('beneficiario')?.patchValue(null);
+    this.solicitudPagoForm.get('beneficiario')?.clearValidators();
+    this.solicitudPagoForm.get('beneficiario')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('concepto')?.patchValue(null);
+    this.solicitudPagoForm.get('concepto')?.clearValidators();
+    this.solicitudPagoForm.get('concepto')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('importe')?.patchValue(null);
+    this.solicitudPagoForm.get('importe')?.clearValidators();
+    this.solicitudPagoForm.get('importe')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('importeLetra')?.patchValue(null);
+    this.solicitudPagoForm.get('importeLetra')?.clearValidators();
+    this.solicitudPagoForm.get('importeLetra')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('observaciones')?.patchValue(null);
+    this.solicitudPagoForm.get('observaciones')?.clearValidators();
+    this.solicitudPagoForm.get('observaciones')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('numeroContrato')?.patchValue(null);
+    this.solicitudPagoForm.get('numeroContrato')?.clearValidators();
+    this.solicitudPagoForm.get('numeroContrato')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('banco')?.patchValue(null);
+    this.solicitudPagoForm.get('banco')?.clearValidators();
+    this.solicitudPagoForm.get('banco')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('cuenta')?.patchValue(null);
+    this.solicitudPagoForm.get('cuenta')?.clearValidators();
+    this.solicitudPagoForm.get('cuenta')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('claveBancaria')?.patchValue(null);
+    this.solicitudPagoForm.get('claveBancaria')?.clearValidators();
+    this.solicitudPagoForm.get('claveBancaria')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('fechaInicial')?.patchValue(null);
+    this.solicitudPagoForm.get('fechaInicial')?.clearValidators();
+    this.solicitudPagoForm.get('fechaInicial')?.updateValueAndValidity();
+    this.solicitudPagoForm.get('fechaFinal')?.patchValue(null);
+    this.solicitudPagoForm.get('fechaFinal')?.clearValidators();
+    this.solicitudPagoForm.get('fechaFinal')?.updateValueAndValidity();
+  }
+
+  get fc() {
+    return this.solicitudPagoForm.controls;
+  }
 }

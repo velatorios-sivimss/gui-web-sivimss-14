@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PATRON_CORREO, PATRON_CURP} from "../../../../utils/constantes";
 import {Usuario} from "../../models/usuario.interface";
 import * as moment from "moment/moment";
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
 import {HttpErrorResponse, HttpEventType, HttpHeaders} from "@angular/common/http";
 import {UsuarioService} from "../../services/usuario.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
@@ -69,7 +68,6 @@ export class AgregarUsuarioComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,

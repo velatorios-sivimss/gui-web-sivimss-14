@@ -1,11 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import { SolicitarSolicitudPago, PartidaPresupuestal } from '../../models/solicitud-pagos.interface';
+import { DetalleSolicitudPago, PartidaPresupuestal } from '../../models/solicitud-pagos.interface';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import { SolicitudesPagoService } from '../../services/solicitudes-pago.service';
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
 
-type DetalleSolicPago = Required<SolicitarSolicitudPago> & { id: string }
+type DetalleSolicPago = Required<DetalleSolicitudPago> & { id: string }
 
 @Component({
   selector: 'app-ver-detalle-solicitud',
@@ -14,9 +18,9 @@ type DetalleSolicPago = Required<SolicitarSolicitudPago> & { id: string }
 })
 export class VerDetalleSolicitudPagoComponent implements OnInit {
 
-  solicitarSolicitudPago: SolicitarSolicitudPago[] = [];
-  solicitudPagoSeleccionado!: any;
-  id!: number;
+  solicitarSolicitudPago: DetalleSolicitudPago[] = [];
+  solicitudPagoSeleccionado!: DetalleSolicitudPago;
+  idSolicitud!: number;
   partidaPresupuestal: PartidaPresupuestal [] = [];
 
   constructor(
@@ -24,27 +28,14 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     public ref: DynamicDialogRef,
     private solicitudesPagoService: SolicitudesPagoService,
     private cargadorService: LoaderService,
+    private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
   ngOnInit(): void {
-    this.id = this.config.data;
-    this.obtenerSolicPago(this.id);
-    this.partidaPresupuestal = [
-      {
-        idPartida: 1,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      },
-      {
-        idPartida: 2,
-        partidaPresupuestal: 'Solicitud de comprobación de bienes y servicios',
-        cuentasContables: '000001',
-        importeTotal: '000001',
-      }
-    ];
+    this.idSolicitud = this.config.data;
+    this.obtenerSolicPago(this.idSolicitud);
   }
 
   aceptar(): void {
@@ -55,26 +46,39 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     this.ref.close();
   }
 
-  obtenerSolicPago(id: number): void {
-    this.solicitudPagoSeleccionado =
-      {
-        folio2: '000001',
-        tipoSolicitud: 'Solicitud de comprobación de bienes y servicios',
-        folioFiscal2: '000001',
-        estatus2: 'Pendiente',
-        ejerciFiscal2: '2021',
-        fechaElaboracion2: '01/07/2023',
-        unidadOpe: 'Referencia unidad operativa/administrativa',
-        solicitadoPor: 'Jorge Sanchez Prado',
-        referenciaTD2: '12133576',
-        beneficiario2: 'Soluciones industriales',
-        nombreDestinatario2: 'Edwin Ruiz Cardenas',
-        nomRemitente2: 'Ricardo Quintero',
-        concepto2: 'Gasto primario',
-        cantidadLetra2: 'Venticinco mil quinientos pesos',
-        observ2: 'No se presentan problemas de ningun tipo'
-      }
-    ;
-
+  get tipoSolicitud(): number {
+    return this.solicitudPagoSeleccionado.idTipoSolicitud;
   }
+
+  obtenerSolicPago(idSolicitud: number): void {
+    this.cargadorService.activar();
+    this.solicitudesPagoService.detalleSolicitudPago(idSolicitud)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.solicitudPagoSeleccionado = respuesta.datos[0];
+          this.listaPartidaPresupuestal(this.solicitudPagoSeleccionado.cveFolioGastos);
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
+  }
+
+  listaPartidaPresupuestal(folioGastos: string): void {
+    this.cargadorService.activar();
+    this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe(
+        (respuesta) => {
+          this.partidaPresupuestal = respuesta!.datos;
+        },
+        (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      );
+  }
+
+
 }

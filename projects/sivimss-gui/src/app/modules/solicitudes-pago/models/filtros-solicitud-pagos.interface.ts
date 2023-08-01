@@ -2,11 +2,10 @@ export interface FiltrosSolicitudPago {
   idNivel: number,
   idDelegacion: number,
   idVelatorio: number,
-  fecIniODS: string,
-  fecFinODS: string,
-  ejercFiscal: string,
-  tipoSolic: string,
-  folio: string,
-  rutaNombreReporte: string,
+  fecIniODS: any,
+  fecFinODS: any,
+  ejercicioFiscal: string,
+  idTipoSolicitud: string,
+  folioSolicitud: string,
   tipoReporte: string
 }
