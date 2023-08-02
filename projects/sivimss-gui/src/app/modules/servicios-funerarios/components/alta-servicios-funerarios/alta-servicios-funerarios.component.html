@@ -2,7 +2,7 @@
 
 <div class="row mb-3">
   <div class="col-md-3">
-    <label class="control-label" for="tipoContratacion">Tipo de contratación:</label>
+    <label class="control-label" for="tipoContratacion">Tipo de contratación<span class="req">*</span>:</label>
     <p-dropdown #dd id="tipoContratacion" class="form-control" placeholder="Selecciona el estatus"
                 [options]="[{id:1,label:'Por persona'}]" [optionValue]="'1'" [disabled]="true"></p-dropdown>
   </div>
@@ -81,7 +81,7 @@
                   *ngIf="fda.fechaNacimiento?.errors?.required && (fda.fechaNacimiento?.dirty || fda.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="sexo">Sexo<span class="req">*</span></label>
+            <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
             <p-dropdown appendTo="body" id="sexo" class="form-control" formControlName="sexo" (onChange)="cambiarSexo(0)"
                         [options]="sexo" [filter]="true" filterBy="label"
                         placeholder="Selecciona el sexo">
@@ -186,7 +186,7 @@
                   *ngIf="fda.municipio?.errors?.required && (fda.municipio?.dirty || fda.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="estado">Estado<span class="req">*</span></label>
+            <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
             <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fda.estado?.errors?.required && (fda.estado?.dirty || fda.estado?.touched)">Este campo es obligatorio *.</span>
@@ -195,7 +195,7 @@
         <hr class="separador">
         <div class="row mb-3">
           <div class="col-md-6">
-            <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span></label>
+            <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
             <p-dropdown appendTo="body" id="tipoPaquete" class="form-control" formControlName="tipoPaquete"
                         [options]="tipoPaquete" [filter]="true" filterBy="label"
                         (onChange)="mostrarInfoPaqueteSeleccionado()" placeholder="Selecciona el tipo de paquete">
@@ -204,7 +204,7 @@
                   *ngIf="fda.tipoPaquete?.errors?.required && (fda.tipoPaquete?.dirty || fda.tipoPaquete?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-6">
-            <label class="control-label" for="numeroPago">Número de pagos<span class="req">*</span></label>
+            <label class="control-label" for="numeroPago">Número de pagos<span class="req">*</span>:</label>
             <p-dropdown appendTo="body" id="numeroPago" class="form-control" formControlName="numeroPago"
                         [options]="numeroPago"
                         placeholder="Selecciona el número de pagos">
@@ -316,7 +316,7 @@
                   *ngIf="fdc.fechaNacimiento?.errors?.required && (fdc.fechaNacimiento?.dirty || fdc.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="sexoContratante">Sexo<span class="req">*</span></label>
+            <label class="control-label" for="sexoContratante">Sexo<span class="req">*</span>:</label>
             <p-dropdown appendTo="body" id="sexoContratante" class="form-control" formControlName="sexo"
                         [options]="sexo" [filter]="true" filterBy="label" (onChange)="cambiarSexo(1)"
                         placeholder="Selecciona el sexo">
@@ -424,7 +424,7 @@
                   *ngIf="fdc.municipio?.errors?.required && (fdc.municipio?.dirty || fdc.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="estadoContratante">Estado<span class="req">*</span></label>
+            <label class="control-label" for="estadoContratante">Estado<span class="req">*</span>:</label>
             <input id="estadoContratante" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
                   *ngIf="fdc.estado?.errors?.required && (fdc.estado?.dirty || fdc.estado?.touched)">Este campo es obligatorio *.</span>
@@ -446,7 +446,7 @@
 
 <div class="flex justify-content-end mb-3">
   <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-  <button class="ml-4 btn btn-primary btn-md" [disabled]="datosAfiliadoForm.invalid || datosContratanteForm.invalid" (click)="confirmarGuardado = true"> Guardar </button>
+  <button class="ml-4 btn btn-primary btn-md" [disabled]="validarBotonGuardar()" (click)="confirmarGuardado = true"> Guardar </button>
 </div>
 
 <p-dialog header="" [(visible)]="confirmarGuardado" [style]="{width: '50vw'}"

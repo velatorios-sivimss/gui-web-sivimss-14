@@ -54,6 +54,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   confirmarGuardado: boolean = false;
   confirmarAceptarPaquete: boolean= false;
   confirmacionDatosExistentes: boolean = false;
+  existeDatoRegistrado: boolean = false;
   infoPaqueteSeleccionado!: any;
   mensajeDatosExistentes: string = "";
 
@@ -286,11 +287,13 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   validarUsuarioAfiliado(curp: string,rfc:string,nss:string): void{
     this.cargadorService.activar();
+    this.existeDatoRegistrado = false;
     this.serviciosFunerariosService.validarAfiliado(curp,rfc,nss).pipe(
       finalize(()=>this.cargadorService.desactivar())
     ).subscribe({
       next:(respuesta: HttpRespuesta<any>) =>{
         if(respuesta.datos.length > 0){
+          this.existeDatoRegistrado = true;
           this.confirmacionDatosExistentes = true;
           this.mensajeDatosExistentes = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje)
           // this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
@@ -449,6 +452,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.fdc.colonia.setValue(this.fda.colonia.value);
     this.fdc.municipio.setValue(this.fda.municipio.value);
     this.fdc.estado.setValue(this.fda.estado.value);
+    this.cambiarNacionalidad(1);
   }
 
   limpiarFormulario(posicion: number):void{
@@ -588,5 +592,12 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   get fdc() {
     return this.datosContratanteForm.controls;
+  }
+
+  validarBotonGuardar(): boolean {
+    if(this.datosAfiliadoForm.invalid || this.datosContratanteForm.invalid || this.existeDatoRegistrado){
+      return true;
+    }
+    return false;
   }
 }
