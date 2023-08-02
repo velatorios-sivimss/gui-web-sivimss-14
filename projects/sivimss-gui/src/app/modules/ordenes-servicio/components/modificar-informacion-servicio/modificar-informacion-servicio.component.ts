@@ -658,7 +658,7 @@ export class ModificarInformacionServicioComponent
   preorden(): void {
     this.altaODS.idEstatus = 1;
     this.llenarDatos();
-    this.altaODS.idEstatus ? this.guardarODS(0) : this.guardarODSComplementaria(0);
+    Number(this.estatusUrl) == 1 ? this.guardarODS(0) : this.guardarODSComplementaria(0);
   }
 
   guardarODS(consumoTablas:number): void {
@@ -736,7 +736,7 @@ export class ModificarInformacionServicioComponent
 
     }
     this.loaderService.activar();
-    this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
+    this.gestionarOrdenServicioService.generarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -987,11 +987,10 @@ export class ModificarInformacionServicioComponent
   }
 
   generada(): void {
-    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
-    // let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
-    this.altaODS.idEstatus = 2;
+    this.altaODS.idEstatus = 1;
     this.llenarDatos();
-    this.altaODS.idEstatus ? this.guardarODS(1) : this.guardarODSComplementaria(2);
+
+    Number(this.estatusUrl)==1 ? this.guardarODS(1) : this.guardarODSComplementaria(1);
 
     // this.guardarODS(1);
   }

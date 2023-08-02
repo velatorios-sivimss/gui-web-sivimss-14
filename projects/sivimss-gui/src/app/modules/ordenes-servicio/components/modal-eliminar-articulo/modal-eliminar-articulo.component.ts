@@ -42,7 +42,6 @@ export class ModalEliminarArticuloComponent implements OnInit {
   aceptarModal(): void {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
     let salida = this.f.motivo.value;
-    console.log(salida);
     this.ref.close(salida);
   }
 }
