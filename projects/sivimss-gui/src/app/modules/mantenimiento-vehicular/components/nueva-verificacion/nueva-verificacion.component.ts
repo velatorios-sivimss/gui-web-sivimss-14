@@ -99,7 +99,6 @@ export class NuevaVerificacionComponent implements OnInit {
       limpiezaExterior: [{ value: null, disabled: false }, [Validators.required]],
       codigoFalla: [{ value: null, disabled: false }, [Validators.required]],
     });
-    this.nuevaVerificacionForm.markAllAsTouched();
   }
 
   obtenerValorNivel(valor: number): string {

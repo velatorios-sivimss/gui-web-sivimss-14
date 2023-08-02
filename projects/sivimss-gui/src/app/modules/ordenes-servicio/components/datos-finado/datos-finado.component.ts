@@ -626,7 +626,6 @@ export class DatosFinadoComponent implements OnInit {
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    console.log(formulario);
     let datosEtapaFinado = {
       datosFinado: {
         tipoOrden: formulario.datosFinado.tipoOrden,
@@ -745,7 +744,6 @@ export class DatosFinadoComponent implements OnInit {
 
     this.altaODS.finado = this.finado;
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
-    console.log('ods segunda fase', this.altaODS);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
@@ -795,6 +793,8 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.nssCheck.disable();
       this.datosFinado.matriculaCheck.disable();
       this.removerValidaciones();
+      this.datosFinado.esParaExtremidad.disable();
+      this.datosFinado.esObito.disable();
     }
   }
 
@@ -822,11 +822,13 @@ export class DatosFinadoComponent implements OnInit {
       this.desabilitarTodo();
       this.datosFinado.esObito.patchValue(null)
       this.datosFinado.esObito.disable();
+      this.datosFinado.esParaExtremidad.enable();
 
       this.datosFinado.velatorioPrevision.disable();
-    } else if ((validacion || !validacion) && idTipoOrden == 3) {
+    } else if (idTipoOrden == 3) {
       this.desabilitarTodo();
       this.datosFinado.esObito.disable();
+      this.datosFinado.esParaExtremidad.disable();
     } else {
       this.habilitarTodo();
       this.datosFinado.velatorioPrevision.disable();
@@ -874,7 +876,6 @@ export class DatosFinadoComponent implements OnInit {
 
   consultarNSS(): void {
     this.loaderService.activar();
-    console.log(this.datosFinado.nss.value);
     if (!this.datosFinado.nss.value) {
       return;
     }
@@ -883,7 +884,6 @@ export class DatosFinadoComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           /*
           if (respuesta) {
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);

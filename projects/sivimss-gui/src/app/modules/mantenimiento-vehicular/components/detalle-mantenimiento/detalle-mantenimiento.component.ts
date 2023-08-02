@@ -77,7 +77,7 @@ export class DetalleMantenimientoComponent implements OnInit {
           if (this.verificacion) {
             this.vehiculo.ID_VEHICULO = this.verificacion.ID_VEHICULO;
             this.vehiculo.DES_MTTOESTADO = this.verificacion.DES_MTTOESTADO;
-            this.vehiculo.DES_VELATORIO = this.verificacion.DES_VELATORIO;
+            this.vehiculo.DES_VELATORIO = this.verificacion.DES_VELATORIO || null;
             this.vehiculo.DES_MARCA = this.verificacion.DES_MARCA;
             this.vehiculo.DES_SUBMARCA = this.verificacion.DES_SUBMARCA;
             this.vehiculo.DES_MODELO = this.verificacion.DES_MODELO;
@@ -85,7 +85,7 @@ export class DetalleMantenimientoComponent implements OnInit {
           } else if (this.registro) {
             this.vehiculo.ID_VEHICULO = this.registro.ID_VEHICULO;
             this.vehiculo.DES_MTTOESTADO = this.registro.DES_MTTOESTADO;
-            this.vehiculo.DES_VELATORIO = this.registro.NOM_VELATORIO;
+            this.vehiculo.DES_VELATORIO = this.registro.NOM_VELATORIO || null;
             this.vehiculo.DES_MARCA = this.registro.DES_MARCA;
             this.vehiculo.DES_SUBMARCA = this.registro.DES_SUBMARCA;
             this.vehiculo.DES_MODELO = this.registro.DES_MODELO;
@@ -93,7 +93,7 @@ export class DetalleMantenimientoComponent implements OnInit {
           } else {
             this.vehiculo.ID_VEHICULO = this.solicitudRegistro.ID_VEHICULO;
             this.vehiculo.DES_MTTOESTADO = this.solicitudRegistro.DES_MTTOESTADO;
-            this.vehiculo.DES_VELATORIO = this.solicitudRegistro.DES_VELATORIO;
+            this.vehiculo.DES_VELATORIO = this.solicitudRegistro.DES_VELATORIO || null;
             this.vehiculo.DES_MARCA = this.solicitudRegistro.DES_MARCA;
             this.vehiculo.DES_SUBMARCA = this.solicitudRegistro.DES_SUBMARCA;
             this.vehiculo.DES_MODELO = this.solicitudRegistro.DES_MODELO;
@@ -102,7 +102,7 @@ export class DetalleMantenimientoComponent implements OnInit {
           this.vehiculo.DES_VELATORIO = this.verificacion?.DES_VELATORIO || this.registro?.NOM_VELATORIO || this.solicitudRegistro?.DES_VELATORIO;
           if (this.solicitudRegistro?.DES_MTTOESTADO) {
             this.vehiculo.DES_MTTOESTADO = this.solicitudRegistro.DES_MTTOESTADO;
-          } else if (this.solicitudRegistro?.DES_MTTOESTADO) {
+          } else if (this.registro?.DES_MTTOESTADO) {
             this.vehiculo.DES_MTTOESTADO = this.registro.DES_MTTOESTADO;
           }
         }

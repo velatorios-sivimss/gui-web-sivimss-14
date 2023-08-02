@@ -363,7 +363,6 @@ export class DatosContratanteComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
-            console.log('curp', respuesta);
             if (respuesta.mensaje.includes('Externo')) {
               if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
                 this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
@@ -424,7 +423,6 @@ export class DatosContratanteComponent implements OnInit {
               }
 
               this.datosContratante.rfc.setValue(datos.rfc);
-              console.log(datos);
               this.datosContratante.paisNacimiento.setValue(
                 Number(datos.idPais)
               );
@@ -677,7 +675,6 @@ export class DatosContratanteComponent implements OnInit {
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    console.log(formulario);
     let datosEtapaContratante = {
       datosContratante: {
         idPersona: this.idPersona,

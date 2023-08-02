@@ -31,12 +31,12 @@
         <div class="flex">
           <div class="flex align-items-center mx-2">
             <p-radioButton [inputId]="'esParaExtremidadSi'" name="esParaExtremidad" [value]="true"
-              formControlName="esParaExtremidad" (click)="esExtremidad(true)"></p-radioButton>
+              formControlName="esParaExtremidad" (onClick)="esExtremidad(true)"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'esParaExtremidadSi'">Si</label>
           </div>
           <div class="flex align-items-center mx-2">
             <p-radioButton [inputId]="'esParaExtremidadNo'" name="esParaExtremidad" [value]="false"
-              formControlName="esParaExtremidad" (click)="esExtremidad(false)"></p-radioButton>
+              formControlName="esParaExtremidad" (onClick)="esExtremidad(false)"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'esParaExtremidadNo'">No</label>
           </div>
         </div>
@@ -49,12 +49,12 @@
         <div class="flex">
           <div class="flex align-items-center mx-2">
             <p-radioButton [inputId]="'esObitoSi'" name="esObito" [value]="true" formControlName="esObito"
-              (click)="esObito(true)"></p-radioButton>
+              (onClick)="esObito(true)"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'esObitoSi'">Si</label>
           </div>
           <div class="flex align-items-center mx-2">
             <p-radioButton [inputId]="'esObitoNo'" name="esObito" [value]="false" formControlName="esObito"
-              (click)="esObito(false)"></p-radioButton>
+              (onClick)="esObito(false)"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'esObitoNo'">No</label>
           </div>
         </div>
@@ -100,21 +100,22 @@
     <div class="row mb-2">
       <div class="col-md-4">
         <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span>:</label>
-        <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre" lettersOnly (keyup.space)="noEspacioPrincipal(0)">
+        <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre"
+               lettersOnly (keyup.space)="noEspacioPrincipal(0)" maxlength="30">
         <span class="campo-obligatorio"
           *ngIf="datosFinado.nombre?.errors?.required && (datosFinado.nombre?.dirty || datosFinado.nombre?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
-        <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido" lettersOnly (keyup.space)="noEspacioPrincipal(1)"
-          placeholder="Ingresa el primer apellido">
+        <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido" lettersOnly
+               (keyup.space)="noEspacioPrincipal(1)" placeholder="Ingresa el primer apellido" maxlength="20">
         <span class="campo-obligatorio"
           *ngIf="datosFinado.primerApellido?.errors?.required && (datosFinado.primerApellido?.dirty || datosFinado.primerApellido?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
-        <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido" lettersOnly (keyup.space)="noEspacioPrincipal(2)"
-          placeholder="Ingresa el segundo apellido">
+        <input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido" lettersOnly
+               (keyup.space)="noEspacioPrincipal(2)" placeholder="Ingresa el segundo apellido"  maxlength="20">
         <span class="campo-obligatorio"
           *ngIf="datosFinado.segundoApellido?.errors?.required && (datosFinado.segundoApellido?.dirty || datosFinado.segundoApellido?.touched)">Este campo es obligatorio *.</span>
       </div>
