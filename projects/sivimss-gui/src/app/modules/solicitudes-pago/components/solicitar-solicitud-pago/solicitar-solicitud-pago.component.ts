@@ -275,7 +275,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('fechaElaboracion')?.setValue(null);
     this.solicitudPagoForm.get('unidadSeleccionada')?.setValue(1);
     this.solicitudPagoForm.get('referenciaUnidad')?.setValue(null);
-    this.solicitudPagoForm.get('referenciaUnidad')?.clearValidators();
     this.solicitudPagoForm.get('solicitadoPor')?.setValue(null);
     this.solicitudPagoForm.get('solicitadoPor')?.clearValidators();
     this.solicitudPagoForm.get('nombreDestinatario')?.setValue(null);
@@ -283,7 +282,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('referenciaTD')?.setValue(null);
     this.solicitudPagoForm.get('referenciaTD')?.clearValidators();
     this.solicitudPagoForm.get('beneficiario')?.setValue(null);
-    this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
     this.solicitudPagoForm.get('concepto')?.setValue(null);
     this.solicitudPagoForm.get('concepto')?.clearValidators();
     this.solicitudPagoForm.get('importe')?.setValue(null);
