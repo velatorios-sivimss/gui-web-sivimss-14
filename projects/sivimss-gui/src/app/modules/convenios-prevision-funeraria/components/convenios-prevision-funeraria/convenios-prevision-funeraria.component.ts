@@ -29,6 +29,8 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import {
   EstatusConvenioPrevisionFunerariaComponent
 } from "../estatus-convenio-prevision-funeraria/estatus-convenio-prevision-funeraria.component";
+import { RenovarConvenioPfService } from '../../../renovar-convenio-pf/services/renovar-convenio-pf.service';
+import { ReporteAnexoDiez, ReporteConvenioPlanAnterior, ReporteConvenioPlanNuevo } from '../../../renovar-convenio-pf/models/convenio.interface';
 
 
 @Component({
@@ -47,6 +49,8 @@ export class ConsultaConveniosComponent implements OnInit {
   archivoRef!: DynamicDialogRef;
   estatusRef!: DynamicDialogRef;
   busquedaRealizada: boolean = false;
+  mostrarModalConfirmacion: boolean = false;
+  mensajeArchivoConfirmacion: string = "";
 
   numPaginaActual = {
     tablaConvenios: 0,
@@ -106,6 +110,7 @@ export class ConsultaConveniosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
+    private renovarConvenioPfService: RenovarConvenioPfService,
   ) { }
 
   ngOnInit(): void {
@@ -237,8 +242,6 @@ export class ConsultaConveniosComponent implements OnInit {
         }
       });
   }
-
-  agregarConvenio(): void { }
 
   devolverBeneficiarios(beneficiario: BeneficiarioInterface[]): number {
     return beneficiario.length;
@@ -500,61 +503,138 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   descargarPDF(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio de Previsión Funeraria" };
+    configuracionArchivo.ext = "pdf"
+
     this.cargadorService.activar();
     let datosBusqueda = this.obtenerObjetoParaFiltrado();
     datosBusqueda.ruta = "reportes/generales/ReporteTablaConsultaConvenios.jrxml";
     datosBusqueda.tipoReporte = "pdf";
-    this.consultaConvenioService.descargarPDF(datosBusqueda).pipe(
-      finalize(() => this.cargadorService.desactivar())).subscribe({
-        next: (respuesta: any) => {
-          const file = new Blob([respuesta], { type: 'application/pdf' });
-          const element = document.createElement('a');
-          element.href = URL.createObjectURL(file);
-          element.download = "Convenios previsión funeraria";
-          document.body.appendChild(element);
-          element.click();
-          window.open(element.href);
-          // this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
-          //   data: url,
-          //   header: "",
-          //   width: "940px",
-          // })
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+    this.descargaArchivosService.descargarArchivo(this.consultaConvenioService.descargarPDF(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
         }
-      }
-      );
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
   }
 
   descargarExcel(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio de Previsión Funeraria" };
+    configuracionArchivo.ext = "xlsx"
+
+    this.cargadorService.activar();
     let datosBusqueda = this.obtenerObjetoParaFiltrado();
     datosBusqueda.ruta = "reportes/generales/ReporteTablaConsultaConvenios.jrxml";
     datosBusqueda.tipoReporte = "xls";
-    this.consultaConvenioService.descargarExcel(datosBusqueda).pipe(
-      finalize(() => this.cargadorService.desactivar())).subscribe({
-        next: (respuesta: any) => {
-          const file = new Blob([respuesta], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' });
-          const url = window.URL.createObjectURL(file);
-          window.open(url);
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+    this.descargaArchivosService.descargarArchivo(this.consultaConvenioService.descargarExcel(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
         }
-      }
-      );
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
+  }
+
+
+
+  renovarConvenio(): void {
+    this.router.navigate(['/renovar-convenio-pf'], { relativeTo: this.activatedRoute });
   }
 
   modificarConvenio(): void {
-    // localStorage.setItem('datosConvenio', JSON.stringify({ convenio: this.convenioSeleccionado }));
     this.router.navigate(['./modificar-nuevo-convenio'], {
       queryParams: {
         folio: this.convenioSeleccionado.folioConvenio,
         fecha: this.convenioSeleccionado.fechaContratacion
       },
       relativeTo: this.activatedRoute
+    });
+  }
+
+  generarReporteConvenioNuevo(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio PF Nuevo" };
+    this.cargadorService.activar();
+    const datosBusqueda: ReporteConvenioPlanNuevo = {
+      folio: this.convenioSeleccionado.folioConvenio,
+      rutaNombreReporte: "reportes/plantilla/Convenio_PF_Nuevo_AnexoB.jrxml",
+      tipoReporte: "pdf"
+    }
+    this.descargaArchivosService.descargarArchivo(this.renovarConvenioPfService.reporteConvenioNuevo(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
+  }
+
+  generarReporteConvenioAnterior(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio PF Anterior" };
+    this.cargadorService.activar();
+    const datosBusqueda: ReporteConvenioPlanAnterior = {
+      idConvenio: this.convenioSeleccionado.idConvenio,
+      rutaNombreReporte: "reportes/plantilla/Convenio_PF_Anterior.jrxml",
+      tipoReporte: "pdf"
+    }
+    this.descargaArchivosService.descargarArchivo(this.renovarConvenioPfService.reporteConvenioAnterior(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
+  }
+
+  generarReporteAnexo(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Hoja de Afiliación" };
+    this.cargadorService.activar();
+    const datosBusqueda: ReporteAnexoDiez = {
+      idConvenio: this.convenioSeleccionado.idConvenio,
+      rutaNombreReporte: "reportes/plantilla/Anexo10_HojaAfiliacion.jrxml",
+      tipoReporte: "pdf"
+    }
+    this.descargaArchivosService.descargarArchivo(this.renovarConvenioPfService.reporteAnexo(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
     });
   }
 

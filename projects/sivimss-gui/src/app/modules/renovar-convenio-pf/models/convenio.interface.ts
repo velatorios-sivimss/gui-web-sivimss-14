@@ -174,13 +174,12 @@ export interface ReporteConvenioPlanNuevo {
 
 export interface ReporteConvenioPlanAnterior {
   idConvenio?: number;
-  costoRenovacion?: number;
   rutaNombreReporte?: string;
   tipoReporte?: string;
 }
 
 export interface ReporteAnexoDiez {
-  idConvenio?: string;
+  idConvenio?: number;
   rutaNombreReporte?: string;
   tipoReporte?: string;
 }

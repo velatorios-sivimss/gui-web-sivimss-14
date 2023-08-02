@@ -74,7 +74,7 @@ export class ConsultaConveniosService extends BaseService<HttpRespuesta<any>, an
     });
 
     return this._http.post<any>(this._base + `${this._funcionalidad}/reporte-tabla-convenios/generarDocumento/pdf`, body,
-      {headers, responseType: 'blob' as 'json'})
+      { headers, responseType: 'blob' as 'json' })
   }
 
   descargarExcel<T>(body: T): Observable<Blob> {
@@ -84,7 +84,7 @@ export class ConsultaConveniosService extends BaseService<HttpRespuesta<any>, an
     });
 
     return this._http.post<any>(this._base + `${this._funcionalidad}/reporte-tabla-convenios/generarDocumento/xls`, body,
-      {headers, responseType: 'blob' as 'json'})
+      { headers, responseType: 'blob' as 'json' })
   }
 
   descargarListadoPagaresPDF(): Observable<Blob> {
