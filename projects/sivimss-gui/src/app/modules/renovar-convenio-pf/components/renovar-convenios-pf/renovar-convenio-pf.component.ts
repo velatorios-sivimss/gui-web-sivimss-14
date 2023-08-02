@@ -148,6 +148,8 @@ export class RenovarConvenioPfComponent implements OnInit {
     this.renovarConvenioPfService.renovarPlan(this.datosRenovarPlan()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos) {
+          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(192);
+          this.alertaService.mostrar(TipoAlerta.Exito, msg);
           this.limpiar();
           this.indice = 0;
           this.confirmarModificarBeneficiarios = false;
