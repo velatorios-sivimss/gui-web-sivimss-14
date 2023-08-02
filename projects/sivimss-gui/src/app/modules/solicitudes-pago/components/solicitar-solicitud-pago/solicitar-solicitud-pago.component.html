@@ -37,7 +37,7 @@
             <span class="campo-obligatorio"
                   *ngIf="fc?.folioFiscal?.errors?.required && (fc?.folioFiscal?.dirty || fc?.folioFiscal?.touched)">Este campo es obligatorio *.</span>
           </div>
-          <button class="btn btn-md btn-primary" type="button" (click)="agregarFactura()" >Agregar</button>
+          <button class="btn btn-md btn-primary" type="button" (click)="agregarFactura()">Agregar</button>
         </div>
       </div>
       <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
@@ -70,7 +70,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-partida>
           <tr>
-            <td> {{partida.partidaPresupuestal}} </td>
+            <td> {{partida.partidaPres}} </td>
             <td> {{partida.cuentaContable}} </td>
             <td> {{partida.importeTotal}} </td>
           </tr>
@@ -78,7 +78,8 @@
       </p-table>
     </div>
     <div class="row mx-1 mb-3" *ngIf="[3,6].includes(tipoSolicitud)">
-      <p-table [value]="partidaPresupuestal" [pageLinks]="3">
+      <p-table [value]="partidaPresupuestal" [pageLinks]="3"
+               *ngIf="partidaPresupuestal.length > 0 || partidaPresupuestalSeleccionada">
         <ng-template pTemplate="header">
           <tr>
             <th scope="col" class="font-bold">Partida presupuestal</th>
@@ -87,9 +88,16 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-partida>
-          <tr>
-            <td> {{partida.partidaPresupuestal}} </td>
-            <td> {{partida.cuentasContables}} </td>
+          <tr *ngIf="partidaPresupuestalSeleccionada">
+            <td> {{partidaPresupuestalSeleccionada.partidaPres}} </td>
+            <td> {{partidaPresupuestalSeleccionada.cuentaContable}} </td>
+            <td>
+              <button class="btn btn-md btn-primary" type="button">Agregar</button>
+            </td>
+          </tr>
+          <tr *ngIf="partidaPresupuestal.length > 0">
+            <td> {{partida.partidaPres}} </td>
+            <td> {{partida.cuentaContable}} </td>
             <td>
               <button class="btn btn-md btn-primary" type="button">Agregar</button>
             </td>

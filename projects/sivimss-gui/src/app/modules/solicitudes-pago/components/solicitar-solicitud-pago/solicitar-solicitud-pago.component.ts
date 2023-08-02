@@ -56,6 +56,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   fechaActual: Date = new Date();
   partidaPresupuestal: PartidaPresupuestal [] = [];
+  partidaPresupuestalSeleccionada!: PartidaPresupuestal;
 
   unidades: TipoDropdown[] = [];
   beneficiarios: TipoDropdown[] = [];
@@ -245,6 +246,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('fechaInicial')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('fechaFinal')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('concepto')?.disable();
+    this.solicitudPagoForm.get('concepto')?.setValue('Reembolso del fondo fijo revolvente');
     this.solicitudPagoForm.get('importe')?.disable();
   }
 
