@@ -205,8 +205,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       fechaElabora: this.validarFecha(this.solicitudPagoForm.get('fechaElaboracion')?.value),
       impTotal: this.solicitudPagoForm.get('importe')?.value,
       observaciones: this.solicitudPagoForm.get('observaciones')?.value,
-      idProveedor: [1, 4].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
-      beneficiario: [2].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
+      idProveedor: [1, 4, 5].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
+      beneficiario: [2, 3].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
     }
   }
 
@@ -255,8 +255,11 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('fechaInicial')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('fechaFinal')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('importe')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('importe')?.disable();
     this.solicitudPagoForm.get('numeroContrato')?.setValidators([Validators.required]);
-    this.validacionesBasicas();
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('concepto')?.disable();
+    this.solicitudPagoForm.get('concepto')?.setValue('Pago de artículos funerarios comercializados.');
   }
 
   validacionesPagoContrato(): void {
@@ -318,7 +321,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     const folio = this.solicitudPagoForm.get("folioFiscal")?.value;
     const tipoSolicitud = this.solicitudPagoForm.get("tipoSolicitud")?.value;
     if (!folio) return;
-    if ([3].includes(tipoSolicitud)) {
+    if ([3, 5, 6].includes(tipoSolicitud)) {
       this.buscarFacturaAgregar(folio);
       return;
     }
@@ -395,5 +398,34 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   sumarImportes(): number {
     return this.partidaPresupuestal.reduce((suma: number, registro: PartidaPresupuestal) => +registro.importeTotal + suma, 0);
+  }
+
+  agregarSolicitudPago(): void {
+    const folio = this.solicitudPagoForm.get("folioFiscal")?.value;
+    if (!folio) return;
+    this.cargadorService.activar();
+    this.solicitudesPagoService.busquedaFolioFactura(folio).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
+        if (respuesta.datos.length === 0) {
+          const ERROR: string = 'El folio fiscal de la factura de gastos no existe.\n' +
+            'Verifica tu información.';
+          this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
+          return;
+        }
+        this.partidaPresupuestal = [...this.partidaPresupuestal, ...respuesta.datos];
+        this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
+        this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
+        const importe: number = this.sumarImportes();
+        this.solicitudPagoForm.get('importe')?.setValue(importe);
+        this.convertirImporte();
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 }

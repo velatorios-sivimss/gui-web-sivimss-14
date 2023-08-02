@@ -37,7 +37,7 @@
             <span class="campo-obligatorio"
                   *ngIf="fc?.folioFiscal?.errors?.required && (fc?.folioFiscal?.dirty || fc?.folioFiscal?.touched)">Este campo es obligatorio *.</span>
           </div>
-          <button class="btn btn-md btn-primary" type="button" (click)="agregarFactura()">Agregar</button>
+          <button class="btn btn-md btn-primary" type="button" (click)="agregarSolicitudPago()">Agregar</button>
         </div>
       </div>
       <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
@@ -77,7 +77,7 @@
         </ng-template>
       </p-table>
     </div>
-    <div class="row mx-1 mb-3" *ngIf="[3,6].includes(tipoSolicitud)">
+    <div class="row mx-1 mb-3" *ngIf="[3,5,6].includes(tipoSolicitud)">
       <p-table [value]="partidaPresupuestalSeleccionada" [pageLinks]="3"
                *ngIf="partidaPresupuestalSeleccionada.length > 0">
         <ng-template pTemplate="header">
@@ -224,14 +224,14 @@
         <span class="campo-obligatorio"
               *ngIf="fc?.referenciaTD?.errors?.required && (fc?.referenciaTD?.dirty || fc?.referenciaTD?.touched)">Este campo es obligatorio *.</span>
       </div>
-      <div class="col-6 mb-3" *ngIf="[2,3,5,6].includes(tipoSolicitud)">
+      <div class="col-6 mb-3" *ngIf="[2,3,6].includes(tipoSolicitud)">
         <label class="control-label" for="beneficiario">Beneficiario<span class="req">*</span>:</label>
         <input id="beneficiario" class="form-control" formControlName="beneficiario"
                placeholder="Ingresar beneficiario" [maxlength]="80">
         <span class="campo-obligatorio"
               *ngIf="fc?.beneficiario?.errors?.required && (fc?.beneficiario?.dirty || fc?.beneficiario?.touched)">Este campo es obligatorio *.</span>
       </div>
-      <div class="col-6 mb-3" *ngIf="[4].includes(tipoSolicitud)">
+      <div class="col-6 mb-3" *ngIf="[4,5].includes(tipoSolicitud)">
         <label class="control-label" for="beneficiarioCol6">Beneficiario<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="beneficiarioCol6" class="form-control" formControlName="beneficiario"
                     [options]="beneficiarios" placeholder="Ingresar beneficiario"
