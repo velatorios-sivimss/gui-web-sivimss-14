@@ -58,6 +58,14 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   infoPaqueteSeleccionado!: any;
   mensajeDatosExistentes: string = "";
 
+  /*Variable tipo lista para validar si ya se encuentra CURP/RFC en BD
+  * [0] = fda.curp.value
+  * [1] = fda.rfc.value
+  * [2] = fdc.curp.value
+  * [3] = fdc.rfc.value
+  * */
+  cajaValidacionDatosExistentes: any[] = [false,false,false,false]
+
   constructor(
     private alertaService: AlertaService,
     private breadcrumbService: BreadcrumbService,
@@ -158,7 +166,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       return;
     }
     this.limpiarFormulario(posicion);
-    this.validarUsuarioAfiliado(formularioEnUso[posicion].curp.value,"","");
+    this.validarUsuarioAfiliado(formularioEnUso[posicion].curp.value,"","",posicion);
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarCURP(formularioEnUso[posicion].curp.value).pipe(
       finalize(()=> this.cargadorService.desactivar())
@@ -188,6 +196,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
           }
           this.consultarCodigoPostal(posicion);
+          this.cambiarNacionalidad(posicion);
           return;
         }
 
@@ -219,6 +228,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         } else {
           formularioEnUso[posicion].nacionalidad.setValue(2);
         }
+        this.cambiarNacionalidad(posicion);
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
@@ -235,7 +245,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     }
     this.cargadorService.activar();
     this.limpiarFormulario(posicion);
-    this.validarUsuarioAfiliado("",formularioEnUso[posicion].rfc.value,"");
+    this.validarUsuarioAfiliado("",formularioEnUso[posicion].rfc.value,"",posicion);
     this.serviciosFunerariosService.consultarRFC(formularioEnUso[posicion].rfc.value).pipe(
       finalize(()=> this.cargadorService.desactivar())
     ).subscribe(
@@ -264,6 +274,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
           }
           this.consultarCodigoPostal(posicion);
+          this.cambiarNacionalidad(posicion);
           return;
         }
         const [anio, mes, dia] = respuesta.datos.identificacion[0].fNacimiento.split('-');
@@ -278,6 +289,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         } else {
           formularioEnUso[posicion].nacionalidad.setValue(2);
         }
+        this.cambiarNacionalidad(posicion);
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
@@ -285,14 +297,45 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     )
   }
 
-  validarUsuarioAfiliado(curp: string,rfc:string,nss:string): void{
+  validarUsuarioAfiliado(curp: string,rfc:string,nss:string,posicion:number): void{
+    let formularioEnUso = [this.fda,this.fdc];
     this.cargadorService.activar();
     this.existeDatoRegistrado = false;
+
+    if(posicion == 0){
+      if(curp ===""){
+        this.cajaValidacionDatosExistentes[1] = false;
+      }else if(rfc === ""){
+        this.cajaValidacionDatosExistentes[0] = false;
+      }
+    }else{
+      if(curp ===""){
+        this.cajaValidacionDatosExistentes[3] = false;
+      }else if(rfc === ""){
+        this.cajaValidacionDatosExistentes[2] = false;
+      }
+    }
+
     this.serviciosFunerariosService.validarAfiliado(curp,rfc,nss).pipe(
       finalize(()=>this.cargadorService.desactivar())
     ).subscribe({
       next:(respuesta: HttpRespuesta<any>) =>{
         if(respuesta.datos.length > 0){
+
+          if(posicion == 0){
+            if(curp ===""){
+              this.cajaValidacionDatosExistentes[1] = true;
+            }else if(rfc === ""){
+              this.cajaValidacionDatosExistentes[0] = true;
+            }
+          }else{
+            if(curp ===""){
+              this.cajaValidacionDatosExistentes[3] = true;
+            }else if(rfc === ""){
+              this.cajaValidacionDatosExistentes[2] = true;
+            }
+          }
+
           this.existeDatoRegistrado = true;
           this.confirmacionDatosExistentes = true;
           this.mensajeDatosExistentes = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje)
@@ -339,6 +382,24 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       finalize(()=> this.cargadorService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
+        const fecha = new Date(Number(anio) + '/' + Number(mes) + '/' + Number(dia));
+        formularios[posicion].curp.setValue(respuesta.datos.curp);
+        formularios[posicion].rfc.setValue(respuesta.datos.rfc)
+        formularios[posicion].nombre.setValue(respuesta.datos.nombre);
+        formularios[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
+        formularios[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido)
+        formularios[posicion].fechaNacimiento.setValue(fecha);
+        formularios[posicion].sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1)
+        if(respuesta.datos.pais == 119)formularios[posicion].nacionalidad.setValue(1);
+
+        if(respuesta.datos.rfc != null){
+          this.validarUsuarioAfiliado("",respuesta.datos.rfc,"",posicion);
+        }
+        if(respuesta.datos.curp != null){
+          this.validarUsuarioAfiliado(respuesta.datos.curp,"","",posicion);
+        }
+
       },
       (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
@@ -426,10 +487,18 @@ export class AltaServiciosFunerariosComponent implements OnInit {
 
   datosIguales(esIgual: boolean): void {
     if(!esIgual){
+      this.datosContratanteForm.enable();
+      this.fdc.municipio.disable();
+      this.fdc.estado.disable()
+      this.cajaValidacionDatosExistentes[2] = false;
+      this.cajaValidacionDatosExistentes[3] = false;
       this.datosContratanteForm.reset();
       this.fdc.datosIguales.setValue(false);
       return
     }
+    this.cajaValidacionDatosExistentes[2] = this.cajaValidacionDatosExistentes[0];
+    this.cajaValidacionDatosExistentes[3] = this.cajaValidacionDatosExistentes[1];
+    this.datosContratanteForm.disable();
     this.fdc.curp.setValue(this.fda.curp.value);
     this.fdc.rfc.setValue(this.fda.rfc.value);
     this.fdc.matricula.setValue(this.fda.matricula.value);
@@ -595,7 +664,11 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   validarBotonGuardar(): boolean {
-    if(this.datosAfiliadoForm.invalid || this.datosContratanteForm.invalid || this.existeDatoRegistrado){
+    // if(this.cajaValidacionDatosExistentes.includes(true)){
+    //   console.log(this.cajaValidacionDatosExistentes)
+    // }
+    if(this.datosAfiliadoForm.invalid || this.datosContratanteForm.invalid ||
+      this.cajaValidacionDatosExistentes.includes(true)){
       return true;
     }
     return false;
