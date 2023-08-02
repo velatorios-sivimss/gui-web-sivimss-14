@@ -3,11 +3,8 @@
         <div class="row mb-3">
             <div class="col-md-12">
                 <label class="control-label" for="motivoRechazo">Motivo de rechazo<span class="req">*</span>:</label>
-                <input id="motivoRechazo" class="form-control" formControlName="motivoRechazo"
-                       placeholder="Ingresa el motivo del rechazo"
-                       maxlength="50">
-                <span class="campo-obligatorio"
-                      *ngIf="ref.motivoRechazo?.errors?.required && (ref.motivoRechazo?.dirty || ref.motivoRechazo?.touched)">Este campo es obligatorio *.</span>
+                <input id="motivoRechazo" class="form-control" formControlName="motivoRechazo" placeholder="Ingresa el motivo del rechazo" maxlength="50">
+                <span class="campo-obligatorio" *ngIf="ref.motivoRechazo?.errors?.required && (ref.motivoRechazo?.dirty || ref.motivoRechazo?.touched)">Este campo es obligatorio *.</span>
             </div>
         </div>
         <div class="row mb-3">
@@ -25,8 +22,7 @@
 <div class="row mb-3" *ngIf="!mensajeConfirmacion">
     <div class="col-md-12 flex justify-content-end align-items-center">
         <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-        <button class="ml-6 btn btn-md btn-primary" [disabled]="rechazarPagoForm.invalid"
-                (click)="mensajeConfirmacion = !mensajeConfirmacion">
+        <button class="ml-6 btn btn-md btn-primary" [disabled]="rechazarPagoForm.invalid" (click)="mensajeConfirmacion = !mensajeConfirmacion">
             Confirmar Rechazo
         </button>
     </div>
@@ -36,8 +32,7 @@
         <button class="ml-4 btn btn-danger btn-md" (click)="mensajeConfirmacion = !mensajeConfirmacion">
             Cancelar
         </button>
-        <button class="ml-6 btn btn-md btn-primary"
-                (click)="confirmarRechazoPago();">
+        <button class="ml-6 btn btn-md btn-primary" (click)="confirmarRechazoPago();" *appValidaRol="['SOLICITAR_PAGO','MODIFICAR']">
             Aceptar
         </button>
     </div>

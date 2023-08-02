@@ -14,10 +14,8 @@
             <div class="col-md-12">
                 <label class="control-label" for="motivo">Motivo de cancelación<span
                         class="req">*</span>:</label>
-                <input class="form-control" formControlName="motivo" id="motivo"
-                       placeholder="Ingresa el motivo de la cancelación" maxlength="50">
-                <span class="campo-obligatorio"
-                      *ngIf="ref.motivo?.errors?.required && (ref.motivo?.dirty || ref.motivo?.touched)">Este campo es obligatorio *.</span>
+                <input class="form-control" formControlName="motivo" id="motivo" placeholder="Ingresa el motivo de la cancelación" maxlength="50">
+                <span class="campo-obligatorio" *ngIf="ref.motivo?.errors?.required && (ref.motivo?.dirty || ref.motivo?.touched)">Este campo es obligatorio *.</span>
             </div>
         </div>
         <div class="row mb-3">
@@ -33,8 +31,7 @@
 <div class="row mb-3" *ngIf="!mensajeConfirmacion">
     <div class="col-md-12 flex justify-content-end align-items-center">
         <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-        <button class="ml-6 btn btn-md btn-primary" [disabled]="cancelarPagoForm.invalid"
-                (click)="mensajeConfirmacion = !mensajeConfirmacion">
+        <button class="ml-6 btn btn-md btn-primary" [disabled]="cancelarPagoForm.invalid" (click)="mensajeConfirmacion = !mensajeConfirmacion">
             Confirmar cancelación
         </button>
     </div>
@@ -44,8 +41,7 @@
         <button class="ml-4 btn btn-danger btn-md" type="button" (click)="mensajeConfirmacion = !mensajeConfirmacion">
             Cancelar
         </button>
-        <button class="ml-6 btn btn-md btn-primary"
-                (click)="confirmarCancelacionPago();">
+        <button class="ml-6 btn btn-md btn-primary" (click)="confirmarCancelacionPago();" *appValidaRol="['SOLICITAR_PAGO','MODIFICAR']">
             Aceptar
         </button>
     </div>
