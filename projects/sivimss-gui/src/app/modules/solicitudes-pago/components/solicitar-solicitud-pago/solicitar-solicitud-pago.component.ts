@@ -367,6 +367,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.partidaPresupuestal = [...this.partidaPresupuestal, ...this.partidaPresupuestalSeleccionada];
     this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
     this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
+    this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
     const importe: number = this.sumarImportes();
     this.solicitudPagoForm.get('importe')?.setValue(importe);
     this.partidaPresupuestalSeleccionada = [];
@@ -380,6 +381,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.convertirImporte();
     if (this.partidaPresupuestal.length > 0) return;
     this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
   }
 
   limpiarImportes(): void {
