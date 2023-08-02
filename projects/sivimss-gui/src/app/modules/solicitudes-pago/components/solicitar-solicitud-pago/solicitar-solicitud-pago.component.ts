@@ -192,8 +192,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       cveFolioConsignados: null,
       cveFolioGastos: this.solicitudPagoForm.get('folioFiscal')?.value,
       ejercicioFiscal: null,
-      fechaFinal: this.solicitudPagoForm.get('fechaFinal')?.value,
-      fechaInicial: this.solicitudPagoForm.get('fechaInicial')?.value,
+      fechaFinal: this.validarFecha(this.solicitudPagoForm.get('fechaFinal')?.value),
+      fechaInicial: this.validarFecha(this.solicitudPagoForm.get('fechaInicial')?.value),
       idContratBenef: null,
       idEstatusSol: 1,
       idTipoSolic: tipoSolicitud,
@@ -205,7 +205,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       fechaElabora: this.validarFecha(this.solicitudPagoForm.get('fechaElaboracion')?.value),
       impTotal: this.solicitudPagoForm.get('importe')?.value,
       observaciones: this.solicitudPagoForm.get('observaciones')?.value,
-      idProveedor: [1].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
+      idProveedor: [1, 4].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
+      beneficiario: [2].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
     }
   }
 
