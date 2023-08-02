@@ -253,7 +253,6 @@ export class ActualizarPaquetesComponent implements OnInit {
         width: "920px"
       });
 
-      console.log("Se imprime objeto para que no marque error en Sonar: ", detalleRef);
 
       // detalleRef.onClose.subscribe((res: HttpResponse) => {
       //   if (res && res.respuesta === 'Ok') {

@@ -208,7 +208,6 @@ export class AdministrarProveedoresComponent implements OnInit {
   }
 
   abrirModalModificacionProveedor(): void {
-    console.log(this.proveedorSeleccionado);
     this.creacionRef = this.dialogService.open(ModificarProveedorComponent, {
       data: this.proveedorSeleccionado,
       header: "Modificar proveedor",
