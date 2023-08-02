@@ -265,6 +265,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   validacionesPagoContrato(): void {
     this.solicitudPagoForm.get('importe')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('numeroContrato')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('importe')?.disable();
     this.validacionesBasicas();
   }
 

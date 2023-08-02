@@ -224,14 +224,14 @@
         <span class="campo-obligatorio"
               *ngIf="fc?.referenciaTD?.errors?.required && (fc?.referenciaTD?.dirty || fc?.referenciaTD?.touched)">Este campo es obligatorio *.</span>
       </div>
-      <div class="col-6 mb-3" *ngIf="[2,3,6].includes(tipoSolicitud)">
+      <div class="col-6 mb-3" *ngIf="[2,3].includes(tipoSolicitud)">
         <label class="control-label" for="beneficiario">Beneficiario<span class="req">*</span>:</label>
         <input id="beneficiario" class="form-control" formControlName="beneficiario"
                placeholder="Ingresar beneficiario" [maxlength]="80">
         <span class="campo-obligatorio"
               *ngIf="fc?.beneficiario?.errors?.required && (fc?.beneficiario?.dirty || fc?.beneficiario?.touched)">Este campo es obligatorio *.</span>
       </div>
-      <div class="col-6 mb-3" *ngIf="[4,5].includes(tipoSolicitud)">
+      <div class="col-6 mb-3" *ngIf="[4,5,6].includes(tipoSolicitud)">
         <label class="control-label" for="beneficiarioCol6">Beneficiario<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="beneficiarioCol6" class="form-control" formControlName="beneficiario"
                     [options]="beneficiarios" placeholder="Ingresar beneficiario"
