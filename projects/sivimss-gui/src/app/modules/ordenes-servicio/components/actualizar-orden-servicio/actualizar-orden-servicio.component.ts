@@ -160,7 +160,6 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
   }
 
   caracteristicas(datos: any): void {
-    console.log(datos);
     let datosPaquete = datos.caracteristicasPresupuesto;
     let presupuesto = datosPaquete.caracteristicasDelPresupuesto;
 
@@ -299,7 +298,6 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
         salidaPresupuesto.push(datosPresupuesto);
       }
     }
-    console.log('salida presg', salidaPresupuesto);
 
     let datosEtapaCaracteristicas = {
       observaciones: observaciones,
@@ -312,14 +310,12 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
       elementosEliminadosPaquete: [],
       total: total,
     };
-    console.log(datosEtapaCaracteristicas);
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(
       datosEtapaCaracteristicas
     );
   }
 
   datosInformacionServicio(datos: any): void {
-    console.log(datos);
     let validaPromotor = false;
     let idPromotor = datos.informacionServicioVelacion.idPromotor ?? null;
     if (idPromotor != null && Number(idPromotor) > 0) {

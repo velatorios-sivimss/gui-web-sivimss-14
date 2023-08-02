@@ -211,7 +211,6 @@ export class PaquetesComponent implements OnInit {
     // De acuerdo a CU al menos un campo con información a buscar
     if (this.validarAlMenosUnCampoConValor(this.filtroForm)) {
       // TO DO llamada a servicio para realizar búsqueda
-      console.log('Datos a buscar', this.filtroForm.value);
     }
   }
 

@@ -304,7 +304,6 @@ export class InformacionServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.capillas = [];
@@ -355,7 +354,6 @@ export class InformacionServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -406,7 +404,6 @@ export class InformacionServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.promotores = [];
@@ -528,10 +525,6 @@ export class InformacionServicioComponent implements OnInit {
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(2);
     this.llenarDatos();
-    console.log(
-      'la fecha es' + moment(this.recoger.fecha.value).format('yyyy-MM-DD')
-    );
-    console.log('la hora es' + moment(this.recoger.hora.value).format('HH:mm'));
   }
 
   llenarDatos(): void {
@@ -561,7 +554,6 @@ export class InformacionServicioComponent implements OnInit {
       gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
       promotor: formulario.cortejo.promotor,
     };
-    console.log(datos);
     this.informacionServicio.fechaCortejo =
       formulario.cortejo.fecha == null
         ? null
@@ -638,7 +630,6 @@ export class InformacionServicioComponent implements OnInit {
 
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
-    console.log('ods final', this.altaODS);
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -674,7 +665,6 @@ export class InformacionServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];

@@ -503,8 +503,6 @@ export class ModalAgregarServicioComponent
     }
 
     this.overlayPanel.hide();
-    console.log('Coordenada origen:', this.coordOrigen);
-    console.log('Coordenada destino:', this.coordDestino);
   }
 
   calcularDistancia([lat1, lng1]: any, [lat2, lng2]: any) {
