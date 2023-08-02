@@ -56,7 +56,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   fechaActual: Date = new Date();
   partidaPresupuestal: PartidaPresupuestal [] = [];
-  partidaPresupuestalSeleccionada!: PartidaPresupuestal;
+  partidaPresupuestalSeleccionada: PartidaPresupuestal[] = [];
 
   unidades: TipoDropdown[] = [];
   beneficiarios: TipoDropdown[] = [];
@@ -134,9 +134,9 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   seleccionarBeneficiario(): void {
     const beneficiario = this.solicitudPagoForm.get('beneficiario')?.value;
     const registro = this.catalogoProveedores.find(r => r.idProveedor === beneficiario);
-    this.solicitudPagoForm.get('banco')?.patchValue(registro?.banco);
-    this.solicitudPagoForm.get('cuenta')?.patchValue(registro?.cuenta);
-    this.solicitudPagoForm.get('claveBancaria')?.patchValue(registro?.cveBancaria);
+    this.solicitudPagoForm.get('banco')?.setValue(registro?.banco);
+    this.solicitudPagoForm.get('cuenta')?.setValue(registro?.cuenta);
+    this.solicitudPagoForm.get('claveBancaria')?.setValue(registro?.cveBancaria);
   }
 
   crearSolicitudPago(): void {
@@ -170,8 +170,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   cambiarTipoUnidad(tipoUnidad: number): void {
-    this.solicitudPagoForm.get('referenciaUnidad')?.patchValue(null);
-    this.solicitudPagoForm.get('solicitadoPor')?.patchValue(null);
+    this.solicitudPagoForm.get('referenciaUnidad')?.setValue(null);
+    this.solicitudPagoForm.get('solicitadoPor')?.setValue(null);
     this.unidades = tipoUnidad === 1 ? this.recuperarUnidadesOperacionales() : this.recuperarUnidadesAdministrativas();
   }
 
@@ -216,10 +216,11 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   convertirImporte(): void {
-    this.solicitudPagoForm.get('importeLetra')?.patchValue('');
+    this.solicitudPagoForm.get('importeLetra')?.setValue('');
     const importe = this.solicitudPagoForm.get('importe')?.value;
+    if (!importe) return;
     const importeLetra: string = convertirNumeroPalabra(+importe);
-    this.solicitudPagoForm.get('importeLetra')?.patchValue(importeLetra[0].toUpperCase() + importeLetra.substring(1));
+    this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1));
   }
 
   seleccionarResponsable(): void {
@@ -227,11 +228,11 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     const idUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value;
     if (tipoUnidad === 1) {
       const responsable: string = this.catalogoUnidades.find(cu => cu.idSubdireccion === idUnidad)?.nomResponsable ?? '';
-      this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
+      this.solicitudPagoForm.get('solicitadoPor')?.setValue(responsable);
       return;
     }
     const responsable: string = this.catalogoVelatorios.find(cu => cu.idVelatorio === idUnidad)?.nomResponsable ?? '';
-    this.solicitudPagoForm.get('solicitadoPor')?.patchValue(responsable);
+    this.solicitudPagoForm.get('solicitadoPor')?.setValue(responsable);
   }
 
   validacionesBienesServiciosPorComprobar(): void {
@@ -305,6 +306,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('fechaFinal')?.clearValidators();
     this.unidades = this.recuperarUnidadesOperacionales();
     this.seleccionarValidaciones();
+    this.partidaPresupuestalSeleccionada = [];
+    this.partidaPresupuestal = [];
   }
 
   get fc() {
@@ -313,7 +316,12 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   buscarFactura(): void {
     const folio = this.solicitudPagoForm.get("folioFiscal")?.value;
+    const tipoSolicitud = this.solicitudPagoForm.get("tipoSolicitud")?.value;
     if (!folio) return;
+    if ([3].includes(tipoSolicitud)) {
+      this.buscarFacturaAgregar(folio);
+      return;
+    }
     this.cargadorService.activar();
     this.solicitudesPagoService.busquedaFolioFactura(folio).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -323,8 +331,30 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
           this.limpiarImportes();
         }
         this.partidaPresupuestal = respuesta.datos;
-        this.solicitudPagoForm.get('importe')?.patchValue(this.partidaPresupuestal[0].importeTotal);
+        this.solicitudPagoForm.get('importe')?.setValue(this.partidaPresupuestal[0].importeTotal);
         this.convertirImporte();
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
+
+  buscarFacturaAgregar(folio: string): void {
+    this.cargadorService.activar();
+    this.solicitudesPagoService.busquedaFolioFactura(folio).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos.length === 0) {
+          this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
+          const ERROR: string = 'El folio fiscal de la factura de gastos no existe.\n' +
+            'Verifica tu información.';
+          this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
+          return;
+        }
+        this.partidaPresupuestalSeleccionada = respuesta.datos;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -334,35 +364,30 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   agregarFactura(): void {
-    const folio = this.solicitudPagoForm.get("folioFiscal")?.value;
-    if (!folio) return;
-    this.cargadorService.activar();
-    this.solicitudesPagoService.busquedaFolioFactura(folio).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        if (respuesta.datos.length === 0) {
-          this.limpiarImportes();
-          return;
-        }
-        this.partidaPresupuestal = [...this.partidaPresupuestal, ...respuesta.datos];
-        const importe: number = this.sumarImportes();
-        this.solicitudPagoForm.get('importe')?.patchValue(importe);
-        this.convertirImporte();
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
-    });
+    this.partidaPresupuestal = [...this.partidaPresupuestal, ...this.partidaPresupuestalSeleccionada];
+    this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
+    this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
+    const importe: number = this.sumarImportes();
+    this.solicitudPagoForm.get('importe')?.setValue(importe);
+    this.partidaPresupuestalSeleccionada = [];
+    this.convertirImporte();
+  }
+
+  eliminarFacturas(id: number): void {
+    this.partidaPresupuestal.splice(id, 1);
+    const importe: number = this.sumarImportes();
+    this.solicitudPagoForm.get('importe')?.setValue(importe === 0 ? null : importe);
+    this.convertirImporte();
+    if (this.partidaPresupuestal.length > 0) return;
+    this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
   }
 
   limpiarImportes(): void {
     const ERROR: string = 'El folio fiscal de la factura de gastos no existe.\n' +
       'Verifica tu información.';
     this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
-    this.solicitudPagoForm.get('folioFiscal')?.patchValue(null);
-    this.solicitudPagoForm.get('importe')?.patchValue(null);
+    this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
+    this.solicitudPagoForm.get('importe')?.setValue(null);
     this.convertirImporte();
   }
 
