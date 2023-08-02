@@ -198,6 +198,8 @@ export class ModificarDatosFinadoComponent
   }
 
   inicializarForm(datosEtapaFinado: any): void {
+    const fechaActual = moment().format('YYYY-MM-DD');
+    const [anio,mes,dia] = fechaActual.split('-')
     let nacionalidad = 1;
     if (
       datosEtapaFinado.datosFinado.idEstado == null ||
@@ -210,6 +212,7 @@ export class ModificarDatosFinadoComponent
     // this.idPersona = datosEtapaFinado.datosFinado.
     let esObito: boolean;
     let extremidad: boolean;
+    let horaDeceso: any;
     if(typeof  datosEtapaFinado.datosFinado.esObito == "string"){
       datosEtapaFinado.datosFinado.esObito.includes("true") ? esObito = true : esObito = false;
     }else{
@@ -220,6 +223,10 @@ export class ModificarDatosFinadoComponent
       datosEtapaFinado.datosFinado.esParaExtremidad.includes("true")? extremidad = true : extremidad = false;
     }else{
       extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
+    }
+    if(typeof datosEtapaFinado.datosFinado.horaDeceso == "string"){
+      const [horas,minutos] = datosEtapaFinado.datosFinado.horaDeceso.split(':')
+      datosEtapaFinado.datosFinado.horaDeceso = new Date(+anio,+mes,+dia,+horas,+minutos)
     }
 
     let edad;
@@ -730,6 +737,8 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.nssCheck.disable();
       this.datosFinado.matriculaCheck.disable();
       this.removerValidaciones();
+      this.datosFinado.esParaExtremidad.disable();
+      this.datosFinado.esObito.disable();
     }
   }
 
@@ -742,10 +751,12 @@ export class ModificarDatosFinadoComponent
       this.desabilitarTodo();
       this.datosFinado.esObito.patchValue(null)
       this.datosFinado.esObito.disable();
+      this.datosFinado.esParaExtremidad.enable();
 
     } else if (idTipoOrden == 3) {
       this.desabilitarTodo();
       this.datosFinado.esObito.disable();
+      this.datosFinado.esParaExtremidad.disable();
     } else {
       this.habilitarTodo();
       this.datosFinado.velatorioPrevision.disable();
@@ -845,6 +856,7 @@ export class ModificarDatosFinadoComponent
   async habilitarTodo() {
     await Object.keys(this.datosFinado).forEach((key) => {
       const form = this.form.controls['datosFinado'] as FormGroup;
+      if(key.includes('noContrato'))return;
       form.controls[key].enable();
     });
 
@@ -986,7 +998,7 @@ export class ModificarDatosFinadoComponent
         nombre: formulario.datosFinado.nombre,
         primerApellido: formulario.datosFinado.primerApellido,
         segundoApellido: formulario.datosFinado.segundoApellido,
-        fechaNacimiento: formulario.datosFinado.fechaNacimiento,
+        fechaNacimiento: moment(formulario.datosFinado.fechaNacimiento).format('YYYY-MM-DD'),
         edad: formulario.datosFinado.edad,
         sexo: formulario.datosFinado.sexo,
         otroTipoSexo: formulario.datosFinado.otroTipoSexo,
@@ -1019,26 +1031,27 @@ export class ModificarDatosFinadoComponent
     this.finado.extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
     this.finado.esobito = datosEtapaFinado.datosFinado.esObito;
     this.finado.rfc = null;
-    this.finado.curp = null;
-    this.finado.nss = null;
-    this.finado.nomPersona = null;
-    this.finado.primerApellido = null;
-    this.finado.segundoApellido = null;
-    this.finado.sexo = null;
-    this.finado.otroSexo = null;
-    this.finado.fechaNac = null;
-    this.finado.idPais = null;
-    this.finado.idEstado = null;
-    this.finado.fechaDeceso = null;
-    this.finado.causaDeceso = null;
-    this.finado.lugarDeceso = null;
-    this.finado.hora = null;
-    this.finado.idClinicaAdscripcion = null;
-    this.finado.idUnidadProcedencia = null;
-    this.finado.procedenciaFinado = null;
-    this.finado.idTipoPension = null;
+    this.finado.curp = datosEtapaFinado.datosFinado.curp;
+    this.finado.nss = datosEtapaFinado.datosFinado.nss;
+    this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
+    this.finado.primerApellido = datosEtapaFinado.datosFinado.primerApellido;
+    this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
+    this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
+    this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
+    this.finado.fechaNac = datosEtapaFinado.datosFinado.fechaNacimiento;
+    this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+    this.finado.idEstado = datosEtapaFinado.direccion.estado;
+    this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion;
+    this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
+    this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
+    this.finado.hora = datosEtapaFinado.datosFinado.horaDeceso;
+    this.finado.idClinicaAdscripcion = datosEtapaFinado.datosFinado.clinicaAdscripcion;
+    this.finado.idUnidadProcedencia = datosEtapaFinado.datosFinado.unidadProcedencia;
+    this.finado.procedenciaFinado = datosEtapaFinado.datosFinado.procedenciaFinado;
+    this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
     this.finado.idContratoPrevision = this.idContratoPrevision;
     this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
+    this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
     // this.finado.cp = null;
     // this.finado.idPersona = null;
     this.altaODS.idContratantePf = this.idContratante;

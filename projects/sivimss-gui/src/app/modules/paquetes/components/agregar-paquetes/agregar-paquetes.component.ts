@@ -220,7 +220,6 @@ export class AgregarPaquetesComponent implements OnInit {
         header: "Agregar paquete",
         width: "920px"
       });
-      console.log("Se imprime objeto para que no marque error en Sonar", detalleRef);
     }
   }
 
