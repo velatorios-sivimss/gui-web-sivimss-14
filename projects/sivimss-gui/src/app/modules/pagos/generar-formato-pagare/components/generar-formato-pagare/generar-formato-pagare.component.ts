@@ -186,13 +186,13 @@ export class GenerarFormatoPagareComponent implements OnInit {
     const fechaInicial = this.filtroForm.get('fechaInicial')?.value !== null ? moment(this.filtroForm.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroForm.get('fechaFinal')?.value !== null ? moment(this.filtroForm.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
     const folio = this.filtroForm.get("folioODS")?.value !== null ? this.filtroForm.get("folioODS")?.value.label : null;
+    const nomContratante = this.filtroForm.get("nombreContratante")?.value !== null ? this.filtroForm.get("nombreContratante")?.value.label : null;
     return {
-      idOficina: this.filtroForm.get("oficina")?.value,
       idNivel: this.filtroForm.get("nivel")?.value,
       idDelegacion: this.filtroForm.get("delegacion")?.value,
       idVelatorio: this.filtroForm.get("velatorio")?.value,
       folioODS: folio,
-      nomContratante: this.filtroForm.get("nomContratante")?.value,
+      nomContratante: nomContratante,
       fecIniODS: fechaInicial,
       fecFinODS: fechaFinal,
       tipoReporte: tipoReporte
@@ -212,6 +212,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     const idDelegacion= this.filtroForm.get('delegacion')?.value;
     const idVelatorio = this.filtroForm.get('velatorio')?.value;
     this.foliosGenerados = [];
+    this.contratantesGenerados  = [];
     if (!idVelatorio) return;
     this.generarFormatoService.obtenerFoliosODS(idDelegacion,idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -299,7 +300,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
       },
     })
   }
-  ngAfterViewInit() {
-  }
+
 
 }
