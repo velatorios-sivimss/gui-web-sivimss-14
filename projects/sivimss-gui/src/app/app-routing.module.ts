@@ -116,7 +116,7 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'renovar-convenio-pf',
+    path: 'convenios-prevision-funeraria/renovar-convenio-pf',
     loadChildren: () => import('./modules/renovar-convenio-pf/renovar-convenio-pf.module').then(m => m.RenovarConvenioPfModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
@@ -126,7 +126,7 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'renovacion-extemporanea',
+    path: 'convenios-prevision-funeraria/renovacion-extemporanea',
     loadChildren: () => import('./modules/renovacion-extemporanea/renovacion-extemporanea.module').then(m => m.RenovacionExtemporaneaModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },

@@ -31,6 +31,7 @@ export class MenuSidebarComponent implements OnInit, OnDestroy {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.modulos$ = this.autenticacionService.obtenerModulosPorIdRol(usuario.idRol).pipe(
       map((respuesta: HttpRespuesta<Modulo[]>): Modulo[] => {
+        console.log(respuesta.datos);
         return this.agregarPropiedadesExtras(respuesta.datos);
       })
     );

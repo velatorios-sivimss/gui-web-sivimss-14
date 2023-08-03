@@ -19,16 +19,21 @@
 <div class="mb-3 mt-3 row text-center" *ngIf="mensajeConfirmacion">
     ¿Estás seguro de rechazar la solicitud de pago?
 </div>
-<section>
-    <div class="row mb-3">
-        <div class="col-md-12 flex justify-content-end align-items-center">
-            <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-            <button class="ml-6 btn btn-md btn-primary" [disabled]="rechazarPagoForm.invalid" *ngIf="!mensajeConfirmacion" (click)="mensajeConfirmacion = !mensajeConfirmacion">
-        Confirmar Rechazo
-      </button>
-            <button class="ml-6 btn btn-md btn-primary" *ngIf="mensajeConfirmacion" (click)="confirmarRechazoPago();">
-        Aceptar
-      </button>
-        </div>
+<div class="row mb-3" *ngIf="!mensajeConfirmacion">
+    <div class="col-md-12 flex justify-content-end align-items-center">
+        <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
+        <button class="ml-6 btn btn-md btn-primary" [disabled]="rechazarPagoForm.invalid" (click)="mensajeConfirmacion = !mensajeConfirmacion">
+            Confirmar Rechazo
+        </button>
     </div>
-</section>
+</div>
+<div class="row mb-3" *ngIf="mensajeConfirmacion">
+    <div class="col-md-12 flex justify-content-end align-items-center">
+        <button class="ml-4 btn btn-danger btn-md" (click)="mensajeConfirmacion = !mensajeConfirmacion">
+            Cancelar
+        </button>
+        <button class="ml-6 btn btn-md btn-primary" (click)="confirmarRechazoPago();" *appValidaRol="['SOLICITAR_PAGO','MODIFICAR']">
+            Aceptar
+        </button>
+    </div>
+</div>

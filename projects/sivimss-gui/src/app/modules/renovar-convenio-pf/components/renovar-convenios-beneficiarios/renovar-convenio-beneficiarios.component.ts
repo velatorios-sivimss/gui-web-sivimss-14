@@ -56,7 +56,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     });
     const respuesta = this.route.snapshot.data["respuesta"];
     this.busquedaListBeneficiarios = respuesta[this.POSICION_BENEFICIARIOS].datos;
-    this.beneficiarios = this.busquedaListBeneficiarios.beneficiarios || [];
+    this.beneficiarios = this.busquedaListBeneficiarios.beneficiarios ?? [];
     this.datosGenerales = respuesta[this.POSICION_DATOS_GRALES].datos[0];
     this.datosGenerales.fecha = moment().format('DD/MM/YYYY');
   }
@@ -89,6 +89,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos) {
             this.beneficiarios = respuesta?.datos?.beneficiarios;
+            this.busquedaListBeneficiarios.activos = respuesta?.datos?.activos;
             const found = this.beneficiarios.find((item: BusquedaBeneficiarios) => item.id === this.beneficiarioSeleccionado?.idBenef)
             if (this.beneficiarioSeleccionado?.idBenef && found) {
               this.obtenerDetalleBeneficiario(this.beneficiarioSeleccionado.idBenef);
@@ -137,7 +138,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información. Intenta nuevamente. del convenio con folio ${this.convenio.folio}`);
+          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información del convenio con folio ${this.convenio.folio}`);
         }
       });
     }
@@ -153,12 +154,12 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
             this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);
             this.consultarListadoBeneficiarios();
           } else {
-            this.alertaService.mostrar(TipoAlerta.Error, `Error al guardar la información. Intenta nuevamente. del convenio con folio ${this.convenio.folio}`);
+            this.alertaService.mostrar(TipoAlerta.Error, `Error al guardar la información del convenio con folio ${this.convenio.folio}`);
           }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información. Intenta nuevamente. del convenio con folio ${this.convenio.folio}`);
+          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información del convenio con folio ${this.convenio.folio}`);
         }
       });
     }
@@ -178,7 +179,7 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información. Intenta nuevamente. del convenio con folio ${this.convenio.folio}`);
+          this.mensajesSistemaService.mostrarMensajeError(error, `Error al guardar la información del convenio con folio ${this.convenio.folio}`);
         }
       });
     }

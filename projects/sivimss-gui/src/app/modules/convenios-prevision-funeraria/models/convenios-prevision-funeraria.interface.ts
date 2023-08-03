@@ -9,7 +9,8 @@ export interface ConveniosPrevisionFunerariaInterface {
   importeConvenio?: number;
   estatus?: number;
   estatusConvenio?: string;
-
+  estatusRenovacion?: number;
+  idConvenio?: number;
   numeroConvenioAnterior?: number;
   nombre?: string;
   razonSocial?: string;
