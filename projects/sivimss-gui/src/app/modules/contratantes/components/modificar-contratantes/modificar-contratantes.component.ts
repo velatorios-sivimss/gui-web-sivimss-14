@@ -90,7 +90,7 @@ export class ModificarContratantesComponent implements OnInit {
     let fechaNacimiento = contratante.fecNacimiento ? moment(contratante.fecNacimiento, 'DD-MM-YYYY').format('YYYY-MM-DD') : null;
     this.datosGeneralesForm = this.formBuilder.group({
       curp: [{ value: contratante.curp, disabled: true }, []],
-      rfc: [{ value: contratante.rfc, disabled: false }, [Validators.maxLength(13)]],
+      rfc: [{ value: contratante.rfc, disabled: false }, []],
       nss: [{ value: contratante.nss, disabled: true }, []],
       nombre: [{ value: contratante.nombre, disabled: false }, [Validators.maxLength(30)]],
       paterno: [{ value: contratante.paterno, disabled: false }, [Validators.maxLength(30)]],
@@ -166,6 +166,7 @@ export class ModificarContratantesComponent implements OnInit {
           const { datos } = respuesta;
           if (datos.length === 0 || !datos) {
             this.limpiarCP();
+            return;
           }
           const { estado, municipio } = datos[0];
           this.colonias = datos.map((d: ValorCP) => ({ value: d.colonia, label: d.colonia }));
@@ -197,12 +198,20 @@ export class ModificarContratantesComponent implements OnInit {
   }
 
   validarRfc() {
-    const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/);
-    if (!regex.test(this.dgf.rfc.value)) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C.no válido.');
-      this.dgf.rfc.setErrors({ 'incorrect': true });
-    } else {
+    if (this.dgf.rfc.value === '' || !this.dgf.rfc.value) {
       this.dgf.rfc.setErrors(null);
+      this.dgf.rfc.clearValidators();
+      this.dgf.rfc.updateValueAndValidity();
+    } else {
+      this.dgf.rfc.setValidators(Validators.maxLength(13));
+      this.dgf.rfc.updateValueAndValidity();
+      const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/);
+      if (!regex.test(this.dgf.rfc.value)) {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C.no válido.');
+        this.dgf.rfc.setErrors({ 'incorrect': true });
+      } else {
+        this.dgf.rfc.setErrors(null);
+      }
     }
   }
 
@@ -266,7 +275,7 @@ export class ModificarContratantesComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
           this.alertaService.mostrar(TipoAlerta.Exito,
-            `Modificado correctamente. ${this.contratanteModificado.nombre} ${this.contratanteModificado.paterno} ${this.contratanteModificado.materno}`);
+            `Modificado correctamente ${this.contratanteModificado.nombre} ${this.contratanteModificado.paterno} ${this.contratanteModificado.materno}`);
           this.vistaConfirmarCambio = false;
           this.ref.close({ estatus: true });
         } else {
