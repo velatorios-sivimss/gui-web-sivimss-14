@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { TipoDropdown } from "../../../models/tipo-dropdown";
 import { Observable, of } from "rxjs";
 import { AutenticacionService } from "../../../services/autenticacion.service";
@@ -70,16 +70,28 @@ export class RenovarConvenioPfService extends BaseService<HttpRespuesta<any>, an
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/renovar-plan`, renovarPlan);
   }
 
-  reporteConvenioNuevo(reporteConvenioPlanNuevo: ReporteConvenioPlanNuevo): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/generar-adenda-anual/generarDocumento/pdf`, reporteConvenioPlanNuevo);
+  reporteConvenioNuevo(reporteConvenioPlanNuevo: ReporteConvenioPlanNuevo): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-adenda-anual/generarDocumento/pdf`, reporteConvenioPlanNuevo, { headers, responseType: 'blob' as 'json' });
   }
 
-  reporteConvenioAnterior(reporteConvenioPlanAnterior: ReporteConvenioPlanAnterior): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/generar-convenio-anterior/generarDocumento/pdf`, reporteConvenioPlanAnterior);
+  reporteConvenioAnterior(reporteConvenioPlanAnterior: ReporteConvenioPlanAnterior): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-convenio-anterior/generarDocumento/pdf`, reporteConvenioPlanAnterior, { headers, responseType: 'blob' as 'json' });
   }
 
-  reporteAnexo(reporteAnexoDiez: ReporteAnexoDiez): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/generar-hoja-afiliacion/generarDocumento/pdf`, reporteAnexoDiez);
+  reporteAnexo(reporteAnexoDiez: ReporteAnexoDiez): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-hoja-afiliacion/generarDocumento/pdf`, reporteAnexoDiez, { headers, responseType: 'blob' as 'json' });
   }
 
   obtenerCatalogoParentesco(): Observable<TipoDropdown[]> {

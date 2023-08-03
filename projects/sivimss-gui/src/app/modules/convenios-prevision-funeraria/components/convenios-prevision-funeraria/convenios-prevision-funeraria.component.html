@@ -58,19 +58,8 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Convenios</h2>
-    <button type="button" class="btn btn-primary btn-lg" routerLink="./ingresar-nuevo-convenio"
-      (click)="agregarConvenio()">Agregar convenio</button>
-  </div>
-
-  <div class="flex justify-content-end mt-7">
-    <form [formGroup]="filtroSubForm">
-      <label class="label-header-input">Folio convenio</label>
-      <span class="p-input-icon-left">
-        <i class="pi pi-search icon-header-input"></i>
-        <input class="form-control" pInputText type="text" formControlName="folioConvenio" maxlength="12"
-          (blur)="realizarBusquedaSubForm('folioConvenio')" textOnly trimmer />
-      </span>
-    </form>
+    <button type="button" class="btn btn-primary btn-lg" routerLink="./ingresar-nuevo-convenio">Agregar
+      convenio</button>
   </div>
 
   <p-table #tablaConvenio appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [(selection)]="selectedConvenioPrevision"
@@ -79,14 +68,12 @@
     [(first)]="numPaginaActual.tablaConvenios" (onLazyLoad)="paginar($event)" [globalFilterFields]="['folioConvenio']">
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 4rem"></th>
+        <th id="radio" style="width: 4rem"></th>
         <th scope="col">Folio de convenio</th>
         <th scope="col">Fecha contratación</th>
         <th scope="col">Fecha vigencia inicio</th>
         <th scope="col">Fecha vigencia fin</th>
         <th scope="col">Beneficiarios</th>
-        <th scope="col">Situación</th>
-        <th scope="col">Factura</th>
         <th scope="col">Importe convenio</th>
         <th scope="col">Estatus del convenio</th>
       </tr>
@@ -101,8 +88,6 @@
         <td>{{convenioPrevision?.fechaVigenciaInicio}}</td>
         <td>{{convenioPrevision?.fechaVigenciaFin}}</td>
         <td>{{convenioPrevision?.cantidadBeneficiarios}}</td>
-        <td>{{convenioPrevision?.situacion}}</td>
-        <td>{{convenioPrevision?.factura === 0 ? 'Sin factura' : 'Con factura'}}</td>
         <td>{{convenioPrevision?.importeConvenio}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
@@ -148,14 +133,18 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Renovar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Renovar" (click)="renovarConvenio()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar" (click)="modificarConvenio()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('Activo')"
         (click)="cambiarEstatusConvenio()" titulo="Desactivar"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('Inactivo')"
         (click)="cambiarEstatusConvenio()" titulo="Activar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Convenio PF anterior"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Hoja de afiliación"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Convenio PF nuevo" (click)="generarReporteConvenioNuevo()"
+        *ngIf="convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Convenio PF anterior" (click)="generarReporteConvenioAnterior()"
+        *ngIf="convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Hoja de afiliación" (click)="generarReporteAnexo()"
+        *ngIf="convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
@@ -164,18 +153,6 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Datos del afiliado</ng-template>
       <ng-template pTemplate="content">
-
-        <div class="flex justify-content-end mb-5">
-          <form [formGroup]="filtroSubForm">
-            <label class="label-header-input">RFC</label>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search icon-header-input"></i>
-              <input class="form-control" pInputText type="text" formControlName="rfc" maxlength="13"
-                (blur)="realizarBusquedaSubForm('rfc')" textOnly trimmer />
-            </span>
-          </form>
-        </div>
-
         <p-table #tablaAfiliado [value]="datosAfiliado" [rows]="cantElementosPorPagina" [lazy]="true"
           [totalRecords]="totalElementos.tablaAfiliados" [pageLinks]="3" [(first)]="numPaginaActual.tablaAfiliados"
           [globalFilterFields]="['rfc']">
@@ -207,18 +184,6 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Vigencia del convenio</ng-template>
       <ng-template pTemplate="content">
-
-        <div class="flex justify-content-end mb-5">
-          <form [formGroup]="filtroSubForm">
-            <label class="label-header-input">Folio convenio</label>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search icon-header-input"></i>
-              <input class="form-control" pInputText type="text" formControlName="folioConvenioVigencia" maxlength="12"
-                (blur)="realizarBusquedaSubForm('folioConvenioVigencia')" textOnly trimmer />
-            </span>
-          </form>
-        </div>
-
         <p-table #tablaVigencia [value]="vigenciaConvenio" [rows]="cantElementosPorPagina" [lazy]="true"
           [totalRecords]="totalElementos.tablaVigenciaConvenio" [pageLinks]="3"
           [(first)]="numPaginaActual.tablaVigenciaConvenio" [globalFilterFields]="['folioConvenio']">
@@ -244,18 +209,6 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Factura del convenio</ng-template>
       <ng-template pTemplate="content">
-
-        <div class="flex justify-content-end mb-5">
-          <form [formGroup]="filtroSubForm">
-            <label class="label-header-input">Número de factura</label>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search icon-header-input"></i>
-              <input class="form-control" pInputText type="text" formControlName="numeroFactura" maxlength="12"
-                (blur)="realizarBusquedaSubForm('numeroFactura')" textOnly trimmer />
-            </span>
-          </form>
-        </div>
-
         <p-table #tablaFactura [value]="facturaConvenio" [rows]="cantElementosPorPagina" [lazy]="true"
           [totalRecords]="totalElementos.tablaFacturaConvenio" [pageLinks]="3"
           [(first)]="numPaginaActual.tablaFacturaConvenio" [globalFilterFields]="['factura']">
@@ -292,18 +245,6 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Beneficiarios</ng-template>
       <ng-template pTemplate="content">
-
-        <div class="flex justify-content-end mb-5">
-          <form [formGroup]="filtroSubForm">
-            <label class="label-header-input">Nombre beneficiario</label>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search icon-header-input"></i>
-              <input class="form-control" pInputText type="text" formControlName="nombreBeneficiario" maxlength="75"
-                (blur)="realizarBusquedaSubForm('nombreBeneficiario')" textOnly trimmer />
-            </span>
-          </form>
-        </div>
-
         <p-table #tablaBeneficiario [value]="beneficiario" [rows]="cantElementosPorPagina" [lazy]="true"
           [totalRecords]="totalElementos.tablaBeneficiario" [pageLinks]="3"
           [(first)]="numPaginaActual.tablaBeneficiario" [globalFilterFields]="['nombre']">
@@ -329,18 +270,6 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Siniestros</ng-template>
       <ng-template pTemplate="content">
-
-        <div class="flex justify-content-end mb-5">
-          <form [formGroup]="filtroSubForm">
-            <label class="label-header-input">Folio siniestro</label>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search icon-header-input"></i>
-              <input class="form-control" pInputText type="text" formControlName="folioSiniestro" maxlength="12"
-                (blur)="realizarBusquedaSubForm('folioSiniestro')" textOnly trimmer />
-            </span>
-          </form>
-        </div>
-
         <p-table #tablaSiniestro [value]="siniestro" [rows]="cantElementosPorPagina" [lazy]="true"
           [totalRecords]="totalElementos.tablaSiniestros" [pageLinks]="3" [(first)]="numPaginaActual.tablaSiniestros"
           [globalFilterFields]="['folioSinisestro']">
@@ -373,3 +302,17 @@
     </p-accordionTab>
   </p-accordion>
 </section>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

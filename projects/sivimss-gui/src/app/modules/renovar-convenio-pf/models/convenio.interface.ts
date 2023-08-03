@@ -102,6 +102,7 @@ export interface BeneficiarioSeleccionado {
   curp?: string;
   idPersona?: number | null;
   tipoConvenioDesc?: string | null;
+  activo?: boolean | null;
 }
 
 export interface BusquedaBeneficiarios {
@@ -110,11 +111,11 @@ export interface BusquedaBeneficiarios {
   nombreBeneficiario?: string;
 }
 export interface BusquedaListBeneficiarios {
-  idConvenio?: number;
-  idContratanteConvenioPf?: number;
-  beneficiarios?: BusquedaBeneficiarios[];
-  activos?: number;
-  tipoPlan?: number;
+  idConvenio: number;
+  idContratanteConvenioPf: number;
+  beneficiarios: BusquedaBeneficiarios[];
+  activos: number;
+  tipoPlan: number;
 }
 
 export interface BuscarConvenioPlanAnterior {
@@ -173,13 +174,12 @@ export interface ReporteConvenioPlanNuevo {
 
 export interface ReporteConvenioPlanAnterior {
   idConvenio?: number;
-  costoRenovacion?: number;
   rutaNombreReporte?: string;
   tipoReporte?: string;
 }
 
 export interface ReporteAnexoDiez {
-  idConvenio?: string;
+  idConvenio?: number;
   rutaNombreReporte?: string;
   tipoReporte?: string;
 }
