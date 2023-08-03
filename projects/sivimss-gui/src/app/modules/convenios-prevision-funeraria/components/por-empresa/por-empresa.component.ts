@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {finalize} from "rxjs/operators";
 
@@ -41,7 +41,10 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
   personasConvenio!: any;
 
   estado!: TipoDropdown[];
-  pais!: TipoDropdown[]
+  pais!: TipoDropdown[];
+  folioRedireccion: string = "";
+  fechaRedireccion: string = "";
+  confirmarRedireccionamiento: boolean = false;
 
 
   constructor(
@@ -51,6 +54,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
     private formBuilder: FormBuilder,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -100,6 +104,49 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
     if(!this.fe.rfc.value.match(PATRON_RFC)){
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
+
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultaCURPRFC(this.fe.rfc.value,"").pipe(
+      finalize(()=>  this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+
+        if(respuesta.datos[0].tieneConvenio>0){
+          if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+            this.folioRedireccion = respuesta.datos[0].folioConvenio;
+            this.fechaRedireccion = respuesta.datos[0].fecha;
+            this.confirmarRedireccionamiento = true
+            return
+          }else{
+            window.location.reload()
+          }
+        }
+      },
+      (error:HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+    // if(respuesta.datos[0].tieneConvenio>0){
+    //   if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+    //     this.folioRedireccion = respuesta.datos[0].folioConvenio;
+    //     this.fechaRedireccion = respuesta.datos[0].fecha;
+    //     this.confirmarRedireccionamiento = true
+    //     return
+    //   }else{
+    //     window.location.reload()
+    //   }
+    // }
+
     this.validarFormularioVacio();
   }
 
@@ -252,6 +299,18 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
     if(!formularios[posicion].value)return;
     formularios[posicion].setValue(
       formularios[posicion].value.toLowerCase()
+    )
+  }
+
+  redireccionarModificar(): void {
+    ///'03/08/2023'
+    this.router.navigate(['../convenios-prevision-funeraria/modificar-nuevo-convenio'],
+      {
+        queryParams:{
+          folio: this.folioRedireccion,
+          fecha: this.fechaRedireccion
+        }
+      }
     )
   }
 
