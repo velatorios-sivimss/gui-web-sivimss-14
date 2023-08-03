@@ -192,7 +192,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       idDelegacion: this.filtroForm.get("delegacion")?.value,
       idVelatorio: this.filtroForm.get("velatorio")?.value,
       folioODS: folio,
-      nomContratante: this.filtroForm.get("nomContratante")?.value,
+      nomContratante: this.filtroForm.get("nombreContratante")?.value,
       fecIniODS: fechaInicial,
       fecFinODS: fechaFinal,
       tipoReporte: tipoReporte
@@ -212,6 +212,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     const idDelegacion= this.filtroForm.get('delegacion')?.value;
     const idVelatorio = this.filtroForm.get('velatorio')?.value;
     this.foliosGenerados = [];
+    this.contratantesGenerados  = [];
     if (!idVelatorio) return;
     this.generarFormatoService.obtenerFoliosODS(idDelegacion,idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
