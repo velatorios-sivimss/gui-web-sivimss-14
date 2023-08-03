@@ -152,21 +152,29 @@ export const idsModulos: DatoModulo = {
         icono: 'default-icon.svg'
     },
     '29': {
-      ruta: '/registro-otorgamiento-servicios',
-      icono: 'default-icon.svg'
+        ruta: '/registro-otorgamiento-servicios',
+        icono: 'default-icon.svg'
     },
     '30': {
-      ruta: '',
-      icono: 'default-icon.svg'
+        ruta: '',
+        icono: 'default-icon.svg'
     },
     '31': {
-    ruta: '/servicios-funerarios/registrar-nuevo-plan-sfpa',
-    icono: 'default-icon.svg'
+        ruta: '/servicios-funerarios/registrar-nuevo-plan-sfpa',
+        icono: 'default-icon.svg'
     },
     '32': {
-      ruta: '/servicios-funerarios',
-      icono: 'default-icon.svg'
-    }
+        ruta: '/servicios-funerarios',
+        icono: 'default-icon.svg'
+    },
+    '129': {
+        ruta: 'convenios-prevision-funeraria/renovar-convenio-pf',
+        icono: 'default-icon.svg'
+    },
+    '71': {
+        ruta: 'convenios-prevision-funeraria/renovacion-extemporanea',
+        icono: 'default-icon.svg'
+    },
 };
 
 
