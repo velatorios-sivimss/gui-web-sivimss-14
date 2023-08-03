@@ -32,6 +32,9 @@ const routes: Routes = [
   {
     path:'modificar-pago/:id',
     component: ModificarServiciosFunerariosComponent,
+    resolve: {
+      respuesta: ServiciosFunerariosResolver
+    }
   },
   {
     path:'registrar-nuevo-plan-sfpa',
