@@ -20,13 +20,16 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {CatalogoPaquetes} from "../../models/catalogos.interface";
 import {AgregarPlanSFPA} from "../../models/servicios-funerarios.interface";
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 
 
 
 @Component({
   selector: 'app-alta-servicios-funerarios',
   templateUrl: './alta-servicios-funerarios.component.html',
-  styleUrls: ['./alta-servicios-funerarios.component.scss']
+  styleUrls: ['./alta-servicios-funerarios.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class AltaServiciosFunerariosComponent implements OnInit {
 
@@ -69,6 +72,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   constructor(
     private alertaService: AlertaService,
     private breadcrumbService: BreadcrumbService,
+    private descargaArchivosService: DescargaArchivosService,
     private formBuilder: FormBuilder,
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
@@ -555,19 +559,29 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   guardar(): void {
-    this.confirmarGuardado = false;
+    const configuracionArchivo: OpcionesArchivos = {};
     let objetoGuardar:AgregarPlanSFPA = this.generarObjetoPlanSFPA();
+    this.confirmarGuardado = false;
     this.cargadorService.activar();
     this.serviciosFunerariosService.insertarPlanSFPA(objetoGuardar).pipe(
       finalize(()=>this.cargadorService.desactivar())
     ).subscribe({
       next:(respuesta: HttpRespuesta<any>) => {
         this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        window.open(url)
+        this.router.navigate(['../servicios-funerarios']);
       },
       error:(error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
-    })
+    }
+    )
   }
 
   generarObjetoPlanSFPA(): AgregarPlanSFPA {
