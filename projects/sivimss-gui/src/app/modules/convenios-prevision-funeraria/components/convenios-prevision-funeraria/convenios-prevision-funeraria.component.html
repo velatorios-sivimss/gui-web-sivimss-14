@@ -140,11 +140,11 @@
       <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('Inactivo')"
         (click)="cambiarEstatusConvenio()" titulo="Activar"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ver Convenio PF nuevo" (click)="generarReporteConvenioNuevo()"
-        *ngIf="convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+        *ngIf="convenioSeleccionado.tipoPlan === 1 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ver Convenio PF anterior" (click)="generarReporteConvenioAnterior()"
-        *ngIf="convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+        *ngIf="convenioSeleccionado.tipoPlan === 2 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ver Hoja de afiliación" (click)="generarReporteAnexo()"
-        *ngIf="convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+        *ngIf="convenioSeleccionado.tipoPlan === 2 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

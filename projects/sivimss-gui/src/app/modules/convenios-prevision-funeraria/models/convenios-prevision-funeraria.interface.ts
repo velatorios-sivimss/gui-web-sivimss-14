@@ -11,6 +11,7 @@ export interface ConveniosPrevisionFunerariaInterface {
   estatusConvenio?: string;
   estatusRenovacion?: number;
   idConvenio?: number;
+  tipoPlan?: number;
   numeroConvenioAnterior?: number;
   nombre?: string;
   razonSocial?: string;
@@ -28,8 +29,6 @@ export interface ConveniosPrevisionFunerariaInterface {
   nExterior?: string;
   telefono?: number;
   correoElectronico?: string;
-
-
   promotor?: number;
   matricula?: string;
   primerApellido?: string;
