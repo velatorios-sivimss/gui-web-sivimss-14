@@ -4,12 +4,11 @@ import { UsuarioContratante, ConfirmarContratante } from "../../models/usuario-c
 import { OverlayPanel } from "primeng/overlaypanel";
 import { ModificarContratantesComponent } from "../modificar-contratantes/modificar-contratantes.component";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { UsuariosComponent } from "../../../usuarios/components/usuarios/usuarios.component";
 import { ALERTA_ESTATUS, MENSAJE_CONFIRMACION } from "../../constants/alertas";
 import { ContratantesService } from '../../services/contratantes.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { TIPO_SEXO, CATALOGO_SEXO } from '../../constants/catalogos-complementarios';
+import { TIPO_SEXO } from '../../constants/catalogos-complementarios';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
@@ -61,7 +60,7 @@ export class DetalleContratantesComponent implements OnInit {
     }
     if (this.origen == "modificar") {      
       this.mensaje = this.tipoMensaje[2];
-      this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo || 1];
+      this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo ?? 1];
     }
   }
 
@@ -71,7 +70,7 @@ export class DetalleContratantesComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.codigo === 200) {
             this.contratante = respuesta?.datos[0] || [];
-            this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo || 1];
+            this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo ?? 1];
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -134,7 +133,6 @@ export class DetalleContratantesComponent implements OnInit {
     this.modificarRef.onClose.subscribe((resultado: ConfirmarContratante) => {
       document.body.style.overflow = 'scroll';
       if (resultado.estatus) {
-        this.alertaService.mostrar(TipoAlerta.Exito, this.alertaEstatus[2]);
         this.ref.close({ estatus: true });
       }
     });
