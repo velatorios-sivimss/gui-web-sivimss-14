@@ -4,7 +4,7 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {AgregarConvenioPFService} from "../../services/agregar-convenio-pf.service";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from "../../../../utils/constantes";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {BeneficiarioInterface} from "../../models/beneficiario.interface";
@@ -62,9 +62,12 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
   pais!: TipoDropdown[];
   tipoPaquete!: TipoDropdown[];
   enfermedadPrexistente: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
+  folioRedireccion: string = "";
+  fechaRedireccion: string = "";
 
   otroTipoEnferemdad: boolean = false;
   mostrarModalConfirmacion: boolean = false;
+  confirmarRedireccionamiento: boolean = false;
 
   constructor(
     private alertaService: AlertaService,
@@ -73,7 +76,8 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     private formBuilder: FormBuilder,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -209,6 +213,16 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.fp.idPersona.setValue(respuesta.datos.idPersona)
           return
         }
+        if(respuesta.datos[0].tieneConvenio>0){
+          if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+            this.folioRedireccion = respuesta.datos[0].folioConvenio;
+            this.fechaRedireccion = respuesta.datos[0].fecha;
+            this.confirmarRedireccionamiento = true
+            return
+          }else{
+            window.location.reload()
+          }
+        }
         this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
         this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
         this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
@@ -242,29 +256,40 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
       return;
     }
 
-    /*this.loaderService.activar();
+    this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC(this.fp.rfc.value,"").pipe(
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.mensaje === ""){
-          this.fp.nombre.setValue(respuesta.datos.nomPersona);
-          this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
-          this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
-          this.fp.idPersona.setValue(respuesta.datos.idPersona)
-          return
+
+        if(respuesta.datos[0].tieneConvenio>0){
+          if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+            this.folioRedireccion = respuesta.datos[0].folioConvenio;
+            this.fechaRedireccion = respuesta.datos[0].fecha;
+            this.confirmarRedireccionamiento = true
+            return
+          }else{
+            window.location.reload()
+          }
         }
-        this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        this.fp.curp.setValue(respuesta.datos[0].curp)
-        this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-        this.fp.telefono.setValue(respuesta.datos[0].telefono)
+        // if(respuesta.mensaje === ""){
+        //   this.fp.nombre.setValue(respuesta.datos.nomPersona);
+        //   this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
+        //   this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
+        //   this.fp.idPersona.setValue(respuesta.datos.idPersona)
+        //   return
+        // }
+        // this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
+        // this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
+        // this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+        // this.fp.curp.setValue(respuesta.datos[0].curp)
+        // this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
+        // this.fp.telefono.setValue(respuesta.datos[0].telefono)
       },
       (error:HttpErrorResponse) => {
         console.log(error);
       }
-    )*/
+    )
   }
 
   consultarMatricula(): void {
@@ -472,6 +497,18 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     if(!formularios[posicion].value)return;
     formularios[posicion].setValue(
       formularios[posicion].value.toLowerCase()
+    )
+  }
+
+  redireccionarModificar(): void {
+    ///'03/08/2023'
+    this.router.navigate(['../convenios-prevision-funeraria/modificar-nuevo-convenio'],
+      {
+        queryParams:{
+          folio: this.folioRedireccion,
+          fecha: this.fechaRedireccion
+        }
+      }
     )
   }
 

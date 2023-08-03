@@ -140,3 +140,18 @@
 
 <!--  </app-agregar-persona-convenios-prevision-funeraria>-->
 <!--</ng-container>-->
+
+<p-dialog [(visible)]="confirmarRedireccionamiento" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" [showHeader]="true" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">La CURP/RFC que deseas ingresar ya se encuentra registrada en el sistema. </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="redireccionarModificar()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
