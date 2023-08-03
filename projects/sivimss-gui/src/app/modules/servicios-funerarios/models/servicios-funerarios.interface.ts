@@ -65,7 +65,7 @@ export interface Persona {
   telefono: string | null,
   telefonoFijo: string | null,
   correo: string | null,
-  tipoPersona: string | null,
+  tipoPersona?: string | null,
   ine: string | null,
   cp: CodigoPostal | null
 }

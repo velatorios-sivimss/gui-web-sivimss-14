@@ -553,7 +553,7 @@ export class ConsultaConveniosComponent implements OnInit {
 
 
   renovarConvenio(): void {
-    this.router.navigate(['/renovar-convenio-pf'], { relativeTo: this.activatedRoute });
+    this.router.navigate(['/convenios-prevision-funeraria/renovar-convenio-pf'], { relativeTo: this.activatedRoute });
   }
 
   modificarConvenio(): void {
