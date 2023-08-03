@@ -1,5 +1,4 @@
 export interface FiltrosFormatoPagare {
-  "idOficina": number,
   "idNivel": number,
   "idDelegacion": number,
   "idVelatorio": number,
