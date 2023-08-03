@@ -21,12 +21,12 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
-import {CATALOGOS_DUMMIES, CATALOGO_NIVEL} from '../../../articulos/constants/dummies';
+import {CATALOGOS_DUMMIES} from '../../../articulos/constants/dummies';
 import {SolicitarSolicitudPagoComponent} from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
 import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
 import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
-import { AprobarSolicitudPagoComponent } from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
+import {AprobarSolicitudPagoComponent} from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
@@ -52,6 +52,7 @@ export class SolicitudesPagoComponent implements OnInit {
   creacionRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
   cancelarRef!: DynamicDialogRef;
+  rechazarRef!: DynamicDialogRef;
   aceptarRef!: DynamicDialogRef;
 
   catalogoEjercicios: TipoDropdown[] = [];
@@ -99,9 +100,9 @@ export class SolicitudesPagoComponent implements OnInit {
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormSolicitudesPago = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
+      nivel: [{value: +usuario?.idOficina, disabled: true}],
+      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario.idOficina > 1}],
+      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
       ejercFiscal: [{value: null, disabled: false}],
@@ -159,7 +160,7 @@ export class SolicitudesPagoComponent implements OnInit {
     this.cancelarRef = this.dialogService.open(
       VerDetalleSolicitudPagoComponent,
       {
-        header: 'Detalle de la solicitud de pago',
+        header: 'Solicitud de comprobación de bienes y servicios',
         width: '880px',
         data: solicitudPagoSeleccionado.idSolicitud
       },
@@ -173,7 +174,8 @@ export class SolicitudesPagoComponent implements OnInit {
         header: 'Generar solicitud de pago',
         width: MAX_WIDTH,
       },
-    )
+    );
+    this.creacionRef.onClose.subscribe(() => this.limpiar())
   }
 
   abrirModalCancelarSolicitudPago(): void {
@@ -184,7 +186,8 @@ export class SolicitudesPagoComponent implements OnInit {
         width: '880px',
         data: this.solicitudPagoSeleccionado
       },
-    )
+    );
+    this.cancelarRef.onClose.subscribe(() => this.limpiar())
   }
 
   abrirModalAprobarSolicitudPago(): void {
@@ -195,20 +198,21 @@ export class SolicitudesPagoComponent implements OnInit {
         width: '880px',
         data: this.solicitudPagoSeleccionado
       },
-    )
+    );
   }
 
+
   abrirModalRechazarSolicitudPago(): void {
-    this.cancelarRef = this.dialogService.open(
+    this.rechazarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
       {
         header: 'Rechazar solicitud de pago',
         width: '880px',
         data: this.solicitudPagoSeleccionado
       },
-    )
+    );
+    this.rechazarRef.onClose.subscribe(() => this.limpiar())
   }
-
 
   paginarConFiltros(): void {
     const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
@@ -332,6 +336,21 @@ export class SolicitudesPagoComponent implements OnInit {
 
   get f() {
     return this.filtroFormSolicitudesPago?.controls;
+  }
+
+  ngOnDestroy(): void {
+    if (this.rechazarRef) {
+      this.rechazarRef.destroy();
+    }
+    if (this.creacionRef) {
+      this.creacionRef.destroy();
+    }
+    if (this.cancelarRef) {
+      this.cancelarRef.destroy();
+    }
+    if (this.aceptarRef) {
+      this.aceptarRef.destroy();
+    }
   }
 
 }
