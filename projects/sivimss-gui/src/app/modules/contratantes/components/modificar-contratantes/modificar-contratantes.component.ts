@@ -96,7 +96,7 @@ export class ModificarContratantesComponent implements OnInit {
       paterno: [{ value: contratante.paterno, disabled: false }, [Validators.maxLength(30)]],
       materno: [{ value: contratante.materno, disabled: false }, [Validators.maxLength(30)]],
       numSexo: [{ value: this.contratante.numSexo, disabled: false }, []],
-      otroSexo: [{ value: this.contratante.sexo, disabled: false }, [Validators.maxLength(15)]],
+      otroSexo: [{ value: this.contratante.otroSexo, disabled: false }, [Validators.maxLength(15)]],
       fecNacimiento: [{ value: fechaNacimiento ? new Date(this.diferenciaUTC(fechaNacimiento)) : null, disabled: false }, []],
       nacionalidad: [{
         value: String(contratante.nacionalidad).toLocaleLowerCase() === 'mexicana' ? 1 : 2,

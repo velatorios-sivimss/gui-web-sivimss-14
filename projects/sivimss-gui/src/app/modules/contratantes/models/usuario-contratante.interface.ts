@@ -55,8 +55,9 @@ export interface ValorCP {
 }
 
 export interface TipoCatalogo {
-  idCatalogo: number,
-  cp?: number
+  idCatalogo?: number,
+  cp?: number,
+  nombre?: string,
 }
 
 export interface BuscarContratantes {

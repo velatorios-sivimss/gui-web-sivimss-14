@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { BuscarContratantes, BusquedaContratante, ConfirmarContratante, ReporteTabla, UsuarioContratante } from "../../models/usuario-contratante.interface";
+import { BuscarContratantes, BusquedaContratante, ConfirmarContratante, ReporteTabla, TipoCatalogo, UsuarioContratante } from "../../models/usuario-contratante.interface";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { ConfirmationService, LazyLoadEvent } from "primeng/api";
 import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
@@ -126,9 +126,8 @@ export class ContratantesComponent implements OnInit {
 
   datosContratantesFiltros(): BuscarContratantes {
     let nomContratante: string | null = null;
-    let idContratante: number | null = null;
     if (typeof this.ff.nombre?.value === 'object') {
-      idContratante = +this.ff.nombre?.value?.value;
+      nomContratante = this.ff.nombre?.value?.label;
     } else {
       nomContratante = this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue();
     }
@@ -136,7 +135,6 @@ export class ContratantesComponent implements OnInit {
       curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
       nss: this.ff.nss.getRawValue() === '' ? null : this.ff.nss.getRawValue(),
       nomContratante,
-      id: idContratante,
       estatus: this.ff.estatus.getRawValue() === '' ? null : this.ff.estatus.getRawValue()
     }
   }
@@ -219,9 +217,8 @@ export class ContratantesComponent implements OnInit {
 
   reporteTabla(tipoReporte: string): ReporteTabla {
     let nomContratante: string | null = null;
-    let idContratante: number | null = null;
     if (typeof this.ff.nombre?.value === 'object') {
-      idContratante = +this.ff.nombre?.value?.value;
+      nomContratante = this.ff.nombre?.value?.label;
     } else {
       nomContratante = this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue();
     }
@@ -229,7 +226,6 @@ export class ContratantesComponent implements OnInit {
       curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
       nss: this.ff.nss.getRawValue() === '' ? null : this.ff.nss.getRawValue(),
       nomContratante,
-      id: idContratante,
       estatus: this.ff.estatus.getRawValue() === '' ? null : this.ff.estatus.getRawValue(),
       rutaNombreReporte: 'reportes/generales/ReporteCatUsrContra.jrxml',
       tipoReporte,
@@ -245,19 +241,13 @@ export class ContratantesComponent implements OnInit {
   }
 
   filtrarContratantes() {
-    let query = this.obtenerNombreContratante();
-    if (query?.length >= 3) {
-      let obj = {
-        curp: null,
-        nss: null,
-        nomContratante: query,
-        estatus: null,
-      }
-      this.contratantesService.obtenerNombreContratantes(obj).subscribe({
+    let nombre = this.obtenerNombreContratante();
+    if (nombre?.length >= 3) {
+      this.contratantesService.consultarCatalogo({ nombre }).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           let filtrado: TipoDropdown[] = [];
-          if (respuesta.datos && respuesta.datos.content.length > 0) {
-            respuesta.datos.content.forEach((e: any) => {
+          if (respuesta.datos && respuesta.datos.length > 0) {
+            respuesta.datos.forEach((e: any) => {
               filtrado.push({
                 label: e.nomContratante,
                 value: e.idContratante,
