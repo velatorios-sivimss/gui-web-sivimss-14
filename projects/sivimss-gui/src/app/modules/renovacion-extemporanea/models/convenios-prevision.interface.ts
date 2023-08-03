@@ -34,7 +34,7 @@ export interface GenerarRenovacionConvenio {
 export interface FiltrosConveniosPrevision {
   idDelegacion?: number | null;
   idVelatorio?: number | null;
-  numConvenio?: string | null;
+  numConvenio?: number | null;
   folio?: string | null;
   rfc?: string | null;
 }
