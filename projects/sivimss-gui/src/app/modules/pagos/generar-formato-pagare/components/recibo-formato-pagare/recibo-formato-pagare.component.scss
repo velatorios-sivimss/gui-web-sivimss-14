@@ -103,6 +103,7 @@ hr.solid {
     margin-bottom: 0px;
     margin-top: 30px;
     margin-left: -200px;
+    margin-right: 30px;
     transition: 0.3s;
     float: right;
     width: 300px;
@@ -171,4 +172,17 @@ hr.solid {
     background-color: #FFFFFF;
     border: 1px solid #235B4E;
     width: 254px;
+}
+
+.input-info {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 15px;
 }
