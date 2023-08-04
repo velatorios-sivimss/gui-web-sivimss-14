@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
@@ -66,7 +66,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   mensajeConfirmacion: boolean = false;
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
     public config: DynamicDialogConfig,
     private cargadorService: LoaderService,
@@ -359,6 +358,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
           return;
         }
         this.partidaPresupuestalSeleccionada = respuesta.datos;
+        this.partidaPresupuestalSeleccionada[0].idPartida = folio;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -368,6 +368,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   agregarFactura(): void {
+    if (this.validarFacturaRepetida()) return;
     this.partidaPresupuestal = [...this.partidaPresupuestal, ...this.partidaPresupuestalSeleccionada];
     this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
     this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
@@ -376,6 +377,19 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('importe')?.setValue(importe);
     this.partidaPresupuestalSeleccionada = [];
     this.convertirImporte();
+  }
+
+  validarFacturaRepetida(): boolean {
+    const folios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
+    const idFolio: string = this.partidaPresupuestalSeleccionada[0].idPartida.toString();
+    console.log(folios, idFolio)
+    if (!folios.includes(idFolio)) return false;
+    this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
+    this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
+    this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
+    this.partidaPresupuestalSeleccionada = [];
+    this.alertaService.mostrar(TipoAlerta.Info, 'El folio introducido ya se encuentra agregado');
+    return true;
   }
 
   eliminarFacturas(id: number): void {
