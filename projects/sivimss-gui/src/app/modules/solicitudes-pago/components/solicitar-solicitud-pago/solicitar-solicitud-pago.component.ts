@@ -63,6 +63,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   catalogoUnidades: RegistroUnidadOperativa[] = [];
   catalogoProveedores: RegistroProveedor[] = [];
   mensajeConfirmacion: boolean = false;
+  importeOriginal: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -443,5 +444,10 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+
+  reAjustarImporte(): void {
+    this.solicitudPagoForm.get('importe')?.setValue(this.partidaPresupuestal[0].importeTotal);
+    this.convertirImporte();
   }
 }
