@@ -274,8 +274,7 @@ export class ModificarContratantesComponent implements OnInit {
     this.contratantesService.actualizar(this.datosActualizar()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
-          this.alertaService.mostrar(TipoAlerta.Exito,
-            `Modificado correctamente ${this.contratanteModificado.nombre} ${this.contratanteModificado.paterno} ${this.contratanteModificado.materno}`);
+          this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente contratante`);
           this.vistaConfirmarCambio = false;
           this.ref.close({ estatus: true });
         } else {
