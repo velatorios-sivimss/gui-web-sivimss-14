@@ -36,7 +36,6 @@ interface RegistroProveedor {
   idProveedor: number
 }
 
-
 @Component({
   selector: 'app-solicitar-solicitud-pago',
   templateUrl: './solicitar-solicitud-pago.component.html',
@@ -379,10 +378,9 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.convertirImporte();
   }
 
-  validarFacturaRepetida(): boolean {
+  validarFacturaRepetida(idFolio?: string): boolean {
     const folios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
-    const idFolio: string = this.partidaPresupuestalSeleccionada[0].idPartida.toString();
-    console.log(folios, idFolio)
+    if (!idFolio) idFolio = this.partidaPresupuestalSeleccionada[0].idPartida.toString();
     if (!folios.includes(idFolio)) return false;
     this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
     this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
@@ -430,7 +428,10 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
           this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
           return;
         }
-        this.partidaPresupuestal = [...this.partidaPresupuestal, ...respuesta.datos];
+        const partidaPresupuestal: PartidaPresupuestal[] = [...respuesta.datos];
+        partidaPresupuestal[0].idPartida = folio;
+        if (this.validarFacturaRepetida(partidaPresupuestal[0].idPartida.toString())) return;
+        this.partidaPresupuestal = [...this.partidaPresupuestal, ...partidaPresupuestal];
         this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
         this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
         const importe: number = this.sumarImportes();
