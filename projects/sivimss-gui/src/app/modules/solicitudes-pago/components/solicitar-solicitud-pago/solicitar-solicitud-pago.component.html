@@ -70,9 +70,12 @@
         </ng-template>
         <ng-template pTemplate="body" let-partida>
           <tr>
-            <td> {{partida.partidaPres}} </td>
-            <td> {{partida.cuentaContable}} </td>
-            <td> {{partida.importeTotal | currency}} </td>
+            <td>{{partida.partidaPres}}</td>
+            <td>{{partida.cuentaContable}}</td>
+            <td>
+              <input [(ngModel)]="partida.importeTotal" class="form-control" [ngModelOptions]="{standalone: true}"
+               (blur)="reAjustarImporte()" numbersOnly>
+            </td>
           </tr>
         </ng-template>
       </p-table>
