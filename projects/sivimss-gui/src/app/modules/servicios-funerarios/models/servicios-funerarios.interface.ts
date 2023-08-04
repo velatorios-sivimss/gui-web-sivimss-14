@@ -42,6 +42,7 @@ export interface DetallePago {
 export interface AgregarPlanSFPA {
              idTipoContratacion: number | null,
                       idPaquete: number | null,
+                      monPrecio: number | null,
              idTipoPagoMensual : number | null,
            indTitularSubstituto: number | null,
   indModificarTitularSubstituto: number | null,
@@ -59,7 +60,7 @@ export interface Persona {
   segundoApellido: string | null,
   sexo: number | null,
   otroSexo: string | null,
-  fecNacimiento: string | null,
+  fecNacimiento: any,
   idPais: number | null,
   idEstado: number | null,
   telefono: string | null,

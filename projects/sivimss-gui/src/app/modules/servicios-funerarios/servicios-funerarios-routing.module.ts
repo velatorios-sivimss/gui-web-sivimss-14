@@ -30,7 +30,7 @@ const routes: Routes = [
     component: CancelarServiciosFunerariosComponent,
   },
   {
-    path:'modificar-pago/:id',
+    path:'modificar-pago',
     component: ModificarServiciosFunerariosComponent,
     resolve: {
       respuesta: ServiciosFunerariosResolver

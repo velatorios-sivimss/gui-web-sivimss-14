@@ -99,7 +99,7 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   modificarPago(): void {
-    this.router.navigate(["servicios-funerarios/modificar-pago/1"])
+    this.router.navigate(["servicios-funerarios/modificar-pago"],{queryParams:{idPlanSfpa:20}})
   }
 
 }
