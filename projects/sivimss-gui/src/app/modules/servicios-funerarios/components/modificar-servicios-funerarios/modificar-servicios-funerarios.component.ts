@@ -53,6 +53,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   confirmarGuardado: boolean = false;
   confirmarAceptarPaquete: boolean= false;
   confirmacionDatosExistentes: boolean = false;
+  cambioNumeroPagos: boolean = false;
+  idNumeroPagoOriginal!: number;
   infoPaqueteSeleccionado!: any;
   mensajeDatosExistentes: string = "";
   idPlanSfpa!: number;
@@ -156,6 +158,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
              numeroPago: [{value: +afiliado.idTipoPagoMensual, disabled:false},
                          [Validators.required]],
     });
+    this.idNumeroPagoOriginal = +afiliado.idTipoPagoMensual
     if(this.fda.sexo.value == 3){
       this.fda.otroSexo.setValidators(Validators.required);
       this.fda.otroSexo.updateValueAndValidity();
@@ -657,6 +660,13 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     this.confirmarAceptarPaquete = true;
   }
 
+  validarNumeroPago(): void {
+    this.cambioNumeroPagos = false;
+    if(this.idNumeroPagoOriginal != this.fda.numeroPago.value){
+      this.cambioNumeroPagos = true;
+    }
+  }
+
   validarBotonGuardar(): boolean {
     if(this.datosAfiliadoForm){
       if(this.datosAfiliadoForm.invalid || this.datosContratanteForm.invalid){
@@ -686,14 +696,17 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       finalize(()=>this.cargadorService.desactivar())
     ).subscribe({
         next:(respuesta: HttpRespuesta<any>) => {
-          this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
-          const file = new Blob(
-            [this.descargaArchivosService.base64_2Blob(
-              respuesta.datos,
-              this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-            { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
-          const url = window.URL.createObjectURL(file);
-          window.open(url)
+          this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(18));
+          if(this.cambioNumeroPagos){
+            const file = new Blob(
+              [this.descargaArchivosService.base64_2Blob(
+                respuesta.datos,
+                this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+              { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+            const url = window.URL.createObjectURL(file);
+            window.open(url)
+          }
+
           this.router.navigate(['../servicios-funerarios']);
         },
         error:(error: HttpErrorResponse) => {
@@ -744,6 +757,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       idTipoContratacion:1,
       idPaquete: this.fda.tipoPaquete.value,
       idTipoPagoMensual: this.fda.numeroPago.value,
+      indTipoPagoMensual: this.cambioNumeroPagos,
       indTitularSubstituto: this.fdc.datosIguales.value ? 1:0, //Cuando te vas a contratante SI 1 no 0
       indModificarTitularSubstituto: 1,
       monPrecio: this.consultarMonPrecio(),
