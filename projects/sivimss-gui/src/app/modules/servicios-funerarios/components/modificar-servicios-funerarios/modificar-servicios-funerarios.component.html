@@ -229,7 +229,7 @@
           <div class="col-md-6">
             <label class="control-label" for="numeroPago">Número de pagos<span class="req">*</span></label>
             <p-dropdown appendTo="body" id="numeroPago" class="form-control" formControlName="numeroPago"
-                        [options]="numeroPago"
+                        [options]="numeroPago" (onChange)="validarNumeroPago()"
                         placeholder="Selecciona el número de pagos">
             </p-dropdown>
             <span class="campo-obligatorio"
@@ -466,7 +466,7 @@
 <div class="flex justify-content-end mb-3">
   <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
   <button class="ml-4 btn btn-primary btn-md" [disabled]="validarBotonGuardar()" (click)="confirmarGuardado = true">
-    Aceptar
+    Guardar
   </button>
 </div>
 
