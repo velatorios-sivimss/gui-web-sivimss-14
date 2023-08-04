@@ -71,7 +71,7 @@ export interface CrearSolicitudPago {
 
 
 export interface PartidaPresupuestal {
-    idPartida: number;
+    idPartida: number | string;
     partidaPres: string;
     cuentaContable: string;
     importeTotal: string;
