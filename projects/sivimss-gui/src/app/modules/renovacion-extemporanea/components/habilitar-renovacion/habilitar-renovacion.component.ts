@@ -45,27 +45,8 @@ export class HabilitarRenovacionComponent implements OnInit {
     this.inicializarAgregarServicioForm();
     if (this.config?.data) {
       this.convenioSeleccionado = this.config.data.convenio;
-      this.obtenerDetalleConvenio();
     }
   }
-
-  obtenerDetalleConvenio() {
-    if (this.convenioSeleccionado.id) {
-      this.loaderService.activar();
-      this.renovacionExtemporaneaService.obtenerDetalleConvenio(this.convenioSeleccionado.id)
-        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-          next: (respuesta: HttpRespuesta<any>): void => {
-            if (respuesta?.datos) {
-              this.convenioSeleccionado = respuesta?.datos;
-            }
-          },
-          error: (error: HttpErrorResponse): void => {
-            console.error(error);
-          }
-        });
-    }
-  }
-
 
   inicializarAgregarServicioForm(): void {
     this.habilitarRenovacionForm = this.formBuilder.group({
@@ -111,9 +92,9 @@ export class HabilitarRenovacionComponent implements OnInit {
 
   datosRenovacionConvenio(): GenerarRenovacionConvenio {
     return {
-      idConvenio: this.convenioSeleccionado.id,
+      idConvenio: this.convenioSeleccionado.idConvenio,
       justificacion: this.hrf.justificacion.value,
-      indRenovacion: 1,
+      indRenovacion: this.convenioSeleccionado.indRenovacion,
     }
   }
 
