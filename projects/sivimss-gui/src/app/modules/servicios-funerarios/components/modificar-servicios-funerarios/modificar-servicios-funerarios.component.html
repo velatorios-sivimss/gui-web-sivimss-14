@@ -3,8 +3,8 @@
   <div class="row table-panel-row">
     <div class="col-md-12">
       <div class="table-panel-column flex-row">
-        <span class="text-4xl">Convenio</span>
-        <span class="text-3xl font-bold inline-block ml-4">DOC-000001</span>
+        <span class="text-4xl">Folio único del Plan SFPA</span>
+        <span class="text-3xl font-bold inline-block ml-4">{{folioConvenio}}</span>
       </div>
     </div>
   </div>
@@ -12,13 +12,13 @@
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Velatorio</label>
-        <span>Velatorio IMSS 20 Ecatepec</span>
+        <span>{{nombreVelatorio}}</span>
       </div>
     </div>
     <div class="col-md-3">
       <div class="table-panel-column">
         <label>Fecha</label>
-        <span>26-04-2023</span>
+        <span>{{fecIngresa}}</span>
       </div>
     </div>
   </div>
@@ -117,7 +117,7 @@
             <input id="otroSexoAfiliado" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
-                  *ngIf="fda.otroSexoAfiliado?.errors?.required && (fda.otroSexoAfiliado?.dirty || fda.otroSexoAfiliado?.touched)">Este campo es obligatorio *.</span>
+                  *ngIf="fda.otroSexo?.errors?.required && (fda.otroSexo?.dirty || fda.otroSexo?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
@@ -352,7 +352,7 @@
             <input id="otroSexoContratante" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
-                  *ngIf="fdc.otroSexoContratante?.errors?.required && (fdc.otroSexoContratante?.dirty || fdc.otroSexoContratante?.touched)">Este campo es obligatorio *.</span>
+                  *ngIf="fdc.otroSexo?.errors?.required && (fdc.otroSexo?.dirty || fdc.otroSexo?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
@@ -463,315 +463,9 @@
   </p-accordionTab>
 </p-accordion>
 
-<!--Esta es la tabla de detalles al confirmar-->
-<!--<ng-container *ngIf="true">-->
-<!--  <div class="row table-panel-row">-->
-<!--    <div class="col-md-12">-->
-<!--      <div class="table-panel-column flex-row align-items-center">-->
-<!--        <label class="mb-0">Tipo de contratación</label>-->
-<!--        <span class="inline-block ml-3">Por persona</span>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <p-accordion styleClass="sivimss-accordion">-->
-<!--    <p-accordionTab>-->
-<!--      <ng-template pTemplate="header">Datos del afiliado</ng-template>-->
-<!--      <ng-template pTemplate="content">-->
-<!--        <app-table-panel class="mb-6">-->
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>CURP</label>-->
-<!--                <span>{{fda.curp.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>RFC</label>-->
-<!--                <span>{{fda.rfc.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Matrícula</label>-->
-<!--                <span>{{fda.matricula.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>NSS</label>-->
-<!--                <span>{{fda.nss.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Nombre</label>-->
-<!--                <span>{{fda.nombre.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Primer apellido</label>-->
-<!--                <span>{{fda.primerApellido.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Segundo apellido</label>-->
-<!--                <span>{{fda.segundoApellido.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Fecha de nacimiento</label>-->
-<!--                <span>{{fda.fechaNacimiento.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Sexo</label>-->
-<!--                <span>{{fda.sexo.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Nacionalidad</label>-->
-<!--                <span>{{fda.nacionalidad.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Lugar de nacimiento</label>-->
-<!--                <span>CDMX</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Correo electrónico</label>-->
-<!--                <span>{{fda.correoElectronico.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Teléfono</label>-->
-<!--                <span>{{fda.telefono.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Calle</label>-->
-<!--                <span>{{fda.calle.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Número exterior</label>-->
-<!--                <span>{{fda.numeroExterior.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>C.P.</label>-->
-<!--                <span>{{fda.cp.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Colonia</label>-->
-<!--                <span>{{fda.colonia.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Municipio</label>-->
-<!--                <span>{{fda.municipio.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Estado</label>-->
-<!--                <span>{{fda.estado.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Tipo de paquete</label>-->
-<!--                <span>{{fda.tipoPaquete.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>No. de pagos</label>-->
-<!--                <span>{{fda.numeroPago.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </app-table-panel>-->
-<!--      </ng-template>-->
-<!--    </p-accordionTab>-->
-<!--    <p-accordionTab>-->
-<!--      <ng-template pTemplate="header">Datos del contratante</ng-template>-->
-<!--      <ng-template pTemplate="content">-->
-<!--        <app-table-panel class="mb-6">-->
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>CURP</label>-->
-<!--                <span>{{fdc.curp.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>RFC</label>-->
-<!--                <span>{{fdc.rfc.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Matrícula</label>-->
-<!--                <span>{{fdc.matricula.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>NSS</label>-->
-<!--                <span>{{fdc.nss.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Nombre</label>-->
-<!--                <span>{{fdc.nombre.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Primer apellido</label>-->
-<!--                <span>{{fdc.primerApellido.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Segundo apellido</label>-->
-<!--                <span>{{fdc.segundoApellido.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Fecha de nacimiento</label>-->
-<!--                <span>{{fdc.fechaNacimiento.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Sexo</label>-->
-<!--                <span>{{fdc.sexo.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Nacionalidad</label>-->
-<!--                <span>{{fdc.nacionalidad.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Lugar de nacimiento</label>-->
-<!--                <span></span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Correo electrónico</label>-->
-<!--                <span>{{fdc.correoElectronico.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Teléfono</label>-->
-<!--                <span>{{fdc.telefono.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Calle</label>-->
-<!--                <span>{{fdc.calle.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Número exterior</label>-->
-<!--                <span>{{fdc.numeroExterior.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>C.P</label>-->
-<!--                <span>{{fdc.cp.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="row table-panel-row">-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Colonia</label>-->
-<!--                <span>{{fdc.colonia.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Municipio</label>-->
-<!--                <span>{{fdc.municipio.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-3">-->
-<!--              <div class="table-panel-column">-->
-<!--                <label>Estado</label>-->
-<!--                <span>{{fdc.estado.value}}</span>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-
-
-<!--        </app-table-panel>-->
-<!--      </ng-template>-->
-<!--    </p-accordionTab>-->
-<!--  </p-accordion>-->
-<!--  <div class="flex justify-content-center">-->
-<!--    <div class="col-md-6">-->
-<!--      <p class="text-center">¿Estás seguro de modificar el registro del convenio con folio XXXX?</p>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</ng-container>-->
-
 <div class="flex justify-content-end mb-3">
   <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-  <button class="ml-4 btn btn-primary btn-md" (click)="aceptar()">
+  <button class="ml-4 btn btn-primary btn-md" [disabled]="validarBotonGuardar()" (click)="confirmarGuardado = true">
     Aceptar
   </button>
 </div>
@@ -779,7 +473,7 @@
 <p-dialog header="" [(visible)]="confirmarGuardado" [style]="{width: '50vw'}"
           [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
   <div class="row">
-    <p class="text-center">¿Estás seguro de agregar este nuevo registro?</p>
+    <p class="text-center">¿Estás seguro de modificar el registro?</p>
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
@@ -808,7 +502,7 @@
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
-      <button type="button" class="btn btn-primary btn-md ml-5" (click)="confirmacionDatosExistentes = false">Aceptar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="recargarPagina()">Aceptar</button>
     </div>
   </div>
 </p-dialog>

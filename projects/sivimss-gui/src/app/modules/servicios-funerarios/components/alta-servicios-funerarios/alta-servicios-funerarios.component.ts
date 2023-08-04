@@ -60,6 +60,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   existeDatoRegistrado: boolean = false;
   infoPaqueteSeleccionado!: any;
   mensajeDatosExistentes: string = "";
+  idPlanSfpaExistente!: number;
 
   /*Variable tipo lista para validar si ya se encuentra CURP/RFC en BD
   * [0] = fda.curp.value
@@ -235,7 +236,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         this.cambiarNacionalidad(posicion);
       },
       (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error,
+          this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
       }
     )
   }
@@ -325,7 +327,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     ).subscribe({
       next:(respuesta: HttpRespuesta<any>) =>{
         if(respuesta.datos.length > 0){
-
+          this.idPlanSfpaExistente = respuesta.datos[0].ID_PLAN_SFPA;
           if(posicion == 0){
             if(curp ===""){
               this.cajaValidacionDatosExistentes[1] = true;
@@ -343,7 +345,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
           this.existeDatoRegistrado = true;
           this.confirmacionDatosExistentes = true;
           this.mensajeDatosExistentes = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje)
-          // this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
         }
       },
       error:(error: HttpErrorResponse) => {
@@ -622,6 +623,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       idTipoPagoMensual: this.fda.numeroPago.value,
       indTitularSubstituto: this.fdc.datosIguales.value ? 1:0, //Cuando te vas a contratante SI 1 no 0
       indModificarTitularSubstituto: 0, //Cuando es alta se manda en 0 acualizar es 1
+      monPrecio: this.consultarMonPrecio(),
       titularesBeneficiarios: [
         {
           persona: 'afiliado',
@@ -660,6 +662,22 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     return objetoPrincipal;
   }
 
+  consultarMonPrecio(): number {
+    let paquete:any = this.paqueteBackUp.find((paquete:CatalogoPaquetes) => {
+      return Number(this.fda.tipoPaquete.value) == paquete.idPaquete;
+    })
+    return paquete.monPrecio;
+  }
+
+  redireccionarModificar(): void {
+    this.router.navigate(['./servicios-funerarios/modificar-pago'],
+      {
+        queryParams:{
+          idPlanSfpa: this.idPlanSfpaExistente
+        }
+      });
+  }
+
   regresar(): void {
     this.confirmarGuardado = false;
     this.indice --;
@@ -678,9 +696,6 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   validarBotonGuardar(): boolean {
-    // if(this.cajaValidacionDatosExistentes.includes(true)){
-    //   console.log(this.cajaValidacionDatosExistentes)
-    // }
     if(this.datosAfiliadoForm.invalid || this.datosContratanteForm.invalid ||
       this.cajaValidacionDatosExistentes.includes(true)){
       return true;

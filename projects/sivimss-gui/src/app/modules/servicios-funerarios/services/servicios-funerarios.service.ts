@@ -19,6 +19,16 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
   return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/inserta-plan-sfpa`,planSFPA);
   }
 
+  consultarPlanSFPA(idPlanSfpa: number): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/consulta-detalle-plan-sfpa`,
+      {idPlanSfpa:idPlanSfpa});
+  }
+
+  consultarNumeroPagos(idPlanSfpa: number): Observable<HttpRespuesta<any>>{
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/consulta-numero-pago-plan-sfpa`,
+      {idPlanSfpa:idPlanSfpa});
+  }
+
   obtenerCatalogoPais(): Observable<TipoDropdown[]> {
     const catalogo_pais = this.authService.obtenerCatalogoDeLocalStorage('catalogo_pais');
     return of(mapearArregloTipoDropdown(catalogo_pais, 'desc', 'id'));

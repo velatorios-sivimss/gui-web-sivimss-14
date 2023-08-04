@@ -22,6 +22,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   private readonly _tipoSolicitud: string = 'tipsolic-solipagos';
   private readonly _ejerciciosPagos: string = 'ejercicios-solipagos';
   private readonly _aprobar: string = 'aprobar-solipagos';
+  private readonly _agregarFoliosSolicitud: string = 'addfolios-solipagos';
 
   obtenerCatalogoEjercicios(): Observable<HttpRespuesta<any>> {
     const params: HttpParams = new HttpParams().append("servicio", this._ejerciciosPagos);
@@ -97,12 +98,12 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   }
 
   buscarGastosPorfolio(folio: string): Observable<HttpRespuesta<any>> {
-    const body = { "folioSolicitud": folio }
+    const body = {"folioSolicitud": folio}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscafol-solipagos`, body);
   }
 
   buscarPartidaPresupuestal(folioGastos: string): Observable<HttpRespuesta<any>> {
-    const body = { "cveFolioGastos": folioGastos }
+    const body = {"cveFolioGastos": folioGastos}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/factura-solipagos`, body);
   }
 
@@ -110,6 +111,10 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
   busquedaFolioFactura(cveFolioGastos: string): Observable<HttpRespuesta<any>> {
     const body = {cveFolioGastos};
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._folioFactura}`, body);
+  }
+
+  guardarFoliosSolicitud(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._agregarFoliosSolicitud}`, body);
   }
 
 }
