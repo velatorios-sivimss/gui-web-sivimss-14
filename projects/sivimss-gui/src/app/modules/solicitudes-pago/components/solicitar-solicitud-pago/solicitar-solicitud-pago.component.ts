@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {finalize} from "rxjs/operators";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
@@ -36,7 +36,6 @@ interface RegistroProveedor {
   idProveedor: number
 }
 
-
 @Component({
   selector: 'app-solicitar-solicitud-pago',
   templateUrl: './solicitar-solicitud-pago.component.html',
@@ -64,9 +63,9 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   catalogoUnidades: RegistroUnidadOperativa[] = [];
   catalogoProveedores: RegistroProveedor[] = [];
   mensajeConfirmacion: boolean = false;
+  importeOriginal: number = 0;
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
     public config: DynamicDialogConfig,
     private cargadorService: LoaderService,
@@ -359,6 +358,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
           return;
         }
         this.partidaPresupuestalSeleccionada = respuesta.datos;
+        this.partidaPresupuestalSeleccionada[0].idPartida = folio;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -368,6 +368,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   agregarFactura(): void {
+    if (this.validarFacturaRepetida()) return;
     this.partidaPresupuestal = [...this.partidaPresupuestal, ...this.partidaPresupuestalSeleccionada];
     this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
     this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
@@ -376,6 +377,18 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('importe')?.setValue(importe);
     this.partidaPresupuestalSeleccionada = [];
     this.convertirImporte();
+  }
+
+  validarFacturaRepetida(idFolio?: string): boolean {
+    const folios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
+    if (!idFolio) idFolio = this.partidaPresupuestalSeleccionada[0].idPartida.toString();
+    if (!folios.includes(idFolio)) return false;
+    this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
+    this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
+    this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
+    this.partidaPresupuestalSeleccionada = [];
+    this.alertaService.mostrar(TipoAlerta.Info, 'El folio introducido ya se encuentra agregado');
+    return true;
   }
 
   eliminarFacturas(id: number): void {
@@ -416,7 +429,10 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
           this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
           return;
         }
-        this.partidaPresupuestal = [...this.partidaPresupuestal, ...respuesta.datos];
+        const partidaPresupuestal: PartidaPresupuestal[] = [...respuesta.datos];
+        partidaPresupuestal[0].idPartida = folio;
+        if (this.validarFacturaRepetida(partidaPresupuestal[0].idPartida.toString())) return;
+        this.partidaPresupuestal = [...this.partidaPresupuestal, ...partidaPresupuestal];
         this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
         this.solicitudPagoForm.get('folioFiscal')?.updateValueAndValidity();
         const importe: number = this.sumarImportes();
@@ -428,5 +444,11 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+
+  reAjustarImporte(): void {
+    const importe = this.partidaPresupuestal[0].importeTotal ?? 0;
+    this.solicitudPagoForm.get('importe')?.setValue(importe);
+    this.convertirImporte();
   }
 }
