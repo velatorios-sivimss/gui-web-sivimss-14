@@ -144,9 +144,8 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudesPagoService.guardar(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Tu solicitud de pago ha sido generada exitosamente.')
-        this.referencia.close();
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos) this.guardarFolios(respuesta.datos);
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -450,5 +449,26 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     const importe = this.partidaPresupuestal[0].importeTotal ?? 0;
     this.solicitudPagoForm.get('importe')?.setValue(importe);
     this.convertirImporte();
+  }
+
+  guardarFolios(id: number): void {
+    const tipoSolicitud: number = this.solicitudPagoForm.get('tipoSolicitud')?.value as number;
+    if (![3, 5, 6].includes(tipoSolicitud)) this.mostrarMensajeSolicitudCorrecta();
+    const cveFolios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
+    const solicitud = {idSolicitud: id, cveFolios}
+    this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).subscribe({
+      next: (): void => {
+        this.mostrarMensajeSolicitudCorrecta();
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    })
+  }
+
+  mostrarMensajeSolicitudCorrecta(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Tu solicitud de pago ha sido generada exitosamente.')
+    this.referencia.close();
   }
 }
