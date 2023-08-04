@@ -74,7 +74,7 @@
             <td>{{partida.cuentaContable}}</td>
             <td>
               <input [(ngModel)]="partida.importeTotal" class="form-control" [ngModelOptions]="{standalone: true}"
-               (blur)="reAjustarImporte()" >
+               (blur)="reAjustarImporte()" numbersOnly>
             </td>
           </tr>
         </ng-template>
