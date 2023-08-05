@@ -979,7 +979,8 @@ export class ModificarDatosContratanteComponent
     //   'yyyy-MM-DD'
     // );
     this.contratante.fechaNac = anio+"-"+mes+"-"+dia;
-    this.contratante.idPais = datos.contratante.idPais;
+    this.contratante.idPais = datos.contratante.idPais == 0 ? null : datos.contratante.idPais;
+
     this.contratante.idEstado = datos.contratante.idEstado;
     this.contratante.telefono = datos.contratante.telefono;
     this.contratante.correo = datos.contratante.correo;
