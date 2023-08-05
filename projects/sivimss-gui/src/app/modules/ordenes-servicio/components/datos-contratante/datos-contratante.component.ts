@@ -729,7 +729,7 @@ export class DatosContratanteComponent implements OnInit {
       datosEtapaContratante.datosContratante.fechaNacimiento
     ).format('yyyy-MM-DD');
     this.contratante.idPais =
-      datosEtapaContratante.datosContratante.paisNacimiento;
+      datosEtapaContratante.datosContratante.paisNacimiento == 0 ? null : datosEtapaContratante.datosContratante.paisNacimiento;
     this.contratante.idEstado =
       datosEtapaContratante.datosContratante.lugarNacimiento;
     this.contratante.telefono = datosEtapaContratante.datosContratante.telefono;
