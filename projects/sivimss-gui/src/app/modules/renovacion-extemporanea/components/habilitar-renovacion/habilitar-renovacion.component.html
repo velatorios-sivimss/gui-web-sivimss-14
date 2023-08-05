@@ -2,7 +2,7 @@
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
       <div class="table-panel-header-column">
-        <span class="font-bold">Folio convenio {{convenioSeleccionado.folioConvenio}}</span>
+        <span class="font-bold">Folio convenio {{convenioSeleccionado.folio}}</span>
       </div>
     </ng-template>
     <ng-template appCustomTemplate="right-header">
@@ -10,8 +10,8 @@
         <div class="flex flex-column">
           <div>Estatus del convenio</div>
           <div class="contenedor-inputswitch">
-            <span class="activo" style="margin-left: -8px;" *ngIf="convenioSeleccionado.estatus">Activo</span>
-            <span class="inactivo" style="margin-left: -8px;" *ngIf="!convenioSeleccionado.estatus">Inactivo</span>
+            <span class="inactivo" style="margin-left: -8px;"
+              *ngIf="convenioSeleccionado.idEstatus === 4">Cerrado</span>
           </div>
         </div>
       </div>
@@ -25,14 +25,8 @@
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
-          <label>Número INE</label>
-          <span> {{convenioSeleccionado.numeroINE}} </span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
           <label>Matrícula IMSS</label>
-          <span> {{convenioSeleccionado.matriculaIMSS}} </span>
+          <span> {{convenioSeleccionado.matricula}} </span>
         </div>
       </div>
     </div>
@@ -60,7 +54,7 @@
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Tipo de prevención funeraria</label>
-          <span> {{convenioSeleccionado.tipoPrevencionFuneraria}} </span>
+          <span> {{convenioSeleccionado.tipoPrevision === 1 ? 'Previsión funeraria plan nuevo' : 'Previsión funeraria plan anterior'}} </span>
         </div>
       </div>
       <div class="col-md-4">
@@ -75,19 +69,21 @@
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Beneficiarios</label>
-          <span> {{convenioSeleccionado.beneficiarios}} </span>
+          <span *ngFor="let beneficiario of convenioSeleccionado.beneficiarios">
+            {{beneficiario.nombreBeneficiario}}
+          </span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Teléfono de contacto</label>
-          <span> {{convenioSeleccionado.telefonoContacto}} </span>
+          <span> {{convenioSeleccionado.tel}} </span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Correo electrónico</label>
-          <span> {{convenioSeleccionado.correoElectronico}} </span>
+          <span> {{convenioSeleccionado.correo}} </span>
         </div>
       </div>
     </div>
@@ -96,13 +92,13 @@
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Fecha inicio de vigencia</label>
-          <span> {{convenioSeleccionado.fechaInicioVigencia}} </span>
+          <span> {{convenioSeleccionado.fecInicio}} </span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Fecha fin de vigencia</label>
-          <span> {{convenioSeleccionado.fechaFinVigencia}} </span>
+          <span> {{convenioSeleccionado.fecVigencia}} </span>
         </div>
       </div>
       <div class="col-md-4">

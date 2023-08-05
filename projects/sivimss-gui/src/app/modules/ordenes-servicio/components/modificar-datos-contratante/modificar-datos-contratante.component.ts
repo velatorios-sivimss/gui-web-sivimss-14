@@ -645,7 +645,7 @@ export class ModificarDatosContratanteComponent
               this.datosContratante.fechaNacimiento.setValue(fecha);
 
               this.datosContratante.sexo.setValue(+respuesta.datos[0].sexo);
-              if (datos.idPais == 119) {
+              if (datos.idPais == 119 || datos.idPais == "" || datos.idPais === null) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
                 this.datosContratante.nacionalidad.setValue(2);

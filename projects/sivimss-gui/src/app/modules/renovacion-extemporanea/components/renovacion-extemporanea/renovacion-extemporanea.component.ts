@@ -1,5 +1,4 @@
 import { HabilitarRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/habilitar-renovacion/habilitar-renovacion.component'
-import { DetalleRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/detalle-renovacion/detalle-renovacion.component'
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { LazyLoadEvent } from 'primeng/api'
@@ -12,8 +11,7 @@ import {
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service'
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes'
-import { CATALOGOS_DUMMIES } from 'projects/sivimss-gui/src/app/modules/proveedores/constants/dummies'
-import { ConveniosPrevision, FiltrosConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/models/convenios-prevision.interface'
+import { BusquedaConveniosPrevision, FiltrosConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/models/convenios-prevision.interface'
 import { RenovacionExtemporaneaService } from '../../services/renovacion-extemporanea.service'
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface'
 import { mapearArregloTipoDropdown, validarUsuarioLogueado } from 'projects/sivimss-gui/src/app/utils/funciones'
@@ -44,16 +42,12 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
-  conveniosPrevicion: ConveniosPrevision[] = [];
-  convenioSeleccionado: ConveniosPrevision = {};
+  conveniosPrevicion: BusquedaConveniosPrevision[] = [];
+  convenioSeleccionado: BusquedaConveniosPrevision = {};
   creacionRef!: DynamicDialogRef;
-  habilitarRenovacionConvenio!: ConveniosPrevision;
+  habilitarRenovacionConvenio!: BusquedaConveniosPrevision;
   mostrarModaltitularFallecido: boolean = false;
-
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
-  tipoServicio: TipoDropdown[] = CATALOGOS_DUMMIES;
-  partidaPresupuestal: TipoDropdown[] = CATALOGOS_DUMMIES;
-  cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES;
+  busquedaRealizada: boolean = false;
 
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
@@ -123,12 +117,13 @@ export class RenovacionExtemporaneaComponent implements OnInit {
       this.renovacionExtemporaneaService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
         .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
           next: (respuesta: HttpRespuesta<any>): void => {
-            if (respuesta?.datos.length > 0) {
+            this.conveniosPrevicion = [];
+            this.totalElementos = 0;
+            if (respuesta?.datos?.content?.length > 0) {
               this.conveniosPrevicion = respuesta.datos.content;
               this.totalElementos = respuesta.datos.totalElements;
             } else {
-              const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(45);
-              this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+              this.busquedaRealizada = true;
             }
           },
           error: (error: HttpErrorResponse): void => {
@@ -143,56 +138,67 @@ export class RenovacionExtemporaneaComponent implements OnInit {
     switch (+usuario.idOficina) {
       case 1:
         return {
-          idDelegacion: this.ff.idDelegacion.getRawValue() === '' ? null : this.ff.idDelegacion.getRawValue(),
-          idVelatorio: this.ff.idVelatorio.getRawValue() === '' ? null : this.ff.idVelatorio.getRawValue(),
-          numConvenio: this.ff.numConvenio.getRawValue() === '' ? null : this.ff.numConvenio.getRawValue(),
-          folio: this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
-          rfc: this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+          idDelegacion: !this.ff.idDelegacion.value || this.ff.idDelegacion.getRawValue() === '' ? null : this.ff.idDelegacion.getRawValue(),
+          idVelatorio: !this.ff.idVelatorio.value || this.ff.idVelatorio.getRawValue() === '' ? null : this.ff.idVelatorio.getRawValue(),
+          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : +this.ff.numConvenio.getRawValue(),
+          folio: !this.ff.folio.value || this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
+          rfc: !this.ff.rfc.value || this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
         }
       case 2:
         return {
-          idVelatorio: this.ff.idVelatorio.getRawValue() === '' ? null : this.ff.idVelatorio.getRawValue(),
-          numConvenio: this.ff.numConvenio.getRawValue() === '' ? null : this.ff.numConvenio.getRawValue(),
-          folio: this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
-          rfc: this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+          idVelatorio: !this.ff.idVelatorio.value || this.ff.idVelatorio.getRawValue() === '' ? null : this.ff.idVelatorio.getRawValue(),
+          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : +this.ff.numConvenio.getRawValue(),
+          folio: !this.ff.folio.value || this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
+          rfc: !this.ff.rfc.value || this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
         }
       default:
         return {
-          numConvenio: this.ff.numConvenio.getRawValue() === '' ? null : this.ff.numConvenio.getRawValue(),
-          folio: this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
-          rfc: this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : +this.ff.numConvenio.getRawValue(),
+          folio: !this.ff.folio.value || this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
+          rfc: !this.ff.rfc.value || this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
         }
     }
   }
 
-  abrirModalDetalleRenovacion(servicio: ConveniosPrevision) {
-    this.creacionRef = this.dialogService.open(DetalleRenovacionComponent, {
-      header: 'Detalle',
-      width: '920px',
-      data: { servicio: servicio, origen: 'detalle' },
-    });
-  }
-
-  abrirPanel(event: MouseEvent, convenioPrevisionSeleccionado: ConveniosPrevision): void {
+  abrirPanel(event: MouseEvent, convenioPrevisionSeleccionado: BusquedaConveniosPrevision): void {
     this.convenioSeleccionado = convenioPrevisionSeleccionado;
     this.overlayPanel.toggle(event);
   }
 
   abrirModalHabilitarRenovacion(): void {
-    if (!this.convenioSeleccionado.fallecido) {
-      this.creacionRef = this.dialogService.open(HabilitarRenovacionComponent, {
-        header: 'Convenio de Previsión Funeraria',
-        width: '920px',
-        data: { convenio: this.convenioSeleccionado, origen: 'agregar' },
-      });
+    this.creacionRef = this.dialogService.open(HabilitarRenovacionComponent, {
+      header: 'Convenio de Previsión Funeraria',
+      width: '920px',
+      data: { convenio: this.convenioSeleccionado, origen: 'agregar' },
+    });
 
-      this.creacionRef.onClose.subscribe((estatus: boolean) => {
-        if (estatus) {
-          this.paginarConFiltros();
-        }
-      });
-    } else {
-      this.mostrarModalTitularFallecido();
+    this.creacionRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
+        this.paginarConFiltros();
+      }
+    });
+  }
+
+  obtenerDetalleConvenio() {
+    if (this.convenioSeleccionado.idConvenio) {
+      this.loaderService.activar();
+      this.renovacionExtemporaneaService.obtenerDetalleConvenio(this.convenioSeleccionado.idConvenio)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            if (respuesta?.datos) {
+              this.convenioSeleccionado = respuesta?.datos;
+              this.abrirModalHabilitarRenovacion();
+            } else {
+              if (respuesta.mensaje === '39') {
+                const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+                this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+              }
+            }
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+          }
+        });
     }
   }
 
@@ -201,6 +207,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   }
 
   limpiar(): void {
+    this.busquedaRealizada = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);

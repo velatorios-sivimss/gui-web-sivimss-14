@@ -48,7 +48,7 @@
           campo es obligatorio *.</span>
       </div>
     </div>
-    <div class="row mt-6">
+    <div class="row mt-6" *appValidaRol="['RENOVACION_EXTEMPORANEA','CONSULTA']">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
         <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
@@ -79,24 +79,31 @@
     </ng-template>
     <ng-template pTemplate="body" let-convenioPrevision>
       <tr>
-        <td> {{convenioPrevision.velatorioOrigen}} </td>
-        <td> {{convenioPrevision.folioConvenio}} </td>
+        <td> {{convenioPrevision.velatorio}} </td>
+        <td> {{convenioPrevision.folio}} </td>
         <td> {{convenioPrevision.rfc}} </td>
         <td> {{convenioPrevision.nombre}} </td>
         <td> {{convenioPrevision.primerApellido}} </td>
         <td> {{convenioPrevision.segundoApellido}} </td>
-        <td> {{convenioPrevision.tipoPrevencion}} </td>
-        <td> {{convenioPrevision.tipoPaquete}} </td>
+        <td> {{convenioPrevision.tipoPrevision === 1 ? 'Previsión funeraria plan nuevo' : 'Previsión funeraria plan anterior'}} </td>
+        <td> {{convenioPrevision.tipopaquete}} </td>
         <td> {{convenioPrevision.cuotaRecuperacion}} </td>
-        <td> {{convenioPrevision.fechaInicioVigencia}} </td>
-        <td> {{convenioPrevision.fechaFinVigencia}} </td>
+        <td> {{convenioPrevision.fecInicio}} </td>
+        <td> {{convenioPrevision.fecVigencia}} </td>
         <td>
-          <div class="contenedor-celda-iconos">
+          <div class="contenedor-celda-iconos" *appValidaRol="['RENOVACION_EXTEMPORANEA','MODIFICAR']">
             <a (click)="abrirPanel($event, convenioPrevision)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
         </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr *ngIf="busquedaRealizada">
+        <th colspan="13" class="p-2 text-center font-bold text-xl" id="stock_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="paginatorleft">
@@ -107,12 +114,6 @@
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
         <div class="export-table">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-pdff.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-excel.svg"
-              alt="exportar excel">
-          </div>
         </div>
       </div>
     </ng-template>
@@ -122,29 +123,7 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Habilitar renovación"
-        (click)="abrirModalHabilitarRenovacion()"></app-overlay-panel-opcion>
+        (click)="obtenerDetalleConvenio()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-<p-dialog [style]="{maxWidth:'776px',width: '100%'}" header="Titular del convenio fallecido"
-  [(visible)]="mostrarModaltitularFallecido" [modal]="true" [draggable]="false" [resizable]="false">
-  <ng-template pTemplate="content">
-    <div class="row" style="text-align: center;">
-      <div class="col-md-2">
-      </div>
-      <div class="col-md-8">
-        <span>Titular del convenio fallecido</span>
-        <p>
-          <span>El beneficiario NO PUEDE RENOVAR el convenio</span>
-        </p>
-      </div>
-      <div class="col-md-2">
-      </div>
-    </div>
-  </ng-template>
-  <ng-template pTemplate="footer">
-    <div class="flex justify-content-end">
-      <button class="btn btn-default btn-md" (click)="mostrarModaltitularFallecido = false">Aceptar</button>
-    </div>
-  </ng-template>
-</p-dialog>
