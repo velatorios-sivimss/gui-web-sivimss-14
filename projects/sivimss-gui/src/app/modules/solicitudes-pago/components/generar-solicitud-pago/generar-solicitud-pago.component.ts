@@ -37,11 +37,11 @@ interface RegistroProveedor {
 }
 
 @Component({
-  selector: 'app-solicitar-solicitud-pago',
-  templateUrl: './solicitar-solicitud-pago.component.html',
-  styleUrls: ['./solicitar-solicitud-pago.component.scss']
+  selector: 'app-generar-solicitud-pago',
+  templateUrl: './generar-solicitud-pago.component.html',
+  styleUrls: ['./generar-solicitud-pago.component.scss']
 })
-export class SolicitarSolicitudPagoComponent implements OnInit {
+export class GenerarSolicitudPagoComponent implements OnInit {
 
   validaciones: Map<number, any> = new Map();
 
@@ -453,7 +453,10 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
 
   guardarFolios(id: number): void {
     const tipoSolicitud: number = this.solicitudPagoForm.get('tipoSolicitud')?.value as number;
-    if (![3, 5, 6].includes(tipoSolicitud)) this.mostrarMensajeSolicitudCorrecta();
+    if (![3, 5, 6].includes(tipoSolicitud)) {
+      this.mostrarMensajeSolicitudCorrecta();
+      return;
+    }
     const cveFolios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
     const solicitud = {idSolicitud: id, cveFolios}
     this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).subscribe({

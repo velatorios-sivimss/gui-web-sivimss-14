@@ -24,8 +24,8 @@ import {SolicitudesPagoRoutingModule} from './solicitudes-pago.routing.module';
 import {UtileriaModule} from '../../shared/utileria/utileria.module';
 import {ValidaRolModule} from '../../shared/valida-rol/valida-rol.module';
 import {
-  SolicitarSolicitudPagoComponent
-} from './components/solicitar-solicitud-pago/solicitar-solicitud-pago.component';
+  GenerarSolicitudPagoComponent
+} from './components/generar-solicitud-pago/generar-solicitud-pago.component';
 import {CancelarSolicitudPagoComponent} from "./components/cancelar-solicitud-pago/cancelar-solicitud-pago.component";
 import {RechazarSolicitudPagoComponent} from "./components/rechazar-solicitud-pago/rechazar-solicitud-pago.component";
 import {VerDetalleSolicitudPagoComponent} from './components/ver-detalle-solicitud/ver-detalle-solicitud.component';
@@ -38,7 +38,7 @@ import {SinCaracteresEspecialesDirective} from "./directives/sin-caracteres-espe
 @NgModule({
   declarations: [
     SolicitudesPagoComponent,
-    SolicitarSolicitudPagoComponent,
+    GenerarSolicitudPagoComponent,
     CancelarSolicitudPagoComponent,
     RechazarSolicitudPagoComponent,
     VerDetalleSolicitudPagoComponent,
