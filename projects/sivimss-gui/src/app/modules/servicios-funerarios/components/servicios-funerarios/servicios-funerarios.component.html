@@ -2,12 +2,17 @@
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <label class="control-label" for="estatus">Nivel:</label>
         <p-dropdown id="nivel" class="form-control" formControlName="nivel"
                     placeholder="Selecciona el nivel" [options]="nivel"></p-dropdown>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-4">
+        <label class="control-label" for="estatus">Delegación:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel"
+                    placeholder="Selecciona el nivel" [options]="nivel"></p-dropdown>
+      </div>
+      <div class="col-md-4">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio"
                     placeholder="Selecciona velatorio" [options]="velatorio"></p-dropdown>

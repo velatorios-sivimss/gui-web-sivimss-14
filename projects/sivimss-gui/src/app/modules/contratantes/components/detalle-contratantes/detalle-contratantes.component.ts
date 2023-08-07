@@ -58,7 +58,7 @@ export class DetalleContratantesComponent implements OnInit {
         this.obtenerDetalleContratante();
       }
     }
-    if (this.origen == "modificar") {      
+    if (this.origen == "modificar") {
       this.mensaje = this.tipoMensaje[2];
       this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo ?? 1];
     }
@@ -71,6 +71,9 @@ export class DetalleContratantesComponent implements OnInit {
           if (respuesta.codigo === 200) {
             this.contratante = respuesta?.datos[0] || [];
             this.tipoSexoDesc = TIPO_SEXO[this.contratante.numSexo ?? 1];
+            if(this.contratante.pais === null){
+              this.contratante.nacionalidad = "Mexicana";
+            }
           }
         },
         error: (error: HttpErrorResponse) => {
