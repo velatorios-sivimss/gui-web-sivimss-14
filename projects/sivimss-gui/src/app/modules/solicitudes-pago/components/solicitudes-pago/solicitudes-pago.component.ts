@@ -22,7 +22,7 @@ import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
 import {CATALOGOS_DUMMIES} from '../../../articulos/constants/dummies';
-import {SolicitarSolicitudPagoComponent} from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
+import {GenerarSolicitudPagoComponent} from '../generar-solicitud-pago/generar-solicitud-pago.component';
 import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
 import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
@@ -169,7 +169,7 @@ export class SolicitudesPagoComponent implements OnInit {
 
   abrirModalGenerarSolicitudPago(): void {
     this.creacionRef = this.dialogService.open(
-      SolicitarSolicitudPagoComponent,
+      GenerarSolicitudPagoComponent,
       {
         header: 'Generar solicitud de pago',
         width: MAX_WIDTH,
