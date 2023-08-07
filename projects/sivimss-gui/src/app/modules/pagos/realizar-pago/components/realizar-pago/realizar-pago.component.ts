@@ -21,6 +21,7 @@ import * as moment from "moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import {DialogService} from "primeng/dynamicdialog";
 
 interface SolicitudDescargaArchivo {
     folio: string | null,
@@ -36,7 +37,7 @@ interface SolicitudDescargaArchivo {
     selector: 'app-realizar-pago',
     templateUrl: './realizar-pago.component.html',
     styleUrls: ['./realizar-pago.component.scss'],
-    providers: [DescargaArchivosService]
+    providers: [DescargaArchivosService, DialogService]
 })
 export class RealizarPagoComponent implements OnInit {
 
