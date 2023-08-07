@@ -22,7 +22,7 @@ import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
 import {CATALOGOS_DUMMIES} from '../../../articulos/constants/dummies';
-import {SolicitarSolicitudPagoComponent} from '../solicitar-solicitud-pago/solicitar-solicitud-pago.component';
+import {GenerarSolicitudPagoComponent} from '../generar-solicitud-pago/generar-solicitud-pago.component';
 import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
 import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
@@ -169,7 +169,7 @@ export class SolicitudesPagoComponent implements OnInit {
 
   abrirModalGenerarSolicitudPago(): void {
     this.creacionRef = this.dialogService.open(
-      SolicitarSolicitudPagoComponent,
+      GenerarSolicitudPagoComponent,
       {
         header: 'Generar solicitud de pago',
         width: MAX_WIDTH,
@@ -248,7 +248,7 @@ export class SolicitudesPagoComponent implements OnInit {
       fecFinODS: fechaFinal,
       ejercicioFiscal: this.filtroFormSolicitudesPago.get("ejercFiscal")?.value,
       idTipoSolicitud: this.filtroFormSolicitudesPago.get("tipoSolic")?.value,
-      folioSolicitud: this.filtroFormSolicitudesPago.get("folio")?.value,
+      folioSolicitud: folio,
       tipoReporte: tipoReporte
     }
   }
@@ -276,26 +276,26 @@ export class SolicitudesPagoComponent implements OnInit {
     });
   }
 
-  generarListadoSolicitudesPDF() {
+  generarListadoSolicitudesPDF(): void {
     this.cargadorService.activar();
     const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
-    const solicitudFiltros = JSON.stringify(filtros);
+    const solicitudFiltros: string = JSON.stringify(filtros);
     this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesPDF(solicitudFiltros)).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta) => {
         console.log(respuesta)
       },
-      (error) => {
+      error: (error) => {
         console.log(error)
       },
-    )
+    })
   }
 
   generarListadoSolicitudesExcel() {
     this.cargadorService.activar();
     const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("xls");
-    const solicitudFiltros = JSON.stringify(filtros);
+    const solicitudFiltros: string = JSON.stringify(filtros);
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
     this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesExcel(solicitudFiltros),
       configuracionArchivo).pipe(
@@ -310,13 +310,13 @@ export class SolicitudesPagoComponent implements OnInit {
     })
   }
 
-  obtenerFoliosGastos() {
+  obtenerFoliosGastos(): void {
     const folio = this.f.folio.value;
     this.solicitudesPagoService.buscarGastosPorfolio(folio).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
+      next: (respuesta: HttpRespuesta<any>): void => {
         let filtrado: TipoDropdown[] = [];
         if (respuesta?.datos.length > 0) {
-          respuesta?.datos.forEach((e: any) => {
+          respuesta?.datos.forEach((e: any): void => {
             filtrado.push({
               label: e.cveFolio,
               value: e.cveFolio,
@@ -327,7 +327,7 @@ export class SolicitudesPagoComponent implements OnInit {
           this.foliosGastos = [];
         }
       },
-      error: (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
       }
     });
