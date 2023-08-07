@@ -72,14 +72,14 @@ export class AprobarSolicitudPagoComponent implements OnInit {
     this.cargadorService.activar();
     this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
-          this.partidaPresupuestal = respuesta!.datos;
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.partidaPresupuestal = respuesta.datos;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
         }
-      );
+      });
   }
 
   get tipoSolicitud(): number {
