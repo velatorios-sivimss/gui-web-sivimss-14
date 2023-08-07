@@ -525,7 +525,9 @@ export class ModificarDatosFinadoComponent
               );
               this.datosFinado.fechaNacimiento.setValue(fecha);
               this.datosFinado.sexo.setValue(+respuesta.datos[0].sexo);
-              if (+respuesta.datos[0].idPais == 119) {
+              if (+respuesta.datos[0].idPais == 119 ||
+                  respuesta.datos[0].idPais == "" ||
+                  respuesta.datos[0].idPais === null) {
                 this.datosFinado.nacionalidad.setValue(1);
               } else {
                 this.datosFinado.nacionalidad.setValue(2);

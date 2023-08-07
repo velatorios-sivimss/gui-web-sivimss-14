@@ -94,7 +94,7 @@
             <input id="otroSexoAfiliado" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
-                  *ngIf="fda.otroSexoAfiliado?.errors?.required && (fda.otroSexoAfiliado?.dirty || fda.otroSexoAfiliado?.touched)">Este campo es obligatorio *.</span>
+                  *ngIf="fda.otroSexo?.errors?.required && (fda.otroSexo?.dirty || fda.otroSexo?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
@@ -329,7 +329,7 @@
             <input id="otroSexoContratante" class="form-control" formControlName="otroSexo"
                    placeholder="Ingresa otro sexo" maxlength="45">
             <span class="campo-obligatorio"
-                  *ngIf="fdc.otroSexoContratante?.errors?.required && (fdc.otroSexoContratante?.dirty || fdc.otroSexoContratante?.touched)">Este campo es obligatorio *.</span>
+                  *ngIf="fdc.otroSexo?.errors?.required && (fdc.otroSexo?.dirty || fdc.otroSexo?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
         <div class="row mb-3">
@@ -481,7 +481,7 @@
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
-      <button type="button" class="btn btn-primary btn-md ml-5" (click)="confirmacionDatosExistentes = false">Aceptar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="redireccionarModificar()">Aceptar</button>
     </div>
   </div>
 </p-dialog>

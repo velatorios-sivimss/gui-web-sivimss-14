@@ -6,6 +6,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {FormatoPagare} from '../../models/formato-pagare.interface';
 import {Location} from "@angular/common";
 
@@ -23,6 +24,7 @@ export class ReciboFormatoPagareComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private generarFormatoPagareService: GenerarFormatoPagareService,
+    private mensajesSistemaService: MensajesSistemaService,
     private cargadorService: LoaderService,
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
@@ -77,8 +79,8 @@ export class ReciboFormatoPagareComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Alta satisfactoria');
       },
       (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-        console.error("ERROR: ", error.message)
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     );
   }
@@ -100,6 +102,7 @@ export class ReciboFormatoPagareComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error(error)
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }

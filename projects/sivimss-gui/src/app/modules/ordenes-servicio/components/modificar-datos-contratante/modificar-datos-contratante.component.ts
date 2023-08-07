@@ -645,7 +645,7 @@ export class ModificarDatosContratanteComponent
               this.datosContratante.fechaNacimiento.setValue(fecha);
 
               this.datosContratante.sexo.setValue(+respuesta.datos[0].sexo);
-              if (datos.idPais == 119) {
+              if (datos.idPais == 119 || datos.idPais == "" || datos.idPais === null) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
                 this.datosContratante.nacionalidad.setValue(2);
@@ -979,7 +979,8 @@ export class ModificarDatosContratanteComponent
     //   'yyyy-MM-DD'
     // );
     this.contratante.fechaNac = anio+"-"+mes+"-"+dia;
-    this.contratante.idPais = datos.contratante.idPais;
+    this.contratante.idPais = datos.contratante.idPais == 0 ? null : datos.contratante.idPais;
+
     this.contratante.idEstado = datos.contratante.idEstado;
     this.contratante.telefono = datos.contratante.telefono;
     this.contratante.correo = datos.contratante.correo;

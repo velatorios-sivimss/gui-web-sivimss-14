@@ -207,7 +207,7 @@ export class ModificarContratantesComponent implements OnInit {
       this.dgf.rfc.updateValueAndValidity();
       const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/);
       if (!regex.test(this.dgf.rfc.value)) {
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C.no válido.');
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
         this.dgf.rfc.setErrors({ 'incorrect': true });
       } else {
         this.dgf.rfc.setErrors(null);
@@ -274,8 +274,7 @@ export class ModificarContratantesComponent implements OnInit {
     this.contratantesService.actualizar(this.datosActualizar()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
-          this.alertaService.mostrar(TipoAlerta.Exito,
-            `Modificado correctamente ${this.contratanteModificado.nombre} ${this.contratanteModificado.paterno} ${this.contratanteModificado.materno}`);
+          this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente contratante`);
           this.vistaConfirmarCambio = false;
           this.ref.close({ estatus: true });
         } else {

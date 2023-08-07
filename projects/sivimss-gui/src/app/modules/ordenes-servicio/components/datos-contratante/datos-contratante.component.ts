@@ -416,7 +416,7 @@ export class DatosContratanteComponent implements OnInit {
               this.datosContratante.fechaNacimiento.setValue(fecha);
 
               this.datosContratante.sexo.setValue(+respuesta.datos[0].sexo);
-              if (datos.idPais == 119) {
+              if (datos.idPais == 119 || datos.idPais == "" || datos.idPais === null) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
                 this.datosContratante.nacionalidad.setValue(2);
@@ -729,7 +729,7 @@ export class DatosContratanteComponent implements OnInit {
       datosEtapaContratante.datosContratante.fechaNacimiento
     ).format('yyyy-MM-DD');
     this.contratante.idPais =
-      datosEtapaContratante.datosContratante.paisNacimiento;
+      datosEtapaContratante.datosContratante.paisNacimiento == 0 ? null : datosEtapaContratante.datosContratante.paisNacimiento;
     this.contratante.idEstado =
       datosEtapaContratante.datosContratante.lugarNacimiento;
     this.contratante.telefono = datosEtapaContratante.datosContratante.telefono;

@@ -21,6 +21,7 @@ export const funcionalidades: { [valor: string]: string } = {
   'CONSULTAR_DONADOS': '64',
   'SOLICITAR_PAGO': '65',
   'GESTIONAR_PAGO': '66',
+  'RENOVACION_EXTEMPORANEA': '71',
   //Agregar los que falten.
 }
 export const permisos: { [valor: string]: string } = {
