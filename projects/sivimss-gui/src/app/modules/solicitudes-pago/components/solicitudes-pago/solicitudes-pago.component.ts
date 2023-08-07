@@ -62,6 +62,7 @@ export class SolicitudesPagoComponent implements OnInit {
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
   foliosGastos: TipoDropdown[] = [];
+  refElementos: number = 0;
 
   paginacionConFiltrado: boolean = false;
 
@@ -141,6 +142,7 @@ export class SolicitudesPagoComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>): void => {
           this.solicitudesPago = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
+          this.refElementos = respuesta.datos.totalElements;
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -173,6 +175,7 @@ export class SolicitudesPagoComponent implements OnInit {
       {
         header: 'Generar solicitud de pago',
         width: MAX_WIDTH,
+        data: this.refElementos
       },
     );
     this.creacionRef.onClose.subscribe(() => this.limpiar())
