@@ -1,8 +1,4 @@
 export function convertirNumeroPalabra(valor: number): string {
-  if (!Number.isInteger(valor) ||  valor < 0 || valor > 9999999) {
-    return '';
-  }
-
   const palabrasNumeros: string[] = [
     '', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve',
     'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve',
@@ -17,52 +13,42 @@ export function convertirNumeroPalabra(valor: number): string {
     '', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'
   ];
 
-  const millones: number = Math.floor(valor / 1000000);
-  const miles: number = Math.floor((valor % 1000000) / 1000);
-  const cientos: number = Math.floor((valor % 1000) / 100);
-  const decenas: number = Math.floor((valor % 100) / 10);
-  const unidades: number = valor % 10;
+  if (!Number.isInteger(valor) || valor < 0 || valor > 9999999) {
+    return '';
+  }
+
+  if (valor === 0) {
+    return 'cero';
+  }
 
   let words: string = '';
 
-  if (millones === 1) {
-    words += 'un millón ';
+  if (valor >= 1000000) {
+    const millones: number = Math.floor(valor / 1000000);
+    words += convertirNumeroPalabra(millones) + ' millón ';
+    valor %= 1000000;
   }
 
-  if (millones > 1) {
-    words += convertirNumeroPalabra(millones) + ' millones ';
-  }
-
-  if (miles === 1) {
-    words += ' mil ';
-  }
-
-  if (miles > 1) {
+  if (valor >= 1000) {
+    const miles: number = Math.floor(valor / 1000);
     words += convertirNumeroPalabra(miles) + ' mil ';
+    valor %= 1000;
   }
 
-  if (cientos > 0) {
-    words += (cientos === 1 && decenas === 0 && unidades === 0) ? 'cien ' : palabrasCientos[cientos] + ' ';
+  if (valor >= 100) {
+    const cientos: number = Math.floor(valor / 100);
+    words += palabrasCientos[cientos] + ' ';
+    valor %= 100;
   }
 
-  if (decenas === 0) {
-    words += palabrasNumeros[unidades];
+  if (valor >= 10) {
+    words += palabrasDecenas[Math.floor(valor / 10)] + ' ';
+    valor %= 10;
   }
 
-  if (decenas === 1) {
-    words += palabrasNumeros[decenas * 10 + unidades];
+  if (valor > 0) {
+    words += palabrasNumeros[valor];
   }
-
-  if (decenas > 1 && unidades === 0) {
-    words += palabrasDecenas[decenas];
-  }
-
-  if (decenas > 1 && unidades > 0) {
-    words += ' y ' + palabrasNumeros[unidades];
-  }
-
-
 
   return words.trim();
 }
-
