@@ -10,7 +10,7 @@ import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/ale
 import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {FiltrosSolicitudPago} from '../../models/filtros-solicitud-pagos.interface';
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -21,7 +21,6 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
-import {CATALOGOS_DUMMIES} from '../../../articulos/constants/dummies';
 import {GenerarSolicitudPagoComponent} from '../generar-solicitud-pago/generar-solicitud-pago.component';
 import {CancelarSolicitudPagoComponent} from '../cancelar-solicitud-pago/cancelar-solicitud-pago.component';
 import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechazar-solicitud-pago.component';
@@ -58,7 +57,6 @@ export class SolicitudesPagoComponent implements OnInit {
   catalogoEjercicios: TipoDropdown[] = [];
   catatalogoTipoSolicitudes: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
   foliosGastos: TipoDropdown[] = [];
@@ -77,7 +75,6 @@ export class SolicitudesPagoComponent implements OnInit {
     private alertaService: AlertaService,
     public dialogService: DialogService,
     private solicitudesPagoService: SolicitudesPagoService,
-    private router: Router,
     private cargadorService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService
@@ -257,19 +254,22 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   limpiar(): void {
-    this.filtroFormSolicitudesPago.reset();
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroFormSolicitudesPago.get('nivel')?.patchValue(+usuario.idOficina);
-    this.filtroFormSolicitudesPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroFormSolicitudesPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    this.paginacionConFiltrado = false;
+    this.numPaginaActual = 0;
+    if (this.filtroFormSolicitudesPago) {
+      this.filtroFormSolicitudesPago.reset();
+      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+      this.filtroFormSolicitudesPago.get('nivel')?.patchValue(+usuario.idOficina);
+      this.filtroFormSolicitudesPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
+      this.filtroFormSolicitudesPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    }
     this.obtenerVelatorios();
     this.paginar();
   }
 
   obtenerVelatorios(): void {
-    const idDelegacion = this.filtroFormSolicitudesPago.get('delegacion')?.value;
-    if (!idDelegacion) return;
-    this.solicitudesPagoService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.solicitudesPagoService.obtenerVelatoriosPorDelegacion(usuario.idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
@@ -314,8 +314,8 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   obtenerFoliosGastos(): void {
-    const folio = this.f.folio.value;
-    this.solicitudesPagoService.buscarGastosPorfolio(folio).subscribe({
+    const velatorio = this.filtroFormSolicitudesPago.get('velatorio')?.value;
+    this.solicitudesPagoService.buscarGastosPorfolio(velatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         let filtrado: TipoDropdown[] = [];
         if (respuesta?.datos.length > 0) {
@@ -336,7 +336,6 @@ export class SolicitudesPagoComponent implements OnInit {
     });
   }
 
-
   get f() {
     return this.filtroFormSolicitudesPago?.controls;
   }
@@ -355,5 +354,6 @@ export class SolicitudesPagoComponent implements OnInit {
       this.aceptarRef.destroy();
     }
   }
+
 
 }
