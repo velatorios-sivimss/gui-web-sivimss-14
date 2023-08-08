@@ -111,6 +111,6 @@
 <div class="row my-3">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
-    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="beneficiarioForm.invalid"  (click)="aceptar()">Aceptar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="beneficiarioForm.invalid || curpDesactivado"  (click)="aceptar()">Aceptar</button>
   </div>
 </div>

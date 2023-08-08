@@ -30,9 +30,7 @@ export interface PersonaInterface {
     validaActaNacimientoBeneficiario?: boolean,
     validaIneBeneficiario?: boolean,
   },
-
-
-
+  entidadFederativa?: string,
   nss?: string,
   numIne?: string,
   sexo?: number | string,

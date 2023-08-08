@@ -51,6 +51,36 @@
           </div>
         </div>
         <div class="row mb-3">
+          <div class="col-md-3">
+            <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
+            <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
+                        (onChange)="cambioTipoSexo()" [options]="tipoSexo"></p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.sexo?.errors?.required && (fp.sexo?.dirty || fp.sexo?.touched)">Este campo es obligatorio *.</span>
+          </div>
+          <div class="col-md-3" *ngIf="fp.sexo.value === 3">
+            <label class="control-label" for="otroSexo">Otro:</label>
+            <input id="otroSexo" class="form-control" formControlName="otroSexo" placeholder="Ingresa sexo" maxlength="15">
+            <span class="campo-obligatorio"
+                  *ngIf="fp.otroSexo?.errors?.required && (fp.otroSexo?.dirty || fp.otroSexo?.touched)">
+          Este campo es obligatorio *.</span>
+          </div>
+          <div class="col-md-3">
+            <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span class="req">*</span>:</label>
+            <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
+                        dateFormat="dd/mm/yy" placeholder="Ingresa fecha" [maxDate]="fechaActual"></p-calendar>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.fechaNacimiento?.errors?.required && (fp.fechaNacimiento?.dirty || fp.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
+          </div>
+          <div class="col-md-3">
+            <label class="control-label" for="entidadFederativa">Entidad Federativa<span class="req">*</span>:</label>
+            <p-dropdown id="entidadFederativa" class="form-control" formControlName="entidadFederativa" placeholder="Selecciona la entidad federativa"
+                        [options]="entidadFederativa" [filter]="true" filterBy="label"></p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.entidadFederativa?.errors?.required && (fp.entidadFederativa?.dirty || fp.entidadFederativa?.touched)">Este campo es obligatorio *.</span>
+          </div>
+        </div>
+        <div class="row mb-3">
           <div class="col-md-8">
             <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
             <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
@@ -160,7 +190,7 @@
   </ng-container>
   <ng-container *ngIf="indice == 1">
     <form [formGroup]="documentacionForm">
-      <app-table-panel>
+      <app-table-panel mb-3>
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
@@ -294,6 +324,27 @@
             <label> {{fp.segundoApellido.value}} </label>
           </div>
         </div>
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <span>Sexo:</span><br/>
+            <label> {{fp.sexo.value == 1 ? "Mujer" : fp.sexo.value == 2 ? "Hombre" : "Otro"     }} </label>
+          </div>
+
+          <div class="col-md-3" *ngIf="fp.sexo.value === 3">
+            <span>Otro:</span><br/>
+            <label> {{fp.otroSexo.value}} </label>
+          </div>
+
+          <div class="col-md-3">
+            <span>Fecha de nacimiento:</span><br/>
+            <label> {{fp.fechaNacimiento.value | date: 'dd/MM/YYYY'}} </label>
+          </div>
+
+          <div class="col-md-3">
+            <span>Entidad Federativa:</span><br/>
+            <label> {{detalleEntidadFederativa[0].label}} </label>
+          </div>
+        </div>
 
         <div class="row mb-3">
           <div class="col-md-3">
@@ -406,7 +457,7 @@
       </div>
     </div>
   </ng-container>
-  <div class="row mb-3">
+  <div class="row my-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" *ngIf="indice > 0" class="btn btn-default btn-md ml-5" (click)="regresar()">Regresar</button>
       <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>

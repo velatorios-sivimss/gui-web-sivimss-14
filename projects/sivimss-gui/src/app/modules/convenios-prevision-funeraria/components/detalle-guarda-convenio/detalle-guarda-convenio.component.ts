@@ -42,6 +42,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
   descripcionPromotor!: TipoDropdown[];
   detalleTipoPaquete!:TipoDropdown[];
   detalleEnfermedad!:TipoDropdown[];
+  detalleEntidadFederativa!: TipoDropdown[];
   velatorio!: TipoDropdown[] ;
   velatorioDescripcion!: string;
 
@@ -68,6 +69,8 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
         {label: paquete.nomPaquete, value: paquete.idPaquete}
       )
     )
+
+
 
     if(this.objetoDetalleEmpresa.empresa){
       this.descripcionPais = this.paises.filter(pais =>{
@@ -97,6 +100,10 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       this.descripcionPromotor = this.paises.filter(promotor =>{
         return promotor.value == this.objetoDetallePersona.idPromotor
       });
+
+      this.detalleEntidadFederativa = this.detalleEntidadFederativa.filter(entidad => {
+        return entidad.value == this.objetoDetallePersona.entidadFederativa;
+      })
     }
 
     this.consultaVelatorio();
