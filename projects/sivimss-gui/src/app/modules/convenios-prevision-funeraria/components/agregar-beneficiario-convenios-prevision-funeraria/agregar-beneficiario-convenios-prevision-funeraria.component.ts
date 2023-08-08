@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 import {DynamicDialogRef} from "primeng/dynamicdialog";
@@ -31,6 +31,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   parentesco!: TipoDropdown[];
 
   hoy = new Date();
+  curpDesactivado!: boolean;
 
   constructor(
     private alertaService: AlertaService,
@@ -121,7 +122,26 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   validarCURP(): void {
     if (this.beneficiarioForm.controls.curp?.errors?.pattern){
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+      return;
     }
+    if(!this.f.curp.value) return;
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultaCURPRFC("",this.f.curp.value).pipe(
+      finalize(()=>this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta:HttpRespuesta<any>) => {
+        if(respuesta.datos.desEstatusCURP.includes('Baja por Defunción')){
+          this.curpDesactivado = true;
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje)
+        );
+      }
+    });
   }
 
   validarRFC(): void {
