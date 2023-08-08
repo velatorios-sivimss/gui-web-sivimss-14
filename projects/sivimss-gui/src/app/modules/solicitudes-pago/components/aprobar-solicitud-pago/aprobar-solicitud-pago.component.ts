@@ -6,6 +6,7 @@ import {DetalleSolicitudPago, PartidaPresupuestal} from "../../models/solicitud-
 import {SolicitudesPagoService} from "../../services/solicitudes-pago.service";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
@@ -60,6 +61,7 @@ export class AprobarSolicitudPagoComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>): void => {
           this.solicitudPagoSeleccionado = respuesta.datos[0];
           this.listaPartidaPresupuestal(this.solicitudPagoSeleccionado.cveFolioGastos);
+          this.convertirImporte(this.solicitudPagoSeleccionado.impTotal);
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -107,6 +109,12 @@ export class AprobarSolicitudPagoComponent implements OnInit {
     return {
       idSolicitud: this.solicitudPagoSeleccionado.idSolicitud
     }
+  }
+
+  convertirImporte(importe: string): void {
+    if (!importe) return;
+    const importeLetra: string = convertirNumeroPalabra(+importe);
+    this.solicitudPagoSeleccionado.cantidadLetra=importeLetra;
   }
 
   cancelar(): void {
