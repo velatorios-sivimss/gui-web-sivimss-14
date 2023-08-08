@@ -140,7 +140,7 @@ export class ReporteEncargadoComponent implements OnInit {
             this.totalVehiculos = respuesta.datos.totalElements;
             this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
-            this.sumTotal = respuesta.datos.content.reduce((sum: any, val: any) => ( sum + parseFloat(val.MON_COSTO_MTTO ? val.MON_COSTO_MTTO : 0) ), 0);
+            this.sumTotal = respuesta.datos.content.reduce((sum: any, val: any) => (sum + parseFloat(val.MON_COSTO_MTTO ? val.MON_COSTO_MTTO : 0)), 0);
           },
           error: (error: HttpErrorResponse): void => {
             console.error(error);
@@ -154,7 +154,7 @@ export class ReporteEncargadoComponent implements OnInit {
             this.totalVehiculos = respuesta.datos.totalElements;
             this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
-            this.sumTotal = respuesta.datos.content.reduce((sum: any, val: any) => ( sum + parseFloat(val.MON_COSTO_MTTO ? val.MON_COSTO_MTTO : 0) ), 0);
+            this.sumTotal = respuesta.datos.content.reduce((sum: any, val: any) => (sum + parseFloat(val.MON_COSTO_MTTO ? val.MON_COSTO_MTTO : 0)), 0);
           },
           error: (error: HttpErrorResponse): void => {
             console.error(error);
@@ -164,18 +164,80 @@ export class ReporteEncargadoComponent implements OnInit {
   }
 
   crearSolicitudFiltrosPrograma(): FiltrosReporteEncargado {
-    return {
-      fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
-      fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
-      placa: this.filtroForm.get('placa')?.value,
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    switch (+usuario.idOficina) {
+      case 1:
+        return {
+          nivelOficina: this.filtroForm.get('nivel')?.value === '' ? null : this.filtroForm.get('nivel')?.value,
+          delegacion: this.filtroForm.get('delegacion')?.value === '' ? null : this.filtroForm.get('delegacion')?.value,
+          velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
+          fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+          placa: this.filtroForm.get('placa')?.value === '' ? null : this.filtroForm.get('placa')?.value
+        }
+      case 2:
+        return {
+          velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
+          fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+          placa: this.filtroForm.get('placa')?.value === '' ? null : this.filtroForm.get('placa')?.value
+        }
+      case 3:
+        return {
+          placa: this.filtroForm.get('placa')?.value === '' ? null : this.filtroForm.get('placa')?.value,
+          fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY')
+        }
+      default:
+        return {
+          delegacion: null,
+          velatorio: null,
+          tipoReporte: null,
+          fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+          fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          placa: '',
+          fechaFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+        }
     }
   }
 
   crearSolicitudFiltrosVerificacion(): FiltrosReporteEncargado {
-    return {
-      fechaFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
-      fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
-      placa: this.filtroForm.get('placa')?.value,
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    switch (+usuario.idOficina) {
+      case 1:
+        return {
+          nivelOficina: this.filtroForm.get('nivel')?.value === '' ? null : this.filtroForm.get('nivel')?.value,
+          delegacion: this.filtroForm.get('delegacion')?.value === '' ? null : this.filtroForm.get('delegacion')?.value,
+          velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
+          fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+          placa: this.filtroForm.get('placa')?.value === '' ? null : this.filtroForm.get('placa')?.value
+        }
+      case 2:
+        return {
+          velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
+          fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+          placa: this.filtroForm.get('placa')?.value === '' ? null : this.filtroForm.get('placa')?.value
+        }
+      case 3:
+        return {
+          placa: this.filtroForm.get('placa')?.value === '' ? null : this.filtroForm.get('placa')?.value,
+          fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY')
+        }
+      default:
+        return {
+          delegacion: null,
+          velatorio: null,
+          tipoReporte: null,
+          fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+          fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          placa: '',
+          fechaFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
+          fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
+        }
     }
   }
 

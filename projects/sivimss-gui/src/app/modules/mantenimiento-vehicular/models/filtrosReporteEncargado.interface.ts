@@ -1,4 +1,5 @@
 export interface FiltrosReporteEncargado {
+  nivelOficina?: number | null,
   delegacion?: number | null,
   velatorio?: number | null,
   tipoReporte?: string | null,
