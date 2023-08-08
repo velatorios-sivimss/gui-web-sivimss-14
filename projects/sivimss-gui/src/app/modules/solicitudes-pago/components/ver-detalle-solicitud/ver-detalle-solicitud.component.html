@@ -113,7 +113,8 @@
             <div class="col-md-6">
                 <div class="table-panel-column">
                     <label>Referencia unidad operativa / administrativa</label>
-                    <span>{{solicitudPagoSeleccionado.refeUnidadOpe}}</span>
+                    <span *ngIf="solicitudPagoSeleccionado.idUnidadOperativa===1">{{solicitudPagoSeleccionado.refeUnidadOpe}}</span>
+                    <span *ngIf="solicitudPagoSeleccionado.idUnidadOperativa!=1">{{solicitudPagoSeleccionado.desVelatorio}}</span>
                 </div>
             </div>
             <div class="col-md-6">
