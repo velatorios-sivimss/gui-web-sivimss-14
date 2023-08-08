@@ -5,6 +5,7 @@ import { SolicitudesPagoService } from '../../services/solicitudes-pago.service'
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -58,6 +59,7 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>): void => {
           this.solicitudPagoSeleccionado = respuesta.datos[0];
           this.listaPartidaPresupuestal(this.solicitudPagoSeleccionado.cveFolioGastos);
+          this.convertirImporte(this.solicitudPagoSeleccionado.impTotal);
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -80,5 +82,10 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
       });
   }
 
+  convertirImporte(importe: string): void {
+    if (!importe) return;
+    const importeLetra: string = convertirNumeroPalabra(+importe);
+    this.solicitudPagoSeleccionado.cantidadLetra=importeLetra;
+  }
 
 }
