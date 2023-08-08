@@ -546,6 +546,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(()=> {
+      this.cambioTipoSexo();
       this.validarFormularioVacio(false,'local');
     },800)
   }
