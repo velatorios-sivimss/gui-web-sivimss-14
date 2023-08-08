@@ -35,7 +35,7 @@ export interface DetalleSolicitudPago {
     observaciones: string;
 
     cveFolioGastos: string;
-    fehaInicial: string;
+    fechaInicial: string;
     fechaFinal: string;
     ejercicioFiscal: number;
     idDelegacion: number;
