@@ -14,7 +14,9 @@ export class ReporteEncargadoResolver implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const placas$: Observable<HttpRespuesta<any>> = this.mantenimientoVehicularService.obtenerCatalogoPlacas();
     const catalogoBase$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoReporteEncargado();
-
-    return forkJoin([placas$, catalogoBase$]);
+    const niveles$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoNiveles();
+    const delegaciones$: Observable<TipoDropdown[]> = this.mantenimientoVehicularService.obtenerCatalogoDelegaciones();
+    
+    return forkJoin([placas$, catalogoBase$, niveles$, delegaciones$]);
   }
 }

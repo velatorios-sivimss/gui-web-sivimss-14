@@ -42,6 +42,7 @@ export class ReporteEncargadoComponent implements OnInit {
   mensajeArchivoConfirmacion: string = "";
   velatorio: string = '';
   totalVehiculos: number = 0;
+  sumTotal: number = 0;
   rangoFecha: string = '';
   registrosReporte: RegistroReporteEncargado[] = [];
   registroSeleccionado!: RegistroReporteEncargado;
@@ -54,9 +55,14 @@ export class ReporteEncargadoComponent implements OnInit {
   mostrarDetalle: boolean = false;
   mostrarTabla: boolean = false;
 
+  catalogoNiveles: TipoDropdown[] = [];
+  catalogoDelegaciones: TipoDropdown[] = [];
+  catalogoVelatorios: TipoDropdown[] = [];
+
   readonly POSICION_CATALOGOS_PLACAS: number = 0;
   readonly POSICION_CATALOGOS_TIPO_MTTO: number = 1;
-
+  readonly POSICION_CATALOGOS_NIVELES: number = 2;
+  readonly POSICION_CATALOGOS_DELEGACIONES: number = 3;
   fechaActual: Date = new Date();
   fechaValida: boolean = false;
   tipoBusqueda: number = 0;
@@ -87,6 +93,8 @@ export class ReporteEncargadoComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
     this.tipoReportes = respuesta[this.POSICION_CATALOGOS_TIPO_MTTO];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
   }
 
   limpiar(): void {
@@ -95,7 +103,11 @@ export class ReporteEncargadoComponent implements OnInit {
   }
 
   inicializarFiltroForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
+      nivel: [{ value: +usuario.idOficina, disabled: true }],
+      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
       tipoReporte: [{ value: null, disabled: false }, [Validators.required]],
       placa: [{ value: null, disabled: false }, []],
       fechaVigenciaDesde: [{ value: null, disabled: false }, [Validators.required]],
@@ -128,6 +140,7 @@ export class ReporteEncargadoComponent implements OnInit {
             this.totalVehiculos = respuesta.datos.totalElements;
             this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
+            this.sumTotal = respuesta.datos.content.reduce((sum: any, val: any) => ( sum + parseFloat(val.MON_COSTO_MTTO ? val.MON_COSTO_MTTO : 0) ), 0);
           },
           error: (error: HttpErrorResponse): void => {
             console.error(error);
@@ -141,6 +154,7 @@ export class ReporteEncargadoComponent implements OnInit {
             this.totalVehiculos = respuesta.datos.totalElements;
             this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
+            this.sumTotal = respuesta.datos.content.reduce((sum: any, val: any) => ( sum + parseFloat(val.MON_COSTO_MTTO ? val.MON_COSTO_MTTO : 0) ), 0);
           },
           error: (error: HttpErrorResponse): void => {
             console.error(error);
@@ -172,15 +186,37 @@ export class ReporteEncargadoComponent implements OnInit {
 
   obtenerVelatorios(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.velatorio = `#${usuario.idVelatorio}`;
+    if (usuario.idVelatorio != null) {
+      this.velatorio = `#${usuario.idVelatorio}`;
+    }
 
-    this.mantenimientoVehicularService.obtenerVelatorios(usuario.idDelegacion).subscribe({
+    if (usuario.idDelegacion != null) {
+      this.mantenimientoVehicularService.obtenerVelatorios(usuario.idDelegacion).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          const velatorio = respuesta.datos.find((v: { id: string | number; }) => (+v.id === +usuario.idVelatorio))?.desc;
+          this.velatorio = `#${usuario.idVelatorio} ${velatorio || ''}`;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error("ERROR: ", error);
+        }
+      });
+    }
+  }
+
+  cargarVelatorios(cargaInicial: boolean = false): void {
+    if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.filtroForm.get('velatorio')?.patchValue("");
+    }
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.mantenimientoVehicularService.obtenerVelatorios(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        const velatorio = respuesta.datos.find((v: { id: string | number; }) => (+v.id === +usuario.idVelatorio))?.desc;
-        this.velatorio = `#${usuario.idVelatorio} ${velatorio || ''}`;
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
       error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
