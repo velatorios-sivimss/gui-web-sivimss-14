@@ -91,7 +91,7 @@
     <ng-template pTemplate="body" let-solicitud>
       <tr>
         <td pResizableColumn>{{solicitud.desVelatorio}}</td>
-        <td pResizableColumn>{{solicitud.cveFolio}} </td>
+        <td pResizableColumn>{{solicitud.cveFolio ? solicitud.cveFolio : solicitud.cveFolios}} </td>
         <td pResizableColumn>{{solicitud.ejercicioFiscal}} </td>
         <td pResizableColumn>{{solicitud.fecElaboracion}}</td>
         <td pResizableColumn>{{solicitud.desTipoSolicitud}}</td>
