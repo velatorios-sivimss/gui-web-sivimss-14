@@ -106,10 +106,10 @@
                 <span>{{rangoFecha}}</span>
               </div>
             </div>
-            <div class="col-md-6 colum-tam">
+            <div class="col-md-6 colum-tam" *ngIf="fmp?.tipoReporte?.value === 1">
               <div class="table-panel-column">
                 <label>Total</label>
-                <span>{{sumTotal}}</span>
+                <span>{{sumTotal | currency }}</span>
               </div>
             </div>
           </div>
