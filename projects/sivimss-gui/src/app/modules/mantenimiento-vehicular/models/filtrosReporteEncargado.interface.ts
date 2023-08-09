@@ -6,6 +6,6 @@ export interface FiltrosReporteEncargado {
   fecInicio?: string,
   fecFin?: string,
   placa: string,
-  fechaFin?: string,
+  fechaFinal?: string,
   fechaInicio?: string,
 }
