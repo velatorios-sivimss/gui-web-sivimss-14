@@ -13,38 +13,36 @@ export interface SolicitudPago {
 
 export interface DetalleSolicitudPago {
     idSolicitud: number;
-    cveFolioGastos: string;
+    refeUnidadOpe: string;
     desEstatusSolicitud: string;
     desTipoSolicitud: string;
-    fecElaboracion: string;
-    ejercicioFiscal: number;
-    idDelegacion: number;
-    unidadMedica: number;
-    unidadAdmi: number;
+    fecElabora: string;
     idTipoSolicitud: number;
     desVelatorio: string;
     idEstatusSol: number;
-    idUnidadOperativa: number;
     idVelatorio: number;
     nomBeneficiario: string;
-    importeTotal: string;
-
-    refeUnidadOpe: string;
-    solicitadoPor: string;
+    impTotal: string;
+    idProveedor: number;
     nomDestinatario: string;
     nomRemitente: string;
     referenciaTD: string;
-    beneficiario: string;
-    fehaInicial: string;
-    fechaFinal: string;
     banco: string;
     cuenta: string;
     claveBancaria: string;
     concepto: string;
-    cantidadLetra: string;
     numContrato: string;
-    observ: string;
+    observaciones: string;
 
+    cveFolioGastos: string;
+    fechaInicial: string;
+    fechaFinal: string;
+    ejercicioFiscal: number;
+    idDelegacion: number;
+	idUnidadOperativa: number;
+	
+	solicitadoPor: string;
+	cantidadLetra: string;
 }
 
 export interface CrearSolicitudPago {

@@ -37,11 +37,11 @@ interface RegistroProveedor {
 }
 
 @Component({
-  selector: 'app-solicitar-solicitud-pago',
-  templateUrl: './solicitar-solicitud-pago.component.html',
-  styleUrls: ['./solicitar-solicitud-pago.component.scss']
+  selector: 'app-generar-solicitud-pago',
+  templateUrl: './generar-solicitud-pago.component.html',
+  styleUrls: ['./generar-solicitud-pago.component.scss']
 })
-export class SolicitarSolicitudPagoComponent implements OnInit {
+export class GenerarSolicitudPagoComponent implements OnInit {
 
   validaciones: Map<number, any> = new Map();
 
@@ -63,7 +63,6 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   catalogoUnidades: RegistroUnidadOperativa[] = [];
   catalogoProveedores: RegistroProveedor[] = [];
   mensajeConfirmacion: boolean = false;
-  importeOriginal: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -100,6 +99,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   inicializarTipoSolicitud(): void {
+    const ref = this.config.data;
     this.solicitudPagoForm = this.formBulder.group({
       tipoSolicitud: [{value: null, disabled: false}, [Validators.required]],
       folioFiscal: [{value: null, disabled: false}],
@@ -109,7 +109,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
       solicitadoPor: [{value: null, disabled: true}],
       nombreDestinatario: [{value: null, disabled: false}, [Validators.required]],
       nomRemitente: [{value: null, disabled: false}, [Validators.required]],
-      referenciaTD: [{value: null, disabled: true}],
+      referenciaTD: [{value: ref + 1, disabled: true}],
       beneficiario: [{value: null, disabled: false}, [Validators.required]],
       concepto: [{value: null, disabled: false}],
       importe: [{value: null, disabled: false}],
@@ -274,6 +274,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   limpiarFormulario(): void {
+    const ref = this.config.data;
     this.mensajeConfirmacion = false;
     this.solicitudPagoForm.get('folioFiscal')?.setValue(null);
     this.solicitudPagoForm.get('folioFiscal')?.clearValidators();
@@ -284,7 +285,7 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('solicitadoPor')?.clearValidators();
     this.solicitudPagoForm.get('nombreDestinatario')?.setValue(null);
     this.solicitudPagoForm.get('nomRemitente')?.setValue(null);
-    this.solicitudPagoForm.get('referenciaTD')?.setValue(null);
+    this.solicitudPagoForm.get('referenciaTD')?.setValue(ref + 1);
     this.solicitudPagoForm.get('referenciaTD')?.clearValidators();
     this.solicitudPagoForm.get('beneficiario')?.setValue(null);
     this.solicitudPagoForm.get('concepto')?.setValue(null);
@@ -446,14 +447,17 @@ export class SolicitarSolicitudPagoComponent implements OnInit {
   }
 
   reAjustarImporte(): void {
-    const importe = this.partidaPresupuestal[0].importeTotal ?? 0;
+    const importe: string = this.partidaPresupuestal[0].importeTotal ?? 0;
     this.solicitudPagoForm.get('importe')?.setValue(importe);
     this.convertirImporte();
   }
 
   guardarFolios(id: number): void {
     const tipoSolicitud: number = this.solicitudPagoForm.get('tipoSolicitud')?.value as number;
-    if (![3, 5, 6].includes(tipoSolicitud)) this.mostrarMensajeSolicitudCorrecta();
+    if (![3, 5, 6].includes(tipoSolicitud)) {
+      this.mostrarMensajeSolicitudCorrecta();
+      return;
+    }
     const cveFolios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
     const solicitud = {idSolicitud: id, cveFolios}
     this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).subscribe({

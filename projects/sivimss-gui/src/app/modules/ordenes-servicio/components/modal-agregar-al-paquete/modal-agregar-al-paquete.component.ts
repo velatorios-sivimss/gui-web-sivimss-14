@@ -87,6 +87,10 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             'nombreArticulo',
             'idArticulo'
           );
+          if(this.listaAtaudes.length == 0){
+            this.alertaService.mostrar(TipoAlerta.Precaucion, "Ya no hay stock de este artículo. " ||
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(15));
+          }
         },
         (error: HttpErrorResponse) => {
           console.log(error);

@@ -9,7 +9,7 @@
   <app-titulo-principal style="width: 100%" titulo="Administrar usuarios contratantes"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (ngSubmit)="paginar()">
+  <form [formGroup]="filtroForm" (ngSubmit)="paginarPorFiltros()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="curp">CURP:</label>

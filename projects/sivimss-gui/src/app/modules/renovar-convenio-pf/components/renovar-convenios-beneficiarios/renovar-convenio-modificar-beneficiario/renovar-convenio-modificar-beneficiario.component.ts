@@ -127,7 +127,7 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
   validarRfc() {
     const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/);
     if (!regex.test(this.mbf.rfc.value)) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C.no válido.');
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
       this.mbf.rfc.setErrors({ 'incorrect': true });
     } else {
       this.mbf.rfc.setErrors(null);
