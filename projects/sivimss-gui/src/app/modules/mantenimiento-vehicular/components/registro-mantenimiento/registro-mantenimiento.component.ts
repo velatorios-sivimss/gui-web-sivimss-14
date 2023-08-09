@@ -320,8 +320,6 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get("modalidad")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("matPreventivo")?.updateValueAndValidity();
     this.solicitudMantenimientoForm.get("noContrato")?.updateValueAndValidity();
-
-    this.solicitudMantenimientoForm.markAllAsTouched();
   }
 
   asignarContrato(): void {

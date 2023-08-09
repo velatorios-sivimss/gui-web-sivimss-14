@@ -3,7 +3,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ConfirmacionServicio, ConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/models/convenios-prevision.interface';
+import { ConfirmacionServicio, ConveniosPrevision, GenerarRenovacionConvenio } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/models/convenios-prevision.interface';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { RenovacionExtemporaneaService } from '../../services/renovacion-extemporanea.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { finalize } from 'rxjs';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ERROR_GUARDAR_INFORMACION } from '../../../mantenimiento-vehicular/constants/catalogos-filtros';
 
 @Component({
   selector: 'app-habilitar-renovacion',
@@ -12,64 +19,87 @@ import { ConfirmacionServicio, ConveniosPrevision } from 'projects/sivimss-gui/s
 })
 export class HabilitarRenovacionComponent implements OnInit {
   @Input() convenioSeleccionado!: ConveniosPrevision;
-  @Input() origen!: string;
   @Output() confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
 
   creacionRef!: DynamicDialogRef;
 
   @ViewChild(OverlayPanel)
   overlayPanel: OverlayPanel | undefined;
-  habilitarRenobacionForm!: FormGroup;
+  habilitarRenovacionForm!: FormGroup;
 
   abrirHabilitar: boolean = false;
+  mostrarMsjConfirmacion: boolean = false;
 
   constructor(public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private formBuilder: FormBuilder,
     public dialogService: DialogService,
-    private alertaService: AlertaService) { }
+    private alertaService: AlertaService,
+    private readonly loaderService: LoaderService,
+    private renovacionExtemporaneaService: RenovacionExtemporaneaService,
+    private mensajesSistemaService: MensajesSistemaService
+  ) { }
 
-ngOnInit(): void {
-//Escenario selección ícono 'ojo' detalle o cambio estatus vista rápida
-this.inicializarAgregarServicioForm();
-if(this.config?.data){
-this.convenioSeleccionado = this.config.data.servicio;
-this.origen = this.config.data.origen;
-}
-}
+  ngOnInit(): void {
+    //Escenario selección ícono 'ojo' detalle o cambio estatus vista rápida
+    this.inicializarAgregarServicioForm();
+    if (this.config?.data) {
+      this.convenioSeleccionado = this.config.data.convenio;
+    }
+  }
 
-
-inicializarAgregarServicioForm():void{
-    this.habilitarRenobacionForm = this.formBuilder.group({
-      justificacion: [{value:null,disabled:false},[Validators.required]],
+  inicializarAgregarServicioForm(): void {
+    this.habilitarRenovacionForm = this.formBuilder.group({
+      justificacion: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(100)]],
     });
-}
+  }
 
-aceptar():void {
-    this.ref.close();
-}
+  cancelar(): void {
+    this.ref.close(false);
+  }
 
-continuarHabilitacion(){
-  this.abrirHabilitar = true;
-  console.log('habilitarrenobacion');
-}
+  habilitarRenovacion() {
+    this.abrirHabilitar = true;
+    this.habilitarRenovacionForm.markAllAsTouched();
+  }
 
-regresar(): void{
-  this.confirmacionAceptar.emit({estatus:true,origen:"regresar"});
-}
+  habilitarRenovacionConfirmar() {
+    this.mostrarMsjConfirmacion = true;
+  }
 
-cerrar(): void {
-  this.ref.close();
-}
+  renovarConvenio() {
+    this.loaderService.activar();
+    this.renovacionExtemporaneaService.renovarCovenio(this.datosRenovacionConvenio())
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          if (respuesta?.datos) {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(146);
+            this.alertaService.mostrar(TipoAlerta.Exito, msg);
+            this.ref.close(true);
+          } else {
+            if (respuesta.mensaje === '36') {
+              const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(36);
+              this.alertaService.mostrar(TipoAlerta.Error, msg);
+            }
+          }
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, ERROR_GUARDAR_INFORMACION);
+        }
+      });
+  }
 
-realizarCombenio(){
-       this.alertaService.mostrar(TipoAlerta.Exito, 'Renovación habilitada correctamente');
-      this.ref.close();
-    this.confirmacionAceptar.emit({estatus:true,origen:this.origen});
-}
+  datosRenovacionConvenio(): GenerarRenovacionConvenio {
+    return {
+      idConvenio: this.convenioSeleccionado.idConvenio,
+      justificacion: this.hrf.justificacion.value,
+      indRenovacion: this.convenioSeleccionado.indRenovacion,
+    }
+  }
 
-get hrf(){
-  return this.habilitarRenobacionForm?.controls;
-}
+  get hrf() {
+    return this.habilitarRenovacionForm?.controls;
+  }
 
 }

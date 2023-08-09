@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 import {finalize} from "rxjs/operators";
 
@@ -20,7 +20,7 @@ import {Empresa} from "../../models/empresa.interface";
   templateUrl: './por-empresa.component.html',
   styleUrls: ['./por-empresa.component.scss']
 })
-export class PorEmpresaComponent implements OnInit, OnChanges {
+export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
 
   @Input() existePersona: boolean = false;
   @Input() folioEmpresa!: any;
@@ -41,7 +41,10 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   personasConvenio!: any;
 
   estado!: TipoDropdown[];
-  pais!: TipoDropdown[]
+  pais!: TipoDropdown[];
+  folioRedireccion: string = "";
+  fechaRedireccion: string = "";
+  confirmarRedireccionamiento: boolean = false;
 
 
   constructor(
@@ -51,6 +54,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     private formBuilder: FormBuilder,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -85,8 +89,8 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
                    pais: [{value: this.empresaFormTempora?.pais ?? null, disabled: false}, [Validators.required]],
                      cp: [{value: this.empresaFormTempora?.cp ?? null, disabled: false}, [Validators.required]],
                 colonia: [{value: this.empresaFormTempora?.colonia ?? null, disabled: false}, [Validators.required]],
-                 estado: [{value: this.empresaFormTempora?.estado ?? null, disabled: true},  [Validators.required]],
-              municipio: [{value: this.empresaFormTempora?.municipio ?? null, disabled: true},  [Validators.required]],
+                 estado: [{value: this.empresaFormTempora?.estado ?? null, disabled: true}],
+              municipio: [{value: this.empresaFormTempora?.municipio ?? null, disabled: true}],
                   calle: [{value: this.empresaFormTempora?.calle ?? null, disabled: false}, [Validators.required]],
          numeroExterior: [{value: this.empresaFormTempora?.numeroExterior ?? null, disabled: false}, [Validators.required]],
          numeroInterior: [{value: this.empresaFormTempora?.numeroInterior ?? null, disabled: false}],
@@ -100,6 +104,49 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     if(!this.fe.rfc.value.match(PATRON_RFC)){
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
     }
+
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultaCURPRFC(this.fe.rfc.value,"").pipe(
+      finalize(()=>  this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+
+        if(respuesta.datos[0].tieneConvenio>0){
+          if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+            this.folioRedireccion = respuesta.datos[0].folioConvenio;
+            this.fechaRedireccion = respuesta.datos[0].fecha;
+            this.confirmarRedireccionamiento = true
+            return
+          }else{
+            window.location.reload()
+          }
+        }
+      },
+      (error:HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
+
+
+
+
+
+
+
+
+
+
+    // if(respuesta.datos[0].tieneConvenio>0){
+    //   if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+    //     this.folioRedireccion = respuesta.datos[0].folioConvenio;
+    //     this.fechaRedireccion = respuesta.datos[0].fecha;
+    //     this.confirmarRedireccionamiento = true
+    //     return
+    //   }else{
+    //     window.location.reload()
+    //   }
+    // }
+
     this.validarFormularioVacio();
   }
 
@@ -113,6 +160,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
       (respuesta: HttpRespuesta<any>) => {
         this.fe.estado.setValue(respuesta.datos[0]?.estado);
         this.fe.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.fe.colonia.setValue(respuesta.datos[0]?.colonia);
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -167,7 +215,6 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   }
 
   consultarFolio(origen: string): void {
-    console.log(this.empresaFormTempora)
     //origen.includes("onChanges") &&
     if(!this.folioEmpresa)return;
     this.loaderService.activar();
@@ -199,7 +246,8 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
   }
 
   validarFormularioVacio(formularioPrincipalValido?: boolean, origen?: string): void {
-    this.empresaForm.valid ? this.formularioValido.emit(true):this.formularioValido.emit(false)
+    if(!this.empresaForm)return;
+    (this.empresaForm.valid && this.personasConvenio.length > 0) ? this.formularioValido.emit(true):this.formularioValido.emit(false)
   }
 
   get fe() {
@@ -237,4 +285,39 @@ export class PorEmpresaComponent implements OnInit, OnChanges {
     if(this.folioEmpresa === "")return;
       this.consultarFolio("onChanges");
   }
+
+  convertirMayusculas(posicion: number): void {
+    const formularios = [this.fe.rfc]
+    if(!formularios[posicion].value)return;
+    formularios[posicion].setValue(
+      formularios[posicion].value.toUpperCase()
+    )
+  }
+
+  convertirMinusculas(posicion:number): void {
+    const formularios = [this.fe.correoElectronico]
+    if(!formularios[posicion].value)return;
+    formularios[posicion].setValue(
+      formularios[posicion].value.toLowerCase()
+    )
+  }
+
+  redireccionarModificar(): void {
+    ///'03/08/2023'
+    this.router.navigate(['../convenios-prevision-funeraria/modificar-nuevo-convenio'],
+      {
+        queryParams:{
+          folio: this.folioRedireccion,
+          fecha: this.fechaRedireccion
+        }
+      }
+    )
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(()=> {
+      this.validarFormularioVacio();
+    },300)
+  }
+
 }

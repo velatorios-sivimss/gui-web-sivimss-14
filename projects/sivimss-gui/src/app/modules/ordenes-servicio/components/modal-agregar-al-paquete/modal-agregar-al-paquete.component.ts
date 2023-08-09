@@ -87,6 +87,10 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             'nombreArticulo',
             'idArticulo'
           );
+          if(this.listaAtaudes.length == 0){
+            this.alertaService.mostrar(TipoAlerta.Precaucion, "Ya no hay stock de este artículo. " ||
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(15));
+          }
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -117,7 +121,6 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaProveedores = [];
@@ -181,7 +184,6 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaAtaudesInventario = [];

@@ -67,12 +67,24 @@ export class ConsultaConveniosService extends BaseService<HttpRespuesta<any>, an
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-facturas`, filtros, { params });
   }
 
-  descargarPDF(datos: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/reporte-tabla-convenios/generarDocumento/pdf`, datos);
+  descargarPDF<T>(body: T): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+
+    return this._http.post<any>(this._base + `${this._funcionalidad}/reporte-tabla-convenios/generarDocumento/pdf`, body,
+      { headers, responseType: 'blob' as 'json' })
   }
 
-  descargarExcel(datos: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/reporte-tabla-convenios/generarDocumento/xls`, datos);
+  descargarExcel<T>(body: T): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+
+    return this._http.post<any>(this._base + `${this._funcionalidad}/reporte-tabla-convenios/generarDocumento/xls`, body,
+      { headers, responseType: 'blob' as 'json' })
   }
 
   descargarListadoPagaresPDF(): Observable<Blob> {

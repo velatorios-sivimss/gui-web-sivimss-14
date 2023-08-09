@@ -13,7 +13,7 @@
           <div class="col-md-4">
             <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
             <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18" alphanumericOnly
-                   (blur)="consultaCURP()">
+                   (blur)="consultaCURP()" (keyup)="convertirMayusculas(0)">
             <span class="campo-obligatorio"
                   *ngIf="fp.curp?.errors?.required && (fp.curp?.dirty || fp.curp?.touched)">Este campo es obligatorio *.</span>
             <span class="campo-obligatorio"
@@ -22,17 +22,17 @@
           <div class="col-md-4">
             <label class="control-label" for="rfc">R.F.C:</label>
             <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C." maxlength="13" alphanumericOnly
-                   (blur)="consultaRFC()">
+                   (blur)="consultaRFC()" (keyup)="convertirMayusculas(1)">
           </div>
           <div class="col-md-4">
-            <label class="control-label" for="matricula">Matrícula :</label>
+            <label class="control-label" for="matricula">Matrícula:</label>
             <input id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula" numbersOnly
             maxlength="10" (blur)="consultarMatricula()">
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-md-4">
-            <label class="control-label" for="nombre">Nombres (s)<span class="req">*</span>:</label>
+            <label class="control-label" for="nombre">Nombres(s)<span class="req">*</span>:</label>
             <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
             <span class="campo-obligatorio"
                   *ngIf="fp.nombre?.errors?.required && (fp.nombre?.dirty || fp.nombre?.touched)">Este campo es obligatorio *.</span>
@@ -51,10 +51,40 @@
           </div>
         </div>
         <div class="row mb-3">
+          <div class="col-md-3">
+            <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
+            <p-dropdown id="sexo" class="form-control" formControlName="sexo" placeholder="Selecciona sexo"
+                        (onChange)="cambioTipoSexo()" [options]="tipoSexo"></p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.sexo?.errors?.required && (fp.sexo?.dirty || fp.sexo?.touched)">Este campo es obligatorio *.</span>
+          </div>
+          <div class="col-md-3" *ngIf="fp.sexo.value === 3">
+            <label class="control-label" for="otroSexo">Otro:</label>
+            <input id="otroSexo" class="form-control" formControlName="otroSexo" placeholder="Ingresa sexo" maxlength="15">
+            <span class="campo-obligatorio"
+                  *ngIf="fp.otroSexo?.errors?.required && (fp.otroSexo?.dirty || fp.otroSexo?.touched)">
+          Este campo es obligatorio *.</span>
+          </div>
+          <div class="col-md-3">
+            <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span class="req">*</span>:</label>
+            <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
+                        dateFormat="dd/mm/yy" placeholder="Ingresa fecha" [maxDate]="fechaActual"></p-calendar>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.fechaNacimiento?.errors?.required && (fp.fechaNacimiento?.dirty || fp.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
+          </div>
+          <div class="col-md-3">
+            <label class="control-label" for="entidadFederativa">Entidad Federativa<span class="req">*</span>:</label>
+            <p-dropdown id="entidadFederativa" class="form-control" formControlName="entidadFederativa" placeholder="Selecciona la entidad federativa"
+                        [options]="entidadFederativa" [filter]="true" filterBy="label"></p-dropdown>
+            <span class="campo-obligatorio"
+                  *ngIf="fp.entidadFederativa?.errors?.required && (fp.entidadFederativa?.dirty || fp.entidadFederativa?.touched)">Este campo es obligatorio *.</span>
+          </div>
+        </div>
+        <div class="row mb-3">
           <div class="col-md-8">
             <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
             <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
-            maxlength="45" (blur)="validarCorreoElectornico()">
+            maxlength="45" (blur)="validarCorreoElectornico()" (keyup)="convertirMinusculas(0)">
             <span class="campo-obligatorio"
                   *ngIf="fp.correoElectronico?.errors?.required && (fp.correoElectronico?.dirty || fp.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -110,14 +140,14 @@
                   *ngIf="fp.municipio?.errors?.required && (fp.municipio?.dirty || fp.municipio?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="estado">Estado <span class="req">*</span>:</label>
+            <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
             <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado"
                    maxlength="35">
             <span class="campo-obligatorio"
                   *ngIf="fp.estado?.errors?.required && (fp.estado?.dirty || fp.estado?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="pais">País <span class="req">*</span>:</label>
+            <label class="control-label" for="pais">País<span class="req">*</span>:</label>
             <p-dropdown id="pais" class="form-control" formControlName="pais" [options]="pais"
                         placeholder="Selecciona el pais" [filter]="true" filterBy="label">
             </p-dropdown>
@@ -144,7 +174,7 @@
                   *ngIf="fp.enfermedadPrexistente?.errors?.required && (fp.enfermedadPrexistente?.dirty || fp.enfermedadPrexistente?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3" *ngIf="otroTipoEnferemdad">
-            <label class="control-label" for="otraEnferdedad">Otro <span class="req">*</span>:</label>
+            <label class="control-label" for="otraEnferdedad">Otro<span class="req">*</span>:</label>
             <input id="otraEnferdedad" class="form-control" formControlName="otraEnferdedad" placeholder="Otro"
                    maxlength="35">
             <span class="campo-obligatorio"
@@ -160,7 +190,7 @@
   </ng-container>
   <ng-container *ngIf="indice == 1">
     <form [formGroup]="documentacionForm">
-      <app-table-panel>
+      <app-table-panel mb-3>
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
@@ -205,14 +235,6 @@
         <!--        </div>-->
       </app-table-panel>
     </form>
-
-    <div class="row">
-      <div class="col-md-12">
-      <span class="etiqueta-base">
-        *Campos obligatorios
-      </span>
-      </div>
-    </div>
   </ng-container>
   <ng-container *ngIf="indice == 2">
     <div class="border-panel">
@@ -300,6 +322,27 @@
           <div class="col-md-3">
             <span>Segundo apellido:</span><br/>
             <label> {{fp.segundoApellido.value}} </label>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <span>Sexo:</span><br/>
+            <label> {{fp.sexo.value == 1 ? "Mujer" : fp.sexo.value == 2 ? "Hombre" : "Otro"     }} </label>
+          </div>
+
+          <div class="col-md-3" *ngIf="fp.sexo.value === 3">
+            <span>Otro:</span><br/>
+            <label> {{fp.otroSexo.value}} </label>
+          </div>
+
+          <div class="col-md-3">
+            <span>Fecha de nacimiento:</span><br/>
+            <label> {{fp.fechaNacimiento.value | date: 'dd/MM/YYYY'}} </label>
+          </div>
+
+          <div class="col-md-3">
+            <span>Entidad Federativa:</span><br/>
+            <label> {{detalleEntidadFederativa[0].label}} </label>
           </div>
         </div>
 
@@ -414,10 +457,10 @@
       </div>
     </div>
   </ng-container>
-  <div class="row mb-3">
+  <div class="row my-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" *ngIf="indice > 0" class="btn btn-default btn-md ml-5" (click)="regresar()">Regresar</button>
-      <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../" (click)="cancelar()">Cancelar</button>
+      <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
       <button type="submit" *ngIf="indice < 2" [disabled]="personaForm.invalid"  class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
       <button type="submit" *ngIf="indice == 2"  class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
       <button type="submit" *ngIf="indice == menuStep.length" class="btn btn-primary btn-md ml-5" (click)="guardar()">Guardar</button>
@@ -427,7 +470,7 @@
 
 <p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" [showHeader]="false">
+          [draggable]="false" [resizable]="false" [showHeader]="true" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{infoPaqueteSeleccionado}}</span>

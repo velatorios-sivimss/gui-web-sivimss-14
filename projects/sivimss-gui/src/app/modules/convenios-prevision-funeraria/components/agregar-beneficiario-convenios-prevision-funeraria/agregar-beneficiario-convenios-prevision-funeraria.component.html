@@ -10,7 +10,7 @@
       <div class="col-md-4">
         <label class="control-label" for="fechaNacimiento">Fecha<span class="req">*</span>:</label>
         <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Ingresa fechaNacimiento" [maxDate]="hoy" ></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha nacimiento" [maxDate]="hoy" ></p-calendar>
         <span class="campo-obligatorio"
               *ngIf="f.fechaNacimiento?.errors?.required && (f.fechaNacimiento?.dirty || f.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -26,21 +26,21 @@
       <div class="col-md-4">
         <label class="control-label" for="nombre">Nombre (s)<span class="req">*</span>:</label>
         <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombre"
-        maxlength="50">
+        maxlength="30">
         <span class="campo-obligatorio"
               *ngIf="f.nombre?.errors?.required && (f.nombre?.dirty || f.nombre?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
         <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa primer apellido"
-        maxlength="50">
+        maxlength="20">
         <span class="campo-obligatorio"
               *ngIf="f.primerApellido?.errors?.required && (f.primerApellido?.dirty || f.primerApellido?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
         <input id="segundoApellido" class="form-control" formControlName="segundoApellido" placeholder="Ingresa segundo apellido"
-        maxlength="50">
+        maxlength="20">
         <span class="campo-obligatorio"
               *ngIf="f.segundoApellido?.errors?.required && (f.segundoApellido?.dirty || f.segundoApellido?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -85,7 +85,7 @@
       </div>
       <div class="col-md-4">
         <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
-        <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono" maxlength="10">
+        <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono" maxlength="10" numbersOnly>
         <span class="campo-obligatorio"
               *ngIf="f.telefono?.errors?.required && (f.telefono?.dirty || f.telefono?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -111,6 +111,6 @@
 <div class="row my-3">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
-    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="beneficiarioForm.invalid"  (click)="aceptar()">Aceptar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="beneficiarioForm.invalid || curpDesactivado"  (click)="aceptar()">Aceptar</button>
   </div>
 </div>

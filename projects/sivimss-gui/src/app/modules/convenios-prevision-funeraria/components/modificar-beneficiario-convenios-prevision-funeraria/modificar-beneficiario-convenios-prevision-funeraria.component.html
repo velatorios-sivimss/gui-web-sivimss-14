@@ -12,7 +12,7 @@
       <div class="col-md-4">
         <label class="control-label" for="fechaNacimiento">Fecha<span class="req">*</span>:</label>
         <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Ingresa fechaNacimiento" [maxDate]="hoy"></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha de acimiento" [maxDate]="hoy"></p-calendar>
         <span class="campo-obligatorio"
               *ngIf="f.fechaNacimiento?.errors?.required && (f.fechaNacimiento?.dirty || f.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -58,7 +58,7 @@
       <div class="col-md-4">
         <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
         <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18"
-               alphanumericOnly>
+               alphanumericOnly (blur)="validarCURP()">
         <span class="campo-obligatorio"
               *ngIf="f.curp?.errors?.required && (f.curp?.dirty || f.curp?.touched)">Este campo es obligatorio *.</span>
         <span class="campo-obligatorio"
@@ -89,7 +89,7 @@
       </div>
       <div class="col-md-4">
         <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
-        <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono" maxlength="10">
+        <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono" maxlength="10" numbersOnly>
         <span class="campo-obligatorio"
               *ngIf="f.telefono?.errors?.required && (f.telefono?.dirty || f.telefono?.touched)">Este campo es obligatorio *.</span>
       </div>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, Renderer2} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ModalAgregarAtaudComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-ataud/modal-agregar-ataud.component';
@@ -34,10 +34,15 @@ import { finalize } from 'rxjs';
 import * as moment from 'moment';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {Panteon} from "../../models/Panteon.interface";
+import {Router} from "@angular/router";
+import {ConsultarOrdenServicioService} from "../../services/consultar-orden-servicio.service";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 @Component({
   selector: 'app-informacion-servicio',
   templateUrl: './informacion-servicio.component.html',
   styleUrls: ['./informacion-servicio.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class InformacionServicioComponent implements OnInit {
   @Output()
@@ -78,6 +83,10 @@ export class InformacionServicioComponent implements OnInit {
   validaDomicilio: boolean = false;
   tipoOrden: number = 0;
   fechaActual= new Date();
+  servicioExtremidad: boolean = false;
+  confirmarGuardado: boolean = false;
+  confirmarPreOrden:boolean = false;
+  confirmarGuardarPanteon: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -87,7 +96,11 @@ export class InformacionServicioComponent implements OnInit {
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasService
+    private gestionarEtapasService: GestionarEtapasService,
+    private router: Router,
+    private consultarOrdenServicioService: ConsultarOrdenServicioService,
+    private renderer: Renderer2,
+    private descargaArchivosService: DescargaArchivosService,
   ) {
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
@@ -135,14 +148,21 @@ export class InformacionServicioComponent implements OnInit {
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
+    this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
+    // if(Number(this.altaODS.finado.idTipoOrden) < 3){
+    //   this.cortejo.gestionadoPorPromotor.disable();
+    // }else{
+    //   this.cortejo.gestionadoPorPromotor.enable();
+    // }
   }
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
     datosPresupuesto.forEach((datos: any) => {
+
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
@@ -195,7 +215,6 @@ export class InformacionServicioComponent implements OnInit {
         ],
         interior: [
           { value: datos.interior, disabled: false },
-          [Validators.required],
         ],
         cp: [{ value: datos.cp, disabled: false }, [Validators.required]],
         colonia: [
@@ -225,7 +244,7 @@ export class InformacionServicioComponent implements OnInit {
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
           { value: null, disabled: false },
-          [Validators.required],
+
         ],
       }),
       recoger: this.formBuilder.group({
@@ -258,7 +277,7 @@ export class InformacionServicioComponent implements OnInit {
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          { value: datos.gestionadoPorPromotor, disabled: false },
+          { value: datos.gestionadoPorPromotor ? datos.gestionadoPorPromotor : false, disabled: false },
           [Validators.required],
         ],
         promotor: [
@@ -270,7 +289,7 @@ export class InformacionServicioComponent implements OnInit {
   }
 
   changePromotor(validacion: string): void {
-    if (validacion == 'si' && Number(this.tipoOrden) < 3)
+    if (validacion == 'si')
       this.cortejo.promotor.enable();
     else {
       this.cortejo.promotor.disable();
@@ -285,7 +304,6 @@ export class InformacionServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.capillas = [];
@@ -336,7 +354,6 @@ export class InformacionServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -387,7 +404,6 @@ export class InformacionServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.promotores = [];
@@ -439,6 +455,7 @@ export class InformacionServicioComponent implements OnInit {
       if (val) {
         this.idPanteon = val
         this.inhumacion.agregarPanteon.disable();
+        this.confirmarGuardarPanteon = true
         return
       }
       this.inhumacion.agregarPanteon.setValue(false);
@@ -508,10 +525,6 @@ export class InformacionServicioComponent implements OnInit {
     this.gestionarEtapasService.etapas$.next(etapas);
     this.seleccionarEtapa.emit(2);
     this.llenarDatos();
-    console.log(
-      'la fecha es' + moment(this.recoger.fecha.value).format('yyyy-MM-DD')
-    );
-    console.log('la hora es' + moment(this.recoger.hora.value).format('HH:mm'));
   }
 
   llenarDatos(): void {
@@ -541,7 +554,6 @@ export class InformacionServicioComponent implements OnInit {
       gestionadoPorPromotor: formulario.cortejo.gestionadoPorPromotor,
       promotor: formulario.cortejo.promotor,
     };
-    console.log(datos);
     this.informacionServicio.fechaCortejo =
       formulario.cortejo.fecha == null
         ? null
@@ -618,7 +630,6 @@ export class InformacionServicioComponent implements OnInit {
 
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
-    console.log('ods final', this.altaODS);
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -654,7 +665,6 @@ export class InformacionServicioComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -663,13 +673,30 @@ export class InformacionServicioComponent implements OnInit {
                 parseInt(respuesta.mensaje)
               );
             this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+              TipoAlerta.Error,
+              errorMsg || 'Error al guardar la información. Intenta nuevamente.'
             );
 
             return;
           }
-          alert('se guardo');
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio);
+          this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+          const ExitoMsg: string =
+            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+              parseInt(respuesta.mensaje)
+            );
+          if(this.altaODS.idEstatus == 2){
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
+            );
+          }else{
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+            );
+          }
+          this.router.navigate(["ordenes-de-servicio"]);
         },
         (error: HttpErrorResponse) => {
           try {
@@ -678,19 +705,77 @@ export class InformacionServicioComponent implements OnInit {
                 parseInt(error.error.mensaje)
               );
             this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+              TipoAlerta.Error,
+              errorMsg || 'Error al guardar la información. Intenta nuevamente.'
             );
           } catch (error) {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
             this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+              TipoAlerta.Error,
+              errorMsg || 'Error al guardar la información. Intenta nuevamente.'
             );
           }
         }
       );
+  }
+
+  descargarContratoServInmediatos(idOrdenServicio:number ): void{
+    this.loaderService.activar()
+    let tipoOrden;
+    this.altaODS.idEstatus == 1 ? tipoOrden = 0 : tipoOrden = 1
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    this.gestionarOrdenServicioService.generarArchivoServiciosInmediatos(idOrdenServicio,tipoOrden).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
+  }
+
+  descargarOrdenServicio(idOrdenServicio:number, idEstatus:number): void {
+    this.loaderService.activar()
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    this.gestionarOrdenServicioService.generarArchivoOrdenServicio(
+      idOrdenServicio,idEstatus
+    ).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
   }
 
   desabilitarTodo(): void {
@@ -709,7 +794,7 @@ export class InformacionServicioComponent implements OnInit {
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    this.inhumacion.agregarPanteon.disable();
+    // this.inhumacion.agregarPanteon.disable();
     this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();

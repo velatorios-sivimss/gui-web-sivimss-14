@@ -3,7 +3,7 @@ import { CodigoPostalIterface } from './CodigoPostal.interface';
 export interface FinadoInterface {
   idPersona: number | null;
   idTipoOrden: number | null;
-  extremidad: string | null;
+  extremidad: any | null;
   esobito: string | null;
   matricula: string | null;
   rfc: string | null;

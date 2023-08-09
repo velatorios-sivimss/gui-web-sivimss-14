@@ -51,6 +51,20 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
+        <label>Contraseña</label>
+        <span>{{usuarioSeleccionado.contrasenia}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="table-panel-column">
+        <label>Entidad Federativa de Nacimiento</label>
+        <span>{{usuarioSeleccionado.desEdoNacimiento | uppercase}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-6">
+      <div class="table-panel-column">
         <label>Primer apellido</label>
         <span>{{usuarioSeleccionado.paterno}}</span>
       </div>

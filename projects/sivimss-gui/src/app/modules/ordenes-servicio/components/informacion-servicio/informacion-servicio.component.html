@@ -5,49 +5,43 @@
       <div class="col-md-6">
         <label class="control-label" for="capilla">Capilla<span class="req">*</span>:</label>
         <p-dropdown id="capilla" class="form-control" formControlName="capilla" placeholder="Selecciona capilla"
-          [options]="capillas"></p-dropdown>
+          [options]="capillas" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.capilla?.errors?.required && (lugarVelacion.capilla?.dirty || lugarVelacion.capilla?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.capilla?.errors?.required && (lugarVelacion.capilla?.dirty || lugarVelacion.capilla?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label">Fecha<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
           placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.fecha?.errors?.required && (lugarVelacion.fecha?.dirty || lugarVelacion.fecha?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.fecha?.errors?.required && (lugarVelacion.fecha?.dirty || lugarVelacion.fecha?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label">Hora<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="hora" [showIcon]="true" placeholder="00:00"
           [timeOnly]="true"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.hora?.errors?.required && (lugarVelacion.hora?.dirty || lugarVelacion.hora?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.hora?.errors?.required && (lugarVelacion.hora?.dirty || lugarVelacion.hora?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-2">
       <div class="col-md-6">
         <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
-        <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa calle" />
+        <input id="calle" class="form-control" maxlength="30" formControlName="calle" placeholder="Ingresa calle" />
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.calle?.errors?.required && (lugarVelacion.calle?.dirty || lugarVelacion.calle?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.calle?.errors?.required && (lugarVelacion.calle?.dirty || lugarVelacion.calle?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="exterior">Número exterior<span class="req">*</span>:</label>
-        <input id="exterior" class="form-control" formControlName="exterior" placeholder="Ingresa número exterior" />
+        <input id="exterior" class="form-control" alphanumericOnly maxlength="10" formControlName="exterior" placeholder="Ingresa número exterior" />
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.exterior?.errors?.required && (lugarVelacion.exterior?.dirty || lugarVelacion.exterior?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.exterior?.errors?.required && (lugarVelacion.exterior?.dirty || lugarVelacion.exterior?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="interior">Número interior:</label>
-        <input id="interior" class="form-control" formControlName="interior" placeholder="Ingresa número interior" />
+        <input id="interior" class="form-control" alphanumericOnly maxlength="10" formControlName="interior" placeholder="Ingresa número interior" />
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.interior?.errors?.required && (lugarVelacion.interior?.dirty || lugarVelacion.interior?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.interior?.errors?.required && (lugarVelacion.interior?.dirty || lugarVelacion.interior?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-2">
@@ -56,29 +50,25 @@
         <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa C.P." numbersOnly
           (blur)="consultaCP()" maxlength="5" />
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.cp?.errors?.required && (lugarVelacion.cp?.dirty || lugarVelacion.cp?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.cp?.errors?.required && (lugarVelacion.cp?.dirty || lugarVelacion.cp?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
         <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa colonia" />
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.colonia?.errors?.required && (lugarVelacion.colonia?.dirty || lugarVelacion.colonia?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.colonia?.errors?.required && (lugarVelacion.colonia?.dirty || lugarVelacion.colonia?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="municipio">Municipio<span class="req">*</span>:</label>
         <input class="form-control" id="municipio" formControlName="municipio" placeholder="Ingresa municipio" />
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.municipio?.errors?.required && (lugarVelacion.municipio?.dirty || lugarVelacion.municipio?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.municipio?.errors?.required && (lugarVelacion.municipio?.dirty || lugarVelacion.municipio?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="estado">Estado:</label>
         <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa estado" />
         <span class="campo-obligatorio"
-          *ngIf="lugarVelacion.estado?.errors?.required && (lugarVelacion.estado?.dirty || lugarVelacion.estado?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarVelacion.estado?.errors?.required && (lugarVelacion.estado?.dirty || lugarVelacion.estado?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
   </ng-container>
@@ -88,26 +78,23 @@
       <div class="col-md-6">
         <label class="control-label" for="sala">Sala<span class="req">*</span>:</label>
         <p-dropdown id="sala" class="form-control" formControlName="sala" placeholder="Selecciona sala"
-          [options]="salas"></p-dropdown>
+          [options]="salas" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="lugarCremacion.sala?.errors?.required && (lugarCremacion.sala?.dirty || lugarCremacion.sala?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarCremacion.sala?.errors?.required && (lugarCremacion.sala?.dirty || lugarCremacion.sala?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label">Fecha<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
           placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="lugarCremacion.fecha?.errors?.required && (lugarCremacion.fecha?.dirty || lugarCremacion.fecha?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarCremacion.fecha?.errors?.required && (lugarCremacion.fecha?.dirty || lugarCremacion.fecha?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="hora">Hora<span class="req">*</span>:</label>
         <p-calendar id="hora" styleClass="form-control" formControlName="hora" [showIcon]="true" placeholder="00:00"
           [timeOnly]="true"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="lugarCremacion.hora?.errors?.required && (lugarCremacion.hora?.dirty || lugarCremacion.hora?.touched)">Campo
-          obligatorio</span>
+          *ngIf="lugarCremacion.hora?.errors?.required && (lugarCremacion.hora?.dirty || lugarCremacion.hora?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
   </ng-container>
@@ -116,13 +103,13 @@
     <div class="row mb-2">
       <div class="col-md-6">
         <div class="flex align-items-center">
-          <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon" (onChange)="abrirModalAgregarPanteon()"
-            [binary]="true"></p-checkbox>
+          <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon"
+            (onChange)="abrirModalAgregarPanteon()" [binary]="true" onCloseOnNavigation
+          [disabled]="tipoOrden == 3 || servicioExtremidad"></p-checkbox>
           <label class="control-label" [for]="'agregarPanteon'">Agregar panteón</label>
         </div>
         <span class="campo-obligatorio"
-          *ngIf="inhumacion.agregarPanteon?.errors?.required && (inhumacion.agregarPanteon?.dirty || inhumacion.agregarPanteon?.touched)">Campo
-          obligatorio</span>
+          *ngIf="inhumacion.agregarPanteon?.errors?.required && (inhumacion.agregarPanteon?.dirty || inhumacion.agregarPanteon?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
   </ng-container>
@@ -142,16 +129,14 @@
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
           placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="recoger.fecha?.errors?.required && (recoger.fecha?.dirty || recoger.fecha?.touched)">Campo
-          obligatorio</span>
+          *ngIf="recoger.fecha?.errors?.required && (recoger.fecha?.dirty || recoger.fecha?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label">Hora<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="hora" [showIcon]="true" placeholder="00:00"
           [timeOnly]="true"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="recoger.hora?.errors?.required && (recoger.hora?.dirty || recoger.hora?.touched)">Campo
-          obligatorio</span>
+          *ngIf="recoger.hora?.errors?.required && (recoger.hora?.dirty || recoger.hora?.touched)">Este campo es obligatorio *.</span>
       </div>
     </ng-container>
     <ng-container formGroupName="instalacionServicio">
@@ -160,16 +145,14 @@
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
           placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="instalacionServicio.fecha?.errors?.required && (instalacionServicio.fecha?.dirty || instalacionServicio.fecha?.touched)">Campo
-          obligatorio</span>
+          *ngIf="instalacionServicio.fecha?.errors?.required && (instalacionServicio.fecha?.dirty || instalacionServicio.fecha?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label">Hora<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="hora" [showIcon]="true" placeholder="00:00"
           [timeOnly]="true"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="instalacionServicio.hora?.errors?.required && (instalacionServicio.hora?.dirty || instalacionServicio.hora?.touched)">Campo
-          obligatorio</span>
+          *ngIf="instalacionServicio.hora?.errors?.required && (instalacionServicio.hora?.dirty || instalacionServicio.hora?.touched)">Este campo es obligatorio *.</span>
       </div>
     </ng-container>
   </div>
@@ -182,34 +165,31 @@
         <p-calendar styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
           placeholder="Selecciona fecha" [maxDate]="fechaActual"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="cortejo.fecha?.errors?.required && (cortejo.fecha?.dirty || cortejo.fecha?.touched)">Campo
-          obligatorio</span>
+          *ngIf="cortejo.fecha?.errors?.required && (cortejo.fecha?.dirty || cortejo.fecha?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label">Hora<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" formControlName="hora" [showIcon]="true" placeholder="00:00"
           [timeOnly]="true"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="cortejo.hora?.errors?.required && (cortejo.hora?.dirty || cortejo.hora?.touched)">Campo
-          obligatorio</span>
+          *ngIf="cortejo.hora?.errors?.required && (cortejo.hora?.dirty || cortejo.hora?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label">¿El servicio fue gestinado por un promotor?<span class="req">*</span>:</label>
         <div class="flex">
           <div class="flex align-items-center mx-2">
-            <p-radioButton [inputId]="'Si'" name="gestionadoPorPromotor" [value]="true" (click)="changePromotor('si')"
-              formControlName="gestionadoPorPromotor"></p-radioButton>
+            <p-radioButton [inputId]="'Si'" name="gestionadoPorPromotor" [value]="true"
+              (onClick)="changePromotor('si')" formControlName="gestionadoPorPromotor"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'Si'">'Si'</label>
           </div>
           <div class="flex align-items-center mx-2">
-            <p-radioButton [inputId]="'No'" name="gestionadoPorPromotor" [value]="false" (click)="changePromotor('no')"
-              formControlName="gestionadoPorPromotor"></p-radioButton>
+            <p-radioButton [inputId]="'No'" name="gestionadoPorPromotor" [value]="false"
+              (onClick)="changePromotor('no')" formControlName="gestionadoPorPromotor"></p-radioButton>
             <label class="control-label m-0 mx-3" [for]="'No'">'No'</label>
           </div>
         </div>
         <span class="campo-obligatorio"
-          *ngIf="cortejo.gestionadoPorPromotor?.errors?.required && (cortejo.gestionadoPorPromotor?.dirty || cortejo.gestionadoPorPromotor?.touched)">Campo
-          obligatorio</span>
+          *ngIf="cortejo.gestionadoPorPromotor?.errors?.required && (cortejo.gestionadoPorPromotor?.dirty || cortejo.gestionadoPorPromotor?.touched)">Este campo es obligatorio *.</span>
       </div>
 
     </div>
@@ -217,10 +197,9 @@
       <div class="col-md-6">
         <label class="control-label" for="promotor">Promotores<span class="req">*</span>:</label>
         <p-dropdown id="promotor" class="form-control" formControlName="promotor" placeholder="Selecciona promotor"
-          [options]="promotores"></p-dropdown>
+          [options]="promotores" [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="cortejo.promotor?.errors?.required && (cortejo.promotor?.dirty || cortejo.promotor?.touched)">Campo
-          obligatorio</span>
+          *ngIf="cortejo.promotor?.errors?.required && (cortejo.promotor?.dirty || cortejo.promotor?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
   </ng-container>
@@ -235,11 +214,12 @@
 
 <div class="row my-4 flex align-items-center">
   <div class="col-md-3">
-    <button type="button" (click)="preorden()" class="btn btn-lg btn-primary">Guardar pre-orden</button>
+    <button type="button" (click)="confirmarPreOrden = true" [disabled]="form.invalid" class="btn btn-lg btn-primary">Generar
+      pre-orden</button>
   </div>
   <div class="col-md-9">
     <span class="etiqueta-base">En caso de que no termines de generar esta orden de servicio, será guardada con el
-      <b>estatus-pre-orden</b></span>
+      <b>estatus-pre-orden</b>.</span>
   </div>
 </div>
 
@@ -247,6 +227,62 @@
   <div class="col-md-12 flex justify-content-end align-items-center">
     <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
     <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-    <button type="button" class="btn btn-md btn-primary ml-5" (click)="generada()">Generar orden de servicio</button>
+    <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="form.invalid" (click)="confirmarGuardado = true">Crear
+      Orden de Servicio</button>
   </div>
 </div>
+
+<p-dialog [(visible)]="confirmarGuardado" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">
+        ¿Estás seguro de agregar este nuevo registro?
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="confirmarGuardado = false">Cancelar</button>
+      <button class="btn btn-primary btn-md" (click)="generada()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="confirmarPreOrden" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">
+        ¿Estás seguro de querer guardar como pre-orden?
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="confirmarPreOrden = false">Cancelar</button>
+      <button class="btn btn-primary btn-md" (click)="preorden()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="confirmarGuardarPanteon" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">
+        Se ha agregado correctamente el panteón.
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="confirmarGuardarPanteon = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

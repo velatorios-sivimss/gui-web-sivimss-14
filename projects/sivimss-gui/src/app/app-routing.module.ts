@@ -116,7 +116,7 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'renovar-convenio-pf',
+    path: 'convenios-prevision-funeraria/renovar-convenio-pf',
     loadChildren: () => import('./modules/renovar-convenio-pf/renovar-convenio-pf.module').then(m => m.RenovarConvenioPfModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
@@ -126,7 +126,7 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'renovacion-extemporanea',
+    path: 'convenios-prevision-funeraria/renovacion-extemporanea',
     loadChildren: () => import('./modules/renovacion-extemporanea/renovacion-extemporanea.module').then(m => m.RenovacionExtemporaneaModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
@@ -161,23 +161,8 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'pagos/generar-recibo-pago',
-    loadChildren: () => import('./modules/pagos/generar-recibo-pago/generar-recibo-pago.module').then(m => m.GenerarReciboModule),
-    canActivate: [PermiteUsuarioLogueadoGuard]
-  },
-  {
-    path: 'pagos/generar-formato-pagare',
-    loadChildren: () => import('./modules/pagos/generar-formato-pagare/generar-formato-pagare.module').then(m => m.GenerarFormatoPagareModule),
-    canActivate: [PermiteUsuarioLogueadoGuard]
-  },
-  {
-    path: 'pagos/facturacion',
-    loadChildren: () => import('./modules/pagos/facturacion/facturacion.module').then(m => m.FacturacionModule),
-    canActivate: [PermiteUsuarioLogueadoGuard]
-  },
-  {
-    path: 'pagos/realizar-pago',
-    loadChildren: () => import('./modules/pagos/realizar-pago/realizar-pago.module').then(m => m.RealizarPagoModule),
+    path: 'pagos',
+    loadChildren: () => import('./modules/pagos/pagos.module').then(m => m.PagosModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
@@ -206,9 +191,24 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'balance-cajas',
-    loadChildren: () => import('./modules/balance-cajas/balance-caja.module').then(m => m.BalanceCajaModule),
+    path: 'solicitudes-pago',
+    loadChildren: () => import('./modules/solicitudes-pago/solicitudes-pago.module').then(m => m.SolicitudesPagoModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'reporte-orden-servicio',
+    loadChildren:() => import ('./modules/reporte-orden-servicio/reporte-orden-servicio.module').then(m=> m.ReporteOrdenServicioModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'orden-entrada',
+    loadChildren:() => import ('./modules/orden-entrada/orden-entrada.module').then(m=> m.OrdenEntradaModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+  path: 'balance-cajas',
+  loadChildren: () => import('./modules/balance-cajas/balance-caja.module').then(m => m.BalanceCajaModule),
+  canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: '**',

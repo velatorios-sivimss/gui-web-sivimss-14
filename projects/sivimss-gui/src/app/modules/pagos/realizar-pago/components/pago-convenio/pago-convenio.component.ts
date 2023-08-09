@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {OverlayPanel} from "primeng/overlaypanel";
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constantes";
-import {TIPO_PAGO_CATALOGOS_CONVENIO} from "../../constants/dummies";
+import {TIPO_PAGO_CATALOGOS_CONVENIO} from "../../constants/catalogos";
 import {LazyLoadEvent} from "primeng/api";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {RegistrarTipoPagoComponent} from "../registrar-tipo-pago/registrar-tipo-pago.component";
@@ -15,6 +15,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
 import {validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -50,7 +51,8 @@ export class PagoConvenioComponent implements OnInit {
   pagoForm!: FormGroup;
 
   pagos: PagoEspecifico[] = [];
-  pagoSeleccionado: any;
+  pagoSeleccionado!: PagoEspecifico;
+  rol!: number;
 
   constructor(private formBuilder: FormBuilder,
               public dialogService: DialogService,
@@ -58,6 +60,8 @@ export class PagoConvenioComponent implements OnInit {
               private cargadorService: LoaderService,
               private mensajesSistemaService: MensajesSistemaService
   ) {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
   }
 
   ngOnInit(): void {
@@ -78,7 +82,7 @@ export class PagoConvenioComponent implements OnInit {
     this.paginar();
   }
 
-  private paginar(): void {
+  paginar(): void {
     this.cargadorService.activar();
     this.realizarPagoService.consultarPagosConvenio(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -101,7 +105,7 @@ export class PagoConvenioComponent implements OnInit {
   abrirModalPago(): void {
     this.registrarPago();
     const idPago = this.pagoForm.get('tipoPago')?.value;
-    const tipoPago: string = this.tipoPago.find(tp => tp.value === idPago)?.label || '';
+    const tipoPago: string = this.tipoPago.find(tp => tp.value === idPago)?.label ?? '';
     const data: RegistroModal = {
       tipoPago, idPago,
       total: this.pagoSeleccionado.diferenciasTotales,

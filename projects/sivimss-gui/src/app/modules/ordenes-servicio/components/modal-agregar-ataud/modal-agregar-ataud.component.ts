@@ -30,6 +30,8 @@ export class ModalAgregarAtaudComponent implements OnInit {
   idProveedor: number = 0;
   idArticulo: number = 0;
   idInventario: number = 0;
+
+  inventarioSeleccionado:number[] = [];
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -42,12 +44,14 @@ export class ModalAgregarAtaudComponent implements OnInit {
 
   ngOnInit(): void {
     this.idVelatorio = this.config.data.idVelatorio;
+    this.inventarioSeleccionado = this.config.data.idInventarios;
     this.inicializarForm();
     this.consultarAtaudes(this.config.data.idVelatorio);
   }
 
   consultarAtaudes(idVelatorio: number): void {
     const parametros = { idVelatorio: idVelatorio };
+    let arregloAtaudTemporal:any;
     this.gestionarOrdenServicioService
       .consultarTodoslosAtaudes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -80,9 +84,22 @@ export class ModalAgregarAtaudComponent implements OnInit {
             return;
           }
 
-          this.ataudesCompletos = datos;
+          arregloAtaudTemporal = datos;
+
+          this.inventarioSeleccionado.forEach((elemento:any) => {
+            arregloAtaudTemporal = arregloAtaudTemporal.filter((filtro:any) => {
+              return filtro.idInventario != elemento;
+            });
+          });
+
+
+          this.ataudesCompletos = arregloAtaudTemporal;
+          if(this.ataudesCompletos.length == 0){
+            const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
+            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+          }
           this.ataudes = mapearArregloTipoDropdown(
-            datos,
+            arregloAtaudTemporal,
             'nombreArticulo',
             'idInventario'
           );
@@ -146,7 +163,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,
-      idInventario: null,
+      idInventario: this.idInventario,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
       idProveedor: this.idProveedor,
@@ -156,7 +173,6 @@ export class ModalAgregarAtaudComponent implements OnInit {
       proviene: 'presupuesto',
     };
 
-    console.log(salida);
     this.ref.close(salida);
   }
 

@@ -14,6 +14,7 @@ import {
 import {
   ModificarServiciosFunerariosComponent
 } from "./components/modificar-servicios-funerarios/modificar-servicios-funerarios.component";
+import {ServiciosFunerariosResolver} from "./services/servicios-funerarios.resolver";
 
 const routes: Routes = [
   {
@@ -29,18 +30,27 @@ const routes: Routes = [
     component: CancelarServiciosFunerariosComponent,
   },
   {
-    path:'modificar-pago/:id',
+    path:'modificar-pago',
     component: ModificarServiciosFunerariosComponent,
+    resolve: {
+      respuesta: ServiciosFunerariosResolver
+    }
   },
   {
     path:'registrar-nuevo-plan-sfpa',
     component: AltaServiciosFunerariosComponent,
+    resolve: {
+      respuesta: ServiciosFunerariosResolver
+    }
   }
 ];
 
 @NgModule({
   imports:[RouterModule.forChild(routes)],
-  exports:[RouterModule]
+  exports:[RouterModule],
+  providers: [
+    ServiciosFunerariosResolver
+  ]
 })
 
 export class ServiciosFunerariosRoutingModule {

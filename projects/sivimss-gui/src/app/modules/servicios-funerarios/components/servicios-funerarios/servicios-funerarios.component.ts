@@ -25,6 +25,7 @@ export class ServiciosFunerariosComponent implements OnInit {
   filtroForm!: FormGroup;
 
   nivel:TipoDropdown[] = CATALOGOS_DUMMIES;
+  delegacion:TipoDropdown[] = CATALOGOS_DUMMIES;
   estatus:TipoDropdown[] = CATALOGOS_DUMMIES;
   velatorio:TipoDropdown[] = CATALOGOS_DUMMIES;
 
@@ -99,7 +100,7 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   modificarPago(): void {
-    this.router.navigate(["servicios-funerarios/modificar-pago/1"])
+    this.router.navigate(["servicios-funerarios/modificar-pago"],{queryParams:{idPlanSfpa:20}})
   }
 
 }

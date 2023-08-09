@@ -29,6 +29,7 @@ export class ModalAgregarUrnaComponent implements OnInit {
   idVelatorio: number = 0;
   idArticulo: number = 0;
   idInventario: number = 0;
+  inventarioSeleccionado:number[] = [];
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -41,14 +42,16 @@ export class ModalAgregarUrnaComponent implements OnInit {
 
   ngOnInit(): void {
     this.idVelatorio = this.config.data.idVelatorio;
+    this.inventarioSeleccionado = this.config.data.idInventarios;
     this.inicializarForm();
     this.consultarUrna(this.config.data.idVelatorio);
   }
 
   consultarUrna(idVelatorio: number): void {
     const parametros = { idVelatorio: idVelatorio };
+    let arregloUrnaTemporal:any;
     this.gestionarOrdenServicioService
-      .consultarTodoslosEmpaques(parametros)
+      .consultarTodaslasUrnas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -79,9 +82,22 @@ export class ModalAgregarUrnaComponent implements OnInit {
             return;
           }
 
-          this.urnasCompletos = datos;
+          arregloUrnaTemporal = datos;
+          this.inventarioSeleccionado.forEach((elemento:any) => {
+            arregloUrnaTemporal = arregloUrnaTemporal.filter((filtro:any) => {
+              return filtro.idInventario != elemento;
+            });
+          });
+
+
+          this.urnasCompletos = arregloUrnaTemporal;
+          if(this.urnasCompletos.length == 0){
+            const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
+            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+          }
+
           this.urnas = mapearArregloTipoDropdown(
-            datos,
+            arregloUrnaTemporal,
             'nombreArticulo',
             'idInventario'
           );
@@ -144,7 +160,7 @@ export class ModalAgregarUrnaComponent implements OnInit {
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,
-      idInventario: null,
+      idInventario: this.idInventario,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
       idProveedor: null,

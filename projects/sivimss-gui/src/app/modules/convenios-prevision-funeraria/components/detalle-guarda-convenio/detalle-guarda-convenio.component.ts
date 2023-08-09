@@ -42,6 +42,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
   descripcionPromotor!: TipoDropdown[];
   detalleTipoPaquete!:TipoDropdown[];
   detalleEnfermedad!:TipoDropdown[];
+  detalleEntidadFederativa!: TipoDropdown[];
   velatorio!: TipoDropdown[] ;
   velatorioDescripcion!: string;
 
@@ -69,13 +70,19 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       )
     )
 
+
+
     if(this.objetoDetalleEmpresa.empresa){
       this.descripcionPais = this.paises.filter(pais =>{
         return pais.value == this.objetoDetalleEmpresa.empresa?.pais
       });
-      this.descripcionPromotor = this.paises.filter(promotor =>{
-        return promotor.value == this.objetoDetalleEmpresa.idPromotor
-      });
+      if(this.objetoDetalleEmpresa.idPromotor){
+        this.descripcionPromotor = this.promotores.filter(promotor =>{
+          return promotor.value == this.objetoDetalleEmpresa.idPromotor
+        });
+      }else{
+        this.descripcionPromotor = [{value:0,label:""}];
+      }
     }
 
     if(this.objetoDetallePersona.indTipoContratacion != ""){
@@ -93,10 +100,11 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       this.descripcionPromotor = this.paises.filter(promotor =>{
         return promotor.value == this.objetoDetallePersona.idPromotor
       });
-    }
 
-    console.log(this.objetoDetalleEmpresa)
-    console.log(this.objetoDetallePersona)
+      this.detalleEntidadFederativa = this.detalleEntidadFederativa.filter(entidad => {
+        return entidad.value == this.objetoDetallePersona.entidadFederativa;
+      })
+    }
 
     this.consultaVelatorio();
   }
@@ -125,7 +133,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       },
       (error:HttpErrorResponse) => {
         console.log(error);
-        this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
       }
     )
   }
@@ -144,7 +152,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
       },
       (error:HttpErrorResponse) => {
         console.log(error);
-        this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
       }
     )
   }

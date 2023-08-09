@@ -19,6 +19,8 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
   idVelatorio: number = 0;
   muestraServicio: boolean = true;
 
+  idInventario: number[] = [];
+
   constructor(
     private readonly ref: DynamicDialogRef,
     private readonly config: DynamicDialogConfig,
@@ -29,6 +31,9 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
     //Obtener la info que le pasa el componente que abre el modal
     this.idVelatorio = this.config.data.idVelatorio;
     this.mostrarOpciones(this.config.data.tipoOrden);
+    this.config.data.presupuesto.forEach((dato:any) => {
+      this.idInventario.push(dato.idInventario)
+    });
   }
 
   mostrarOpciones(tipoOrden: number): void {
@@ -55,7 +60,6 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
       },
     });
     ref.onClose.subscribe((salida: any) => {
-      console.log(salida);
       if (salida != null) this.cerrarmodal(salida);
     });
   }
@@ -67,6 +71,7 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
       style: { maxWidth: '876px', width: '100%' },
       data: {
         idVelatorio: this.idVelatorio,
+        idInventarios: this.idInventario
         //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });
@@ -82,6 +87,7 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
       style: { maxWidth: '876px', width: '100%' },
       data: {
         idVelatorio: this.idVelatorio,
+        idInventarios: this.idInventario
         //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });
@@ -97,6 +103,7 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
       style: { maxWidth: '876px', width: '100%' },
       data: {
         idVelatorio: this.idVelatorio,
+        idInventarios: this.idInventario
         //Pasa info a ModalVerTarjetaIdentificacionComponent
       },
     });

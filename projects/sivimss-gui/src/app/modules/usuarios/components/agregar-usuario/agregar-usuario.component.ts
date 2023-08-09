@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PATRON_CORREO, PATRON_CURP} from "../../../../utils/constantes";
 import {Usuario} from "../../models/usuario.interface";
 import * as moment from "moment/moment";
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
 import {HttpErrorResponse, HttpEventType, HttpHeaders} from "@angular/common/http";
 import {UsuarioService} from "../../services/usuario.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
@@ -18,7 +17,9 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
-type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula" | "usuario">;
+type NuevoUsuario = Omit<Usuario, "id" | "password" | "estatus" | "matricula" | "usuario"> & {
+  idEdoNacimiento: number
+};
 type SolicitudCurp = Pick<Usuario, "curp">;
 type SolicitudMatricula = Pick<Usuario, "claveMatricula">;
 
@@ -43,6 +44,7 @@ export class AgregarUsuarioComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
+  catalogoEstados: TipoDropdown[] = [];
 
   nuevoUsuario!: NuevoUsuario;
   fechaActual: Date = new Date();
@@ -51,11 +53,13 @@ export class AgregarUsuarioComponent implements OnInit {
   nivelResumen: string = "";
   delegacionResumen: string = "";
   velatorioResumen: string = "";
+  estadoResumen: string = "";
   mostrarModalMatriculaInactiva: boolean = false;
   mostrarModalUsuarioRepetido: boolean = false;
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGO_ESTADOS: number = 2
   readonly NOT_FOUND_ERROR_RENAPO: string = "No se encontro información relacionada a tu búsqueda.";
   readonly ERROR_ALTA_USUARIO: string = "Error al guardar la información del usuario. Intenta nuevamente.";
   readonly MSG_ALTA_USUARIO: string = "Agregado correctamente.";
@@ -64,7 +68,6 @@ export class AgregarUsuarioComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
@@ -76,7 +79,6 @@ export class AgregarUsuarioComponent implements OnInit {
 
   ngOnInit(): void {
     this.folio = this.config.data.toString().padStart(3, '0');
-    console.log(this.folio);
     this.inicializarAgregarUsuarioForm();
     this.cargarCatalogos();
   }
@@ -85,6 +87,7 @@ export class AgregarUsuarioComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    this.catalogoEstados = respuesta[this.POSICION_CATALOGO_ESTADOS];
   }
 
   inicializarAgregarUsuarioForm(): void {
@@ -101,6 +104,7 @@ export class AgregarUsuarioComponent implements OnInit {
       nivel: [{value: null, disabled: false}, [Validators.required]],
       delegacion: [{value: null, disabled: false}],
       velatorio: [{value: null, disabled: false}],
+      idEdoNacimiento: [{value: null, disabled: false}],
       rol: [{value: null, disabled: false}, [Validators.required]],
       estatus: [{value: true, disabled: false}, [Validators.required]]
     });
@@ -117,7 +121,7 @@ export class AgregarUsuarioComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        const roles = respuesta.datos;
+        const roles = respuesta.datos || [];
         this.catalogoRoles = mapearArregloTipoDropdown(roles, "nombre", "id");
       },
       error: (error: HttpErrorResponse): void => {
@@ -159,6 +163,7 @@ export class AgregarUsuarioComponent implements OnInit {
       materno: this.agregarUsuarioForm.get("segundoApellido")?.value,
       nombre: this.agregarUsuarioForm.get("nombre")?.value,
       paterno: this.agregarUsuarioForm.get("primerApellido")?.value,
+      idEdoNacimiento: this.agregarUsuarioForm.get("idEdoNacimiento")?.value,
     };
   }
 
@@ -173,10 +178,12 @@ export class AgregarUsuarioComponent implements OnInit {
     const idNivel = this.agregarUsuarioForm.get("nivel")?.value;
     const idDelegacion = this.agregarUsuarioForm.get("delegacion")?.value;
     const idVelatorio = this.agregarUsuarioForm.get("velatorio")?.value;
+    const idEdoNacimiento = this.agregarUsuarioForm.get("idEdoNacimiento")?.value;
     this.rolResumen = this.catalogoRoles.find(rol => rol.value === idRol)?.label ?? "";
     this.nivelResumen = this.catalogoNiveles.find(nivel => nivel.value === idNivel)?.label ?? "";
     this.delegacionResumen = this.catalogoDelegaciones.find(delegacion => delegacion.value === idDelegacion)?.label ?? "";
     this.velatorioResumen = this.catalogoVelatorios.find(velatorio => velatorio.value === idVelatorio)?.label ?? "";
+    this.estadoResumen = this.catalogoEstados.find(estado => estado.value === idEdoNacimiento)?.label ?? "";
   }
 
   validarCurp(): void {

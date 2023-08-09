@@ -13,15 +13,16 @@ import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {GenerarFormatoPagareService} from '../../services/generar-formato-pagare.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FiltrosFormatoPagare} from "../../models/filtrosFormatoPagare.interface";
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {finalize} from "rxjs/operators";
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import * as moment from "moment/moment";
 
 type ListadoFormato = Required<FormatoPagare> & { idODS: string }
 
@@ -55,6 +56,9 @@ export class GenerarFormatoPagareComponent implements OnInit {
   foliosGenerados: TipoDropdown[] = [];
   contratantesGenerados: TipoDropdown[] = [];
 
+  fechaActual: Date = new Date();
+  fechaAnterior: Date = new Date();
+
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
   readonly POSICION_CATALOGO_VELATORIOS: number = 2;
@@ -74,6 +78,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
+    this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
 
@@ -89,6 +94,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     this.obtenerVelatorios();
+    this.obtenerFoliosGenerados();
   }
 
   abrirPanel(event: MouseEvent, formatoPagareSeleccionado: ListadoFormato): void {
@@ -96,7 +102,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
- abrirModalformatoPagareTramites (): void {
+  abrirModalformatoPagareTramites(): void {
     this.router.navigate(['generar-formato-pagare'], {
       relativeTo: this.activatedRoute,
       queryParams: {idODS: this.formatoPagareSeleccionado.id}
@@ -114,6 +120,16 @@ export class GenerarFormatoPagareComponent implements OnInit {
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
     });
+  }
+
+  validarMismaFechaInicioFin(): void {
+    const fechaInicial = this.filtroForm.get('fechaInicial')?.value;
+    const fechaFinal = this.filtroForm.get('fechaFinal')?.value;
+    if ([fechaInicial, fechaFinal].some(f => f === null)) return;
+    if (moment(fechaInicial).format('YYYY-MM-DD') !== moment(fechaFinal).format('YYYY-MM-DD')) return;
+    this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+    this.filtroForm.get('fechaInicial')?.patchValue(null);
+    this.filtroForm.get('fechaFinal')?.patchValue(null);
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -144,7 +160,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros("pdf");
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
@@ -155,7 +171,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+          this.mensajesSistemaService.mostrarMensajeError(error);
         }
       );
   }
@@ -166,17 +182,20 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-  crearSolicitudFiltros(): FiltrosFormatoPagare {
+  crearSolicitudFiltros(tipoReporte: string): FiltrosFormatoPagare {
+    const fechaInicial = this.filtroForm.get('fechaInicial')?.value !== null ? moment(this.filtroForm.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
+    const fechaFinal = this.filtroForm.get('fechaFinal')?.value !== null ? moment(this.filtroForm.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
+    const folio = this.filtroForm.get("folioODS")?.value !== null ? this.filtroForm.get("folioODS")?.value.label : null;
+    const nomContratante = this.filtroForm.get("nombreContratante")?.value !== null ? this.filtroForm.get("nombreContratante")?.value.label : null;
     return {
-      idOficina: this.filtroForm.get("oficina")?.value,
       idNivel: this.filtroForm.get("nivel")?.value,
       idDelegacion: this.filtroForm.get("delegacion")?.value,
       idVelatorio: this.filtroForm.get("velatorio")?.value,
-      folioODS: this.filtroForm.get("folioODS")?.value.label,
-      nomContratante: this.filtroForm.get("nomContratante")?.value,
-      fecIniODS: this.filtroForm.get("fechaInicial")?.value,
-      fecFinODS: this.filtroForm.get("fechaFinal")?.value,
-      tipoReporte:"pdf"
+      folioODS: folio,
+      nomContratante: nomContratante,
+      fecIniODS: fechaInicial,
+      fecFinODS: fechaFinal,
+      tipoReporte: tipoReporte
     }
   }
 
@@ -184,18 +203,16 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
-    this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.obtenerVelatorios();
     this.paginar();
   }
 
 
   obtenerFoliosGenerados(): void {
-    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    const idDelegacion= this.filtroForm.get('delegacion')?.value;
     const idVelatorio = this.filtroForm.get('velatorio')?.value;
     this.foliosGenerados = [];
-    this.filtroForm.get('folioODS')?.patchValue(null);
+    this.contratantesGenerados  = [];
     if (!idVelatorio) return;
     this.generarFormatoService.obtenerFoliosODS(idDelegacion,idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -233,6 +250,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   obtenerVelatorios(): void {
     this.foliosGenerados = [];
+    this.catalogoVelatorios = [];
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
     this.generarFormatoService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
@@ -243,7 +261,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
-    this.obtenerFoliosGenerados();
   }
 
   get f() {
@@ -252,8 +269,9 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   guardarListadoPagaresPDF() {
     this.cargadorService.activar();
-    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
-    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresPDF()).pipe(
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros("pdf");
+    const solicitudFiltros = JSON.stringify(filtros);
+    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresPDF(solicitudFiltros)).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe(
       (respuesta) => {
@@ -267,10 +285,11 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   guardarListadoPagaresExcel() {
     this.cargadorService.activar();
-    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros();
+    const filtros: FiltrosFormatoPagare = this.crearSolicitudFiltros("xls");
+    const solicitudFiltros = JSON.stringify(filtros);
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
-    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresExcel(),
-    configuracionArchivo).pipe(
+    this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresExcel(solicitudFiltros),
+      configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
         console.log(respuesta)
@@ -281,5 +300,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
       },
     })
   }
+
 
 }

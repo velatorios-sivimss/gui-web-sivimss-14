@@ -5,22 +5,20 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { BusquedaContratante, ConfirmarContratante, UsuarioContratante } from "../../models/usuario-contratante.interface";
+import { BuscarContratantes, BusquedaContratante, ConfirmarContratante, ReporteTabla, TipoCatalogo, UsuarioContratante } from "../../models/usuario-contratante.interface";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { ConfirmationService, LazyLoadEvent } from "primeng/api";
 import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
-import { ModificarContratantesComponent } from "../modificar-contratantes/modificar-contratantes.component";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { ALERTA_ESTATUS } from "../../constants/alertas";
 import { ContratantesService } from '../../services/contratantes.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
-import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ReporteTabla } from '../../../velacion-domicilio/models/velacion-domicilio.interface';
+
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 @Component({
@@ -50,6 +48,7 @@ export class ContratantesComponent implements OnInit {
   retorno: ConfirmarContratante = {};
   mensajeArchivoConfirmacion: string | undefined;
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
+  contratantesFiltrados: TipoDropdown[] = [];
 
   estatus: TipoDropdown[] = [
     {
@@ -105,11 +104,16 @@ export class ContratantesComponent implements OnInit {
     } else {
       this.numPaginaActual = 0;
     }
-    this.buscarPorFiltros();
+    this.buscarPorFiltros(false);
   }
 
-  buscarPorFiltros(): void {
-    this.contratantesService.buscarPorFiltros(this.filtroForm.getRawValue(), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+  paginarPorFiltros(): void {
+    this.numPaginaActual = 0;
+    this.buscarPorFiltros(true);
+  }
+
+  buscarPorFiltros(esFiltro: boolean): void {
+    this.contratantesService.buscarPorFiltros(this.datosContratantesFiltros(esFiltro), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos) {
           this.contratantes = respuesta.datos.content;
@@ -123,6 +127,23 @@ export class ContratantesComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
     });
+  }
+
+  datosContratantesFiltros(esFiltro: boolean): BuscarContratantes {
+    let nomContratante: string | null = null;
+    if (esFiltro) {
+      if (typeof this.ff.nombre?.value === 'object') {
+        nomContratante = this.ff.nombre?.value?.label;
+      } else {
+        nomContratante = this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue();
+      }
+    }
+    return {
+      curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
+      nss: this.ff.nss.getRawValue() === '' ? null : this.ff.nss.getRawValue(),
+      nomContratante,
+      estatus: this.ff.estatus.getRawValue() === '' ? null : this.ff.estatus.getRawValue()
+    }
   }
 
   limpiar(): void {
@@ -171,7 +192,7 @@ export class ContratantesComponent implements OnInit {
   }
 
   descargarReporteTabla(tipoReporte: string): void {
-    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Disponibilidad de capillas" };
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Listado contratantes" };
     if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
@@ -202,13 +223,50 @@ export class ContratantesComponent implements OnInit {
   }
 
   reporteTabla(tipoReporte: string): ReporteTabla {
+    let nomContratante: string | null = null;
+    if (typeof this.ff.nombre?.value === 'object') {
+      nomContratante = this.ff.nombre?.value?.label;
+    } else {
+      nomContratante = this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue();
+    }
     return {
-      curp: this.ff.curp.value,
-      nss: this.ff.nss.value,
-      nomContratante: this.ff.nombre.value,
-      estatus: this.ff.estatus.value,
+      curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
+      nss: this.ff.nss.getRawValue() === '' ? null : this.ff.nss.getRawValue(),
+      nomContratante,
+      estatus: this.ff.estatus.getRawValue() === '' ? null : this.ff.estatus.getRawValue(),
       rutaNombreReporte: 'reportes/generales/ReporteCatUsrContra.jrxml',
       tipoReporte,
+    }
+  }
+
+  obtenerNombreContratante(): string {
+    let query = this.ff.nombre?.value || '';
+    if (typeof this.ff.nombre?.value === 'object') {
+      query = this.ff.nombre?.value?.label;
+    }
+    return query;
+  }
+
+  filtrarContratantes() {
+    let nombre = this.obtenerNombreContratante();
+    if (nombre?.length >= 3) {
+      this.contratantesService.consultarCatalogo({ nombre }).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          let filtrado: TipoDropdown[] = [];
+          if (respuesta.datos && respuesta.datos.length > 0) {
+            respuesta.datos.forEach((e: any) => {
+              filtrado.push({
+                label: e.nomContratante,
+                value: e.idContratante,
+              });
+            });
+            this.contratantesFiltrados = filtrado;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
     }
   }
 

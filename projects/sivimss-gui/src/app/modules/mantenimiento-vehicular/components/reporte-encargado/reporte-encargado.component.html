@@ -4,6 +4,26 @@
     <form [formGroup]="filtroForm">
       <div class="row mb-3">
         <div class="col-md-6">
+          <label class="control-label" for="nivel">Nivel:</label>
+          <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+            placeholder="Seleccionar el nivel" [filter]="true">
+          </p-dropdown>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="delegacion">Delegación:</label>
+          <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+            placeholder="Seleccionar delegación" (onChange)="cargarVelatorios(); obtenerPlacas();" [filter]="true">
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="velatorio">Velatorio:</label>
+          <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+            placeholder="Seleccionar el velatorio" [filter]="true" (onChange)="obtenerPlacas();">
+          </p-dropdown>
+        </div>
+        <div class="col-md-6">
           <label class="control-label" for="tipoReporte">Tipo de reporte<span class="req">*</span>:</label>
           <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
             placeholder="Selecciona el tipo" [filter]="true">
@@ -12,14 +32,14 @@
             *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este
             campo es obligatorio *.</span>
         </div>
+      </div>
+      <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="placa">Placa:</label>
           <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
             placeholder="Seleccionar vehículo" [filter]="true">
           </p-dropdown>
         </div>
-      </div>
-      <div class="row mb-3">
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-6">
@@ -86,6 +106,12 @@
                 <span>{{rangoFecha}}</span>
               </div>
             </div>
+            <div class="col-md-6 colum-tam" *ngIf="fmp?.tipoReporte?.value === 1">
+              <div class="table-panel-column">
+                <label>Total</label>
+                <span>{{sumTotal | currency }}</span>
+              </div>
+            </div>
           </div>
         </ng-template>
 
@@ -145,7 +171,7 @@
 
           <ng-template pTemplate="paginatorright">
             <div class="paginator-template" *ngIf="registrosReporte.length > 0">
-              <div class="export-table" style="float: right;">
+              <div class="export-table" style="float: right;" *appValidaRol="['MANTENIMIENTO_VEHICULAR','IMPRIMIR']">
                 <span class="export-table-text">Exportar tabla</span>
                 <div class="export-table-icons">
                   <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
@@ -380,9 +406,8 @@
   </div>
 </ng-container>
 
-<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
-          [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>

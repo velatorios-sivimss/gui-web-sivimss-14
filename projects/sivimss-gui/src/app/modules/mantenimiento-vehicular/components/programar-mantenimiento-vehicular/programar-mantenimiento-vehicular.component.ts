@@ -44,6 +44,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  realizoBusqueda: boolean = false;
   paginacionConFiltrado: boolean = false;
   modificarModal: boolean = false;
   detalleModal: boolean = false;
@@ -147,6 +148,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    this.paginacionConFiltrado = false;
     if (validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
@@ -161,12 +163,12 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   paginar(): void {
     if (!localStorage.getItem('sivimss_token')) return;
     this.loaderService.activar();
-    const filtros: FiltrosMantenimientoVehicular = this.crearSolicitudFiltros();
-    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.crearSolicitudFiltros())
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.vehiculos = respuesta.datos.content;
           this.totalElementos = respuesta.datos.totalElements;
+          this.realizoBusqueda = true;
 
           const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
           if (usuario?.idRol == '17' && this.vehiculos.length > 0 && this.once) {
@@ -183,28 +185,55 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosMantenimientoVehicular = this.crearSolicitudFiltros();
-    if (!Object.values(filtros).some(v => (v))) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+    const filtros: FiltrosMantenimientoVehicular | null = this.crearSolicitudFiltrosPorNivel();
+    if (filtros) {
+      if (!Object.values(filtros).some(v => (v))) {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+        return;
+      }
+      this.loaderService.activar();
+      this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.vehiculos = respuesta.datos.content;
+            this.totalElementos = respuesta.datos.totalElements;
+            this.realizoBusqueda = true;
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+            this.mensajesSistemaService.mostrarMensajeError(error);
+          }
+        });
     }
-    this.loaderService.activar();
-    this.mantenimientoVehicularService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
-      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.vehiculos = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
   }
 
   buscar(): void {
     this.numPaginaActual = 0;
     this.paginacionConFiltrado = true;
     this.paginarConFiltros();
+  }
+
+  crearSolicitudFiltrosPorNivel(): FiltrosMantenimientoVehicular | null {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    switch (+usuario.idOficina) {
+      case 1:
+        return {
+          delegacion: this.f.delegacion.getRawValue() === '' ? null : this.f.delegacion.getRawValue(),
+          velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
+          placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+        }
+      case 2:
+        return {
+          velatorio: this.f.velatorio.getRawValue() === '' ? null : this.f.velatorio.getRawValue(),
+          placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+        }
+      case 3:
+        return {
+          placa: this.f.placa.getRawValue() === '' ? null : this.f.placa.getRawValue()
+        }
+      default:
+        return null;
+    }
   }
 
   crearSolicitudFiltros(): FiltrosMantenimientoVehicular {
@@ -217,6 +246,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   limpiar(): void {
+    this.realizoBusqueda = false;
     this.filtroFormProgramarMantenimiento.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormProgramarMantenimiento.get('nivel')?.patchValue(+usuario.idOficina);
@@ -232,6 +262,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     }
     this.obtenerPlacas();
     this.cargarVelatorios(true);
+    this.vehiculos = [];
+    this.totalElementos = 0;
     this.paginar();
   }
 

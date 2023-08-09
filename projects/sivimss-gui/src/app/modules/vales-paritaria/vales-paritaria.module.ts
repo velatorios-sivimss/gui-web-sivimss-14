@@ -1,22 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CeldaStickyModule } from "projects/sivimss-gui/src/app/shared/celda-sticky/celda-sticky.module";
-import { AccordionModule } from 'primeng-lts/accordion';
 import { RolesRoutingModule } from './vales-paritaria-routing.module';
 import { ValesParitariaComponent } from './components/vales-paritaria/vales-paritaria.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TituloPrincipalModule } from "../../shared/titulo-principal/titulo-principal.module";
-import { DropdownModule } from "primeng-lts/dropdown";
-import { TableModule } from "primeng-lts/table";
-import { CalendarModule } from 'primeng-lts/calendar';
-import { InputSwitchModule } from "primeng-lts/inputswitch";
-import { DialogModule } from "primeng-lts/dialog";
-import { CheckboxModule } from "primeng-lts/checkbox";
 import { SolicitarValeParitariaComponent } from './components/solicitar-vale-paritaria/solicitar-vale-paritaria.component';
-import { OverlayPanelModule } from "primeng-lts/overlaypanel";
 import { OverlayPanelOpcionesModule } from "../../shared/overlay-panel-opciones/overlay-panel-opciones.module";
 import { TablePanelModule } from "../../shared/table-panel/table-panel.module";
 import { ModificarCreditoComponent } from './components/modificar-credito/modificar-credito.component';
+import {DropdownModule} from "primeng/dropdown";
+import {TableModule} from "primeng/table";
+import {InputSwitchModule} from "primeng/inputswitch";
+import {DialogModule} from "primeng/dialog";
+import {CheckboxModule} from "primeng/checkbox";
+import {OverlayPanelModule} from "primeng/overlaypanel";
+import {AccordionModule} from "primeng/accordion";
+import {CalendarModule} from "primeng/calendar";
 
 @NgModule({
   declarations: [

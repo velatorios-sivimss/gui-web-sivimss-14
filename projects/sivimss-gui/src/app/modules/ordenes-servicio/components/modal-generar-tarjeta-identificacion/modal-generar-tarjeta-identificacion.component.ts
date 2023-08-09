@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { FormTarjetaIdentificacion } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/models/form-tarjeta-identificacion.enum";
@@ -90,7 +90,7 @@ export class ModalGenerarTarjetaIdentificacionComponent implements OnInit {
     this.loaderService.activar();
     const configuracionArchivo: OpcionesArchivos = {};
     const idODS:number = this.config.data.ods.idOrdenServicio
-    this.consultarOrdenServicioService.generarArchivoTarjetaIdetificacion(+this.f.nombreOperador.value,idODS).pipe(
+    this.consultarOrdenServicioService.generarArchivoTarjetaIdetificacion(this.f.nombreOperador.value.toString(),idODS).pipe(
       finalize(()=>this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>): void => {
@@ -108,7 +108,7 @@ export class ModalGenerarTarjetaIdentificacionComponent implements OnInit {
       },
       (error:HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
+        this.alertaService.mostrar(TipoAlerta.Error, 'Error en la descarga del documento.Intenta nuevamente.');
       }
     )
   }

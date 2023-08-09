@@ -23,7 +23,7 @@
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Fecha</label>
-            <span>{{fecha | date: 'dd/MM/yyyy'}}</span>
+            <span>{{fecha}}</span>
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@
     <form [formGroup]="filtroForm">
       <div class="row mb-3">
         <div class="col-md-4">
-          <label class="control-label" for="tipoContratacion">Tipo de contratación <span class="req">*</span></label>
+          <label class="control-label" for="tipoContratacion">Tipo de contratación opciones <span class="req">*</span>:</label>
           <p-dropdown id="tipoContratacion" class="form-control" formControlName="tipoContratacion" [options]="tipoContratacion"
                       placeholder="Selecciona el tipo de contratación" [filter]="true" filterBy="label" (onChange)="validarTipoContratacion()" >
           </p-dropdown>
@@ -45,7 +45,7 @@
                  maxlength="10" (change)="consultarConvenio()">
         </div>
         <div class="col-md-4">
-          <label class="control-label" for="rfcCurp">RFC o CURP</label>
+          <label class="control-label" for="rfcCurp">RFC o CURP:</label>
           <input id="rfcCurp" class="form-control" formControlName="rfcCurp" placeholder="Ingresa el RFC o CURP"
                  maxlength="18" alphanumericOnly (blur)="consultaRFCCURP()">
           <span class="campo-obligatorio"
@@ -55,7 +55,7 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-4">
-          <label class="control-label">¿El servicio fue gestionado por un promotor? *</label>
+          <label class="control-label">¿El servicio fue gestionado por un promotor? <span class="req">*</span></label>
           <div class="flex">
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
@@ -70,7 +70,7 @@
           </div>
         </div>
         <div class="col-md-4" *ngIf="agregarPromotor">
-          <label class="control-label" for="listaPromotor">Promotor<span class="req">*</span></label>
+          <label class="control-label" for="listaPromotor">Promotor<span class="req">*</span>:</label>
           <p-dropdown id="listaPromotor" class="form-control" formControlName="listaPromotor" [options]="promotores"
                       placeholder="Selecciona el promotor" [filter]="true" filterBy="label" (onChange)="validarListadoPormotores()">
           </p-dropdown>
@@ -82,6 +82,7 @@
       <ng-container *ngIf="ff.tipoContratacion.value== 1" >
         <app-por-persona [folioConvenio]="folioConvenioPersona"
                          [confirmacionGuardado]="confirmarGuardadoPersona"
+                         [siguienteSeccion]="siguienteSeccion"
                          [consultarFormularioValido]="consultarFormularioValido"
                          [escenario]="'modificar'"
                          (formularioValido)="validarFormularioPersona($event)"

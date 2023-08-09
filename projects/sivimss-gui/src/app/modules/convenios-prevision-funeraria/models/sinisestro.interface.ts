@@ -11,4 +11,5 @@ export interface SinisestroInterface {
   velatorioOringe?: number;
   descVelatorioOrigen?: string;
   importe?: number;
+  estatusRenovacion?: number;
 }

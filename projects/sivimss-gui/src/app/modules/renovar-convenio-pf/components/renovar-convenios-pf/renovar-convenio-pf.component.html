@@ -7,286 +7,406 @@
 
 <ng-container *ngIf="indice == 0">
   <div class="border-panel">
-    <form [formGroup]="tipoConvenioForm" >
+    <form [formGroup]="busquedaTipoConvenioForm">
       <div class="row mb-3">
         <div class="col-md-6">
-<!--          TODO: Cambiar estilos-->
-          <p style="font-size:14px" >Tipo de convenio</p>
-          <p-selectButton class="select-button" optionLabel="label" [options]="tipoConvenio" formControlName="tipoConvenio"></p-selectButton>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="noConvenio">No. de convenio</label>
-          <input id="noConvenio" class="form-control" formControlName="noConvenio" placeholder="Ingresa el no. de convenio">
-          <span class="campo-obligatorio"
-                *ngIf="tcf.noConvenio?.errors?.required && (tcf.noConvenio?.dirty || tcf.noConvenio?.touched)">
-                              Campo obligatorio</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="numeroContratante">No. de contratante</label>
-          <input id="numeroContratante" class="form-control" formControlName="numeroContratante" placeholder="Ingresa el no. de contratante">
-          <span class="campo-obligatorio"
-                *ngIf="tcf.numeroContratante?.errors?.required && (tcf.numeroContratante?.dirty || tcf.numeroContratante?.touched)">
-                              Campo obligatorio</span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <span>*Campos obligatorios</span>
+          <p style="font-size:14px">Tipo de convenio:</p>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton id="planAnterior" name="tipoConvenio" [value]="true" formControlName="tipoConvenio"
+                inputId="convenioPlanAnterior"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'tipoConvenio'">Convenio Plan Anterior</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton id="planNuevo" name="tipoConvenio" [value]="false" formControlName="tipoConvenio"
+                inputId="convenioPlanNuevo"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'tipoConvenio'">Convenio Plan Nuevo</label>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="row mt-6">
+      <div class="row mb-3" *ngIf="btcf.tipoConvenio.value">
+        <div class="col-md-6">
+          <label class="control-label" for="numConvenio">Número de Convenio:</label>
+          <input id="numConvenio" class="form-control" formControlName="numConvenio" placeholder="Ingresa número"
+            alphanumericOnly trimmer>
+          <span class="campo-obligatorio"
+            *ngIf="btcf.numConvenio.errors?.required && (btcf.numConvenio.dirty || btcf.numConvenio.touched)">
+            Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="nombreContratante">Número de Contratante:</label>
+          <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
+            placeholder="Ingresa número" alphanumericOnly trimmer>
+          <span class="campo-obligatorio"
+            *ngIf="btcf.nombreContratante?.errors?.required && (btcf.nombreContratante?.dirty || btcf.nombreContratante?.touched)">
+            Campo obligatorio</span>
+        </div>
+      </div>
+
+      <div class="row mb-3" *ngIf="!btcf.tipoConvenio.value">
+        <div class="col-md-6">
+          <label class="control-label" for="folio">Folio:</label>
+          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa folio" folioOdsAlphanumeric
+            trimmer>
+          <span class="campo-obligatorio"
+            *ngIf="btcf.folio.errors?.required && (btcf.folio.dirty || btcf.folio.touched)">
+            Campo obligatorio</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="rfc">RFC:</label>
+          <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa rfc" alphanumericOnly trimmer>
+          <span class="campo-obligatorio" *ngIf="btcf.rfc?.errors?.required && (btcf.rfc?.dirty || btcf.rfc?.touched)">
+            Campo obligatorio</span>
+        </div>
+      </div>
+
+      <div class="row mt-6" *appValidaRol="['RENOVAR_CONVENIO_PF','CONSULTA']">
         <div class="col-md-12 flex justify-content-end">
-          <button type="submit" class="btn btn-default btn-md">Limpiar</button>
-          <button type="submit" class="btn btn-danger btn-md ml-5">Buscar</button>
+          <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+          <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
+        </div>
+      </div>
+    </form>
+
+    <form [formGroup]="resultadoBusquedaForm" *ngIf="convenio">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="tipoPrevision">Tipo de previsión funeraria:</label>
+          <input id="tipoPrevision" class="form-control" formControlName="tipoPrevision" placeholder="">
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="tipoPaquete">Tipo de paquete:</label>
+          <input id="tipoPaquete" class="form-control" formControlName="tipoPaquete" placeholder="">
         </div>
       </div>
 
-
-
-      <h2 class="subtitulo-base">Convenios plan anterior</h2>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="tipoPrevisionFuneraria">Tipo de previsión funeraria<span class="req">*</span>:</label>
-          <p-dropdown id="tipoPrevisionFuneraria" class="form-control" formControlName="tipoContratacion" [options]="tipoPrevisionFuneraria"
-                       placeholder="Selecciona el tipo de previsión funeraria">
-          </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="tcf.tipoPrevisionFuneraria?.errors?.required && (tcf.tipoPrevisionFuneraria?.dirty || tcf.tipoPrevisionFuneraria?.touched)">
-                        Campo obligatorio</span>
+          <label class="control-label" for="datosBancarios">Datos bancarios:</label>
+          <input id="datosBancarios" class="form-control" formControlName="datosBancarios" placeholder="" maxlength="30"
+            trimmer alphanumericOnly>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="tipoPaquete">Tipo de paquete<span class="req">*</span>:</label>
-          <p-dropdown id="tipoPaquete" class="form-control" formControlName="tipoPaquete" [options]="tipoPaquete"
-                      placeholder="Selecciona el tipo de previsión funeraria">
-          </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="tcf.tipoPaquete?.errors?.required && (tcf.tipoPaquete?.dirty || tcf.tipoPaquete?.touched)">
-                        Campo obligatorio</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="control-label" for="datosBancarios">Datos bancarios<span class="req">*</span>:</label>
-          <input id="datosBancarios" class="form-control" formControlName="datosBancarios" placeholder="Ingresa los datos bancarios">
-          <span class="campo-obligatorio"
-                *ngIf="tcf.datosBancarios?.errors?.required && (tcf.datosBancarios?.dirty || tcf.datosBancarios?.touched)">
-                              Campo obligatorio</span>
-        </div>
-        <div class="col-md-6">
-          <label class="control-label" for="costoRenovacion">Costo de renovación<span class="req">*</span>:</label>
-          <input id="costoRenovacion" class="form-control" formControlName="costoRenovacion" placeholder="Ingresa costo de renocación">
-          <span class="campo-obligatorio"
-                *ngIf="tcf.costoRenovacion?.errors?.required && (tcf.costoRenovacion?.dirty || tcf.costoRenovacion?.touched)">
-                              Campo obligatorio</span>
+          <label class="control-label" for="costoRenovacion">Costo de renovación:</label>
+          <input id="costoRenovacion" class="form-control" formControlName="costoRenovacion" placeholder="">
         </div>
       </div>
     </form>
   </div>
-  <section class="mt-5">
-      <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="convenios"
-               [paginator]="convenios.length > 0"
-               [rows]="cantElementosPorPagina"
-               [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-               (onLazyLoad)="paginar($event)">
-        <ng-template pTemplate="header">
-          <tr>
-            <th scope="col">Folio de Convenio</th>
-            <th scope="col">RFC</th>
-            <th scope="col">Número de INE</th>
-            <th scope="col">Matrícula IMSS</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Primer Apellido</th>
-            <th scope="col">Segundo Apellido</th>
-            <th scope="col">Tipo de previsión funeraria</th>
-            <th scope="col">Tipo de paquete</th>
-            <th scope="col">Estatus del convenio</th>
-            <th scope="col">Cuota de recuperación</th>
-            <th scope="col">Fecha Inicio de Vigencia</th>
-            <th scope="col">Fecha FIn de Vigencia</th>
-            <th scope="col">Dirección calle</th>
-            <th scope="col">Número exterior</th>
-            <th scope="col">Número interior</th>
-            <th scope="col">CP</th>
-            <th scope="col">Estado</th>
-            <th scope="col">Municipio</th>
-            <th scope="col">Teléfono contacto</th>
-            <th scope="col">Correo electrónico</th>
-            <th scope="col">Beneficiarios</th>
-            <th scope="col"></th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-convenios>
-          <tr>
-            <td> {{convenios?.folioConvenio}} </td>
-            <td> {{convenios?.rfc}} </td>
-            <td> {{convenios?.numeroINE}} </td>
-            <td> {{convenios?.matriculaIMSS}} </td>
-            <td> {{convenios?.nombre}} </td>
-            <td> {{convenios?.primerApellido}} </td>
-            <td> {{convenios?.segundoApellido}} </td>
-            <td> {{convenios?.descTipoPF}} </td>
-            <td> {{convenios?.descTipoPaquete}} </td>
-            <td> {{convenios?.estatusConvenio}} </td>
-            <td> {{convenios?.cuotaRecuperacion}} </td>
-            <td> {{convenios?.fechaInicioVigencia}} </td>
-            <td> {{convenios?.fechaFinVigencia}} </td>
-            <td> {{convenios?.calle}} </td>
-            <td> {{convenios.numeroExterior}} </td>
-            <td> {{convenios?.numeroInterior}} </td>
-            <td> {{convenios?.cp}} </td>
-            <td> {{convenios?.descEstado}} </td>
-            <td> {{convenios?.municipio}} </td>
-            <td> {{convenios?.telefonoContacto}} </td>
-            <td> {{convenios?.correoElectronico}} </td>
-            <td> {{convenios?.beneficiarios}} </td>
-            <td>
-              <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 80px'}">
-                <div class="contenedor-celda-iconos">
-                  <a >
-                    <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-                  </a>
-                  <a (click)="abrirPanel($event,convenios)">
-                    <img
-                      src="assets/images/imagen-icono-barras-horizontales.svg"
-                      alt="icono barras horizontales">
-                  </a>
-                </div>
-              </div>
-            </td>
 
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorleft">
-          <div class="paginator-template">
-            <span class="total-elements">{{convenios.length}} de {{totalElementos}}</span>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-          <div class="paginator-template">
-            <div class="export-table">
-              <span class="export-table-text">Exportar tabla</span>
-              <div class="export-table-icons">
-                <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-                <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg"
-                     alt="exportar excel">
-              </div>
-            </div>
-          </div>
-        </ng-template>
-      </p-table>
-  </section>
+  <div class="border-panel mt-5" *ngIf="convenio">
+    <div class="row table-panel-row">
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Folio de Convenio:</span>
+          <label>{{convenio.folio}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>RFC:</span>
+          <label>{{convenio.rfc}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Matricula IMSS:</span>
+          <label>{{convenio.matricula}}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>Fecha inicio de vigencia:</span>
+          <label>{{convenio.fecInicio}}</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>Fecha fin de vigencia:</span>
+          <label>{{convenio.fecVigencia}}</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>Nombre:</span>
+          <label>{{convenio.nomContratante}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Primer apellido:</span>
+          <label>{{convenio.primerApellido}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Segundo apellido:</span>
+          <label>{{convenio.segundoApellido}}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Tipo de previsión funeraria:</span>
+          <label>{{convenio.tipoPrevision}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Tipo de paquete:</span>
+          <label>{{convenio.tipoPaquete}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Estatus de convenio:</span>
+          <label>{{convenio.estatusConvenio === 2 ? 'Vigente' : ''}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Cuota de recuperación:</span>
+          <label>{{convenio.costoRenovacion}}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>CP:</span>
+          <label>{{convenio.cp}}</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>Calle:</span>
+          <label>{{convenio.calle}}</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>Número exterior:</span>
+          <label>{{convenio.numExterior}}</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>Número interior:</span>
+          <label>{{convenio.numInterior}}</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>Estado:</span>
+          <label>{{convenio.estado}}</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <span>Municipio:</span>
+          <label>{{convenio.municipio}}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row table-panel-row">
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Teléfono de contacto:</span>
+          <label>{{convenio.tel}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Correo electrónico:</span>
+          <label>{{convenio.correo}}</label>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="table-panel-column">
+          <span>Beneficiarios:</span>
+          <label *ngFor="let beneficiario of convenio.beneficiarios; index as i">
+            {{beneficiario.nombreBeneficiario}}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3 mt-5 row text-center" *ngIf="confirmarModificarBeneficiarios">
+    ¿Deseas modificar a tus beneficiarios?
+  </div>
 </ng-container>
-<ng-container *ngIf="indice == 1">
+
+<ng-container *ngIf="indice === 1">
   <div class="border-panel">
     <form [formGroup]="documentacionForm">
+
+      <p-accordion styleClass="sivimss-accordion">
+        <p-accordionTab>
+          <ng-template pTemplate="header">
+            <span>Convenio &nbsp;</span><b>{{convenio?.folio}}</b>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="table-panel-column">
+                  <label>Tipo previsión funeraria:</label>
+                  <span>{{convenio?.tipoPrevision}}</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column">
+                  <label>Tipo de paquete:</label>
+                  <span>{{convenio?.tipoPaquete}}</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column">
+                  <label>Datos bancarios:</label>
+                  <span>{{convenio?.datosBancarios}}</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column">
+                  <label>Cuota de recuperación:</label>
+                  <span>{{convenio?.costoRenovacion}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <div class="table-panel-column">
+                  <label>Nombre del asegurado:</label>
+                  <span>{{convenio?.nomContratante}}</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column">
+                  <label>Primer apellido del asegurado:</label>
+                  <span>{{convenio?.primerApellido}}</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="table-panel-column">
+                  <label>Segundo apellido del asegurado:</label>
+                  <span>{{convenio?.segundoApellido}}</span>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="table-panel-column">
+                  <label>Velatorio:</label>
+                  <span>{{convenio?.velatorio}}</span>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="table-panel-column">
+                  <label>Fecha:</label>
+                  <span>{{convenio?.fecha}}</span>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-accordionTab>
+      </p-accordion>
+
       <app-table-panel>
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="ineAfiliado" formControlName="ineAfiliado" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'ineAfiliado'" class="control-label"><strong>INE del afiliado *</strong></label>
-            </div>
-          </div>
-        </div>
-
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaCURP" formControlName="copiaCURP" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaCURP'" class="control-label"><strong>Copia CURP *</strong></label>
+              <p-checkbox inputId="ineAfiliado" formControlName="ineAfiliado" styleClass="mr-3"
+                [binary]="true"></p-checkbox>
+              <label [for]="'ineAfiliado'" class="control-label"><strong>INE del afiliado</strong></label>
             </div>
           </div>
         </div>
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="copiaRFC" formControlName="copiaRFC" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaRFC'" class="control-label"><strong>Copia RFC *</strong></label>
+              <p-checkbox inputId="curp" formControlName="curp" styleClass="mr-3" [binary]="true"></p-checkbox>
+              <label [for]="'curp'" class="control-label"><strong>Copia CURP</strong></label>
             </div>
           </div>
         </div>
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="convenioAnterior" formControlName="convenioAnterior" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'convenioAnterior'" class="control-label"><strong>Convenio Anterior *</strong></label>
+              <p-checkbox inputId="rfc" formControlName="rfc" styleClass="mr-3" [binary]="true"></p-checkbox>
+              <label [for]="'rfc'" class="control-label"><strong>Copia RFC</strong></label>
             </div>
           </div>
         </div>
         <div class="row p-3 table-panel-row">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="copiaActaNacimiento" formControlName="copiaActaNacimiento" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaActaNacimiento'" class="control-label">
-                <strong>Copia acta de nacimiento del beneficiario si es menor de edad *</strong>
-              </label>
+              <p-checkbox inputId="convenioAnterior" formControlName="convenioAnterior" styleClass="mr-3"
+                [binary]="true"></p-checkbox>
+              <label [for]="'convenioAnterior'" class="control-label"><strong>Convenio Anterior</strong></label>
             </div>
           </div>
         </div>
-        <div class="row p-3 table-panel-row">
+        <div class="row p-3 table-panel-row" *ngIf="convenio?.tipoConvenioDesc === 'ConvenioAnterior'">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="copiaINE" formControlName="copiaINE" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaINE'" class="control-label"><strong>Copias del INE del beneficiario si es mayor de edad *</strong></label>
+              <p-checkbox inputId="cartaPoder" formControlName="cartaPoder" styleClass="mr-3"
+                [binary]="true"></p-checkbox>
+              <label [for]="'cartaPoder'" class="control-label"><strong>Carta Poder con 2 testigos</strong></label>
             </div>
           </div>
         </div>
-        <div class="row p-3 table-panel-row">
+        <div class="row p-3 table-panel-row" *ngIf="convenio?.tipoConvenioDesc === 'ConvenioAnterior'">
           <div class="col-md-12">
             <div class="flex">
-              <p-checkbox inputId="comprobanteEstudios" formControlName="comprobanteEstudios" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'comprobanteEstudios'" class="control-label">
-                <strong>Comprobante de estudios del beneficiario si es mayor de 18 años y estudia *</strong>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="actaMatrimonio" formControlName="actaMatrimonio" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'actaMatrimonio'" class="control-label"><strong>Acta de matrimonio *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="declaracionConcubinato" formControlName="declaracionConcubinato" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'declaracionConcubinato'" class="control-label"><strong>Declaración de concubinato *</strong></label>
+              <p-checkbox inputId="ineTestigo" formControlName="ineTestigo" styleClass="mr-3"
+                [binary]="true"></p-checkbox>
+              <label [for]="'ineTestigo'" class="control-label"><strong>Copia de INE de testigos</strong></label>
             </div>
           </div>
         </div>
       </app-table-panel>
     </form>
-    <div class="row">
-      <div class="col-md-12">
-      <span class="etiqueta-base">
-        *Campos obligatorios
-      </span>
-      </div>
-    </div>
   </div>
 </ng-container>
 
-<ng-container *ngIf="indice == menuStep.length">
-<!--  TODO: Verificar pantalla de confirmación-->
-</ng-container>
-
-<div class="row my-6">
-  <div class="col-md-12 flex justify-content-end">
-    <button type="submit" *ngIf="indice > 0" class="btn btn-default btn-md ml-5" (click)="regresar()">Regresar</button>
-    <button type="submit" class="btn btn-danger btn-md ml-5">Cancelar</button>
-    <button type="submit" *ngIf="indice < menuStep.length" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
+<div class="row my-6" *ngIf="indice === 0 && convenio && !confirmarModificarBeneficiarios">
+  <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','MODIFICAR']">
+    <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar()">Guardar</button>
   </div>
 </div>
-<p-overlayPanel #overlayPanel>
+
+<div class="row my-6" *ngIf="indice === 0 && confirmarModificarBeneficiarios">
+  <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','MODIFICAR']">
+    <button type="button" class="btn btn-danger btn-md ml-5" (click)="siguiente()">Cancelar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+  </div>
+</div>
+
+<div class="row my-6" *ngIf="indice === 1 && convenio">
+  <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','MODIFICAR']">
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="generarRenovacion()">Generar renovación</button>
+  </div>
+</div>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Modificar beneficiarios"></app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeBusqueda}}</span>
+    </div>
   </ng-template>
-</p-overlayPanel>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

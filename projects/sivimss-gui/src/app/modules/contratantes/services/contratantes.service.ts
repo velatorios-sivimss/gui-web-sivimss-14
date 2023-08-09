@@ -4,7 +4,7 @@ import { environment } from 'projects/sivimss-gui/src/environments/environment';
 import { Observable } from 'rxjs';
 import { HttpRespuesta } from '../../../models/http-respuesta.interface';
 import { BaseService } from '../../../utils/base-service';
-import { TipoCatalogo } from '../models/usuario-contratante.interface';
+import { BuscarContratantes, TipoCatalogo } from '../models/usuario-contratante.interface';
 import { ReporteTabla } from '../../velacion-domicilio/models/velacion-domicilio.interface';
 
 @Injectable()
@@ -14,11 +14,15 @@ export class ContratantesService extends BaseService<HttpRespuesta<any>, any> {
       11, "usr-contratantes", "detalle-contratante", "cambiar-estatus");
   }
 
-  buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+  buscarPorFiltros(filtros: BuscarContratantes, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, filtros, { params });
+  }
+
+  obtenerNombreContratantes(filtros: BuscarContratantes): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, filtros);
   }
 
   obtenerDetalleContratante(id: number): Observable<HttpRespuesta<any>> {

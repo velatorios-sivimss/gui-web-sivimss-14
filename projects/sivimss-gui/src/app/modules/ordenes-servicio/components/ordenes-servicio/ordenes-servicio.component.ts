@@ -73,9 +73,12 @@ export class OrdenesServicioComponent implements OnInit {
   mensajeArchivoConfirmacion: string = "";
   mostrarModalConfirmacion: boolean = false;
 
+  mostrarDescargaEntradas: boolean = false;
+  mostrarDescagaSalidas: boolean = false;
+
 
   ordenesServicio: OrdenServicioPaginado[] = [];
-  ordenServicioSeleccionada!: OrdenServicioPaginado;
+  ordenServicioSeleccionada!: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -88,6 +91,8 @@ export class OrdenesServicioComponent implements OnInit {
     private route: ActivatedRoute,
     private descargaArchivosService: DescargaArchivosService,
     private renderer: Renderer2,
+
+    private router: Router,
   ) {
   }
 
@@ -96,6 +101,7 @@ export class OrdenesServicioComponent implements OnInit {
 
     let respuesta = this.route.snapshot.data['respuesta'];
     this.delegaciones = respuesta[this.POSICION_DELEGACION];
+    this.unidadesMedicas = respuesta[1];
 
 
 
@@ -226,6 +232,8 @@ export class OrdenesServicioComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, ordenServicioSeleccionada: any): void {
     this.ordenServicioSeleccionada = ordenServicioSeleccionada;
+    this.ordenServicioSeleccionada.EntradaDonacion > 0 ? this.mostrarDescargaEntradas = true : this.mostrarDescargaEntradas = false
+    this.ordenServicioSeleccionada.SalidaDonacion   > 0 ? this.mostrarDescagaSalidas = true : this.mostrarDescagaSalidas = false
     this.overlayPanel.toggle(event);
   }
 
@@ -278,7 +286,7 @@ export class OrdenesServicioComponent implements OnInit {
           },
           (error:HttpErrorResponse) => {
             const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-            this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
+            this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
           }
         )
       }
@@ -291,7 +299,7 @@ export class OrdenesServicioComponent implements OnInit {
       finalize(()=>this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>): void => {
-        this.consultarUnidadMedica();
+        // this.consultarUnidadMedica();
         this.velatorios = respuesta.datos.map((velatorio: catalogoVelatorio) => (
           { label: velatorio.DES_VELATORIO, value: velatorio.idVelatorio })) || [];
       },
@@ -371,19 +379,22 @@ export class OrdenesServicioComponent implements OnInit {
   }
 
   consultarUnidadMedica(): void {
-    this.loaderService.activar();
-    this.consultarOrdenServicioService.unidadMedica(this.formulario.delegacion.value).pipe(
-      finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
-        this.unidadesMedicas = respuesta.datos.map((unidadMedica: catalogoUnidadesMedicas) => (
-          { label: unidadMedica.nombreUnidad, value: unidadMedica.idUnidadMedica })) || [];
-      },
-      (error:HttpErrorResponse) => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
-      }
-    )
+    // this.loaderService.activar();
+    // this.consultarOrdenServicioService.unidadMedica(this.formulario.delegacion.value).pipe(
+    //   finalize(()=>this.loaderService.desactivar())
+    // ).subscribe(
+    //   (respuesta: HttpRespuesta<any>): void => {
+    //     this.unidadesMedicas = respuesta.datos.map((unidadMedica: catalogoUnidadesMedicas) => (
+    //       { label: unidadMedica.nombreUnidad, value: unidadMedica.idUnidadMedica })) || [];
+    //   },
+    //   (error:HttpErrorResponse) => {
+    //     const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+    //     this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
+    //   }
+    // )
+
+
+
   }
 
   exportarArchivo(extension: string): void {
@@ -426,9 +437,16 @@ export class OrdenesServicioComponent implements OnInit {
 
   descargarContratoServInmediatos(): void{
     this.loaderService.activar()
+    let tipoReporte = 0;
+    if(this.ordenServicioSeleccionada.estatus?.includes('Generada')){
+      tipoReporte = 1;
+    }
+    if(this.ordenServicioSeleccionada.estatus?.includes('Preorden')){
+      tipoReporte = 0;
+    }
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio).pipe(
+    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio,tipoReporte).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
@@ -457,9 +475,85 @@ export class OrdenesServicioComponent implements OnInit {
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
     let estatusODS:number = 1;
-    this.ordenServicioSeleccionada.estatus?.includes("Generado") ? estatusODS = 2 : estatusODS= 1;
+    this.ordenServicioSeleccionada.estatus?.includes("Generada") ? estatusODS = 2 : estatusODS= 1;
     this.consultarOrdenServicioService.generarArchivoOrdenServicio(
       this.ordenServicioSeleccionada.idOrdenServicio,estatusODS
+    ).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
+  }
+
+  modificarODS(): void {
+    // let estatusODS =["Cancelado","Preorden","Generada","En transito","Pagada","Facturada","Concluida","Activa"]
+    // let od = this.ordenServicioSeleccionada;
+    // let estatusODS;
+    // this.ordenServicioSeleccionada == 1 ? estatusODS = 1 :
+    this.router.navigate(["ordenes-de-servicio/modificar-orden-de-servicio"],
+      {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:1 }})
+  }
+
+  ordenComplementaria(): void {
+    this.router.navigate(["ordenes-de-servicio/modificar-orden-de-servicio"],
+      {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:0 }})
+  }
+
+  descargarEntradas(): void {
+    let tipoConsulta = this.ordenServicioSeleccionada.estatus == "Preorden" ? 0 : 1;
+    this.loaderService.activar()
+    let filtros = this.obtenerObjetoParaFiltrado();
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    this.consultarOrdenServicioService.generarArchivoEntradaDonaciones(
+      this.ordenServicioSeleccionada.idOrdenServicio,tipoConsulta
+    ).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download','documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    )
+  }
+
+  descargarSalidas(): void {
+    let tipoConsulta = this.ordenServicioSeleccionada.estatus == "Preorden" ? 0 : 1;
+    this.loaderService.activar()
+    let filtros = this.obtenerObjetoParaFiltrado();
+    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    this.consultarOrdenServicioService.generarArchivoSalidaDonaciones(
+      this.ordenServicioSeleccionada.idOrdenServicio,tipoConsulta
     ).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe(

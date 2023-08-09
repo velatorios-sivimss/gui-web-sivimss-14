@@ -33,9 +33,10 @@ import {DetalleMetodoPagoComponent} from './components/detalle-metodo-pago/detal
 import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 import {RealizarPagoService} from "./services/realizar-pago.service";
 import {AccordionModule} from "primeng/accordion";
-import { ModificarMetodoPagoComponent } from './components/modificar-metodo-pago/modificar-metodo-pago.component';
+import {ModificarMetodoPagoComponent} from './components/modificar-metodo-pago/modificar-metodo-pago.component';
 import {InputNumberModule} from "primeng/inputnumber";
-import { ModificarTipoPagoComponent } from './components/modificar-tipo-pago/modificar-tipo-pago.component';
+import {ModificarTipoPagoComponent} from './components/modificar-tipo-pago/modificar-tipo-pago.component';
+import {EliminarTipoPagoComponent} from './components/eliminar-tipo-pago/eliminar-tipo-pago.component';
 
 
 @NgModule({
@@ -50,28 +51,29 @@ import { ModificarTipoPagoComponent } from './components/modificar-tipo-pago/mod
     SeleccionBeneficiariosAgfComponent,
     DetalleMetodoPagoComponent,
     ModificarMetodoPagoComponent,
-    ModificarTipoPagoComponent
+    ModificarTipoPagoComponent,
+    EliminarTipoPagoComponent
   ],
-    imports: [
-        CommonModule,
-        RealizarPagoRoutingModule,
-        TituloPrincipalModule,
-        ReactiveFormsModule,
-        DropdownModule,
-        CalendarModule,
-        UtileriaModule,
-        ValidaRolModule,
-        TableModule,
-        InputSwitchModule,
-        OverlayPanelModule,
-        OverlayPanelOpcionesModule,
-        DialogModule,
-        TablePanelModule,
-        CheckboxModule,
-        CeldaStickyModule,
-        AccordionModule,
-        InputNumberModule
-    ],
+  imports: [
+    CommonModule,
+    RealizarPagoRoutingModule,
+    TituloPrincipalModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    CalendarModule,
+    UtileriaModule,
+    ValidaRolModule,
+    TableModule,
+    InputSwitchModule,
+    OverlayPanelModule,
+    OverlayPanelOpcionesModule,
+    DialogModule,
+    TablePanelModule,
+    CheckboxModule,
+    CeldaStickyModule,
+    AccordionModule,
+    InputNumberModule
+  ],
   providers: [RealizarPagoService]
 })
 export class RealizarPagoModule {

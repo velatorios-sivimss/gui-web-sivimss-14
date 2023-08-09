@@ -55,6 +55,25 @@ export interface ValorCP {
 }
 
 export interface TipoCatalogo {
-  idCatalogo: number,
-  cp?: number
+  idCatalogo?: number,
+  cp?: number,
+  nombre?: string,
+}
+
+export interface BuscarContratantes {
+  curp?: string | null;
+  nss?: string | null;
+  nomContratante?: string | null;
+  id?: number | null;
+  estatus?: boolean | null;
+}
+
+export interface ReporteTabla {
+  curp?: number | null;
+  nss?: string | null;
+  nomContratante?: string | null;
+  id?: number | null;
+  estatus?: string | null;
+  rutaNombreReporte?: string;
+  tipoReporte?: string;
 }

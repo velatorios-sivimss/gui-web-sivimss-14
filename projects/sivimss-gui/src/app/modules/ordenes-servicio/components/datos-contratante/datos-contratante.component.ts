@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   AlertaService,
@@ -15,14 +15,12 @@ import { nacionalidad, sexo } from '../../constants/catalogos-complementarios';
 import { ActivatedRoute } from '@angular/router';
 import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
 import { LoaderService } from '../../../../shared/loader/services/loader.service';
-import { GestionarDonacionesService } from '../../../consulta-donaciones/services/gestionar-donaciones.service';
 import { finalize } from 'rxjs/operators';
 import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
 import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
 import { ConfirmacionServicio } from '../../../renovacion-extemporanea/models/convenios-prevision.interface';
-import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
@@ -39,6 +37,7 @@ import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.int
 import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
 
 import * as moment from 'moment';
+import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
 
 @Component({
   selector: 'app-datos-contratante',
@@ -92,10 +91,10 @@ export class DatosContratanteComponent implements OnInit {
   informacionServicioVelacion: InformacionServicioVelacionInterface =
     {} as InformacionServicioVelacionInterface;
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
+
   idPersona: number | null = null;
   idContratante: number | null = null;
   idDomicilio: number | null = null;
-
   fechaActual = new Date();
 
   constructor(
@@ -129,7 +128,6 @@ export class DatosContratanteComponent implements OnInit {
 
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.gestionarEtapasService.datosEtapaContratante$
-      .asObservable()
       .subscribe((datosEtapaContratante) =>
         this.inicializarForm(datosEtapaContratante)
       );
@@ -222,8 +220,7 @@ export class DatosContratanteComponent implements OnInit {
           {
             value: datosEtapaContratante.datosContratante.nacionalidad,
             disabled: false,
-          },
-          [Validators.required],
+          }
         ],
         lugarNacimiento: [
           {
@@ -257,7 +254,6 @@ export class DatosContratanteComponent implements OnInit {
             value: datosEtapaContratante.datosContratante.parentesco,
             disabled: false,
           },
-          [Validators.required],
         ],
       }),
       direccion: this.formBuilder.group({
@@ -323,10 +319,43 @@ export class DatosContratanteComponent implements OnInit {
     formName[posicion].setValue(formName[posicion].value.trimStart());
   }
 
+  limpiarFormularioConsultaRfcCurp(origen:string): void{
+      // if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
+      // if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
+      this.datosContratante.nombre.patchValue(null)
+      this.datosContratante.primerApellido.patchValue(null)
+      this.datosContratante.segundoApellido.patchValue(null)
+      this.datosContratante.fechaNacimiento.patchValue(null)
+      this.datosContratante.sexo.patchValue(null)
+      this.datosContratante.otroTipoSexo.patchValue(null)
+      this.datosContratante.nacionalidad.patchValue(null)
+      this.datosContratante.lugarNacimiento.patchValue(null)
+      this.datosContratante.paisNacimiento.patchValue(null)
+      this.datosContratante.telefono.patchValue(null)
+      this.datosContratante.correoElectronico.patchValue(null)
+      this.datosContratante.parentesco.patchValue(null)
+      this.direccion.calle.patchValue(null)
+      this.direccion.noExterior.patchValue(null)
+      this.direccion.noInterior.patchValue(null)
+      this.direccion.cp.patchValue(null)
+      this.direccion.colonia.patchValue(null)
+      this.direccion.municipio.patchValue(null)
+      this.direccion.estado.patchValue(null)
+  }
+
   consultarCURP(): void {
     if (!this.datosContratante.curp.value) {
       return;
     }
+    // this.limpiarFormularioConsultaRfcCurp("curp")
+    if (this.datosContratante.curp?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(34)
+      );
+      return;
+    }
+
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
@@ -334,12 +363,16 @@ export class DatosContratanteComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
-            console.log('curp', respuesta);
             if (respuesta.mensaje.includes('Externo')) {
-              this.idPersona = null;
-              this.idContratante = null;
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
+
+              this.idPersona = null;
+              this.idContratante = null;
               this.datosContratante.nombre.setValue(respuesta.datos.nombre);
               this.datosContratante.primerApellido.setValue(
                 respuesta.datos.apellido1
@@ -348,15 +381,17 @@ export class DatosContratanteComponent implements OnInit {
                 respuesta.datos.apellido2
               );
               this.datosContratante.fechaNacimiento.setValue(fecha);
+
               if (respuesta.datos.sexo.includes('HOMBRE')) {
                 this.datosContratante.sexo.setValue(2);
               }
+
               if (respuesta.datos.sexo.includes('MUJER')) {
                 this.datosContratante.sexo.setValue(1);
               }
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
@@ -364,14 +399,16 @@ export class DatosContratanteComponent implements OnInit {
               }
             } else {
               let datos = respuesta.datos[0];
+              let [anio, mes, dia] = datos.fechaNac.split('-');
               this.idPersona = datos.idPersona;
               this.idContratante = datos.idContratante;
-              let [anio, mes, dia] = datos.fechaNac.split('-');
               dia = dia.substr(0, 2);
+
               const fecha = new Date(anio + '/' + mes + '/' + dia);
+
               this.datosContratante.nombre.setValue(datos.nombre);
               this.datosContratante.primerApellido.setValue(
-                respuesta.primerApellido
+                datos.primerApellido
               );
               this.datosContratante.segundoApellido.setValue(
                 datos.segundoApellido
@@ -379,14 +416,13 @@ export class DatosContratanteComponent implements OnInit {
               this.datosContratante.fechaNacimiento.setValue(fecha);
 
               this.datosContratante.sexo.setValue(+respuesta.datos[0].sexo);
-              if (datos.idPais == 119) {
+              if (datos.idPais == 119 || datos.idPais == "" || datos.idPais === null) {
                 this.datosContratante.nacionalidad.setValue(1);
               } else {
                 this.datosContratante.nacionalidad.setValue(2);
               }
 
               this.datosContratante.rfc.setValue(datos.rfc);
-              console.log(datos);
               this.datosContratante.paisNacimiento.setValue(
                 Number(datos.idPais)
               );
@@ -396,21 +432,19 @@ export class DatosContratanteComponent implements OnInit {
 
               this.datosContratante.telefono.setValue(datos.telefono);
               this.datosContratante.correoElectronico.setValue(datos.correo);
-
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.municipio.setValue(datos.municipio);
               this.direccion.estado.setValue(datos.estado);
               this.direccion.cp.setValue(datos.cp);
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.calle.setValue(datos.calle);
-
-              this.direccion.noInterior.setValue(datos.numExterior);
-              this.direccion.noExterior.setValue(datos.numInterior);
+              this.direccion.noInterior.setValue(datos.numInterior);
+              this.direccion.noExterior.setValue(datos.numExterior);
               this.idDomicilio = datos.idDomicilio;
             }
             return;
           }
-          this.limpiarConsultaDatosPersonales();
+          // this.limpiarConsultaDatosPersonales();
           this.alertaService.mostrar(
             TipoAlerta.Precaucion,
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -428,13 +462,20 @@ export class DatosContratanteComponent implements OnInit {
     if (!this.datosContratante.rfc.value) {
       return;
     }
+    // this.limpiarFormularioConsultaRfcCurp("rfc")
+    if (this.datosContratante.rfc?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(33)
+      );
+      return;
+    }
     this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           if (respuesta.datos.length > 0) {
             let datos = respuesta.datos[0];
             this.idPersona = datos.idPersona;
@@ -444,13 +485,12 @@ export class DatosContratanteComponent implements OnInit {
             const fecha = new Date(anio + '/' + mes + '/' + dia);
             this.datosContratante.nombre.setValue(datos.nombre);
             this.datosContratante.primerApellido.setValue(datos.primerApellido);
-
             this.datosContratante.segundoApellido.setValue(
               datos.segundoApellido
             );
             this.datosContratante.fechaNacimiento.setValue(fecha);
-
             this.datosContratante.sexo.setValue(+respuesta.datos[0].sexo);
+
             if (datos.idPais == 119) {
               this.datosContratante.nacionalidad.setValue(1);
             } else {
@@ -458,7 +498,6 @@ export class DatosContratanteComponent implements OnInit {
             }
 
             this.datosContratante.rfc.setValue(datos.rfc);
-
             this.datosContratante.paisNacimiento.setValue(Number(datos.idPais));
             this.datosContratante.lugarNacimiento.setValue(
               Number(datos.idEstado)
@@ -473,14 +512,13 @@ export class DatosContratanteComponent implements OnInit {
             this.direccion.cp.setValue(datos.cp);
             this.direccion.colonia.setValue(datos.colonia);
             this.direccion.calle.setValue(datos.calle);
-
             this.direccion.noInterior.setValue(datos.numExterior);
             this.direccion.noExterior.setValue(datos.numInterior);
             this.idDomicilio = datos.idDomicilio;
 
             return;
           }
-          this.limpiarConsultaDatosPersonales();
+          // this.limpiarConsultaDatosPersonales();
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -489,10 +527,10 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.direccion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -535,29 +573,29 @@ export class DatosContratanteComponent implements OnInit {
 
   cambiarTipoSexo(): void {
     if (this.datosContratante.sexo.value == 3) {
-      this.datosContratante.otroTipoSexo.enabled;
+      this.datosContratante.otroTipoSexo.enable();
       this.datosContratante.otroTipoSexo.setValidators(Validators.required);
       return;
     }
-    this.datosContratante.otroTipoSexo.disabled;
+    this.datosContratante.otroTipoSexo.disable();
     this.datosContratante.otroTipoSexo.clearValidators();
     this.datosContratante.otroTipoSexo.setValue(null);
   }
 
   cambiarNacionalidad(): void {
     if (this.datosContratante.nacionalidad.value == 1) {
-      this.datosContratante.paisNacimiento.disabled;
+      this.datosContratante.paisNacimiento.disable();
       this.datosContratante.paisNacimiento.clearValidators();
       this.datosContratante.paisNacimiento.reset();
-      this.datosContratante.lugarNacimiento.enabled;
+      this.datosContratante.lugarNacimiento.enable();
       this.datosContratante.lugarNacimiento.setValidators(Validators.required);
       return;
     }
-    this.datosContratante.lugarNacimiento.disabled;
+    this.datosContratante.lugarNacimiento.disable();
     this.datosContratante.lugarNacimiento.clearValidators();
     this.datosContratante.lugarNacimiento.reset();
-    this.datosContratante.paisNacimiento.enabled;
-    this.datosContratante.paisNacimiento.setValidators(Validators.required);
+    this.datosContratante.paisNacimiento.enable();
+    // this.datosContratante.paisNacimiento.setValidators(Validators.required);
   }
 
   limpiarConsultaDatosPersonales(): void {
@@ -570,8 +608,6 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   continuar(): void {
-    // if (!this.form.valid) return;
-    console.log(this.form.valid);
     let etapas: Etapa[] = [
       {
         idEtapa: 0,
@@ -639,7 +675,6 @@ export class DatosContratanteComponent implements OnInit {
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    console.log(formulario);
     let datosEtapaContratante = {
       datosContratante: {
         idPersona: this.idPersona,
@@ -694,7 +729,7 @@ export class DatosContratanteComponent implements OnInit {
       datosEtapaContratante.datosContratante.fechaNacimiento
     ).format('yyyy-MM-DD');
     this.contratante.idPais =
-      datosEtapaContratante.datosContratante.paisNacimiento;
+      datosEtapaContratante.datosContratante.paisNacimiento == 0 ? null : datosEtapaContratante.datosContratante.paisNacimiento;
     this.contratante.idEstado =
       datosEtapaContratante.datosContratante.lugarNacimiento;
     this.contratante.telefono = datosEtapaContratante.datosContratante.telefono;
@@ -714,16 +749,13 @@ export class DatosContratanteComponent implements OnInit {
     this.altaODS.contratante = this.contratante;
     this.altaODS.idVelatorio = null;
     this.altaODS.idOperador = null;
-
-    this.contratante.cp = this.cp;
-
     this.contratante.cp = this.cp;
 
     this.gestionarEtapasService.datosEtapaContratante$.next(
       datosEtapaContratante
     );
-    this.gestionarEtapasService.altaODS$.next(this.altaODS);
 
+    this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
   get datosContratante() {
@@ -754,5 +786,27 @@ export class DatosContratanteComponent implements OnInit {
           console.log(error);
         }
       );
+  }
+
+  convertirAMayusculas(posicionFormulario: number): void {
+    const formularios = [this.datosContratante.curp, this.datosContratante.rfc];
+    formularios[posicionFormulario].setValue(
+      formularios[posicionFormulario].value.toUpperCase()
+    );
+  }
+
+  convertirAMinusculas(): void {
+    this.datosContratante.correoElectronico.setValue(
+      this.datosContratante.correoElectronico.value.toLowerCase()
+    );
+  }
+
+  validarCorreoElectronico(): void {
+    if (this.datosContratante.correoElectronico?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(50)
+      );
+    }
   }
 }

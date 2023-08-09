@@ -58,8 +58,8 @@ export class RegistrarSalidaComponent implements OnInit {
   inicializarFormRegistroSalida(): void {
     this.registroSalidaForm = this.formBuilder.group({
       nivelGas: [{value: null, disabled: false}, [Validators.required]],
-      fecha: [{value: null, disabled: false}, [Validators.required]],
-      hora: [{value: null, disabled: false}, [Validators.required]],
+      fecha: [{value: this.fechaActual, disabled: false}, [Validators.required]],
+      hora: [{value: this.fechaActual, disabled: false}, [Validators.required]],
     })
   }
 

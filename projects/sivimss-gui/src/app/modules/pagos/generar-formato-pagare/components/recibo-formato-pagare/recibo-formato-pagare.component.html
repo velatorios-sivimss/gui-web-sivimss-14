@@ -1,7 +1,7 @@
 <div class="row">
     <h3>Pagaré</h3>
 </div>
-<form [formGroup]="filtroForm" (ngSubmit)="generarPdf()">
+<form [formGroup]="filtroForm">
     <div class="row mb-4">
 
         <div class="col-md-12 border seccion-folio flex justify-content-between">
@@ -27,28 +27,27 @@
                     <div class="logo-fibeso float-right ">
                         <span class="texto-fibeso">FIBESO</span>
                     </div>
-                    <div class="float-right ">
-                        <div class="grid-item">
-                            <span class="etiqueta-formato">Fecha <span class="etiqueta-formato-val">{{formatoPagare.fechaODS}}</span></span>
-                        </div>
-                        <div class="grid-item">
-                            <span class="etiqueta-formato">Hora <span class="etiqueta-formato-val">{{formatoPagare.hora}}</span>
-                            </span>
-                        </div>
+
+                </section>
+                <div class="float-right ">
+                    <div class="grid-item">
+                        <span class="etiqueta-formato">Fecha <span class="etiqueta-formato-val">{{formatoPagare.fechaODS}}</span></span>
                     </div>
-                </section>
-                <section class="titulo-body">
+                    <div class="grid-item">
+                        <span class="etiqueta-formato">Hora <span
+                        class="etiqueta-formato-val">{{formatoPagare.hora}} hrs</span>
+                        </span>
+                    </div>
+                </div>
 
-                </section>
-
+                <br>
                 <hr class="solid">
 
                 <section class="flex justify-content-between info-gral-body mt-7 col-md-7">
                     <span class="etiqueta-formato">Pagaré <span
-          class="etiqueta-formato-val">{{formatoPagare.folioPagare}}</span> </span>
+                      class="etiqueta-formato-val">{{formatoPagare.folioPagare}}</span> </span>
                     <span class="etiqueta-formato">Bueno por $ <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
                     </span>
-
 
 
                 </section>
@@ -59,47 +58,45 @@
                         <span class="col-md-12 etiqueta-formato">Por el presente pagaré reconozco deber y me obligo a pagar en esta ciudad o en cualquier otra en que se me requiera</span>
 
                         <span class="col-md-12 etiqueta-formato">al INSTITUTO MEXICANO DEL SEGURO SOCIAL
-            <span class="etiqueta-base"> o a su orden el dia </span>
+            <span class="etiqueta-formato"> o a su orden el día </span>
                         <span class="etiqueta-formato-val"> {{formatoPagare.fechaODS}} </span>
-                        <!--
-            <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> Abril </span>
-            <span class="etiqueta-base"> de </span>
-            <span class="etiqueta-formato-val"> 2021 </span>
-            -->
                         </span>
-                        <span class="col-md-12 etiqueta-base mt-3">la cantidad de $
-                        <span class="etiqueta-formato-val">{{formatoPagare.importe}}</span>
-                        <span class="etiqueta-formato-val">{{importeLetra}}</span>
+                        <span class="col-md-12 etiqueta-formato mt-3">la cantidad de $
+                        <span class="etiqueta-formato-val">( {{importeLetra}} )</span>
                         </span>
-                        <span class="col-md-12 etiqueta-base mt-3">Valor recibido SERVICIOS FUNERARIOS ORDEN DE SERVICIO No. 
-                            <span class="etiqueta-formato-val">{{formatoPagare.folioODS}} </span>
+                        <span class="col-md-12 etiqueta-formato mt-3">Valor recibido en SERVICIOS FUNERARIOS (ORDEN DE SERVICIO No.
+                            <span class="etiqueta-formato-val">{{formatoPagare.folioODS}} )</span>
                         </span>
                     </div>
 
                     <div>
-                        <span class="col-md-12 etiqueta-base mt-7 mb-3">
-                        A mi entera satisfacción. La cantidad que ampara este pagare es parte de cantidad mayor, por la cual se otorgan otros pagares con vencimientos posteriores y
-queda expresamente convenido que si no es pagado este documento precisamente a su vencimiento se darán por vencidos anticipadamente los demás
-pagares a que se refiere está cláusula. Este pagaré es mercantil está regido por la Ley General de Títulos y Operaciones de Crédito en su artículo 173 parte
+                        <span class="col-md-12 etiqueta-formato mt-7 mb-3">
+                        A mi entera satisfacción. La cantidad que ampara este pagaré es parte de cantidad mayor, por la cual se otorgan otros pagarés con vencimientos posteriores y
+queda expresamente convenido que si no es pagado este documento precisamente a su vencimiento se darán, por vencidos anticipadamente los demás
+pagarés a que se refiere está cláusula. Este pagaré es mercantil está regido por la Ley General de Títulos y Operaciones de Crédito en su artículo 173 parte
 final y Artículos correlativos por no ser pagare domiciliado.
                     </span>
 
-                        <span class="col-md-12 etiqueta-base mt-7 mb-3">
-                        De no verificarse el pago de la cantidad que este pagare expresa el día de su vencimiento abonar a la
-                    </span>
+                        <span class="col-md-12 etiqueta-formato mt-7 mb-3">
+                        De no verificarse el pago de la cantidad que este pagaré expresa el día de su vencimiento abonar a la cuenta el rédito
+                        </span>
 
-                        <span class="col-md-1 etiqueta-base mt-3">de </span>
-                        <span class="etiqueta-formato-val col-md-1">
-                            <input id="redito" class="form-control" [(ngModel)]="formatoPagare.redito" formControlName="redito" placeholder="Ingresa redito" size="2"></span>
-                        <span class="col-md-10 etiqueta-base">por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen</span>
+                        <div class="col-md-12 input-info">
+                            <span class="etiqueta-formato">De</span>
+                            <span class="col-md-1">
+                                <input id="redito" class="form-control" [(ngModel)]="formatoPagare.redito"
+                                    formControlName="redito" placeholder="Ingresa redito" size="1">
+                            </span>
+                            <span class="etiqueta-formato">por ciento mensual por todo el tiempo que este insoluto, sin perjuicio al cobro mas los gastos que por ello se originen.</span>
+                        </div>
+
 
                         <div class="grid-item"></div>
                         <div class="grid-item"></div>
                         <div class="grid-item"></div>
                         <div class="grid-item"></div>
 
-                        <div class="row flex justify-content-between mt-7">
+                        <div class="row  justify-content-between mt-6 mb-3">
                             <div class="card border">
                                 <div class="container-card">
                                     <hr class="solid">
@@ -113,7 +110,7 @@ final y Artículos correlativos por no ser pagare domiciliado.
                         <div class="grid-container">
                             <div class="grid-item">
                                 <span class="etiqueta-formato">Otorgante <span
-                class="etiqueta-formato-val">{{formatoPagare.nomContratante}}</span></span>
+                                  class="etiqueta-formato-val">{{formatoPagare.nomContratante}}</span></span>
                             </div>
                             <div class="grid-item">
 
@@ -122,17 +119,17 @@ final y Artículos correlativos por no ser pagare domiciliado.
 
                             <div class="grid-item">
                                 <span class="etiqueta-formato">Domicilio <span
-                class="etiqueta-formato-val ">{{formatoPagare.domContratante}}</span></span>
+                                  class="etiqueta-formato-val ">{{formatoPagare.domContratante}}</span></span>
                             </div>
                             <div class="grid-item">
                                 <span class="etiqueta-formato">Fecha <span
-                class="etiqueta-formato-val">{{formatoPagare.fechaPago}}</span>
+                                  class="etiqueta-formato-val">{{formatoPagare.fechaPago}}</span>
                                 </span>
                             </div>
                             <div class="grid-item"></div>
                             <div class="grid-item">
                                 <span class="etiqueta-formato">Agente <span
-                class="etiqueta-formato-val">{{formatoPagare.nomUsuario}}</span></span>
+                                  class="etiqueta-formato-val">{{formatoPagare.nomUsuario}}</span></span>
                             </div>
                             <div class="grid-item">
 
@@ -152,8 +149,8 @@ final y Artículos correlativos por no ser pagare domiciliado.
 
 
     <div class="row flex justify-content-end mb-4">
-        <button class="btn btn-default btn-md" [routerLink]="'../'">Regresar</button>
-        <button class="ml-4 btn btn-primary btn-md">Generar formato pagaré</button>
+        <button class="btn btn-default btn-md" (click)="regresarPaginaPrevia()">Cancelar</button>
+        <button class="ml-4 btn btn-primary btn-md" (click)="generarPdf()">Generar formato pagaré</button>
     </div>
 </form>
 

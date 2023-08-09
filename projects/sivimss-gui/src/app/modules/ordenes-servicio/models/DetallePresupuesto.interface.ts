@@ -1,6 +1,7 @@
 import { ServicioDetalleTrasladotoInterface } from './ServicioDetalleTraslado.interface';
 
 export interface DetallePresupuestoInterface {
+  proviene: string | null;
   idCategoria: number | null;
   idArticulo: number | null;
   idInventario: number | null;
@@ -10,5 +11,6 @@ export interface DetallePresupuestoInterface {
   idProveedor: number | null;
   esDonado: number | null;
   importeMonto: number | null;
+  activo?: number | null;
   servicioDetalleTraslado: ServicioDetalleTrasladotoInterface | null;
 }

@@ -38,6 +38,8 @@ import { ServicioDetalleTrasladotoInterface } from '../../models/ServicioDetalle
 import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.interface';
 import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
+import { ModalConvenioPfComponent } from '../modal-convenio-pf/modal-convenio-pf.component';
+import { Persona } from '../../models/Persona.interface';
 
 @Component({
   selector: 'app-datos-finado',
@@ -97,7 +99,9 @@ export class DatosFinadoComponent implements OnInit {
   radonlyCurp: boolean = false;
   idContratante: number | null = null;
   fechaActual = new Date();
+  validacionPersonaConvenio: boolean = false;
 
+  idPersona: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -177,7 +181,7 @@ export class DatosFinadoComponent implements OnInit {
           {
             value: datosEtapaFinado.datosFinado.esParaExtremidad,
             disabled: false,
-          }
+          },
         ],
         matricula: [
           { value: datosEtapaFinado.datosFinado.matricula, disabled: false },
@@ -230,7 +234,7 @@ export class DatosFinadoComponent implements OnInit {
           [Validators.required],
         ],
         edad: [
-          { value: datosEtapaFinado.datosFinado.edad, disabled: false },
+          { value: datosEtapaFinado.datosFinado.edad, disabled: true },
           [Validators.required],
         ],
         sexo: [
@@ -313,7 +317,6 @@ export class DatosFinadoComponent implements OnInit {
         ],
         noInterior: [
           { value: datosEtapaFinado.direccion.noInterior, disabled: false },
-          [Validators.required],
         ],
         cp: [
           { value: datosEtapaFinado.direccion.cp, disabled: false },
@@ -324,7 +327,7 @@ export class DatosFinadoComponent implements OnInit {
           [Validators.required],
         ],
         municipio: [
-          { value: datosEtapaFinado.direccion.municipio, disabled: false },
+          { value: datosEtapaFinado.direccion.municipio, disabled: true },
           [Validators.required],
         ],
         estado: [
@@ -335,12 +338,19 @@ export class DatosFinadoComponent implements OnInit {
     });
     this.cambiarValidacionNSS();
     this.cambiarValidacionMatricula();
-    this.esEstremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
+    this.esExtremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
     this.esObito(datosEtapaFinado.datosFinado.esObito);
   }
 
   consultarCURP(): void {
     if (!this.datosFinado.curp.value) {
+      return;
+    }
+    if (this.datosFinado.curp?.errors?.pattern) {
+      this.alertaService.mostrar(
+        TipoAlerta.Precaucion,
+        this.mensajesSistemaService.obtenerMensajeSistemaPorId(34)
+      );
       return;
     }
     this.loaderService.activar();
@@ -351,8 +361,13 @@ export class DatosFinadoComponent implements OnInit {
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
+              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
+                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+                return
+              }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
               const fecha = new Date(anio + '/' + mes + '/' + dia);
+              this.idPersona = null;
               this.datosFinado.nombre.setValue(respuesta.datos.nombre);
               this.datosFinado.primerApellido.setValue(
                 respuesta.datos.apellido1
@@ -368,15 +383,17 @@ export class DatosFinadoComponent implements OnInit {
                 this.datosFinado.sexo.setValue(1);
               }
               if (
-                respuesta.datos.desEntidadNac.includes('MEXICO') ||
-                respuesta.datos.desEntidadNac.includes('MEX')
+                respuesta.datos.nacionalidad.includes('MEXICO') ||
+                respuesta.datos.nacionalidad.includes('MEX')
               ) {
                 this.datosFinado.nacionalidad.setValue(1);
               } else {
                 this.datosFinado.nacionalidad.setValue(2);
               }
             } else {
+              let datos = respuesta.datos[0];
               let [anio, mes, dia] = respuesta.datos[0].fechaNac.split('-');
+              this.idPersona = datos.idPersona;
               dia = dia.substr(0, 2);
               const fecha = new Date(anio + '/' + mes + '/' + dia);
               this.datosFinado.nombre.setValue(respuesta.datos[0].nombre);
@@ -388,7 +405,9 @@ export class DatosFinadoComponent implements OnInit {
               );
               this.datosFinado.fechaNacimiento.setValue(fecha);
               this.datosFinado.sexo.setValue(+respuesta.datos[0].sexo);
-              if (+respuesta.datos[0].idPais == 119) {
+              if (+respuesta.datos[0].idPais == 119 ||
+                respuesta.datos[0].idPais == "" ||
+                respuesta.datos[0].idPais === null) {
                 this.datosFinado.nacionalidad.setValue(1);
               } else {
                 this.datosFinado.nacionalidad.setValue(2);
@@ -400,12 +419,7 @@ export class DatosFinadoComponent implements OnInit {
             return;
           }
           this.limpiarConsultaDatosPersonales();
-          this.alertaService.mostrar(
-            TipoAlerta.Precaucion,
-            this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-              parseInt(respuesta.mensaje)
-            )
-          );
+          this.alertaService.mostrar(TipoAlerta.Precaucion,"CURP no valido.");
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -548,7 +562,6 @@ export class DatosFinadoComponent implements OnInit {
   }
 
   continuar(): void {
-    //  if (!this.form.valid) return;
     let etapas: Etapa[] = [
       {
         idEtapa: 0,
@@ -556,11 +569,11 @@ export class DatosFinadoComponent implements OnInit {
         textoInterior: '1',
         textoExterior: 'Datos del contratante',
         lineaIzquierda: {
-          mostrar: true,
-          estilo: 'solid',
+          mostrar: false,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
+          mostrar: true,
           estilo: 'dashed',
         },
       },
@@ -570,12 +583,12 @@ export class DatosFinadoComponent implements OnInit {
         textoInterior: '2',
         textoExterior: 'Datos del finado',
         lineaIzquierda: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
         lineaDerecha: {
-          mostrar: false,
-          estilo: 'solid',
+          mostrar: true,
+          estilo: 'dashed',
         },
       },
       {
@@ -615,7 +628,6 @@ export class DatosFinadoComponent implements OnInit {
 
   datosAlta(): void {
     let formulario = this.form.getRawValue();
-    console.log(formulario);
     let datosEtapaFinado = {
       datosFinado: {
         tipoOrden: formulario.datosFinado.tipoOrden,
@@ -683,9 +695,9 @@ export class DatosFinadoComponent implements OnInit {
     this.finado.procedenciaFinado = null;
     this.finado.idTipoPension = null;
     this.finado.idContratoPrevision = this.idContratoPrevision;
-    this.finado.idVelatorioContratoPrevision = null;
+    this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
     this.finado.cp = null;
-    this.finado.idPersona = null;
+    this.finado.idPersona = this.idPersona;
     this.altaODS.idContratantePf = this.idContratante;
     if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
       this.finado.rfc = null;
@@ -729,12 +741,11 @@ export class DatosFinadoComponent implements OnInit {
       this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
       this.cpFinado.idDomicilio = null;
       this.finado.cp = this.cpFinado;
-      this.finado.idPersona = null;
+      this.finado.idPersona = this.idPersona;
     }
 
     this.altaODS.finado = this.finado;
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
-    console.log('ods segunda fase', this.altaODS);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
@@ -784,36 +795,46 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.nssCheck.disable();
       this.datosFinado.matriculaCheck.disable();
       this.removerValidaciones();
+      this.datosFinado.esParaExtremidad.disable();
+      this.datosFinado.esObito.disable();
     }
   }
 
-  changeClinica(): void {
-    this.datosFinado.unidadProcedencia.setValue(null);
-    this.datosFinado.unidadProcedencia.clearValidators();
-    this.datosFinado.unidadProcedencia.updateValueAndValidity();
-    console.log(this.form)
-  }
 
   changeUnidad(): void {
-    this.datosFinado.clinicaAdscripcion.setValue(null);
-    this.datosFinado.clinicaAdscripcion.clearValidators();
-    this.datosFinado.clinicaAdscripcion.updateValueAndValidity();
+    this.datosFinado.procedenciaFinado.setValue(null);
+    this.datosFinado.procedenciaFinado.clearValidators();
+    this.datosFinado.procedenciaFinado.updateValueAndValidity();
+    this.datosFinado.unidadProcedencia.setValidators(Validators.required);
   }
-  esEstremidad(validacion: boolean): void {
+
+  changeProcedenciaFinado(): void {
+    this.datosFinado.unidadProcedencia.reset();
+    this.datosFinado.unidadProcedencia.clearValidators();
+    this.datosFinado.unidadProcedencia.updateValueAndValidity();
+    this.datosFinado.procedenciaFinado.setValidators(Validators.required);
+  }
+
+  esExtremidad(validacion: boolean): void {
     const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
 
+    this.datosFinado.esParaExtremidad.setValue(validacion);
     if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
       this.datosFinado.velatorioPrevision.disable();
       this.desabilitarTodo();
+      this.datosFinado.esObito.patchValue(null)
       this.datosFinado.esObito.disable();
+      this.datosFinado.esParaExtremidad.enable();
 
       this.datosFinado.velatorioPrevision.disable();
-    } else if ((validacion || !validacion) && idTipoOrden == 3) {
+    } else if (idTipoOrden == 3) {
       this.desabilitarTodo();
       this.datosFinado.esObito.disable();
+      this.datosFinado.esParaExtremidad.disable();
     } else {
       this.habilitarTodo();
       this.datosFinado.velatorioPrevision.disable();
+      if(idTipoOrden == 1)this.datosFinado.noContrato.disable();
     }
   }
 
@@ -837,6 +858,8 @@ export class DatosFinadoComponent implements OnInit {
 
   esObito(validacion: boolean): void {
     //curp nss matricula se bloquean
+    if(this.datosFinado.esParaExtremidad.value)return;
+    this.datosFinado.esObito.setValue(validacion);
     let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
     if (validacion) {
@@ -855,7 +878,6 @@ export class DatosFinadoComponent implements OnInit {
 
   consultarNSS(): void {
     this.loaderService.activar();
-    console.log(this.datosFinado.nss.value);
     if (!this.datosFinado.nss.value) {
       return;
     }
@@ -864,7 +886,6 @@ export class DatosFinadoComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           /*
           if (respuesta) {
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
@@ -943,7 +964,6 @@ export class DatosFinadoComponent implements OnInit {
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].enable();
     });
-
     Object.keys(this.direccion).forEach((key) => {
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].enable();
@@ -951,12 +971,14 @@ export class DatosFinadoComponent implements OnInit {
   }
   agregarValidaciones(): void {
     Object.keys(this.datosFinado).forEach((key) => {
+      if (key.includes('esObito') || key.includes('esParaExtremidad')) return;
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
     });
 
     Object.keys(this.direccion).forEach((key) => {
+      if (key.includes("noInterior"))return;
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
@@ -964,10 +986,10 @@ export class DatosFinadoComponent implements OnInit {
   }
 
   consultaCP(): void {
-    this.loaderService.activar();
     if (!this.direccion.cp.value) {
       return;
     }
+    this.loaderService.activar();
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -991,5 +1013,84 @@ export class DatosFinadoComponent implements OnInit {
           console.log(error);
         }
       );
+  }
+
+  consultarFolioPf(event: any): void {
+    if(!this.datosFinado.noContrato.value)return;
+    const ref = this.dialogService.open(ModalConvenioPfComponent, {
+      header: 'Número de contrato',
+      style: { maxWidth: '876px', width: '100%' },
+      data: { folio: this.datosFinado.noContrato.value },
+    });
+    ref.onClose.subscribe((persona: any) => {
+      let [anio, mes, dia]: any = persona.finado.fechaNac?.split('-');
+      this.validacionPersonaConvenio = true;
+      dia = dia.substr(0, 2);
+      const fecha = new Date(anio + '/' + mes + '/' + dia);
+      this.datosFinado.matricula.setValue(persona.finado.matricula);
+      this.datosFinado.curp.setValue(persona.finado.curp);
+      this.datosFinado.nss.setValue(persona.finado.nss);
+      this.datosFinado.nombre.setValue(persona.finado.nomPersona);
+      this.datosFinado.primerApellido.setValue(persona.finado.primerApellido);
+      this.datosFinado.segundoApellido.setValue(persona.finado.segundoApellido);
+      this.datosFinado.fechaNacimiento.setValue(fecha);
+      this.datosFinado.sexo.setValue(persona.finado?.sexo);
+      this.datosFinado.velatorioPrevision.setValue(persona.nombreVelatorio);
+      if (Number(persona.finado.idPais) == 119) {
+        this.datosFinado.nacionalidad.setValue(1);
+        this.datosFinado.lugarNacimiento.setValue(Number(persona.finado.idEstado));
+      } else {
+        this.datosFinado.nacionalidad.setValue(2);
+        this.datosFinado.paisNacimiento.setValue(Number(persona.finado.idPais));
+      }
+      this.datosFinado.sexo.setValue(Number(persona.finado.sexo));
+      this.datosFinado.otroTipoSexo.setValue(persona.finado.otroSexo);
+      this.idVelatorioContratoPrevision = +persona.idVelacion;
+      this.idContratoPrevision = +persona.idContrato
+      this.idPersona = +persona.finado.idPersona
+      this.idContratante = +persona.idContratantePf
+
+      this.cambiarTipoSexo();
+      this.cambiarNacionalidad();
+    });
+  }
+  convertirAMayusculas(): void {
+    this.datosFinado.curp.setValue(this.datosFinado.curp.value.toUpperCase());
+  }
+
+  noEspacioPrincipal(posicion:number): void {
+    let formularios = [
+      this.datosFinado.nombre,
+      this.datosFinado.primerApellido,
+      this.datosFinado.segundoApellido,
+      this.datosFinado.procedenciaFinado
+    ];
+    if(formularios[posicion].value.charAt(0).includes(' ')){
+      formularios[posicion].setValue(formularios[posicion].value.trimStart());
+    }
+  }
+
+  validarBotonAceptar(): boolean {
+
+    if(this.datosFinado.tipoOrden.value == 2){
+      if(this.form.invalid || !this.validacionPersonaConvenio){
+        return true;
+      }
+    }
+    if(this.datosFinado.tipoOrden.value == 1){
+      if(this.form.invalid){
+        return true;
+      }
+    }
+    if(this.datosFinado.tipoOrden.value == 3){
+      if(this.form.invalid){
+        return true;
+      }
+    }
+
+    if(this.form.invalid){
+      return true;
+    }
+    return false;
   }
 }

@@ -1,0 +1,119 @@
+<form [formGroup]="formulario">
+  <div class="row my-3">
+    <div class="col-md-6">
+      <label class="control-label" for="nivel">Nivel:</label>
+      <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+                  placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
+      </p-dropdown>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="delegacion">Delegación:</label>
+      <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+                  placeholder="Seleccionar la delegación" [filter]="true" filterBy="label">
+      </p-dropdown>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="velatorio">Velatorio:</label>
+      <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+                  placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
+      </p-dropdown>
+    </div>
+    <div class="col-md-6">
+      <!--                    (onSelect)="seleccionaPanteon($event)"  [suggestions]="panteonServicioFiltrados"-->
+      <!--                    (completeMethod)="filtrarPateon($event)"-->
+      <label class="control-label" for="ordenEntrada">Orden de entrada:</label>
+      <p-autoComplete id="ordenEntrada"  class="form-control" formControlName="ordenEntrada"
+                      autocomplete="000000"
+                      [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50"
+                      class="p-autocomplete" placeholder="Ingresa la orden de entrada"
+                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+      </p-autoComplete>
+    </div>
+  </div>
+  <div class="row mb-6">
+    <div class="col-md-6">
+      <!--                    (onSelect)="seleccionaPanteon($event)"  [suggestions]="panteonServicioFiltrados"-->
+      <!--                    (completeMethod)="filtrarPateon($event)"-->
+      <label class="control-label" for="categoria">Categoría:</label>
+      <p-autoComplete id="categoria"  class="form-control" formControlName="categoria"
+                      autocomplete="000000"
+                      [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50"
+                      class="p-autocomplete" placeholder="Ingresa la categoría"
+                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+      </p-autoComplete>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="nivel">Asignación:</label>
+      <p-dropdown id="asignacion" class="form-control" formControlName="asignacion" [options]="asignacion"
+                  placeholder="Seleccionar la asignación" [filter]="true" filterBy="label">
+      </p-dropdown>
+    </div>
+  </div>
+  <div class="flex justify-content-between ">
+    <h2 class="subtitulo">Stock</h2>
+    <button type="button" class="btn btn-primary btn-md">Buscar</button>
+  </div>
+</form>
+<section>
+  <p-table styleClass="mt-5 mb-8" [value]="stock"
+           [paginator]="stock.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
+           [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn scope="col">Fecha ODE</th>
+        <th pResizableColumn scope="col">Folio ODE</th>
+        <th pResizableColumn scope="col">Folio artículo</th>
+        <th pResizableColumn scope="col">Artículo</th>
+        <th pResizableColumn scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-stock>
+      <tr>
+        <td pResizableColumn> {{stock.fechaOde}} </td>
+        <td pResizableColumn> {{stock.folioOde}} </td>
+        <td pResizableColumn> {{stock.folioArticulo}} </td>
+        <td pResizableColumn> {{stock.articulo}} </td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirPanel($event,stock)" onCloseOnNavigation>
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="13" class="p-2 text-center font-bold text-xl" id="stock_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{stock.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table"  src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Devolver" (click)="abrirModalDevolver()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

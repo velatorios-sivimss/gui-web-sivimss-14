@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from "../../../../utils/base-service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 import {environment} from "../../../../../environments/environment";
 import {Observable, of} from "rxjs";
@@ -17,11 +17,13 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _odsFolios: string = 'consultar-folios-ods-pagos';
   private readonly _prevFunFolios: string = 'consultar-folios-prevFun-pagos';
   private readonly _renPrevFunFolios: string = 'consultar-folios-renPrevFun-pagos';
-  private readonly _detallePago: string = 'buscar-detalle-pago';
+  private readonly _eliminarPago: string = 'eliminar-pagos';
+  private readonly _modificarPago: string = 'actualizar-pagos';
+  private readonly _imprimirPago: string = 'generar-pdf-tabla-pagos';
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "crear_pagos", "",
-      36, "consultar-tabla-pagos", "", "");
+      36, "consultar-tabla-pagos", "buscar-detalle-pago", "");
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
@@ -94,7 +96,25 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
   consultarDetallePago(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
     const body = {idPagoBitacora}
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._detallePago}`, body)
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._detalle}`, body)
+  }
+
+  cancelarMetodoPago(idPagoDetalle: number): Observable<HttpRespuesta<any>> {
+    const body = {idPagoDetalle};
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._eliminarPago}`, body)
+  }
+
+  modificarMetodoPago(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
+  }
+
+  descargarListado(body: any): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
   }
 
 }

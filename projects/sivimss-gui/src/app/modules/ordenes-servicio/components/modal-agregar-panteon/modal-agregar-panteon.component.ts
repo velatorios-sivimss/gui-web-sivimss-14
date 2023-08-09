@@ -7,6 +7,8 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Panteon} from "../../models/Panteon.interface";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-modal-agregar-panteon',
@@ -19,10 +21,12 @@ export class ModalAgregarPanteonComponent implements OnInit {
   panteonServicioFiltrados: string[] = [];
 
   constructor(
+    private alertaService: AlertaService,
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
     private readonly config: DynamicDialogConfig,
     private loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
   ) {
   }
@@ -65,9 +69,6 @@ export class ModalAgregarPanteonComponent implements OnInit {
           value: null,
           disabled: false
         },
-        [
-          Validators.required
-        ]
       ],
       colonia: [
         {
@@ -81,7 +82,7 @@ export class ModalAgregarPanteonComponent implements OnInit {
       municipio: [
         {
           value: null,
-          disabled: false
+          disabled: true
         },
         [
           Validators.required
@@ -90,7 +91,7 @@ export class ModalAgregarPanteonComponent implements OnInit {
       estado: [
         {
           value: null,
-          disabled: false
+          disabled: true
         },
         [
           Validators.required
@@ -126,10 +127,21 @@ export class ModalAgregarPanteonComponent implements OnInit {
     });
   }
 
-  sinEspacioInicial(): void {
-    this.f.nombrePanteon.setValue(
-      this.f.nombrePanteon.value.trimStart()
-    )
+  validarNombre(posicion: number): void {
+    let formularios = [this.f.nombrePanteon];
+    let value = formularios[posicion].value;
+    let nuevoValor =  value.replace(/[^a-zA-Z0-9ñÑ\s]+/g, '');
+    nuevoValor = nuevoValor.replace(/\s+/g, ' ');
+    formularios[posicion].setValue(nuevoValor)
+
+
+  }
+
+  sinEspacioInicial(posicion:number): void {
+    let formularios = [this.f.nombrePanteon]
+    if(formularios[posicion].value.charAt(posicion).includes(' ')){
+      formularios[posicion].setValue(formularios[posicion].value.trimStart());
+    }
   }
 
   seleccionaPanteon(event:any){
@@ -139,15 +151,25 @@ export class ModalAgregarPanteonComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         respuesta.datos.forEach((datosPanteon: any) => {
+
           this.f.calle.setValue(respuesta.datos[0]?.desCalle)
+          this.f.calle.disable();
           this.f.noExterior.setValue(respuesta.datos[0]?.numExterior)
+          this.f.noExterior.disable();
           this.f.noInterior.setValue(respuesta.datos[0]?.numInterior)
+          this.f.noInterior.disable();
           this.f.colonia.setValue(respuesta.datos[0]?.desColonia)
+          this.f.colonia.disable();
           this.f.municipio.setValue(respuesta.datos[0]?.desMunicipio)
+          this.f.municipio.disable();
           this.f.estado.setValue(respuesta.datos[0]?.desEstado)
+          this.f.estado.disable();
           this.f.cp.setValue(respuesta.datos[0]?.codigoPostal)
+          this.f.cp.disable();
           this.f.contacto.setValue(respuesta.datos[0]?.nombreContacto)
+          this.f.contacto.disable();
           this.f.telefono.setValue(respuesta.datos[0]?.numTelefono)
+          this.f.telefono.disable();
         });
       },
       (error: HttpErrorResponse) => {
@@ -155,6 +177,8 @@ export class ModalAgregarPanteonComponent implements OnInit {
       }
     )
   }
+
+
 
   guardarPanteon(): void {
     this.loaderService.activar();
@@ -166,7 +190,8 @@ export class ModalAgregarPanteonComponent implements OnInit {
         this.ref.close(respuesta.datos[0].idPanteon);
       },
       (error:HttpErrorResponse) => {
-        console.log(error)
+
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
       }
     )
   }
@@ -212,7 +237,35 @@ export class ModalAgregarPanteonComponent implements OnInit {
     )
   }
 
-
+  consultarCP(): void {
+    if (!this.f.cp.value) {
+      return;
+    }
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService
+      .consutaCP(this.f.cp.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          if (respuesta) {
+            this.f.colonia.setValue(respuesta.datos[0].nombre);
+            this.f.municipio.setValue(
+              respuesta.datos[0].localidad.municipio.nombre
+            );
+            this.f.estado.setValue(
+              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+            );
+            return;
+          }
+          this.f.colonia.patchValue(null);
+          this.f.municipio.patchValue(null);
+          this.f.estado.patchValue(null);
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      );
+  }
 
 
   cerrarModal() {

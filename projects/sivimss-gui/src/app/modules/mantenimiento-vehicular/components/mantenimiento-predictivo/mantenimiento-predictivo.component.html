@@ -163,7 +163,7 @@
   </p-accordion>
 
   <div class="col-mb-12 flex justify-content-end" *ngIf="titulosSeleccionados.length > 0">
-    <div class="export-table" style="float: right;">
+    <div class="export-table" style="float: right;" *appValidaRol="['MANTENIMIENTO_VEHICULAR','IMPRIMIR']">
       <span class="export-table-text">Exportar tabla</span>
       <div class="export-table-icons flex justify-content-around">
         <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"

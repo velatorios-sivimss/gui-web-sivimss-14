@@ -45,6 +45,10 @@ export class ModalAgregarServicioComponent
 {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+  @ViewChild('dd')
+  valorProveedor!: any;
+
+
   listaproveedor: any[] = [];
   form!: FormGroup;
   fila: number = 0;
@@ -79,6 +83,15 @@ export class ModalAgregarServicioComponent
   proveedorCompletos: any[] = [];
   disableddMapa: boolean = false;
   ocultarBtn: boolean = false;
+  paqueteSelccionado!: number;
+  botonPresupuesto:boolean = true;
+  consultarKilometraje:boolean = false;
+  kilometrosPermitidos!: number;
+  costoPorKilometraje!: number;
+  costoExtraKilometros:number = 0;
+  serviciosPaquete!: any[];
+  heightMap = "0px"
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -96,6 +109,8 @@ export class ModalAgregarServicioComponent
     this.fila = this.config.data.fila;
     this.proviene = this.config.data.proviene;
     this.idServicio = this.config.data.idServicio;
+    this.paqueteSelccionado = this.config.data.paqueteSeleccionado;
+    this.serviciosPaquete = this.config.data.filaSeleccionada;
     this.inicializarForm();
   }
 
@@ -107,21 +122,26 @@ export class ModalAgregarServicioComponent
       this.disableddMapa = false;
       this.ocultarServicios = false;
       validacionServicio = [];
-      this.ocultarMapa = true;
+      this.ocultarMapa = false;
       this.ocultarProveedor = false;
       this.ocultarBtn = false;
+      this.consultarKilometraje = true;
+      this.heightMap = "400px"
+      this.inicializarMapa();
     } else if (this.proviene == 'proveedor') {
       this.disableddMapa = true;
-      this.ocultarMapa = false;
+      this.ocultarMapa = true;
       this.ocultarServicios = false;
       validacionServicio = [];
+      validacionMapa = [];
       this.ocultarProveedor = true;
       this.ocultarBtn = true;
     } else if (this.proviene == 'servicios') {
+      this.botonPresupuesto = false;
       this.disableddMapa = true;
       this.ocultarMapa = true;
       this.ocultarServicios = true;
-      this.ocultarBtn = false;
+      this.ocultarBtn = true;
       this.ocultarProveedor = true;
       validacionMapa = [];
       this.buscarServicios();
@@ -189,8 +209,33 @@ export class ModalAgregarServicioComponent
   }
 
   seleccionaServicio(dd: Dropdown): void {
+    let tipoServicio = dd.selectedOption.label.toUpperCase()
     this.nombreServicio = dd.selectedOption.label;
     this.idServicio = dd.selectedOption.value;
+
+    this.consultarKilometraje = false;
+    if(tipoServicio.includes("TRASLADO")){
+      this.ocultarMapa = false;
+      // servicio: [{ value: null, disabled: false }, validacionServicio],
+      // proveedor: [{ value: null, disabled: false }, [Validators.required]],
+      this.f.origen.setValidators(Validators.required);
+      this.f.origen.updateValueAndValidity();
+      this.f.destino.setValidators(Validators.required);
+      this.f.destino.updateValueAndValidity();
+      this.heightMap = "400px"
+      this.inicializarMapa();
+      this.consultarKilometraje = true;
+      // kilometraje: [{ value: null, disabled: false }, validacionMapa],
+
+
+    }else{
+      this.ocultarMapa = true;
+      this.f.origen.clearValidators();
+      this.f.origen.updateValueAndValidity();
+      this.f.destino.clearValidators();
+      this.f.destino.updateValueAndValidity();
+    }
+
     this.serviciosCompletos.forEach((datos: any) => {
       if (Number(datos.idServicio) == Number(dd.selectedOption.value)) {
         this.concepto = datos.nombreServicio;
@@ -208,6 +253,40 @@ export class ModalAgregarServicioComponent
     this.consultarProveeedorServicio();
   }
 
+  consultarKilometrajePaquete(): void {
+
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService.consultarKilometrajePaquete(this.paqueteSelccionado,this.f.proveedor.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        this.kilometrosPermitidos = respuesta.datos[0].numKilometraje;
+        this.costoPorKilometraje = respuesta.datos[0].costoPorKilometraje;
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error,errorMsg || 'El servicio no responde, no permite más llamadas.')
+      }
+    )
+  }
+
+  consultarKilometrajeServicio(): void {
+
+    this.loaderService.activar();
+    this.gestionarOrdenServicioService.consultarKilometrajeServicio(this.idServicio,this.idProveedor).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        this.costoPorKilometraje = respuesta.datos[0].costoPorKilometraje;
+      },
+      (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error,errorMsg || 'El servicio no responde, no permite más llamadas.')
+      }
+    )
+  }
+
+
   seleccionaProveedor(dd: Dropdown): void {
     this.proveedor = dd.selectedOption.label;
     this.idProveedor = Number(dd.selectedOption.value);
@@ -216,6 +295,13 @@ export class ModalAgregarServicioComponent
         this.costo = datos.importe;
       }
     });
+    if(this.consultarKilometraje){
+      if(!this.ocultarServicios){
+        this.consultarKilometrajePaquete();
+      }else{
+        this.consultarKilometrajeServicio();
+      }
+    }
   }
 
   consultarProveeedorServicio(): void {
@@ -239,6 +325,7 @@ export class ModalAgregarServicioComponent
             return;
           }
           const datos = respuesta.datos;
+          this.proveedorCompletos = datos;
           this.listaproveedor = mapearArregloTipoDropdown(
             datos,
             'nombreProveedor',
@@ -282,6 +369,7 @@ export class ModalAgregarServicioComponent
         datosFormulario: this.form.value,
         coordOrigen: this.coordOrigen,
         coordDestino: this.coordDestino,
+        costoExtraKilometros: this.costoExtraKilometros
       };
     } else if (this.proviene == 'servicios') {
       salida = {
@@ -298,10 +386,11 @@ export class ModalAgregarServicioComponent
         idTipoServicio: this.idTipoServicio,
         idServicio: this.idServicio,
         idProveedor: this.idProveedor,
-        totalPaquete: this.costo,
-        importe: this.costo,
+        totalPaquete: this.costoExtraKilometros > 0 ? this.costoExtraKilometros :  this.costo,
+        importe:  this.costoExtraKilometros > 0 ? this.costoExtraKilometros :  this.costo,
         esDonado: false,
         proviene: 'presupuesto',
+        costoExtraKilometros: this.costoExtraKilometros
       };
     }
     this.ref.close(salida);
@@ -312,27 +401,32 @@ export class ModalAgregarServicioComponent
   }
 
   inicializarMapa(): void {
-    try {
-      L.Icon.Default.imagePath = 'assets/images/leaflet/';
 
-      this.map = L.map('map').setView([19.4326296, -99.1331785], 13);
+    setTimeout(()=> {
+      try {
+        L.Icon.Default.imagePath = 'assets/images/leaflet/';
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
-      }).addTo(this.map);
+        this.map = L.map('map').setView([19.4326296, -99.1331785], 13);
 
-      let geoCoderOptions = {
-        collapsed: false,
-        placeholder: 'Buscar dirección',
-        geocoder: L.Control.Geocoder.nominatim({
-          geocodingQueryParams: {
-            countrycodes: 'mx',
-          },
-        }),
-      };
-    } catch (error) {
-      console.log(error);
-    }
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap',
+        }).addTo(this.map);
+
+        let geoCoderOptions = {
+          collapsed: false,
+          placeholder: 'Buscar dirección',
+          geocoder: L.Control.Geocoder.nominatim({
+            geocodingQueryParams: {
+              countrycodes: 'mx',
+            },
+          }),
+        };
+      } catch (error) {
+        console.log(error);
+      }
+
+    },400)
+
   }
 
   buscar(event: Event, direccion: any, nombreInput: string) {
@@ -354,7 +448,6 @@ export class ModalAgregarServicioComponent
               inputBusqueda: nombreInput,
             }))
           : [];
-      console.log(this.resultadosBusquedaMapa);
       this.desactivarLoaderBusqueda(nombreInput);
     });
   }
@@ -410,8 +503,6 @@ export class ModalAgregarServicioComponent
     }
 
     this.overlayPanel.hide();
-    console.log('Coordenada origen:', this.coordOrigen);
-    console.log('Coordenada destino:', this.coordDestino);
   }
 
   calcularDistancia([lat1, lng1]: any, [lat2, lng2]: any) {
@@ -419,11 +510,65 @@ export class ModalAgregarServicioComponent
     let punto2 = L.latLng(lat2, lng2);
     let distanciaMetros = punto1.distanceTo(punto2);
     let distanciaKm = (distanciaMetros / 1000).toFixed(2);
+    let kilometrosExtra:number = 0;
+
     this.form.get('kilometraje')?.setValue(distanciaKm);
+
+    this.costoPorKilometraje;
+    this.kilometrosPermitidos;
+    if(this.ocultarServicios){
+      this.costoExtraKilometros = Number(distanciaKm) * this.costoPorKilometraje
+      return
+    }
+    if(Number(distanciaKm) > this.kilometrosPermitidos){
+      kilometrosExtra = Number(distanciaKm) - this.kilometrosPermitidos
+      this.costoExtraKilometros = kilometrosExtra * this.costoPorKilometraje;
+    }
+  }
+
+  llenarMapaPrevio(datosPrevios:any):void {
+
+
+    this.coordOrigen = [datosPrevios.coordOrigen[0], datosPrevios.coordOrigen[1]];
+    this.marcadorOrigen = L.marker(this.coordOrigen).addTo(this.map);
+
+    this.coordDestino = [datosPrevios.coordDestino[0], datosPrevios.coordDestino[1]];
+    this.marcadorDestino = L.marker(this.coordDestino).addTo(this.map);
+
+    this.polyline = L.polyline([this.coordOrigen, this.coordDestino], {
+      color: 'black',
+    }).addTo(this.map);
+    this.map.fitBounds(this.polyline.getBounds());
+
+
+
+    this.f.origen.setValue(datosPrevios.origen);
+    this.f.destino.setValue(datosPrevios.destino);
+    this.f.kilometraje.setValue(datosPrevios.kilometraje);
+    this.f.proveedor.setValue(datosPrevios.idProveedor);
+
+    this.proveedor = this.valorProveedor.selectedOption.label;
+    setTimeout(()=> {
+      this.consultarKilometrajePaquete();
+    },200)
+
+
+
+
+
   }
 
   ngAfterViewInit(): void {
-    this.inicializarMapa();
+    // this.inicializarMapa();
+    if(this.proviene == "traslados"){
+      this.serviciosPaquete.forEach((data:any) => {
+        if(data.grupo.includes("TRASLADO")){
+          if(data.coordDestino && data.coordOrigen){
+            this.llenarMapaPrevio(data);
+          }
+        }
+      });
+    }
   }
 
   ngAfterContentChecked(): void {

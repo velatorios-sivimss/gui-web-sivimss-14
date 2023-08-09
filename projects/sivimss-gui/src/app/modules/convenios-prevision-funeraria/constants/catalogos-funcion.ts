@@ -10,7 +10,7 @@ export const CATALOGO_ENFERMEDAD_PREEXISTENTE: TipoDropdown[] =[
     value: 2
   },
   {
-    label: 'Hipertension',
+    label: 'Hipertensión',
     value: 3
   },
   {
@@ -33,6 +33,21 @@ export const CATALOGO_TIPO_PAQUETE: TipoDropdown[] = [
     value: 3
   },
 ]
+
+export const CATALOGO_SEXO: TipoDropdown[] = [
+  {
+    label: "Mujer",
+    value: 1
+  },
+  {
+    label: "Hombre",
+    value: 2
+  },
+  {
+    label: "Otro",
+    value: 3
+  }
+];
 
 export const INFO_TIPO_PAQUETE: string[] = [
   "Paquete Económico: incluye la recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa), capilla en velatorio o en domicilio (hasta 24 horas), apoyo para trámites, arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario), no se incluye ataúd.",

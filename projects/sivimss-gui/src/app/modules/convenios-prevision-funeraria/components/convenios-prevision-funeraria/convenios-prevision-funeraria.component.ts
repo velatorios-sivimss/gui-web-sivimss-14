@@ -23,12 +23,15 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { DetalleConvenioPrevisionFunerariaComponent } from "../detalle-convenio-prevision-funeraria/detalle-convenio-prevision-funeraria.component";
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {
   EstatusConvenioPrevisionFunerariaComponent
 } from "../estatus-convenio-prevision-funeraria/estatus-convenio-prevision-funeraria.component";
+import { RenovarConvenioPfService } from '../../../renovar-convenio-pf/services/renovar-convenio-pf.service';
+import { ReporteAnexoDiez, ReporteConvenioPlanAnterior, ReporteConvenioPlanNuevo } from '../../../renovar-convenio-pf/models/convenio.interface';
+
 
 @Component({
   selector: 'app-convenios-prevision-funeraria',
@@ -45,6 +48,9 @@ export class ConsultaConveniosComponent implements OnInit {
   filtroSubForm!: FormGroup;
   archivoRef!: DynamicDialogRef;
   estatusRef!: DynamicDialogRef;
+  busquedaRealizada: boolean = false;
+  mostrarModalConfirmacion: boolean = false;
+  mensajeArchivoConfirmacion: string = "";
 
   numPaginaActual = {
     tablaConvenios: 0,
@@ -80,6 +86,8 @@ export class ConsultaConveniosComponent implements OnInit {
   ]
 
   convenioPrevision: ConveniosPrevisionFunerariaInterface[] = [];
+  selectedConvenioPrevision: any;
+  mostrarAcordiones: boolean = false;
   datosAfiliado: AfiliadoInterface[] = [];
   vigenciaConvenio: VigenciaConvenioInterface[] = [];
   facturaConvenio: FacturaConvenioInterface[] = [];
@@ -102,6 +110,7 @@ export class ConsultaConveniosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
+    private renovarConvenioPfService: RenovarConvenioPfService,
   ) { }
 
   ngOnInit(): void {
@@ -133,6 +142,36 @@ export class ConsultaConveniosComponent implements OnInit {
     })
   }
 
+  onRowSelect(convenioSeleccionado: any) {
+    this.paginarSecciones(convenioSeleccionado.data.folioConvenio);
+  }
+
+  paginarSecciones(folioConvenioSeleccionado: any): void {
+    this.cargadorService.activar();
+    let param = {
+      folioConvenio: folioConvenioSeleccionado
+    };
+    this.consultaConvenioService.buscarPorFiltros(param, 0, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.mensaje === "OK" && respuesta.datos) {
+            // Seteamos los datos de cada seccion
+            this.datosAfiliado = respuesta.datos.afiliados.datos.content;
+            this.vigenciaConvenio = respuesta.datos.vigencias.datos.content;
+            this.facturaConvenio = respuesta.datos.facturas.datos.content;
+            this.beneficiario = respuesta.datos.beneficiarios.datos.content;
+            this.siniestro = respuesta.datos.siniestros.datos.content;
+            this.mostrarAcordiones = true;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      });
+  }
+
   paginarConvenios(): void {
     this.cargadorService.activar();
     // this.consultaConvenioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
@@ -153,7 +192,6 @@ export class ConsultaConveniosComponent implements OnInit {
   paginarConFiltros(): void {
     const filtros: FiltrosConvenio = this.crearSolicitudFiltros();
     this.cargadorService.activar();
-    // this.consultaConvenioService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
     this.consultaConvenioService.buscarPorFiltros(filtros, 0, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
@@ -179,22 +217,23 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   paginar(event: LazyLoadEvent): void {
+    if (!validarAlMenosUnCampoConValor(this.filtroForm.value)) return;
+    if (event?.first !== undefined && event.rows !== undefined) {
+      this.numPaginaActual.tablaConvenios = Math.floor(event.first / event.rows);
+    } else {
+      this.numPaginaActual.tablaConvenios = 0;
+    }
+
     const filtros: FiltrosConvenio = this.crearSolicitudFiltros();
     this.cargadorService.activar();
-    this.consultaConvenioService.buscarPorFiltros(filtros, 0, this.cantElementosPorPagina)
+    this.consultaConvenioService.consultarConvenios(filtros, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if(respuesta.mensaje === "OK" && respuesta.datos) {
-            // Seteamos los datos de cada seccion
-            this.datosAfiliado = respuesta.datos.afiliados.datos.content;
-            this.vigenciaConvenio = respuesta.datos.vigencias.datos.content;
-            // this.facturaConvenio = respuesta.datos.facturas.datos.content; //Se comenta porque no existe funcionalidad actualmente
-            this.beneficiario = respuesta.datos.beneficiarios.datos.content;
-            this.siniestro = respuesta.datos.siniestros.datos.content;
+          if (respuesta.mensaje === "Exito" && respuesta.datos) {
             // Seteamos los datos de convenios
-            this.convenioPrevision = respuesta.datos.convenios.datos.content;
-            this.totalElementos.tablaConvenios = respuesta.datos.convenios.datos.totalElements;
+            this.convenioPrevision = respuesta.datos.content;
+            this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -203,8 +242,6 @@ export class ConsultaConveniosComponent implements OnInit {
         }
       });
   }
-
-  agregarConvenio(): void { }
 
   devolverBeneficiarios(beneficiario: BeneficiarioInterface[]): number {
     return beneficiario.length;
@@ -236,18 +273,12 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   buscarPorFiltros(): void {
-    this.consultaConvenioService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
+    this.consultaConvenioService.consultarConvenios(this.obtenerObjetoParaFiltrado(), this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.mensaje === "OK" && respuesta.datos) {
-          // Seteamos los datos de cada seccion
-          this.datosAfiliado = respuesta.datos.afiliados.datos.content;
-          this.vigenciaConvenio = respuesta.datos.vigencias.datos.content;
-          // this.facturaConvenio = respuesta.datos.facturas.datos.content;
-          this.beneficiario = respuesta.datos.beneficiarios.datos.content;
-          this.siniestro = respuesta.datos.siniestros.datos.content;
-          // Seteamos los datos de convenios
-          this.convenioPrevision = respuesta.datos.convenios.datos.content;
-          this.totalElementos.tablaConvenios = respuesta.datos.convenios.datos.totalElements;
+        if (respuesta.mensaje === "Exito" && respuesta.datos) {
+          this.convenioPrevision = respuesta.datos.content;
+          this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
+          this.busquedaRealizada = true;
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -259,7 +290,11 @@ export class ConsultaConveniosComponent implements OnInit {
 
   obtenerObjetoParaFiltrado(): any {
     return {
-      ...this.filtroForm.value,
+      folioConvenio: this.ff.folioConvenio.getRawValue() === '' ? null : this.ff.folioConvenio.getRawValue(),
+      rfc: this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+      nombre: this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue(),
+      curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
+      estatusConvenio: this.ff.estatusConvenio.getRawValue() === '' ? null : this.ff.estatusConvenio.getRawValue(),
     };
   }
 
@@ -269,6 +304,7 @@ export class ConsultaConveniosComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
+    this.busquedaRealizada = false;
   }
 
   abrirPanel(event: MouseEvent, convenio: ConveniosPrevisionFunerariaInterface): void {
@@ -316,177 +352,316 @@ export class ConsultaConveniosComponent implements OnInit {
 
   realizarBusquedaSubForm(controlName: string) {
     this.fsf[controlName].patchValue(this.fsf[controlName].value.trim());
-    if (this.fsf[controlName].value && this.fsf[controlName].value !== '') {
-      switch (controlName) {
-        case 'folioConvenio':
-          this.buscarPorConvenio(this.fsf[controlName].value);
-          break;
-        case 'rfc':
-          this.buscarPorAfiliado(this.fsf[controlName].value);
-          break;
-        case 'folioConvenioVigencia':
-          this.buscarPorVigencia(this.fsf[controlName].value);
-          break;
-        case 'numeroFactura':
-          this.buscarPorFactura(this.fsf[controlName].value);
-          break;
-        case 'nombreBeneficiario':
-          this.buscarPorBeneficiario(this.fsf[controlName].value);
-          break;
-        case 'folioSiniestro':
-          this.buscarPorSiniestro(this.fsf[controlName].value);
-          break;
-        default:
-          break;
-      }
+    if (this.fsf[controlName].value === '') {
+      this.fsf[controlName].setValue(null);
+    }
+    switch (controlName) {
+      case 'folioConvenio':
+        this.buscarPorConvenio(this.fsf[controlName].value);
+        break;
+      case 'rfc':
+        this.buscarPorAfiliado(this.fsf[controlName].value);
+        break;
+      case 'folioConvenioVigencia':
+        this.buscarPorVigencia(this.fsf[controlName].value);
+        break;
+      case 'numeroFactura':
+        this.buscarPorFactura(this.fsf[controlName].value);
+        break;
+      case 'nombreBeneficiario':
+        this.buscarPorBeneficiario(this.fsf[controlName].value);
+        break;
+      case 'folioSiniestro':
+        this.buscarPorSiniestro(this.fsf[controlName].value);
+        break;
+      default:
+        break;
     }
   }
 
   buscarPorConvenio(subFormValue: string): void {
+    this.cargadorService.activar();
     let datosBusqueda = this.obtenerObjetoParaFiltrado();
     datosBusqueda.folioConvenio = subFormValue;
-    this.consultaConvenioService.consultarConvenios(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.convenioPrevision = respuesta.datos.content;
-          this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
+    this.consultaConvenioService.consultarConvenios(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.convenioPrevision = respuesta.datos.content;
+            this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorBeneficiario(subFormValue: string): void {
-    let datosBusqueda = this.obtenerObjetoParaFiltrado();
-    datosBusqueda.nombreBeneficiario = subFormValue;
-    this.consultaConvenioService.consultarBeneficiarios(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.beneficiario = [];
-          this.beneficiario = respuesta.datos.content;
+    this.cargadorService.activar();
+    let datosBusqueda = {
+      folioConvenio: this.selectedConvenioPrevision.folioConvenio,
+      nombreBeneficiario: subFormValue
+    };
+    this.consultaConvenioService.consultarBeneficiarios(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.beneficiario = [];
+            this.beneficiario = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorFactura(subFormValue: string): void {
-    let datosBusqueda = this.obtenerObjetoParaFiltrado();
-    datosBusqueda.numeroFactura = subFormValue;
-    this.consultaConvenioService.consultarFacturas(this.obtenerObjetoParaFiltrado(), this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.vigenciaConvenio = [];
-          this.facturaConvenio = respuesta.datos.content;
+    this.cargadorService.activar();
+    let datosBusqueda = {
+      folioConvenio: this.selectedConvenioPrevision.folioConvenio,
+      numeroFactura: subFormValue
+    };
+    this.consultaConvenioService.consultarFacturas(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.vigenciaConvenio = [];
+            this.facturaConvenio = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorSiniestro(subFormValue: string): void {
-    let datosBusqueda = this.obtenerObjetoParaFiltrado();
-    datosBusqueda.folioSiniestro = subFormValue;
-    this.consultaConvenioService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.vigenciaConvenio = [];
-          this.siniestro = respuesta.datos.content;
+    this.cargadorService.activar();
+    let datosBusqueda = {
+      folioConvenio: this.selectedConvenioPrevision.folioConvenio,
+      folioSiniestro: subFormValue
+    };
+    this.consultaConvenioService.buscarPorFiltros(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.vigenciaConvenio = [];
+            this.siniestro = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorAfiliado(subFormValue: string): void {
-    let datosBusqueda = this.obtenerObjetoParaFiltrado();
-    datosBusqueda.folioConvenio = subFormValue;
-    this.consultaConvenioService.consultarAfiliados(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.vigenciaConvenio = [];
-          this.datosAfiliado = respuesta.datos.content;
+    this.cargadorService.activar();
+    let datosBusqueda = {
+      folioConvenio: this.selectedConvenioPrevision.folioConvenio,
+      rfc: subFormValue
+    };
+    this.consultaConvenioService.consultarAfiliados(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.vigenciaConvenio = [];
+            this.datosAfiliado = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   buscarPorVigencia(subFormValue: string): void {
-    let datosBusqueda = this.obtenerObjetoParaFiltrado();
-    datosBusqueda.folioConvenio = subFormValue;
-    this.consultaConvenioService.consultarVigencias(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos) {
-          this.vigenciaConvenio = [];
-          this.vigenciaConvenio = respuesta.datos.content;
+    this.cargadorService.activar();
+    let datosBusqueda = {
+      folioConvenio: this.selectedConvenioPrevision.folioConvenio
+    };
+    this.consultaConvenioService.consultarVigencias(datosBusqueda, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.vigenciaConvenio = [];
+            this.vigenciaConvenio = respuesta.datos.content;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   descargarPDF(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio de Previsión Funeraria" };
+    configuracionArchivo.ext = "pdf"
+
+    this.cargadorService.activar();
     let datosBusqueda = this.obtenerObjetoParaFiltrado();
     datosBusqueda.ruta = "reportes/generales/ReporteTablaConsultaConvenios.jrxml";
     datosBusqueda.tipoReporte = "pdf";
-    this.consultaConvenioService.descargarPDF(datosBusqueda).subscribe(
-      (respuesta:any) => {
-        const file = new Blob([respuesta], {type: 'application/pdf'});
-        const url = window.URL.createObjectURL(file);
-        //No se ha podido probar la descarga porque el servicio no funciona
-      }
-    );
+    this.descargaArchivosService.descargarArchivo(this.consultaConvenioService.descargarPDF(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
   }
 
   descargarExcel(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio de Previsión Funeraria" };
+    configuracionArchivo.ext = "xlsx"
+
+    this.cargadorService.activar();
     let datosBusqueda = this.obtenerObjetoParaFiltrado();
     datosBusqueda.ruta = "reportes/generales/ReporteTablaConsultaConvenios.jrxml";
     datosBusqueda.tipoReporte = "xls";
-    this.consultaConvenioService.descargarExcel(datosBusqueda).subscribe(
-      (respuesta:any) => {
-        const file = new Blob([respuesta], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'});
-        const url = window.URL.createObjectURL(file);
-        //No se ha podido probar la descarga porque el servicio no funciona
-      }
-    );
+    this.descargaArchivosService.descargarArchivo(this.consultaConvenioService.descargarExcel(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
+  }
+
+
+
+  renovarConvenio(): void {
+    this.router.navigate(['/convenios-prevision-funeraria/renovar-convenio-pf'], { relativeTo: this.activatedRoute });
   }
 
   modificarConvenio(): void {
-    localStorage.setItem('datosConvenio', JSON.stringify({convenio:this.convenioSeleccionado}));
-    this.router.navigate(['./modificar-nuevo-convenio'],{
-      relativeTo: this.activatedRoute});
+    this.router.navigate(['./modificar-nuevo-convenio'], {
+      queryParams: {
+        folio: this.convenioSeleccionado.folioConvenio,
+        fecha: this.convenioSeleccionado.fechaContratacion
+      },
+      relativeTo: this.activatedRoute
+    });
   }
 
-  cambiarEstatusConvenio(): void{
+  generarReporteConvenioNuevo(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio PF Nuevo" };
+    this.cargadorService.activar();
+    const datosBusqueda: ReporteConvenioPlanNuevo = {
+      folio: this.convenioSeleccionado.folioConvenio,
+      rutaNombreReporte: "reportes/plantilla/Convenio_PF_Nuevo_AnexoB.jrxml",
+      tipoReporte: "pdf"
+    }
+    this.descargaArchivosService.descargarArchivo(this.renovarConvenioPfService.reporteConvenioNuevo(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
+  }
+
+  generarReporteConvenioAnterior(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Convenio PF Anterior" };
+    this.cargadorService.activar();
+    const datosBusqueda: ReporteConvenioPlanAnterior = {
+      idConvenio: this.convenioSeleccionado.idConvenio,
+      rutaNombreReporte: "reportes/plantilla/Convenio_PF_Anterior.jrxml",
+      tipoReporte: "pdf"
+    }
+    this.descargaArchivosService.descargarArchivo(this.renovarConvenioPfService.reporteConvenioAnterior(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
+  }
+
+  generarReporteAnexo(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: "Reporte Hoja de Afiliación" };
+    this.cargadorService.activar();
+    const datosBusqueda: ReporteAnexoDiez = {
+      idConvenio: this.convenioSeleccionado.idConvenio,
+      rutaNombreReporte: "reportes/plantilla/Anexo10_HojaAfiliacion.jrxml",
+      tipoReporte: "pdf"
+    }
+    this.descargaArchivosService.descargarArchivo(this.renovarConvenioPfService.reporteAnexo(datosBusqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+      },
+    });
+  }
+
+  cambiarEstatusConvenio(): void {
     this.estatusRef = this.dialogService.open(EstatusConvenioPrevisionFunerariaComponent, {
       header: this.convenioSeleccionado.estatusConvenio?.includes('3') ? 'Activar' : 'Desactivar',
       width: "920px",
       data: this.convenioSeleccionado,
     })
 
-    this.estatusRef.onClose.subscribe((estatus:boolean) => {
-      if(estatus){
+    this.estatusRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
         this.paginar_()
       }
     });
+  }
+
+  obtenerDescGenero(genero: number): string {
+    switch (genero) {
+      case 1:
+        return 'Masculino';
+      case 2:
+        return 'Femenino';
+      case 3:
+        return 'Otro';
+      default:
+        return '';
+    }
   }
 }

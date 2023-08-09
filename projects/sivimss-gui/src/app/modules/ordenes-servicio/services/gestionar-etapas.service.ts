@@ -220,7 +220,7 @@ export class GestionarEtapasService {
     gestionadoPorPromotor: null,
     promotor: null,
   };
-
+  detalleODS = [];
   etapas$: BehaviorSubject<Etapa[]> = new BehaviorSubject<Etapa[]>(this.etapas);
   idEtapaSeleccionada$: BehaviorSubject<number> = new BehaviorSubject<number>(
     0
@@ -241,6 +241,8 @@ export class GestionarEtapasService {
     new BehaviorSubject<any>(this.datosEtapaInformacionServicio);
 
   altaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.altaODS);
+
+  detalleODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.detalleODS);
 
   constructor() {
     // private authService: AutenticacionService // _http:HttpClient,

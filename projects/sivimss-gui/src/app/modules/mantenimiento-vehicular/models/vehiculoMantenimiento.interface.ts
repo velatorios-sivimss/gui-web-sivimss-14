@@ -18,7 +18,7 @@ export interface VehiculoMantenimiento {
   ID_VELATORIO: number,
   IMPORTE_PRIMA: number,
   IND_ESTATUS: boolean,
-  DES_VELATORIO: string,
+  DES_VELATORIO: string  | null,
   TOTAL: number,
   TOTAL_VEHICULOS?: number | null,
   ID_MTTO_SOLICITUD: number | null,

@@ -72,7 +72,7 @@
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
         <button type="submit" class="btn btn-default btn-md" (click)="limpiar();">Limpiar filtros</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
       </div>
     </div>
   </form>
@@ -103,14 +103,14 @@
     </ng-template>
     <ng-template pTemplate="body" let-pago>
       <tr>
-        <td>{{pago.fecha}}</td>
+        <td>{{pago.fecha | date:'dd/MM/YYYY'}}</td>
         <td>{{pago.folio}}</td>
         <td>{{pago.nomContratante}}</td>
         <td>{{pago.tipoPago}}</td>
-        <td>{{pago.total}}</td>
+        <td>{{pago.total | currency}}</td>
         <td>{{pago.estatus}}</td>
         <td>{{pago.estatusPago}}</td>
-        <td></td>
+        <td>{{pago.metodoPago | titlecase}}</td>
         <td>
           <div class="contenedor-celda-iconos">
             <a (click)="abrirModalDetallePago(pago)" [routerLink]="['./detalle-de-pago', pago.idPagoBitacora]">
