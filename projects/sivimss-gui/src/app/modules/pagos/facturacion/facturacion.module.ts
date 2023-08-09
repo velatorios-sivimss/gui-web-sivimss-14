@@ -19,6 +19,7 @@ import { EnviarFacturaComponent } from './components/enviar-factura/enviar-factu
 import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 import { VerDetalleFacturaComponent } from './components/ver-detalle-factura/ver-detalle-factura.component';
 import {AccordionModule} from "primeng/accordion";
+import {FacturacionService} from "./services/facturacion.service";
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import {AccordionModule} from "primeng/accordion";
         NgOptimizedImage,
         TablePanelModule,
         AccordionModule
-    ]
+    ],
+  providers: [FacturacionService]
 })
 export class FacturacionModule { }
