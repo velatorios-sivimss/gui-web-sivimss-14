@@ -34,6 +34,21 @@ export const CATALOGO_TIPO_PAQUETE: TipoDropdown[] = [
   },
 ]
 
+export const CATALOGO_SEXO: TipoDropdown[] = [
+  {
+    label: "Mujer",
+    value: 1
+  },
+  {
+    label: "Hombre",
+    value: 2
+  },
+  {
+    label: "Otro",
+    value: 3
+  }
+];
+
 export const INFO_TIPO_PAQUETE: string[] = [
   "Paquete Económico: incluye la recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa), capilla en velatorio o en domicilio (hasta 24 horas), apoyo para trámites, arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario), no se incluye ataúd.",
   "Paquete Básico: incluye la recolección y traslado del cuerpo (hasta 100 km en la misma entidad federativa), capilla en velatorio o en domicilio (hasta 24 horas), apoyo para trámites, arreglo estético del cuerpo y embalsamamiento (en caso de ser necesario), ataúd nuevo básico; lo anterior, de acuerdo con la normatividad vigente que aplique para los Velatorios IMSS para el otorgamiento de servicios funerarios.",

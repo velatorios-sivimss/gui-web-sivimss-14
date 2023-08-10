@@ -27,19 +27,19 @@
     <div class="row mb-2">
       <div class="col-md-6">
         <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
-        <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa calle" />
+        <input id="calle" class="form-control" maxlength="30" formControlName="calle" placeholder="Ingresa calle" />
         <span class="campo-obligatorio"
           *ngIf="lugarVelacion.calle?.errors?.required && (lugarVelacion.calle?.dirty || lugarVelacion.calle?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="exterior">Número exterior<span class="req">*</span>:</label>
-        <input id="exterior" class="form-control" formControlName="exterior" placeholder="Ingresa número exterior" />
+        <input id="exterior" class="form-control" alphanumericOnly maxlength="10" formControlName="exterior" placeholder="Ingresa número exterior" />
         <span class="campo-obligatorio"
           *ngIf="lugarVelacion.exterior?.errors?.required && (lugarVelacion.exterior?.dirty || lugarVelacion.exterior?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="interior">Número interior:</label>
-        <input id="interior" class="form-control" formControlName="interior" placeholder="Ingresa número interior" />
+        <input id="interior" class="form-control" alphanumericOnly maxlength="10" formControlName="interior" placeholder="Ingresa número interior" />
         <span class="campo-obligatorio"
           *ngIf="lugarVelacion.interior?.errors?.required && (lugarVelacion.interior?.dirty || lugarVelacion.interior?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -214,7 +214,7 @@
 
 <div class="row my-4 flex align-items-center">
   <div class="col-md-3">
-    <button type="button" (click)="confirmarPreOrden = true" [disabled]="form.invalid" class="btn btn-lg btn-primary">Guardar
+    <button type="button" (click)="confirmarPreOrden = true" [disabled]="form.invalid" class="btn btn-lg btn-primary">Generar
       pre-orden</button>
   </div>
   <div class="col-md-9">
@@ -227,8 +227,8 @@
   <div class="col-md-12 flex justify-content-end align-items-center">
     <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
     <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-    <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="form.invalid" (click)="confirmarGuardado = true">Generar
-      orden de servicio</button>
+    <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="form.invalid" (click)="confirmarGuardado = true">Crear
+      Orden de Servicio</button>
   </div>
 </div>
 

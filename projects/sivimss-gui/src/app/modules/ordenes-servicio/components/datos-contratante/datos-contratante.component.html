@@ -25,8 +25,6 @@
           maxlength="18" (blur)="consultarCURP()" (keyup)="convertirAMayusculas(0)">
         <span class="campo-obligatorio"
           *ngIf="datosContratante.curp?.errors?.required && (datosContratante.curp?.dirty || datosContratante.curp?.touched)">Este campo es obligatorio *.</span>
-        <span class="campo-obligatorio"
-          *ngIf="datosContratante.curp?.errors?.pattern && (datosContratante.curp?.dirty || datosContratante.curp?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-2">
@@ -110,8 +108,6 @@
           placeholder="Ingresa correo electrónico" (keyup)="convertirAMinusculas()" (blur)="validarCorreoElectronico()">
         <span class="campo-obligatorio"
           *ngIf="datosContratante.correoElectronico?.errors?.required && (datosContratante.correoElectronico?.dirty || datosContratante.correoElectronico?.touched)">Este campo es obligatorio *.</span>
-        <span class="campo-obligatorio"
-          *ngIf="datosContratante.correoElectronico?.errors?.pattern && (datosContratante.correoElectronico?.dirty || datosContratante.correoElectronico?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="parentesco">Parentesco:</label>
@@ -156,6 +152,8 @@
       <div class="col-md-3">
         <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
         <input id="colonia" type="text" class="form-control" formControlName="colonia" placeholder="Ingresa colonia">
+<!--        <p-dropdown id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"-->
+<!--                    [options]="colonias" [filter]="true" filterBy="label"></p-dropdown>-->
         <span class="campo-obligatorio"
           *ngIf="direccion.colonia?.errors?.required && (direccion.colonia?.dirty || direccion.colonia?.touched)">Este campo es obligatorio *.</span>
       </div>

@@ -104,11 +104,16 @@ export class ContratantesComponent implements OnInit {
     } else {
       this.numPaginaActual = 0;
     }
-    this.buscarPorFiltros();
+    this.buscarPorFiltros(false);
   }
 
-  buscarPorFiltros(): void {
-    this.contratantesService.buscarPorFiltros(this.datosContratantesFiltros(), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+  paginarPorFiltros(): void {
+    this.numPaginaActual = 0;
+    this.buscarPorFiltros(true);
+  }
+
+  buscarPorFiltros(esFiltro: boolean): void {
+    this.contratantesService.buscarPorFiltros(this.datosContratantesFiltros(esFiltro), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos) {
           this.contratantes = respuesta.datos.content;
@@ -124,12 +129,14 @@ export class ContratantesComponent implements OnInit {
     });
   }
 
-  datosContratantesFiltros(): BuscarContratantes {
+  datosContratantesFiltros(esFiltro: boolean): BuscarContratantes {
     let nomContratante: string | null = null;
-    if (typeof this.ff.nombre?.value === 'object') {
-      nomContratante = this.ff.nombre?.value?.label;
-    } else {
-      nomContratante = this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue();
+    if (esFiltro) {
+      if (typeof this.ff.nombre?.value === 'object') {
+        nomContratante = this.ff.nombre?.value?.label;
+      } else {
+        nomContratante = this.ff.nombre.getRawValue() === '' ? null : this.ff.nombre.getRawValue();
+      }
     }
     return {
       curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),

@@ -1,63 +1,54 @@
 export function convertirNumeroPalabra(valor: number): string {
-  if (!Number.isInteger(valor) || valor < 0 || valor > 9999999) {
-    return '';
-  }
-
-  const numberWords: string[] = [
+  const palabrasNumeros: string[] = [
     '', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve',
     'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve',
     'veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'
   ];
 
-  const tensWords: string[] = [
+  const palabrasDecenas: string[] = [
     '', '', 'veinte', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'
   ];
 
-  const hundredsWords: string[] = [
+  const palabrasCientos: string[] = [
     '', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'
   ];
 
-  const million: number = Math.floor(valor / 1000000);
-  const thousand: number = Math.floor((valor % 1000000) / 1000);
-  const hundreds: number = Math.floor((valor % 1000) / 100);
-  const tens: number = Math.floor((valor % 100) / 10);
-  const units: number = valor % 10;
+  if (!Number.isInteger(valor) || valor < 0 || valor > 9999999) {
+    return '';
+  }
+
+  if (valor === 0) {
+    return 'cero';
+  }
 
   let words: string = '';
 
-  if (million > 0) {
-    if (million === 1) {
-      words += 'un millón ';
-    } else {
-      words += convertirNumeroPalabra(million) + ' millones ';
-    }
+  if (valor >= 1000000) {
+    const millones: number = Math.floor(valor / 1000000);
+    words += convertirNumeroPalabra(millones) + ' millón ';
+    valor %= 1000000;
   }
 
-  if (thousand > 0) {
-    if (thousand === 1) {
-      words += ' mil ';
-    } else {
-      words += convertirNumeroPalabra(thousand) + ' mil ';
-    }
+  if (valor >= 1000) {
+    const miles: number = Math.floor(valor / 1000);
+    words += convertirNumeroPalabra(miles) + ' mil ';
+    valor %= 1000;
   }
 
-  if (hundreds > 0) {
-    words += (hundreds === 1 && tens === 0 && units === 0) ? 'cien ' : hundredsWords[hundreds] + ' ';
+  if (valor >= 100) {
+    const cientos: number = Math.floor(valor / 100);
+    words += palabrasCientos[cientos] + ' ';
+    valor %= 100;
   }
 
-  if (tens > 0) {
-    if (tens === 1) {
-      words += numberWords[tens * 10 + units];
-    } else {
-      words += tensWords[tens];
-      if (units > 0) {
-        words += ' y ' + numberWords[units];
-      }
-    }
-  } else if (units > 0) {
-    words += numberWords[units];
+  if (valor >= 10) {
+    words += palabrasDecenas[Math.floor(valor / 10)] + ' ';
+    valor %= 10;
+  }
+
+  if (valor > 0) {
+    words += palabrasNumeros[valor];
   }
 
   return words.trim();
 }
-

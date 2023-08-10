@@ -239,24 +239,31 @@ export class MantenimientoPredictivoComponent implements OnInit {
   filtrosArchivos(tipoReporte: string) {
     let tipoMttoDesc: string | null = null;
     let valor: string | null = null;
-
-    if (this.vehiculos.length === 1 && this.vehiculos[0].TOTAL_VEHICULOS !== 0) {
+    // && this.vehiculos[0].TOTAL_VEHICULOS !== 0
+    if (this.vehiculos.length === 1) {
       tipoMttoDesc = this.tipoMantenimientos.find(item => item.value === this.fmp.tipoMantenimiento.value)?.label ?? '';
       switch (tipoMttoDesc) {
         case "Aceite":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_ACEITE || 'BAJO']
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_ACEITE || 'BAJO'];
           break;
         case "Agua":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_AGUA || 'BAJO']
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_AGUA || 'BAJO'];
+          break;
+        case "Calibración Neumáticos":
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_AGUA || 'BAJO'];
           break;
         case "Combustible":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_COMBUSTIBLE || 'BAJO']
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_COMBUSTIBLE || 'BAJO'];
           break;
         case "Código de Falla":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_CODIGOFALLO || 'BAJO']
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_CODIGOFALLO || 'BAJO'];
           break;
         case "Batería":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_BATERIA || 'BAJO']
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_BATERIA || 'BAJO'];
+          break;
+        case "Todos":
+          tipoMttoDesc = null;
+          valor = null;
           break;
       }
     }

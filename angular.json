@@ -43,7 +43,9 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "moment"
+              "moment",
+              "pdfjs-dist",
+              "leaflet"
             ],
             "outputPath": "dist/sivimss-gui",
             "index": "projects/sivimss-gui/src/index.html",

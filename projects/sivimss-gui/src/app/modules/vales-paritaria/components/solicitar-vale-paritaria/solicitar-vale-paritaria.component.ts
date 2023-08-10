@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OverlayPanel } from "primeng-lts/overlaypanel";
-import { Funcionalidad } from "projects/sivimss-gui/src/app/modules/roles/models/funcionalidad.interface";
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import { AlertaService } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {CATALOGOS} from '../../../usuarios/constants/catalogos_dummies';
-import {ValeParitaria} from "../../models/vale-paritaria.interface";
 import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
+import {OverlayPanel} from "primeng/overlaypanel";
 
 @Component({
   selector: 'app-solicitar-vale-paritaria',
@@ -29,7 +27,7 @@ export class SolicitarValeParitariaComponent implements OnInit {
   disableTabVale: boolean = false;
   abrirTabCredito: boolean = false;
   disableTabCredito: boolean = true;
-  
+
   formaRecuperacion: any[] = [
     {
       label: 'Quincena',
@@ -137,7 +135,7 @@ export class SolicitarValeParitariaComponent implements OnInit {
     this.abrirTabCredito = true;
     this.disableTabCredito = false;
   }
-  
+
   solicitarCredito(): void {
     this.datosSolicitudCredito = this.datosSolicitarCredito();
   }
@@ -149,5 +147,5 @@ export class SolicitarValeParitariaComponent implements OnInit {
    get fc() {
     return this.solicitarCreditoForm.controls;
   }
-  
+
 }
