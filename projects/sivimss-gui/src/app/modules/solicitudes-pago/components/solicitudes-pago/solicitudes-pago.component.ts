@@ -360,5 +360,4 @@ export class SolicitudesPagoComponent implements OnInit {
     }
   }
 
-
 }

@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {Router} from "@angular/router";
 import {DetalleSolicitudPago, PartidaPresupuestal} from "../../models/solicitud-pagos.interface";
 import {SolicitudesPagoService} from "../../services/solicitudes-pago.service";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -29,7 +28,6 @@ export class AprobarSolicitudPagoComponent implements OnInit {
   mensajeConfirmacion: boolean = false;
 
   constructor(
-    private router: Router,
     public config: DynamicDialogConfig,
     private formBulder: FormBuilder,
     private readonly referencia: DynamicDialogRef,
@@ -113,8 +111,7 @@ export class AprobarSolicitudPagoComponent implements OnInit {
 
   convertirImporte(importe: string): void {
     if (!importe) return;
-    const importeLetra: string = convertirNumeroPalabra(+importe);
-    this.solicitudPagoSeleccionado.cantidadLetra=importeLetra;
+    this.solicitudPagoSeleccionado.cantidadLetra = convertirNumeroPalabra(+importe);
   }
 
   cancelar(): void {
