@@ -8,6 +8,8 @@ import {LazyLoadEvent} from "primeng/api";
 import {FACTURACION_BREADCRUMB} from "../../constants/breadcrumb";
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {VerDetalleFacturaComponent} from "../ver-detalle-factura/ver-detalle-factura.component";
+import * as moment from "moment";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 @Component({
   selector: 'app-facturacion',
@@ -23,6 +25,9 @@ export class FacturacionComponent implements OnInit {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+
+  fechaActual: Date = new Date();
+  fechaAnterior: Date = new Date();
 
   detalleRef!: DynamicDialogRef;
 
@@ -42,8 +47,10 @@ export class FacturacionComponent implements OnInit {
   constructor(
     private breadcrumbService: BreadcrumbService,
     private formBuilder: FormBuilder,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private alertaService: AlertaService,
   ) {
+    this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
   ngOnInit(): void {
@@ -63,6 +70,24 @@ export class FacturacionComponent implements OnInit {
       periodoInicio: [{value: null, disabled: false}],
       periodoFin: [{value: null, disabled: false}],
     })
+  }
+
+  validarMismaFechaInicioFin(): void {
+    const fechaInicial = this.filtroForm.get('periodoInicio')?.value;
+    const fechaFinal = this.filtroForm.get('periodoFin')?.value;
+    if ([fechaInicial, fechaFinal].some(f => f === null)) return;
+    if (moment(fechaInicial).format('YYYY-MM-DD') !== moment(fechaFinal).format('YYYY-MM-DD')) return;
+    this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+    this.filtroForm.get('periodoInicio')?.patchValue(null);
+    this.filtroForm.get('periodoFin')?.patchValue(null);
+  }
+
+  limpiarFolios(folio: 1 | 2 ): void {
+    if (folio === 1) {
+      this.filtroForm.get('folioConvenio')?.patchValue(null);
+      return;
+    }
+    this.filtroForm.get('ods')?.patchValue(null);
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
@@ -87,11 +112,4 @@ export class FacturacionComponent implements OnInit {
     this.detalleRef = this.dialogService.open(VerDetalleFacturaComponent, DETALLE_CONFIG);
   }
 
-  guardarPDF(): void {
-
-  }
-
-  guardarExcel(): void {
-
-  }
 }

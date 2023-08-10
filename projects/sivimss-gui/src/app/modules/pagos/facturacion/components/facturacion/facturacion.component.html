@@ -11,12 +11,12 @@
       <div class="col-md-4">
         <label class="control-label" for="ods">Folio de ODS:</label>
         <input id="ods" class="form-control" formControlName="ods"
-               placeholder="Ingresa el folio ODS">
+               placeholder="Ingresa el folio ODS" (blur)="limpiarFolios(1)">
       </div>
       <div class="col-md-4">
         <label class="control-label" for="folioConvenio">Folio de convenio:</label>
         <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
-               placeholder="Ingresa el folio del convenio">
+               placeholder="Ingresa el folio del convenio" (blur)="limpiarFolios(2)">
       </div>
     </div>
     <div class="row mb-3">
@@ -28,19 +28,19 @@
       <div class="col-md-4">
         <label class="control-label" for="folioFactura">Folio de factura (SIVIMSS):</label>
         <input id="folioFactura" class="form-control" formControlName="folioFactura"
-               placeholder="Ingresa el folio de la factura">
+               placeholder="Ingresa el folio de la factura" numbersOnly>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="folioFiscal">Folio fiscal (SAT):</label>
         <input id="folioFiscal" class="form-control" formControlName="folioFiscal"
-               placeholder="Ingresa el folio fiscal">
+               placeholder="Ingresa el folio fiscal" [maxlength]="36">
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="rfc">RFC:</label>
         <input id="rfc" class="form-control" formControlName="rfc"
-               placeholder="Ingresa el RFC">
+               placeholder="Ingresa el RFC" [maxlength]="13">
       </div>
       <div class="col-md-8">
         <div class="row">
@@ -51,12 +51,16 @@
           </div>
           <div class="col-md-6">
             <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
-                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
+                        (onSelect)="validarMismaFechaInicioFin()"
+                        [maxDate]="filtroForm.get('periodoFin')?.value || fechaAnterior">
             </p-calendar>
           </div>
           <div class="col-md-6">
             <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
-                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
+                        (onSelect)="validarMismaFechaInicioFin()"
+                        [minDate]="filtroForm.get('elaboracionInicio')?.value" [maxDate]="fechaActual">
             </p-calendar>
           </div>
         </div>
@@ -121,19 +125,6 @@
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
         <span class="total-elements">{{registros.length}} de {{totalElementos}}</span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
-        <div class="export-table">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table" ngSrc="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-                 (click)="guardarPDF()" height="41" width="40">
-            <img class="icon-export-table" ngSrc="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-                 (click)="guardarExcel()" height="41" width="39">
-          </div>
-        </div>
       </div>
     </ng-template>
   </p-table>
