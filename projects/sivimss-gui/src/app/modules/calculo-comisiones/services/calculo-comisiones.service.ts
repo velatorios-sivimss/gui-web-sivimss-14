@@ -11,14 +11,11 @@ import { AutenticacionService } from '../../../services/autenticacion.service';
 @Injectable()
 export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 23, "consultar-rec-pagos", "", "");
+    super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 47, "consulta-comisiones", "", "");
   }
 
-  private readonly _folios: string = 'consultar-folios-rec-pagos';
-  private readonly _derechos: string = 'consultar-derechos-rec-pagos';
-  private readonly _tramites: string = 'consultar-tramites-rec-pagos';
-  private readonly _recibo_detalle: string = 'consultar-porId-rec-pagos';
-  private readonly _filtros: string = 'rec-pagos-filtros';
+  private readonly _promotores: string = 'listprom-comisiones';
+  private readonly _filtros: string = 'buscar-comisiones';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -42,28 +39,13 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._filtros}`, filtros,
       {params});
   }
-
-  buscarDatosReportePagos(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
-    const body: { idPagoBitacora: number } = {idPagoBitacora}
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/datos-rec-pagos`, body);
+  
+  obtenerDetalleComision(idComision: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=detalle-comisiones`);
   }
 
-  descargarReporte<T>(body: T): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-
-    return this._http.post<any>(this._base + `${this._funcionalidad}/plantilla-rec-pagos/generarDocumento/pdf`, body,
-      {headers, responseType: 'blob' as 'json'})
-  }
-
-  obtenerFoliosODS(idVelatorio: string): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._folios}`, {idVelatorio});
-  }
-
-  obtenerDetalleComision(idValeSalida: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `58/${idValeSalida}?servicio=consultar-vale-salida-detalle`);
+  obtenerPromotores(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}?servicio=listprom-comisiones`);
   }
 
 }

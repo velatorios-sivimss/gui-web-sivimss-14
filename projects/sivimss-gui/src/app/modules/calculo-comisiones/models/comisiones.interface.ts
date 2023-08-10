@@ -1,5 +1,5 @@
 export interface Comisiones {
-  id: number;
+  idPromotor: number;
   numEmpleado: string;
   curp: string,
   nombre: string;
