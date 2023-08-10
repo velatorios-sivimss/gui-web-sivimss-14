@@ -20,6 +20,7 @@ import {ModificarMetodoPagoComponent} from './components/modificar-metodo-pago/m
 import {CancelarMetodoPagoComponent} from './components/cancelar-metodo-pago/cancelar-metodo-pago.component';
 import {InputTextareaModule} from "primeng/inputtextarea";
 import { IrAPagoComponent } from './components/ir-a-pago/ir-a-pago.component';
+import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -30,23 +31,24 @@ import { IrAPagoComponent } from './components/ir-a-pago/ir-a-pago.component';
     CancelarMetodoPagoComponent,
     IrAPagoComponent
   ],
-  imports: [
-    CommonModule,
-    GestionarPagoRoutingModule,
-    TituloPrincipalModule,
-    PaginatorModule,
-    ReactiveFormsModule,
-    CeldaStickyModule,
-    TableModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    CalendarModule,
-    CustomTemplateModule,
-    TablePanelModule,
-    AccordionModule,
-    InputTextareaModule,
-    FormsModule
-  ],
+    imports: [
+        CommonModule,
+        GestionarPagoRoutingModule,
+        TituloPrincipalModule,
+        PaginatorModule,
+        ReactiveFormsModule,
+        CeldaStickyModule,
+        TableModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        CalendarModule,
+        CustomTemplateModule,
+        TablePanelModule,
+        AccordionModule,
+        InputTextareaModule,
+        FormsModule,
+        BtnRegresarModule
+    ],
   providers: [GestionarPagoService]
 })
 export class GestionarPagoModule {

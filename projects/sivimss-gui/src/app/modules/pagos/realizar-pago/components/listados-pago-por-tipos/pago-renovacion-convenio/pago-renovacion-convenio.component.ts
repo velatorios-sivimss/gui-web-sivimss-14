@@ -1,28 +1,21 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {OverlayPanel} from "primeng/overlaypanel";
-import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constantes";
-import {TIPO_PAGO_CATALOGOS_CONVENIO} from "../../constants/catalogos";
+import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../../utils/constantes";
+import {TIPO_PAGO_CATALOGOS_CONVENIO} from "../../../constants/catalogos";
 import {LazyLoadEvent} from "primeng/api";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
-import {RegistrarTipoPagoComponent} from "../registrar-tipo-pago/registrar-tipo-pago.component";
-import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {RegistrarTipoPagoComponent} from "../../registrar-pago/registrar-tipo-pago/registrar-tipo-pago.component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {HttpRespuesta} from "../../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
-import {RealizarPagoService} from "../../services/realizar-pago.service";
-import {LoaderService} from "../../../../../shared/loader/services/loader.service";
-import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
-import {validarUsuarioLogueado} from "../../../../../utils/funciones";
-import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
-
-interface DatosRegistro {
-  idPagoBitacora: number,
-  idFlujoPago: number,
-  idRegistro: number,
-  importePago: number
-}
+import {RealizarPagoService} from "../../../services/realizar-pago.service";
+import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
+import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
+import {validarUsuarioLogueado} from "../../../../../../utils/funciones";
+import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
 
 interface RegistroModal {
   tipoPago: string,
@@ -31,27 +24,32 @@ interface RegistroModal {
   datosRegistro: DatosRegistro
 }
 
+interface DatosRegistro {
+  idPagoBitacora: number,
+  idFlujoPago: number,
+  idRegistro: number,
+  importePago: number
+}
 
 @Component({
-  selector: 'app-pago-convenio',
-  templateUrl: './pago-convenio.component.html',
-  styleUrls: ['./pago-convenio.component.scss'],
+  selector: 'app-pago-renovacion-convenio',
+  templateUrl: './pago-renovacion-convenio.component.html',
+  styleUrls: ['./pago-renovacion-convenio.component.scss'],
   providers: [DialogService]
 })
-export class PagoConvenioComponent implements OnInit {
-
+export class PagoRenovacionConvenioComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+
+  pagos: PagoEspecifico[] = [];
+  pagoSeleccionado: any;
   pagoConvenioModal: boolean = false;
   tipoPago: TipoDropdown[] = TIPO_PAGO_CATALOGOS_CONVENIO;
   pagoForm!: FormGroup;
-
-  pagos: PagoEspecifico[] = [];
-  pagoSeleccionado!: PagoEspecifico;
   rol!: number;
 
   constructor(private formBuilder: FormBuilder,
@@ -82,9 +80,9 @@ export class PagoConvenioComponent implements OnInit {
     this.paginar();
   }
 
-  paginar(): void {
+  private paginar(): void {
     this.cargadorService.activar();
-    this.realizarPagoService.consultarPagosConvenio(this.numPaginaActual, this.cantElementosPorPagina)
+    this.realizarPagoService.consultarPagosRenovacionConvenio(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.pagos = respuesta.datos.content;
@@ -128,7 +126,4 @@ export class PagoConvenioComponent implements OnInit {
     this.pagoConvenioModal = !this.pagoConvenioModal;
   }
 
-  get pcf() {
-    return this.pagoForm?.controls;
-  }
 }

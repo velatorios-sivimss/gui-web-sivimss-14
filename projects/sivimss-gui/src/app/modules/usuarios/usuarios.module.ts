@@ -21,6 +21,7 @@ import {ModificarUsuarioComponent} from './components/modificar-usuario/modifica
 import {VerDetalleUsuarioComponent} from './components/ver-detalle-usuario/ver-detalle-usuario.component';
 import {CambioEstatusUsuarioComponent} from './components/cambio-estatus-usuario/cambio-estatus-usuario.component';
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -31,24 +32,25 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
     VerDetalleUsuarioComponent,
     CambioEstatusUsuarioComponent
   ],
-  imports: [
-    CommonModule,
-    UsuariosRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    TituloPrincipalModule,
-    TableModule,
-    InputSwitchModule,
-    DialogModule,
-    CalendarModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    TablePanelModule,
-    CeldaStickyModule,
-    ValidaRolModule,
-    UtileriaModule
-  ],
+    imports: [
+        CommonModule,
+        UsuariosRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        TituloPrincipalModule,
+        TableModule,
+        InputSwitchModule,
+        DialogModule,
+        CalendarModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        TablePanelModule,
+        CeldaStickyModule,
+        ValidaRolModule,
+        UtileriaModule,
+        BtnRegresarModule
+    ],
   providers: [UsuarioService]
 })
 export class UsuariosModule {

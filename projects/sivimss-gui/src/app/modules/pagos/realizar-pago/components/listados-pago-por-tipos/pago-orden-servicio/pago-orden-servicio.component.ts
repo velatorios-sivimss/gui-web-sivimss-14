@@ -1,23 +1,23 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {OverlayPanel} from "primeng/overlaypanel";
-import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constantes";
+import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
-import {RegistrarTipoPagoComponent} from "../registrar-tipo-pago/registrar-tipo-pago.component";
-import {RegistrarAgfComponent} from "../registrar-agf/registrar-agf.component";
-import {RegistrarValeParitariaComponent} from "../registrar-vale-paritaria/registrar-vale-paritaria.component";
-import {RealizarPagoService} from "../../services/realizar-pago.service";
-import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {RegistrarTipoPagoComponent} from "../../registrar-pago/registrar-tipo-pago/registrar-tipo-pago.component";
+import {RegistrarAgfComponent} from "../../registrar-pago/registrar-agf/registrar-agf.component";
+import {RegistrarValeParitariaComponent} from "../../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
+import {RealizarPagoService} from "../../../services/realizar-pago.service";
+import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {HttpRespuesta} from "../../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
-import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {PagoEspecifico} from "../../modelos/pagoEspecifico.interface";
-import {validarUsuarioLogueado} from "../../../../../utils/funciones";
-import {TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
-import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
-import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
+import {PagoEspecifico} from "../../../modelos/pagoEspecifico.interface";
+import {validarUsuarioLogueado} from "../../../../../../utils/funciones";
+import {TIPO_PAGO_CATALOGOS_ODS} from "../../../constants/catalogos";
+import {UsuarioEnSesion} from "../../../../../../models/usuario-en-sesion.interface";
+import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 
 interface DatosRegistro {
   idPagoBitacora: number,

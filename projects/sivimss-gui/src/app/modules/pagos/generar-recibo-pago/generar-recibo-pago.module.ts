@@ -24,6 +24,7 @@ import {ReciboPagoTramitesComponent} from './components/recibo-pago-tramites/rec
 import {UtileriaModule} from '../../../shared/utileria/utileria.module';
 import {DetallePagoTramitesComponent} from "./components/detalle-pago-tramites/detalle-pago-tramites.component";
 import {ValidaRolModule} from '../../../shared/valida-rol/valida-rol.module';
+import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -31,27 +32,28 @@ import {ValidaRolModule} from '../../../shared/valida-rol/valida-rol.module';
     ReciboPagoTramitesComponent,
     DetallePagoTramitesComponent
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    GenerarReciboRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    AutoCompleteModule,
-    ValidaRolModule,
-    UtileriaModule,
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        GenerarReciboRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        AutoCompleteModule,
+        ValidaRolModule,
+        UtileriaModule,
+        BtnRegresarModule,
+    ],
   providers: [GenerarReciboService]
 })
 export class GenerarReciboModule {

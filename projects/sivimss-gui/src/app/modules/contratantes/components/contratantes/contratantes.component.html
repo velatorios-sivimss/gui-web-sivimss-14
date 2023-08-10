@@ -1,12 +1,6 @@
-<div class="flex">
-  <app-btn-regresar class="mr-2" style="
-    z-index: 300;
-    border: solid 2px;
-    height: 38px;
-    width: 47px;
-    padding-left: 6px;
-    border-radius: 5px;" routerLink="../"></app-btn-regresar>
-  <app-titulo-principal style="width: 100%" titulo="Administrar usuarios contratantes"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="Administrar usuarios contratantes"></app-titulo-principal>
 </div>
 <div class="border-panel">
   <form [formGroup]="filtroForm" (ngSubmit)="paginarPorFiltros()">
@@ -14,22 +8,23 @@
       <div class="col-md-6">
         <label class="control-label" for="curp">CURP:</label>
         <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18" trimmer
-          alphanumericOnly>
+               alphanumericOnly>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nss">NSS:</label>
         <input id="nss" class="form-control" formControlName="nss" placeholder="Ingresa NSS" maxlength="11" trimmer
-          numbersOnly>
+               numbersOnly>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nombreContratante">Nombre:</label>
-        <p-autoComplete id="nombreContratante" class="form-control" formControlName="nombre" [showEmptyMessage]="true"
-          [suggestions]="contratantesFiltrados" (completeMethod)="filtrarContratantes()" [style]="{'width':'100%'}"
-          [minLength]="3" [maxlength]="30" class="p-autocomplete" placeholder="Ingresa el nombre" field="label"
-          [inputStyleClass]="filtroForm.valid ? 'input-autocomplete' : 'input-autocomplete input-autocomplete-error'"
-          trimmer lettersOnly>
+        <p-autoComplete id="nombreContratante" formControlName="nombre" [showEmptyMessage]="true"
+                        [suggestions]="contratantesFiltrados" (completeMethod)="filtrarContratantes()"
+                        [style]="{'width':'100%'}"
+                        [minLength]="3" [maxlength]="30" class="p-autocomplete form-control"
+                        placeholder="Ingresa el nombre" field="label"
+                        [inputStyleClass]="filtroForm.valid ? 'input-autocomplete' : 'input-autocomplete input-autocomplete-error'">
           <ng-template let-articulo pTemplate="item">
             <div class="autocomplete-item">
               <div>{{articulo.label}}</div>
@@ -40,7 +35,7 @@
       <div class="col-md-6">
         <label class="control-label" for="estatus">Estatus:</label>
         <p-dropdown id="estatus" class="form-control" formControlName="estatus" placeholder="Selecciona estatus"
-          [options]="estatus"></p-dropdown>
+                    [options]="estatus"></p-dropdown>
       </div>
     </div>
     <div class="row mt-6">
@@ -58,8 +53,9 @@
   </div>
 
   <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="contratantes"
-    [paginator]="contratantes.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos"
-    [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+           [paginator]="contratantes.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
+           [totalRecords]="totalElementos"
+           [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
         <th scope="col">CURP</th>
@@ -83,7 +79,7 @@
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-inputswitch" *appValidaRol="['CONTRATANTES','MODIFICAR']">
               <p-inputSwitch [(ngModel)]="contratante.estatus"
-                (click)="contratante.estatus = !contratante.estatus; abrirModalCambiarEstatus(contratante)">
+                             (click)="contratante.estatus = !contratante.estatus; abrirModalCambiarEstatus(contratante)">
               </p-inputSwitch>
               <span class="activo" *ngIf="contratante.estatus">Activo</span>
               <span class="inactivo" *ngIf="!contratante.estatus">Inactivo</span>
@@ -116,9 +112,9 @@
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-              (click)="descargarReporteTabla('pdf')">
+                 (click)="descargarReporteTabla('pdf')">
             <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-              (click)="descargarReporteTabla('xls')">
+                 (click)="descargarReporteTabla('xls')">
           </div>
         </div>
       </div>
