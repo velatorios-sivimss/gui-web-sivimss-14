@@ -59,7 +59,6 @@ export class SolicitudesPagoComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
-  foliosGastos: TipoDropdown[] = [];
   refElementos: number = 0;
 
   mostrarModalDescargaExitosa: boolean = false;
@@ -318,28 +317,6 @@ export class SolicitudesPagoComponent implements OnInit {
     })
   }
 
-  obtenerFoliosGastos(): void {
-    const velatorio = this.filtroFormSolicitudesPago.get('velatorio')?.value;
-    this.solicitudesPagoService.buscarGastosPorfolio(velatorio).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        let filtrado: TipoDropdown[] = [];
-        if (respuesta?.datos.length > 0) {
-          respuesta?.datos.forEach((e: any): void => {
-            filtrado.push({
-              label: e.cveFolio,
-              value: e.cveFolio,
-            });
-          });
-          this.foliosGastos = filtrado;
-        } else {
-          this.foliosGastos = [];
-        }
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
-    });
-  }
 
   get f() {
     return this.filtroFormSolicitudesPago?.controls;
