@@ -62,6 +62,9 @@ export class SolicitudesPagoComponent implements OnInit {
   foliosGastos: TipoDropdown[] = [];
   refElementos: number = 0;
 
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
+
   paginacionConFiltrado: boolean = false;
 
   readonly POSICION_CATALOGO_EJERCICIOS: number = 0;
@@ -99,7 +102,7 @@ export class SolicitudesPagoComponent implements OnInit {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormSolicitudesPago = this.formBuilder.group({
       nivel: [{value: +usuario?.idOficina, disabled: true}],
-      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario.idOficina > 1}],
+      delegacion: [{value: usuario?.idDelegacion, disabled: +usuario.idOficina > 1}],
       velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
@@ -287,6 +290,7 @@ export class SolicitudesPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
+        this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error) => {
@@ -304,6 +308,7 @@ export class SolicitudesPagoComponent implements OnInit {
       configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
+        this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
