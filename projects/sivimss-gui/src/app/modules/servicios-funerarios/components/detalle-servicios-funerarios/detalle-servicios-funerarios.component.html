@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="ver detalle"></app-titulo-principal>
+<app-titulo-principal titulo="detalle de pago"></app-titulo-principal>
 <section class="mb-3">
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
@@ -32,7 +32,7 @@
               <span>Nombre(s) del contratante</span>
             </div>
             <div class="col-md">
-              <span class="font-bold">Heriberto Sánchez Maldonado</span>
+              <span class="font-bold"> {{detalleServicio.contratanteSubstituto}} </span>
             </div>
           </div>
         </div>
@@ -42,7 +42,7 @@
               <span>Estado</span>
             </div>
             <div class="col-md">
-              <span class="font-bold">Querétaro</span>
+              <span class="font-bold">{{detalleServicio.estado}}</span>
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@
               <span>Correo electrónico</span>
             </div>
             <div class="col-md">
-              <span class="font-bold">herisama123@gmail.com</span>
+              <span class="font-bold">{{detalleServicio.correo}}</span>
             </div>
           </div>
         </div>
@@ -62,7 +62,7 @@
               <span>Paquete</span>
             </div>
             <div class="col-md">
-              <span class="font-bold">Económico</span>
+              <span class="font-bold">{{detalleServicio.nombrePaquete}}</span>
             </div>
           </div>
         </div>
@@ -70,10 +70,9 @@
     </ng-template>
     <div class="row table-panel-row mb-2">
       <h2 class="subtitulo pl-1 mx-6 my-4">Detalle pagos</h2>
-      <p-table styleClass="mt-5 mb-8 mx-6" [value]="detallePago"
+      <p-table styleClass="mt-5 mb-8 mx-6" [value]="pagosRealizados"
                [rows]="cantElementosPorPagina"
-               [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-               (onLazyLoad)="paginar($event)">
+               [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
         <ng-template pTemplate="header">
           <tr>
             <th scope="col">Velatorio</th>
@@ -86,15 +85,15 @@
             <th scope="col"></th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-detallePago>
+        <ng-template pTemplate="body" let-pagosRealizados>
           <tr>
-            <td>{{detallePago.velatorio}}</td>
-            <td>{{detallePago.pagos}}</td>
-            <td>{{detallePago.fechaPago}}</td>
-            <td>{{detallePago.monto}}</td>
-            <td>{{detallePago.metodoPago}}</td>
-            <td>{{detallePago.noReciboPago}}</td>
-            <td>{{detallePago.estatus}}</td>
+            <td>{{pagosRealizados.velatorio}}</td>
+            <td>{{pagosRealizados.pagos}}</td>
+            <td>{{pagosRealizados.fechaPago}}</td>
+            <td>{{pagosRealizados.monto}}</td>
+            <td>{{pagosRealizados.metodoPago}}</td>
+            <td>{{pagosRealizados.noReciboPago}}</td>
+            <td>{{pagosRealizados.estatusPago}}</td>
             <td>
               <div class="contenedor-celda-iconos">
                 <a class="ml-5 cursor-pointer" (click)="overlayPanelBody.toggle($event)">
@@ -142,7 +141,7 @@
   </div>
   <div class="row mb-6">
     <div class="flex mt-4 justify-content-end">
-      <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../../">Regresar</button>
+      <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../">Regresar</button>
     </div>
   </div>
 </section>
@@ -150,15 +149,15 @@
 <p-overlayPanel #overlayPanelHeader>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Ver contrato"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Detalles"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Realizar pago" (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
+<!--      <app-overlay-panel-opcion titulo="Ver contrato"></app-overlay-panel-opcion>-->
+<!--      <app-overlay-panel-opcion titulo="Detalles"></app-overlay-panel-opcion>-->
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 <p-overlayPanel #overlayPanelBody>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Realizar pago" (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar método" ></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Eliminar método" (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>

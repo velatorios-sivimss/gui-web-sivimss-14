@@ -21,6 +21,7 @@ import { TituloPrincipalModule } from "../../shared/titulo-principal/titulo-prin
 import { TablePanelModule } from "projects/sivimss-gui/src/app/shared/table-panel/table-panel.module";
 
 import {ServiciosFunerariosComponent} from "./components/servicios-funerarios/servicios-funerarios.component";
+import {ServiciosFunerariosConsultaService} from "./services/servicios-funerarios-consulta.service";
 import {ServiciosFunerariosRoutingModule} from "./servicios-funerarios-routing.module";
 import {ServiciosFunerariosService} from "./services/servicios-funerarios.service";
 import { DetalleServiciosFunerariosComponent } from './components/detalle-servicios-funerarios/detalle-servicios-funerarios.component';
@@ -31,6 +32,8 @@ import { ModificarServiciosFunerariosComponent } from './components/modificar-se
 import { ModalRealizarPagoComponent } from './components/modal-realizar-pago/modal-realizar-pago.component';
 import { ModalEliminarPagoComponent } from './components/modal-eliminar-pago/modal-eliminar-pago.component';
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
+import {DetallePagoService} from "./services/detalle-pago.service";
 
 @NgModule({
   declarations:[
@@ -63,9 +66,12 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
     RadioButtonModule,
     AccordionModule,
     UtileriaModule,
+    BtnRegresarModule
   ],
   providers:[
-    ServiciosFunerariosService
+    ServiciosFunerariosService,
+    ServiciosFunerariosConsultaService,
+    DetallePagoService
   ]
 })
 
