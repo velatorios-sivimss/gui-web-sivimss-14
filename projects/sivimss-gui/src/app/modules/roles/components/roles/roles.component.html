@@ -1,12 +1,6 @@
-<div class="flex">
-  <app-btn-regresar class="mr-2" style="
-    z-index: 300;
-    border: solid 2px;
-    height: 38px;
-    width: 47px;
-    padding-left: 6px;
-    border-radius: 5px;" routerLink="../"></app-btn-regresar>
-  <app-titulo-principal style="width: 100%" titulo="Administrar roles a nivel oficina"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="Administrar roles a nivel oficina"></app-titulo-principal>
 </div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
@@ -69,13 +63,13 @@
         <td pResizableColumn>{{roles.fCreacion}}</td>
         <td *appValidaRol="['ROLES','MODIFICAR']">
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
-            <div class="contenedor-inputswitch"  onCloseOnNavigation>
-              <p-inputSwitch [(ngModel)]="roles.estatusRol"  (ngModelChange)="cambiarEstatus(roles);"></p-inputSwitch>
+            <div class="contenedor-inputswitch" onCloseOnNavigation>
+              <p-inputSwitch [(ngModel)]="roles.estatusRol" (ngModelChange)="cambiarEstatus(roles);"></p-inputSwitch>
               <span class="activo" *ngIf="roles.estatusRol">Activo</span>
               <span class="inactivo" *ngIf="!roles.estatusRol">Inactivo</span>
             </div>
-            <div *appValidaRol="['ROLES','MODIFICAR']" class="contenedor-celda-iconos" >
-              <a (click)="abrirPanel($event,roles)"  onCloseOnNavigation>
+            <div *appValidaRol="['ROLES','MODIFICAR']" class="contenedor-celda-iconos">
+              <a (click)="abrirPanel($event,roles)" onCloseOnNavigation>
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
             </div>
