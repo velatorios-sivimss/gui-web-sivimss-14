@@ -63,6 +63,8 @@ export class GenerarNotaRemisionComponent implements OnInit {
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   constructor(
     private route: ActivatedRoute,
@@ -246,6 +248,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     ).subscribe({
       next: (respuesta: any) => {
         console.log(respuesta);
+        this.mostrarModalDescargaExitosa = true;
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
