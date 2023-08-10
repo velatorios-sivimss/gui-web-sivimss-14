@@ -72,6 +72,8 @@ export class RealizarPagoComponent implements OnInit {
   foliosRevPrevFun: TipoDropdown[] = [];
 
   tipoFolio: null | 1 | 2 | 3 = null;
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   realizarPagoModal: boolean = false;
 
@@ -171,10 +173,12 @@ export class RealizarPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
+        this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
         console.log(error)
+        this.mensajesSistemaService.mostrarMensajeError(error);
       },
     });
   }
@@ -187,10 +191,12 @@ export class RealizarPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
+        this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
         console.log(error)
+        this.mensajesSistemaService.mostrarMensajeError(error);
       },
     });
   }
