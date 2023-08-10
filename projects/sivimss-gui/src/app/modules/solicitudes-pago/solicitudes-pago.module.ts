@@ -34,6 +34,7 @@ import {AprobarSolicitudPagoComponent} from "./components/aprobar-solicitud-pago
 import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directive";
 import {PanelModule} from "primeng/panel";
 import {SinCaracteresEspecialesDirective} from "./directives/sin-caracteres-especiales.directive";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import {SinCaracteresEspecialesDirective} from "./directives/sin-caracteres-espe
     CheckboxModule,
     CeldaStickyModule,
     PanelModule,
-    RadioButtonModule
+    RadioButtonModule,
+    BtnRegresarModule
   ],
   providers: [SolicitudesPagoService]
 })
