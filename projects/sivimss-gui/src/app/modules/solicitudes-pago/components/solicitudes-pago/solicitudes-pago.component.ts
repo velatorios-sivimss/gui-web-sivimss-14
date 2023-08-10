@@ -27,8 +27,18 @@ import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechaza
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
 import {AprobarSolicitudPagoComponent} from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
+
+interface SolicitudReporte {
+  idSolicitud: number,
+  idTipoSolicitud: string,
+  idUnidadOperativa: number | null,
+  idVelatorio: number | null,
+  cantidadLetra: string,
+  tipoReporte: string
+}
 
 @Component({
   selector: 'app-solicitudes-pago',
@@ -203,7 +213,6 @@ export class SolicitudesPagoComponent implements OnInit {
     );
   }
 
-
   abrirModalRechazarSolicitudPago(): void {
     this.rechazarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
@@ -238,7 +247,7 @@ export class SolicitudesPagoComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-  crearSolicitudFiltros(tipoReporte: string): FiltrosSolicitudPago {
+  crearSolicitudFiltros(tipoReporte: "pdf" | "xls" = "pdf"): FiltrosSolicitudPago {
     const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
     const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
@@ -281,11 +290,13 @@ export class SolicitudesPagoComponent implements OnInit {
     });
   }
 
-  generarListadoSolicitudesPDF(): void {
+  generarListadoSolicitudes(tipoReporte: "pdf" | "xls" = "pdf"): void {
     this.cargadorService.activar();
-    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros(tipoReporte);
     const solicitudFiltros: string = JSON.stringify(filtros);
-    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesPDF(solicitudFiltros)).pipe(
+    const ext = tipoReporte === 'pdf' ? 'pdf' : 'xlsx';
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext}
+    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudes(solicitudFiltros), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
@@ -298,12 +309,12 @@ export class SolicitudesPagoComponent implements OnInit {
     })
   }
 
-  generarListadoSolicitudesExcel() {
+  descargarReporteSolicitud(tipoReporte: "pdf" | "xls" = "pdf"): void {
     this.cargadorService.activar();
-    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("xls");
-    const solicitudFiltros: string = JSON.stringify(filtros);
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
-    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesExcel(solicitudFiltros),
+    const solicitud = this.generarSolicitudReporte(tipoReporte);
+    const ext = tipoReporte === 'pdf' ? 'pdf' : 'xlsx';
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext}
+    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarReporteSolicitud(solicitud),
       configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
@@ -314,7 +325,18 @@ export class SolicitudesPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
         console.log(error)
       },
-    })
+    });
+  }
+
+  generarSolicitudReporte(tipoReporte: "pdf" | "xls" = "pdf"): SolicitudReporte {
+    return {
+      idSolicitud: this.solicitudPagoSeleccionado.idSolicitud,
+      idTipoSolicitud: this.solicitudPagoSeleccionado.idTipoSolicitid,
+      idUnidadOperativa: null,
+      idVelatorio: null,
+      cantidadLetra: convertirNumeroPalabra(0),
+      tipoReporte
+    }
   }
 
 

@@ -128,9 +128,9 @@
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-                 (click)="generarListadoSolicitudesPDF()">
+                 (click)="generarListadoSolicitudes()">
             <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-                 (click)="generarListadoSolicitudesExcel()">
+                 (click)="generarListadoSolicitudes('xls')">
           </div>
         </div>
       </div>
@@ -161,12 +161,12 @@
       </ng-container>
       <ng-container *appValidaRol="['SOLICITAR_PAGO','IMPRIMIR']">
         <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Aprobada'"
-                                  titulo="Exportar a PDF" (click)="generarListadoSolicitudesPDF();">
+                                  titulo="Exportar a PDF" (click)="descargarReporteSolicitud();">
         </app-overlay-panel-opcion>
       </ng-container>
       <ng-container *appValidaRol="['SOLICITAR_PAGO','IMPRIMIR']">
         <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Aprobada'"
-                                  titulo="Exportar a Excel" (click)="generarListadoSolicitudesExcel();">
+                                  titulo="Exportar a Excel" (click)="descargarReporteSolicitud('xls');">
         </app-overlay-panel-opcion>
       </ng-container>
     </app-overlay-panel-opciones>

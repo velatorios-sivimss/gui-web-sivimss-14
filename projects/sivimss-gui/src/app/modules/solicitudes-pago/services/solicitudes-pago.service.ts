@@ -79,7 +79,7 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/0`, {params});
   }
 
-  descargarListadoSolicitudesPDF(body: any): Observable<Blob> {
+  descargarListadoSolicitudes(body: any): Observable<Blob> {
     const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
@@ -88,25 +88,19 @@ export class SolicitudesPagoService extends BaseService<HttpRespuesta<any>, any>
       , body, {headers, responseType: 'blob' as 'json'});
   }
 
-  descargarListadoSolicitudesExcel(body: any): Observable<Blob> {
+  descargarReporteSolicitud(body: any): Observable<Blob> {
     const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/gendocto-solipagos/generarDocumento/xls`
+    return this._http.post<any>(this._base + `${this._funcionalidad}/gendpdfs-solipagos/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
-  }
-
-  buscarGastosPorfolio(folio: string): Observable<HttpRespuesta<any>> {
-    const body = {"folioSolicitud": folio}
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscafol-solipagos`, body);
   }
 
   buscarPartidaPresupuestal(folioGastos: string): Observable<HttpRespuesta<any>> {
     const body = {"cveFolioGastos": folioGastos}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/factura-solipagos`, body);
   }
-
 
   busquedaFolioFactura(cveFolioGastos: string): Observable<HttpRespuesta<any>> {
     const body = {cveFolioGastos};
