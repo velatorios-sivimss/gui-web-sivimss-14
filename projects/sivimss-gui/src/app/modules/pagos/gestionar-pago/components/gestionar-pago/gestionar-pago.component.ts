@@ -20,6 +20,7 @@ import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
+import {FiltrosPago} from "../../../realizar-pago/modelos/filtrosPago.interface";
 
 @Component({
   selector: 'app-gestionar-pago',
@@ -145,6 +146,19 @@ export class GestionarPagoComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
+    this.cargadorService.activar();
+    const filtros = this.filtroGestionarPagoForm.getRawValue();
+    this.gestionarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.pagos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      },
+    });
   }
 
   paginar(): void {
