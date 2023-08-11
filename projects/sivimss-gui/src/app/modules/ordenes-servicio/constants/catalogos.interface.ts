@@ -39,6 +39,9 @@ export interface catalogoContratantes {
   lugarNacimiento?: string;
   correoElectronico?: string;
   curp?: string;
+  nomContratante?: string,
+  apPatContratante?: string,
+  apMatContratante?: string
 }
 
 export interface catalogoFinado {
@@ -73,6 +76,9 @@ export interface catalogoFinado {
   lugarDeceso?: string;
   sexo?: string;
   lugarNacimiento?: string;
+  nomContratante?: string,
+  apPatContratante?: string,
+  apMatContratante?: string
 }
 
 export interface CatalogoOperadores {
