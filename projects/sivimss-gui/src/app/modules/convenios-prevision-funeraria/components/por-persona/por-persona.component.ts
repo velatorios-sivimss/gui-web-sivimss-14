@@ -109,6 +109,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
 
   inicializarPersonaForm(): void {
     this.personaForm= this.formBuilder.group({
+              idContratante: [{value:null, disabled: false}],
                   matricula: [{value:null, disabled: false}],
                         rfc: [{value:null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
                   idPersona: {value:null, disabled: false},
@@ -379,6 +380,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.fp.otroSexo.setValue(respuesta.datos.datosContratante.otroSexo)
           this.fp.entidadFederativa.setValue(+respuesta.datos.datosContratante.idEstado)
           this.fp.fechaNacimiento.setValue(new Date(anio + '-' + mes + '-' + dia))
+          this.fp.idContratante.setValue(+respuesta.datos.datosContratante.idContratante)
 
 
 

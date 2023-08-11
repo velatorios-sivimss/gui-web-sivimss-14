@@ -60,15 +60,13 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
   }
 
   nombreContratante(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", 'consultar-contratante');
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, {params});
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-nombre-contratantes`, {});
   }
 
   nombreFinado(): Observable<HttpRespuesta<any>> {
-    const params: HttpParams = new HttpParams()
-      .append("servicio", 'consultar-finado');
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, {params});
+    // const params: HttpParams = new HttpParams()
+    //   .append("servicio", 'consultar-finado');
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-nombre-finados`,{});
   }
 
   consultarODS(objetoPaginado: OrdenServicioFiltroConsulta, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
