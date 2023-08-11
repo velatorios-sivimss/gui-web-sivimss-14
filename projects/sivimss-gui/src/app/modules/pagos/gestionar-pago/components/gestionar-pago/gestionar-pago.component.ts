@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {BreadcrumbService} from "../../../../../shared/breadcrumb/services/breadcrumb.service";
 import {GESTIONAR_PAGO_BREADCRUMB} from "../../constants/breadcrumb";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective} from "@angular/forms";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
@@ -28,6 +28,9 @@ import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interfac
   providers: [DescargaArchivosService]
 })
 export class GestionarPagoComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -84,11 +87,13 @@ export class GestionarPagoComponent implements OnInit {
     this.foliosPNCPF = mapearArregloTipoDropdown(foliosPrevFun, "folio", "folio");
     const foliosRevPrevFun = respuesta[this.POSICION_FOLIO_REN_PREV_FUN].datos;
     this.foliosPRCPF = mapearArregloTipoDropdown(foliosRevPrevFun, "folio", "folio");
+    this.obtenerVelatorios();
   }
 
   inicializarForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroGestionarPagoForm = this.formBuilder.group({
-      velatorio: [{value: null, disabled: false}],
+      velatorio: [{value: usuario?.idVelatorio, disabled: false}],
       folioODS: [{value: null, disabled: false}],
       folioPNCPF: [{value: null, disabled: false}],
       folioPRCPF: [{value: null, disabled: false}],
@@ -107,13 +112,24 @@ export class GestionarPagoComponent implements OnInit {
   limpiar(): void {
     this.paginacionConFiltrado = false;
     if (this.filtroGestionarPagoForm) {
-      this.filtroGestionarPagoForm.reset();
       this.tipoFolio = null;
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroGestionarPagoForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+      this.filtroFormDir.resetForm({velatorio: +usuario?.idVelatorio});
     }
     this.numPaginaActual = 0;
     this.paginar();
+  }
+
+  obtenerVelatorios(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.gestionarPagoService.obtenerVelatoriosPorDelegacion(usuario?.idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+      }
+    });
   }
 
   limpiarFolios(folio: 1 | 2 | 3): void {
@@ -145,6 +161,19 @@ export class GestionarPagoComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
+    this.cargadorService.activar();
+    const filtros = this.filtroGestionarPagoForm.getRawValue();
+    this.gestionarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.pagos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      },
+    });
   }
 
   paginar(): void {

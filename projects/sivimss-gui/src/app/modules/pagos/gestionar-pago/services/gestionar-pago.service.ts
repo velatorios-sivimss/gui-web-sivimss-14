@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from "../../../../utils/base-service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 import {environment} from "../../../../../environments/environment";
 import {Observable} from "rxjs";
@@ -46,6 +46,19 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
 
   modificarMetodoPago(body: any): Observable<HttpRespuesta<any>> {
     return this._http.put<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/${this._modificarPago}`, body)
+  }
+
+  buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio);
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`,
+      filtros, {params});
+  }
+
+  obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body: { idDelegacion: string | null } = {idDelegacion: delegacion}
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
   descargarListado(): Observable<Blob> {
