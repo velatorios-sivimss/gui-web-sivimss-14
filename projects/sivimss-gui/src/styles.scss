@@ -96,7 +96,7 @@ body {
   display: inline-block;
   margin-left: 10px;
 
-  &>*:not(span) {
+  & > *:not(span) {
     transform: translateY(3px);
   }
 
@@ -145,7 +145,7 @@ body {
     width: 100%;
   }
 
-  a+a {
+  a + a {
     margin-left: 1.75rem;
   }
 
@@ -410,6 +410,7 @@ h1.subtitulo-base-lg {
   width: 47px;
   padding-left: 6px;
   border-radius: 5px;
+  z-index: 300;
 }
 
 // .ui-accordion .ui-accordion-header .ui-icon {
