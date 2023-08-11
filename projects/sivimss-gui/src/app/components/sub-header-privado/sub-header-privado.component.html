@@ -6,7 +6,7 @@
   <div class="datos-usuario">
     <img src="../../../assets/images/imagen-icono-usuario.svg" alt="imagen usuario" class="imagen-usuario"
          *ngIf="!existeNotificacion">
-    <div class="contenedor-imagen-usuario" *ngIf="existeNotificacion">
+    <div class="contenedor-imagen-usuario notificaciones" *ngIf="existeNotificacion">
       <button class="button-user-img" appPopover (click)="this.overlayVisible = !this.overlayVisible" pBadge
               severity="danger" #btnNotificacion
               style="font-size: 1px" value="">
@@ -14,7 +14,7 @@
       </button>
       <p-overlay [(visible)]="overlayVisible" [appendTo]="btnNotificacion"
                  [responsive]="{ breakpoint: '300px', direction: 'bottom' }"
-                 contentStyleClass="p-4 surface-overlay shadow-2 border-round" [autoZIndex]="true">
+                 contentStyleClass="p-4 surface-overlay shadow-2 border-round " [autoZIndex]="true">
         <ng-template pTemplate="content">
           <div class="row">
             <div class="col-12">
