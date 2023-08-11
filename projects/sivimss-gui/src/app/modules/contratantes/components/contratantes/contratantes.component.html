@@ -3,7 +3,7 @@
   <app-titulo-principal class="col" titulo="Administrar usuarios contratantes"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (ngSubmit)="paginarPorFiltros()">
+  <form [formGroup]="filtroForm" (ngSubmit)="paginarPorFiltros()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="curp">CURP:</label>
@@ -21,8 +21,7 @@
         <label class="control-label" for="nombreContratante">Nombre:</label>
         <p-autoComplete id="nombreContratante" formControlName="nombre" [showEmptyMessage]="true"
                         [suggestions]="contratantesFiltrados" (completeMethod)="filtrarContratantes()"
-                        [style]="{'width':'100%'}"
-                        [minLength]="3" [maxlength]="30" class="p-autocomplete form-control"
+                        [minLength]="3" [maxlength]="30" class="p-autocomplete"
                         placeholder="Ingresa el nombre" field="label"
                         [inputStyleClass]="filtroForm.valid ? 'input-autocomplete' : 'input-autocomplete input-autocomplete-error'">
           <ng-template let-articulo pTemplate="item">
@@ -40,8 +39,8 @@
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar</button>
       </div>
     </div>
   </form>
