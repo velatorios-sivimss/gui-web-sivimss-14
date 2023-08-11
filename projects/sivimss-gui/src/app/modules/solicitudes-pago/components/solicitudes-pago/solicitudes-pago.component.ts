@@ -333,9 +333,9 @@ export class SolicitudesPagoComponent implements OnInit {
     return {
       idSolicitud: this.solicitudPagoSeleccionado.idSolicitud,
       idTipoSolicitud: this.solicitudPagoSeleccionado.idTipoSolicitid,
-      idUnidadOperativa: null,
-      idVelatorio: null,
-      cantidadLetra: convertirNumeroPalabra(0),
+      idUnidadOperativa: this.solicitudPagoSeleccionado.idUnidadOperativa ?? null,
+      idVelatorio: this.solicitudPagoSeleccionado.idVelatorio ?? null,
+      cantidadLetra: convertirNumeroPalabra(this.solicitudPagoSeleccionado.importe),
       tipoReporte
     }
   }
