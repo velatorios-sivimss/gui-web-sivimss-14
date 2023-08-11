@@ -78,7 +78,6 @@ export class SolicitudesPagoComponent implements OnInit {
 
   readonly POSICION_CATALOGO_EJERCICIOS: number = 0;
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
-  readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
   constructor(
     private route: ActivatedRoute,
@@ -304,7 +303,8 @@ export class SolicitudesPagoComponent implements OnInit {
         console.log(respuesta)
       },
       error: (error) => {
-        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     })
   }
@@ -322,7 +322,8 @@ export class SolicitudesPagoComponent implements OnInit {
         console.log(respuesta)
       },
       error: (error): void => {
-        this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
         console.log(error)
       },
     });

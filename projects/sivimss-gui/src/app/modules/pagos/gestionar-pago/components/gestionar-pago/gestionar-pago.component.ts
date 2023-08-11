@@ -188,7 +188,8 @@ export class GestionarPagoComponent implements OnInit {
         console.log(respuesta)
       },
       error: (error): void => {
-        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });
   }
@@ -204,7 +205,8 @@ export class GestionarPagoComponent implements OnInit {
         console.log(respuesta)
       },
       error: (error): void => {
-        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });
   }

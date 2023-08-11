@@ -7,7 +7,7 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
@@ -143,8 +143,8 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.notasRemision = [];
     this.generarNotaRemisionService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-          this.notasRemision = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
+        this.notasRemision = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
@@ -191,7 +191,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   limpiar(): void {
     this.alertaService.limpiar();
     this.filtroForm.reset();
-    this.filtroForm.get('nivel')?.patchValue(+this.rolLocalStorage.idOficina );
+    this.filtroForm.get('nivel')?.patchValue(+this.rolLocalStorage.idOficina);
     this.filtroForm.get('delegacion')?.patchValue(+this.rolLocalStorage.idDelegacion);
     this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio);
     this.obtenerVelatorios();
@@ -241,8 +241,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     }
 
     this.loaderService.activar();
-    const busqueda = this.filtrosArchivos(tipoReporte);
-
+    const busqueda: GenerarReporte = this.filtrosArchivos(tipoReporte);
     this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
@@ -251,7 +250,8 @@ export class GenerarNotaRemisionComponent implements OnInit {
         this.mostrarModalDescargaExitosa = true;
       },
       error: (error: HttpErrorResponse) => {
-        console.log(error);
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });
   }
