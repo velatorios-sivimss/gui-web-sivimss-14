@@ -7,13 +7,49 @@
     <img src="../../../assets/images/imagen-icono-usuario.svg" alt="imagen usuario" class="imagen-usuario"
          *ngIf="!existeNotificacion">
     <div class="contenedor-imagen-usuario" *ngIf="existeNotificacion">
-      <button class="button-user-img" appPopover (click)="notificacionesPopOver.toggle($event)" pBadge severity="danger"
+      <button class="button-user-img" appPopover (click)="this.overlayVisible = !this.overlayVisible" pBadge
+              severity="danger" #btnNotificacion
               style="font-size: 1px" value="">
         <img src="../../../assets/images/imagen-icono-usuario.svg" alt="imagen usuario" class="imagen-usuario">
       </button>
-      <app-popover #notificacionesPopOver>
-        <ng-container *ngTemplateOutlet="notificacionesTemplate"></ng-container>
-      </app-popover>
+      <p-overlay [(visible)]="overlayVisible" [appendTo]="btnNotificacion"
+                 [responsive]="{ breakpoint: '300px', direction: 'bottom' }"
+                 contentStyleClass="p-4 surface-overlay shadow-2 border-round" [autoZIndex]="true">
+        <ng-template pTemplate="content">
+          <div class="row">
+            <div class="col-12">
+              <ul>
+                <li *ngFor="let notificacion of notificaciones">
+                  {{ notificacion.mensaje}}
+                  <ng-container *ngIf="notificacion.cu =='9'">
+                    <div class="flex justify-content-end">
+                      <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">
+                        Registrar salida
+                      </button>
+                      <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarMasTarde(notificacion)">
+                        Registrar más tarde
+                      </button>
+                    </div>
+                  </ng-container>
+                  <!--      <div class="flex justify-content-end" *ngIf="notificacion.path=='reservar-salas'">-->
+                  <!--        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">-->
+                  <!--          Registrar salida-->
+                  <!--        </button>-->
+                  <!--        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarMasTarde(notificacion)">-->
+                  <!--          Registrar más tarde-->
+                  <!--        </button>-->
+                  <!--      </div>-->
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="flex justify-content-end">
+            <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="this.overlayVisible = !this.overlayVisible">
+              Aceptar
+            </button>
+          </div>
+        </ng-template>
+      </p-overlay>
     </div>
     <div class="contenedor-curp">
       <span>CURP {{usuarioEnSesion?.curp}}</span>
@@ -24,39 +60,6 @@
                                                              src="../../../assets/images/imagen-icono-cerrar-sesion.svg"
                                                              alt="icono cerrar sesion">Cerrar sesión</a>
 </div>
-
-<ng-template #notificacionesTemplate>
-  <ul>
-    <li *ngFor="let notificacion of notificaciones">
-      {{ notificacion.mensaje}}
-
-      <ng-container *ngIf="notificacion.cu =='9'">
-
-        <div class="flex justify-content-end">
-          <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">
-            Registrar salida
-          </button>
-          <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarMasTarde(notificacion)">
-            Registrar más tarde
-          </button>
-        </div>
-
-      </ng-container>
-
-
-<!--      <div class="flex justify-content-end" *ngIf="notificacion.path=='reservar-salas'">-->
-<!--        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarSalida(notificacion)">-->
-<!--          Registrar salida-->
-<!--        </button>-->
-<!--        <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="registrarMasTarde(notificacion)">-->
-<!--          Registrar más tarde-->
-<!--        </button>-->
-<!--      </div>-->
-
-    </li>
-
-  </ul>
-</ng-template>
 
 <p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
