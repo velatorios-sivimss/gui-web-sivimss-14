@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective} from "@angular/forms";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {REALIZAR_PAGO_BREADCRUMB} from "../../constants/breadcrumb";
 import {BreadcrumbService} from "../../../../../shared/breadcrumb/services/breadcrumb.service";
@@ -40,6 +40,9 @@ interface SolicitudDescargaArchivo {
   providers: [DescargaArchivosService, DialogService]
 })
 export class RealizarPagoComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -131,11 +134,9 @@ export class RealizarPagoComponent implements OnInit {
   limpiar(): void {
     this.paginacionConFiltrado = false;
     if (this.filtroForm) {
-      this.filtroForm.reset();
-      this.tipoFolio = null;
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
-      this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+      this.filtroFormDir.resetForm({nivel: +usuario?.idOficina, velatorio: +usuario?.idVelatorio});
+      this.tipoFolio = null;
     }
     this.numPaginaActual = 0;
     this.paginar();
@@ -198,7 +199,8 @@ export class RealizarPagoComponent implements OnInit {
       error: (error): void => {
         console.log(error)
         const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);      },
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
     });
   }
 
