@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -47,6 +47,9 @@ interface SolicitudReporte {
   providers: [DialogService, DescargaArchivosService]
 })
 export class SolicitudesPagoComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -109,9 +112,7 @@ export class SolicitudesPagoComponent implements OnInit {
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormSolicitudesPago = this.formBuilder.group({
-      nivel: [{value: +usuario?.idOficina, disabled: true}],
-      delegacion: [{value: usuario?.idDelegacion, disabled: +usuario.idOficina > 1}],
-      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3}],
+      velatorio: [{value: usuario?.idVelatorio, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
       ejercFiscal: [{value: null, disabled: false}],
@@ -267,11 +268,8 @@ export class SolicitudesPagoComponent implements OnInit {
     this.paginacionConFiltrado = false;
     this.numPaginaActual = 0;
     if (this.filtroFormSolicitudesPago) {
-      this.filtroFormSolicitudesPago.reset();
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroFormSolicitudesPago.get('nivel')?.patchValue(+usuario.idOficina);
-      this.filtroFormSolicitudesPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
-      this.filtroFormSolicitudesPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
+      this.filtroFormDir.resetForm({velatorio: usuario?.idVelatorio});
     }
     this.obtenerVelatorios();
     this.paginar();
@@ -333,9 +331,9 @@ export class SolicitudesPagoComponent implements OnInit {
     return {
       idSolicitud: this.solicitudPagoSeleccionado.idSolicitud,
       idTipoSolicitud: this.solicitudPagoSeleccionado.idTipoSolicitid,
-      idUnidadOperativa: null,
-      idVelatorio: null,
-      cantidadLetra: convertirNumeroPalabra(0),
+      idUnidadOperativa: this.solicitudPagoSeleccionado.idUnidadOperativa ?? null,
+      idVelatorio: this.solicitudPagoSeleccionado.idVelatorio ?? null,
+      cantidadLetra: convertirNumeroPalabra(this.solicitudPagoSeleccionado.importe),
       tipoReporte
     }
   }
