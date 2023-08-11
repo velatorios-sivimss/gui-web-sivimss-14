@@ -1,12 +1,14 @@
-<app-titulo-principal titulo="Solicitudes de pago"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal titulo="Solicitudes de pago" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroFormSolicitudesPago" (ngSubmit)="buscar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                    placeholder="Selecciona velatorio" [filter]="true"
-                    (onChange)="obtenerFoliosGastos()">
+                    placeholder="Selecciona velatorio" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
@@ -49,10 +51,7 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="folio">Folio de la solicitud de pago:</label>
-        <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="foliosGastos"
-                    (onFocus)="obtenerFoliosGastos();" placeholder="Selecciona el folio" optionLabel="label"
-                    [filter]="true">
-        </p-dropdown>
+        <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio">
       </div>
     </div>
     <div class="row mt-6">
@@ -124,6 +123,17 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                 (click)="generarListadoSolicitudes()">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                 (click)="generarListadoSolicitudes('xls')">
+          </div>
+        </div>
+      </div>
     </ng-template>
   </p-table>
 </section>
@@ -151,14 +161,29 @@
       </ng-container>
       <ng-container *appValidaRol="['SOLICITAR_PAGO','IMPRIMIR']">
         <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Aprobada'"
-                                  titulo="Exportar a PDF" (click)="generarListadoSolicitudesPDF();">
+                                  titulo="Exportar a PDF" (click)="descargarReporteSolicitud();">
         </app-overlay-panel-opcion>
       </ng-container>
       <ng-container *appValidaRol="['SOLICITAR_PAGO','IMPRIMIR']">
         <app-overlay-panel-opcion *ngIf="solicitudPagoSeleccionado.desEstatusSolicitud === 'Aprobada'"
-                                  titulo="Exportar a Excel" (click)="generarListadoSolicitudesExcel();">
+                                  titulo="Exportar a Excel" (click)="descargarReporteSolicitud('xls');">
         </app-overlay-panel-opcion>
       </ng-container>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-dialog [(visible)]="mostrarModalDescargaExitosa" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalDescargaExitosa = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

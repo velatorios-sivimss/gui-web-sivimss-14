@@ -29,6 +29,7 @@ import { CancelarFormatoGenerarNotaRemisionComponent } from './components/cancel
 import { LoaderModule } from '../../shared/loader/loader.module';
 import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
         LoaderModule,
         ValidaRolModule,
         CeldaStickyModule,
+        BtnRegresarModule,
     ],
   providers: [GenerarNotaRemisionService]
 })

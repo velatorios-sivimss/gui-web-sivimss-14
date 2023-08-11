@@ -48,6 +48,7 @@ export class DetalleComisionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    debugger
     if (!this.detalleForm) {
       const respuesta = this.route.snapshot.data["respuesta"];
       this.detalleComision = respuesta[this.POSICION_DETALLE_VALE_SALIDA]?.datos;

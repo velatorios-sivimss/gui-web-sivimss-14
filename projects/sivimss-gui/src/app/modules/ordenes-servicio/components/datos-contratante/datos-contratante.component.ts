@@ -38,6 +38,7 @@ import { InformacionServicioVelacionInterface } from '../../models/InformacionSe
 
 import * as moment from 'moment';
 import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-datos-contratante',
@@ -96,6 +97,7 @@ export class DatosContratanteComponent implements OnInit {
   idContratante: number | null = null;
   idDomicilio: number | null = null;
   fechaActual = new Date();
+  colonias:any;
 
   constructor(
     private route: ActivatedRoute,
@@ -537,6 +539,7 @@ export class DatosContratanteComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            // this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].localidad.municipio.nombre

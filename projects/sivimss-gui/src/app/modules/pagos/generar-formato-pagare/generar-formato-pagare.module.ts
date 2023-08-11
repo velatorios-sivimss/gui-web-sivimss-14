@@ -22,32 +22,34 @@ import { GenerarFormatoPagareService } from './services/generar-formato-pagare.s
 import { GenerarReciboRoutingModule } from './generar-formato-pagare.routing.module';
 import { ReciboFormatoPagareComponent } from './components/recibo-formato-pagare/recibo-formato-pagare.component';
 import { UtileriaModule } from '../../../shared/utileria/utileria.module';
+import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
     GenerarFormatoPagareComponent,
     ReciboFormatoPagareComponent
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    GenerarReciboRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    AutoCompleteModule,
-    UtileriaModule,
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        GenerarReciboRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        AutoCompleteModule,
+        UtileriaModule,
+        BtnRegresarModule,
+    ],
   providers: [GenerarFormatoPagareService]
 })
 export class GenerarFormatoPagareModule { }

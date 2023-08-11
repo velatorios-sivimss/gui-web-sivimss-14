@@ -8,7 +8,6 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {finalize} from "rxjs/operators";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {Router} from "@angular/router";
 
 interface SolicitudRechazo {
   idSolicitud: number,
@@ -35,7 +34,6 @@ export class RechazarSolicitudPagoComponent implements OnInit {
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private alertaService: AlertaService,
-    private router: Router,
   ) {
   }
 

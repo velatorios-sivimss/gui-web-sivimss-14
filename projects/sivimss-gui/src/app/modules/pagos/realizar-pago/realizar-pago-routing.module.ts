@@ -1,14 +1,14 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {RealizarPagoComponent} from "./components/realizar-pago/realizar-pago.component";
-import {PagoOrdenServicioComponent} from "./components/pago-orden-servicio/pago-orden-servicio.component";
-import {PagoConvenioComponent} from "./components/pago-convenio/pago-convenio.component";
+import {PagoOrdenServicioComponent} from "./components/listados-pago-por-tipos/pago-orden-servicio/pago-orden-servicio.component";
+import {PagoConvenioComponent} from "./components/listados-pago-por-tipos/pago-convenio/pago-convenio.component";
 import {
   PagoRenovacionConvenioComponent
-} from "./components/pago-renovacion-convenio/pago-renovacion-convenio.component";
+} from "./components/listados-pago-por-tipos/pago-renovacion-convenio/pago-renovacion-convenio.component";
 import {
   SeleccionBeneficiariosAgfComponent
-} from "./components/seleccion-beneficiarios-agf/seleccion-beneficiarios-agf.component";
+} from "./components/registrar-pago/seleccion-beneficiarios-agf/seleccion-beneficiarios-agf.component";
 import {DetalleMetodoPagoComponent} from "./components/detalle-metodo-pago/detalle-metodo-pago.component";
 import {RealizarPagoResolver} from "./services/realizar-pago.resolver";
 import {DetallePagoResolver} from "./services/detalle-pago.resolver";

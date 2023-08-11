@@ -21,7 +21,7 @@
             </div>
             <div class="col-md-6">
                 <label class="control-label" for="promotores">Promotores*:</label>
-                <p-dropdown id="promotores" class="form-control" formControlName="promotores" [options]="opciones" placeholder="Selecciona el promotor" [filter]="true">
+                <p-dropdown id="promotores" class="form-control" formControlName="promotores" [options]="promotores" placeholder="Selecciona el promotor" [filter]="true">
                 </p-dropdown>
             </div>
         </div>
@@ -70,7 +70,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-comision>
             <tr>
-                <td>{{comision.id}}</td>
+                <td>{{comision.idPromotor}}</td>
                 <td>{{comision.numEmpleado}} </td>
                 <td>{{comision.curp}} </td>
                 <td>{{comision.nombre}}</td>

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ActivatedRoute, Router} from "@angular/router";
 

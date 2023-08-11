@@ -87,6 +87,7 @@ export class ReporteEncargadoComponent implements OnInit {
     this.cargarCatalogos();
     this.inicializarFiltroForm();
     this.obtenerVelatorios();
+    this.cargarVelatorios(true);
   }
 
   cargarCatalogos(): void {
@@ -100,6 +101,13 @@ export class ReporteEncargadoComponent implements OnInit {
   limpiar(): void {
     this.filtroForm.reset();
     this.mostrarTabla = false;
+    this.inicializarFiltroForm();
+    this.obtenerVelatorios();
+    this.cargarVelatorios(true);
+    if (this.filtroForm.get('nivel')?.value === 1) {
+      this.filtroForm.get('delegacion')?.setValue('');
+      this.filtroForm.get('velatorio')?.setValue('');
+    } 
   }
 
   inicializarFiltroForm(): void {
@@ -124,6 +132,7 @@ export class ReporteEncargadoComponent implements OnInit {
       } else {
         this.numPaginaActual = 0;
       }
+      this.buscar();
     }
   }
 
@@ -140,7 +149,7 @@ export class ReporteEncargadoComponent implements OnInit {
             this.totalVehiculos = respuesta.datos.totalElements;
             this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
-            this.sumTotal = respuesta.datos.content.reduce((sum: any, val: any) => (sum + parseFloat(val.MON_COSTO_MTTO ? val.MON_COSTO_MTTO : 0)), 0);
+            this.sumTotal = respuesta.datos.content[0].totalCosto;
           },
           error: (error: HttpErrorResponse): void => {
             console.error(error);
@@ -154,7 +163,7 @@ export class ReporteEncargadoComponent implements OnInit {
             this.totalVehiculos = respuesta.datos.totalElements;
             this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
-            this.sumTotal = respuesta.datos.content.reduce((sum: any, val: any) => (sum + parseFloat(val.MON_COSTO_MTTO ? val.MON_COSTO_MTTO : 0)), 0);
+            this.sumTotal = respuesta.datos.content[0].totalCosto;
           },
           error: (error: HttpErrorResponse): void => {
             console.error(error);
@@ -177,6 +186,8 @@ export class ReporteEncargadoComponent implements OnInit {
         }
       case 2:
         return {
+          nivelOficina: this.filtroForm.get('nivel')?.value === '' ? null : this.filtroForm.get('nivel')?.value,
+          delegacion: this.filtroForm.get('delegacion')?.value === '' ? null : this.filtroForm.get('delegacion')?.value,
           velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
           fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
           fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
@@ -184,6 +195,9 @@ export class ReporteEncargadoComponent implements OnInit {
         }
       case 3:
         return {
+          nivelOficina: this.filtroForm.get('nivel')?.value === '' ? null : this.filtroForm.get('nivel')?.value,
+          delegacion: this.filtroForm.get('delegacion')?.value === '' ? null : this.filtroForm.get('delegacion')?.value,
+          velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
           placa: this.filtroForm.get('placa')?.value === '' ? null : this.filtroForm.get('placa')?.value,
           fecFin: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
           fecInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY')
@@ -214,6 +228,8 @@ export class ReporteEncargadoComponent implements OnInit {
         }
       case 2:
         return {
+          nivelOficina: this.filtroForm.get('nivel')?.value === '' ? null : this.filtroForm.get('nivel')?.value,
+          delegacion: this.filtroForm.get('delegacion')?.value === '' ? null : this.filtroForm.get('delegacion')?.value,
           velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
           fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
           fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY'),
@@ -221,6 +237,9 @@ export class ReporteEncargadoComponent implements OnInit {
         }
       case 3:
         return {
+          nivelOficina: this.filtroForm.get('nivel')?.value === '' ? null : this.filtroForm.get('nivel')?.value,
+          delegacion: this.filtroForm.get('delegacion')?.value === '' ? null : this.filtroForm.get('delegacion')?.value,
+          velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
           placa: this.filtroForm.get('placa')?.value === '' ? null : this.filtroForm.get('placa')?.value,
           fechaFinal: moment(this.filtroForm.get('fecahVigenciaHasta')?.value).format('DD/MM/YYYY'),
           fechaInicio: moment(this.filtroForm.get('fechaVigenciaDesde')?.value).format('DD/MM/YYYY')
@@ -329,6 +348,8 @@ export class ReporteEncargadoComponent implements OnInit {
 
   filtrosArchivos(tipoReporte: string) {
     return {
+      delegacion: this.filtroForm.get('delegacion')?.value === '' ? null : this.filtroForm.get('delegacion')?.value,
+      velatorio: this.filtroForm.get('velatorio')?.value === '' ? null : this.filtroForm.get('velatorio')?.value,
       numReporte: this.fmp.tipoReporte.value,
       fechaInicio: moment(this.fmp.fechaVigenciaDesde.value).format('DD-MM-YYYY'),
       fechaFin: moment(this.fmp.fecahVigenciaHasta.value).format('DD-MM-YYYY'),

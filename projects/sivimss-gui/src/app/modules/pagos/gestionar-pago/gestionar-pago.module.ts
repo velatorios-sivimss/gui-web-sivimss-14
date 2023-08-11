@@ -20,6 +20,8 @@ import {ModificarMetodoPagoComponent} from './components/modificar-metodo-pago/m
 import {CancelarMetodoPagoComponent} from './components/cancelar-metodo-pago/cancelar-metodo-pago.component';
 import {InputTextareaModule} from "primeng/inputtextarea";
 import { IrAPagoComponent } from './components/ir-a-pago/ir-a-pago.component';
+import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
+import {DialogModule} from "primeng/dialog";
 
 
 @NgModule({
@@ -45,7 +47,9 @@ import { IrAPagoComponent } from './components/ir-a-pago/ir-a-pago.component';
     TablePanelModule,
     AccordionModule,
     InputTextareaModule,
-    FormsModule
+    FormsModule,
+    BtnRegresarModule,
+    DialogModule
   ],
   providers: [GestionarPagoService]
 })

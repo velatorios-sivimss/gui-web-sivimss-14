@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective} from "@angular/forms";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
@@ -39,6 +39,9 @@ export class RolesComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -137,7 +140,7 @@ export class RolesComponent implements OnInit {
   limpiar(): void {
     this.paginacionConFiltrado = false;
     if (this.filtroForm) {
-      this.filtroForm.reset();
+      this.filtroFormDir.resetForm();
     }
     this.numPaginaActual = 0;
     this.paginar();
