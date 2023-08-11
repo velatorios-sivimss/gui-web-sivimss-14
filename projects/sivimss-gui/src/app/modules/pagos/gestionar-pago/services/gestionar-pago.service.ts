@@ -56,6 +56,11 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
       filtros, {params});
   }
 
+  obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+    const body: { idDelegacion: string | null } = {idDelegacion: delegacion}
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
+  }
+
   descargarListado(): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
