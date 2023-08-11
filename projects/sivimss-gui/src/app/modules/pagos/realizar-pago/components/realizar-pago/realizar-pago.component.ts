@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective} from "@angular/forms";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {REALIZAR_PAGO_BREADCRUMB} from "../../constants/breadcrumb";
 import {BreadcrumbService} from "../../../../../shared/breadcrumb/services/breadcrumb.service";
