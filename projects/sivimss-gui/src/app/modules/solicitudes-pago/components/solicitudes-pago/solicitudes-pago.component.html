@@ -3,7 +3,7 @@
   <app-titulo-principal titulo="Solicitudes de pago" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroFormSolicitudesPago" (ngSubmit)="buscar()">
+  <form [formGroup]="filtroFormSolicitudesPago" (submit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
@@ -56,8 +56,11 @@
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroFormSolicitudesPago.pristine">
+          Limpiar
+        </button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroFormSolicitudesPago.pristine">Buscar
+        </button>
       </div>
     </div>
   </form>
