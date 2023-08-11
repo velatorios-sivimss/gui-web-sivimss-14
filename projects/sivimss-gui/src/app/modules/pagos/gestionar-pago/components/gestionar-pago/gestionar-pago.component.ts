@@ -55,6 +55,9 @@ export class GestionarPagoComponent implements OnInit {
   totalElementos: number = 0;
   paginacionConFiltrado: boolean = false;
 
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
+
   constructor(private breadcrumbService: BreadcrumbService,
               private formBuilder: FormBuilder,
               private gestionarPagoService: GestionarPagoService,
@@ -181,10 +184,12 @@ export class GestionarPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
+        this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
-        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });
   }
@@ -196,10 +201,12 @@ export class GestionarPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
+        this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
-        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });
   }

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {Router} from "@angular/router";
 import {SolicitudPago} from "../../models/solicitud-pagos.interface";
 import {SolicitudesPagoService} from "../../services/solicitudes-pago.service";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -28,7 +27,6 @@ export class CancelarSolicitudPagoComponent implements OnInit {
   mensajeConfirmacion: boolean = false;
 
   constructor(
-    private router: Router,
     public config: DynamicDialogConfig,
     private formBulder: FormBuilder,
     private readonly referencia: DynamicDialogRef,

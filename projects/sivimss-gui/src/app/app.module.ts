@@ -27,6 +27,7 @@ import {UtileriaModule} from "./shared/utileria/utileria.module";
 import {NgOptimizedImage} from "@angular/common";
 import { DialogModule } from 'primeng/dialog';
 import {BadgeModule} from "primeng/badge";
+import {OverlayModule} from "primeng/overlay";
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient, './assets/i18n/', '.json')
@@ -39,33 +40,34 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     HeaderImssPublicoComponent,
     SubHeaderPrivadoComponent
   ],
-  imports: [
-    BrowserModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'es',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
-    BrowserAnimationsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    SidebarModule.forRoot({
-      tiempoTransicion: .25,
-      widthMenuSidebar: 320,
-      inicializarMenuSidebarAbierto: false
-    }),
-    BreadcrumbModule,
-    LoaderModule,
-    AlertaModule,
-    PopoverModule,
-    UtileriaModule,
-    NgOptimizedImage,
-    DialogModule,
-    BadgeModule
-  ],
+    imports: [
+        BrowserModule,
+        TranslateModule.forRoot({
+            defaultLanguage: 'es',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient],
+            },
+        }),
+        BrowserAnimationsModule,
+        HttpClientModule,
+        AppRoutingModule,
+        SidebarModule.forRoot({
+            tiempoTransicion: .25,
+            widthMenuSidebar: 320,
+            inicializarMenuSidebarAbierto: false
+        }),
+        BreadcrumbModule,
+        LoaderModule,
+        AlertaModule,
+        PopoverModule,
+        UtileriaModule,
+        NgOptimizedImage,
+        DialogModule,
+        BadgeModule,
+        OverlayModule
+    ],
   providers: [
     AutenticacionService,
     {

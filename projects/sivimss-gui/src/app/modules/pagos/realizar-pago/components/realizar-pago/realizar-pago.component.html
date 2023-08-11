@@ -188,3 +188,18 @@
     </div>
   </div>
 </p-dialog>
+
+<p-dialog [(visible)]="mostrarModalDescargaExitosa" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalDescargaExitosa = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
