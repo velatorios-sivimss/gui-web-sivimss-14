@@ -472,7 +472,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
       this.formularioPersona.emit(
         {
           idPersona: this.fp.idPersona.value ? this.fp.idPersona?.value.toString() : null,
-          matricula: this.fp.matricula.value ? this.fp.matricula.toString() : "",
+          matricula: this.fp.matricula.value ? this.fp.matricula.value.toString() : "",
           rfc:this.fp.rfc?.value?.toString() ?? "",
           curp:this.fp.curp.value.toString(),
           nss:"",

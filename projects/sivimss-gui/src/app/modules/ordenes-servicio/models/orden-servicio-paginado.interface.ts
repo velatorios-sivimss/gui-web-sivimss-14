@@ -20,7 +20,7 @@ export interface OrdenServicioFiltroConsulta {
   idFinado?: number;
   idTipoODS?: number;
   idUnidadMedica?: number;
-  idConvenio?: number | null;
+  cveConvenio?: string | null;
   numeroFolio?: string;
   tipoReporte?: string;
   nombreFinado?: string | null;
