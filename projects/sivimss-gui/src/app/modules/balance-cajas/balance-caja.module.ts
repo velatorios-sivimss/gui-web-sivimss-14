@@ -20,7 +20,6 @@ import {AccordionModule} from 'primeng/accordion';
 import { BalanceCajaComponent } from './components/balance-caja/balance-caja.component';
 import { BalanceCajaService } from './services/balance-caja.service';
 import { CalculoComisionesoRoutingModule } from './balance-caja.routing.module';
-import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 import { ModificarPagoComponent } from './components/modificar-pago/modificar-pago.component';
 import { RealizarCierreComponent } from './components/realizar-cierre/realizar-cierre.component';
@@ -49,8 +48,7 @@ import { RealizarCierreComponent } from './components/realizar-cierre/realizar-c
     StepsModule,
     AccordionModule,
     AutoCompleteModule,
-    ValidaRolModule,
-    UtileriaModule,
+    ValidaRolModule
   ],
   providers: [BalanceCajaService]
 })
