@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {
   DIEZ_ELEMENTOS_POR_PAGINA,
   MAX_WIDTH,
@@ -50,6 +50,9 @@ type SolicitudEstatus = Pick<Usuario, 'id'>;
 export class UsuariosComponent implements OnInit, OnDestroy {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -295,7 +298,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   limpiar(): void {
     this.paginacionConFiltrado = false;
     if (this.filtroForm) {
-      this.filtroForm.reset();
+      this.filtroFormDir.resetForm();
     }
     this.numPaginaActual = 0;
     this.paginar();

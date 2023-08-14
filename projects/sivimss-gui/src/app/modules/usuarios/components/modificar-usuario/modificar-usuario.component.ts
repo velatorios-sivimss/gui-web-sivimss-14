@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Usuario} from '../../models/usuario.interface';
 import * as moment from "moment/moment";
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {UsuarioService} from "../../services/usuario.service";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
@@ -54,7 +53,6 @@ export class ModificarUsuarioComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private usuarioService: UsuarioService,
-    private alertaService: AlertaService,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private cargadorService: LoaderService,

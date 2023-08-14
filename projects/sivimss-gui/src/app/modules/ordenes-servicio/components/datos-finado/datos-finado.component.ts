@@ -886,20 +886,21 @@ export class DatosFinadoComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
-          /*
           if (respuesta) {
-            this.direccion.colonia.setValue(respuesta.datos[0].nombre);
-            this.direccion.municipio.setValue(
-              respuesta.datos[0].localidad.municipio.nombre
-            );
-            this.direccion.estado.setValue(
-              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
-            );
-            return;
+
+            this.datosFinado.curp.setValue(respuesta.datos.curp);
+            this.datosFinado.nombre.setValue(respuesta.datos?.nombre);
+            this.datosFinado.primerApellido.setValue(respuesta.datos.primerApellido);
+            this.datosFinado.segundoApellido.setValue(respuesta.datos.segundoApellido);
+            this.datosFinado.sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1 );
+
+            //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
+            this.datosFinado.nacionalidad.setValue(1);
+
           }
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
-          this.direccion.estado.patchValue(null);*/
+          this.direccion.estado.patchValue(null);
         },
         (error: HttpErrorResponse) => {
           console.log(error);

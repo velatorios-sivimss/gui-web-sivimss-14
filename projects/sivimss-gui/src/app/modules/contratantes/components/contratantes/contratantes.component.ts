@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { OverlayPanel } from "primeng/overlaypanel";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
@@ -31,6 +31,9 @@ export class ContratantesComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -147,20 +150,8 @@ export class ContratantesComponent implements OnInit {
   }
 
   limpiar(): void {
-    this.filtroForm.reset();
-    this.clearValidatorsFiltroForm();
+    this.filtroFormDir.resetForm();
     this.paginar();
-  }
-
-  clearValidatorsFiltroForm() {
-    this.ff.curp.clearValidators();
-    this.ff.curp.updateValueAndValidity();
-    this.ff.nss.clearValidators();
-    this.ff.nss.updateValueAndValidity();
-    this.ff.nombre.clearValidators();
-    this.ff.nombre.updateValueAndValidity();
-    this.ff.estatus.clearValidators();
-    this.ff.estatus.updateValueAndValidity();
   }
 
   abrirModalDetalleContratante(contratante: UsuarioContratante): void {

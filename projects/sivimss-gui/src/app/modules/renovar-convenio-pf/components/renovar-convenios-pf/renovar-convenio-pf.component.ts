@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { MenuItem } from "primeng/api";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { CATALOGOS_DUMMIES } from "../../../convenios-prevision-funeraria/constants/dummies";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {MenuItem} from "primeng/api";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {CATALOGOS_DUMMIES} from "../../../convenios-prevision-funeraria/constants/dummies";
 import {
   BuscarConvenioPlanAnterior,
   BuscarConvenioPlanNuevo,
@@ -13,16 +13,16 @@ import {
   RenovarPlan,
   VerificarDocumentacion
 } from "../../models/convenio.interface";
-import { MENU_STEPPER } from '../../constants/menu-steppers';
-import { Router } from '@angular/router';
-import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
+import {MENU_STEPPER} from '../../constants/menu-steppers';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RenovarConvenioPfService} from '../../services/renovar-convenio-pf.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {validarAlMenosUnCampoConValor} from 'projects/sivimss-gui/src/app/utils/funciones';
 import * as moment from 'moment';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 
 @Component({
   selector: 'app-renovar-convenio-pf',
@@ -42,8 +42,8 @@ export class RenovarConvenioPfComponent implements OnInit {
   mensajeBusqueda: string = "";
 
   tipoConvenio: TipoDropdown[] = [
-    { label: 'Plan anterior', value: '0' },
-    { label: 'Plan nuevo', value: '1' },
+    {label: 'Plan anterior', value: '0'},
+    {label: 'Plan nuevo', value: '1'},
   ];
 
   tipoPrevisionFuneraria: TipoDropdown[] = CATALOGOS_DUMMIES;
@@ -56,9 +56,11 @@ export class RenovarConvenioPfComponent implements OnInit {
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
@@ -73,31 +75,31 @@ export class RenovarConvenioPfComponent implements OnInit {
 
   inicializarFormBusquedaTipoConvenio(): void {
     this.busquedaTipoConvenioForm = this.formBuilder.group({
-      tipoConvenio: [{ value: true, disabled: false }, []],
-      numConvenio: [{ value: null, disabled: false }, []],
-      nombreContratante: [{ value: null, disabled: false }, []],
-      folio: [{ value: null, disabled: false }, []],
-      rfc: [{ value: null, disabled: false }, []],
+      tipoConvenio: [{value: true, disabled: false}, []],
+      numConvenio: [{value: null, disabled: false}, []],
+      nombreContratante: [{value: null, disabled: false}, []],
+      folio: [{value: null, disabled: false}, []],
+      rfc: [{value: null, disabled: false}, []],
     });
   }
 
   inicializarFormPlanAnterior(): void {
     this.resultadoBusquedaForm = this.formBuilder.group({
-      tipoPrevision: [{ value: null, disabled: true }, []],
-      tipoPaquete: [{ value: null, disabled: true }, []],
-      datosBancarios: [{ value: null, disabled: false }, [Validators.maxLength(30)]],
-      costoRenovacion: [{ value: null, disabled: true }, []],
+      tipoPrevision: [{value: null, disabled: true}, []],
+      tipoPaquete: [{value: null, disabled: true}, []],
+      datosBancarios: [{value: null, disabled: false}, [Validators.maxLength(30)]],
+      costoRenovacion: [{value: null, disabled: true}, []],
     });
   }
 
   inicializarDocumentacionForm(): void {
     this.documentacionForm = this.formBuilder.group({
-      ineAfiliado: [{ value: null, disabled: false }, []],
-      curp: [{ value: null, disabled: false }, []],
-      rfc: [{ value: null, disabled: false }, []],
-      convenioAnterior: [{ value: null, disabled: false }, []],
-      cartaPoder: [{ value: null, disabled: false }, []],
-      ineTestigo: [{ value: null, disabled: false }, []],
+      ineAfiliado: [{value: null, disabled: false}, []],
+      curp: [{value: null, disabled: false}, []],
+      rfc: [{value: null, disabled: false}, []],
+      convenioAnterior: [{value: null, disabled: false}, []],
+      cartaPoder: [{value: null, disabled: false}, []],
+      ineTestigo: [{value: null, disabled: false}, []],
     });
   }
 
@@ -106,8 +108,8 @@ export class RenovarConvenioPfComponent implements OnInit {
   }
 
   aceptar(): void {
-    void this.router.navigate([`/renovar-convenio-pf/beneficiarios/${this.convenio?.idConvenio}`],
-      { queryParams: { folio: this.convenio?.folio } });
+    void this.router.navigate([`./beneficiarios/${this.convenio?.idConvenio}`],
+      {queryParams: {folio: this.convenio?.folio}, relativeTo: this.activatedRoute});
   }
 
   limpiar(): void {

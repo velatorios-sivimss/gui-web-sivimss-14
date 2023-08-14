@@ -194,6 +194,7 @@ export class OrdenesServicioComponent implements OnInit {
     this.totalElementos = 0;
     this.ordenesServicio = [];
     const filtros = this.obtenerObjetoParaFiltrado();
+    delete filtros.tipoReporte
     this.loaderService.activar();
     this.consultarOrdenServicioService.consultarODS(filtros,this.numPaginaActual,this.cantElementosPorPagina).pipe(
       finalize(()=> this.loaderService.desactivar())
@@ -212,14 +213,19 @@ export class OrdenesServicioComponent implements OnInit {
 
   obtenerObjetoParaFiltrado(): OrdenServicioFiltroConsulta{
     return {
-      idOrdenServicio: null,
-      idVelatorio: this.formulario.velatorio.value,
-      idContratante: this.formulario.nombreContratante.value?.value ?? null,
-      idFinado: this.formulario.nombreFinado.value?.value ?? null,
-      idTipoODS: this.formulario.tipoOrden.value,
-      idUnidadMedica: this.formulario.unidadProcedencia.value,
-      idConvenio: null,
-      tipoReporte: "pdf"
+      // numeroFolio: this.formulario.numeroFolio.value ?? null,
+      cveFolio: this.formulario.numeroFolio.value ?? null,
+      idVelatorio: this.formulario.velatorio.value ?? null,
+      idTipoODS: this.formulario.tipoOrden.value ?? null,
+      idUnidadMedica: this.formulario.unidadProcedencia.value ?? null,
+      cveConvenio: this.formulario.numeroContrato.value ?? null,
+      tipoReporte: "pdf",
+      nombreFinado: this.formulario.nombreFinado.value?.value.nomContratante ?? null,
+      apPatFinado: this.formulario.nombreFinado.value?.value.apPatContratante ?? null,
+      apMatFinado: this.formulario.nombreFinado.value?.value.apMatContratante ?? null,
+      nombreContratante: this.formulario.nombreContratante.value?.value.nomContratante ?? null,
+      apPatContratante: this.formulario.nombreContratante.value?.value.apPatContratante ?? null,
+      apMatContratante: this.formulario.nombreContratante.value?.value.apMatContratante ?? null,
     }
   }
 
@@ -334,11 +340,16 @@ export class OrdenesServicioComponent implements OnInit {
     if(query?.length < 3)return;
     for (let i = 0; i < (this.nombresContratantes as any[]).length; i++) {
       let contratante = (this.nombresContratantes as any[])[i];
-      if (contratante.nombreContratante.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+      if (contratante.nombreCompletoContratante.toLowerCase().indexOf(query.toLowerCase()) == 0) {
 
         filtered.push({
             label: contratante.nombreCompletoContratante,
-            value: contratante.idContratante
+            value:
+              {
+                nomContratante: contratante.nomContratante,
+                apPatContratante: contratante.apPatContratante,
+                apMatContratante: contratante.apMatContratante
+              }
           })
       }
     }
@@ -354,7 +365,11 @@ export class OrdenesServicioComponent implements OnInit {
       if (finado.nombreCompletoFinado.toLowerCase().indexOf(query.toLowerCase()) == 0) {
         filtered.push({
           label: finado.nombreCompletoFinado,
-          value: finado.idFinado
+          value: {
+            nomContratante: finado.nomContratante,
+            apPatContratante: finado.apPatContratante,
+            apMatContratante: finado.apMatContratante
+          }
         })
       }
     }

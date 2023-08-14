@@ -57,7 +57,7 @@ export class DetalleFormatoGenerarNotaRemisionComponent implements OnInit {
     this.aceptar.emit();
   }
 
-  btnAceptarDetalle() {
-    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+  btnAceptarDetalle(): void {
+    void this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
   }
 }

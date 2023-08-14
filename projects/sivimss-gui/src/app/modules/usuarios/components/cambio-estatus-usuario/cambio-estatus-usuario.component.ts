@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {Usuario} from "../../models/usuario.interface";
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {UsuarioService} from "../../services/usuario.service";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -29,7 +28,6 @@ export class CambioEstatusUsuarioComponent implements OnInit {
   title!: string;
 
   constructor(
-    private alertaService: AlertaService,
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private usuarioService: UsuarioService,

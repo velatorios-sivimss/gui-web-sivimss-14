@@ -189,6 +189,42 @@ export class ModificarDatosFinadoComponent
 
   }
 
+
+  consultarNSS(): void {
+    this.loaderService.activar();
+    if (!this.datosFinado.nss.value) {
+      return;
+    }
+    this.gestionarOrdenServicioService
+      .consultarNSS(this.datosFinado.nss.value)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe(
+        (respuesta: HttpRespuesta<any>) => {
+          this.loaderService.desactivar();
+          if (respuesta) {
+
+            this.datosFinado.curp.setValue(respuesta.datos.curp);
+            this.datosFinado.nombre.setValue(respuesta.datos?.nombre);
+            this.datosFinado.primerApellido.setValue(respuesta.datos.primerApellido);
+            this.datosFinado.segundoApellido.setValue(respuesta.datos.segundoApellido);
+            this.datosFinado.sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1 );
+
+            //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
+            this.datosFinado.nacionalidad.setValue(1);
+
+          }
+          this.direccion.colonia.patchValue(null);
+          this.direccion.municipio.patchValue(null);
+          this.direccion.estado.patchValue(null);
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      );
+  }
+
+
+
   llenarAlta(datodPrevios: AltaODSInterface): void {
     this.altaODS = datodPrevios;
   }

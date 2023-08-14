@@ -1,16 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import { DetalleSolicitudPago, PartidaPresupuestal } from '../../models/solicitud-pagos.interface';
+import {DetalleSolicitudPago, PartidaPresupuestal} from '../../models/solicitud-pagos.interface';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import { SolicitudesPagoService } from '../../services/solicitudes-pago.service';
+import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
-
-type DetalleSolicPago = Required<DetalleSolicitudPago> & { id: string }
 
 @Component({
   selector: 'app-ver-detalle-solicitud',
@@ -19,7 +16,6 @@ type DetalleSolicPago = Required<DetalleSolicitudPago> & { id: string }
 })
 export class VerDetalleSolicitudPagoComponent implements OnInit {
 
-  solicitarSolicitudPago: DetalleSolicitudPago[] = [];
   solicitudPagoSeleccionado!: DetalleSolicitudPago;
   idSolicitud!: number;
   partidaPresupuestal: PartidaPresupuestal [] = [];
@@ -29,7 +25,6 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     public ref: DynamicDialogRef,
     private solicitudesPagoService: SolicitudesPagoService,
     private cargadorService: LoaderService,
-    private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
   }
@@ -40,10 +35,6 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
   }
 
   aceptar(): void {
-    this.ref.close();
-  }
-
-  abrirModalAceptar(): void {
     this.ref.close();
   }
 
@@ -84,8 +75,7 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
 
   convertirImporte(importe: string): void {
     if (!importe) return;
-    const importeLetra: string = convertirNumeroPalabra(+importe);
-    this.solicitudPagoSeleccionado.cantidadLetra=importeLetra;
+    this.solicitudPagoSeleccionado.cantidadLetra=convertirNumeroPalabra(+importe);
   }
 
 }
