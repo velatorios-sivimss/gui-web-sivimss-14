@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -27,8 +27,18 @@ import {RechazarSolicitudPagoComponent} from '../rechazar-solicitud-pago/rechaza
 import {VerDetalleSolicitudPagoComponent} from '../ver-detalle-solicitud/ver-detalle-solicitud.component';
 import {AprobarSolicitudPagoComponent} from '../aprobar-solicitud-pago/aprobar-solicitud-pago.component';
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 
 type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
+
+interface SolicitudReporte {
+  idSolicitud: number,
+  idTipoSolicitud: string,
+  idUnidadOperativa: number | null,
+  idVelatorio: number | null,
+  cantidadLetra: string,
+  tipoReporte: string
+}
 
 @Component({
   selector: 'app-solicitudes-pago',
@@ -37,6 +47,9 @@ type ListadoSolicitudPago = Required<SolicitudPago> & { id: string }
   providers: [DialogService, DescargaArchivosService]
 })
 export class SolicitudesPagoComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -59,14 +72,15 @@ export class SolicitudesPagoComponent implements OnInit {
   catalogoVelatorios: TipoDropdown[] = [];
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
-  foliosGastos: TipoDropdown[] = [];
   refElementos: number = 0;
+
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   paginacionConFiltrado: boolean = false;
 
   readonly POSICION_CATALOGO_EJERCICIOS: number = 0;
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
-  readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
   constructor(
     private route: ActivatedRoute,
@@ -98,9 +112,7 @@ export class SolicitudesPagoComponent implements OnInit {
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormSolicitudesPago = this.formBuilder.group({
-      nivel: [{value: +usuario?.idOficina, disabled: true}],
-      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario.idOficina > 1}],
-      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3}],
+      velatorio: [{value: usuario?.idVelatorio, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
       ejercFiscal: [{value: null, disabled: false}],
@@ -201,7 +213,6 @@ export class SolicitudesPagoComponent implements OnInit {
     );
   }
 
-
   abrirModalRechazarSolicitudPago(): void {
     this.rechazarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
@@ -236,7 +247,7 @@ export class SolicitudesPagoComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-  crearSolicitudFiltros(tipoReporte: string): FiltrosSolicitudPago {
+  crearSolicitudFiltros(tipoReporte: "pdf" | "xls" = "pdf"): FiltrosSolicitudPago {
     const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
     const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
@@ -257,11 +268,8 @@ export class SolicitudesPagoComponent implements OnInit {
     this.paginacionConFiltrado = false;
     this.numPaginaActual = 0;
     if (this.filtroFormSolicitudesPago) {
-      this.filtroFormSolicitudesPago.reset();
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroFormSolicitudesPago.get('nivel')?.patchValue(+usuario.idOficina);
-      this.filtroFormSolicitudesPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
-      this.filtroFormSolicitudesPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
+      this.filtroFormDir.resetForm({velatorio: usuario?.idVelatorio});
     }
     this.obtenerVelatorios();
     this.paginar();
@@ -279,61 +287,55 @@ export class SolicitudesPagoComponent implements OnInit {
     });
   }
 
-  generarListadoSolicitudesPDF(): void {
+  generarListadoSolicitudes(tipoReporte: "pdf" | "xls" = "pdf"): void {
     this.cargadorService.activar();
-    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
+    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros(tipoReporte);
     const solicitudFiltros: string = JSON.stringify(filtros);
-    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesPDF(solicitudFiltros)).pipe(
+    const ext = tipoReporte === 'pdf' ? 'pdf' : 'xlsx';
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext}
+    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudes(solicitudFiltros), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
+        this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error) => {
-        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     })
   }
 
-  generarListadoSolicitudesExcel() {
+  descargarReporteSolicitud(tipoReporte: "pdf" | "xls" = "pdf"): void {
     this.cargadorService.activar();
-    const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("xls");
-    const solicitudFiltros: string = JSON.stringify(filtros);
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
-    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudesExcel(solicitudFiltros),
+    const solicitud = this.generarSolicitudReporte(tipoReporte);
+    const ext = tipoReporte === 'pdf' ? 'pdf' : 'xlsx';
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext}
+    this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarReporteSolicitud(solicitud),
       configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
+        this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
-        this.mensajesSistemaService.mostrarMensajeError(error.message, this.ERROR_DESCARGA_ARCHIVO);
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
         console.log(error)
       },
-    })
+    });
   }
 
-  obtenerFoliosGastos(): void {
-    const velatorio = this.filtroFormSolicitudesPago.get('velatorio')?.value;
-    this.solicitudesPagoService.buscarGastosPorfolio(velatorio).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        let filtrado: TipoDropdown[] = [];
-        if (respuesta?.datos.length > 0) {
-          respuesta?.datos.forEach((e: any): void => {
-            filtrado.push({
-              label: e.cveFolio,
-              value: e.cveFolio,
-            });
-          });
-          this.foliosGastos = filtrado;
-        } else {
-          this.foliosGastos = [];
-        }
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
-    });
+  generarSolicitudReporte(tipoReporte: "pdf" | "xls" = "pdf"): SolicitudReporte {
+    return {
+      idSolicitud: this.solicitudPagoSeleccionado.idSolicitud,
+      idTipoSolicitud: this.solicitudPagoSeleccionado.idTipoSolicitid,
+      idUnidadOperativa: this.solicitudPagoSeleccionado.idUnidadOperativa ?? null,
+      idVelatorio: this.solicitudPagoSeleccionado.idVelatorio ?? null,
+      cantidadLetra: convertirNumeroPalabra(this.solicitudPagoSeleccionado.importe),
+      tipoReporte
+    }
   }
 
   get f() {
@@ -354,6 +356,5 @@ export class SolicitudesPagoComponent implements OnInit {
       this.aceptarRef.destroy();
     }
   }
-
 
 }

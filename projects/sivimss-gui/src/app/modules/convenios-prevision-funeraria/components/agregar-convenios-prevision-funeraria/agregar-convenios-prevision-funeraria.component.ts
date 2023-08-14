@@ -118,7 +118,8 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       tipoContratacion: [{value: formularioPrevio?.tipoContratacion ?? null, disabled: false}, [Validators.required]],
                rfcCurp: [{value: formularioPrevio?.rfcCurp ?? null, disabled: false}],
               promotor: [{value: formularioPrevio?.promotor ?? null, disabled: false}, [Validators.required]],
-         listaPromotor: [{value: formularioPrevio?.listaPromotor ?? null, disabled: false}, [Validators.required]]
+         listaPromotor: [{value: formularioPrevio?.listaPromotor ?? null, disabled: false}, [Validators.required]],
+         idContratante: [{value: null, disabled: false}],
     })
       this.agregarPromotor = formularioPrevio?.promotor ?? false;
   }
@@ -233,6 +234,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
         if(!respuesta.datos)return;
         this.ff.rfcCurp.setValue(respuesta.datos.datosContratante.curp);
         if(respuesta.datos.datosContratante.idPromotor){
+          this.ff.idContratante.setValue(respuesta.datos.datosContratante.idContratante);
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
           this.ff.listaPromotor.setValue(+respuesta.datos.datosContratante.idPromotor);
@@ -403,7 +405,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       idPromotor: this.ff.listaPromotor.value ? this.ff.listaPromotor.value.toString() : "",
       idPersona :event.idPersona ? event.idPersona.toString() : null,
       idDomicilio :null,
-      idContratante :null,
+      idContratante : this.ff.idContratante.value ? this.ff.idContratante.value.toString(): "" ,
 
       // numeroConvenio: this.ff.numeroConvenio.value,
       // rfcCurp: this.ff.rfcCurp.value,

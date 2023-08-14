@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../constants/dummies";
 import {ActivatedRoute} from "@angular/router";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from "../../../../utils/constantes";
@@ -12,6 +11,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {AgregarConvenioPFService} from "../../services/agregar-convenio-pf.service";
 import * as moment from "moment/moment";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-modificar-beneficiario-convenios-prevision-funeraria',
@@ -32,14 +33,17 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
   fechaNacimientoFormateada!: any;
 
   hoy = new Date();
+  curpDesactivado!: boolean;
 
   constructor(
+    private alertaService: AlertaService,
     private route: ActivatedRoute,
     private config: DynamicDialogConfig,
     private ref: DynamicDialogRef,
     private formBuilder: FormBuilder,
     private agregarConvenioPFService: AgregarConvenioPFService,
     private readonly loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
@@ -153,6 +157,31 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
       this.f.validaActaNacimientoBeneficiario.disable();
       this.f.validaActaNacimientoBeneficiario.patchValue(null);
     }
+  }
+
+  validarCURP(): void {
+    if (this.beneficiarioForm.controls.curp?.errors?.pattern){
+      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+      return;
+    }
+    if(!this.f.curp.value) return;
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultaCURPRFC("",this.f.curp.value).pipe(
+      finalize(()=>this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta:HttpRespuesta<any>) => {
+        if(respuesta.datos.desEstatusCURP.includes('Baja por Defunción')){
+          this.curpDesactivado = true;
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(
+          TipoAlerta.Error,
+          this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje)
+        );
+      }
+    });
   }
 
   aceptar(): void {

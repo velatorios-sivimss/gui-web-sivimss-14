@@ -3,8 +3,6 @@ export interface FiltrosComisiones {
   idDelegacion: number,
   idVelatorio: number,
   promotores: string,
-  fecIniODS: string,
-  fecFinODS: string,
-  rutaNombreReporte: string,
-  tipoReporte: string
+  fechaInicial: any,
+  fechaFinal: any
 }

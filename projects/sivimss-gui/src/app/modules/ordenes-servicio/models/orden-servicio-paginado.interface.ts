@@ -14,12 +14,19 @@ export interface OrdenServicioPaginado {
 }
 
 export interface OrdenServicioFiltroConsulta {
-  idOrdenServicio?: number | null;
+  cveFolio?: number | null;
   idVelatorio?: number;
   idContratante?: number;
   idFinado?: number;
   idTipoODS?: number;
   idUnidadMedica?: number;
-  idConvenio?: number | null;
+  cveConvenio?: string | null;
+  numeroFolio?: string;
   tipoReporte?: string;
+  nombreFinado?: string | null;
+  apPatFinado?: string | null;
+  apMatFinado?: string | null;
+  nombreContratante?: string | null;
+  apPatContratante?: string  | null;
+  apMatContratante?: string  | null;
 }

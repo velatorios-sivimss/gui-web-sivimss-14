@@ -50,7 +50,7 @@ export class ComisionesComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   catatalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
+  promotores: TipoDropdown[] = [];
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
 
@@ -77,6 +77,7 @@ export class ComisionesComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.inicializarFiltroForm();
     this.cargarCatalogos();
+    this.obtenerPromotores();
   }
 
   private cargarCatalogos(): void {
@@ -88,7 +89,7 @@ export class ComisionesComponent implements OnInit {
 
   abrirDetalleComision(comisionSeleccionado: ListadoComisiones): void {
     this.comisionSeleccionado = comisionSeleccionado;
-    this.router.navigate([`comisiones/detalle-comision/${comisionSeleccionado.id}`]).then(() => { }).catch(() => { });
+    this.router.navigate([`comisiones/detalle-comision/${comisionSeleccionado.idPromotor}`]).then(() => { }).catch(() => { });
   }
 
   inicializarFiltroForm(): void {
@@ -126,38 +127,19 @@ export class ComisionesComponent implements OnInit {
   }
 
   paginar(): void {
-    const filtros = {
-      idNivel: this.filtroFormComisiones.get("nivel")?.value,
-      idDelegacion: this.filtroFormComisiones.get("delegacion")?.value,
-      idVelatorio: this.filtroFormComisiones.get("velatorio")?.value,
-    }
-    this.comisiones = [
-      {
-        id: 1,
-        numEmpleado: '000001',
-        curp: 'TASASL12107034Y',
-        nombre: 'Jorge',
-        primerApellido: 'Sanchez',
-        segundoApellido: 'Prado',
-      },
-      {
-        id: 2,
-        numEmpleado: '000002',
-        curp: 'TASASL12107034Y',
-        nombre: 'Edwin',
-        primerApellido: 'Ruiz',
-        segundoApellido: 'Cardenas',
-      },
-      {
-        id: 3,
-        numEmpleado: '000003',
-        curp: 'TASASL12107034Y',
-        nombre: 'Nataly',
-        primerApellido: 'Sanchez',
-        segundoApellido: 'Hernandez',
-      },
-    ];
-    this.totalElementos=10;
+    this.cargadorService.activar();
+    this.calculoComisionesService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.comisiones = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      });
   }
 
   paginarConFiltros(): void {
@@ -183,15 +165,15 @@ export class ComisionesComponent implements OnInit {
   }
 
   crearSolicitudFiltros(): FiltrosComisiones {
+    const fechaInicial = this.filtroFormComisiones.get('fechaInicial')?.value !== null ? moment(this.filtroFormComisiones.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
+    const fechaFinal = this.filtroFormComisiones.get('fechaFinal')?.value !== null ? moment(this.filtroFormComisiones.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
     return {
       idNivel: this.filtroFormComisiones.get("nivel")?.value,
       idDelegacion: this.filtroFormComisiones.get("delegacion")?.value,
       idVelatorio: this.filtroFormComisiones.get("velatorio")?.value,
       promotores: this.filtroFormComisiones.get("promotores")?.value,
-      fecIniODS: this.filtroFormComisiones.get("fechaInicial")?.value,
-      fecFinODS: this.filtroFormComisiones.get("fechaFinal")?.value,
-      rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
-      tipoReporte: "pdf"
+      fechaInicial: fechaInicial,
+      fechaFinal: fechaFinal,
     }
   }
 
@@ -216,6 +198,19 @@ export class ComisionesComponent implements OnInit {
         console.error("ERROR: ", error);
       }
     });
+  }
+
+  obtenerPromotores(): void {
+    this.promotores = [];
+    this.calculoComisionesService.obtenerPromotores().subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.promotores = mapearArregloTipoDropdown(respuesta.datos, "nomPromotor", "numEmpleado");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    })
   }
 
   get f() {

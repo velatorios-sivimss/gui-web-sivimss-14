@@ -148,6 +148,7 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    this.paginacionConFiltrado = false;
     if (validarUsuarioLogueado()) return;
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));

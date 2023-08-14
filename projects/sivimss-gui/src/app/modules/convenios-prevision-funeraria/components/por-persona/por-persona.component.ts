@@ -13,8 +13,7 @@ import {
 } from "../agregar-beneficiario-convenios-prevision-funeraria/agregar-beneficiario-convenios-prevision-funeraria.component";
 import {
   CATALOGO_ENFERMEDAD_PREEXISTENTE,
-  CATALOGO_TIPO_PAQUETE,
-  INFO_TIPO_PAQUETE
+  CATALOGO_SEXO,
 } from "../../constants/catalogos-funcion";
 import {
   DetalleBeneficiarioConveniosPrevisionFunerariaComponent
@@ -27,6 +26,7 @@ import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {TipoPaquete} from "../../models/tipo-paquete.interface";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-por-persona',
@@ -61,13 +61,17 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
   estado!: TipoDropdown[];
   pais!: TipoDropdown[];
   tipoPaquete!: TipoDropdown[];
+  entidadFederativa!: TipoDropdown[];
   enfermedadPrexistente: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
+  tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   folioRedireccion: string = "";
   fechaRedireccion: string = "";
 
   otroTipoEnferemdad: boolean = false;
   mostrarModalConfirmacion: boolean = false;
   confirmarRedireccionamiento: boolean = false;
+
+  fechaActual= new Date();
 
   constructor(
     private alertaService: AlertaService,
@@ -98,12 +102,14 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
       )
     )
     this.infoTipoPaquete = respuesta[this.POSICION_PAQUETES].datos;
+    this.entidadFederativa = respuesta[this.POSICION_ESTADOS];
 
     this.inicializarPersonaForm();
   }
 
   inicializarPersonaForm(): void {
     this.personaForm= this.formBuilder.group({
+              idContratante: [{value:null, disabled: false}],
                   matricula: [{value:null, disabled: false}],
                         rfc: [{value:null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
                   idPersona: {value:null, disabled: false},
@@ -124,6 +130,10 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
       enfermedadPrexistente: [{value:null, disabled: false}, [Validators.required]],
              otraEnfermedad: [{value:null, disabled: false}],
                 tipoPaquete: [{value:null, disabled: false}, [Validators.required]],
+                       sexo: [{value:null, disabled: false}, [Validators.required]],
+                   otroSexo: [{value:null, disabled: false}, [Validators.required]],
+            fechaNacimiento: [{value:null, disabled: false}, [Validators.required]],
+          entidadFederativa: [{value:null, disabled: false}, [Validators.required]]
     })
   }
 
@@ -156,6 +166,17 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
       this.fp.otraEnfermedad.setValidators(Validators.required);
       this.fp.otraEnfermedad.updateValueAndValidity();
     }
+    this.validarFormularioVacio(false,'local');
+  }
+
+  cambioTipoSexo(): void {
+    if(this.fp.sexo.value == 3){
+      this.fp.otroSexo.setValidators(Validators.required);
+    }else{
+      this.fp.otroSexo.patchValue(null);
+      this.fp.otroSexo.clearValidators();
+    }
+    this.fp.otroSexo.updateValueAndValidity();
     this.validarFormularioVacio(false,'local');
   }
 
@@ -337,6 +358,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(!respuesta.datos)return;
+          const [anio,mes,dia] = respuesta.datos.datosContratante.fechaNacimiento.split('-')
           this.fp.curp.setValue(respuesta.datos.datosContratante.curp);
           this.fp.rfc.setValue(respuesta.datos.datosContratante.rfc);
           this.fp.nombre.setValue(respuesta.datos.datosContratante.nombrePersona);
@@ -354,6 +376,14 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.fp.pais.setValue(+respuesta.datos.datosContratante.idPais);
           this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
           this.fp.idPersona.setValue(+respuesta.datos.datosContratante.idPersona)
+          this.fp.sexo.setValue(+respuesta.datos.datosContratante.numSexo)
+          this.fp.otroSexo.setValue(respuesta.datos.datosContratante.otroSexo)
+          this.fp.entidadFederativa.setValue(+respuesta.datos.datosContratante.idEstado)
+          this.fp.fechaNacimiento.setValue(new Date(anio + '-' + mes + '-' + dia))
+          this.fp.idContratante.setValue(+respuesta.datos.datosContratante.idContratante)
+
+
+
         this.fp.enfermedadPrexistente.setValue(+respuesta.datos.datosContratante.idEnfermedadPreexistente);
         this.fp.otraEnfermedad.setValue(respuesta.datos.datosContratante.otraEnfermedad);
 
@@ -442,7 +472,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
       this.formularioPersona.emit(
         {
           idPersona: this.fp.idPersona.value ? this.fp.idPersona?.value.toString() : null,
-          matricula: this.fp.matricula.value ? this.fp.matricula.toString() : "",
+          matricula: this.fp.matricula.value ? this.fp.matricula.value.toString() : "",
           rfc:this.fp.rfc?.value?.toString() ?? "",
           curp:this.fp.curp.value.toString(),
           nss:"",
@@ -450,9 +480,6 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           nombre:this.fp.nombre.value ? this.fp.nombre.value.toString() : "",
           primerApellido:this.fp.primerApellido ? this.fp.primerApellido.value.toString() : "",
           segundoApellido:this.fp.segundoApellido ? this.fp.segundoApellido.value.toString() : "",
-          sexo:"",
-          otroSexo:"",
-          fechaNacimiento:"",
           tipoPersona:"",
           calle:this.fp.calle.value.toString(),
           numeroExterior:this.fp.numeroExterior.value.toString(),
@@ -468,6 +495,10 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           otraEnfermedad:this.fp.otraEnfermedad?.value,
           paquete:this.fp.tipoPaquete.value.toString(),
           beneficiarios: this.beneficiarios,
+          sexo: this.fp.sexo.value,
+          otroSexo: this.fp.otroSexo.value ?? "",
+          fechaNacimiento: moment(this.fp.fechaNacimiento.value).format("YYYY-MM-DD"),
+          entidadFederativa: this.fp.entidadFederativa.value,
           documentacion:{
             validaIneContratante:false,
             validaCurp:false,
@@ -501,7 +532,6 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
   }
 
   redireccionarModificar(): void {
-    ///'03/08/2023'
     this.router.navigate(['../convenios-prevision-funeraria/modificar-nuevo-convenio'],
       {
         queryParams:{
@@ -518,6 +548,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(()=> {
+      this.cambioTipoSexo();
       this.validarFormularioVacio(false,'local');
     },800)
   }

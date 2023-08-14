@@ -6,7 +6,6 @@ import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 
 
 import { MENU_STEPPER_AGREGAR_PERSONA } from "../../constants/menu-steppers-agregar-persona";
-import { CATALOGOS_DUMMIES } from "../../constants/dummies";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 
 import { BeneficiarioInterface } from "../../models/beneficiario.interface";
@@ -20,12 +19,12 @@ import {
 } from "../detalle-beneficiario-convenios-prevision-funeraria/detalle-beneficiario-convenios-prevision-funeraria.component";
 import {PATRON_CORREO, PATRON_CURP, PATRON_RFC} from "../../../../utils/constantes";
 import {
-  ModificarBeneficiarioComponent
-} from "../../../convenios-nuevos/seguimiento-nuevo-convenio/components/modificar-beneficiario/modificar-beneficiario.component";
-import {
   ModificarBeneficiarioConveniosPrevisionFunerariaComponent
 } from "../modificar-beneficiario-convenios-prevision-funeraria/modificar-beneficiario-convenios-prevision-funeraria.component";
-import {CATALOGO_ENFERMEDAD_PREEXISTENTE, CATALOGO_TIPO_PAQUETE} from "../../constants/catalogos-funcion";
+import {
+  CATALOGO_ENFERMEDAD_PREEXISTENTE,
+  CATALOGO_SEXO,
+} from "../../constants/catalogos-funcion";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {finalize} from "rxjs/operators";
@@ -35,6 +34,7 @@ import {AgregarConvenioPFService} from "../../services/agregar-convenio-pf.servi
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {TipoPaquete} from "../../models/tipo-paquete.interface";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-agregar-persona-convenios-prevision-funeraria',
@@ -61,7 +61,9 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   indice: number = 0;
 
   tipoPaquete!: TipoDropdown[];
+  entidadFederativa!: TipoDropdown[];
   enfermedadPrexistente: TipoDropdown[] = CATALOGO_ENFERMEDAD_PREEXISTENTE;
+  tipoSexo: TipoDropdown[] = CATALOGO_SEXO;
   estado!: TipoDropdown[];
   pais!: TipoDropdown[];
 
@@ -72,11 +74,14 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   mostrarModalConfirmacion: boolean = false;
   infoTipoPaquete!: any[];
   detallePais!: any;
+  detalleEntidadFederativa!: any;
   detalleEnfermedad!: any;
   detalleTipoPaquete!: any;
   infoPaqueteSeleccionado!: any;
   respuesta: any;
   flujo!: any;
+
+  fechaActual = new Date();
 
 
   constructor(
@@ -109,6 +114,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
         {label: paquete.nomPaquete, value: paquete.idPaquete}
       )
     )
+    this.entidadFederativa = this.respuesta[this.POSICION_ESTADOS];
     this.infoTipoPaquete = this.respuesta[this.POSICION_PAQUETES].datos;
     this.inicializarFormPersona();
     this.inicializarDocumentacionForm();
@@ -135,6 +141,10 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       enfermedadPrexistente: [{value: null, disabled: false}, [Validators.required]],
                        pais: [{value: null, disabled: false}, [Validators.required]],
              otraEnferdedad: [{value: null, disabled: false}],
+                       sexo: [{value:null, disabled: false}, [Validators.required]],
+                   otroSexo: [{value:null, disabled: false}, [Validators.required]],
+            fechaNacimiento: [{value:null, disabled: false}, [Validators.required]],
+          entidadFederativa: [{value:null, disabled: false}, [Validators.required]]
     });
   }
 
@@ -159,6 +169,16 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
         this.beneficiario.push(beneficiarioModal);
       }
     });
+  }
+
+  cambioTipoSexo(): void {
+    if(this.fp.sexo.value == 3){
+      this.fp.otroSexo.setValidators(Validators.required);
+    }else{
+      this.fp.otroSexo.patchValue(null);
+      this.fp.otroSexo.clearValidators();
+    }
+    this.fp.otroSexo.updateValueAndValidity();
   }
 
   abrirModalDetalleBeneficiario(detalleBeneficiario: BeneficiarioInterface): void {
@@ -194,15 +214,16 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.loaderService.activar();
     this.agregarConvenioPFService.consutaCP(+this.fp.cp.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        this.fp.estado.setValue(respuesta.datos[0]?.estado);
-        this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
-        this.fp.colonia.setValue(respuesta.datos[0]?.colonia);
-        this.fp.pais.setValue(119);
-      },
-      (error:HttpErrorResponse) => {
-        console.log(error);
+    ).subscribe({
+        next:(respuesta: HttpRespuesta<any>) => {
+          this.fp.estado.setValue(respuesta.datos[0]?.estado);
+          this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
+          this.fp.colonia.setValue(respuesta.datos[0]?.colonia);
+          this.fp.pais.setValue(119);
+        },
+        error:(error:HttpErrorResponse) => {
+          console.log(error);
+        }
       }
     )
   }
@@ -372,6 +393,10 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           ineAfiliado: this.documentacionForm.get('ineAfiliado')?.value ? this.documentacionForm.get('ineAfiliado')?.value : false,
           copiaCURP: this.documentacionForm.get('copiaCURP')?.value ? this.documentacionForm.get('copiaCURP')?.value : false,
           copiaRFC: this.documentacionForm.get('copiaRFC')?.value ? this.documentacionForm.get('copiaRFC')?.value : false,
+          sexo: this.personaForm.get('sexo')?.value ?? "",
+          otroSexo: this.personaForm.get('otroSexo')?.value ?? "",
+          fechaNacimiento: moment(this.personaForm.get('fechaNacimiento')?.value).format('YYYY-MM-DD') ?? "",
+          entidadFederativa: this.personaForm.get('entidadFederativa')?.value ?? "",
           beneficiarios: this.beneficiario,
           documentacion:{
             validaIneContratante:false,
@@ -380,9 +405,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           },
           nss:"",
           numIne:"",
-          sexo:"",
-          otroSexo:"",
-          fechaNacimiento:"",
           tipoPersona:"",
           otraEnfermedad:"",
       }
@@ -395,6 +417,9 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       this.detalleEnfermedad = CATALOGO_ENFERMEDAD_PREEXISTENTE.filter(enfermedad => {
         return enfermedad.value == this.fp.enfermedadPrexistente.value;
       });
+      this.detalleEntidadFederativa = this.entidadFederativa.filter(entidad => {
+        return entidad.value == this.fp.entidadFederativa.value
+      })
     }
   }
 

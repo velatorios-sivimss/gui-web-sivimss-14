@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {SolicitudCrearPago} from "../../modelos/solicitudPago.interface";
-import {RealizarPagoService} from "../../services/realizar-pago.service";
+import {SolicitudCrearPago} from "../../../modelos/solicitudPago.interface";
+import {RealizarPagoService} from "../../../services/realizar-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import * as moment from "moment/moment";
-import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
-import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
 interface DatosRegistro {
