@@ -1,21 +1,22 @@
-export interface DetalleComisionInterface {
-    nombreVelatorio?: string;
-    folioOds?: string;
-    nombreContratante?: string;
-    fechaSalida?: string;
-    fechaEntrada?: string;
-    responsableInstalacion?: string;
-    totalArticulos?: number;
-    idEstatus?: number;
-    idOds?: number;
-    idVelatorio?: number;
-    idValeSalida?: number;
-    nombreResponsableInstalacion?: string;
-    validacionDias?: number;
+export interface DetalleComision {
+  numEmpleado?: string;
+  primerApellido?: string;
+  velatorio?: string;
+  categoria?: string;
+  segundoApellido?: string;
+  montoComision?: number;
+  nombre?: string;
+  puesto?: string;
+  correo?: string;
+  fecNacimiento?: string;
+  fecIngreso?: string;
+  sueldoBase?: number;
+  idPromotor?: number;
+  curp?: string;
   }
 
   
-export interface DatosFolioODS {
+export interface DetalleODS {
     idValeSalida?: number;
     folioValeSalida?: number;
     idVelatorio?: number;

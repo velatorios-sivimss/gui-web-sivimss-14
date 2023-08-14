@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { DatosFolioODS, DetalleComisionInterface } from '../../models/detalle-comision.interface';
+import { DetalleODS, DetalleComision } from '../../models/detalle-comision.interface';
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { ActivatedRoute } from '@angular/router';
 import {CalculoComisionesService} from '../../services/calculo-comisiones.service';
@@ -22,15 +22,18 @@ import { ModalComisionComponent } from '../modal-comision/modal-comision.compone
   providers: [DialogService]
 })
 export class DetalleComisionComponent implements OnInit {
-  readonly POSICION_DETALLE_VALE_SALIDA = 0;
+  readonly POSICION_DETALLE_COMISION = 0;
+  readonly POSICION_DETALLE_ODS = 1;
+  readonly POSICION_DETALLE_CONVENIOS_PF = 2;
 
-  @Input() detalleForm: DatosFolioODS | undefined;
+  @Input() detalleForm: DetalleComision | undefined;
 
   registrarEntradaEquipoRef!: DynamicDialogRef;
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
-  detalleComision: DatosFolioODS = {
+  detalleComision!: DetalleComision;
+  detalleODS: DetalleODS = {
     articulos: []
   };
   formComisiones!: FormGroup;
@@ -48,10 +51,9 @@ export class DetalleComisionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    debugger
     if (!this.detalleForm) {
       const respuesta = this.route.snapshot.data["respuesta"];
-      this.detalleComision = respuesta[this.POSICION_DETALLE_VALE_SALIDA]?.datos;
+      this.detalleComision = respuesta[this.POSICION_DETALLE_COMISION]?.datos[this.POSICION_DETALLE_COMISION];
     } else {
       window.scrollTo(0, 0);
       console.log(this.detalleForm);
@@ -59,12 +61,11 @@ export class DetalleComisionComponent implements OnInit {
       this.detalleComision = this.detalleForm;
     }
     this.inicializarFiltroForm();
-    this.obtenerDetalleComision();
   }
 
   obtenerDetalleComision() {
-    if (this.detalleComision.idValeSalida) {
-      this.calculoComisionesService.obtenerDetalleComision(this.detalleComision.idValeSalida).pipe(
+    if (this.detalleComision.idPromotor) {
+      this.calculoComisionesService.obtenerDetalleComision(this.detalleComision.idPromotor).pipe(
         finalize(() => this.loaderService.desactivar())
       ).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {

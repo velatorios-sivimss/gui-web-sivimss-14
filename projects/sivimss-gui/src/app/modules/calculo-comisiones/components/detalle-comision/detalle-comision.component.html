@@ -6,137 +6,103 @@
         </ng-template>
         <ng-template pTemplate="content">
             <app-table-panel>
-                <ng-template appCustomTemplate="header">
-                    <div class="row table-panel-row">
-                        <div class="col-md-12">
-                            <div class="table-panel-column">
-                                <span><b>ID{{detalleComision.idValeSalida}}</b></span>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Nombre empleado</label>
-                            <span>{{detalleComision.nombreResponsableEntrega}}</span>
+                            <label>ID::</label>
+                            <span>{{detalleComision.idPromotor}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>CURP</label>
-                            <span>{{detalleComision.diasNovenario}}</span>
+                            <label>Número empleado::</label>
+                            <span>{{detalleComision.numEmpleado}}</span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-
-                        </div>
-                    </div>
-                </div>
-                <div class="row table-panel-row">
-                    <div class="col-md-12">
-                        <div class="table-panel-column">
-                            <label>Nombre</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>CURP:</label>
+                            <span>{{detalleComision.curp}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Primer apellido</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Nombre(s):</label>
+                            <span>{{detalleComision.nombre}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Segundo apellido</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Primer apellido:</label>
+                            <span>{{detalleComision.primerApellido}}</span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
+                            <label>Segundo apellido:</label>
+                            <span>{{detalleComision.segundoApellido}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Fecha de nacimiento</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Fecha de nacimiento:</label>
+                            <span>{{detalleComision.fecNacimiento}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Fecha de ingreso</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Fecha de ingreso:</label>
+                            <span>{{detalleComision.fecIngreso}}</span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
+                            <label>Sueldo base:</label>
+                            <span>{{detalleComision.sueldoBase}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Velatorio</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Velatorio:</label>
+                            <span>{{detalleComision.velatorio}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Sueldo base</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Dias de descanso:</label>
+                            <span>4</span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
+                            <label>Correo electronico:</label>
+                            <span>{{detalleComision.correo}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Puesto</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Puesto:</label>
+                            <span>{{detalleComision.puesto}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
-                        <div class="table-panel-column">
-                            <label>Dias de descanso</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="table-panel-column">
-                        </div>
-                    </div>
-                </div>
-                <div class="row table-panel-row">
-                    <div class="col-md-12">
-                        <div class="table-panel-column">
-                            <label>Correo electronico</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Categoria</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Categoria:</label>
+                            <span>{{detalleComision.categoria}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Monto de comisión</label>
-                            <span><b>{{detalleComision.nombreResponsableInstalacion}}</b></span>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="table-panel-column">
+                            <label>Monto de comisión:</label>
+                            <span>{{detalleComision.montoComision}}</span>
                         </div>
                     </div>
                 </div>
@@ -157,7 +123,7 @@
                     </div>
                 </div>
                 <div class="row mx-6 mb-3">
-                    <p-table styleClass="mb-8" [value]="detalleComision.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+                    <p-table styleClass="mb-8" [value]="detalleODS.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
                         <ng-template pTemplate="header">
                             <tr>
@@ -190,7 +156,7 @@
                     </div>
                 </div>
                 <div class="row mx-6 mb-3">
-                    <p-table styleClass="mb-8" [value]="detalleComision.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+                    <p-table styleClass="mb-8" [value]="detalleODS.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
                         <ng-template pTemplate="header">
                             <tr>
@@ -227,17 +193,17 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label" for="anio">Año</label>
+                        <label class="control-label" for="anio">Año:</label>
                         <p-dropdown id="anio" class="form-control" formControlName="anio" [options]="opciones" placeholder="Selecciona el año">
                         </p-dropdown>
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label" for="mes">Mes</label>
+                        <label class="control-label" for="mes">Mes:</label>
                         <p-dropdown id="mes" class="form-control" formControlName="mes" [options]="opciones" placeholder="Selecciona el mes">
                         </p-dropdown>
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label"></label>
+                        <label class="control-label">:</label>
                         <button type="submit" class="btn btn-primary btn-md ml-6 mt-5" (click)="abrirModarCalcularComision()">Calcular comisión</button>
 
                     </div>
@@ -246,7 +212,7 @@
 
             <div class="row table-panel-row">
                 <div class="row mx-6 mb-3">
-                    <p-table styleClass="mb-8" [value]="detalleComision.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+                    <p-table styleClass="mb-8" [value]="detalleODS.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
                         <ng-template pTemplate="header">
                             <tr>
