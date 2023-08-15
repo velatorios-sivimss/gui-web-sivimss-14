@@ -1,7 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+
+interface DatosRegistro {
+  idPagoBitacora: number,
+  idFlujoPago: number,
+  idRegistro: number,
+  importePago: number
+}
 
 @Component({
   selector: 'app-registrar-vale-paritaria',
@@ -10,11 +17,16 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 })
 export class RegistrarValeParitariaComponent implements OnInit {
 
+  readonly CAPTURA_DE_PAGO: number = 1;
+  readonly RESUMEN_DE_PAGO: number = 2;
+  pasoAgregarPago: number = 1;
+
   valeParitariaForm!: FormGroup;
   indice: number = 0;
-  delegaciones: TipoDropdown[] = [];
+  resumenSolicitud!: any;
 
-  constructor(private formBuilder: FormBuilder, public config: DynamicDialogConfig,
+  constructor(private formBuilder: FormBuilder,
+              public config: DynamicDialogConfig,
               public ref: DynamicDialogRef,) {
     this.inicializarValeForm();
   }
@@ -24,25 +36,22 @@ export class RegistrarValeParitariaComponent implements OnInit {
 
   inicializarValeForm(): void {
     this.valeParitariaForm = this.formBuilder.group({
-      matricula: [{value: null, disabled: false}],
-      delegacion: [{value: null, disabled: false}],
-      importePrestamo: [{value: null, disabled: false}],
+      numAutorizacion: [{value: null, disabled: false}, [Validators.required]],
+      fechaValeAGF: [{value: null, disabled: false}, [Validators.required]],
+      importePago: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
   aceptar(): void {
-    if (this.indice === 3) {
-      this.ref.close();
-      return;
-    }
-    this.indice++;
+    this.resumenSolicitud = this.valeParitariaForm.getRawValue();
+    this.pasoAgregarPago = this.RESUMEN_DE_PAGO;
   }
 
   cancelar(): void {
-    if (this.indice === 0) {
-      this.ref.close();
-      return;
-    }
-    this.indice--;
+    this.ref.close();
+  }
+
+  guardar(): void {
+
   }
 }
