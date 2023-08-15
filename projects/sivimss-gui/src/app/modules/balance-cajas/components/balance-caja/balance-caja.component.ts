@@ -129,13 +129,18 @@ export class BalanceCajaComponent implements OnInit {
   }
 
   paginar(): void {
-    const filtros = {
-      idNivel: this.filtroFormBalanceCaja.get("nivel")?.value,
-      idDelegacion: this.filtroFormBalanceCaja.get("delegacion")?.value,
-      idVelatorio: this.filtroFormBalanceCaja.get("velatorio")?.value,
-    }
-    this.balanceCaja = [];
-    this.totalElementos = 10;
+    this.cargadorService.activar();
+    this.balanceCajaService.buscarPorFiltros({}, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.balanceCaja = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   paginarConFiltros(): void {
@@ -214,7 +219,6 @@ export class BalanceCajaComponent implements OnInit {
       this.paginar();
     })
   }
-
 
   abrirModalCierre(): void {
     this.modificacionRef = this.dialogService.open(RealizarCierreComponent, {

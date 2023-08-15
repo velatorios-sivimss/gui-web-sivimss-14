@@ -11,14 +11,11 @@ import { AutenticacionService } from '../../../services/autenticacion.service';
 @Injectable()
 export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 23, "consultar-rec-pagos", "", "");
+    super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 69, "consultar-rec-pagos", "", "");
   }
 
   private readonly _folios: string = 'consultar-folios-rec-pagos';
-  private readonly _derechos: string = 'consultar-derechos-rec-pagos';
-  private readonly _tramites: string = 'consultar-tramites-rec-pagos';
-  private readonly _recibo_detalle: string = 'consultar-porId-rec-pagos';
-  private readonly _filtros: string = 'rec-pagos-filtros';
+  private readonly _filtros: string = 'consultar-balance-caja';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
