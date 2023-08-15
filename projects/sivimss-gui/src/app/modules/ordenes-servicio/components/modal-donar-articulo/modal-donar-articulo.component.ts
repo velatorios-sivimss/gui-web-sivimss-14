@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-modal-donar-articulo',
@@ -11,7 +13,9 @@ export class ModalDonarArticuloComponent implements OnInit {
   salida: any = {};
   constructor(
     private ref: DynamicDialogRef,
-    private config: DynamicDialogConfig
+    private config: DynamicDialogConfig,
+    private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {}
 
   ngOnInit(): void {
@@ -25,6 +29,10 @@ export class ModalDonarArticuloComponent implements OnInit {
   }
 
   donarAtaud(): void {
+    const msg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(114);
+    this.alertaService.mostrar(TipoAlerta.Exito,msg || "El ataúd ya fue registrado como donado exitosamente.");
+
+
     this.salida.esDonado = 1;
     this.salida.proviene = 'paquete';
     this.ref.close(this.salida);
