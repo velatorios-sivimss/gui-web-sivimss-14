@@ -21,9 +21,9 @@
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="importePago">Importe autorizado:<span
+          <label class="control-label" for="importe">Importe autorizado:<span
             class="req">*</span></label>
-          <p-inputNumber class="form-control" id="importePago" formControlName="importePago"
+          <p-inputNumber class="form-control" id="importe" formControlName="importe"
                          placeholder="Ingresa importe" [maxlength]="10"
                          [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
                          [locale]="'en-US'" [mode]="'currency'" currency="USD"
@@ -36,7 +36,7 @@
                             })">
           </p-inputNumber>
           <span class="campo-obligatorio"
-                *ngIf="pf?.importePago?.errors?.required && (pf?.importePago?.dirty || pf?.importePago?.touched)">Este campo es obligatorio *.</span>
+                *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
         </div>
@@ -59,20 +59,34 @@
       <div class="row table-panel-row">
         <div class="col-md-4">
           <div class="table-panel-column">
-            <label>Matrícula</label>
-            <span>DOC-000001</span>
+            <label>Tipo de Pago</label>
+            <span>Vale paritaria</span>
           </div>
         </div>
         <div class="col-md-4">
           <div class="table-panel-column">
-            <label>Delegación</label>
-            <span>Edo. México Poniente</span>
+            <label>Folio Vale Paritaria</label>
+            <span>{{resumenSolicitud.numAutorizacion}}</span>
           </div>
         </div>
         <div class="col-md-4">
           <div class="table-panel-column">
-            <label>Importe del préstamo</label>
-            <span>$ 30,000.00</span>
+            <label>Fecha folio vale paritaria</label>
+            <span>{{resumenSolicitud.fechaValeAGF | date:'dd-MM-YYYY'}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Importe autorizado</label>
+            <span>DOC-{{resumenSolicitud.importe | currency}}</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Total a pagar</label>
+            <span>{{total | currency}}</span>
           </div>
         </div>
       </div>
