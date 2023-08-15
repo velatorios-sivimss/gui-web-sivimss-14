@@ -3,175 +3,212 @@
   <div class="row mb-3">
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Fecha de pago</span>
-      <span class="texto-base">24-12-2021</span>
+      <span class="texto-base"> {{fechaActual | date:'dd/MM/YYYY'}} </span>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Folio Plan SFPA</span>
-      <span class="texto-base">DOC-000001</span>
+      <span class="texto-base">{{this.config.data.detallePago.numFolio}}</span>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Tipo de pago</span>
-      <span class="texto-base">Transferencia</span>
+      <span class="texto-base"> {{tipoDePago  }}</span>
     </div>
   </div>
   <div class="row">
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Número de pago</span>
-      <span class="texto-base">2/3</span>
+      <span class="texto-base">{{this.config.data.pagosRealizados.length + 1}} / {{this.config.data.detallePago.desNumeroPagos}}</span>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Total a cubrir</span>
-      <span class="texto-base">$50,000.00</span>
+      <span class="texto-base">{{this.config.data.detallePago.total | currency:"USD":"symbol"}}</span>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Monto mensual a cubrir</span>
-      <span class="texto-base">$5,000.00</span>
+      <span class="texto-base">{{mensalidades | currency:"USD":"symbol"}}</span>
     </div>
   </div>
 </div>
-<div class="row mb-3">
-  <div class="col-md-6">
-    <label class="control-label" for="metodoPago">Método de pago</label>
-    <p-dropdown appendTo="body" id="metodoPago" class="form-control"
-                [options]="[{id:1,label:'Tarjeta de débito'},{id:2,label:'Tarjeta de crédito'},{id:3,label:'Transferencia'},{id:4,label:'Depósito'}]"
-                placeholder="Selecciona método de pago">
-    </p-dropdown>
+<form [formGroup]="generarPagoForm">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="metodoPago">Método de pago</label>
+      <p-dropdown #dd id="metodoPago" class="form-control" [filter]="true" filterBy="label" appendTo="body"
+                  [options]="metodoPago" placeholder="Selecciona método de pago" (onChange)="cambioMetodoPago(dd)"
+      formControlName="metodoPago">
+      </p-dropdown>
+
+    </div>
+    <div class="col-md-6" *ngIf="validacion.nombreBanco">
+      <label class="control-label" for="nombreBanco">Nombre del banco:</label>
+      <input id="nombreBanco" class="form-control" placeholder="Ingresa el nombre del banco" maxlength="20"
+      formControlName="nombreBanco">
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6" *ngIf="validacion.numeroAutorizacion">
+      <label class="control-label" for="numeroAutorizacion">Número de autorización:</label>
+      <input id="numeroAutorizacion" class="form-control" alphanumericOnly maxlength="10"
+             placeholder="Ingresa el número de autorización" formControlName="numeroAutorizacion">
+
+    </div>
+    <div class="col-md-6" *ngIf="validacion.importe">
+      <label class="control-label" for="importe">Importe:</label>
+      <p-inputNumber id="importe" class="form-control" formControlName="importe" mode="decimal"
+                     [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="Ingresa el importe"
+                     [maxlength]="10" currency="USD" locale="en-US"></p-inputNumber>
+    </div>
+    <div class="col-md-6" *ngIf="validacion.totalPagar">
+      <label class="control-label" for="totalPagar">Total, a pagar:</label>
+      <input id="totalPagar" class="form-control" placeholder="Ingrese el total a pagar" formControlName="totalPagar">
+    </div>
 
   </div>
-  <div class="col-md-6">
-    <label class="control-label" for="nombreBanco">Nombre del banco:</label>
-    <input id="nombreBanco" class="form-control"
-           placeholder="Ingresa el nombre del banco">
+  <div class="row mb-3">
+    <div class="col-md-6" *ngIf="validacion.folioAutorizacion">
+      <label class="control-label" for="folioAutorizacion">Folio de autorización:</label>
+      <input id="folioAutorizacion" class="form-control" alphanumericOnly maxlength="20"
+             placeholder="Ingresa el folio de autorización" formControlName="folioAutorizacion">
+    </div>
+    <div class="col-md-6" *ngIf="validacion.fecha">
+      <label class="control-label" for="fecha">Fecha:</label>
+      <p-calendar styleClass="form-control" appendTo="body" id="fecha" formControlName="fecha" [showIcon]="true"
+                  dateFormat="dd/mm/yy" placeholder="Fecha"></p-calendar>
+    </div>
   </div>
-</div>
-<div class="row mb-3">
-  <div class="col-md-6">
-    <label class="control-label" for="numeroAutorizacion">Número de autorización</label>
-    <input id="numeroAutorizacion" class="form-control"
-           placeholder="Ingresa el no. de autorización">
+</form>
 
-  </div>
-  <div class="col-md-6">
-    <label class="control-label" for="importe">Importe:</label>
-    <input id="importe" class="form-control"
-           placeholder="Ingresa el importe">
-  </div>
-</div>
+<!--<ng-container *ngIf="true">-->
+<!--  <app-table-panel class="mb-6 block">-->
 
-<ng-container *ngIf="true">
-  <app-table-panel class="mb-6 block">
+<!--    <div class="row table-panel-row">-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Fecha de pago</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Folio Plan SFPA</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Tipo de pago</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Fecha de pago</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Folio Plan SFPA</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Tipo de pago</label>
-          <span></span>
-        </div>
-      </div>
-    </div>
+<!--    <div class="row table-panel-row">-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Número de pago</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Total a cubrir</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Monto mensual a cubrir</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Número de pago</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Total a cubrir</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Monto mensual a cubrir</label>
-          <span></span>
-        </div>
-      </div>
-    </div>
+<!--    <div class="row table-panel-row">-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Método de pago</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Folio de autorización</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Banco</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Método de pago</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Folio de autorización</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Banco</label>
-          <span></span>
-        </div>
-      </div>
-    </div>
+<!--    <div class="row table-panel-row">-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Método de pago</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Folio de autorización</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Banco</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Método de pago</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Folio de autorización</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Banco</label>
-          <span></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Fecha</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Importe</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Total pagado</label>
-          <span></span>
-        </div>
-      </div>
-    </div>
-  </app-table-panel>
-</ng-container>
+<!--    <div class="row table-panel-row">-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Fecha</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Importe</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="col-md-4">-->
+<!--        <div class="table-panel-column">-->
+<!--          <label>Total pagado</label>-->
+<!--          <span></span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </app-table-panel>-->
+<!--</ng-container>-->
 
 <div class="row mt-2">
   <div class="col-md-12 flex justify-content-end">
-    <button type="button" class="btn btn-default btn-md" (click)="cerrarModal()">Cancelar</button>
     <button type="button" class="btn btn-gold btn-md ml-3" (click)="cerrarModal()">Cancelar</button>
-    <button type="button" class="btn btn-primary btn-md ml-3" (click)="cerrarModal()">Registrar</button>
+    <button type="button" class="btn btn-primary btn-md ml-3" (click)="confirmacionGuardar = true">Registrar pago</button>
   </div>
 </div>
+
+<p-dialog [(visible)]="confirmacionGuardar" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-center">
+        ¿Estás seguro de registrar el pago?
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button type="button" class="btn btn-gold btn-md ml-3" (click)="confirmacionGuardar = false">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-md" (click)="guardarPago()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

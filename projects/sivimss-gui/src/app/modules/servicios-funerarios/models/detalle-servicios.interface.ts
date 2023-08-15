@@ -9,6 +9,8 @@ export interface DetalleServicios {
               velatorio: null | string,
             estatusPlan: null | string,
                   total: null | string,
+               restante: null | number,
+            totalPagado: null | number
 }
 
 export interface PagosRealizados {

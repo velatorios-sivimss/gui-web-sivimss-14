@@ -31,6 +31,11 @@ import {DetalleServicios, PagosRealizados} from "../../models/detalle-servicios.
 export class DetalleServiciosFunerariosComponent implements OnInit {
 
   @Input() servicioFunerario: ServiciosFunerariosInterface[] = [];
+  @ViewChild(OverlayPanel)
+  overlayPanelHeader!: OverlayPanel;
+
+  @ViewChild(OverlayPanel)
+  overlayPanelBody!: OverlayPanel;
 
   readonly POSICION_METODO_PAGO:number = 0;
 
@@ -38,16 +43,12 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   detalleSeleccionado: DetallePago = {};
   metodosPago!: TipoDropdown[];
 
-  @ViewChild(OverlayPanel)
-  overlayPanelHeader!: OverlayPanel;
-
-  @ViewChild(OverlayPanel)
-  overlayPanelBody!: OverlayPanel;
 
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  // totalPagado:number = 0;
 
   detalleServicio!: DetalleServicios;
   pagosRealizados!: PagosRealizados[];
@@ -88,7 +89,10 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
           estado:respuesta.datos.detallePlan.estado,
           idPlan:respuesta.datos.detallePlan.idPlan,
           total:respuesta.datos.detallePlan.total,
+          restante: respuesta.datos.detallePlan.restante ?? 0,
+          totalPagado: Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante ?? 0)
         }
+        // this.totalPagado = Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante)
         this.pagosRealizados = respuesta.datos.pagos || [];
       },
       error: (error: HttpErrorResponse) => {
@@ -152,12 +156,14 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         width: '100%'
       },
       data: {
-        dummy: '', //Pasa info
+        metodosPago: this.metodosPago,
+        detallePago: this.detalleServicio,
+        pagosRealizados: this.pagosRealizados
       },
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
-        //Obtener info cuando se cierre el modal
+        this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
       }
     });
   }

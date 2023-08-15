@@ -7,6 +7,7 @@ import {CalendarModule} from "primeng/calendar";
 import {DialogModule} from "primeng/dialog";
 import {DropdownModule} from "primeng/dropdown";
 import {DynamicDialogModule} from "primeng/dynamicdialog";
+import {InputNumberModule} from "primeng/inputnumber";
 import {InputSwitchModule} from "primeng/inputswitch";
 import {MultiSelectModule} from "primeng/multiselect";
 import {OverlayPanelModule} from "primeng/overlaypanel";
@@ -54,6 +55,7 @@ import {DetallePagoService} from "./services/detalle-pago.service";
     DynamicDialogModule,
     TituloPrincipalModule,
     TableModule,
+    InputNumberModule,
     InputSwitchModule,
     DialogModule,
     OverlayPanelModule,
@@ -66,7 +68,7 @@ import {DetallePagoService} from "./services/detalle-pago.service";
     RadioButtonModule,
     AccordionModule,
     UtileriaModule,
-    BtnRegresarModule
+    BtnRegresarModule,
   ],
   providers:[
     ServiciosFunerariosService,
