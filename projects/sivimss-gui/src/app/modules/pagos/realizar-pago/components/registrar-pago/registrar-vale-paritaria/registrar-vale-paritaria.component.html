@@ -7,12 +7,16 @@
             class="req">*</span></label>
           <input id="numAutorizacion" class="form-control" formControlName="numAutorizacion"
                  placeholder="Ingresar folio" [maxlength]="20">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.numAutorizacion?.errors?.required && (pf?.numAutorizacion?.dirty || pf?.numAutorizacion?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="fechaValeAGF">Fecha folio vale paritaria:<span class="req">*</span></label>
           <p-calendar id="fechaValeAGF" formControlName="fechaValeAGF" styleClass="form-control" [showIcon]="true"
                       placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
           </p-calendar>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.fechaValeAGF?.errors?.required && (pf?.fechaValeAGF?.dirty || pf?.fechaValeAGF?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
@@ -31,6 +35,8 @@
                                   : valeParitariaForm.value?.importe
                             })">
           </p-inputNumber>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.importePago?.errors?.required && (pf?.importePago?.dirty || pf?.importePago?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
         </div>
