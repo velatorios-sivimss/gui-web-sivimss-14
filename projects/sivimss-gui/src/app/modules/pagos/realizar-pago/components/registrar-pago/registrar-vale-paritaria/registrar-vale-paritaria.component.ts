@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
 interface DatosRegistro {
@@ -22,16 +21,20 @@ export class RegistrarValeParitariaComponent implements OnInit {
   pasoAgregarPago: number = 1;
 
   valeParitariaForm!: FormGroup;
-  indice: number = 0;
   resumenSolicitud!: any;
+
+  registroPago!: DatosRegistro;
+  total: number = 0;
 
   constructor(private formBuilder: FormBuilder,
               public config: DynamicDialogConfig,
               public ref: DynamicDialogRef,) {
-    this.inicializarValeForm();
   }
 
   ngOnInit(): void {
+    this.total = this.config.data.total;
+    this.registroPago = this.config.data.datosRegistro;
+    this.inicializarValeForm();
   }
 
   inicializarValeForm(): void {
