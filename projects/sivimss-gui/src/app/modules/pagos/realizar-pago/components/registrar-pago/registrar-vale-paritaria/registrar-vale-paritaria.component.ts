@@ -57,4 +57,8 @@ export class RegistrarValeParitariaComponent implements OnInit {
   guardar(): void {
 
   }
+
+  get pf() {
+    return this.valeParitariaForm?.controls
+  }
 }
