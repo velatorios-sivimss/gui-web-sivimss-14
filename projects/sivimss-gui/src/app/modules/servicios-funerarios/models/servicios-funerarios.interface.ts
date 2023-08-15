@@ -39,6 +39,30 @@ export interface DetallePago {
   monto?: number;
 }
 
+export interface ConsultaPaginado {
+                   ESTADO: string | null,
+        ESTATUS_PLAN_SFPA: string | null,
+             ID_PLAN_SFPA: number | null,
+                  TITULAR: string | null,
+      NUM_FOLIO_PLAN_SFPA: string | null,
+              NUMERO_PAGO: string | null,
+                  PAQUETE: string | null,
+       CORREO_ELECTRONICO: string | null,
+  ESTATUS_PAGO_ANTICIPADO: string | null,
+}
+
+export interface GenerarReporte{
+        idVelatorio: string | null,
+   numFolioPlanSfpa: string | null,
+                rfc: string | null,
+               curp: string | null,
+     nombreAfiliado: string | null,
+  idEstatusPlanSfpa: string | null,
+        fechaInicio: string | null,
+           fechaFin: string | null,
+        tipoReporte: string | null,
+}
+
 export interface AgregarPlanSFPA {
              idTipoContratacion: number | null,
                       idPaquete: number | null,
