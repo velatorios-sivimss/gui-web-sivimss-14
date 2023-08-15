@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -14,16 +14,16 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FiltrosBalanceCaja} from "../../models/filtros-balance-caja.interface";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import * as moment from "moment/moment";
-import { CATALOGOS_DUMMIES, CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
-import { ModificarPagoComponent } from '../modificar-pago/modificar-pago.component';
-import { RealizarCierreComponent } from '../realizar-cierre/realizar-cierre.component';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {ModificarPagoComponent} from '../modificar-pago/modificar-pago.component';
+import {RealizarCierreComponent} from '../realizar-cierre/realizar-cierre.component';
+import {TIPO_CONVENIOS} from "../../constants/convenios";
+import {TIPO_PAGO} from "../../constants/tipos-pago";
 
 type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
 
@@ -38,6 +38,9 @@ export class BalanceCajaComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
+
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
@@ -50,7 +53,9 @@ export class BalanceCajaComponent implements OnInit {
   catalogoNiveles: TipoDropdown[] = [];
   catatalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
+  tipoConvenio: TipoDropdown[] = TIPO_CONVENIOS;
+  opciones: TipoDropdown[] = TIPO_PAGO;
+
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
   ventanaConfirmacion: boolean = false;
@@ -58,6 +63,7 @@ export class BalanceCajaComponent implements OnInit {
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+  convenioSeleccionado: number = 1;
 
   constructor(
     private route: ActivatedRoute,
@@ -79,7 +85,7 @@ export class BalanceCajaComponent implements OnInit {
     this.cargarCatalogos();
   }
 
-  private cargarCatalogos(): void {
+  cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
@@ -88,7 +94,7 @@ export class BalanceCajaComponent implements OnInit {
 
   abrirDetalleComision(balanceCajaSeleccionado: ListadoBalanceCaja): void {
     this.balanceCajaSeleccionado = balanceCajaSeleccionado;
-    this.router.navigate([`comisiones/detalle-comision/${balanceCajaSeleccionado.id}`]).then(() => { }).catch(() => { });
+    void this.router.navigate([`comisiones/detalle-comision/${balanceCajaSeleccionado.id}`]);
   }
 
   abrirPanel(event: MouseEvent, balanceCajaSeleccionado: BalanceCaja): void {
@@ -128,36 +134,8 @@ export class BalanceCajaComponent implements OnInit {
       idDelegacion: this.filtroFormBalanceCaja.get("delegacion")?.value,
       idVelatorio: this.filtroFormBalanceCaja.get("velatorio")?.value,
     }
-    this.balanceCaja = [ 
-      {
-        fecha: 1,
-        delegacion: '000001',
-        velatorio: 'TASASL12107034Y',
-        folio: 'Jorge',
-        tipoIngreso: 'Sanchez',
-        metodo: 'Prado',
-        estatus: 'Abierto',
-      },
-      {
-        fecha: 2,
-        delegacion: '000002',
-        velatorio: 'TASASL12107034Y',
-        folio: 'Edwin',
-        tipoIngreso: 'Ruiz',
-        metodo: 'Cardenas',
-        estatus: 'Abierto',
-      },
-      {
-        fecha: 3,
-        delegacion: '000003',
-        velatorio: 'TASASL12107034Y',
-        folio: 'Nataly',
-        tipoIngreso: 'Sanchez',
-        metodo: 'Hernandez',
-        estatus: 'Abierto',
-      },
-    ];
-    this.totalElementos=10;
+    this.balanceCaja = [];
+    this.totalElementos = 10;
   }
 
   paginarConFiltros(): void {
@@ -200,9 +178,14 @@ export class BalanceCajaComponent implements OnInit {
   limpiar(): void {
     this.filtroFormBalanceCaja.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroFormBalanceCaja.get('nivel')?.patchValue(+usuario.idOficina);
-    this.filtroFormBalanceCaja.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroFormBalanceCaja.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    if (this.filtroFormBalanceCaja) {
+      const formularioDefault = {
+        nivel: +usuario?.idOficina,
+        delegacion: usuario?.idDelegacion,
+        velatorio: usuario?.idVelatorio
+      }
+      this.filtroFormDir.resetForm(formularioDefault);
+    }
     this.obtenerVelatorios();
     this.paginar();
   }
@@ -224,7 +207,7 @@ export class BalanceCajaComponent implements OnInit {
     this.modificacionRef = this.dialogService.open(ModificarPagoComponent, {
       header: 'Modificar pago',
       width: '920px',
-      data: { valeSeleccionado: this.balanceCajaSeleccionado },
+      data: {valeSeleccionado: this.balanceCajaSeleccionado},
     });
 
     this.modificacionRef.onClose.subscribe(() => {
@@ -232,12 +215,12 @@ export class BalanceCajaComponent implements OnInit {
     })
   }
 
-  
+
   abrirModalCierre(): void {
     this.modificacionRef = this.dialogService.open(RealizarCierreComponent, {
       header: 'Cierre',
       width: '920px',
-      data: { valeSeleccionado: this.balanceCajaSeleccionado },
+      data: {valeSeleccionado: this.balanceCajaSeleccionado},
     });
 
     this.modificacionRef.onClose.subscribe(() => {
@@ -245,7 +228,7 @@ export class BalanceCajaComponent implements OnInit {
     })
   }
 
-  aceptar(){
+  aceptar() {
   }
 
   cerrar(): void {

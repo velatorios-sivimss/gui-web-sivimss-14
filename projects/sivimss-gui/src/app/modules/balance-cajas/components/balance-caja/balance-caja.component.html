@@ -1,124 +1,147 @@
-<app-titulo-principal titulo="Realizar balance de cajas"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal titulo="Realizar balance de cajas" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
-    <form [formGroup]="filtroFormBalanceCaja" (ngSubmit)="buscar()">
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label class="control-label" for="nivel">Nivel:</label>
-                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles" placeholder="Selecciona el nivel">
-                </p-dropdown>
-            </div>
-            <div class="col-md-4">
-                <label class="control-label" for="delegacion">Delegación*:</label>
-                <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
-                </p-dropdown>
-            </div>
-            <div class="col-md-4">
-                <label class="control-label" for="velatorio">Velatorio*:</label>
-                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true">
-                </p-dropdown>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="folioODS">Folio de la orden de servicio (ODS)*:</label>
-                <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="opciones" placeholder="Ingresa folio" [filter]="true">
-                </p-dropdown>
-            </div>
-            <div class="col-md-6">
-                <label class="control-label" for="folioNuevo">Folio nuevo convenio prevision funeraria</label>
-                <p-dropdown id="folioNuevo" class="form-control" formControlName="folioNuevo" [options]="opciones" placeholder="Ingresa folio" [filter]="true">
-                </p-dropdown>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria (PRCPF):</label>
-                <p-dropdown id="folioRenovacion" class="form-control" formControlName="folioRenovacion" [options]="opciones" placeholder="Ingresa folio" [filter]="true">
-                </p-dropdown>
-            </div>
-            <div class="col-md-3">
-                <label class="control-label" for="fecha">Fecha</label>
-                <p-dropdown id="fecha" class="form-control" formControlName="fecha" [options]="opciones" placeholder="Ingresa método de pago" [filter]="true">
-                </p-dropdown>
-            </div>
-            <div class="col-md-3">
-                <label class="control-label" for="metodo">Fecha:</label>
-                <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy" [minDate]="filtroFormBalanceCaja.get('metodo')?.value" [maxDate]="fechaActual">
-                </p-calendar>
-            </div>
-
-        </div>
-        <div class="row mt-6">
-            <div class="col-md-12 flex justify-content-end">
-                <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-                <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
-            </div>
-        </div>
-    </form>
+  <form [formGroup]="filtroFormBalanceCaja" (ngSubmit)="buscar()" (reset)="limpiar()">
+    <div class="grid mb-3">
+      <div class="col-4">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+                    placeholder="Selecciona el nivel">
+        </p-dropdown>
+      </div>
+      <div class="col-4">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones"
+                    placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
+        </p-dropdown>
+      </div>
+      <div class="col-4">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+                    placeholder="Selecciona el velatorio" [filter]="true">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="grid mb-3">
+      <div class="col-4 mb-3 mt-grid">
+        <label class="control-label" for="tipoConvenio">Tipo de convenios:</label>
+        <p-dropdown id="tipoConvenio" class="form-control" [(ngModel)]="convenioSeleccionado" [options]="tipoConvenio"
+                    placeholder="Selecciona tipo de convenio" [filter]="true" [ngModelOptions]="{ standalone: true }">
+        </p-dropdown>
+      </div>
+      <div class="col-4 mb-3 mt-grid" *ngIf="[1,2].includes(convenioSeleccionado)">
+        <label class="control-label" for="folioODS">Folio de la orden de Servicio (ODS):</label>
+        <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="opciones"
+                    placeholder="Ingresa folio" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-4 mb-3" *ngIf="[1,3].includes(convenioSeleccionado)">
+        <label class="control-label" for="folioNuevo">Folio del Nuevo convenio de previsión funeraria (PNCPF): </label>
+        <p-dropdown id="folioNuevo" class="form-control" formControlName="folioNuevo" [options]="opciones"
+                    placeholder="Ingresa folio" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-4 mb-3" *ngIf="[1,4].includes(convenioSeleccionado)">
+        <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria
+          (PRCPF):</label>
+        <p-dropdown id="folioRenovacion" class="form-control" formControlName="folioRenovacion" [options]="opciones"
+                    placeholder="Ingresa folio" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-4 mt-grid mb-3">
+        <label class="control-label" for="metodo">Método de pago:</label>
+        <p-dropdown id="metodo" class="form-control" formControlName="fecha" [options]="opciones"
+                    placeholder="Ingresa método de pago" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-4 mt-grid mb-3">
+        <label class="control-label" for="fecha">Fecha:</label>
+        <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
+                    placeholder="Selecciona la fecha" dateFormat="dd/mm/yy"
+                    [minDate]="filtroFormBalanceCaja.get('metodo')?.value" [maxDate]="fechaActual">
+        </p-calendar>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroFormBalanceCaja.pristine">Limpiar
+        </button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+      </div>
+    </div>
+  </form>
 </div>
 
 <section class="mt-5">
-    <div class="flex justify-content-between align-items-center">
-        <h2 class="subtitulo">Pagos</h2>
-        <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button>
-    </div>
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Campos de Reporte</h2>
+    <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button>
+  </div>
 
-    <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
+  <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0"
+           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+           [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
 
-        <ng-template pTemplate="header">
-            <tr>
-                <th id="columna_generar_recibo_fecha">Fecha</th>
-                <th id="columna_generar_recibo_folio">Delegacion</th>
-                <th id="columna_generar_recibo_estatus_ods">Velatorio</th>
-                <th id="columna_generar_recibo_estatus_ods">Folio</th>
-                <th id="columna_generar_recibo_estatus_ods">Tipo de ingreso</th>
-                <th id="columna_generar_recibo_estatus_pago">Metodo Pago</th>
-                <th id="columna_generar_recibo_botones">Estatus caja</th>
-                <th></th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-balance>
-            <tr>
-                <td>{{balance.fecha}}</td>
-                <td>{{balance.delegacion}} </td>
-                <td>{{balance.velatorio}} </td>
-                <td>{{balance.folio}}</td>
-                <td>{{balance.tipoIngreso}}</td>
-                <td>{{balance.metodo}}</td>
-                <td>{{balance.estatus}}</td>
-                <td>
-                    <div class="contenedor-celda-iconos">
-                        <a (click)="abrirDetalleComision(balance)">
-                            <img src="assets/images/imagen-icono-ver.svg" alt="Ver">
-                        </a>
-                        <a (click)="abrirPanel($event,balance)">
-                            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <th colspan="5" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
-                    No se encontró información relacionada a tu búsqueda
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorleft">
-            <div class="paginator-template">
-                <span class="total-elements"> {{balanceCaja.length}} de {{totalElementos}} </span>
-            </div>
-        </ng-template>
-        <ng-template pTemplate="paginatorright">
-        </ng-template>
-    </p-table>
+    <ng-template pTemplate="header">
+      <tr>
+        <th id="columna_balance_caja_fecha">Fecha</th>
+        <th id="columna_balance_caja_delegacion">Delegacion</th>
+        <th id="columna_balance_caja_velatorio">Velatorio</th>
+        <th id="columna_balance_caja_folio">Folio</th>
+        <th id="columna_balance_caja_tipo_ingreso">Tipo de ingreso</th>
+        <th id="columna_balance_caja_estatus_pago">Estatus de pago</th>
+        <th id="columna_balance_caja_metodo_pago">Método de pago</th>
+        <th id="columna_balance_caja_importe">Importe</th>
+        <th id="columna_balance_caja_ingreso_neto">Ingreso neto</th>
+        <th id="columna_balance_caja_estatus_caja">Estatus caja</th>
+        <th id="columna_balance_caja_fecha_cierre">Fecha y hora de cierre</th>
+        <th id="columna_balance_caja_estatus"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-balance>
+      <tr>
+        <td>{{balance.fecha}}</td>
+        <td>{{balance.delegacion}} </td>
+        <td>{{balance.velatorio}} </td>
+        <td>{{balance.folio}}</td>
+        <td>{{balance.tipoIngreso}}</td>
+        <td>{{balance.metodo}}</td>
+        <td>{{balance.estatus}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirDetalleComision(balance)">
+              <img src="assets/images/imagen-icono-ver.svg" alt="Ver">
+            </a>
+            <a (click)="abrirPanel($event,balance)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="12" class="p-2 text-center font-bold text-xl" id="balance_caja_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements"> {{balanceCaja.length}} de {{totalElementos}} </span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+    </ng-template>
+  </p-table>
 </section>
 
 <p-overlayPanel #overlayPanel>
-    <ng-template pTemplate="content">
-        <app-overlay-panel-opciones>
-            <app-overlay-panel-opcion titulo="Modificar pago" (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
-        </app-overlay-panel-opciones>
-    </ng-template>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Modificar pago" (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
 </p-overlayPanel>

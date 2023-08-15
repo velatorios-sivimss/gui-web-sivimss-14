@@ -23,6 +23,7 @@ import { CalculoComisionesoRoutingModule } from './balance-caja.routing.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 import { ModificarPagoComponent } from './components/modificar-pago/modificar-pago.component';
 import { RealizarCierreComponent } from './components/realizar-cierre/realizar-cierre.component';
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -30,26 +31,27 @@ import { RealizarCierreComponent } from './components/realizar-cierre/realizar-c
     ModificarPagoComponent,
     RealizarCierreComponent
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    CalculoComisionesoRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    AutoCompleteModule,
-    ValidaRolModule
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        CalculoComisionesoRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        AutoCompleteModule,
+        ValidaRolModule,
+        BtnRegresarModule
+    ],
   providers: [BalanceCajaService]
 })
 export class BalanceCajaModule {
