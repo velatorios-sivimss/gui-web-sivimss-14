@@ -105,6 +105,7 @@ export class ModificarContratantesComponent implements OnInit {
       idEstado: [{ value: contratante.idEstado, disabled: false }, []],
       idPais: [{ value: contratante.idPais, disabled: false }, []],
       telefono: [{ value: contratante.telefono, disabled: false }, [Validators.maxLength(10)]],
+      segundoTel: [{ value: contratante.segundoTel, disabled: false }, [Validators.maxLength(10)]],
       correo: [{ value: contratante.correo, disabled: false }, [Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}')]]
     });
     if (this.dgf.nacionalidad.value === 1) {
@@ -260,6 +261,7 @@ export class ModificarContratantesComponent implements OnInit {
       idPais: this.contratanteModificado.idPais,
       idLugarNac: this.contratanteModificado.idEstado,
       tel: this.contratanteModificado.telefono,
+      segundoTel: this.contratanteModificado.segundoTel,
       correo: this.contratanteModificado.correo,
       calle: this.contratanteModificado.calle,
       numInt: this.contratanteModificado.numInt,
