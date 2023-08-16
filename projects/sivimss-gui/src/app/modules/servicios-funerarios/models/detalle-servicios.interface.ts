@@ -14,6 +14,7 @@ export interface DetalleServicios {
 }
 
 export interface PagosRealizados {
+        idMetodoPago:  null | string,
                pagos:  null | string,
            fechaPago:  null | string,
           metodoPago:  null | string,

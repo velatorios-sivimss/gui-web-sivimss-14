@@ -19,6 +19,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {DetalleServicios, PagosRealizados} from "../../models/detalle-servicios.interface";
+import {ModalModificarPagosComponent} from "../modal-modificar-pagos/modal-modificar-pagos.component";
 
 @Component({
   selector: 'app-detalle-servicios-funerarios',
@@ -31,6 +32,7 @@ import {DetalleServicios, PagosRealizados} from "../../models/detalle-servicios.
 export class DetalleServiciosFunerariosComponent implements OnInit {
 
   @Input() servicioFunerario: ServiciosFunerariosInterface[] = [];
+
   @ViewChild(OverlayPanel)
   overlayPanelHeader!: OverlayPanel;
 
@@ -40,7 +42,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   readonly POSICION_METODO_PAGO:number = 0;
 
   detallePago: DetallePago[] = [];
-  detalleSeleccionado: DetallePago = {};
+  detalleSeleccionado!: PagosRealizados;
   metodosPago!: TipoDropdown[];
 
 
@@ -144,7 +146,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     this.overlayPanelHeader.toggle(event);
   }
 
-  abrirPanelBody(event: MouseEvent, detalleSeleccionado: DetallePago): void {
+  abrirPanelBody(event: MouseEvent, detalleSeleccionado: PagosRealizados): void {
+    this.detalleSeleccionado = detalleSeleccionado;
     this.overlayPanelBody.toggle(event);
   }
 
@@ -168,6 +171,26 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     });
   }
 
+  abrirModalModificarPago(): void {
+    const ref = this.dialogService.open(ModalModificarPagosComponent, {
+      header: 'Modificar pago',
+      style: {
+        maxWidth: '876px',
+        width: '100%'
+      },
+      data: {
+        metodosPago: this.metodosPago,
+        detallePago: this.detalleServicio,
+        detalleRegistro: this.detalleSeleccionado
+      },
+    });
+    ref.onClose.subscribe((val: boolean) => {
+      if (val) {
+        //Obtener info cuando se cierre el modal
+      }
+    });
+  }
+
   abrirModalEliminarPago(): void {
     const ref = this.dialogService.open(ModalEliminarPagoComponent, {
       header: 'Eliminar pago',
@@ -176,12 +199,13 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         width: '100%'
       },
       data: {
-        dummy: '', //Pasa info
+        detalleRegistro: this.detalleSeleccionado
       },
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
-        //Obtener info cuando se cierre el modal
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(193);
+        this.alertaService.mostrar(TipoAlerta.Exito,msg)
       }
     });
   }

@@ -32,4 +32,14 @@ export class DetallePagoService extends BaseService<HttpRespuesta<any>, any>{
     return this._http.post<HttpRespuesta<any>>(this._base +
       `${this._funcionalidad}/pago-anticipado-registrar-pago`, pago)
   }
+
+  modificarPago(pago:RegistrarPago): Observable<HttpRespuesta<any>> {
+    return this._http.put<HttpRespuesta<any>>(this._base +
+      `${this._funcionalidad}/pago-anticipado-modificar-pago`, pago)
+  }
+
+  desactivarPago(idPlanBitacora: number): Observable<HttpRespuesta<any>> {
+    return this._http.put<HttpRespuesta<any>>(this._base +  `${this._funcionalidad}/pago-anticipado-desactivar-pago`,
+      {idPlanBitacora:idPlanBitacora})
+  }
 }
