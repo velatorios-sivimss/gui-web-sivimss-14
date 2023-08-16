@@ -1,16 +1,27 @@
-<app-titulo-principal titulo="Servicios funerarios pago anticipado sfpa"></app-titulo-principal>
+<div class="flex">
+  <app-btn-regresar class="mr-2" style="
+      z-index: 300;
+      border: solid 2px;
+      height: 38px;
+      width: 47px;
+      padding-left: 6px;
+      border-radius: 5px;" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal style="width: 100%" titulo="Servicios funerarios pago anticipado sfpa"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-4">
-        <label class="control-label" for="estatus">Nivel:</label>
+        <label class="control-label" for="nivel">Nivel:</label>
         <p-dropdown id="nivel" class="form-control" formControlName="nivel"
                     placeholder="Selecciona el nivel" [options]="nivel"></p-dropdown>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="estatus">Delegación:</label>
-        <p-dropdown id="nivel" class="form-control" formControlName="nivel"
-                    placeholder="Selecciona el nivel" [options]="nivel"></p-dropdown>
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion"
+                    placeholder="Selecciona la delegación" [options]="delegacion" (onChange)="consultarVelatorios()">
+
+        </p-dropdown>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="velatorio">Velatorio:</label>
@@ -22,15 +33,17 @@
       <div class="col-md-3">
         <label class="control-label" for="folioPlanSFPA">Folio Plan SFPA:</label>
         <input id="folioPlanSFPA" class="form-control" formControlName="folioPlanSFPA"
-               placeholder="Ingresa folio plan SFPA">
+               maxlength="12" alphanumericOnly placeholder="Ingresa folio plan SFPA">
       </div>
       <div class="col-md-3">
         <label class="control-label" for="rfc">RFC:</label>
-        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC">
+        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC"
+        maxlength="13" alphanumericOnly>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="curp">CURP:</label>
-        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP">
+        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
+               maxlength="18" alphanumericOnly>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="estatus">Estatus del Plan SFPA:</label>
@@ -40,25 +53,28 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="afiliado">Titular:</label>
-        <input id="afiliado" class="form-control" formControlName="afiliado" placeholder="Ingresa el afiliado">
+        <label class="control-label" for="afiliado">Afiliado:</label>
+        <input id="afiliado" class="form-control" formControlName="afiliado"
+               placeholder="Ingresa el afiliado" alphanumericOnly maxlength="50">
       </div>
       <div class="col-md-3">
-        <label class="control-label" for="rangoInicio">Fecha de inicio:</label>
+        <label class="control-label" for="rangoInicio">Fecha inicio:</label>
         <p-calendar id="rangoInicio" styleClass="form-control" formControlName="rangoInicio" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha inicio"></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Ingresa fecha inicio" [maxDate]="fechaActual"
+                    (onSelect)="validarMismaFechaInicioFin()"></p-calendar>
       </div>
       <div class="col-md-3">
-        <label class="control-label" for="rangoInicio">Fecha de fin:</label>
+        <label class="control-label" for="rangoInicio">Fecha fin:</label>
         <p-calendar id="rangoFin" styleClass="form-control" formControlName="rangoFin" [showIcon]="true"
+                    (onSelect)="validarMismaFechaInicioFin()" [maxDate]="fechaActual"
                     dateFormat="dd/mm/yy" placeholder="Ingresa fecha fin"></p-calendar>
       </div>
     </div>
   </form>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md">Limpiar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+      <button type="submit" class="btn btn-default btn-md" (click)="limpiar()" >Limpiar Filtros</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
     </div>
   </div>
 </div>
@@ -66,46 +82,41 @@
 <section class="my-6">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Planes SFPA</h2>
-    <button type="button" class="btn btn-primary btn-lg" routerLink="registrar-nuevo-plan-sfpa">Registrar nuevo plan
+    <button type="button" class="btn btn-primary btn-lg" routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan
       SFPA
     </button>
   </div>
 
-  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="servicioFunerario"
-           [paginator]="servicioFunerario.length > 0"
-           [rows]="cantElementosPorPagina"
+  <p-table styleClass="mt-5 mb-8" [value]="servicioFunerario"
+           [paginator]="servicioFunerario.length > 0" [rows]="cantElementosPorPagina"
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="paginar($event)">
+           (onLazyLoad)="paginar($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
 
     <ng-template pTemplate="header">
       <tr>
-        <th scope="col">Folio Plan SFPA</th>
-        <th scope="col">Afiliado</th>
-        <th scope="col">Estado</th>
-        <th scope="col">Correo electrónico</th>
-        <th scope="col">Paquete</th>
-        <th scope="col">Número de pagos</th>
-        <th scope="col">Estatus de Plan SFPA PA</th>
-        <th scope="col">Estatus pago</th>
-        <th scope="col">Estatus</th>
+        <th pResizableColumn scope="col">Folio Plan SFPA</th>
+        <th pResizableColumn scope="col">Afiliado</th>
+        <th pResizableColumn scope="col">Estado</th>
+        <th pResizableColumn scope="col">Correo electrónico</th>
+        <th pResizableColumn scope="col">Paquete</th>
+        <th pResizableColumn scope="col">Número de pagos</th>
+        <th pResizableColumn scope="col">Estatus de Plan SFPA PA</th>
+        <th pResizableColumn scope="col">Estatus pago</th>
+        <th pResizableColumn scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-servicioFunerario>
       <tr>
-        <td> {{servicioFunerario.folioPlanSFPA}} </td>
-        <td> {{servicioFunerario.nombre}} {{servicioFunerario.primerApellido}} {{servicioFunerario.segundoApellido}} </td>
-        <td> {{servicioFunerario.estado}} </td>
-        <td> {{servicioFunerario.correoElectronico}} </td>
-        <td> {{servicioFunerario.paquete}} </td>
-        <td> {{servicioFunerario.numeroPago}} </td>
-        <td> {{servicioFunerario.estatusPlan}} </td>
-        <td> {{servicioFunerario.estatusPago}} </td>
+        <td> {{servicioFunerario.NUM_FOLIO_PLAN_SFPA}} </td>
+        <td> {{servicioFunerario.TITULAR}}</td>
+        <td> {{servicioFunerario.ESTADO}} </td>
+        <td> {{servicioFunerario.CORREO_ELECTRONICO}} </td>
+        <td> {{servicioFunerario.PAQUETE}} </td>
+        <td> {{servicioFunerario.NUMERO_PAGO}} </td>
+        <td> {{servicioFunerario.ESTATUS_PLAN_SFPA}} </td>
+        <td> {{servicioFunerario.ESTATUS_PAGO_ANTICIPADO}} </td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
-            <div class="contenedor-inputswitch">
-              <span class="activo" *ngIf="servicioFunerario.estatus">Activo</span>
-              <span class="inactivo" *ngIf="!servicioFunerario.estatus">Inactivo</span>
-            </div>
             <div class="contenedor-celda-iconos">
               <a>
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
@@ -120,6 +131,13 @@
         </td>
       </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="8" class="p-2 text-center font-bold text-xl" id="servicios_funerarios_sin_resultados">
+          No se encontró información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
         <span class="total-elements">{{servicioFunerario.length}} de {{totalElementos}}</span>
@@ -130,8 +148,9 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg"
+            <img class="icon-export-table" (click)="exportarArchivo('pdf')"  src="assets/images/imagen-icono-pdf.svg"
+                 alt="exportar pdf">
+            <img class="icon-export-table" (click)="exportarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
                  alt="exportar excel">
           </div>
         </div>
@@ -142,13 +161,43 @@
   <p-overlayPanel #overlayPanel>
     <ng-template pTemplate="content">
       <app-overlay-panel-opciones>
+        <app-overlay-panel-opcion (click)="verContrato()" titulo="Ver contrato"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion (click)="detallePago()" titulo="Detalle pago"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion (click)="modificarPago()" titulo="Modificar"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion (click)="cancelarPago()" titulo="Cancelar"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion titulo="Ver contrato"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion (click)="modificarPago()" titulo="Modificar Plan"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="!servicioSeleccionado.ESTATUS_PLAN_SFPA?.includes('CANCELADO')"
+                                  (click)="mostrarModalCancelarPlan = true" titulo="Cancelar Plan"></app-overlay-panel-opcion>
       </app-overlay-panel-opciones>
     </ng-template>
   </p-overlayPanel>
-
-
 </section>
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="" >
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="mostrarModalCancelarPlan" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="" >
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">¿Estás seguro de cancelar este Plan de Servicios Funerarios Pago Anticipado?</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-gold btn-md" (click)="mostrarModalCancelarPlan = false">Cancelar</button>
+      <button class="btn btn-primary btn-md" (click)="cancelarPago()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

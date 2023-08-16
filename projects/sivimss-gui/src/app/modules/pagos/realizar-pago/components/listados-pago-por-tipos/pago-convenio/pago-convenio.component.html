@@ -1,5 +1,5 @@
 <app-titulo-principal titulo="Pago de Nuevos Convenios de Previsión Funeraria"></app-titulo-principal>
-<p-table styleClass="mt-5 mb-8" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
+<p-table styleClass="mt-5 mb-6" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
          [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
          (onLazyLoad)="seleccionarPaginacion($event)">
   <ng-template pTemplate="header">

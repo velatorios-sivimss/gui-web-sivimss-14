@@ -1077,6 +1077,34 @@ export class CaracteristicasPresupuestoComponent
     });
   }
 
+  validarSeleccionPaquete(): void {
+    let banderaPresupuesto = false;
+    let banderaPaquete = false;
+    if(this.f.observaciones.value && this.f.notasServicio.value){
+      if (this.tipoOrden == 1 || this.tipoOrden == 2) {
+        this.datosPresupuesto.forEach(function (datos) {
+          if (datos.proviene.includes('paquete')) {
+            banderaPaquete = true;
+          }
+        });
+        if(!banderaPaquete){
+          this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+        }
+        return
+      }
+      if (this.tipoOrden == 3) {
+        this.datosPresupuesto.forEach(function (datos) {
+          if (datos.proviene.includes('presupuesto')) {
+            banderaPresupuesto = true;
+          }
+        });
+        if(!banderaPresupuesto){
+          this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+        }
+      }
+    }
+  }
+
   validacionFormulario(): boolean {
     let banderaPaquete = false;
     let banderaPresupuesto = false;
