@@ -38,9 +38,9 @@ export class ModalEliminarPagoComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Info, errorMsg || 'El servicio no responde, no permite más llamadas.')
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.')
       }
-    })
+    });
   }
 
   cerrarModal(respuesta: boolean) {

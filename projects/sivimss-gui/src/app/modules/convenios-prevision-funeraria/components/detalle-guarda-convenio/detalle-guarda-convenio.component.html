@@ -4,130 +4,130 @@
     <div class="row m-4 table-panel-row">
       <div class="row mb-3">
         <div class="col-md-3">
-          <span>Tipo de contratación:</span><br/>
+          <span class="etiqueta-base">Tipo de contratación:</span><br/>
           <label> Por persona </label>
         </div>
         <div class="col-md-3" *ngIf="objetoDetallePersona.rfcCurp">
-          <span>RFC o CURP:</span><br/>
-          <label> {{objetoDetallePersona.rfcCurp}} </label>
+          <span class="etiqueta-base">RFC o CURP:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.rfcCurp}} </label>
         </div>
         <div class="col-md-3" *ngIf="descripcionPromotor[0]?.label">
-          <span>Promotor:</span><br/>
-          <label> {{descripcionPromotor[0].label }} </label>
+          <span class="etiqueta-base">Promotor:</span><br/>
+          <label class="texto-base"> {{descripcionPromotor[0].label }} </label>
         </div>
       </div>
 
       <h2 class="subtitulo">Datos personales</h2>
       <div class="row mb-3">
         <div class="col-md-3">
-          <span>CURP:</span><br/>
-          <label> {{objetoDetallePersona.persona?.curp}} </label>
+          <span class="etiqueta-base">CURP:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.curp}} </label>
         </div>
         <div class="col-md-3" *ngIf="objetoDetallePersona.persona?.rfc">
-          <span>R.F.C:</span><br/>
-          <label> {{objetoDetallePersona.persona?.rfc}} </label>
+          <span class="etiqueta-base">R.F.C:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.rfc}} </label>
         </div>
         <div class="col-md-3" *ngIf="this.objetoDetallePersona.matricula">
-          <span>Matrícula:</span><br/>
-          <label> {{objetoDetallePersona.persona?.matricula}} </label>
+          <span class="etiqueta-base">Matrícula:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.matricula}} </label>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-3">
-          <span>Nombre (s):</span><br/>
-          <label> {{objetoDetallePersona.persona?.nombre}} </label>
+          <span class="etiqueta-base">Nombre (s):</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.nombre}} </label>
         </div>
         <div class="col-md-3">
-          <span>Primer apellido:</span><br/>
-          <label> {{objetoDetallePersona.persona?.primerApellido}} </label>
+          <span class="etiqueta-base">Primer apellido:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.primerApellido}} </label>
         </div>
         <div class="col-md-3">
-          <span>Segundo apellido:</span><br/>
-          <label> {{objetoDetallePersona.persona?.segundoApellido}} </label>
+          <span class="etiqueta-base">Segundo apellido:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.segundoApellido}} </label>
         </div>
       </div>
 
 <!--      <div class="row mb-3">-->
 <!--        <div class="col-md-3">-->
-<!--          <span>Sexo:</span><br/>-->
-<!--          <label> {{objetoDetallePersona.sexo == 1 ? "Mujer" : fp.sexo.value == 2 ? "Hombre" : "Otro"     }} </label>-->
+<!--          < class="etiqueta-base"span>Sexo:</span><br/>-->
+<!--          <labe class="texto-base"l> {{objetoDetallePersona.sexo == 1 ? "Mujer" : fp.sexo.value == 2 ? "Hombre" : "Otro"     }} </label>-->
 <!--        </div>-->
 
 <!--        <div class="col-md-3" *ngIf="fp.sexo.value === 3">-->
-<!--          <span>Otro:</span><br/>-->
-<!--          <label> {{objetoDetallePersona.otroSexo}} </label>-->
+<!--          < class="etiqueta-base"span>Otro:</span><br/>-->
+<!--          <labe class="texto-base"l> {{objetoDetallePersona.otroSexo}} </label>-->
 <!--        </div>-->
 
 <!--        <div class="col-md-3">-->
-<!--          <span>Fecha de nacimiento:</span><br/>-->
-<!--          <label> {{objetoDetallePersona.fechaNacimiento | date: 'dd/MM/YYYY'}} </label>-->
+<!--          < class="etiqueta-base"span>Fecha de nacimiento:</span><br/>-->
+<!--          <labe class="texto-base"l> {{objetoDetallePersona.fechaNacimiento | date: 'dd/MM/YYYY'}} </label>-->
 <!--        </div>-->
 
 <!--        <div class="col-md-3">-->
-<!--          <span>Entidad Federativa:</span><br/>-->
-<!--          <label> {{objetoDetallePersona.detalleEntidadFederativa[0].label}} </label>-->
+<!--          < class="etiqueta-base"span>Entidad Federativa:</span><br/>-->
+<!--          <labe class="texto-base"l> {{objetoDetallePersona.detalleEntidadFederativa[0].label}} </label>-->
 <!--        </div>-->
 <!--      </div>-->
 
       <div class="row mb-3">
         <div class="col-md-3">
-          <span>Correo electrónico:</span><br/>
-          <label> {{objetoDetallePersona.persona?.correoElectronico}} </label>
+          <span class="etiqueta-base">Correo electrónico:</span><br/>
+          <label clas class="texto-base"s="texto-base"> {{objetoDetallePersona.persona?.correoElectronico}} </label>
         </div>
         <div class="col-md-3">
-          <span>Teléfono:</span><br/>
-          <label> {{objetoDetallePersona.persona?.telefono}} </label>
+          <span class="etiqueta-base">Teléfono:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.telefono}} </label>
         </div>
       </div>
       <h2 class="subtitulo">Dirección</h2>
       <div class="row">
         <div class="col-md-3">
-          <span>Calle:</span><br/>
-          <label> {{objetoDetallePersona.persona?.calle}} </label>
+          <span class="etiqueta-base">Calle:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.calle}} </label>
         </div>
         <div class="col-md-3">
-          <span>Número exterior:</span><br/>
-          <label> {{objetoDetallePersona.persona?.numeroExterior}} </label>
+          <span class="etiqueta-base">Número exterior:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.numeroExterior}} </label>
         </div>
         <div class="col-md-3">
-          <span>Número interior:</span><br/>
-          <label> {{objetoDetallePersona.persona?.numeroInterior}} </label>
+          <span class="etiqueta-base">Número interior:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.numeroInterior}} </label>
         </div>
         <div class="col-md-3">
-          <span>C.P.:</span><br/>
-          <label> {{objetoDetallePersona.persona?.cp}} </label>
-        </div>
-      </div>
-      <div class="row mb-4">
-        <div class="col-md-3">
-          <span>Asentamiento / Colonia:</span><br/>
-          <label> {{objetoDetallePersona.persona?.colonia}} </label>
-        </div>
-        <div class="col-md-3">
-          <span>Municipio:</span><br/>
-          <label> {{objetoDetallePersona.persona?.municipio}} </label>
-        </div>
-        <div class="col-md-3">
-          <span>Estado:</span><br/>
-          <label> {{objetoDetallePersona.persona?.estado}} </label>
-        </div>
-        <div class="col-md-3">
-          <span>País:</span><br/>
-          <label> {{descripcionPais[0].label}} </label>
+          <span class="etiqueta-base">C.P.:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.cp}} </label>
         </div>
       </div>
       <div class="row mb-4">
         <div class="col-md-3">
-          <span>Tipo de paquete:</span><br/>
-          <label> {{detalleTipoPaquete[0].label}} </label>
+          <span class="etiqueta-base">Asentamiento / Colonia:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.colonia}} </label>
         </div>
         <div class="col-md-3">
-          <span>Enfermedad preexistente:</span><br/>
-          <label> {{detalleEnfermedad[0].label}} </label>
+          <span class="etiqueta-base">Municipio:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.municipio}} </label>
+        </div>
+        <div class="col-md-3">
+          <span class="etiqueta-base">Estado:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.estado}} </label>
+        </div>
+        <div class="col-md-3">
+          <span class="etiqueta-base">País:</span><br/>
+          <label class="texto-base"> {{descripcionPais[0].label}} </label>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <span class="etiqueta-base">Tipo de paquete:</span><br/>
+          <label class="texto-base"> {{detalleTipoPaquete[0].label}} </label>
+        </div>
+        <div class="col-md-3">
+          <span class="etiqueta-base">Enfermedad preexistente:</span><br/>
+          <label class="texto-base"> {{detalleEnfermedad[0].label}} </label>
         </div>
         <div class="col-md-3" *ngIf="objetoDetallePersona.persona?.enfermedadPreexistente == 4">
-          <span>Otro:</span><br/>
-          <label> {{objetoDetallePersona.persona?.otraEnfermedad}} </label>
+          <span class="etiqueta-base">Otro:</span><br/>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.otraEnfermedad}} </label>
         </div>
       </div>
   </div>
@@ -179,49 +179,49 @@
       <div class="row mx-4 table-panel-row">
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>Número de convenio anterior:</span><br/>
-            <label> {{objetoDetalleEmpresa.numeroConvenio}} </label>
+            <span class="etiqueta-base">Número de convenio anterior:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.numeroConvenio}} </label>
           </div>
           <div class="col-md-3">
-            <span>Tipo de contratación:</span><br/>
+            <span class="etiqueta-base">Tipo de contratación:</span><br/>
             <label>Por Grupo o por Empresa</label>
           </div>
           <div class="col-md-3">
-            <span>RFC o CURP:</span><br/>
-            <label> {{objetoDetalleEmpresa.rfcCurp}} </label>
+            <span class="etiqueta-base">RFC o CURP:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.rfcCurp}} </label>
           </div>
           <div class="col-md-3" *ngIf="descripcionPromotor[0].label">
-            <span>Promotor:</span><br/>
-            <label> {{descripcionPromotor[0].label }} </label>
+            <span class="etiqueta-base">Promotor:</span><br/>
+            <label class="texto-base"> {{descripcionPromotor[0].label }} </label>
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>Nombre:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.nombreEmpresa}} </label>
+            <span class="etiqueta-base">Nombre:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.nombreEmpresa}} </label>
           </div>
           <div class="col-md-3">
-            <span>Razón social:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.razonSocial}} </label>
+            <span class="etiqueta-base">Razón social:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.razonSocial}} </label>
           </div>
           <div class="col-md-3">
-            <span>RFC:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.rfc}} </label>
+            <span class="etiqueta-base">RFC:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.rfc}} </label>
           </div>
         </div>
         <h2 class="subtitulo">Dirección</h2>
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>País:</span><br/>
-            <label> {{descripcionPais[0].label}} </label>
+            <span class="etiqueta-base">País:</span><br/>
+            <label class="texto-base"> {{descripcionPais[0].label}} </label>
           </div>
           <div class="col-md-3">
-            <span>CP:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.cp}} </label>
+            <span class="etiqueta-base">CP:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.cp}} </label>
           </div>
           <div class="col-md-3">
-            <span>Estado:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.estado}} </label>
+            <span class="etiqueta-base">Estado:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.estado}} </label>
           </div>
           <div class="col-md-3">
             <span>Municipio:</span> <br/>
@@ -231,31 +231,31 @@
 
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>Asentamiento / Colonia:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.colonia}} </label>
+            <span class="etiqueta-base">Asentamiento / Colonia:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.colonia}} </label>
           </div>
           <div class="col-md-3">
-            <span>Calle:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.calle}} </label>
+            <span class="etiqueta-base">Calle:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.calle}} </label>
           </div>
           <div class="col-md-3">
-            <span>Número exterior:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.numeroExterior}} </label>
+            <span class="etiqueta-base">Número exterior:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.numeroExterior}} </label>
           </div>
           <div class="col-md-3">
-            <span>Número interior:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.numeroInterior}} </label>
+            <span class="etiqueta-base">Número interior:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.numeroInterior}} </label>
           </div>
         </div>
         <h2 class="subtitulo">Contacto</h2>
         <div class="row">
           <div class="col-md-3">
-            <span>Correo electrónico:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.correoElectronico}} </label>
+            <span class="etiqueta-base">Correo electrónico:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.correoElectronico}} </label>
           </div>
           <div class="col-md-3">
-            <span>Teléfono:</span><br/>
-            <label> {{objetoDetalleEmpresa.empresa.telefono}} </label>
+            <span class="etiqueta-base">Teléfono:</span><br/>
+            <label class="texto-base"> {{objetoDetalleEmpresa.empresa.telefono}} </label>
           </div>
         </div>
       </div>
