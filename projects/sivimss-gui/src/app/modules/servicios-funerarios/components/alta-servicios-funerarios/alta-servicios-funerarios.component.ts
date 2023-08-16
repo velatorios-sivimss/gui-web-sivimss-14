@@ -473,10 +473,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
           if (respuesta) {
             formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
             formularios[posicion].municipio.setValue(
-              respuesta.datos[0].localidad.municipio.nombre
+              respuesta.datos[0].municipio.nombre
             );
             formularios[posicion].estado.setValue(
-              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+              respuesta.datos[0].municipio.entidadFederativa.nombre
             );
             return;
           }
@@ -579,7 +579,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         this.router.navigate(['../servicios-funerarios']);
       },
       error:(error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
       }
     }
     )

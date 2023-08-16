@@ -6,8 +6,8 @@ export interface SolicitudCrearPago {
   importePago: number,
   numAutorizacion: number,
   descBanco: string,
-  fechaPago: string,
-  fechaValeAGF: null,
+  fechaPago: string | null,
+  fechaValeAGF: string | null,
   importeRegistro: number
 }
 

@@ -91,6 +91,8 @@ export class ModalAgregarServicioComponent
   costoExtraKilometros:number = 0;
   serviciosPaquete!: any[];
   heightMap = "0px"
+  servicioTraslado: boolean = false;
+  confirmarAgregarTraslado: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -212,9 +214,11 @@ export class ModalAgregarServicioComponent
     let tipoServicio = dd.selectedOption.label.toUpperCase()
     this.nombreServicio = dd.selectedOption.label;
     this.idServicio = dd.selectedOption.value;
-
     this.consultarKilometraje = false;
+    this.servicioTraslado = false;
+
     if(tipoServicio.includes("TRASLADO")){
+      this.servicioTraslado = true;
       this.ocultarMapa = false;
       // servicio: [{ value: null, disabled: false }, validacionServicio],
       // proveedor: [{ value: null, disabled: false }, [Validators.required]],
@@ -524,6 +528,14 @@ export class ModalAgregarServicioComponent
       kilometrosExtra = Number(distanciaKm) - this.kilometrosPermitidos
       this.costoExtraKilometros = kilometrosExtra * this.costoPorKilometraje;
     }
+  }
+
+  validarOrigenAgregar(): void {
+    if(this.proviene.includes('traslados') || this.servicioTraslado){
+      this.confirmarAgregarTraslado = true;
+      return
+    }
+    this.aceptarModal();
   }
 
   llenarMapaPrevio(datosPrevios:any):void {

@@ -1,5 +1,5 @@
 <app-titulo-principal titulo="Pago de Renovación de Convenios de Previsión Funeraria"></app-titulo-principal>
-<p-table styleClass="mt-5 mb-8" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
+<p-table styleClass="mt-5 mb-6" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
          [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
          (onLazyLoad)="seleccionarPaginacion($event)">
   <ng-template pTemplate="header">
@@ -45,7 +45,7 @@
   <ng-template pTemplate="paginatorright">
   </ng-template>
 </p-table>
-<div class="flex mt-4 justify-content-end">
+<div class="flex mt-4 mb-4 justify-content-end">
   <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./..'">
     Regresar
   </button>

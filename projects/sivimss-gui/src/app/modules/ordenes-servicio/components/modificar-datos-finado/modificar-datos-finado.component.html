@@ -102,7 +102,7 @@
         <div class="col-md-4">
           <label class="control-label" for="nss">NSS<span class="req"
               *ngIf="datosFinado.nssCheck.value">*</span>:</label>
-          <input id="nss" type="text" class="form-control" (change)="cambiarValidacionNSS()" formControlName="nss"
+          <input id="nss" type="text" class="form-control" (blur)="consultarNSS()" (change)="cambiarValidacionNSS()" formControlName="nss"
             placeholder="Ingresa nss" maxlength="11">
           <p-checkbox inputId="nssotorgamiento" formControlName="nssCheck" styleClass="mr-3"
             (click)="cambiarValidacionNSS()" [binary]="true"></p-checkbox>
