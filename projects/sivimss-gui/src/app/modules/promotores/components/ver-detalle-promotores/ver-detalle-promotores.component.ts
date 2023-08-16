@@ -4,7 +4,7 @@ import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { Accion } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { Promotor } from '../../models/promotores.interface';
+import { Promotor, PromotorDetalle } from '../../models/promotores.interface';
 
 @Component({
   selector: 'app-ver-detalle-promotores',
@@ -17,7 +17,7 @@ export class VerDetallePromotoresComponent implements OnInit {
   readonly MENSAJE_PROMOTOR_ACTIVADO = 'Promotor activado correctamente';
   readonly MENSAJE_PROMOTOR_DESACTIVADO = 'Promotor desactivado correctamente';
 
-  promotorSeleccionado!: Promotor;
+  promotorSeleccionado!: PromotorDetalle;
   preguntaConfirmacion: string = '';
   mensajeConfirmacion: string = '';
   Accion = Accion;
@@ -61,7 +61,7 @@ export class VerDetallePromotoresComponent implements OnInit {
     }
   }
 
-  cerrarDialogo(promotor?: Promotor) {
+  cerrarDialogo(promotor?: PromotorDetalle) {
     this.ref.close({
       respuesta: 'Ok',
       promotor,
@@ -70,7 +70,7 @@ export class VerDetallePromotoresComponent implements OnInit {
 
   // Para activar o desactivar
   cambiarEstatusPromotor() {
-    const nuevoPromotor: Promotor = {
+    const nuevoPromotor: PromotorDetalle = {
       ...this.promotorSeleccionado,
       estatus: !this.promotorSeleccionado.estatus,
     }
@@ -80,7 +80,7 @@ export class VerDetallePromotoresComponent implements OnInit {
   }
 
   agregarPromotor() {
-    const nuevoPromotor: Promotor = { ...this.promotorSeleccionado }
+    const nuevoPromotor: PromotorDetalle = { ...this.promotorSeleccionado }
     // TO DO Integrar servicio de back para Guardar
     this.cerrarDialogo(nuevoPromotor);
     this.alertaService.mostrar(TipoAlerta.Exito, this.mensajeConfirmacion);

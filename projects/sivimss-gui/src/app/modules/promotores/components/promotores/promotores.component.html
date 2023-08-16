@@ -4,38 +4,37 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
-        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="opciones"
-          placeholder="Selecciona el nivel">
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+          placeholder="Selecciona el nivel" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
-        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="opciones"
-          placeholder="Selecciona la delegación">
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+          placeholder="Selecciona la delegación" (onChange)="cargarVelatorios()" [filter]="true">
         </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="opciones"
-          placeholder="Selecciona el velatorio">
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nombrePromotor">Promotor:</label>
         <p-autoComplete id="nombrePromotor" class="form-control" formControlName="nombrePromotor"
-          [showEmptyMessage]="true" [suggestions]="promotoresServicioFiltrados" (completeMethod)="filtrarPromotores($event)"
-          [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa el nombre del promotor" field="label"
-          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"
-          >
+          [showEmptyMessage]="true" [suggestions]="promotoresServicioFiltrados" [style]="{'width':'100%'}"
+          [minLength]="3" class="p-autocomplete" placeholder="Ingresa el nombre del promotor" field="label"
+          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
         </p-autoComplete>
       </div>
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" (click)="limpiarFormBusqueda();">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscarPromotor();">Buscar</button>
+        <button type="button" class="btn btn-default btn-md" (click)="limpiarFormBusqueda();">Limpiar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscarPromotor();">Buscar</button>
       </div>
     </div>
   </form>
@@ -50,30 +49,47 @@
     [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>No. de empleado</th>
-        <th>CURP</th>
-        <th>Nombre</th>
-        <th>Primer apellido</th>
-        <th>Segundo apellido</th>
-        <th>Fecha de nacimiento</th>
-        <th>Estatus</th>
-        <th></th>
+        <th id="idPromotor">ID</th>
+        <th id="numEmpleado">Número de empleado</th>
+        <th id="curp">CURP</th>
+        <th id="nombre">Nombre</th>
+        <th id="primerApellido">Primer apellido</th>
+        <th id="segundoApellido">Segundo apellido</th>
+        <th id="fecNac">Fecha de nacimiento</th>
+        <th id="fecIngreso">Fecha ingreso</th>
+        <th id="fecBaja">Fecha de baja</th>
+        <th id="sueldoBase">Sueldo base</th>
+        <th id="velatorio">Velatorio</th>
+        <th id="diasDescanso">Días de descanso</th>
+        <th id="fecNac">Antigüedad</th>
+        <th id="correo">Correo eletrónico</th>
+        <th id="puesto">Puesto</th>
+        <th id="categoria">Categoría</th>
+        <th id="estatus">Estatus</th>
+        <th id="acciones"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-promotor>
       <tr>
-        <td>{{promotor.id}}</td>
+        <td>{{promotor.idPromotor}}</td>
         <td>{{promotor.numEmpleado}}</td>
         <td>{{promotor.curp}}</td>
         <td>{{promotor.nombre}}</td>
         <td>{{promotor.primerApellido}}</td>
         <td>{{promotor.segundoApellido}}</td>
-        <td>{{promotor.fechaNacimiento}}</td>
+        <td>{{promotor.fecNac}}</td>
+        <td>{{promotor.fecIngreso}}</td>
+        <td>{{promotor.fecBaja}}</td>
+        <td>{{promotor.sueldoBase}}</td>
+        <td>{{promotor.velatorio}}</td>
+        <td>{{promotor.diasDescanso}}</td>
+        <td>{{promotor.antiguedad}}</td>
+        <td>{{promotor.correo}}</td>
+        <td>{{promotor.puesto}}</td>
+        <td>{{promotor.categoria}}</td>
         <td>
           <div class="contenedor-inputswitch">
-            <p-inputSwitch
-              [(ngModel)]="promotor.estatus"
+            <p-inputSwitch [(ngModel)]="promotor.estatus"
               (click)="promotor.estatus = !promotor.estatus; cambiarEstatus(promotor);">
             </p-inputSwitch>
             <span class="activo" *ngIf="promotor.estatus">Activo</span>
@@ -82,9 +98,6 @@
         </td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetallePromotor(promotor)">
-              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-            </a>
             <a (click)="abrirPanel($event,promotor)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
@@ -98,15 +111,6 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
-        <div class="export-table">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
-          </div>
-        </div>
-      </div>
     </ng-template>
   </p-table>
 </section>

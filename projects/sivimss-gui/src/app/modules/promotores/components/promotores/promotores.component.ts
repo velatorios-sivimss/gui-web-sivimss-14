@@ -5,12 +5,20 @@ import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/al
 import { OverlayPanel } from "primeng/overlaypanel";
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DIEZ_ELEMENTOS_POR_PAGINA, Accion } from "../../../../utils/constantes";
-import { Promotor } from "../../models/promotores.interface";
+import { BuscarPromotores, Promotor, PromotoresBusqueda } from "../../models/promotores.interface";
 import { LazyLoadEvent } from "primeng/api";
 import { ActivatedRoute, Router } from '@angular/router';
 import { VerDetallePromotoresComponent } from '../ver-detalle-promotores/ver-detalle-promotores.component';
 import { AgregarPromotoresComponent } from '../agregar-promotores/agregar-promotores.component';
 import { ModificarPromotoresComponent } from '../modificar-promotores/modificar-promotores.component';
+import { PROMOTORES_BREADCRUMB } from '../../constants/breadcrumb';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { PromotoresService } from '../../services/promotores.service';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 
 interface HttpResponse {
   respuesta: string;
@@ -23,28 +31,19 @@ interface HttpResponse {
   providers: [DialogService]
 })
 export class PromotoresComponent implements OnInit {
+  readonly POSICION_CATALOGOS_NIVELES: number = 0;
+  readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  numPaginaActual: number = 0;
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
-  totalElementos: number = 0;
-
-  opciones: any[] = [
-    {
-      label: 'Opción 1',
-      value: 0,
-    },
-    {
-      label: 'Opción 2',
-      value: 1,
-    },
-    {
-      label: 'Opción 3',
-      value: 2,
-    }
-  ];
+  public numPaginaActual: number = 0;
+  public cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
+  public totalElementos: number = 0;
+  public catalogoNiveles: TipoDropdown[] = [];
+  public catalogoDelegaciones: TipoDropdown[] = [];
+  public catalogoVelatorios: TipoDropdown[] = [];
+  public catalogoPlacas: TipoDropdown[] = [];
 
   promotoresServicio: any[] = [
     {
@@ -61,127 +60,116 @@ export class PromotoresComponent implements OnInit {
     }
   ];
 
-  promotores: Promotor[] = [];
+  promotores: PromotoresBusqueda[] = [];
   promotorSeleccionado!: Promotor;
   detalleRef!: DynamicDialogRef;
   filtroForm!: FormGroup;
-  agregarPromotorForm!: FormGroup;
-  modificarPromotorForm!: FormGroup;
   promotoresServicioFiltrados: any[] = [];
 
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
     private alertaService: AlertaService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private promotoresService: PromotoresService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
   }
 
   ngOnInit(): void {
-    this.breadcrumbService.actualizar([
-      {
-        icono: 'imagen-icono-operacion-sivimss.svg',
-        titulo: 'Administración de catálogos'
-      },
-      {
-        icono: '',
-        titulo: 'Promotores'
-      }
-    ]);
+    this.breadcrumbService.actualizar(PROMOTORES_BREADCRUMB);
     this.inicializarFiltroForm();
-  }
-
-
-  paginar(event: LazyLoadEvent): void {
-    setTimeout(() => {
-      this.promotores = [
-        {
-          id: 1,
-          numEmpleado: '11',
-          curp: 'ALBI05041980',
-          nombre: 'Alberto',
-          primerApellido: 'Lima',
-          segundoApellido: 'Dorantes',
-          fechaNacimiento: '05/04/1980',
-          fechaIngreso: '01/30/2000',
-          sueldoBase: '$10,000.00',
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          categoria: '$3,000',
-          antiguedad: '22 años',
-          correo: 'jimetez@imss.gob.mx',
-          puesto: 'Promotor',
-          diasDescanso: '13/03/2023',
-          nombrePromotor: 'Promotor siniestro de previsión funeraria con cremación',
-          descripcion: 'Promotor todo incluido con cremación servicios completos',
-          estatus: true,
-        },
-        {
-          id: 2,
-          numEmpleado: '11',
-          curp: 'ALBI05041980',
-          nombre: 'Alberto',
-          primerApellido: 'Lima',
-          segundoApellido: 'Dorantes',
-          fechaNacimiento: '05/04/1980',
-          fechaIngreso: '01/30/2000',
-          sueldoBase: '$10,000.00',
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          categoria: '$3,000',
-          antiguedad: '22 años',
-          correo: 'jimetez@imss.gob.mx',
-          puesto: 'Promotor',
-          diasDescanso: '13/03/2023',
-          nombrePromotor: 'Promotor siniestro de previsión funeraria con cremación',
-          descripcion: 'Promotor todo incluido con cremación servicios completos',
-          estatus: true,
-        },
-        {
-          id: 3,
-          numEmpleado: '11',
-          curp: 'ALBI05041980',
-          nombre: 'Alberto',
-          primerApellido: 'Lima',
-          segundoApellido: 'Dorantes',
-          fechaNacimiento: '05/04/1980',
-          fechaIngreso: '01/30/2000',
-          sueldoBase: '$10,000.00',
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          categoria: '$3,000',
-          antiguedad: '22 años',
-          correo: 'jimetez@imss.gob.mx',
-          puesto: 'Promotor',
-          diasDescanso: '13/03/2023',
-          nombrePromotor: 'Promotor siniestro de previsión funeraria con cremación',
-          descripcion: 'Promotor todo incluido con cremación servicios completos',
-          estatus: true,
-        }
-      ];
-      this.totalElementos = this.promotores.length;
-    }, 0);
+    this.cargarCatalogos();
+    this.cargarVelatorios(true);
   }
 
   inicializarFiltroForm() {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: null, disabled: false }],
-      delegacion: [{ value: null, disabled: false }],
-      velatorio: [{ value: null, disabled: false }],
+      nivel: [{ value: +usuario.idOficina, disabled: true }],
+      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
       nombrePromotor: [{ value: null, disabled: false }],
     });
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
+  }
+
+  cargarVelatorios(cargaInicial: boolean = false): void {
+    if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.filtroForm.get('velatorio')?.patchValue("");
+    }
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.promotoresService.obtenerVelatorios(idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
+
+  paginar(event?: LazyLoadEvent): void {
+    if (event?.first !== undefined && event.rows !== undefined) {
+      this.numPaginaActual = Math.floor(event.first / event.rows);
+    } else {
+      this.numPaginaActual = 0;
+    }
+    this.buscarPorFiltros(false);
+  }
+
+  paginarPorFiltros(): void {
+    this.numPaginaActual = 0;
+    this.buscarPorFiltros(true);
+  }
+
+  buscarPorFiltros(esFiltro: boolean): void {
+    this.promotoresService.buscarPorFiltros(this.datosPromotoresFiltros(esFiltro), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos) {
+          this.promotores = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        } else {
+          this.promotores = [];
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    });
+  }
+
+  datosPromotoresFiltros(esFiltro: boolean): BuscarPromotores {
+    let nomPromotor: string | null = null;
+    if (esFiltro) {
+      if (typeof this.ff.nombrePromotor?.value === 'object') {
+        nomPromotor = this.ff.nombrePromotor?.value?.label;
+      } else {
+        nomPromotor = this.ff.nombrePromotor.getRawValue() === '' ? null : this.ff.nombrePromotor.getRawValue();
+      }
+    }
+    return {
+      idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
+      idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+      nomPromotor,
+    }
   }
 
   abrirModalAgregarPromotor(): void {
     this.detalleRef = this.dialogService.open(AgregarPromotoresComponent, {
       header: "Agregar promotor",
-      width: "920px"
-    });
-  }
-
-  abrirModalDetallePromotor(promotor: Promotor) {
-    this.detalleRef = this.dialogService.open(VerDetallePromotoresComponent, {
-      data: { promotor, modo: Accion.Detalle },
-      header: "Ver detalle",
       width: "920px"
     });
   }
@@ -228,38 +216,16 @@ export class PromotoresComponent implements OnInit {
       header: "Ver detalle",
       width: "920px"
     });
-    this.detalleRef.onClose.subscribe((res: HttpResponse) => {
-      if (res && res.respuesta === 'Ok' && res.promotor) {
-        const foundIndex = this.promotores.findIndex((item: Promotor) => item.id === promotor.id);
-        this.promotores[foundIndex] = res.promotor;
-      }
-    });
+    // this.detalleRef.onClose.subscribe((res: HttpResponse) => {
+    //   if (res && res.respuesta === 'Ok' && res.promotor) {
+    //     const foundIndex = this.promotores.findIndex((item: Promotor) => item.id === promotor.id);
+    //     this.promotores[foundIndex] = res.promotor;
+    //   }
+    // });
   }
 
-  filtrarPromotores(event: any) {
-    // TO DO En una aplicación real, realice una solicitud a una URL remota con la consulta y devuelva los resultados filtrados
-    let filtrado: any[] = [];
-    let query = event.query;
-    for (let i = 0; i < this.promotoresServicio.length; i++) {
-      let promotor = this.promotoresServicio[i];
-      if (promotor.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtrado.push(promotor);
-      }
-    }
-
-    this.promotoresServicioFiltrados = filtrado;
-  }
-
-  get f() {
+  get ff() {
     return this.filtroForm.controls;
-  }
-
-  get fac() {
-    return this.agregarPromotorForm.controls;
-  }
-
-  get fmc() {
-    return this.modificarPromotorForm.controls;
   }
 
 }
