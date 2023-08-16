@@ -6,7 +6,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {RegistrarTipoPagoComponent} from "../../registrar-pago/registrar-tipo-pago/registrar-tipo-pago.component";
 import {RegistrarAgfComponent} from "../../registrar-pago/registrar-agf/registrar-agf.component";
-import {RegistrarValeParitariaComponent} from "../../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
+import {
+  RegistrarValeParitariaComponent
+} from "../../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
 import {RealizarPagoService} from "../../../services/realizar-pago.service";
 import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
@@ -104,6 +106,7 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   registrarPago(): void {
+    console.log(this.pagoSeleccionado);
     this.pagoODSModal = !this.pagoODSModal;
   }
 

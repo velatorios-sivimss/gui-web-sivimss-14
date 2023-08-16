@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {CATALOGOS_DUMMIES} from '../../constants/dummies';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
@@ -36,6 +36,9 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -200,21 +203,20 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   limpiar(): void {
-    this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
+    this.filtroFormDir.resetForm({nivel: +usuario?.idOficina});
     this.obtenerVelatorios();
     this.paginar();
   }
 
 
   obtenerFoliosGenerados(): void {
-    const idDelegacion= this.filtroForm.get('delegacion')?.value;
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
     const idVelatorio = this.filtroForm.get('velatorio')?.value;
     this.foliosGenerados = [];
-    this.contratantesGenerados  = [];
+    this.contratantesGenerados = [];
     if (!idVelatorio) return;
-    this.generarFormatoService.obtenerFoliosODS(idDelegacion,idVelatorio).subscribe({
+    this.generarFormatoService.obtenerFoliosODS(idDelegacion, idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.foliosGenerados = mapearArregloTipoDropdown(respuesta.datos, "nombre", "id");
       },
