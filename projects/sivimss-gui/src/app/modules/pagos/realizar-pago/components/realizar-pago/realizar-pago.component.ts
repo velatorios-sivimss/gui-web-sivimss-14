@@ -115,7 +115,7 @@ export class RealizarPagoComponent implements OnInit {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: +usuario?.idOficina, disabled: true}],
-      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario?.idRol === 3}],
+      velatorio: [{value: usuario?.idVelatorio, disabled: +usuario?.idRol === 3}],
       folioOrden: [{value: null, disabled: false}, []],
       folioConvenio: [{value: null, disabled: false}, []],
       folioRenovacion: [{value: null, disabled: false}, []],
