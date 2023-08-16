@@ -22,6 +22,7 @@ import { RenovacionExtemporaneaComponent } from 'projects/sivimss-gui/src/app/mo
 import { HabilitarRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/habilitar-renovacion/habilitar-renovacion.component';
 import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 //as
 @NgModule({
@@ -48,6 +49,7 @@ import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
     AccordionModule,
     UtileriaModule,
     ValidaRolModule,
+    ConfirmDialogModule,
   ],
   providers: [RenovacionExtemporaneaService]
 })
