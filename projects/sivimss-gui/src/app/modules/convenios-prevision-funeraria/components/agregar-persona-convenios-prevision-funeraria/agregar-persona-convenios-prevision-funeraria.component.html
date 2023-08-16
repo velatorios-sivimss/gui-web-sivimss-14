@@ -298,113 +298,113 @@
         <h2 class="subtitulo">Datos personales</h2>
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>CURP:</span><br/>
-            <label> {{fp.curp.value}} </label>
+            <span class="etiqueta-base">CURP:</span><br/>
+            <label class="texto-base"> {{fp.curp.value}} </label>
           </div>
           <div class="col-md-3" *ngIf="fp.rfc.value">
-            <span>R.F.C:</span><br/>
-            <label> {{fp.rfc.value}} </label>
+            <span class="etiqueta-base">R.F.C:</span><br/>
+            <label class="texto-base"> {{fp.rfc.value}} </label>
           </div>
           <div class="col-md-3" *ngIf="this.fp.matricula.value">
-            <span>Matrícula:</span><br/>
-            <label> {{fp.matricula.value}} </label>
+            <span class="etiqueta-base">Matrícula:</span><br/>
+            <label class="texto-base"> {{fp.matricula.value}} </label>
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>Nombre (s):</span><br/>
-            <label> {{fp.nombre.value}} </label>
+            <span class="etiqueta-base">Nombre (s):</span><br/>
+            <label class="texto-base"> {{fp.nombre.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>Primer apellido:</span><br/>
-            <label> {{fp.primerApellido.value}} </label>
+            <span class="etiqueta-base">Primer apellido:</span><br/>
+            <label class="texto-base"> {{fp.primerApellido.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>Segundo apellido:</span><br/>
-            <label> {{fp.segundoApellido.value}} </label>
+            <span class="etiqueta-base">Segundo apellido:</span><br/>
+            <label class="texto-base"> {{fp.segundoApellido.value}} </label>
           </div>
         </div>
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>Sexo:</span><br/>
-            <label> {{fp.sexo.value == 1 ? "Mujer" : fp.sexo.value == 2 ? "Hombre" : "Otro"     }} </label>
+            <span class="etiqueta-base">Sexo:</span><br/>
+            <label class="texto-base"> {{fp.sexo.value == 1 ? "Mujer" : fp.sexo.value == 2 ? "Hombre" : "Otro"     }} </label>
           </div>
 
           <div class="col-md-3" *ngIf="fp.sexo.value === 3">
-            <span>Otro:</span><br/>
-            <label> {{fp.otroSexo.value}} </label>
+            <span class="etiqueta-base">Otro:</span><br/>
+            <label class="texto-base"> {{fp.otroSexo.value}} </label>
           </div>
 
           <div class="col-md-3">
-            <span>Fecha de nacimiento:</span><br/>
-            <label> {{fp.fechaNacimiento.value | date: 'dd/MM/YYYY'}} </label>
+            <span class="etiqueta-base">Fecha de nacimiento:</span><br/>
+            <label class="texto-base"> {{fp.fechaNacimiento.value | date: 'dd/MM/YYYY'}} </label>
           </div>
 
           <div class="col-md-3">
-            <span>Entidad Federativa:</span><br/>
-            <label> {{detalleEntidadFederativa[0].label}} </label>
+            <span class="etiqueta-base">Entidad Federativa:</span><br/>
+            <label class="texto-base"> {{detalleEntidadFederativa[0].label}} </label>
           </div>
         </div>
 
         <div class="row mb-3">
           <div class="col-md-3">
-            <span>Correo electrónico:</span><br/>
-            <label> {{fp.correoElectronico.value}} </label>
+            <span class="etiqueta-base">Correo electrónico:</span><br/>
+            <label class="texto-base"> {{fp.correoElectronico.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>Teléfono:</span><br/>
-            <label> {{fp.telefono.value}} </label>
+            <span class="etiqueta-base">Teléfono:</span><br/>
+            <label class="texto-base"> {{fp.telefono.value}} </label>
           </div>
         </div>
         <h2 class="subtitulo">Dirección</h2>
         <div class="row">
           <div class="col-md-3">
-            <span>Calle:</span><br/>
-            <label> {{fp.calle.value}} </label>
+            <span class="etiqueta-base">Calle:</span><br/>
+            <label class="texto-base"> {{fp.calle.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>Número exterior:</span><br/>
-            <label> {{fp.noExterior.value}} </label>
+            <span class="etiqueta-base">Número exterior:</span><br/>
+            <label class="texto-base"> {{fp.noExterior.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>Número interior:</span><br/>
-            <label> {{fp.noInterior.value}} </label>
+            <span class="etiqueta-base">Número interior:</span><br/>
+            <label class="texto-base"> {{fp.noInterior.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>C.P.:</span><br/>
-            <label> {{fp.cp.value}} </label>
-          </div>
-        </div>
-        <div class="row mb-4">
-          <div class="col-md-3">
-            <span>Asentamiento / Colonia:</span><br/>
-            <label> {{fp.colonia.value}} </label>
-          </div>
-          <div class="col-md-3">
-            <span>Municipio:</span><br/>
-            <label> {{fp.municipio.value}} </label>
-          </div>
-          <div class="col-md-3">
-            <span>Estado:</span><br/>
-            <label> {{fp.estado.value}} </label>
-          </div>
-          <div class="col-md-3">
-            <span>País:</span><br/>
-            <label> {{detallePais[0]?.label}} </label>
+            <span class="etiqueta-base">C.P.:</span><br/>
+            <label class="texto-base"> {{fp.cp.value}} </label>
           </div>
         </div>
         <div class="row mb-4">
           <div class="col-md-3">
-            <span>Tipo de paquete:</span><br/>
-            <label> {{detalleTipoPaquete[0]?.label}} </label>
+            <span class="etiqueta-base">Asentamiento / Colonia:</span><br/>
+            <label class="texto-base"> {{fp.colonia.value}} </label>
           </div>
           <div class="col-md-3">
-            <span>Enfermedad prexistente:</span><br/>
-            <label> {{detalleEnfermedad[0]?.label}} </label>
+            <span class="etiqueta-base">Municipio:</span><br/>
+            <label class="texto-base"> {{fp.municipio.value}} </label>
+          </div>
+          <div class="col-md-3">
+            <span class="etiqueta-base">Estado:</span><br/>
+            <label class="texto-base"> {{fp.estado.value}} </label>
+          </div>
+          <div class="col-md-3">
+            <span class="etiqueta-base">País:</span><br/>
+            <label class="texto-base"> {{detallePais[0]?.label}} </label>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-md-3">
+            <span class="etiqueta-base">Tipo de paquete:</span><br/>
+            <label class="texto-base"> {{detalleTipoPaquete[0]?.label}} </label>
+          </div>
+          <div class="col-md-3">
+            <span class="etiqueta-base">Enfermedad prexistente:</span><br/>
+            <label class="texto-base"> {{detalleEnfermedad[0]?.label}} </label>
           </div>
           <div class="col-md-3" *ngIf="fp.enfermedadPrexistente.value == 4">
-            <span>Otro:</span><br/>
-            <label> {{fp.otraEnferdedad.value}} </label>
+            <span class="etiqueta-base">Otro:</span><br/>
+            <label class="texto-base"> {{fp.otraEnferdedad.value}} </label>
           </div>
         </div>
       </div>
