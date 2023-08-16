@@ -894,7 +894,7 @@ export class ModificarDatosFinadoComponent
   async habilitarTodo() {
     await Object.keys(this.datosFinado).forEach((key) => {
       const form = this.form.controls['datosFinado'] as FormGroup;
-      if(key.includes('noContrato'))return;
+      // if(key.includes('noContrato'))return;
       form.controls[key].enable();
     });
 

@@ -172,8 +172,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.informacionServicioVelacion.cp = this.cpVelacion;
     this.buscarPaquetes();
     this.form = this.formBuilder.group({
-      observaciones: [{ value: null, disabled: false }, [Validators.required]],
-      notasServicio: [{ value: null, disabled: false }, [Validators.required]],
+      observaciones: [{ value: null, disabled: false }],
+      notasServicio: [{ value: null, disabled: false }],
     });
   }
 
@@ -802,37 +802,38 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.seleccionarEtapa.emit(1);
   }
 
-  validarSeleccionPaquete(): void {
+  validarSeleccionPaquete(): boolean {
     let banderaPresupuesto = false;
     let banderaPaquete = false;
-    if(this.f.observaciones.value && this.f.notasServicio.value){
-      if (this.tipoOrden == 1 || this.tipoOrden == 2) {
-        this.datosPresupuesto.forEach(function (datos) {
-          if (datos.proviene.includes('paquete')) {
-            banderaPaquete = true;
-          }
-        });
-        if(!banderaPaquete){
-          this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+    if (this.tipoOrden == 1 || this.tipoOrden == 2) {
+      this.datosPresupuesto.forEach(function (datos) {
+        if (datos.proviene.includes('paquete')) {
+          banderaPaquete = true;
         }
-        return
-      }
-      if (this.tipoOrden == 3) {
-        this.datosPresupuesto.forEach(function (datos) {
-          if (datos.proviene.includes('presupuesto')) {
-            banderaPresupuesto = true;
-          }
-        });
-        if(!banderaPresupuesto){
-          this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
-        }
+      });
+      if(!banderaPaquete){
+        this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+        return false;
       }
     }
+    if (this.tipoOrden == 3) {
+      this.datosPresupuesto.forEach(function (datos) {
+        if (datos.proviene.includes('presupuesto')) {
+          banderaPresupuesto = true;
+        }
+      });
+      if(!banderaPresupuesto){
+        this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+        return false;
+      }
+    }
+    return true;
   }
 
   validacionFormulario(): boolean {
     let banderaPaquete = false;
     let banderaPresupuesto = false;
+    let banderaTipo = false;
 
     this.selecionaTipoOtorgamiento;
     this.paqueteSeleccionadoDD?.label;
@@ -845,52 +846,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
         }
       }
     }
-
-    if (this.tipoOrden == 1) {
-      this.datosPresupuesto.forEach(function (datos) {
-        if (
-          datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo == true
-        ) {
-          banderaPaquete = true;
-        }
-        if (datos.proviene.includes('presupuesto')) {
-          banderaPresupuesto = true;
-        }
-      });
-      if (banderaPaquete && this.form.valid && this.dd) {
-        return false;
-      }
-    }
-
-    if (this.tipoOrden == 2) {
-      this.datosPresupuesto.forEach(function (datos) {
-        if (
-          datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo == true
-        ) {
-          banderaPaquete = true;
-        }
-      });
-      if (banderaPaquete && this.form.valid && this.dd) {
-        return false;
-      }
-    }
-
-    if (this.tipoOrden == 3) {
-      this.datosPresupuesto.forEach(function (datos) {
-        if (datos.proviene.includes('presupuesto')) {
-          banderaPresupuesto = true;
-        }
-      });
-      if (banderaPresupuesto && this.form.valid) {
-        return false;
-      }
-    }
-    return true;
+    return false;
   }
 
   continuar() {
+    if(!this.validarSeleccionPaquete()) return;
     let etapas: Etapa[] = [
       {
         idEtapa: 0,

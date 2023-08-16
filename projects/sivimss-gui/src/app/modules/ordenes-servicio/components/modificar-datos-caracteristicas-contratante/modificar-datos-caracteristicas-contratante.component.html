@@ -168,16 +168,16 @@
   <form [formGroup]="form">
     <div class="row mb-2">
       <div class="col-md-6">
-        <label class="control-label" for="observaciones">Observaciones<span class="req">*</span>:</label>
+        <label class="control-label" for="observaciones">Observaciones:</label>
         <input id="observaciones" type="text" class="form-control" formControlName="observaciones" maxlength="100"
-          placeholder="Ingresa observaciones" (blur)="validarSeleccionPaquete()">
+          placeholder="Ingresa observaciones">
         <span class="campo-obligatorio"
           *ngIf="f.observaciones?.errors?.required && (f.observaciones?.dirty || f.observaciones?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="notasServicio">Notas del servicio<span class="req">*</span>:</label>
+        <label class="control-label" for="notasServicio">Notas del servicio:</label>
         <input id="notasServicio" type="text" class="form-control" formControlName="notasServicio" maxlength="80"
-          placeholder="Ingresa notas de servicio" (blur)="validarSeleccionPaquete()">
+          placeholder="Ingresa notas de servicio">
         <span class="campo-obligatorio"
           *ngIf="f.notasServicio?.errors?.required && (f.notasServicio?.dirty || f.notasServicio?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -194,7 +194,7 @@
         <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
         <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
 <!--        <button type="button" [disabled]="validacionFormulario()" (click)="continuar()"-->
-        <button type="button" (click)="continuar()"
+        <button type="button" [disabled]="validacionFormulario()" (click)="continuar()"
           class="btn btn-md btn-primary ml-5">Aceptar</button>
       </div>
     </div>
