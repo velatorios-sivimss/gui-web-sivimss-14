@@ -24,7 +24,8 @@
       <td>
         <div class="contenedor-celda-iconos">
           <a (click)="abrirPanel($event,pago)">
-            <img src="../../../../../../../assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            <img src="../../../../../../../assets/images/imagen-icono-barras-horizontales.svg"
+                 alt="icono barras horizontales">
           </a>
         </div>
       </td>
@@ -45,7 +46,7 @@
   <ng-template pTemplate="paginatorright">
   </ng-template>
 </p-table>
-<div class="flex mb-2 justify-content-end">
+<div class="flex mt-4 mb-4 justify-content-end">
   <button class="ml-6 btn btn-primary btn-md" [routerLink]="'./..'">
     Regresar
   </button>
@@ -93,7 +94,7 @@
     <div class="col-md-12 flex justify-content-end">
       <button type="submit" class="btn btn-default btn-md" (click)="pagoODSModal = !pagoODSModal">Cancelar</button>
       <button type="submit" class="btn btn-primary btn-md ml-5" (click)="seleccionarPago();"
-              [disabled]="pagoForm.invalid">Aceptar
+              [disabled]="pagoForm.invalid" onCloseOnNavigation>Aceptar
       </button>
     </div>
   </div>

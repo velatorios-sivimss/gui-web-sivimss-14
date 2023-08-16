@@ -27,8 +27,8 @@ interface DatosRegistro {
 }
 
 interface RegistroModal {
-  tipoPago: string,
-  idPago: string,
+  tipoPago?: string,
+  idPago?: string,
   total: number,
   datosRegistro: DatosRegistro
 }
@@ -123,9 +123,19 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   abrirModalValeParitaria(): void {
+    const data: RegistroModal = {
+      total: this.pagoSeleccionado.diferenciasTotales,
+      datosRegistro: {
+        idPagoBitacora: this.pagoSeleccionado.idPagoBitacora,
+        idFlujoPago: this.pagoSeleccionado.idFlujoPago,
+        idRegistro: this.pagoSeleccionado.idRegistro,
+        importePago: this.pagoSeleccionado.total,
+      }
+    }
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
       header: "Registrar tipo de pago",
       width: MAX_WIDTH,
+      data
     }
     this.dialogService.open(RegistrarValeParitariaComponent, REGISTRAR_PAGO_CONFIG)
   }

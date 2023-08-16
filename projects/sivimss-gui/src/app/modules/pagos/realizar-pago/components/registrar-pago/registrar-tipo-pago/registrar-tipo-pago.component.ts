@@ -28,7 +28,6 @@ export class RegistrarTipoPagoComponent implements OnInit {
   pasoAgregarPago: number = 1;
 
   tipoPagoForm!: FormGroup;
-  indice: number = 0;
 
   registroPago!: DatosRegistro;
   tipoPago!: string;
