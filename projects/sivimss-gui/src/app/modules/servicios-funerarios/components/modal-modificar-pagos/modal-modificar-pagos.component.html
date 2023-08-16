@@ -17,7 +17,7 @@
   <div class="row">
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Número de pago</span>
-      <span class="texto-base">{{this.config.data.pagosRealizados.length + 1}} / {{this.config.data.detallePago.desNumeroPagos}}</span>
+      <span class="texto-base">{{config.data.detalleRegistro.pagos}}</span>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Total a cubrir</span>
@@ -29,20 +29,20 @@
     </div>
   </div>
 </div>
-<form [formGroup]="generarPagoForm">
+<form [formGroup]="modificarPagoForm">
   <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="metodoPago">Método de pago</label>
       <p-dropdown #dd id="metodoPago" class="form-control" [filter]="true" filterBy="label" appendTo="body"
                   [options]="metodoPago" placeholder="Selecciona método de pago" (onChange)="cambioMetodoPago(dd)"
-      formControlName="metodoPago">
+                  formControlName="metodoPago">
       </p-dropdown>
 
     </div>
     <div class="col-md-6" *ngIf="validacion.nombreBanco">
       <label class="control-label" for="nombreBanco">Nombre del banco:</label>
       <input id="nombreBanco" class="form-control" placeholder="Ingresa el nombre del banco" maxlength="20"
-      formControlName="nombreBanco">
+             formControlName="nombreBanco">
     </div>
   </div>
   <div class="row mb-3">
@@ -58,10 +58,10 @@
                      [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="Ingresa el importe"
                      [maxlength]="10" currency="USD" locale="en-US"></p-inputNumber>
     </div>
-<!--    <div class="col-md-6" *ngIf="validacion.totalPagar">-->
-<!--      <label class="control-label" for="totalPagar">Total, a pagar:</label>-->
-<!--      <input id="totalPagar" class="form-control" placeholder="Ingrese el total a pagar" formControlName="totalPagar">-->
-<!--    </div>-->
+    <!--    <div class="col-md-6" *ngIf="validacion.totalPagar">-->
+    <!--      <label class="control-label" for="totalPagar">Total, a pagar:</label>-->
+    <!--      <input id="totalPagar" class="form-control" placeholder="Ingrese el total a pagar" formControlName="totalPagar">-->
+    <!--    </div>-->
 
   </div>
   <div class="row mb-3">
@@ -97,7 +97,7 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-content-center">
       <button type="button" class="btn btn-gold btn-md ml-3" (click)="confirmacionGuardar = false">Cancelar</button>
-      <button type="button" class="btn btn-primary btn-md" (click)="guardarPago()">Aceptar</button>
+      <button type="button" class="btn btn-primary btn-md" (click)="modificarPago()">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

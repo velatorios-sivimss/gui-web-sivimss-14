@@ -1,39 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { CATALOGOS_DUMMIES } from "../../../servicios/constants/dummies";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-
-import * as moment from "moment";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Dropdown} from "primeng/dropdown";
-import {DetallePagoService} from "../../services/detalle-pago.service";
-import {RegistrarPago} from "../../models/registrar-pago.interface";
-import {LoaderService} from "../../../../shared/loader/services/loader.service";
-import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpErrorResponse} from "@angular/common/http";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {ActivatedRoute} from "@angular/router";
+import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
+import {DetallePagoService} from "../../services/detalle-pago.service";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {Dropdown} from "primeng/dropdown";
+import {RegistrarPago} from "../../models/registrar-pago.interface";
+import * as moment from "moment/moment";
+import {PagosRealizados} from "../../models/detalle-servicios.interface";
 
 @Component({
-  selector: 'app-modal-realizar-pago',
-  templateUrl: './modal-realizar-pago.component.html',
-  styleUrls: ['./modal-realizar-pago.component.scss']
+  selector: 'app-modal-modificar-pagos',
+  templateUrl: './modal-modificar-pagos.component.html',
+  styleUrls: ['./modal-modificar-pagos.component.scss']
 })
-export class ModalRealizarPagoComponent implements OnInit {
+export class ModalModificarPagosComponent implements OnInit {
 
-
-  generarPagoForm!: FormGroup;
+  modificarPagoForm!: FormGroup;
   metodoPago!: TipoDropdown[];
   fechaActual = new Date();
   mensalidades:number = 0;
-  tipoDePago: string = "";
+  tipoDePago: any;
   confirmacionGuardar: boolean = false;
   idPlanSpfa!: number;
 
   validacion: any = {nombreBanco: false, numeroAutorizacion: false,importe: false, totalPagar: false,
-                      folioAutorizacion: false, fecha:false}
+    folioAutorizacion: false, fecha:false}
 
   constructor(private route: ActivatedRoute,
               private alertaService: AlertaService,
@@ -42,30 +37,76 @@ export class ModalRealizarPagoComponent implements OnInit {
               public readonly config: DynamicDialogConfig,
               private formBuilder: FormBuilder,
               private loaderService: LoaderService,
-              private mensajesSistemaService: MensajesSistemaService,
-              ) {}
+              private mensajesSistemaService: MensajesSistemaService) { }
 
   ngOnInit(): void {
-    this.inicializarFormulario();
-    this.inicializarDatos()
+    this.inicializarFormulario(this.config.data.detalleRegistro);
+    this.inicializarDatos();
     this.idPlanSpfa = this.route.snapshot.queryParams.idPlanSfpa;
   }
 
-  inicializarFormulario(): void {
-    this.generarPagoForm = this.formBuilder.group({
-      numeroAutorizacion: [{value: null, disabled:false}],
-             nombreBanco: [{value: null, disabled:false}],
-                 importe: [{value: null, disabled:false}],
-       folioAutorizacion: [{value: null, disabled:false}],
-                   fecha: [{value: null, disabled:false}],
-              totalPagar: [{value: null, disabled:false}],
-              metodoPago: [{value: null, disabled:false}],
+  inicializarFormulario(datos: PagosRealizados): void {
+    let fecha;
+    if(datos.fechaPago){
+      const [anio,mes,dia] = datos.fechaPago.split('-');
+      fecha = new Date(Number(anio) + '/' + Number(mes) + '/' + Number(dia));
+    }
+
+    this.modificarPagoForm = this.formBuilder.group({
+      numeroAutorizacion: [{value: datos.numeroAutorizacion ?? null, disabled:false}],
+      nombreBanco: [{value: datos.nombreBanco ?? null, disabled:false}],
+      importe: [{value: datos.monto ?? null, disabled:false}],
+      folioAutorizacion: [{value: datos.folioAutorizacion ?? null, disabled:false}],
+      fecha: [{value: fecha ?? null, disabled:false}],
+      totalPagar: [{value: null, disabled:false}],
+      metodoPago: [{value: Number(datos.idMetodoPago), disabled:false}],
     });
+
+    // this.cambioMetodoPago(null, )
+    this.tipoDePago = datos.metodoPago;
+    this.validarTipoPago(datos.metodoPago);
+
   }
 
   inicializarDatos(): void {
     this.metodoPago = this.config.data.metodosPago;
     this.mensalidades = Number(this.config.data.detallePago.total) / Number(this.config.data.detallePago.desNumeroPagos);
+  }
+
+  validarTipoPago(tipo: any): void {
+
+    if(tipo.includes('Tarjeta crédito')){
+      this.validacion.nombreBanco = true;
+      this.validacion.numeroAutorizacion = true;
+      this.validacion.importe = true;
+      this.validacion.totalPagar = false;
+      this.validacion.folioAutorizacion = false;
+      this.validacion.fecha = false;
+    }
+    if(tipo.includes('Tarjeta débito')){
+      this.validacion.nombreBanco = true;
+      this.validacion.numeroAutorizacion = true;
+      this.validacion.importe = true;
+      this.validacion.totalPagar = false;
+      this.validacion.folioAutorizacion = false;
+      this.validacion.fecha = false;
+    }
+    if(tipo.includes('Transferencia')){
+      this.validacion.nombreBanco = true;
+      this.validacion.numeroAutorizacion = false;
+      this.validacion.importe = true;
+      this.validacion.totalPagar = true;
+      this.validacion.folioAutorizacion = true;
+      this.validacion.fecha = true;
+    }
+    if(tipo.includes('Depósito')){
+      this.validacion.nombreBanco = true;
+      this.validacion.numeroAutorizacion = false;
+      this.validacion.importe = true;
+      this.validacion.totalPagar = true;
+      this.validacion.folioAutorizacion = true;
+      this.validacion.fecha = true;
+    }
   }
 
   cambioMetodoPago(dd: Dropdown): void {
@@ -110,27 +151,7 @@ export class ModalRealizarPagoComponent implements OnInit {
     }
   }
 
-  cerrarModal() {
-    this.ref.close(false);
-  }
-
-  guardarPago(): void {
-    this.confirmacionGuardar = false;
-    this.loaderService.activar();
-    let generarObjetoGuardado: RegistrarPago = this.generarObjetoGuardado()
-    this.detallePagoService.guardarPago(generarObjetoGuardado).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        this.ref.close(true)
-      },
-      error: (error:HttpErrorResponse) => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.')
-      }
-    });
-  }
-  generarObjetoGuardado(): RegistrarPago {
+  generarObjetoModificar(): RegistrarPago {
     return {
       idPlan: +this.idPlanSpfa,
       idTipoPago: +this.formulario.metodoPago.value ?? null,
@@ -142,7 +163,16 @@ export class ModalRealizarPagoComponent implements OnInit {
     }
   }
 
-  get formulario(){
-    return this.generarPagoForm.controls;
+  modificarPago(): void {
+
   }
+
+  cerrarModal() {
+    this.ref.close(false);
+  }
+
+  get formulario(){
+    return this.modificarPagoForm.controls;
+  }
+
 }

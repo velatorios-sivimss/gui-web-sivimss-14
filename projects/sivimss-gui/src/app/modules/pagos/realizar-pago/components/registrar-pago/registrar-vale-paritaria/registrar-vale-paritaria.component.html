@@ -1,92 +1,104 @@
-<ng-container *ngIf="indice === 0">
-  <form [formGroup]="valeParitariaForm" (submit)="aceptar()">
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="matricula">Matricula<span
-          class="req">*</span></label>
-        <input id="matricula" class="form-control" formControlName="matricula"
-               placeholder="Ingresar matrícula">
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="delegacion">Delegación<span class="req">*</span></label>
-        <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
-                    [options]="delegaciones" placeholder="Seleccione el velatorio">
-        </p-dropdown>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="importePrestamo">Importe del préstamo<span
-          class="req">*</span></label>
-        <input id="importePrestamo" class="form-control" formControlName="importePrestamo"
-               placeholder="Ingresar importe">
-      </div>
-      <div class="col-md-6">
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-md-12 control-label">
-        <span>*Campos obligatorios</span>
-      </div>
-    </div>
-    <div class="flex justify-content-end mt-5">
-      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="ml-4 btn btn-primary btn-md">
-        Guardar
-      </button>
-    </div>
-  </form>
-</ng-container>
-<ng-container *ngIf="indice === 1">
-  <app-table-panel>
-    <div class="row table-panel-row">
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Matrícula</label>
-          <span>DOC-000001</span>
+<ng-container [ngSwitch]="pasoAgregarPago">
+  <ng-container *ngSwitchCase="CAPTURA_DE_PAGO">
+    <form [formGroup]="valeParitariaForm" (submit)="aceptar()">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="numAutorizacion">Folio vale paritaria:<span
+            class="req">*</span></label>
+          <input id="numAutorizacion" class="form-control" formControlName="numAutorizacion"
+                 placeholder="Ingresar folio" [maxlength]="20">
+          <span class="campo-obligatorio"
+                *ngIf="pf?.numAutorizacion?.errors?.required && (pf?.numAutorizacion?.dirty || pf?.numAutorizacion?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="fechaValeAGF">Fecha folio vale paritaria:<span class="req">*</span></label>
+          <p-calendar id="fechaValeAGF" formControlName="fechaValeAGF" styleClass="form-control" [showIcon]="true"
+                      placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+          </p-calendar>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.fechaValeAGF?.errors?.required && (pf?.fechaValeAGF?.dirty || pf?.fechaValeAGF?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Delegación</label>
-          <span>Edo. México Poniente</span>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="importe">Importe autorizado:<span
+            class="req">*</span></label>
+          <p-inputNumber class="form-control" id="importe" formControlName="importe"
+                         placeholder="Ingresa importe" [maxlength]="10"
+                         [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD"
+                         (onInput)="
+                            valeParitariaForm.patchValue({
+                                importe:
+                                $event.value >= 0 && $event.value <= 99999999999
+                                  ? $event.value
+                                  : valeParitariaForm.value?.importe
+                            })">
+          </p-inputNumber>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6">
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Importe del préstamo</label>
-          <span>$ 30,000.00</span>
+      <div class="row mb-4">
+        <div class="col-md-12 control-label">
+          <span>*Campos obligatorios</span>
         </div>
       </div>
+      <div class="flex justify-content-end mt-5">
+        <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="valeParitariaForm.invalid">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="RESUMEN_DE_PAGO">
+    <app-table-panel>
+      <div class="row table-panel-row">
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Tipo de Pago</label>
+            <span>Vale paritaria</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Folio Vale Paritaria</label>
+            <span>{{resumenSolicitud.numAutorizacion}}</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Fecha folio vale paritaria</label>
+            <span>{{resumenSolicitud.fechaValeAGF | date:'dd-MM-YYYY'}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Importe autorizado</label>
+            <span>{{resumenSolicitud.importe | currency}}</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Total a pagar</label>
+            <span>{{total | currency}}</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <div class="mb-3 mt-3 row text-center">
+      ¿Estás seguro que deseas registrar este pago?
     </div>
-  </app-table-panel>
-  <div class="mb-3 mt-3 row text-center">
-    ¿Estás seguro que deseas registrar en el SIAP la solicitud del Vale Paritaria?
-  </div>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="submit" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar</button>
+      </div>
     </div>
-  </div>
-</ng-container>
-<ng-container *ngIf="indice === 2">
-  <div class="mb-3 mt-3 row text-center">
-    No hay registro en SIAP.
-  </div>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-center">
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
-    </div>
-  </div>
-</ng-container>
-<ng-container *ngIf="indice === 3">
-  <div class="mb-3 mt-3 row text-center">
-    El trabajador no es candidato para un Vale paritaria.
-  </div>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-center">
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
-    </div>
-  </div>
+  </ng-container>
 </ng-container>

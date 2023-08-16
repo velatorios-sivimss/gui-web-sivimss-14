@@ -15,15 +15,23 @@ import {
   ModificarServiciosFunerariosComponent
 } from "./components/modificar-servicios-funerarios/modificar-servicios-funerarios.component";
 import {ServiciosFunerariosResolver} from "./services/servicios-funerarios.resolver";
+import {ServiciosFunerariosConsultaResolver} from "./services/servicios-funerarios-consulta.resolver";
+import {DetallePagoResolver} from "./services/detalle-pago.resolver";
 
 const routes: Routes = [
   {
     path:'',
-    component: ServiciosFunerariosComponent
+    component: ServiciosFunerariosComponent,
+    resolve: {
+      respuesta: ServiciosFunerariosConsultaResolver
+    }
   },
   {
-    path:'detalle-pago/:id',
+    path:'detalle-pago',
     component: DetalleServiciosFunerariosComponent,
+    resolve: {
+      respuesta: DetallePagoResolver
+    }
   },
   {
     path:'cancelar-pago/:id',
@@ -49,7 +57,9 @@ const routes: Routes = [
   imports:[RouterModule.forChild(routes)],
   exports:[RouterModule],
   providers: [
-    ServiciosFunerariosResolver
+    ServiciosFunerariosResolver,
+    ServiciosFunerariosConsultaResolver,
+    DetallePagoResolver
   ]
 })
 

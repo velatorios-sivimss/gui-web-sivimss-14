@@ -8,7 +8,18 @@ import { ServiciosFunerariosInterface, DetallePago } from "../../models/servicio
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
 import { LazyLoadEvent } from "primeng/api";
 import { Articulo } from "../../../articulos/models/articulos.interface";
-import { ActivatedRoute } from "@angular/router";
+import {ActivatedRoute, ActivatedRouteSnapshot} from "@angular/router";
+import {DetallePagoService} from "../../services/detalle-pago.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {DetalleServicios, PagosRealizados} from "../../models/detalle-servicios.interface";
+import {ModalModificarPagosComponent} from "../modal-modificar-pagos/modal-modificar-pagos.component";
 
 @Component({
   selector: 'app-detalle-servicios-funerarios',
@@ -22,28 +33,78 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
 
   @Input() servicioFunerario: ServiciosFunerariosInterface[] = [];
 
-  detallePago: DetallePago[] = [];
-  detalleSeleccionado: DetallePago = {};
-
   @ViewChild(OverlayPanel)
   overlayPanelHeader!: OverlayPanel;
 
   @ViewChild(OverlayPanel)
   overlayPanelBody!: OverlayPanel;
 
+  readonly POSICION_METODO_PAGO:number = 0;
+
+  detallePago: DetallePago[] = [];
+  detalleSeleccionado!: PagosRealizados;
+  metodosPago!: TipoDropdown[];
+
+
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  // totalPagado:number = 0;
+
+  detalleServicio!: DetalleServicios;
+  pagosRealizados!: PagosRealizados[];
 
   constructor(
+    private alertaService: AlertaService,
+    private detallePagoService: DetallePagoService,
     private dialogService: DialogService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private loaderService: LoaderService,
     private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
+    let respuesta = this.route.snapshot.data['respuesta'];
+    this.metodosPago = mapearArregloTipoDropdown(respuesta[this.POSICION_METODO_PAGO].datos,
+                 'metodoPago', 'idMetodoPago');
+
+    this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
   }
+
+  consultarDetallePago(idPlanSfpa: number) : void {
+
+    // this.loaderService.activar();
+    this.detallePagoService.obtenerDetallePago(+idPlanSfpa).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.detalleServicio = {
+          contratanteSubstituto:respuesta.datos.detallePlan.contratanteSubstituto,
+          desNumeroPagos:respuesta.datos.detallePlan.desNumeroPagos,
+          nombrePaquete:respuesta.datos.detallePlan.nombrePaquete,
+          estatusPlan:respuesta.datos.detallePlan.estatusPlan,
+          velatorio:respuesta.datos.detallePlan.velatorio,
+          numFolio:respuesta.datos.detallePlan.numFolio,
+          correo:respuesta.datos.detallePlan.correo,
+          estado:respuesta.datos.detallePlan.estado,
+          idPlan:respuesta.datos.detallePlan.idPlan,
+          total:respuesta.datos.detallePlan.total,
+          restante: respuesta.datos.detallePlan.restante ?? 0,
+          totalPagado: Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante ?? 0)
+        }
+        // this.totalPagado = Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante)
+        this.pagosRealizados = respuesta.datos.pagos || [];
+      },
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Info, errorMsg || 'El servicio no responde, no permite más llamadas.')
+      }
+    });
+
+  }
+
 
   paginar(event: LazyLoadEvent): void {
     setTimeout(() => {
@@ -85,7 +146,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     this.overlayPanelHeader.toggle(event);
   }
 
-  abrirPanelBody(event: MouseEvent, detalleSeleccionado: DetallePago): void {
+  abrirPanelBody(event: MouseEvent, detalleSeleccionado: PagosRealizados): void {
+    this.detalleSeleccionado = detalleSeleccionado;
     this.overlayPanelBody.toggle(event);
   }
 
@@ -97,7 +159,29 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         width: '100%'
       },
       data: {
-        dummy: '', //Pasa info
+        metodosPago: this.metodosPago,
+        detallePago: this.detalleServicio,
+        pagosRealizados: this.pagosRealizados
+      },
+    });
+    ref.onClose.subscribe((val: boolean) => {
+      if (val) {
+        this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
+      }
+    });
+  }
+
+  abrirModalModificarPago(): void {
+    const ref = this.dialogService.open(ModalModificarPagosComponent, {
+      header: 'Modificar pago',
+      style: {
+        maxWidth: '876px',
+        width: '100%'
+      },
+      data: {
+        metodosPago: this.metodosPago,
+        detallePago: this.detalleServicio,
+        detalleRegistro: this.detalleSeleccionado
       },
     });
     ref.onClose.subscribe((val: boolean) => {
@@ -115,12 +199,13 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         width: '100%'
       },
       data: {
-        dummy: '', //Pasa info
+        detalleRegistro: this.detalleSeleccionado
       },
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
-        //Obtener info cuando se cierre el modal
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(193);
+        this.alertaService.mostrar(TipoAlerta.Exito,msg)
       }
     });
   }
