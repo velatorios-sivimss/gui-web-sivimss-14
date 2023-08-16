@@ -186,7 +186,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
-        //Obtener info cuando se cierre el modal
+        this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
       }
     });
   }
@@ -204,6 +204,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
+        this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(193);
         this.alertaService.mostrar(TipoAlerta.Exito,msg)
       }

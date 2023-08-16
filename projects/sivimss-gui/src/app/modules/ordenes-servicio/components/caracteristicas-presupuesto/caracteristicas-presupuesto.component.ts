@@ -202,11 +202,9 @@ export class CaracteristicasPresupuestoComponent
     this.form = this.formBuilder.group({
       observaciones: [
         { value: datos.observaciones, disabled: false },
-        [Validators.required],
       ],
       notasServicio: [
         { value: datos.notasServicio, disabled: false },
-        [Validators.required],
       ],
     });
   }
@@ -790,6 +788,7 @@ export class CaracteristicasPresupuestoComponent
   }
 
   continuar() {
+    if(!this.validarSeleccionPaquete()) return;
     let etapas: Etapa[] = [
       {
         idEtapa: 0,
@@ -1077,10 +1076,9 @@ export class CaracteristicasPresupuestoComponent
     });
   }
 
-  validarSeleccionPaquete(): void {
+  validarSeleccionPaquete(): boolean {
     let banderaPresupuesto = false;
     let banderaPaquete = false;
-    if(this.f.observaciones.value && this.f.notasServicio.value){
       if (this.tipoOrden == 1 || this.tipoOrden == 2) {
         this.datosPresupuesto.forEach(function (datos) {
           if (datos.proviene.includes('paquete')) {
@@ -1089,8 +1087,8 @@ export class CaracteristicasPresupuestoComponent
         });
         if(!banderaPaquete){
           this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+          return false;
         }
-        return
       }
       if (this.tipoOrden == 3) {
         this.datosPresupuesto.forEach(function (datos) {
@@ -1100,9 +1098,10 @@ export class CaracteristicasPresupuestoComponent
         });
         if(!banderaPresupuesto){
           this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+          return false;
         }
       }
-    }
+      return true;
   }
 
   validacionFormulario(): boolean {
@@ -1121,58 +1120,58 @@ export class CaracteristicasPresupuestoComponent
         }
       }
     }
-    if (this.tipoOrden == 1) {
-      this.datosPresupuesto.forEach(function (datos) {
-
-        if(typeof datos.utilizarArticulo == "string"){
-          if(datos.utilizarArticulo.includes("true")){
-            banderaTipo = true
-          } else{
-            banderaTipo = false
-          }
-        }else{
-          banderaTipo = datos.utilizarArticulo;
-        }
-
-        if (
-          datos.proviene.includes('paquete') &&
-          banderaTipo
-        ) {
-          banderaPaquete = true;
-        }
-        if (datos.proviene.includes('presupuesto')) {
-          banderaPresupuesto = true;
-        }
-      });
-      if (banderaPaquete && this.form.valid && this.dd) {
-        return false;
-      }
-    }
-
-    if (this.tipoOrden == 2) {
-      this.datosPresupuesto.forEach(function (datos) {
-        if (
-          datos.proviene.includes('paquete') &&
-          datos.utilizarArticulo.includes('true')
-        ) {
-          banderaPaquete = true;
-        }
-      });
-      if (banderaPaquete && this.form.valid && this.dd) {
-        return false;
-      }
-    }
-
-    if (this.tipoOrden == 3) {
-      this.datosPresupuesto.forEach(function (datos) {
-        if (datos.proviene.includes('presupuesto')) {
-          banderaPresupuesto = true;
-        }
-      });
-      if (banderaPresupuesto && this.form.valid) {
-        return false;
-      }
-    }
-    return true;
+    // if (this.tipoOrden == 1) {
+    //   this.datosPresupuesto.forEach(function (datos) {
+    //
+    //     if(typeof datos.utilizarArticulo == "string"){
+    //       if(datos.utilizarArticulo.includes("true")){
+    //         banderaTipo = true
+    //       } else{
+    //         banderaTipo = false
+    //       }
+    //     }else{
+    //       banderaTipo = datos.utilizarArticulo;
+    //     }
+    //
+    //     if (
+    //       datos.proviene.includes('paquete') &&
+    //       banderaTipo
+    //     ) {
+    //       banderaPaquete = true;
+    //     }
+    //     if (datos.proviene.includes('presupuesto')) {
+    //       banderaPresupuesto = true;
+    //     }
+    //   });
+    //   if (banderaPaquete && this.form.valid && this.dd) {
+    //     return false;
+    //   }
+    // }
+    //
+    // if (this.tipoOrden == 2) {
+    //   this.datosPresupuesto.forEach(function (datos) {
+    //     if (
+    //       datos.proviene.includes('paquete') &&
+    //       datos.utilizarArticulo.includes('true')
+    //     ) {
+    //       banderaPaquete = true;
+    //     }
+    //   });
+    //   if (banderaPaquete && this.form.valid && this.dd) {
+    //     return false;
+    //   }
+    // }
+    //
+    // if (this.tipoOrden == 3) {
+    //   this.datosPresupuesto.forEach(function (datos) {
+    //     if (datos.proviene.includes('presupuesto')) {
+    //       banderaPresupuesto = true;
+    //     }
+    //   });
+    //   if (banderaPresupuesto && this.form.valid) {
+    //     return false;
+    //   }
+    // }
+    return false;
   }
 }

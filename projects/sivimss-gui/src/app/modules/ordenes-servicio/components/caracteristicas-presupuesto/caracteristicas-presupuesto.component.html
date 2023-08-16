@@ -153,18 +153,18 @@
 <form [formGroup]="form">
   <div class="row mb-2">
     <div class="col-md-6">
-      <label class="control-label" for="observaciones">Observaciones<span class="req">*</span>:</label>
+      <label class="control-label" for="observaciones">Observaciones:</label>
       <input id="observaciones" type="text" class="form-control" formControlName="observaciones" maxlength="100"
-        placeholder="Ingresa observaciones" (blur)="validarSeleccionPaquete()">
-      <span class="campo-obligatorio"
-        *ngIf="f.observaciones?.errors?.required && (f.observaciones?.dirty || f.observaciones?.touched)">Este campo es obligatorio *.</span>
+        placeholder="Ingresa observaciones">
+<!--      <span class="campo-obligatorio"-->
+<!--        *ngIf="f.observaciones?.errors?.required && (f.observaciones?.dirty || f.observaciones?.touched)">Este campo es obligatorio *.</span>-->
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="notasServicio">Notas del servicio<span class="req">*</span>:</label>
+      <label class="control-label" for="notasServicio">Notas del servicio:</label>
       <input id="notasServicio" type="text" class="form-control" formControlName="notasServicio" maxlength="80"
-        placeholder="Ingresa notas de servicio" (blur)="validarSeleccionPaquete()">
-      <span class="campo-obligatorio"
-        *ngIf="f.notasServicio?.errors?.required && (f.notasServicio?.dirty || f.notasServicio?.touched)">Este campo es obligatorio *.</span>
+        placeholder="Ingresa notas de servicio">
+<!--      <span class="campo-obligatorio"-->
+<!--        *ngIf="f.notasServicio?.errors?.required && (f.notasServicio?.dirty || f.notasServicio?.touched)">Este campo es obligatorio *.</span>-->
     </div>
   </div>
   <div class="row mt-4">

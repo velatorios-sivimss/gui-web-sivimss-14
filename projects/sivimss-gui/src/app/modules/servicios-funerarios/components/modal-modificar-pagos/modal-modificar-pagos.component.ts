@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {ActivatedRoute} from "@angular/router";
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {DetallePagoService} from "../../services/detalle-pago.service";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
@@ -11,6 +11,9 @@ import {Dropdown} from "primeng/dropdown";
 import {RegistrarPago} from "../../models/registrar-pago.interface";
 import * as moment from "moment/moment";
 import {PagosRealizados} from "../../models/detalle-servicios.interface";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-modal-modificar-pagos',
@@ -42,7 +45,7 @@ export class ModalModificarPagosComponent implements OnInit {
   ngOnInit(): void {
     this.inicializarFormulario(this.config.data.detalleRegistro);
     this.inicializarDatos();
-    this.idPlanSpfa = this.route.snapshot.queryParams.idPlanSfpa;
+    this.idPlanSpfa = this.config.data.detalleRegistro.idBitacoraPago;
   }
 
   inicializarFormulario(datos: PagosRealizados): void {
@@ -164,7 +167,20 @@ export class ModalModificarPagosComponent implements OnInit {
   }
 
   modificarPago(): void {
-
+    this.confirmacionGuardar = false;
+    this.loaderService.activar();
+    let generarObjetoGuardado: RegistrarPago = this.generarObjetoModificar()
+    this.detallePagoService.modificarPago(generarObjetoGuardado).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.ref.close(true)
+      },
+      error: (error:HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.')
+      }
+    });
   }
 
   cerrarModal() {
