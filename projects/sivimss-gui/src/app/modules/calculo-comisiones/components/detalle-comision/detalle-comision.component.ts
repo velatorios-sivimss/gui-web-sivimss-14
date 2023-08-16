@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { DetalleODS, DetalleComision } from '../../models/detalle-comision.interface';
+import { DetalleODS, DetalleComision, DetalleConvenioPF, DetalleComisiones,FiltroComisiones } from '../../models/detalle-comision.interface';
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { ActivatedRoute } from '@angular/router';
 import {CalculoComisionesService} from '../../services/calculo-comisiones.service';
@@ -14,6 +14,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { CATALOGOS_DUMMIES } from '../../../articulos/constants/dummies';
 import { ModalComisionComponent } from '../modal-comision/modal-comision.component';  
+import * as moment from "moment/moment";
 
 @Component({
   selector: 'app-detalle-comision',
@@ -25,6 +26,7 @@ export class DetalleComisionComponent implements OnInit {
   readonly POSICION_DETALLE_COMISION = 0;
   readonly POSICION_DETALLE_ODS = 1;
   readonly POSICION_DETALLE_CONVENIOS_PF = 2;
+  readonly POSICION_DETALLE_COMISIONES = 3;
 
   @Input() detalleForm: DetalleComision | undefined;
 
@@ -33,9 +35,9 @@ export class DetalleComisionComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   detalleComision!: DetalleComision;
-  detalleODS: DetalleODS = {
-    articulos: []
-  };
+  detalleODS!: DetalleODS[];
+  detalleConveniosPF!: DetalleConvenioPF[];
+  listaComisiones!: DetalleComisiones[];
   formComisiones!: FormGroup;
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
   registrarCalcularComisionRef!: DynamicDialogRef
@@ -54,6 +56,8 @@ export class DetalleComisionComponent implements OnInit {
     if (!this.detalleForm) {
       const respuesta = this.route.snapshot.data["respuesta"];
       this.detalleComision = respuesta[this.POSICION_DETALLE_COMISION]?.datos[this.POSICION_DETALLE_COMISION];
+      this.detalleODS = respuesta[this.POSICION_DETALLE_ODS]?.datos;
+      this.detalleConveniosPF = respuesta[this.POSICION_DETALLE_CONVENIOS_PF]?.datos;
     } else {
       window.scrollTo(0, 0);
       console.log(this.detalleForm);
@@ -63,16 +67,23 @@ export class DetalleComisionComponent implements OnInit {
     this.inicializarFiltroForm();
   }
 
+  inicializarFiltroForm(): void {
+    this.formComisiones = this.formBuilder.group({
+      anio: [{value: null, disabled: false}],
+      mes: [{value: null, disabled: false}],
+    });
+  }
+
   obtenerDetalleComision() {
     if (this.detalleComision.idPromotor) {
+      const filtros: FiltroComisiones = this.filtrosCalculoComision();
       this.calculoComisionesService.obtenerDetalleComision(this.detalleComision.idPromotor).pipe(
         finalize(() => this.loaderService.desactivar())
       ).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
-            this.detalleComision = respuesta.datos;
-            console.log(respuesta.datos);
-
+            this.listaComisiones = respuesta.datos;
+            this.abrirModarCalcularComision();
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -82,11 +93,14 @@ export class DetalleComisionComponent implements OnInit {
     }
   }
 
-  inicializarFiltroForm(): void {
-    this.formComisiones = this.formBuilder.group({
-      anio: [{value: null, disabled: false}],
-      mes: [{value: null, disabled: false}],
-    });
+  filtrosCalculoComision(): FiltroComisiones {
+    const anio = this.formComisiones.get('anio')?.value !== null ? moment(this.formComisiones.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
+    const mes = this.formComisiones.get('mes')?.value !== null ? moment(this.formComisiones.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
+    return {
+      idPromotor: this.detalleComision.idPromotor,
+      mesCalculo: moment().format('MM').toUpperCase(),
+      anioCalculo: parseInt(moment().format('yyyy')),
+    }
   }
 
   abrirModarCalcularComision(): void {
