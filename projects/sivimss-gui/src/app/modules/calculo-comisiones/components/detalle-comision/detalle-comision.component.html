@@ -10,19 +10,19 @@
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>ID::</label>
-                            <span>{{detalleComision.idPromotor}}</span>
+                            <span>{{detallePromotor.idPromotor}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Número empleado::</label>
-                            <span>{{detalleComision.numEmpleado}}</span>
+                            <span>{{detallePromotor.numEmpleado}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>CURP:</label>
-                            <span>{{detalleComision.curp}}</span>
+                            <span>{{detallePromotor.curp}}</span>
                         </div>
                     </div>
                 </div>
@@ -30,19 +30,19 @@
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Nombre(s):</label>
-                            <span>{{detalleComision.nombre}}</span>
+                            <span>{{detallePromotor.nombre}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Primer apellido:</label>
-                            <span>{{detalleComision.primerApellido}}</span>
+                            <span>{{detallePromotor.primerApellido}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Segundo apellido:</label>
-                            <span>{{detalleComision.segundoApellido}}</span>
+                            <span>{{detallePromotor.segundoApellido}}</span>
                         </div>
                     </div>
                 </div>
@@ -50,19 +50,19 @@
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Fecha de nacimiento:</label>
-                            <span>{{detalleComision.fecNacimiento}}</span>
+                            <span>{{detallePromotor.fecNacimiento}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Fecha de ingreso:</label>
-                            <span>{{detalleComision.fecIngreso}}</span>
+                            <span>{{detallePromotor.fecIngreso}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Sueldo base:</label>
-                            <span>{{detalleComision.sueldoBase}}</span>
+                            <span>{{detallePromotor.sueldoBase}}</span>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Velatorio:</label>
-                            <span>{{detalleComision.velatorio}}</span>
+                            <span>{{detallePromotor.velatorio}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -82,7 +82,7 @@
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Correo electronico:</label>
-                            <span>{{detalleComision.correo}}</span>
+                            <span>{{detallePromotor.correo}}</span>
                         </div>
                     </div>
                 </div>
@@ -90,19 +90,19 @@
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Puesto:</label>
-                            <span>{{detalleComision.puesto}}</span>
+                            <span>{{detallePromotor.puesto}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Categoria:</label>
-                            <span>{{detalleComision.categoria}}</span>
+                            <span>{{detallePromotor.categoria}}</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="table-panel-column">
                             <label>Monto de comisión:</label>
-                            <span>{{detalleComision.montoComision}}</span>
+                            <span>{{detallePromotor.montoComision}}</span>
                         </div>
                     </div>
                 </div>
@@ -145,7 +145,7 @@
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
                             <tr>
-                                <th colspan="5" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
+                                <th colspan="5" class="p-2 text-center font-bold text-xl">
                                     No se encontró información relacionada a tu búsqueda
                                 </th>
                             </tr>
@@ -154,6 +154,8 @@
                             <div class="paginator-template">
                                 <span class="total-elements"> {{detalleODS.length}} de {{totalElementos}} </span>
                             </div>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorright">
                         </ng-template>
                     </p-table>
                 </div>
@@ -190,7 +192,7 @@
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
                             <tr>
-                                <th colspan="5" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
+                                <th colspan="5" class="p-2 text-center font-bold text-xl">
                                     No se encontró información relacionada a tu búsqueda
                                 </th>
                             </tr>
@@ -199,6 +201,8 @@
                             <div class="paginator-template">
                                 <span class="total-elements"> {{detalleConveniosPF.length}} de {{totalElementos}} </span>
                             </div>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorright">
                         </ng-template>
                     </p-table>
                 </div>
@@ -215,20 +219,20 @@
             <form [formGroup]="formComisiones" (ngSubmit)="buscar()">
                 <div class="row mb-3">
                     <div class="col-md-3">
-                    </div>
-                    <div class="col-md-3">
                         <label class="control-label" for="anio">Año:</label>
-                        <p-dropdown id="anio" class="form-control" formControlName="anio" [options]="opciones" placeholder="Selecciona el año">
-                        </p-dropdown>
+                        <p-calendar id="anio" formControlName="anio" view="year" [maxDate]="maxDate" dateFormat="yy" dataType="string" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar año">
+                        </p-calendar>
                     </div>
                     <div class="col-md-3">
                         <label class="control-label" for="mes">Mes:</label>
-                        <p-dropdown id="mes" class="form-control" formControlName="mes" [options]="opciones" placeholder="Selecciona el mes">
-                        </p-dropdown>
+                        <p-calendar id="mes" formControlName="mes" view="month" [maxDate]="maxDate" dateFormat="MM" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar mes">
+                        </p-calendar>
+                    </div>
+                    <div class="col-md-3">
                     </div>
                     <div class="col-md-3">
                         <label class="control-label">:</label>
-                        <button type="submit" class="btn btn-primary btn-md ml-6 mt-5" (click)="obtenerDetalleComision()">Calcular comisión</button>
+                        <button type="submit" class="btn btn-primary btn-md ml-6 mt-5" (click)="obtenerDetalleComision()" [disabled]="formComisiones.invalid">Calcular comisión</button>
 
                     </div>
                 </div>
@@ -255,6 +259,20 @@
                                 <td><b> {{comisiones.monConveniosPF}}</b></td>
                                 <td><b> {{comisiones.monBonoAplicado}} </b></td>
                             </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <th colspan="5" class="p-2 text-center font-bold text-xl">
+                                    No se encontró información relacionada a tu búsqueda
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorleft">
+                            <div class="paginator-template">
+                                <span class="total-elements"> {{listaComisiones.length}} de {{totalElementos}} </span>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorright">
                         </ng-template>
                     </p-table>
                 </div>

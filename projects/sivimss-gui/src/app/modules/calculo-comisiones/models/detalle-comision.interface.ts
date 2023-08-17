@@ -1,18 +1,18 @@
-export interface DetalleComision {
-  numEmpleado?: string;
-  primerApellido?: string;
-  velatorio?: string;
-  categoria?: string;
-  segundoApellido?: string;
-  montoComision?: number;
-  nombre?: string;
-  puesto?: string;
-  correo?: string;
-  fecNacimiento?: string;
-  fecIngreso?: string;
-  sueldoBase?: number;
-  idPromotor?: number;
-  curp?: string;
+  export interface DetallePromotor {
+    numEmpleado?: string;
+    primerApellido?: string;
+    velatorio?: string;
+    categoria?: string;
+    segundoApellido?: string;
+    montoComision?: number;
+    nombre?: string;
+    puesto?: string;
+    correo?: string;
+    fecNacimiento?: string;
+    fecIngreso?: string;
+    sueldoBase?: number;
+    idPromotor?: number;
+    curp?: string;
   }
 
   export interface DetalleODS {
@@ -23,13 +23,13 @@ export interface DetalleComision {
     cveFolio?: string;
     importePagado?: number;
   }
-  
+
   export interface DetalleConvenioPF {
     lugarCaptacion?: string;
-    fechaCPF?: string;
+    folioNCPF?: string;
     nomContratante?: string;
     importeCPF?: number;
-    folioNCPF?: string;
+    fechaCPF?: string;
     importePagado?: number;
   }
   
@@ -42,8 +42,7 @@ export interface DetalleComision {
   }
 
   export interface FiltroComisiones {
-    idPromotor?: number;
-    mesCalculo?: string;
-    anioCalculo?: any; 
+      idPromotor?: number;
+      mesCalculo?: any;
+      anioCalculo?: any;
   }
-  
