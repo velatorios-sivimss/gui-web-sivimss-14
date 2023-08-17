@@ -3,7 +3,7 @@
   <app-titulo-principal titulo="Facturación" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" >
+  <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="velatorio">Velatorios:</label>
@@ -88,13 +88,15 @@
            (onLazyLoad)="seleccionarPaginacion($event)">
     <ng-template pTemplate="header">
       <tr>
-        <th>Velatorio</th>
-        <th>Folio</th>
-        <th>Folio de factura</th>
-        <th>Fecha de factura</th>
-        <th>Folio fiscal</th>
-        <th>Estatus</th>
-        <th></th>
+        <th id="facturacion_velatorio">Velatorio</th>
+        <th id="facturacion_folio">Folio</th>
+        <th id="facturacion_folio_factura">Folio de factura</th>
+        <th id="facturacion_fecha_factura">Fecha de factura</th>
+        <th id="facturacion_folio_fiscal">Folio fiscal</th>
+        <th id="facturacion_rfc">RFC</th>
+        <th id="facturacion_razon_social">Razón social</th>
+        <th id="facturacion_estatus">Estatus</th>
+        <th id="facturacion_btns"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-registro>
@@ -104,6 +106,8 @@
         <td>{{registro.folioFactura}}</td>
         <td>{{registro.fechaFactura}}</td>
         <td>{{registro.folioFiscal}}</td>
+        <td>{{registro.estatus}}</td>
+        <td>{{registro.estatus}}</td>
         <td>{{registro.estatus}}</td>
         <td>
           <div class="contenedor-celda-iconos">
@@ -120,7 +124,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="7" class="p-2 text-center font-bold text-xl">
+        <th colspan="9" class="p-2 text-center font-bold text-xl" id="facturacion_empty_message">
           No se encontro información relacionada a tu búsqueda
         </th>
       </tr>
