@@ -1,4 +1,4 @@
-import {Comisiones} from '../../models/comisiones.interface';
+import {Comisiones, OpcionesArchivos} from '../../models/comisiones.interface';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
@@ -55,7 +55,8 @@ export class ComisionesComponent implements OnInit {
   fechaAnterior: Date = new Date();
 
   paginacionConFiltrado: boolean = false;
-
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
 
@@ -68,7 +69,8 @@ export class ComisionesComponent implements OnInit {
     private calculoComisionesService: CalculoComisionesService,
     private router: Router,
     private cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private descargaArchivosService: DescargaArchivosService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -143,7 +145,7 @@ export class ComisionesComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosComisiones = this.crearSolicitudFiltros();
+    const filtros: FiltrosComisiones = this.crearSolicitudFiltros("pdf");
     this.cargadorService.activar();
     this.calculoComisionesService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -164,7 +166,7 @@ export class ComisionesComponent implements OnInit {
     this.paginarConFiltros();
   }
 
-  crearSolicitudFiltros(): FiltrosComisiones {
+  crearSolicitudFiltros(tipoReporte: string): FiltrosComisiones {
     const fechaInicial = this.filtroFormComisiones.get('fechaInicial')?.value !== null ? moment(this.filtroFormComisiones.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroFormComisiones.get('fechaFinal')?.value !== null ? moment(this.filtroFormComisiones.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
     return {
@@ -174,6 +176,7 @@ export class ComisionesComponent implements OnInit {
       promotores: this.filtroFormComisiones.get("promotores")?.value,
       fechaInicial: fechaInicial,
       fechaFinal: fechaFinal,
+      tipoReporte: tipoReporte
     }
   }
 
@@ -211,6 +214,43 @@ export class ComisionesComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     })
+  }
+
+  guardarPDF(): void {
+    const solicitud: FiltrosComisiones = this.crearSolicitudFiltros("pdf");
+    this.cargadorService.activar();
+    this.descargaArchivosService.descargarArchivo(this.calculoComisionesService.descargarListadoComisiones(solicitud)).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: boolean): void => {
+        this.mostrarModalDescargaExitosa = true;
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
+
+  guardarExcel(): void {
+    const solicitud: FiltrosComisiones = this.crearSolicitudFiltros('xls');
+    this.cargadorService.activar();
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    this.descargaArchivosService.descargarArchivo(this.calculoComisionesService.descargarListadoComisiones(solicitud), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: boolean): void => {
+        this.mostrarModalDescargaExitosa = true;
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
   }
 
   get f() {
