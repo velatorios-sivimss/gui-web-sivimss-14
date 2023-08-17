@@ -169,15 +169,15 @@ export class OrdenesServicioComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      delegacion: [{value: null, disabled: false}, []],
-      velatorio: [{value: null, disabled: false}, []],
-      numeroFolio: [{value: null, disabled: false}, []],
+             delegacion: [{value: null, disabled: false}],
+              velatorio: [{value: null, disabled: false}],
+            numeroFolio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
-      nombreFinado: [{value: null, disabled: false}],
-      tipoOrden: [{value: null, disabled: false}, []],
+           nombreFinado: [{value: null, disabled: false}],
+              tipoOrden: [{value: null, disabled: false}],
       unidadProcedencia: [{value: null, disabled: false}, [Validators.required]],
-      numeroContrato: [{value: null, disabled: false}, []],
-      estatus: [{value: null, disabled: false}, []]
+         numeroContrato: [{value: null, disabled: false}],
+                estatus: [{value: null, disabled: false}]
     });
   }
 
@@ -340,7 +340,7 @@ export class OrdenesServicioComponent implements OnInit {
     if(query?.length < 3)return;
     for (let i = 0; i < (this.nombresContratantes as any[]).length; i++) {
       let contratante = (this.nombresContratantes as any[])[i];
-      if (contratante.nombreCompletoContratante.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+      if (contratante.nombreCompletoContratante?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
 
         filtered.push({
             label: contratante.nombreCompletoContratante,
