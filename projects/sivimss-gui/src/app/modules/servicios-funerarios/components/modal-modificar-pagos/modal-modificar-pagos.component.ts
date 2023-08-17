@@ -156,7 +156,7 @@ export class ModalModificarPagosComponent implements OnInit {
 
   generarObjetoModificar(): RegistrarPago {
     return {
-      idPlan: +this.idPlanSpfa,
+      idPago: +this.idPlanSpfa,
       idTipoPago: +this.formulario.metodoPago.value ?? null,
       fechaPago: this.formulario.fecha.value ? moment(this.formulario.fecha.value).format('YYYY-MM-DD') : null,
       numeroAutorizacion: this.formulario.numeroAutorizacion.value ?? null,
