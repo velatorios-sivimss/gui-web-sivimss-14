@@ -14,8 +14,8 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 47, "consulta-comisiones", "", "");
   }
 
-  private readonly _promotores: string = 'listprom-comisiones';
   private readonly _filtros: string = 'buscar-comisiones';
+  private readonly _imprimirComisiones: string = 'gendocto-comisiones';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -60,5 +60,13 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}?servicio=listprom-comisiones`);
   }
 
+  descargarListadoComisiones(body: any): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirComisiones}/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
+  }
 
 }
