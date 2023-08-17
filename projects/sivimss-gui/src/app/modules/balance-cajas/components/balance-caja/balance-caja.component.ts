@@ -1,0 +1,294 @@
+import {BalanceCaja} from '../../models/balance-caja.interface';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {LazyLoadEvent} from 'primeng/api';
+import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
+import {BalanceCajaService} from '../../services/balance-caja.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {FiltrosBalanceCaja} from "../../models/filtros-balance-caja.interface";
+import {finalize} from "rxjs/operators";
+import {of} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {RealizarCierreComponent} from '../realizar-cierre/realizar-cierre.component';
+import {TIPO_CONVENIOS} from "../../constants/convenios";
+import {TIPO_PAGO} from "../../constants/tipos-pago";
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { DatePipe } from '@angular/common';
+
+type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
+
+@Component({
+  selector: 'app-balance-caja',
+  templateUrl: './balance-caja.component.html',
+  styleUrls: ['./balance-caja.component.scss'],
+  providers: [DialogService, DescargaArchivosService, DatePipe]
+})
+export class BalanceCajaComponent implements OnInit {
+
+  @ViewChild(OverlayPanel)
+  overlayPanel!: OverlayPanel;
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
+
+  numPaginaActual: number = 0;
+  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
+  totalElementos: number = 0;
+
+  balanceCaja: BalanceCaja[] = [];
+  balanceCajaSeleccionado!: BalanceCaja;
+  filtroFormBalanceCaja!: FormGroup;
+  modificacionRef!: DynamicDialogRef;
+
+  catalogoNiveles: TipoDropdown[] = [];
+  catatalogoDelegaciones: TipoDropdown[] = [];
+  catalogoVelatorios: TipoDropdown[] = [];
+  tipoConvenio: TipoDropdown[] = TIPO_CONVENIOS;
+  opciones: TipoDropdown[] = TIPO_PAGO;
+
+  fechaActual: Date = new Date();
+  fechaAnterior: Date = new Date();
+  ventanaConfirmacion: boolean = false;
+  paginacionConFiltrado: boolean = false;
+
+  readonly POSICION_CATALOGO_NIVELES: number = 0;
+  readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
+  convenioSeleccionado: number = 1;
+  mensajeArchivoConfirmacion: string = "";
+  mostrarModalConfirmacion: boolean = false;
+  esModificacion: boolean = true;
+  rol: any;
+
+  constructor(
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    private breadcrumbService: BreadcrumbService,
+    private alertaService: AlertaService,
+    public dialogService: DialogService,
+    private balanceCajaService: BalanceCajaService,
+    private router: Router,
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
+    private datePipe: DatePipe
+  ) {
+    this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
+  }
+
+  ngOnInit(): void {
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
+    console.log("ID ROL: ", this.rol);
+    this.inicializarFiltroForm();
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
+    this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    this.obtenerVelatorios();
+  }
+
+  abrirPanel(event: MouseEvent, balanceCajaSeleccionado: BalanceCaja): void {
+    this.balanceCajaService.balanceSeleccionado = balanceCajaSeleccionado;
+    this.balanceCajaSeleccionado = balanceCajaSeleccionado;
+    this.validarFecha();
+    this.overlayPanel.toggle(event);
+  }
+
+  validarFecha() {
+    const fechaSeleccionada = new Date(this.filtroFormBalanceCaja.get('fecha')?.value);
+    const fechaHoy = new Date();
+
+    // Elimina las horas, minutos, segundos y milisegundos de la fecha de hoy
+    fechaHoy.setHours(0, 0, 0, 0);
+
+    if (fechaSeleccionada.getTime() === fechaHoy.getTime()) {
+      console.log('La fecha es del día actual.');
+      this.esModificacion = true;
+    } else if (fechaSeleccionada.getTime() < fechaHoy.getTime()) {
+      console.log('La fecha es menor al día de hoy.');
+      this.esModificacion = false;
+    } else {
+      console.log('La fecha es mayor al día de hoy.');
+    }
+  }
+
+  inicializarFiltroForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroFormBalanceCaja = this.formBuilder.group({
+      nivel: [{value: +usuario.idOficina, disabled: true}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
+      folioODS: [{value: null, disabled: false}],
+      folioNuevo: [{value: null, disabled: false}],
+      folioRenovacion: [{value: null, disabled: false}],
+      fecha: [{value: null, disabled: false}],
+      metodo: [{value: null, disabled: false}],
+    });
+  }
+
+  seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+    }
+    if (this.paginacionConFiltrado) {
+      this.paginarConFiltros();
+    } else {
+      this.paginar();
+    }
+  }
+
+  paginar(): void {
+    this.cargadorService.activar();
+    let filtros: FiltrosBalanceCaja = this.crearSolicitudFiltros();
+    delete filtros.tipoReporte;
+    if (filtros.fecha === null) {
+      filtros.fecha = this.datePipe.transform(new Date(), 'YYYY-MM-dd')
+    }
+    this.balanceCajaService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.balanceCaja = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
+
+  paginarConFiltros(): void {
+    let filtros: FiltrosBalanceCaja = this.crearSolicitudFiltros();
+    delete filtros.tipoReporte;
+    this.cargadorService.activar();
+    this.balanceCajaService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.balanceCaja = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
+
+  buscar(): void {
+    this.numPaginaActual = 0;
+    this.paginacionConFiltrado = true;
+    this.paginarConFiltros();
+  }
+
+  crearSolicitudFiltros(): FiltrosBalanceCaja {
+    return {
+      idNivel: this.filtroFormBalanceCaja.get("nivel")?.value === "" ? null : this.filtroFormBalanceCaja.get("nivel")?.value,
+      idDelegacion: this.filtroFormBalanceCaja.get("delegacion")?.value === "" ? null : this.filtroFormBalanceCaja.get("delegacion")?.value,
+      idVelatorio: this.filtroFormBalanceCaja.get("velatorio")?.value === "" ? null : this.filtroFormBalanceCaja.get("velatorio")?.value,
+      tipoConvenio: this.convenioSeleccionado,
+      folioODS: this.filtroFormBalanceCaja.get("folioODS")?.value,
+      folioNuevoConvenio: this.filtroFormBalanceCaja.get("folioNuevo")?.value,
+      folioRenovacionConvenio: this.filtroFormBalanceCaja.get("folioRenovacion")?.value,
+      fecha: this.datePipe.transform(this.filtroFormBalanceCaja.get("fecha")?.value, 'YYYY-MM-dd'),
+      idMetodoPago: this.filtroFormBalanceCaja.get("metodo")?.value === "" ? null : this.filtroFormBalanceCaja.get("metodo")?.value,
+      tipoReporte: "pdf"
+    }
+  }
+
+  limpiar(): void {
+    this.filtroFormBalanceCaja.reset();
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    if (this.filtroFormBalanceCaja) {
+      const formularioDefault = {
+        nivel: +usuario?.idOficina,
+        delegacion: +usuario?.idDelegacion,
+        velatorio: +usuario?.idVelatorio
+      }
+      this.filtroFormDir.resetForm(formularioDefault);
+    }
+    this.obtenerVelatorios();
+    this.paginar();
+  }
+
+  obtenerVelatorios(): void {
+    const idDelegacion = this.filtroFormBalanceCaja.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.balanceCajaService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+      }
+    });
+  }
+
+  exportarArchivo(extension: string) {
+    this.cargadorService.activar();
+    let filtros = this.crearSolicitudFiltros();
+    // filtros.folioODS = "DOC-0000005";
+    // filtros.folioNuevoConvenio = "DOC-000010";
+    // filtros.fecha = null;
+    // filtros.idDelegacion = null;
+    // filtros.idVelatorio = null;
+    // filtros.idMetodoPago = null;
+    // filtros.idNivel = null;
+    const configuracionArchivo: OpcionesArchivos = {};
+    if(extension.includes("xls")){
+      configuracionArchivo.ext = "xlsx"
+    }
+    filtros.tipoReporte = extension;
+    this.descargaArchivosService.descargarArchivo(this.balanceCajaService.descargarReporte(filtros)).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        console.log(respuesta)
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error)
+      },
+    });
+  }
+
+  abrirModalCierre(): void {
+    this.modificacionRef = this.dialogService.open(RealizarCierreComponent, {
+      header: 'Cierre',
+      width: '520px',
+      data: {valeSeleccionado: this.balanceCajaSeleccionado},
+    });
+
+    this.modificacionRef.onClose.subscribe(() => {
+      this.paginar();
+    })
+  }
+
+  aceptar() {
+  }
+
+  cerrar(): void {
+    this.modificacionRef.close();
+  }
+
+  get f() {
+    return this.filtroFormBalanceCaja?.controls;
+  }
+
+}

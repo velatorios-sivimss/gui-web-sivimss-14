@@ -305,8 +305,8 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(respuesta){
-        this.fds.municipio.setValue(respuesta.datos[0].localidad.municipio.nombre);
-        this.fds.estado.setValue(respuesta.datos[0].localidad.municipio.entidadFederativa.nombre);
+        this.fds.municipio.setValue(respuesta.datos[0].municipio.nombre);
+        this.fds.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
         this.fds.colonia.setValue(respuesta.datos[11].nombre);
           return
         }

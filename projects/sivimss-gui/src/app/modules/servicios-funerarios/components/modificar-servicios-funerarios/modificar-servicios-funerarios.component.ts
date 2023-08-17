@@ -583,10 +583,10 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
           if (respuesta) {
             formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
             formularios[posicion].municipio.setValue(
-              respuesta.datos[0].localidad.municipio.nombre
+              respuesta.datos[0].municipio.nombre
             );
             formularios[posicion].estado.setValue(
-              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+              respuesta.datos[0].municipio.entidadFederativa.nombre
             );
             return;
           }

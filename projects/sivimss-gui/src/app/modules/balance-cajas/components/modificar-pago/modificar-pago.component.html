@@ -1,0 +1,138 @@
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal titulo="Realizar balance de caja" class="col"></app-titulo-principal>
+</div>
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">Folio {{ 111 }}</span>
+    </div>
+  </ng-template>
+  <div class="panel-table-container">
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha:</label>
+          <span>{{ balanceSeleccionado.fecha }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Delegación:</label>
+          <span>{{ balanceSeleccionado.delegacion }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Velatorio:</label>
+          <span>{{ balanceSeleccionado.velatorio }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Estatus:</label>
+          <span>{{ balanceSeleccionado.estatus }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Tipo de ingreso</label>
+          <span>{{ balanceSeleccionado.tipoIngreso }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Estatus de pago:</label>
+          <span>{{ balanceSeleccionado.estatusPago }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Método de pago:</label>
+          <span>{{ balanceSeleccionado.metodoPago }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Importe:</label>
+          <span>{{ balanceSeleccionado.importe | currency }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Ingreso neto:</label>
+          <span>{{ balanceSeleccionado.ingresoNeto | currency }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha de cierre:</label>
+          <span>{{ fechaCierre }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Hora de cierre:</label>
+          <span>{{ horaCierre }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Estatus de caja:</label>
+          <span>{{ balanceSeleccionado.estatusCaja }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-table-container p-0 mt-3" *ngIf="!esModificacion">
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Motivo de la modificación:</label>
+          <span>{{ balanceSeleccionado.modifPago }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+
+<ng-container *ngIf="esModificacion">
+  <form [formGroup]="modificarPagoForm">
+    <div class="row mb-3 mt-3">
+      <div class="col-md-12">
+        <label class="control-label" for="modificarPago">Motivo de modificación<span class="req">*</span>:</label>
+        <textarea rows="4" class="form-control" pInputTextarea formControlName="modificarPago"
+          placeholder="Ingresa el motivo de la modificación" maxlength="100"></textarea>
+        <span class="campo-obligatorio"
+          *ngIf="ref.modificarPago?.errors?.required && (ref.modificarPago?.dirty || ref.modificarPago?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <span class="mensaje-inferior-campo-obligatorio">
+          *Campos obligatorios
+        </span>
+      </div>
+    </div>
+  </form>
+</ng-container>
+<section>
+  <div class="row mb-3" *ngIf="!esModificacion">
+    <div class="col-md-12 flex justify-content-end align-items-center">
+      <button class="ml-4 btn btn-default btn-md" routerLink="../">Regresar</button>
+    </div>
+  </div>
+  <div class="row mb-3" *ngIf="esModificacion">
+    <div class="col-md-12 flex justify-content-end align-items-center">
+      <button class="ml-4 btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+      <button class="ml-4 btn btn-md btn-primary" [disabled]="modificarPagoForm.invalid" (click)="modificarPago();">Aceptar</button>
+    </div>
+  </div>
+</section>

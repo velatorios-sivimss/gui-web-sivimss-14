@@ -125,7 +125,7 @@
     <div class="row mb-3">
       <div class="col-md-12">
         <label class="control-label" for="justificacion">Justificación<span class="req">*</span>:</label>
-        <input id="justificacion" class="form-control" formControlName="justificacion"
+        <input id="justificacion" class="form-control" formControlName="justificacion" maxlength="100"
           placeholder="Ingresa la justificación" required="true" alphanumericOnly trimmer>
         <span class="campo-obligatorio"
           *ngIf="hrf.justificacion?.errors?.required && (hrf.justificacion?.dirty || hrf.justificacion?.touched)">Este
@@ -155,7 +155,7 @@
     <div class="flex justify-content-end">
       <button class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
       <button class="ml-4 btn btn-primary btn-md" [disabled]="habilitarRenovacionForm.invalid"
-        (click)="renovarConvenio()">Habilitar</button>
+        (click)="renovarConvenio()">Aceptar</button>
     </div>
   </div>
 </ng-container>

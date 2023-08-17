@@ -13,7 +13,7 @@ import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/a
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { CATALOGOS_DUMMIES } from '../../../articulos/constants/dummies';
-import { ModalComisionComponent } from '../modal-comision/modal-comision.component';  
+import { ModalComisionComponent } from '../modal-comision/modal-comision.component';
 
 @Component({
   selector: 'app-detalle-comision',
@@ -48,7 +48,6 @@ export class DetalleComisionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    debugger
     if (!this.detalleForm) {
       const respuesta = this.route.snapshot.data["respuesta"];
       this.detalleComision = respuesta[this.POSICION_DETALLE_VALE_SALIDA]?.datos;
