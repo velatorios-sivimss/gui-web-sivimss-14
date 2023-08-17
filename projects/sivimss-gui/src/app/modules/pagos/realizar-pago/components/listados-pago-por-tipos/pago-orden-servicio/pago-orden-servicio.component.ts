@@ -2,11 +2,13 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {OverlayPanel} from "primeng/overlaypanel";
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {RegistrarTipoPagoComponent} from "../../registrar-pago/registrar-tipo-pago/registrar-tipo-pago.component";
 import {RegistrarAgfComponent} from "../../registrar-pago/registrar-agf/registrar-agf.component";
-import {RegistrarValeParitariaComponent} from "../../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
+import {
+  RegistrarValeParitariaComponent
+} from "../../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
 import {RealizarPagoService} from "../../../services/realizar-pago.service";
 import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
@@ -40,6 +42,9 @@ interface RegistroModal {
   providers: [DialogService]
 })
 export class PagoOrdenServicioComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -104,7 +109,12 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   registrarPago(): void {
+    this.tipoPago = [...TIPO_PAGO_CATALOGOS_ODS];
+    if (this.pagoSeleccionado.valeP > 0 || this.pagoSeleccionado.nss) {
+      this.tipoPago.shift()
+    }
     this.pagoODSModal = !this.pagoODSModal;
+    this.filtroFormDir.resetForm();
   }
 
   seleccionarPago(): void {

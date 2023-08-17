@@ -2,16 +2,16 @@
 <section class="mb-3">
   <app-table-panel>
     <ng-template appCustomTemplate="left-header">
-      <div class="table-panel-header-column">
-        <span class="font-bold">Folio plan SFPA</span>
+      <div class="table-panel-header-column" *ngIf="detalleServicio?.numFolio">
+        <span class="font-bold">Folio plan SFPA {{detalleServicio.numFolio}}</span>
       </div>
     </ng-template>
     <ng-template appCustomTemplate="right-header">
       <div class="table-panel-header-column">
         <div class="flex flex-column">
           <span>Estatus pago</span>
-          <div class="contenedor-inputswitch">
-            <span class="font-bold">Pendiente</span>
+          <div class="contenedor-inputswitch" *ngIf="detalleServicio?.estatusPlan">
+            <span class="font-bold">{{detalleServicio.estatusPlan}}</span>
           </div>
         </div>
         <a class="ml-5 cursor-pointer" (click)="overlayPanelHeader.toggle($event)">
@@ -31,7 +31,7 @@
             <div class="col-md">
               <span>Nombre(s) del contratante</span>
             </div>
-            <div class="col-md">
+            <div class="col-md" *ngIf="detalleServicio?.contratanteSubstituto">
               <span class="font-bold"> {{detalleServicio.contratanteSubstituto}} </span>
             </div>
           </div>
@@ -41,7 +41,7 @@
             <div class="col-md">
               <span>Estado</span>
             </div>
-            <div class="col-md">
+            <div class="col-md" *ngIf="detalleServicio?.estado">
               <span class="font-bold">{{detalleServicio.estado}}</span>
             </div>
           </div>
@@ -51,7 +51,7 @@
             <div class="col-md">
               <span>Correo electrónico</span>
             </div>
-            <div class="col-md">
+            <div class="col-md" *ngIf="detalleServicio?.correo">
               <span class="font-bold">{{detalleServicio.correo}}</span>
             </div>
           </div>
@@ -61,7 +61,7 @@
             <div class="col-md">
               <span>Paquete</span>
             </div>
-            <div class="col-md">
+            <div class="col-md" *ngIf="detalleServicio?.nombrePaquete">
               <span class="font-bold">{{detalleServicio.nombrePaquete}}</span>
             </div>
           </div>
@@ -96,8 +96,8 @@
             <td>{{pagosRealizados.estatusPago}}</td>
             <td>
               <div class="contenedor-celda-iconos">
-                <a class="ml-5 cursor-pointer" (click)="overlayPanelBody.toggle($event)">
-                  <!--                <a (click)="abrirPanelBody($event,detallePago)">-->
+<!--                <a class="ml-5 cursor-pointer" (click)="overlayPanelBody.toggle($event)">-->
+                                  <a (click)="abrirPanelBody($event,pagosRealizados)">
                   <img
                     src="assets/images/imagen-icono-barras-horizontales.svg"
                     alt="icono barras horizontales">
@@ -115,17 +115,17 @@
         </ng-template>
       </p-table>
       <div class="row ml-5">
-        <div class="col-md-7 mt-6">
+        <div class="col-md-7 mt-6" *ngIf="detalleServicio?.restante">
           <span>Aún debes pagar esta cantidad para cubrir el total del plan SPFA <span
             class="font-bold">{{detalleServicio.restante | currency:"USD":"symbol"}}</span></span>
         </div>
         <div class="col-md-5">
           <div class="flex justify-content-end">
-            <div class="col-md-4">
+            <div class="col-md-4" *ngIf="detalleServicio?.totalPagado">
               <label>Total pagado</label><br/>
               <span>{{detalleServicio.totalPagado | currency:"USD":"symbol"}}</span>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4" *ngIf="detalleServicio?.total">
               <label>Total a pagar</label><br/>
               <span>{{detalleServicio.total | currency:"USD":"symbol"}}</span>
             </div>
@@ -153,20 +153,20 @@
   </div>
 </section>
 
+<p-overlayPanel #overlayPanelBody>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion onCloseOnNavigation titulo="Modificar método" (click)="abrirModalModificarPago()" ></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion onCloseOnNavigation titulo="Eliminar método" (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
 <p-overlayPanel #overlayPanelHeader>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion onCloseOnNavigation titulo="Realizar pago" (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
 <!--      <app-overlay-panel-opcion titulo="Ver contrato"></app-overlay-panel-opcion>-->
 <!--      <app-overlay-panel-opcion titulo="Detalles"></app-overlay-panel-opcion>-->
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel>
-<p-overlayPanel #overlayPanelBody>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Modificar método" ></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Eliminar método" (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

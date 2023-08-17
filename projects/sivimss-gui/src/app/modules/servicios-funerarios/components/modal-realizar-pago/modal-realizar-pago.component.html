@@ -58,10 +58,10 @@
                      [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="Ingresa el importe"
                      [maxlength]="10" currency="USD" locale="en-US"></p-inputNumber>
     </div>
-    <div class="col-md-6" *ngIf="validacion.totalPagar">
-      <label class="control-label" for="totalPagar">Total, a pagar:</label>
-      <input id="totalPagar" class="form-control" placeholder="Ingrese el total a pagar" formControlName="totalPagar">
-    </div>
+<!--    <div class="col-md-6" *ngIf="validacion.totalPagar">-->
+<!--      <label class="control-label" for="totalPagar">Total, a pagar:</label>-->
+<!--      <input id="totalPagar" class="form-control" placeholder="Ingrese el total a pagar" formControlName="totalPagar">-->
+<!--    </div>-->
 
   </div>
   <div class="row mb-3">
@@ -77,117 +77,6 @@
     </div>
   </div>
 </form>
-
-<!--<ng-container *ngIf="true">-->
-<!--  <app-table-panel class="mb-6 block">-->
-
-<!--    <div class="row table-panel-row">-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Fecha de pago</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Folio Plan SFPA</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Tipo de pago</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    <div class="row table-panel-row">-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Número de pago</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Total a cubrir</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Monto mensual a cubrir</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    <div class="row table-panel-row">-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Método de pago</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Folio de autorización</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Banco</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    <div class="row table-panel-row">-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Método de pago</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Folio de autorización</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Banco</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    <div class="row table-panel-row">-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Fecha</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Importe</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="col-md-4">-->
-<!--        <div class="table-panel-column">-->
-<!--          <label>Total pagado</label>-->
-<!--          <span></span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </app-table-panel>-->
-<!--</ng-container>-->
-
 <div class="row mt-2">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-gold btn-md ml-3" (click)="cerrarModal()">Cancelar</button>

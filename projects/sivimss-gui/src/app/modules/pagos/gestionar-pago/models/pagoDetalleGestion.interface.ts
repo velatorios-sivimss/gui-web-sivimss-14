@@ -1,6 +1,7 @@
 import {MetodoPagoGestion} from "./metodoPagoGestion.interface";
 
 export interface PagoDetalleGestion {
+  montoTotal: number;
   fecha: string,
   folio: string,
   nomContratante: string,

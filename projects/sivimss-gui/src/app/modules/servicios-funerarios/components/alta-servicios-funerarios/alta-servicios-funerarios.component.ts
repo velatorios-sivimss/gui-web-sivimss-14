@@ -568,7 +568,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       finalize(()=>this.cargadorService.desactivar())
     ).subscribe({
       next:(respuesta: HttpRespuesta<any>) => {
-        this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(30) +
+          " del convenio con folio " + respuesta.mensaje);
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,

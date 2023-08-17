@@ -35,6 +35,7 @@ import { ModalEliminarPagoComponent } from './components/modal-eliminar-pago/mod
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 import {DetallePagoService} from "./services/detalle-pago.service";
+import { ModalModificarPagosComponent } from './components/modal-modificar-pagos/modal-modificar-pagos.component';
 
 @NgModule({
   declarations:[
@@ -44,7 +45,8 @@ import {DetallePagoService} from "./services/detalle-pago.service";
     CancelarServiciosFunerariosComponent,
     ModificarServiciosFunerariosComponent,
     ModalRealizarPagoComponent,
-    ModalEliminarPagoComponent
+    ModalEliminarPagoComponent,
+    ModalModificarPagosComponent
   ],
   imports: [
     CommonModule,

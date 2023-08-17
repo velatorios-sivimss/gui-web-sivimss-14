@@ -1,9 +1,9 @@
 <div class="grid">
-  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../../"></app-btn-regresar>
   <app-titulo-principal titulo="Generar Formato Pagaré" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (ngSubmit)="buscar()">
+  <form [formGroup]="filtroForm" (ngSubmit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
@@ -58,8 +58,11 @@
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">
+          Limpiar
+        </button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar
+        </button>
       </div>
     </div>
   </form>
