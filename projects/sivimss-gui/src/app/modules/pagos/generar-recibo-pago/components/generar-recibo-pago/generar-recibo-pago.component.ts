@@ -16,7 +16,11 @@ import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown, obtenerDelegacionUsuarioLogueado, obtenerNivelUsuarioLogueado,
+  obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
@@ -95,10 +99,11 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     this.filtroFormReciboPago = this.formBuilder.group({
-      nivel: [{value: +usuario?.idOficina, disabled: true}],
-      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario.idOficina > 1}],
-      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3}],
+      nivel: [{value: nivel, disabled: true}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: nivel > 1}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: nivel === 3}],
       folio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
@@ -189,9 +194,9 @@ export class GenerarReciboPagoComponent implements OnInit {
     this.filtroFormReciboPago.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const DEFAULT = {
-      nivel: +usuario?.idOficina,
-      delegacion: +usuario?.idDelegacion,
-      velatorio: usuario?.idVelatorio
+      nivel: obtenerNivelUsuarioLogueado(usuario),
+      delegacion: obtenerDelegacionUsuarioLogueado(usuario),
+      velatorio: obtenerVelatorioUsuarioLogueado(usuario)
     }
     this.filtroFormDir.resetForm(DEFAULT);
     this.obtenerVelatorios();

@@ -1,4 +1,5 @@
 import {TipoDropdown} from "../models/tipo-dropdown";
+import {UsuarioEnSesion} from "../models/usuario-en-sesion.interface";
 
 export function diferenciaUTC(fecha: string, divisor: string = "/"): number {
   const [dia, mes, anio]: string[] = fecha.split(divisor);
@@ -58,4 +59,18 @@ export function existeMensajeEnEnum(enumObj: { [s: string]: string }, valor: str
 
 export function validarUsuarioLogueado(): boolean {
   return !localStorage.getItem('sivimss_token');
+}
+
+export function obtenerNivelUsuarioLogueado(usuario: UsuarioEnSesion): number {
+  return +usuario.idOficina
+}
+
+export function obtenerDelegacionUsuarioLogueado(usuario: UsuarioEnSesion): number | null {
+  const {idDelegacion} = usuario;
+  return +idDelegacion === 0 ? null : +idDelegacion;
+}
+
+export function obtenerVelatorioUsuarioLogueado(usuario: UsuarioEnSesion): number | null {
+  const {idVelatorio} = usuario;
+  return +idVelatorio === 0 ? null : +idVelatorio;
 }

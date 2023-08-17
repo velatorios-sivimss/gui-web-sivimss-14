@@ -5,7 +5,11 @@ import {FormBuilder, FormGroup, FormGroupDirective} from "@angular/forms";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {
+  mapearArregloTipoDropdown, obtenerNivelUsuarioLogueado,
+  obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from "../../../../../utils/funciones";
 import {GestionarPagoService} from "../../services/gestionar-pago.service";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {finalize} from "rxjs/operators";
@@ -93,7 +97,7 @@ export class GestionarPagoComponent implements OnInit {
   inicializarForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroGestionarPagoForm = this.formBuilder.group({
-      velatorio: [{value: usuario?.idVelatorio, disabled: false}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: obtenerNivelUsuarioLogueado(usuario) === 3}],
       folioODS: [{value: null, disabled: false}],
       folioPNCPF: [{value: null, disabled: false}],
       folioPRCPF: [{value: null, disabled: false}],
@@ -114,7 +118,7 @@ export class GestionarPagoComponent implements OnInit {
     if (this.filtroGestionarPagoForm) {
       this.tipoFolio = null;
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroFormDir.resetForm({velatorio: +usuario?.idVelatorio});
+      this.filtroFormDir.resetForm({velatorio: obtenerVelatorioUsuarioLogueado(usuario)});
     }
     this.numPaginaActual = 0;
     this.paginar();
