@@ -14,8 +14,8 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 47, "consulta-comisiones", "", "");
   }
 
-  private readonly _promotores: string = 'listprom-comisiones';
   private readonly _filtros: string = 'buscar-comisiones';
+  private readonly _imprimirComisiones: string = 'gendocto-comisiones';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -40,12 +40,33 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
       {params});
   }
   
-  obtenerDetalleComision(idComision: number): Observable<HttpRespuesta<any>> {
+  obtenerDetallePromotor(idComision: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=detalle-comisiones`);
+  }
+
+  obtenerDetalleODS(idComision: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=ordenes-comisiones`);
+  }
+
+  obtenerDetalleConveniosPF(idComision: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=convenios-comisiones`);
+  }
+
+  obtenerDetalleComisiones(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detcomi-comisiones`,body);
   }
 
   obtenerPromotores(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}?servicio=listprom-comisiones`);
+  }
+
+  descargarListadoComisiones(body: any): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirComisiones}/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
   }
 
 }

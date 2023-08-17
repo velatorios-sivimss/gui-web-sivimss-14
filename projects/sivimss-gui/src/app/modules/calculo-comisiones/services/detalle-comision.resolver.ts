@@ -11,8 +11,10 @@ export class DetalleComisionResolver implements Resolve<any> {
     constructor(private calculoComisionesService: CalculoComisionesService) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-        const id = +(route.paramMap.get('id') || 0);
-        const detalleComision$ = this.calculoComisionesService.obtenerDetalleComision(id);
-        return forkJoin([detalleComision$]);
+        const idComision = +(route.paramMap.get('id') || 0);
+        const detallePromotor$ = this.calculoComisionesService.obtenerDetallePromotor(idComision);
+        const detalleODS$ = this.calculoComisionesService.obtenerDetalleODS(idComision);
+        const detalleConveniosPF$ = this.calculoComisionesService.obtenerDetalleConveniosPF(idComision);
+        return forkJoin([detallePromotor$, detalleODS$, detalleConveniosPF$]);
     }
 }
