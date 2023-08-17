@@ -1,5 +1,5 @@
 export interface RegistrarPago{
-              idPlan: null | number;
+             idPlan?: null | number;
           idTipoPago: null | number;
            fechaPago: null | string;
   numeroAutorizacion: null | string;
