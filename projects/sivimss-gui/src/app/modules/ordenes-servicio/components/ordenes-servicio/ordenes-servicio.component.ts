@@ -221,12 +221,12 @@ export class OrdenesServicioComponent implements OnInit {
       cveConvenio: this.formulario.numeroContrato.value ?? null,
       idEstatusODS: this.formulario.estatus.value ?? null,
       tipoReporte: "pdf",
-      nombreFinado: this.formulario.nombreFinado.value?.value.nomContratante ?? null,
-      apPatFinado: this.formulario.nombreFinado.value?.value.apPatContratante ?? null,
-      apMatFinado: this.formulario.nombreFinado.value?.value.apMatContratante ?? null,
+      nombreFinado: this.formulario.nombreFinado.value?.value.nomFinado ?? null,
+      // apPatFinado: this.formulario.nombreFinado.value?.value.apPatContratante ?? null,
+      // apMatFinado: this.formulario.nombreFinado.value?.value.apMatContratante ?? null,
       nombreContratante: this.formulario.nombreContratante.value?.value.nomContratante ?? null,
-      apPatContratante: this.formulario.nombreContratante.value?.value.apPatContratante ?? null,
-      apMatContratante: this.formulario.nombreContratante.value?.value.apMatContratante ?? null,
+      // apPatContratante: this.formulario.nombreContratante.value?.value.apPatContratante ?? null,
+      // apMatContratante: this.formulario.nombreContratante.value?.value.apMatContratante ?? null,
     }
   }
 
@@ -347,9 +347,9 @@ export class OrdenesServicioComponent implements OnInit {
             label: contratante.nombreCompletoContratante,
             value:
               {
-                nomContratante: contratante.nomContratante,
-                apPatContratante: contratante.apPatContratante,
-                apMatContratante: contratante.apMatContratante
+                nomContratante: contratante.nombreCompletoContratante,
+                // apPatContratante: contratante.apPatContratante,
+                // apMatContratante: contratante.apMatContratante
               }
           })
       }
@@ -367,9 +367,9 @@ export class OrdenesServicioComponent implements OnInit {
         filtered.push({
           label: finado.nombreCompletoFinado,
           value: {
-            nomContratante: finado.nomContratante,
-            apPatContratante: finado.apPatContratante,
-            apMatContratante: finado.apMatContratante
+            nomFinado: finado.nombreCompletoFinado,
+            // apPatContratante: finado.apPatContratante,
+            // apMatContratante: finado.apMatContratante
           }
         })
       }
