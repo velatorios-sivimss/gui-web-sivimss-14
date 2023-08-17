@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {BreadcrumbService} from "../../../../../shared/breadcrumb/services/breadcrumb.service";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, FormGroupDirective} from "@angular/forms";
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from "../../../../../utils/constantes";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {LazyLoadEvent} from "primeng/api";
@@ -10,6 +10,8 @@ import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dyna
 import {VerDetalleFacturaComponent} from "../ver-detalle-factura/ver-detalle-factura.component";
 import * as moment from "moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado} from "../../../../../utils/funciones";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-facturacion',
@@ -18,6 +20,9 @@ import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/a
   providers: [DialogService]
 })
 export class FacturacionComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -58,9 +63,13 @@ export class FacturacionComponent implements OnInit {
     this.inicializarFiltroForm();
   }
 
-  private inicializarFiltroForm(): void {
+  inicializarFiltroForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      velatorio: [{value: null, disabled: false}],
+      velatorio: [{
+        value: obtenerVelatorioUsuarioLogueado(usuario),
+        disabled: obtenerNivelUsuarioLogueado(usuario) === 3
+      }],
       ods: [{value: null, disabled: false}],
       folioConvenio: [{value: null, disabled: false}],
       numeroPermiso: [{value: null, disabled: false}],
@@ -82,7 +91,7 @@ export class FacturacionComponent implements OnInit {
     this.filtroForm.get('periodoFin')?.patchValue(null);
   }
 
-  limpiarFolios(folio: 1 | 2 ): void {
+  limpiarFolios(folio: 1 | 2): void {
     if (folio === 1) {
       this.filtroForm.get('folioConvenio')?.patchValue(null);
       return;

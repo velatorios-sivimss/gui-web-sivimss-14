@@ -20,6 +20,7 @@ import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 import { VerDetalleFacturaComponent } from './components/ver-detalle-factura/ver-detalle-factura.component';
 import {AccordionModule} from "primeng/accordion";
 import {FacturacionService} from "./services/facturacion.service";
+import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import {FacturacionService} from "./services/facturacion.service";
         InputSwitchModule,
         NgOptimizedImage,
         TablePanelModule,
-        AccordionModule
+        AccordionModule,
+        BtnRegresarModule
     ],
   providers: [FacturacionService]
 })
