@@ -13,12 +13,15 @@ import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/a
 import {
   mapearArregloTipoDropdown,
   obtenerNivelUsuarioLogueado,
-  obtenerVelatorioUsuarioLogueado
+  obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
 } from "../../../../../utils/funciones";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {FacturacionService} from "../../services/facturacion.service";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
+import {finalize} from "rxjs/operators";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-facturacion',
@@ -37,6 +40,7 @@ export class FacturacionComponent implements OnInit {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  paginacionConFiltrado: boolean = false;
 
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
@@ -45,23 +49,16 @@ export class FacturacionComponent implements OnInit {
 
   velatorios: TipoDropdown[] = [];
   filtroForm!: FormGroup;
-  registros: any[] = [
-    {
-      velatorio: 'No. 14 San Luis Potosí y CD Valles',
-      folio: 'DOC-000001',
-      folioFactura: 'DOC-000002',
-      fechaFactura: '01/01/2022',
-      folioFiscal: 'DOC-000002',
-      estatus: 'Facturada'
-    }
-  ];
+  registros: any[] = [];
 
   constructor(
     private breadcrumbService: BreadcrumbService,
     private formBuilder: FormBuilder,
     private dialogService: DialogService,
     private alertaService: AlertaService,
-    private facturacionService: FacturacionService
+    private facturacionService: FacturacionService,
+    private cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -108,14 +105,67 @@ export class FacturacionComponent implements OnInit {
     this.filtroForm.get('ods')?.patchValue(null);
   }
 
+  buscar(): void {
+    this.numPaginaActual = 0;
+    this.paginacionConFiltrado = true;
+    this.paginarConFiltros();
+  }
+
+  limpiar(): void {
+    this.paginacionConFiltrado = false;
+    if (this.filtroForm) {
+      const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+      this.filtroFormDir.resetForm({velatorio: obtenerVelatorioUsuarioLogueado(usuario)});
+    }
+    this.numPaginaActual = 0;
+    this.paginar();
+  }
+
   seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+    }
+    if (this.paginacionConFiltrado) {
+      this.paginarConFiltros();
+    } else {
+      this.paginar();
     }
   }
 
-  limpiarFiltros(): void {
+  paginarConFiltros(): void {
+    const filtros = this.crearSolicitudFiltros();
+    this.cargadorService.activar();
+    this.facturacionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.registros = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
 
+  paginar(): void {
+    this.cargadorService.activar();
+    this.facturacionService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.registros = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      },
+    });
+  }
+
+  crearSolicitudFiltros() {
+    return {};
   }
 
   obtenerVelatorios(): void {
