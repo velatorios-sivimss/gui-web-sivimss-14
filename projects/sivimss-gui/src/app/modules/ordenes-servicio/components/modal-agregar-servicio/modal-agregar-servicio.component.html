@@ -63,7 +63,7 @@
       </div>
       <div class="col-md-12 flex justify-content-end" *ngIf="botonPresupuesto" [hidden]="ocultarMapa">
         <button type="button" class="btn btn-gold btn-md"  (click)="cerrarModal()">Cancelar</button>
-          <button type="button" class="ml-5 btn btn-primary btn-md" [hidden]="ocultarMapa" [disabled]="form.invalid" (click)="aceptarModal()">Agregar
+          <button type="button" class="ml-5 btn btn-primary btn-md" [hidden]="ocultarMapa" [disabled]="form.invalid" (click)="validarOrigenAgregar()">Agregar
         </button>
       </div>
     </div>
@@ -71,7 +71,7 @@
     <div class="row mb-3" *ngIf="ocultarBtn">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-gold btn-md" (click)="cerrarModal()">Cancelar</button>
-          <button type="button" class="ml-5 btn btn-primary btn-md" [disabled]="form.invalid" (click)="aceptarModal()">Agregar
+          <button type="button" class="ml-5 btn btn-primary btn-md" [disabled]="form.invalid" (click)="validarOrigenAgregar()">Agregar
         </button>
       </div>
     </div>
@@ -143,3 +143,17 @@
     </div>
   </div>
 </ng-template>
+
+<p-dialog header="" [(visible)]="confirmarAgregarTraslado" [style]="{width: '50vw'}"
+          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
+  <div class="row">
+    <p class="text-center">¿Estás seguro de que los puntos origen y destino son los correctos?</p>
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="submit" class="btn btn-default btn-md" (click)="confirmarAgregarTraslado = false">Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptarModal('traslado')">Aceptar</button>
+    </div>
+  </div>
+</p-dialog>

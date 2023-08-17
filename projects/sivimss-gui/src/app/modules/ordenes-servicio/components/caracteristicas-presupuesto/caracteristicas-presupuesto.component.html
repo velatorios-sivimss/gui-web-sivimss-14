@@ -132,7 +132,7 @@
 <!--        (click)="abrirModalVerKm()"></app-overlay-panel-opcion>-->
       <app-overlay-panel-opcion *ngIf="mostrarDonarAtaud" titulo="Donar Ataúd"
           onCloseOnNavigation (click)="abrirModalDonarAtaud($event)"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="mostrarQuitarPresupuesto" titulo="Quitar"
+      <app-overlay-panel-opcion onCloseOnNavigation *ngIf="mostrarQuitarPresupuesto" titulo="Quitar"
         (click)="confQuitarPresupuesto = true"></app-overlay-panel-opcion>
 
     </app-overlay-panel-opciones>
@@ -153,18 +153,18 @@
 <form [formGroup]="form">
   <div class="row mb-2">
     <div class="col-md-6">
-      <label class="control-label" for="observaciones">Observaciones<span class="req">*</span>:</label>
+      <label class="control-label" for="observaciones">Observaciones:</label>
       <input id="observaciones" type="text" class="form-control" formControlName="observaciones" maxlength="100"
         placeholder="Ingresa observaciones">
-      <span class="campo-obligatorio"
-        *ngIf="f.observaciones?.errors?.required && (f.observaciones?.dirty || f.observaciones?.touched)">Este campo es obligatorio *.</span>
+<!--      <span class="campo-obligatorio"-->
+<!--        *ngIf="f.observaciones?.errors?.required && (f.observaciones?.dirty || f.observaciones?.touched)">Este campo es obligatorio *.</span>-->
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="notasServicio">Notas del servicio<span class="req">*</span>:</label>
+      <label class="control-label" for="notasServicio">Notas del servicio:</label>
       <input id="notasServicio" type="text" class="form-control" formControlName="notasServicio" maxlength="80"
         placeholder="Ingresa notas de servicio">
-      <span class="campo-obligatorio"
-        *ngIf="f.notasServicio?.errors?.required && (f.notasServicio?.dirty || f.notasServicio?.touched)">Este campo es obligatorio *.</span>
+<!--      <span class="campo-obligatorio"-->
+<!--        *ngIf="f.notasServicio?.errors?.required && (f.notasServicio?.dirty || f.notasServicio?.touched)">Este campo es obligatorio *.</span>-->
     </div>
   </div>
   <div class="row mt-4">

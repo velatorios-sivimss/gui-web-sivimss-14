@@ -17,6 +17,7 @@ export interface UsuarioContratante {
   idEstado?: number;
   idPais?: number;
   telefono?: number;
+  segundoTel?: number;
   correo?: string;
   calle?: string;
   numExt?: string;

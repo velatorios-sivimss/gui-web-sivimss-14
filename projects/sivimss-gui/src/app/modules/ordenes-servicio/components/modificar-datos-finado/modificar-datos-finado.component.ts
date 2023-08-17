@@ -601,10 +601,10 @@ export class ModificarDatosFinadoComponent
           if (respuesta) {
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
-              respuesta.datos[0].localidad.municipio.nombre
+              respuesta.datos[0].municipio.nombre
             );
             this.direccion.estado.setValue(
-              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+              respuesta.datos[0].municipio.entidadFederativa.nombre
             );
             return;
           }
@@ -894,7 +894,7 @@ export class ModificarDatosFinadoComponent
   async habilitarTodo() {
     await Object.keys(this.datosFinado).forEach((key) => {
       const form = this.form.controls['datosFinado'] as FormGroup;
-      if(key.includes('noContrato'))return;
+      // if(key.includes('noContrato'))return;
       form.controls[key].enable();
     });
 

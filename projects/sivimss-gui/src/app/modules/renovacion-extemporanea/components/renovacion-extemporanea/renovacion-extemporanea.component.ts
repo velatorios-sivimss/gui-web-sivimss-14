@@ -21,6 +21,7 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface'
 import { finalize } from 'rxjs'
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service'
+import { RENOVACION_EXTEMPORANEA_BREADCRUMB } from '../../constants/breadcrumb'
 
 @Component({
   selector: 'app-renovacion-extemporanea',
@@ -48,6 +49,8 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   habilitarRenovacionConvenio!: BusquedaConveniosPrevision;
   mostrarModaltitularFallecido: boolean = false;
   busquedaRealizada: boolean = false;
+  mostrarModalConfirmacion: boolean = false;
+  mensajeConfirmacion: string = "";
 
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
@@ -63,6 +66,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.breadcrumbService.actualizar(RENOVACION_EXTEMPORANEA_BREADCRUMB);
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION];
@@ -110,7 +114,8 @@ export class RenovacionExtemporaneaComponent implements OnInit {
     if (filtros) {
       if (!Object.values(filtros).some(v => (v))) {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(22);
-        this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+        this.mostrarModalConfirmacion = true;
+        this.mensajeConfirmacion = msg;
         return;
       }
       this.loaderService.activar();

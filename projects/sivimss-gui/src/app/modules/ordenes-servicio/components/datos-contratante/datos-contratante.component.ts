@@ -431,9 +431,8 @@ export class DatosContratanteComponent implements OnInit {
               this.datosContratante.lugarNacimiento.setValue(
                 Number(datos.idEstado)
               );
-
-              this.datosContratante.telefono.setValue(datos.telefono);
-              this.datosContratante.correoElectronico.setValue(datos.correo);
+              datos.telefono.includes('null') ? this.datosContratante.telefono.patchValue(null) : this.datosContratante.telefono.setValue(datos.telefono);
+              datos.correo.includes('null') ? this.datosContratante.correoElectronico.patchValue(null) : this.datosContratante.correoElectronico.setValue(datos.correo);
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.municipio.setValue(datos.municipio);
               this.direccion.estado.setValue(datos.estado);
@@ -542,10 +541,10 @@ export class DatosContratanteComponent implements OnInit {
             // this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
-              respuesta.datos[0].localidad.municipio.nombre
+              respuesta.datos[0].municipio.nombre
             );
             this.direccion.estado.setValue(
-              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+              respuesta.datos[0].municipio.entidadFederativa.nombre
             );
             return;
           }

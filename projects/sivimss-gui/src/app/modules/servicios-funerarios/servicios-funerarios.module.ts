@@ -7,6 +7,7 @@ import {CalendarModule} from "primeng/calendar";
 import {DialogModule} from "primeng/dialog";
 import {DropdownModule} from "primeng/dropdown";
 import {DynamicDialogModule} from "primeng/dynamicdialog";
+import {InputNumberModule} from "primeng/inputnumber";
 import {InputSwitchModule} from "primeng/inputswitch";
 import {MultiSelectModule} from "primeng/multiselect";
 import {OverlayPanelModule} from "primeng/overlaypanel";
@@ -21,6 +22,7 @@ import { TituloPrincipalModule } from "../../shared/titulo-principal/titulo-prin
 import { TablePanelModule } from "projects/sivimss-gui/src/app/shared/table-panel/table-panel.module";
 
 import {ServiciosFunerariosComponent} from "./components/servicios-funerarios/servicios-funerarios.component";
+import {ServiciosFunerariosConsultaService} from "./services/servicios-funerarios-consulta.service";
 import {ServiciosFunerariosRoutingModule} from "./servicios-funerarios-routing.module";
 import {ServiciosFunerariosService} from "./services/servicios-funerarios.service";
 import { DetalleServiciosFunerariosComponent } from './components/detalle-servicios-funerarios/detalle-servicios-funerarios.component';
@@ -31,6 +33,9 @@ import { ModificarServiciosFunerariosComponent } from './components/modificar-se
 import { ModalRealizarPagoComponent } from './components/modal-realizar-pago/modal-realizar-pago.component';
 import { ModalEliminarPagoComponent } from './components/modal-eliminar-pago/modal-eliminar-pago.component';
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
+import {DetallePagoService} from "./services/detalle-pago.service";
+import { ModalModificarPagosComponent } from './components/modal-modificar-pagos/modal-modificar-pagos.component';
 
 @NgModule({
   declarations:[
@@ -40,7 +45,8 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
     CancelarServiciosFunerariosComponent,
     ModificarServiciosFunerariosComponent,
     ModalRealizarPagoComponent,
-    ModalEliminarPagoComponent
+    ModalEliminarPagoComponent,
+    ModalModificarPagosComponent
   ],
   imports: [
     CommonModule,
@@ -51,6 +57,7 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
     DynamicDialogModule,
     TituloPrincipalModule,
     TableModule,
+    InputNumberModule,
     InputSwitchModule,
     DialogModule,
     OverlayPanelModule,
@@ -63,9 +70,12 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
     RadioButtonModule,
     AccordionModule,
     UtileriaModule,
+    BtnRegresarModule,
   ],
   providers:[
-    ServiciosFunerariosService
+    ServiciosFunerariosService,
+    ServiciosFunerariosConsultaService,
+    DetallePagoService
   ]
 })
 
