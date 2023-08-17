@@ -219,6 +219,7 @@ export class OrdenesServicioComponent implements OnInit {
       idTipoODS: this.formulario.tipoOrden.value ?? null,
       idUnidadMedica: this.formulario.unidadProcedencia.value ?? null,
       cveConvenio: this.formulario.numeroContrato.value ?? null,
+      idEstatusODS: this.formulario.estatus.value ?? null,
       tipoReporte: "pdf",
       nombreFinado: this.formulario.nombreFinado.value?.value.nomContratante ?? null,
       apPatFinado: this.formulario.nombreFinado.value?.value.apPatContratante ?? null,
