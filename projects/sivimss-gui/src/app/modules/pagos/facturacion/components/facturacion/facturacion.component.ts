@@ -10,8 +10,15 @@ import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dyna
 import {VerDetalleFacturaComponent} from "../ver-detalle-factura/ver-detalle-factura.component";
 import * as moment from "moment";
 import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
-import {obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado} from "../../../../../utils/funciones";
+import {
+  mapearArregloTipoDropdown,
+  obtenerNivelUsuarioLogueado,
+  obtenerVelatorioUsuarioLogueado
+} from "../../../../../utils/funciones";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import {FacturacionService} from "../../services/facturacion.service";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-facturacion',
@@ -54,6 +61,7 @@ export class FacturacionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private dialogService: DialogService,
     private alertaService: AlertaService,
+    private facturacionService: FacturacionService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -61,6 +69,7 @@ export class FacturacionComponent implements OnInit {
   ngOnInit(): void {
     this.breadcrumbService.actualizar(FACTURACION_BREADCRUMB);
     this.inicializarFiltroForm();
+    this.obtenerVelatorios();
   }
 
   inicializarFiltroForm(): void {
@@ -107,6 +116,18 @@ export class FacturacionComponent implements OnInit {
 
   limpiarFiltros(): void {
 
+  }
+
+  obtenerVelatorios(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.facturacionService.obtenerCatalogoVelatorios(usuario?.idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.velatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+      }
+    });
   }
 
   abrirPanel(event: MouseEvent, registro: any): void {
