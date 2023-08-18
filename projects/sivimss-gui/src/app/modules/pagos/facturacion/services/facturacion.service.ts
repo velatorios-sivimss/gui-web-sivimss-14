@@ -9,8 +9,6 @@ import {Observable} from "rxjs";
 @Injectable()
 export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
 
-  private _filtros: string = '';
-
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "", "", 100, "consultar-tabla-facturacion", "", "");
   }
@@ -19,7 +17,7 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._filtros}`, filtros,
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, filtros,
       {params});
   }
 

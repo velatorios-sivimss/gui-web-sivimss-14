@@ -22,6 +22,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {FiltrosFacturacion} from "../../models/filtrosFacturacion.interface";
 
 @Component({
   selector: 'app-facturacion',
@@ -50,6 +51,7 @@ export class FacturacionComponent implements OnInit {
   velatorios: TipoDropdown[] = [];
   filtroForm!: FormGroup;
   registros: any[] = [];
+  tipoPago: number | null = null;
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -98,6 +100,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   limpiarFolios(folio: 1 | 2): void {
+    this.tipoPago = folio;
     if (folio === 1) {
       this.filtroForm.get('folioConvenio')?.patchValue(null);
       return;
@@ -117,6 +120,7 @@ export class FacturacionComponent implements OnInit {
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
       this.filtroFormDir.resetForm({velatorio: obtenerVelatorioUsuarioLogueado(usuario)});
     }
+    this.tipoPago = null;
     this.numPaginaActual = 0;
     this.paginar();
   }
@@ -164,8 +168,24 @@ export class FacturacionComponent implements OnInit {
     });
   }
 
-  crearSolicitudFiltros() {
-    return {};
+  crearSolicitudFiltros(): FiltrosFacturacion {
+    let folio: string | null = null;
+    if(this.tipoPago === 1) folio =  this.filtroForm.get('ods')?.value;
+    if(this.tipoPago === 2) folio =  this.filtroForm.get('folioConvenio')?.value;
+    let fechaFin = this.filtroForm.get('fecha')?.value;
+    if (fechaFin) fechaFin = moment(fechaFin).format('YYYY-MM-DD');
+    let fechaInicio = this.filtroForm.get('fecha')?.value;
+    if (fechaInicio) fechaInicio = moment(fechaInicio).format('YYYY-MM-DD');
+    return {
+      fechaFin,
+      fechaInicio,
+      folio,
+      folioFactura: this.filtroForm.get('folioFactura')?.value,
+      folioFiscal: this.filtroForm.get('folioFiscal')?.value,
+      idFlujoPagos: this.tipoPago,
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      rfc: this.filtroForm.get('rfc')?.value
+    };
   }
 
   obtenerVelatorios(): void {
