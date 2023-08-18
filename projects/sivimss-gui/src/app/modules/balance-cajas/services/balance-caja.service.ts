@@ -12,6 +12,7 @@ import { AutenticacionService } from '../../../services/autenticacion.service';
 export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
   
   balanceSeleccionado: any;
+  filtrosBalanceSeleccionados: any;
 
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 69, "consultar-rec-pagos", "", "");
@@ -46,6 +47,14 @@ export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
   buscarDatosReportePagos(idPagoBitacora: number): Observable<HttpRespuesta<any>> {
     const body: { idPagoBitacora: number } = {idPagoBitacora}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/datos-rec-pagos`, body);
+  }
+
+  modificarPago(datos: any) {
+    return this._http.put<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/balance-caja-modificar-pago`, datos);
+  }
+
+  realizarCierre(datos: any) {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/actualiza-estatus-cierre`, datos);
   }
 
   descargarReporte<T>(body: T): Observable<Blob> {

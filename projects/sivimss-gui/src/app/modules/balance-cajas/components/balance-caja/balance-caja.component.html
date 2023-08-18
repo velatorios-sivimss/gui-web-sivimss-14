@@ -74,10 +74,7 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Campos de Reporte</h2>
-    <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 1" (click)="abrirModalCierre()">Realizar
-      cierre
-    </button>
-    <!-- <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button> -->
+    <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button>
   </div>
 
   <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0"
@@ -138,15 +135,15 @@
           <div class="flex justify-content-between table-footer">
             <div class="flex flex-column">
               <span class="text-2xl font-normal">Total de ingresos</span>
-              <span class="font-bold text-2xl">$10,000.00</span>
+              <span class="font-bold text-2xl">{{ totalIngresos | currency }}</span>
             </div>
             <div class="flex flex-column">
               <span class="text-2xl font-normal">Total de importe</span>
-              <span class="font-bold text-2xl">$16,500.00</span>
+              <span class="font-bold text-2xl">{{ totalImporte | currency }}</span>
             </div>
             <div class="flex flex-column">
               <span class="text-2xl font-normal">Total de registros</span>
-              <span class="font-bold text-2xl">$50,000.00</span>
+              <span class="font-bold text-2xl">{{ totalElementos }}</span>
             </div>
           </div>
         </td>
