@@ -1,12 +1,12 @@
 export interface FiltrosBalanceCaja {
-  idNivel: number,
-  idDelegacion: number,
-  idVelatorio: number,
+  idNivel?: number | null,
+  idDelegacion: number | null,
+  idVelatorio: number | null,
+  tipoConvenio: number,
   folioODS: string,
-  folioNuevo: string,
-  folioRenovacion: string,
-  fecha: string,
-  metodo: string
-  rutaNombreReporte: string,
-  tipoReporte: string,
+  folioNuevoConvenio: string,
+  folioRenovacionConvenio: string,
+  fecha: string | null,
+  idMetodoPago: string | null,
+  tipoReporte?: string,
 }

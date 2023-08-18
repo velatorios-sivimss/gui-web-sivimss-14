@@ -1,43 +1,43 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {
   DIEZ_ELEMENTOS_POR_PAGINA,
   MAX_WIDTH,
 } from '../../../../utils/constantes';
-import { OverlayPanel } from 'primeng/overlaypanel';
+import {OverlayPanel} from 'primeng/overlaypanel';
 import {
   AlertaService,
   TipoAlerta,
 } from '../../../../shared/alerta/services/alerta.service';
-import { BreadcrumbService } from '../../../../shared/breadcrumb/services/breadcrumb.service';
+import {BreadcrumbService} from '../../../../shared/breadcrumb/services/breadcrumb.service';
 
-import { ActivatedRoute } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Usuario } from '../../models/usuario.interface';
-import { UsuarioService } from '../../services/usuario.service';
+import {ActivatedRoute} from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Usuario} from '../../models/usuario.interface';
+import {UsuarioService} from '../../services/usuario.service';
 
-import { TipoDropdown } from '../../../../models/tipo-dropdown';
+import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {
   DialogService,
   DynamicDialogConfig,
   DynamicDialogRef,
 } from 'primeng/dynamicdialog';
-import { AgregarUsuarioComponent } from '../agregar-usuario/agregar-usuario.component';
-import { USUARIOS_BREADCRUMB } from '../../constants/breadcrumb';
-import { FiltrosUsuario } from '../../models/filtrosUsuario.interface';
-import { VerDetalleUsuarioComponent } from '../ver-detalle-usuario/ver-detalle-usuario.component';
-import { RespuestaModalUsuario } from '../../models/respuestaModal.interface';
-import { ModificarUsuarioComponent } from '../modificar-usuario/modificar-usuario.component';
+import {AgregarUsuarioComponent} from '../agregar-usuario/agregar-usuario.component';
+import {USUARIOS_BREADCRUMB} from '../../constants/breadcrumb';
+import {FiltrosUsuario} from '../../models/filtrosUsuario.interface';
+import {VerDetalleUsuarioComponent} from '../ver-detalle-usuario/ver-detalle-usuario.component';
+import {RespuestaModalUsuario} from '../../models/respuestaModal.interface';
+import {ModificarUsuarioComponent} from '../modificar-usuario/modificar-usuario.component';
 import {
   mapearArregloTipoDropdown,
   validarUsuarioLogueado,
 } from '../../../../utils/funciones';
-import { LazyLoadEvent } from 'primeng/api';
-import { LoaderService } from '../../../../shared/loader/services/loader.service';
-import { finalize } from 'rxjs/operators';
-import { CambioEstatusUsuarioComponent } from '../cambio-estatus-usuario/cambio-estatus-usuario.component';
-import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
-import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
+import {LazyLoadEvent} from 'primeng/api';
+import {LoaderService} from '../../../../shared/loader/services/loader.service';
+import {finalize} from 'rxjs/operators';
+import {CambioEstatusUsuarioComponent} from '../cambio-estatus-usuario/cambio-estatus-usuario.component';
+import {HttpRespuesta} from '../../../../models/http-respuesta.interface';
+import {MensajesSistemaService} from '../../../../services/mensajes-sistema.service';
 
 type SolicitudEstatus = Pick<Usuario, 'id'>;
 
@@ -66,8 +66,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   usuarioSeleccionado!: Usuario;
   mostrarNuevoUsuario: boolean = false;
   nuevoUsuario: { usuario: string; contrasenia: string } = {
-    usuario: 'Prueba',
-    contrasenia: 'Prueba',
+    usuario: '',
+    contrasenia: '',
   };
   respuestaNuevoUsuario: RespuestaModalUsuario = {};
 
@@ -94,7 +94,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     public dialogService: DialogService,
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(USUARIOS_BREADCRUMB);
@@ -184,10 +185,10 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: null, disabled: false }],
-      velatorio: [{ value: null, disabled: false }],
-      delegacion: [{ value: null, disabled: false }],
-      rol: [{ value: null, disabled: false }],
+      nivel: [{value: null, disabled: false}],
+      velatorio: [{value: null, disabled: false}],
+      delegacion: [{value: null, disabled: false}],
+      rol: [{value: null, disabled: false}],
     });
   }
 
@@ -305,7 +306,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   cambiarEstatus(id: number): void {
-    const idUsuario: SolicitudEstatus = { id };
+    const idUsuario: SolicitudEstatus = {id};
     this.cargadorService.activar();
     this.usuarioService
       .cambiarEstatus(idUsuario)
@@ -346,7 +347,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.alertaService.mostrar(TipoAlerta.Exito, mensaje);
     this.limpiar();
     this.respuestaNuevoUsuario = {};
-    this.nuevoUsuario = { usuario: '', contrasenia: '' };
+    this.nuevoUsuario = {usuario: '', contrasenia: ''};
   }
 
   get f() {

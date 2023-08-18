@@ -12,7 +12,11 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from "../../../../../utils/funciones";
+import {
+  mapearArregloTipoDropdown,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from "../../../../../utils/funciones";
 import {Pago} from "../../modelos/pago.interface";
 import {FiltrosPago} from "../../modelos/filtrosPago.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
@@ -114,8 +118,11 @@ export class RealizarPagoComponent implements OnInit {
   inicializarForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +usuario?.idOficina, disabled: true}],
-      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario?.idRol === 3}],
+      nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
+      velatorio: [{
+        value: obtenerVelatorioUsuarioLogueado(usuario),
+        disabled: obtenerNivelUsuarioLogueado(usuario) === 3
+      }],
       folioOrden: [{value: null, disabled: false}, []],
       folioConvenio: [{value: null, disabled: false}, []],
       folioRenovacion: [{value: null, disabled: false}, []],
@@ -135,7 +142,11 @@ export class RealizarPagoComponent implements OnInit {
     this.paginacionConFiltrado = false;
     if (this.filtroForm) {
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroFormDir.resetForm({nivel: +usuario?.idOficina, velatorio: +usuario?.idVelatorio});
+      const DEFAULT = {
+        nivel: obtenerNivelUsuarioLogueado(usuario),
+        velatorio: obtenerVelatorioUsuarioLogueado(usuario)
+      }
+      this.filtroFormDir.resetForm(DEFAULT);
       this.tipoFolio = null;
     }
     this.numPaginaActual = 0;

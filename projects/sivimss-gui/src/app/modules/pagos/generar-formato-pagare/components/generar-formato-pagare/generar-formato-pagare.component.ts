@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {CATALOGOS_DUMMIES} from '../../constants/dummies';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
@@ -15,7 +15,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FiltrosFormatoPagare} from "../../models/filtrosFormatoPagare.interface";
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {finalize} from "rxjs/operators";
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown,
+  obtenerDelegacionUsuarioLogueado,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
@@ -36,6 +40,9 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
@@ -61,7 +68,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
-  readonly POSICION_CATALOGO_VELATORIOS: number = 2;
 
   readonly ERROR_DESCARGA_ARCHIVO: string = "Error al guardar el archivo";
 
@@ -90,7 +96,6 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   private cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    const velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS].datos;
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     this.obtenerVelatorios();
@@ -109,12 +114,13 @@ export class GenerarFormatoPagareComponent implements OnInit {
     });
   }
 
-  inicializarFiltroForm() {
+  inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idRol === 2}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idRol === 3}],
+      nivel: [{value: nivel, disabled: true}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: nivel > 1}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: nivel === 3}],
       folioODS: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
@@ -200,21 +206,25 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   limpiar(): void {
-    this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
+    const DEFAULT = {
+      nivel: obtenerNivelUsuarioLogueado(usuario),
+      delegacion: obtenerDelegacionUsuarioLogueado(usuario),
+      velatorio: obtenerVelatorioUsuarioLogueado(usuario)
+    }
+    this.filtroFormDir.resetForm(DEFAULT);
     this.obtenerVelatorios();
     this.paginar();
   }
 
 
   obtenerFoliosGenerados(): void {
-    const idDelegacion= this.filtroForm.get('delegacion')?.value;
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
     const idVelatorio = this.filtroForm.get('velatorio')?.value;
     this.foliosGenerados = [];
-    this.contratantesGenerados  = [];
+    this.contratantesGenerados = [];
     if (!idVelatorio) return;
-    this.generarFormatoService.obtenerFoliosODS(idDelegacion,idVelatorio).subscribe({
+    this.generarFormatoService.obtenerFoliosODS(idDelegacion, idVelatorio).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.foliosGenerados = mapearArregloTipoDropdown(respuesta.datos, "nombre", "id");
       },

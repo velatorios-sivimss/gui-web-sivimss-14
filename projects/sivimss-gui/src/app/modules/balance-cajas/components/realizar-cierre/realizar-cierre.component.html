@@ -1,7 +1,7 @@
 <ng-container>
-    <div class="flex mt-4 justify-content-center">
-        <div class="col-md-6">
-            ¿Estás seguro que deseas realizar este cierre?
+    <div class="flex mb-3 modal-text-center">
+        <div class="col-md-12">
+            ¿Deseas continuar con el cierre de caja?
         </div>
     </div>
 </ng-container>
@@ -14,9 +14,9 @@
 </div>
 <section>
     <div class="row mb-3">
-        <div class="col-md-12 flex justify-content-end align-items-center">
+        <div class="col-md-12 flex align-items-center justify-content-center">
             <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-            <button class="ml-6 btn btn-md btn-primary" [disabled]="modificarPagoForm.invalid" (click)="cerrarPago();">Aceptar</button>
+            <button class="ml-6 btn btn-md btn-primary" (click)="realizarCierre()">Aceptar</button>
         </div>
     </div>
 </section>

@@ -6,137 +6,103 @@
         </ng-template>
         <ng-template pTemplate="content">
             <app-table-panel>
-                <ng-template appCustomTemplate="header">
-                    <div class="row table-panel-row">
-                        <div class="col-md-12">
-                            <div class="table-panel-column">
-                                <span><b>ID{{detalleComision.idValeSalida}}</b></span>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Nombre empleado</label>
-                            <span>{{detalleComision.nombreResponsableEntrega}}</span>
+                            <label>ID::</label>
+                            <span>{{detallePromotor.idPromotor}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>CURP</label>
-                            <span>{{detalleComision.diasNovenario}}</span>
+                            <label>Número empleado::</label>
+                            <span>{{detallePromotor.numEmpleado}}</span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-
-                        </div>
-                    </div>
-                </div>
-                <div class="row table-panel-row">
-                    <div class="col-md-12">
-                        <div class="table-panel-column">
-                            <label>Nombre</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>CURP:</label>
+                            <span>{{detallePromotor.curp}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Primer apellido</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Nombre(s):</label>
+                            <span>{{detallePromotor.nombre}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Segundo apellido</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Primer apellido:</label>
+                            <span>{{detallePromotor.primerApellido}}</span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
+                            <label>Segundo apellido:</label>
+                            <span>{{detallePromotor.segundoApellido}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Fecha de nacimiento</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Fecha de nacimiento:</label>
+                            <span>{{detallePromotor.fecNacimiento}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Fecha de ingreso</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Fecha de ingreso:</label>
+                            <span>{{detallePromotor.fecIngreso}}</span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
+                            <label>Sueldo base:</label>
+                            <span>{{detallePromotor.sueldoBase}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Velatorio</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Velatorio:</label>
+                            <span>{{detallePromotor.velatorio}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Sueldo base</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Dias de descanso:</label>
+                            <span>4</span>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
+                            <label>Correo electronico:</label>
+                            <span>{{detallePromotor.correo}}</span>
                         </div>
                     </div>
                 </div>
                 <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Puesto</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Puesto:</label>
+                            <span>{{detallePromotor.puesto}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
-                        <div class="table-panel-column">
-                            <label>Dias de descanso</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="table-panel-column">
-                        </div>
-                    </div>
-                </div>
-                <div class="row table-panel-row">
-                    <div class="col-md-12">
-                        <div class="table-panel-column">
-                            <label>Correo electronico</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row table-panel-row">
                     <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Categoria</label>
-                            <span>{{detalleComision.nombreResponsableInstalacion}}</span>
+                            <label>Categoria:</label>
+                            <span>{{detallePromotor.categoria}}</span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="table-panel-column">
-                            <label>Monto de comisión</label>
-                            <span><b>{{detalleComision.nombreResponsableInstalacion}}</b></span>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="table-panel-column">
+                            <label>Monto de comisión:</label>
+                            <span>{{detallePromotor.montoComision}}</span>
                         </div>
                     </div>
                 </div>
@@ -157,7 +123,7 @@
                     </div>
                 </div>
                 <div class="row mx-6 mb-3">
-                    <p-table styleClass="mb-8" [value]="detalleComision.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+                    <p-table styleClass="mb-8" [value]="detalleODS" [paginator]="detalleODS.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
                         <ng-template pTemplate="header">
                             <tr>
@@ -168,14 +134,31 @@
                                 <th scope="col">Importe ODS</th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-ordenes>
+                        <ng-template pTemplate="body" let-folioODS>
                             <tr>
-                                <td> 01/06/2023 </td>
-                                <td> DOC-0001 </td>
-                                <td> {{ordenes.nombreArticulo}} </td>
-                                <td> CDMX </td>
-                                <td> {{ordenes.cantidad}} </td>
+                                <td> {{folioODS.fechaODS}} </td>
+                                <td> {{folioODS.cveFolio}} </td>
+                                <td> {{folioODS.nombreArticulo}} </td>
+                                <td> {{folioODS.nomFinado}} </td>
+                                <td> {{folioODS.importeODS | currency}} </td>
                             </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <th colspan="5" class="p-2 text-center font-bold text-xl">
+                                    No se encontró información relacionada a tu búsqueda
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorleft">
+                            <div class="paginator-template">
+                                <span class="total-elements"> {{detalleODS.length}} de {{totalElementos}} </span>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorright">
+                            <div id="total">
+                                <span class="total-table-text">Suma de los importes de las ODS contabilizadas en el mes consultado <b>{{ totalODS | currency:''}} </b></span>
+                            </div>
                         </ng-template>
                     </p-table>
                 </div>
@@ -190,7 +173,7 @@
                     </div>
                 </div>
                 <div class="row mx-6 mb-3">
-                    <p-table styleClass="mb-8" [value]="detalleComision.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+                    <p-table styleClass="mb-8" [value]="detalleConveniosPF" [paginator]="detalleConveniosPF.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
                         <ng-template pTemplate="header">
                             <tr>
@@ -201,14 +184,31 @@
                                 <th scope="col">Importe</th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-ordenes>
+                        <ng-template pTemplate="body" let-convenios>
                             <tr>
-                                <td> 01/06/2023 </td>
-                                <td> DOC-0001 </td>
-                                <td> {{ordenes.nombreArticulo}} </td>
-                                <td> CDMX </td>
-                                <td> {{ordenes.cantidad}} </td>
+                                <td> {{convenios.fechaCPF}} </td>
+                                <td> {{convenios.folioNCPF}} </td>
+                                <td> {{convenios.nomContratante}} </td>
+                                <td> {{convenios.lugarCaptacion}} </td>
+                                <td> {{convenios.importeCPF | currency}} </td>
                             </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <th colspan="5" class="p-2 text-center font-bold text-xl">
+                                    No se encontró información relacionada a tu búsqueda
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorleft">
+                            <div class="paginator-template">
+                                <span class="total-elements"> {{detalleConveniosPF.length}} de {{totalElementos}} </span>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="paginatorright">
+                            <div id="total">
+                                <span class="total-table-text">Suma de los importes de las ODS contabilizadas en el mes consultado <b>{{ totalConveniosPF | currency:''}} </b></span>
+                            </div>
                         </ng-template>
                     </p-table>
                 </div>
@@ -225,56 +225,70 @@
             <form [formGroup]="formComisiones" (ngSubmit)="buscar()">
                 <div class="row mb-3">
                     <div class="col-md-3">
+                        <label class="control-label" for="anio">Año:</label>
+                        <p-calendar id="anio" formControlName="anio" view="year" [maxDate]="maxDate" dateFormat="yy" dataType="string" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar año">
+                        </p-calendar>
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label" for="anio">Año</label>
-                        <p-dropdown id="anio" class="form-control" formControlName="anio" [options]="opciones" placeholder="Selecciona el año">
-                        </p-dropdown>
+                        <label class="control-label" for="mes">Mes:</label>
+                        <p-calendar id="mes" formControlName="mes" view="month" [maxDate]="maxDate" dateFormat="MM" styleClass="form-control" [showIcon]="true" placeholder="Seleccionar mes">
+                        </p-calendar>
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label" for="mes">Mes</label>
-                        <p-dropdown id="mes" class="form-control" formControlName="mes" [options]="opciones" placeholder="Selecciona el mes">
-                        </p-dropdown>
                     </div>
                     <div class="col-md-3">
-                        <label class="control-label"></label>
-                        <button type="submit" class="btn btn-primary btn-md ml-6 mt-5" (click)="abrirModarCalcularComision()">Calcular comisión</button>
+                        <label class="control-label">:</label>
+                        <button type="submit" class="btn btn-primary btn-md ml-6 mt-5" (click)="obtenerDetalleComision()" [disabled]="formComisiones.invalid">Calcular comisión</button>
 
                     </div>
                 </div>
             </form>
 
-            <div class="row table-panel-row">
-                <div class="row mx-6 mb-3">
-                    <p-table styleClass="mb-8" [value]="detalleComision.articulos" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th scope="col">Número de ordenes de servicios inmediatos</th>
-                                <th scope="col">Monto de comisión ODS</th>
-                                <th scope="col">Número de nuevos convenios de previsión funeraria</th>
-                                <th scope="col">Monto de comisión nuevos convenios</th>
-                                <th scope="col">Monto del bono aplicado</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-ordenes>
-                            <tr>
-                                <td> 11 </td>
-                                <td> $8,000,00</td>
-                                <td> 3 </td>
-                                <td> <b>$8,000,00</b> </td>
-                                <td><b>$32,000,00</b> </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
+            <p-table styleClass="mt-5 mb-8" [value]="listaComisiones" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th scope="col">Número de ordenes de servicios inmediatos</th>
+                        <th scope="col">Monto de comisión ODS</th>
+                        <th scope="col">Número de nuevos convenios de previsión funeraria</th>
+                        <th scope="col">Monto de comisión nuevos convenios</th>
+                        <th scope="col">Monto del bono aplicado</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-comisiones>
+                    <tr>
+                        <td> {{comisiones.numOrdenesServicio}} </td>
+                        <td> {{comisiones.monComisionODS}} </td>
+                        <td> {{comisiones.numConveniosPF}} </td>
+                        <td><b> {{comisiones.monConveniosPF}}</b></td>
+                        <td><b> {{comisiones.monBonoAplicado}} </b></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <th colspan="5" class="p-2 text-center font-bold text-xl">
+                            No se encontró información relacionada a tu búsqueda
+                        </th>
+                    </tr>
+                </ng-template>
+            </p-table>
         </ng-template>
     </p-accordionTab>
-
 </p-accordion>
-
+<ng-template pTemplate="paginatorleft">
+</ng-template>
+<ng-template pTemplate="paginatorright">
+    <div class="paginator-template">
+        <div class="export-table">
+            <span class="export-table-text">Exportar tabla</span>
+            <div class="export-table-icons">
+                <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+                <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            </div>
+        </div>
+    </div>
+</ng-template>
 <ng-container>
     <div class="flex justify-content-end mb-3">
         <button class="ml-4 mt-3 btn btn-danger btn-md" [routerLink]="'../../'">Regresar</button>

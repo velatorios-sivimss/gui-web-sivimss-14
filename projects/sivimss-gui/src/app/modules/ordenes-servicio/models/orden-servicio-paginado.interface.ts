@@ -29,4 +29,5 @@ export interface OrdenServicioFiltroConsulta {
   nombreContratante?: string | null;
   apPatContratante?: string  | null;
   apMatContratante?: string  | null;
+      idEstatusODS?: number | null;
 }

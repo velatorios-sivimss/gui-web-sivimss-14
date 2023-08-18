@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -16,7 +16,11 @@ import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown, obtenerDelegacionUsuarioLogueado, obtenerNivelUsuarioLogueado,
+  obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
@@ -31,6 +35,9 @@ type ListadoRecibo = Required<ReciboPago> & { idPagoBitacora: string }
   providers: [DialogService, DescargaArchivosService]
 })
 export class GenerarReciboPagoComponent implements OnInit {
+
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -92,10 +99,11 @@ export class GenerarReciboPagoComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const nivel: number = obtenerNivelUsuarioLogueado(usuario);
     this.filtroFormReciboPago = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
+      nivel: [{value: nivel, disabled: true}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: nivel > 1}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: nivel === 3}],
       folio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
@@ -185,9 +193,12 @@ export class GenerarReciboPagoComponent implements OnInit {
   limpiar(): void {
     this.filtroFormReciboPago.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroFormReciboPago.get('nivel')?.patchValue(+usuario.idOficina);
-    this.filtroFormReciboPago.get('delegacion')?.patchValue(+usuario.idDelegacion);
-    this.filtroFormReciboPago.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    const DEFAULT = {
+      nivel: obtenerNivelUsuarioLogueado(usuario),
+      delegacion: obtenerDelegacionUsuarioLogueado(usuario),
+      velatorio: obtenerVelatorioUsuarioLogueado(usuario)
+    }
+    this.filtroFormDir.resetForm(DEFAULT);
     this.obtenerVelatorios();
     this.paginar();
   }

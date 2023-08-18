@@ -1,4 +1,6 @@
 export interface PagoEspecifico {
+  valeP: number,
+  nss: string | null,
   diferenciasTotales: number,
   fechaPago: string,
   folio: string

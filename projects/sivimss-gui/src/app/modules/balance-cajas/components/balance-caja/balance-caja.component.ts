@@ -13,6 +13,7 @@ import {BalanceCajaService} from '../../services/balance-caja.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FiltrosBalanceCaja} from "../../models/filtros-balance-caja.interface";
 import {finalize} from "rxjs/operators";
+import {of} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
@@ -20,10 +21,11 @@ import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivims
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import {ModificarPagoComponent} from '../modificar-pago/modificar-pago.component';
 import {RealizarCierreComponent} from '../realizar-cierre/realizar-cierre.component';
 import {TIPO_CONVENIOS} from "../../constants/convenios";
 import {TIPO_PAGO} from "../../constants/tipos-pago";
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { DatePipe } from '@angular/common';
 
 type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
 
@@ -31,7 +33,7 @@ type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
   selector: 'app-balance-caja',
   templateUrl: './balance-caja.component.html',
   styleUrls: ['./balance-caja.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, DatePipe]
 })
 export class BalanceCajaComponent implements OnInit {
 
@@ -44,6 +46,8 @@ export class BalanceCajaComponent implements OnInit {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  totalIngresos: number = 0;
+  totalImporte: number = 0;
 
   balanceCaja: BalanceCaja[] = [];
   balanceCajaSeleccionado!: BalanceCaja;
@@ -64,6 +68,10 @@ export class BalanceCajaComponent implements OnInit {
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
   convenioSeleccionado: number = 1;
+  mensajeArchivoConfirmacion: string = "";
+  mostrarModalConfirmacion: boolean = false;
+  esModificacion: boolean = true;
+  rol: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -72,15 +80,18 @@ export class BalanceCajaComponent implements OnInit {
     private alertaService: AlertaService,
     public dialogService: DialogService,
     private balanceCajaService: BalanceCajaService,
-    private router: Router,
     private cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private descargaArchivosService: DescargaArchivosService,
+    private datePipe: DatePipe
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
   ngOnInit(): void {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.rol = +usuario.idRol;
     this.inicializarFiltroForm();
     this.cargarCatalogos();
   }
@@ -92,14 +103,27 @@ export class BalanceCajaComponent implements OnInit {
     this.obtenerVelatorios();
   }
 
-  abrirDetalleComision(balanceCajaSeleccionado: ListadoBalanceCaja): void {
+  abrirPanel(event: MouseEvent, balanceCajaSeleccionado: BalanceCaja): void {
+    this.balanceCajaService.balanceSeleccionado = balanceCajaSeleccionado;
     this.balanceCajaSeleccionado = balanceCajaSeleccionado;
-    void this.router.navigate([`comisiones/detalle-comision/${balanceCajaSeleccionado.id}`]);
+    this.validarFecha();
+    this.overlayPanel.toggle(event);
   }
 
-  abrirPanel(event: MouseEvent, balanceCajaSeleccionado: BalanceCaja): void {
-    this.balanceCajaSeleccionado = balanceCajaSeleccionado;
-    this.overlayPanel.toggle(event);
+  validarFecha() {
+    const fechaSeleccionada = new Date(this.filtroFormBalanceCaja.get('fecha')?.value);
+    const fechaHoy = new Date();
+    // Elimina las horas, minutos, segundos y milisegundos de la fecha de hoy
+    fechaHoy.setHours(0, 0, 0, 0);
+    if (fechaSeleccionada.getTime() === fechaHoy.getTime()) {
+      console.log('La fecha es del día actual.');
+      this.esModificacion = true;
+    } else if (fechaSeleccionada.getTime() < fechaHoy.getTime()) {
+      console.log('La fecha es menor al día de hoy.');
+      this.esModificacion = false;
+    } else {
+      console.log('La fecha es mayor al día de hoy.');
+    }
   }
 
   inicializarFiltroForm(): void {
@@ -130,11 +154,18 @@ export class BalanceCajaComponent implements OnInit {
 
   paginar(): void {
     this.cargadorService.activar();
-    this.balanceCajaService.buscarPorFiltros({}, this.numPaginaActual, this.cantElementosPorPagina)
+    let filtros: FiltrosBalanceCaja = this.crearSolicitudFiltros();
+    delete filtros.tipoReporte;
+    if (filtros.fecha === null) {
+      filtros.fecha = this.datePipe.transform(new Date(), 'YYYY-MM-dd')
+    }
+    this.balanceCajaService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.balanceCaja = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
+        this.totalIngresos = respuesta.datos.content[0].totalIngreso;
+        this.totalImporte = respuesta.datos.content[0].totalImporte;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -144,7 +175,8 @@ export class BalanceCajaComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    const filtros: FiltrosBalanceCaja = this.crearSolicitudFiltros();
+    let filtros: FiltrosBalanceCaja = this.crearSolicitudFiltros();
+    delete filtros.tipoReporte;
     this.cargadorService.activar();
     this.balanceCajaService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
@@ -167,15 +199,15 @@ export class BalanceCajaComponent implements OnInit {
 
   crearSolicitudFiltros(): FiltrosBalanceCaja {
     return {
-      idNivel: this.filtroFormBalanceCaja.get("nivel")?.value,
-      idDelegacion: this.filtroFormBalanceCaja.get("delegacion")?.value,
-      idVelatorio: this.filtroFormBalanceCaja.get("velatorio")?.value,
-      folioODS: this.filtroFormBalanceCaja.get("promotores")?.value,
-      folioNuevo: this.filtroFormBalanceCaja.get("fechaInicial")?.value,
-      folioRenovacion: this.filtroFormBalanceCaja.get("fechaFinal")?.value,
-      fecha: this.filtroFormBalanceCaja.get("fechaFinal")?.value,
-      metodo: this.filtroFormBalanceCaja.get("fechaFinal")?.value,
-      rutaNombreReporte: "reportes/generales/ReporteFiltrosRecPagos.jrxml",
+      idNivel: this.filtroFormBalanceCaja.get("nivel")?.value === "" ? null : this.filtroFormBalanceCaja.get("nivel")?.value,
+      idDelegacion: this.filtroFormBalanceCaja.get("delegacion")?.value === "" ? null : this.filtroFormBalanceCaja.get("delegacion")?.value,
+      idVelatorio: this.filtroFormBalanceCaja.get("velatorio")?.value === "" ? null : this.filtroFormBalanceCaja.get("velatorio")?.value,
+      tipoConvenio: this.convenioSeleccionado,
+      folioODS: this.filtroFormBalanceCaja.get("folioODS")?.value,
+      folioNuevoConvenio: this.filtroFormBalanceCaja.get("folioNuevo")?.value,
+      folioRenovacionConvenio: this.filtroFormBalanceCaja.get("folioRenovacion")?.value,
+      fecha: this.datePipe.transform(this.filtroFormBalanceCaja.get("fecha")?.value, 'YYYY-MM-dd'),
+      idMetodoPago: this.filtroFormBalanceCaja.get("metodo")?.value === "" ? null : this.filtroFormBalanceCaja.get("metodo")?.value,
       tipoReporte: "pdf"
     }
   }
@@ -186,8 +218,8 @@ export class BalanceCajaComponent implements OnInit {
     if (this.filtroFormBalanceCaja) {
       const formularioDefault = {
         nivel: +usuario?.idOficina,
-        delegacion: usuario?.idDelegacion,
-        velatorio: usuario?.idVelatorio
+        delegacion: +usuario?.idDelegacion,
+        velatorio: +usuario?.idVelatorio
       }
       this.filtroFormDir.resetForm(formularioDefault);
     }
@@ -208,31 +240,41 @@ export class BalanceCajaComponent implements OnInit {
     });
   }
 
-  abrirModalModificarPago(): void {
-    this.modificacionRef = this.dialogService.open(ModificarPagoComponent, {
-      header: 'Modificar pago',
-      width: '920px',
-      data: {valeSeleccionado: this.balanceCajaSeleccionado},
+  exportarArchivo(extension: string) {
+    this.cargadorService.activar();
+    let filtros = this.crearSolicitudFiltros();
+    const configuracionArchivo: OpcionesArchivos = {};
+    if(extension.includes("xls")){
+      configuracionArchivo.ext = "xlsx";
+    }
+    filtros.tipoReporte = extension;
+    this.descargaArchivosService.descargarArchivo(this.balanceCajaService.descargarReporte(filtros)).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        console.log(respuesta)
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error)
+      },
     });
-
-    this.modificacionRef.onClose.subscribe(() => {
-      this.paginar();
-    })
   }
 
   abrirModalCierre(): void {
+    let filtros: FiltrosBalanceCaja = this.crearSolicitudFiltros();
+    delete filtros.tipoReporte;
+    if (filtros.fecha === null) {
+      filtros.fecha = this.datePipe.transform(new Date(), 'YYYY-MM-dd')
+    }
+    this.balanceCajaService.filtrosBalanceSeleccionados = filtros;
     this.modificacionRef = this.dialogService.open(RealizarCierreComponent, {
       header: 'Cierre',
-      width: '920px',
-      data: {valeSeleccionado: this.balanceCajaSeleccionado},
+      width: '520px'
     });
 
     this.modificacionRef.onClose.subscribe(() => {
       this.paginar();
     })
-  }
-
-  aceptar() {
   }
 
   cerrar(): void {
