@@ -21,6 +21,7 @@ import { VerDetalleFacturaComponent } from './components/ver-detalle-factura/ver
 import {AccordionModule} from "primeng/accordion";
 import {FacturacionService} from "./services/facturacion.service";
 import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
+import { DatosContratanteComponent } from './components/datos-contratante/datos-contratante.component';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.modul
     SolicitarFacturaComponent,
     CancelarFacturaComponent,
     EnviarFacturaComponent,
-    VerDetalleFacturaComponent
+    VerDetalleFacturaComponent,
+    DatosContratanteComponent
   ],
     imports: [
         CommonModule,
