@@ -249,6 +249,7 @@ export class ModificarDatosFinadoComponent
     let esObito: boolean;
     let extremidad: boolean;
     let horaDeceso: any;
+    let fechaDeceso:any;
     if(typeof  datosEtapaFinado.datosFinado.esObito == "string"){
       datosEtapaFinado.datosFinado.esObito.includes("true") ? esObito = true : esObito = false;
     }else{
@@ -263,6 +264,11 @@ export class ModificarDatosFinadoComponent
     if(typeof datosEtapaFinado.datosFinado.horaDeceso == "string"){
       const [horas,minutos] = datosEtapaFinado.datosFinado.horaDeceso.split(':')
       datosEtapaFinado.datosFinado.horaDeceso = new Date(+anio,+mes,+dia,+horas,+minutos)
+    }
+    if(typeof datosEtapaFinado.datosFinado.fechaDefuncion == "string" ){
+      const [dia, mes, anio] = datosEtapaFinado.datosFinado.fechaDefuncion.split('/');
+      // fechaDeceso = new Date(anio + '/' + mes + '/' + dia);
+      datosEtapaFinado.datosFinado.fechaDefuncion = new Date(anio + '/' + mes + '/' + dia);
     }
 
     let edad;
