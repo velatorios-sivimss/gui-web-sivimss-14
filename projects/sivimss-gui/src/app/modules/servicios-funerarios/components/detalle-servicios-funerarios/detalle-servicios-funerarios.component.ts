@@ -50,6 +50,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  opcionRealizarPagos = true;
   // totalPagado:number = 0;
 
   detalleServicio!: DetalleServicios;
@@ -92,10 +93,15 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
           idPlan:respuesta.datos.detallePlan.idPlan,
           total:respuesta.datos.detallePlan.total,
           restante: respuesta.datos.detallePlan.restante ?? 0,
-          totalPagado: Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante ?? 0)
+          totalPagado:  respuesta.datos.detallePlan.restante ?
+                        Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante) :
+                        0
         }
         // this.totalPagado = Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante)
         this.pagosRealizados = respuesta.datos.pagos || [];
+        this.pagosRealizados.length < Number(this.detalleServicio.desNumeroPagos) ?
+          this.opcionRealizarPagos = true:
+          this.opcionRealizarPagos = false
       },
       error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
@@ -152,6 +158,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   }
 
   abrirModalRealizarPago(): void {
+    if(!this.opcionRealizarPagos)return;
     const ref = this.dialogService.open(ModalRealizarPagoComponent, {
       header: 'Realizar pago',
       style: {

@@ -10,6 +10,9 @@ import { AutenticacionService } from '../../../services/autenticacion.service';
 
 @Injectable()
 export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
+  
+  balanceSeleccionado: any;
+
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 69, "consultar-rec-pagos", "", "");
   }
@@ -50,8 +53,7 @@ export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-
-    return this._http.post<any>(this._base + `${this._funcionalidad}/plantilla-rec-pagos/generarDocumento/pdf`, body,
+    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/reporte-balance-caja`, body,
       {headers, responseType: 'blob' as 'json'})
   }
 

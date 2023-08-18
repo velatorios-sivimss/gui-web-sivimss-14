@@ -25,38 +25,35 @@
       </div>
     </div>
     <div class="grid mb-3">
-      <div class="col-4 mb-3 mt-grid">
+      <div class="col-4">
         <label class="control-label" for="tipoConvenio">Tipo de convenios:</label>
         <p-dropdown id="tipoConvenio" class="form-control" [(ngModel)]="convenioSeleccionado" [options]="tipoConvenio"
                     placeholder="Selecciona tipo de convenio" [filter]="true" [ngModelOptions]="{ standalone: true }">
         </p-dropdown>
       </div>
-      <div class="col-4 mb-3 mt-grid" *ngIf="[1,2].includes(convenioSeleccionado)">
+      <div class="col-4" *ngIf="[1,2].includes(convenioSeleccionado)">
         <label class="control-label" for="folioODS">Folio de la orden de Servicio (ODS):</label>
-        <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="opciones"
-                    placeholder="Ingresa folio" [filter]="true">
-        </p-dropdown>
+        <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa folio"/>
       </div>
-      <div class="col-4 mb-3" *ngIf="[1,3].includes(convenioSeleccionado)">
+      <div class="col-4" *ngIf="[1,3].includes(convenioSeleccionado)">
         <label class="control-label" for="folioNuevo">Folio del Nuevo convenio de previsión funeraria (PNCPF): </label>
-        <p-dropdown id="folioNuevo" class="form-control" formControlName="folioNuevo" [options]="opciones"
+        <input id="folioNuevo" class="form-control" formControlName="folioNuevo" placeholder="Ingresa folio"/>
+        <!-- <p-dropdown id="folioNuevo" class="form-control" formControlName="folioNuevo" [options]="opciones"
                     placeholder="Ingresa folio" [filter]="true">
-        </p-dropdown>
+        </p-dropdown> -->
       </div>
-      <div class="col-4 mb-3" *ngIf="[1,4].includes(convenioSeleccionado)">
+      <div class="col-4" *ngIf="[1,4].includes(convenioSeleccionado)">
         <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria
           (PRCPF):</label>
-        <p-dropdown id="folioRenovacion" class="form-control" formControlName="folioRenovacion" [options]="opciones"
-                    placeholder="Ingresa folio" [filter]="true">
-        </p-dropdown>
+        <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion" placeholder="Ingresa folio"/>
       </div>
-      <div class="col-4 mt-grid mb-3">
+      <div class="col-4">
         <label class="control-label" for="metodo">Método de pago:</label>
-        <p-dropdown id="metodo" class="form-control" formControlName="fecha" [options]="opciones"
+        <p-dropdown id="metodo" class="form-control" formControlName="metodo" [options]="opciones"
                     placeholder="Ingresa método de pago" [filter]="true">
         </p-dropdown>
       </div>
-      <div class="col-4 mt-grid mb-3">
+      <div class="col-4">
         <label class="control-label" for="fecha">Fecha:</label>
         <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
                     placeholder="Selecciona la fecha" dateFormat="dd/mm/yy"
@@ -66,7 +63,7 @@
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroFormBalanceCaja.pristine">Limpiar
+        <button type="reset" class="btn btn-default btn-md">Limpiar
         </button>
         <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
       </div>
@@ -77,7 +74,10 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Campos de Reporte</h2>
-    <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button>
+    <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 1" (click)="abrirModalCierre()">Realizar
+      cierre
+    </button>
+    <!-- <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button> -->
   </div>
 
   <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0"
@@ -107,13 +107,17 @@
         <td>{{balance.velatorio}} </td>
         <td>{{balance.folio}}</td>
         <td>{{balance.tipoIngreso}}</td>
-        <td>{{balance.metodo}}</td>
-        <td>{{balance.estatus}}</td>
+        <td>{{balance.estatusPago}}</td>
+        <td>{{balance.metodoPago}}</td>
+        <td>{{balance.importe | currency }}</td>
+        <td>{{balance.ingresoNeto | currency }}</td>
+        <td>{{balance.estatusCaja}}</td>
+        <td>{{balance.fecHoraCierre}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirDetalleComision(balance)">
+            <!-- <a (click)="abrirDetalleComision(balance)">
               <img src="assets/images/imagen-icono-ver.svg" alt="Ver">
-            </a>
+            </a> -->
             <a (click)="abrirPanel($event,balance)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
@@ -128,12 +132,44 @@
         </th>
       </tr>
     </ng-template>
+    <ng-template pTemplate="footer">
+      <tr >
+        <td colspan="12" >
+          <div class="flex justify-content-between table-footer">
+            <div class="flex flex-column">
+              <span class="text-2xl font-normal">Total de ingresos</span>
+              <span class="font-bold text-2xl">$10,000.00</span>
+            </div>
+            <div class="flex flex-column">
+              <span class="text-2xl font-normal">Total de importe</span>
+              <span class="font-bold text-2xl">$16,500.00</span>
+            </div>
+            <div class="flex flex-column">
+              <span class="text-2xl font-normal">Total de registros</span>
+              <span class="font-bold text-2xl">$50,000.00</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
         <span class="total-elements"> {{balanceCaja.length}} de {{totalElementos}} </span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
+      <div class="paginator-template" *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+
+            <img class="icon-export-table" (click)="exportarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg"
+                 alt="exportar pdf">
+            <img class="icon-export-table" (click)="exportarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
+                 alt="exportar excel">
+          </div>
+        </div>
+      </div>
     </ng-template>
   </p-table>
 </section>
@@ -141,7 +177,10 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Modificar pago" (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="esModificacion" titulo="Modificar pago"
+                                routerLink="modificar-pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="!esModificacion" titulo="Motivo de pago"
+                                routerLink="modificar-pago"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
