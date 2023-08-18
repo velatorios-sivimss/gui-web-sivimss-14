@@ -4,6 +4,7 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {REGISTROS_PAGOS} from "../../constants/dummies";
 import {TIPO_FACTURACION} from "../../constants/tipoFacturacion";
+import {MetodosPagoFact} from "../../models/metodosPagoFact.interface";
 
 @Component({
   selector: 'app-solicitar-factura',
@@ -21,6 +22,14 @@ export class SolicitarFacturaComponent implements OnInit {
   folios: TipoDropdown[] = [];
   datosContratanteForm!: FormGroup;
   servicios: any[] = REGISTROS_PAGOS;
+
+  metodosPago: MetodosPagoFact[] = [{
+    metodo: 'Vale Paritaria',
+    importe: 10000
+  },{
+    metodo: 'Tarjeta Credito',
+    importe: 10000
+  }]
 
   constructor(private formBuilder: FormBuilder) {
   }

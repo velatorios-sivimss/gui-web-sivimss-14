@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {ServiciosContratados} from "../../models/serviciosContratados.interface";
+import {MetodosPagoFact} from "../../models/metodosPagoFact.interface";
 
 @Component({
   selector: 'app-datos-contratante',
@@ -13,5 +14,5 @@ export class DatosContratanteComponent {
   @Input() fechaPago: string = '';
   @Input() concepto: string = '';
   @Input() servicios: ServiciosContratados[] = [];
-  @Input() metodosPago: any[] = [];
+  @Input() metodosPago: MetodosPagoFact[] = [];
 }
