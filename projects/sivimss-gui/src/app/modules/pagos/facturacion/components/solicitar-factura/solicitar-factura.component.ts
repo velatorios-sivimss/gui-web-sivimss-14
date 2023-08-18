@@ -20,6 +20,7 @@ export class SolicitarFacturaComponent implements OnInit {
   tiposFactura: TipoDropdown[] = TIPO_FACTURACION;
   folios: TipoDropdown[] = [];
   datosContratanteForm!: FormGroup;
+  servicios: any[] = REGISTROS_PAGOS;
 
   constructor(private formBuilder: FormBuilder) {
   }
@@ -42,7 +43,6 @@ export class SolicitarFacturaComponent implements OnInit {
   }
 
   protected readonly DIEZ_ELEMENTOS_POR_PAGINA = DIEZ_ELEMENTOS_POR_PAGINA;
-  servicios: any[] = REGISTROS_PAGOS;
 
   get folio(): string {
     const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;

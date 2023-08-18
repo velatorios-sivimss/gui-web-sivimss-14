@@ -34,14 +34,9 @@
 <ng-container>
   <app-datos-contratante [nombreContratante]="'Heriberto Angelo Sánchez Maldonado'"
                          [tipoFecha]="2" [fecha]="'01/01/2022'" [fechaPago]="'01/01/2022'"
-                         [concepto]="'Orden de servicio'"></app-datos-contratante>
+                         [concepto]="'Orden de servicio'" [servicios]="servicios"></app-datos-contratante>
   <p-accordion styleClass="sivimss-accordion sivimss-accordionColor" [activeIndex]="0">
     <p-accordionTab>
-      <ng-template pTemplate="header">
-        <div class="sivimss-acoordion-header">
-          Heriberto Angelo Sánchez Maldonado
-        </div>
-      </ng-template>
       <ng-template pTemplate="content" *ngIf="false">
         <form [formGroup]="datosContratanteForm">
           <div class="row mb-3 mt-3">
@@ -60,61 +55,6 @@
             </div>
           </div>
         </form>
-      </ng-template>
-      <ng-template pTemplate="content">
-        <app-table-panel>
-          <div class="row table-panel-row">
-            <div class="col-md-2">
-              <div class="table-panel-column">
-                <label>Fecha de ODS</label>
-                <span>01/01/2022</span>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="table-panel-column">
-                <label>Fecha de pago</label>
-                <span>01/01/2022</span>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="table-panel-column">
-                <label>Concepto de pago</label>
-                <span>Orden de servicio</span>
-              </div>
-            </div>
-          </div>
-        </app-table-panel>
-        <div class="flex justify-content-between align-items-center">
-          <h2 class="subtitulo mt-2">Método de pago</h2>
-        </div>
-
-        <div class="flex justify-content-between align-items-center">
-          <h2 class="subtitulo mt-2">Servicios ODS</h2>
-        </div>
-        <p-table styleClass="mt-5 mb-8" [value]="servicios">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>No. consecutivo</th>
-              <th>Grupo</th>
-              <th>Concepto</th>
-              <th>Cantidad</th>
-              <th>Clave SAT</th>
-              <th>Importe /Monto</th>
-              <th>Total</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-servicio>
-            <tr>
-              <td>{{servicio.noConsecutivo}}</td>
-              <td>{{servicio.grupo}}</td>
-              <td>{{servicio.concepto}}</td>
-              <td>{{servicio.cantidad}}</td>
-              <td>{{servicio.claveSat}}</td>
-              <td>{{servicio.importe}}</td>
-              <td>{{servicio.total}}</td>
-            </tr>
-          </ng-template>
-        </p-table>
       </ng-template>
     </p-accordionTab>
   </p-accordion>

@@ -6,35 +6,70 @@
       </div>
     </ng-template>
     <ng-template pTemplate="content">
-      <app-table-panel>
-        <div class="row table-panel-row">
-          <div [ngClass]="{ 'col-7': tipoFecha !== 2, 'col-9': tipoFecha === 2 }">
-            <div class="grid">
-              <div class="pl-3" *ngIf="tipoFecha !== 3" [ngClass]="{ 'col-6': tipoFecha === 2, 'col': tipoFecha !== 2 }">
-                <div class="table-panel-column">
-                  <label *ngIf="tipoFecha === 1">Fecha de ODS</label>
-                  <label *ngIf="tipoFecha === 2">Fecha de contratación / renovación</label>
-                  <label *ngIf="tipoFecha === 4">Fecha de contratación</label>
-                  <span>{{fecha}}</span>
+      <ng-container>
+        <app-table-panel>
+          <div class="row table-panel-row">
+            <div [ngClass]="{ 'col-7': tipoFecha !== 2, 'col-9': tipoFecha === 2 }">
+              <div class="grid">
+                <div class="pl-3" *ngIf="tipoFecha !== 3"
+                     [ngClass]="{ 'col-6': tipoFecha === 2, 'col': tipoFecha !== 2 }">
+                  <div class="table-panel-column">
+                    <label *ngIf="tipoFecha === 1">Fecha de ODS</label>
+                    <label *ngIf="tipoFecha === 2">Fecha de contratación / renovación</label>
+                    <label *ngIf="tipoFecha === 4">Fecha de contratación</label>
+                    <span>{{fecha}}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="col" [ngClass]="{ 'pl-3': tipoFecha === 3 }">
-                <div class="table-panel-column">
-                  <label>Fecha de pago</label>
-                  <span>{{fechaPago}}</span>
+                <div class="col" [ngClass]="{ 'pl-3': tipoFecha === 3 }">
+                  <div class="table-panel-column">
+                    <label>Fecha de pago</label>
+                    <span>{{fechaPago}}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="col">
-                <div class="table-panel-column">
-                  <label>Concepto de pago</label>
-                  <span>{{concepto}}</span>
+                <div class="col">
+                  <div class="table-panel-column">
+                    <label>Concepto de pago</label>
+                    <span>{{concepto}}</span>
+                  </div>
                 </div>
+                <div class="col" *ngIf="tipoFecha === 3"></div>
               </div>
-              <div class="col" *ngIf="tipoFecha === 3"></div>
             </div>
           </div>
+        </app-table-panel>
+        <div class="flex justify-content-between align-items-center mt-3">
+          <h2 class="subtitulo mt-2">Método de pago</h2>
         </div>
-      </app-table-panel>
+      </ng-container>
+      <ng-container>
+        <div class="flex justify-content-between align-items-center">
+          <h2 class="subtitulo mt-2">Servicios ODS</h2>
+        </div>
+        <p-table styleClass="mt-5 mb-8" [value]="servicios">
+          <ng-template pTemplate="header">
+            <tr>
+              <th id="servicios_ods_consecutivo">No. consecutivo</th>
+              <th id="servicios_ods_grupo">Grupo</th>
+              <th id="servicios_ods_concepto">Concepto</th>
+              <th id="servicios_ods_cantidad">Cantidad</th>
+              <th id="servicios_ods_sat">Clave SAT</th>
+              <th id="servicios_ods_importe">Importe /Monto</th>
+              <th id="servicios_ods_total">Total</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-servicio>
+            <tr>
+              <td>{{servicio.noConsecutivo}}</td>
+              <td>{{servicio.grupo}}</td>
+              <td>{{servicio.concepto}}</td>
+              <td>{{servicio.cantidad}}</td>
+              <td>{{servicio.claveSat}}</td>
+              <td>{{servicio.importe}}</td>
+              <td>{{servicio.total}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-container>
     </ng-template>
   </p-accordionTab>
 </p-accordion>

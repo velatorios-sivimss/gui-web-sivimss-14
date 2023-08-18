@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {REGISTROS_PAGOS} from "../../constants/dummies";
 
 @Component({
   selector: 'app-datos-contratante',
@@ -11,4 +12,6 @@ export class DatosContratanteComponent {
   @Input() tipoFecha: 1 | 2 | 3 | 4 = 1;
   @Input() fechaPago: string = '';
   @Input() concepto: string = '';
+  @Input() servicios: any[] = [];
+  protected readonly REGISTROS_PAGOS = REGISTROS_PAGOS;
 }
