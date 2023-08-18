@@ -140,7 +140,7 @@
                                 <td> {{folioODS.cveFolio}} </td>
                                 <td> {{folioODS.nombreArticulo}} </td>
                                 <td> {{folioODS.nomFinado}} </td>
-                                <td> {{folioODS.importeODS}} </td>
+                                <td> {{folioODS.importeODS | currency}} </td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
@@ -156,6 +156,9 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="paginatorright">
+                            <div id="total">
+                                <span class="total-table-text">Suma de los importes de las ODS contabilizadas en el mes consultado <b>{{ totalODS | currency:''}} </b></span>
+                            </div>
                         </ng-template>
                     </p-table>
                 </div>
@@ -187,7 +190,7 @@
                                 <td> {{convenios.folioNCPF}} </td>
                                 <td> {{convenios.nomContratante}} </td>
                                 <td> {{convenios.lugarCaptacion}} </td>
-                                <td> {{convenios.importeCPF}} </td>
+                                <td> {{convenios.importeCPF | currency}} </td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
@@ -203,6 +206,9 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="paginatorright">
+                            <div id="total">
+                                <span class="total-table-text">Suma de los importes de las ODS contabilizadas en el mes consultado <b>{{ totalConveniosPF | currency:''}} </b></span>
+                            </div>
                         </ng-template>
                     </p-table>
                 </div>
@@ -238,51 +244,51 @@
                 </div>
             </form>
 
-            <div class="row table-panel-row">
-                <div class="row mx-6 mb-3">
-                    <p-table styleClass="mb-8" [value]="listaComisiones" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th scope="col">Número de ordenes de servicios inmediatos</th>
-                                <th scope="col">Monto de comisión ODS</th>
-                                <th scope="col">Número de nuevos convenios de previsión funeraria</th>
-                                <th scope="col">Monto de comisión nuevos convenios</th>
-                                <th scope="col">Monto del bono aplicado</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-comisiones>
-                            <tr>
-                                <td> {{comisiones.numOrdenesServicio}} </td>
-                                <td> {{comisiones.monComisionODS}} </td>
-                                <td> {{comisiones.numConveniosPF}} </td>
-                                <td><b> {{comisiones.monConveniosPF}}</b></td>
-                                <td><b> {{comisiones.monBonoAplicado}} </b></td>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="emptymessage">
-                            <tr>
-                                <th colspan="5" class="p-2 text-center font-bold text-xl">
-                                    No se encontró información relacionada a tu búsqueda
-                                </th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="paginatorleft">
-                            <div class="paginator-template">
-                                <span class="total-elements"> {{listaComisiones.length}} de {{totalElementos}} </span>
-                            </div>
-                        </ng-template>
-                        <ng-template pTemplate="paginatorright">
-                        </ng-template>
-                    </p-table>
-                </div>
-            </div>
+            <p-table styleClass="mt-5 mb-8" [value]="listaComisiones" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
 
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th scope="col">Número de ordenes de servicios inmediatos</th>
+                        <th scope="col">Monto de comisión ODS</th>
+                        <th scope="col">Número de nuevos convenios de previsión funeraria</th>
+                        <th scope="col">Monto de comisión nuevos convenios</th>
+                        <th scope="col">Monto del bono aplicado</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-comisiones>
+                    <tr>
+                        <td> {{comisiones.numOrdenesServicio}} </td>
+                        <td> {{comisiones.monComisionODS}} </td>
+                        <td> {{comisiones.numConveniosPF}} </td>
+                        <td><b> {{comisiones.monConveniosPF}}</b></td>
+                        <td><b> {{comisiones.monBonoAplicado}} </b></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <th colspan="5" class="p-2 text-center font-bold text-xl">
+                            No se encontró información relacionada a tu búsqueda
+                        </th>
+                    </tr>
+                </ng-template>
+            </p-table>
         </ng-template>
     </p-accordionTab>
-
 </p-accordion>
-
+<ng-template pTemplate="paginatorleft">
+</ng-template>
+<ng-template pTemplate="paginatorright">
+    <div class="paginator-template">
+        <div class="export-table">
+            <span class="export-table-text">Exportar tabla</span>
+            <div class="export-table-icons">
+                <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+                <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            </div>
+        </div>
+    </div>
+</ng-template>
 <ng-container>
     <div class="flex justify-content-end mb-3">
         <button class="ml-4 mt-3 btn btn-danger btn-md" [routerLink]="'../../'">Regresar</button>
