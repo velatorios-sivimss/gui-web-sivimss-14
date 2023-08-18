@@ -42,6 +42,8 @@ export class DetalleComisionComponent implements OnInit {
   formComisiones!: FormGroup;
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
   registrarCalcularComisionRef!: DynamicDialogRef
+  totalODS: number = 0;
+  totalConveniosPF: number = 0;
   minDate!: Date;
   maxDate!: Date;
 
@@ -63,6 +65,8 @@ export class DetalleComisionComponent implements OnInit {
       this.detalleConveniosPF = respuesta[this.POSICION_DETALLE_CONVENIOS_PF]?.datos;
       this.minDate = new Date();
       this.maxDate = new Date();
+      this.importeTotalODS();
+      this.importeTotalConveniosPf();
     } else {
       window.scrollTo(0, 0);
       console.log(this.detalleForm);
@@ -70,6 +74,23 @@ export class DetalleComisionComponent implements OnInit {
       this.detallePromotor = this.detalleForm;
     }
     this.inicializarFiltroForm();
+  }
+
+  importeTotalODS(): void {
+    this.totalODS = this.detalleODS.reduce((
+      acc,
+      obj,
+    ) => acc +  (obj.importeODS!) ,
+    0);
+  }
+
+
+  importeTotalConveniosPf(): void {
+    this.totalConveniosPF = this.detalleConveniosPF.reduce((
+      acc,
+      obj,
+    ) => acc +  (obj.importeCPF!) ,
+    0);
   }
 
   inicializarFiltroForm(): void {
@@ -118,8 +139,10 @@ export class DetalleComisionComponent implements OnInit {
     )
   }
 
-  registrarSalida() {
+  guardarPDF(): void {
+  }
 
+  guardarExcel(): void {
   }
 
   buscar(): void {
