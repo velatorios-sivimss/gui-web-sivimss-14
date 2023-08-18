@@ -33,18 +33,19 @@
       </div>
       <div class="col-4" *ngIf="[1,2].includes(convenioSeleccionado)">
         <label class="control-label" for="folioODS">Folio de la orden de Servicio (ODS):</label>
-        <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa folio" />
+        <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa folio"/>
       </div>
       <div class="col-4" *ngIf="[1,3].includes(convenioSeleccionado)">
         <label class="control-label" for="folioNuevo">Folio del Nuevo convenio de previsión funeraria (PNCPF): </label>
-        <input id="folioNuevo" class="form-control" formControlName="folioNuevo" placeholder="Ingresa folio" />
+        <input id="folioNuevo" class="form-control" formControlName="folioNuevo" placeholder="Ingresa folio"/>
         <!-- <p-dropdown id="folioNuevo" class="form-control" formControlName="folioNuevo" [options]="opciones"
                     placeholder="Ingresa folio" [filter]="true">
         </p-dropdown> -->
       </div>
       <div class="col-4" *ngIf="[1,4].includes(convenioSeleccionado)">
-        <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria (PRCPF):</label>
-        <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion" placeholder="Ingresa folio" />
+        <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria
+          (PRCPF):</label>
+        <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion" placeholder="Ingresa folio"/>
       </div>
       <div class="col-4">
         <label class="control-label" for="metodo">Método de pago:</label>
@@ -73,8 +74,7 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Campos de Reporte</h2>
-    <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 1" (click)="abrirModalCierre()">Realizar cierre</button>
-    <!-- <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button> -->
+    <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button>
   </div>
 
   <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0"
@@ -129,6 +129,26 @@
         </th>
       </tr>
     </ng-template>
+    <ng-template pTemplate="footer">
+      <tr >
+        <td colspan="12" >
+          <div class="flex justify-content-between table-footer">
+            <div class="flex flex-column">
+              <span class="text-2xl font-normal">Total de ingresos</span>
+              <span class="font-bold text-2xl">{{ totalIngresos | currency }}</span>
+            </div>
+            <div class="flex flex-column">
+              <span class="text-2xl font-normal">Total de importe</span>
+              <span class="font-bold text-2xl">{{ totalImporte | currency }}</span>
+            </div>
+            <div class="flex flex-column">
+              <span class="text-2xl font-normal">Total de registros</span>
+              <span class="font-bold text-2xl">{{ totalElementos }}</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
         <span class="total-elements"> {{balanceCaja.length}} de {{totalElementos}} </span>
@@ -140,8 +160,10 @@
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
 
-            <img class="icon-export-table" (click)="exportarArchivo('pdf')"  src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" (click)="exportarArchivo('xls')"  src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" (click)="exportarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg"
+                 alt="exportar pdf">
+            <img class="icon-export-table" (click)="exportarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
+                 alt="exportar excel">
           </div>
         </div>
       </div>
@@ -152,8 +174,10 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion *ngIf="esModificacion" titulo="Modificar pago" routerLink="modificar-pago"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="!esModificacion" titulo="Motivo de pago" routerLink="modificar-pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="esModificacion" titulo="Modificar pago"
+                                routerLink="modificar-pago"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="!esModificacion" titulo="Motivo de pago"
+                                routerLink="modificar-pago"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
