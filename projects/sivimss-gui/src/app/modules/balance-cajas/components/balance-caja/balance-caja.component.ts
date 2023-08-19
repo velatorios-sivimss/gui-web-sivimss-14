@@ -46,6 +46,8 @@ export class BalanceCajaComponent implements OnInit {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  totalIngresos: number = 0;
+  totalImporte: number = 0;
 
   balanceCaja: BalanceCaja[] = [];
   balanceCajaSeleccionado!: BalanceCaja;
@@ -78,10 +80,8 @@ export class BalanceCajaComponent implements OnInit {
     private alertaService: AlertaService,
     public dialogService: DialogService,
     private balanceCajaService: BalanceCajaService,
-    private router: Router,
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private datePipe: DatePipe
   ) {
@@ -92,7 +92,6 @@ export class BalanceCajaComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.rol = +usuario.idRol;
-    console.log("ID ROL: ", this.rol);
     this.inicializarFiltroForm();
     this.cargarCatalogos();
   }
@@ -114,10 +113,8 @@ export class BalanceCajaComponent implements OnInit {
   validarFecha() {
     const fechaSeleccionada = new Date(this.filtroFormBalanceCaja.get('fecha')?.value);
     const fechaHoy = new Date();
-
     // Elimina las horas, minutos, segundos y milisegundos de la fecha de hoy
     fechaHoy.setHours(0, 0, 0, 0);
-
     if (fechaSeleccionada.getTime() === fechaHoy.getTime()) {
       console.log('La fecha es del día actual.');
       this.esModificacion = true;
@@ -167,6 +164,8 @@ export class BalanceCajaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.balanceCaja = respuesta.datos.content;
         this.totalElementos = respuesta.datos.totalElements;
+        this.totalIngresos = respuesta.datos.content[0].totalIngreso;
+        this.totalImporte = respuesta.datos.content[0].totalImporte;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -244,16 +243,9 @@ export class BalanceCajaComponent implements OnInit {
   exportarArchivo(extension: string) {
     this.cargadorService.activar();
     let filtros = this.crearSolicitudFiltros();
-    // filtros.folioODS = "DOC-0000005";
-    // filtros.folioNuevoConvenio = "DOC-000010";
-    // filtros.fecha = null;
-    // filtros.idDelegacion = null;
-    // filtros.idVelatorio = null;
-    // filtros.idMetodoPago = null;
-    // filtros.idNivel = null;
     const configuracionArchivo: OpcionesArchivos = {};
     if(extension.includes("xls")){
-      configuracionArchivo.ext = "xlsx"
+      configuracionArchivo.ext = "xlsx";
     }
     filtros.tipoReporte = extension;
     this.descargaArchivosService.descargarArchivo(this.balanceCajaService.descargarReporte(filtros)).pipe(
@@ -269,18 +261,20 @@ export class BalanceCajaComponent implements OnInit {
   }
 
   abrirModalCierre(): void {
+    let filtros: FiltrosBalanceCaja = this.crearSolicitudFiltros();
+    delete filtros.tipoReporte;
+    if (filtros.fecha === null) {
+      filtros.fecha = this.datePipe.transform(new Date(), 'YYYY-MM-dd')
+    }
+    this.balanceCajaService.filtrosBalanceSeleccionados = filtros;
     this.modificacionRef = this.dialogService.open(RealizarCierreComponent, {
       header: 'Cierre',
-      width: '520px',
-      data: {valeSeleccionado: this.balanceCajaSeleccionado},
+      width: '520px'
     });
 
     this.modificacionRef.onClose.subscribe(() => {
       this.paginar();
     })
-  }
-
-  aceptar() {
   }
 
   cerrar(): void {

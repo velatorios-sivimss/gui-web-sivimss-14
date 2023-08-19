@@ -4,7 +4,7 @@ export const TIPO_PAGO_CATALOGOS_ODS: any[] = [
   {
     value: 1,
     label: 'Vale paritaria',
-    deshabilitado: false
+    deshabilitado: true
   },
   {
     value: 2,

@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-// import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { BalanceCajaService } from '../../services/balance-caja.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { mensajes } from '../../../reservar-salas/constants/mensajes';
 import { ModificarPagoInterface } from '../../models/balance-caja.interface';
+import { finalize } from "rxjs/operators";
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-modificar-pago',
@@ -24,14 +28,16 @@ export class ModificarPagoComponent implements OnInit {
 
   constructor(
     private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
     private formBulder: FormBuilder,
     private balanceCajaService: BalanceCajaService,
-    private readonly loaderService: LoaderService,
+    private loaderService: LoaderService,
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.balanceSeleccionado = this.balanceCajaService.balanceSeleccionado;
-    console.log("BALANCE SELECCIONADO: ", this.balanceSeleccionado);
     if (this.balanceSeleccionado.fecHoraCierre) {
       let parts = this.balanceSeleccionado.fecHoraCierre.split(' ');
       if (parts.length === 2) {
@@ -57,7 +63,19 @@ export class ModificarPagoComponent implements OnInit {
       idPagoDetalle: this.balanceSeleccionado.idPagoDetalle,
       motivoModifica: this.modificarPagoForm.get("modificarPago")?.value
     }
-    console.log("DATA: ", data);
+    this.loaderService.activar();
+    this.balanceCajaService.modificarPago(data)
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos) {
+            this.alertaService.mostrar(TipoAlerta.Exito, "El motivo de modificación será registrado");
+            void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
+        }
+      },
+      error: (error: HttpErrorResponse): void => {
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   limpiar(): void {

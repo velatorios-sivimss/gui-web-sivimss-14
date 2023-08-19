@@ -38,9 +38,6 @@
       <div class="col-4" *ngIf="[1,3].includes(convenioSeleccionado)">
         <label class="control-label" for="folioNuevo">Folio del Nuevo convenio de previsión funeraria (PNCPF): </label>
         <input id="folioNuevo" class="form-control" formControlName="folioNuevo" placeholder="Ingresa folio"/>
-        <!-- <p-dropdown id="folioNuevo" class="form-control" formControlName="folioNuevo" [options]="opciones"
-                    placeholder="Ingresa folio" [filter]="true">
-        </p-dropdown> -->
       </div>
       <div class="col-4" *ngIf="[1,4].includes(convenioSeleccionado)">
         <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria
@@ -72,12 +69,9 @@
 </div>
 
 <section class="mt-5">
-  <div class="flex justify-content-between align-items-center">
+  <div class="flex justify-content-between align-items-center" *appValidaRol="['BALANCE_CAJA','MODIFICACION']">
     <h2 class="subtitulo">Campos de Reporte</h2>
-    <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 1" (click)="abrirModalCierre()">Realizar
-      cierre
-    </button>
-    <!-- <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button> -->
+    <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 13" (click)="abrirModalCierre()">Realizar cierre</button>
   </div>
 
   <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0"
@@ -115,9 +109,6 @@
         <td>{{balance.fecHoraCierre}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <!-- <a (click)="abrirDetalleComision(balance)">
-              <img src="assets/images/imagen-icono-ver.svg" alt="Ver">
-            </a> -->
             <a (click)="abrirPanel($event,balance)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
@@ -138,15 +129,15 @@
           <div class="flex justify-content-between table-footer">
             <div class="flex flex-column">
               <span class="text-2xl font-normal">Total de ingresos</span>
-              <span class="font-bold text-2xl">$10,000.00</span>
+              <span class="font-bold text-2xl">{{ totalIngresos | currency }}</span>
             </div>
             <div class="flex flex-column">
               <span class="text-2xl font-normal">Total de importe</span>
-              <span class="font-bold text-2xl">$16,500.00</span>
+              <span class="font-bold text-2xl">{{ totalImporte | currency }}</span>
             </div>
             <div class="flex flex-column">
               <span class="text-2xl font-normal">Total de registros</span>
-              <span class="font-bold text-2xl">$50,000.00</span>
+              <span class="font-bold text-2xl">{{ totalElementos }}</span>
             </div>
           </div>
         </td>
@@ -158,7 +149,7 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
-      <div class="paginator-template" *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
+      <div class="paginator-template" *appValidaRol="['BALANCE_CAJA','IMPRIMIR']">
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
@@ -176,9 +167,11 @@
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
+    <app-overlay-panel-opciones *appValidaRol="['BALANCE_CAJA','MODIFICACION']">
       <app-overlay-panel-opcion *ngIf="esModificacion" titulo="Modificar pago"
                                 routerLink="modificar-pago"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+    <app-overlay-panel-opciones>
       <app-overlay-panel-opcion *ngIf="!esModificacion" titulo="Motivo de pago"
                                 routerLink="modificar-pago"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
