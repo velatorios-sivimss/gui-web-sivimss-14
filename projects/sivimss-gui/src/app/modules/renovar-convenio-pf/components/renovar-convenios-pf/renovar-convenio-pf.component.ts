@@ -132,18 +132,20 @@ export class RenovarConvenioPfComponent implements OnInit {
   }
 
   generarRenovacion() {
-    this.loaderService.activar();
-    this.renovarConvenioPfService.verificarDocumentacion(this.datosVerificarDocumentacion()).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.codigo === 200) {
-          this.renovarPlan();
-        }
-      },
-      error: (error: HttpErrorResponse) => {
-        this.procesarErrorResponse(error);
-        this.loaderService.desactivar();
-      }
-    });
+    const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(192);
+          this.alertaService.mostrar(TipoAlerta.Exito, msg);
+    // this.loaderService.activar();
+    // this.renovarConvenioPfService.verificarDocumentacion(this.datosVerificarDocumentacion()).subscribe({
+    //   next: (respuesta: HttpRespuesta<any>) => {
+    //     if (respuesta.codigo === 200) {
+    //       this.renovarPlan();
+    //     }
+    //   },
+    //   error: (error: HttpErrorResponse) => {
+    //     this.procesarErrorResponse(error);
+    //     this.loaderService.desactivar();
+    //   }
+    // });
   }
 
   renovarPlan() {
