@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-enviar-factura',
@@ -9,25 +9,25 @@ import {FormGroup} from "@angular/forms";
 export class EnviarFacturaComponent implements OnInit {
 
   enviarForm!: FormGroup;
-  indice: number = 0;
+  mostrarDialogEnviar: boolean = false;
 
-  constructor() {
+  constructor(
+    private formBuilder: FormBuilder,
+  ) {
   }
 
   ngOnInit(): void {
+    this.inicializarEnviarForm();
   }
 
-  guardar(): void {
-    if (this.indice === 0) {
-      this.indice++;
-      return;
-    }
+  inicializarEnviarForm(): void {
+    this.enviarForm = this.formBuilder.group({
+      correoElectronico: [{value: null, disabled: false}, [Validators.required]],
+    });
   }
 
-  cancelar(): void {
-    if (this.indice === 1) {
-      this.indice--;
-      return;
-    }
+  get fc() {
+    return this.enviarForm.controls;
   }
+
 }
