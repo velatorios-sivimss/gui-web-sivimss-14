@@ -21,6 +21,7 @@ import { DialogModule } from "primeng/dialog";
 import { OverlayPanelModule } from "primeng/overlaypanel";
 import { CheckboxModule } from 'primeng/checkbox';
 import {CalendarModule} from 'primeng/calendar';
+import { UsuarioService } from '../usuarios/services/usuario.service';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import {CalendarModule} from 'primeng/calendar';
     CalendarModule,
   ],
   providers: [
-    PromotoresService
+    PromotoresService,
+    UsuarioService
   ]
 })
 export class PromotoresModule {

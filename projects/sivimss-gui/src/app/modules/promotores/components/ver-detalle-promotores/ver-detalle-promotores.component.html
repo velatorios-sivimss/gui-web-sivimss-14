@@ -2,7 +2,7 @@
     <ng-template appCustomTemplate="left-header">
         <div class="table-panel-header-column">
             <span class="font-bold">
-                ID <span [ngClass]="promotorSeleccionado.estatus ? 'activo' : 'inactivo'">{{promotorSeleccionado.id}}</span>
+                ID <span [ngClass]="promotorSeleccionado.estatus ? 'activo' : 'inactivo'">{{promotorSeleccionado.idPromotor}}</span>
             </span>
         </div>
     </ng-template>
@@ -64,13 +64,13 @@
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Fecha de nacimiento</label>
-                <span>{{promotorSeleccionado.fechaNacimiento}}</span>
+                <span>{{promotorSeleccionado.fecNac}}</span>
             </div>
         </div>
         <div class="col-md-6">
             <div class="table-panel-column">
                 <label>Fecha de ingreso</label>
-                <span>{{promotorSeleccionado.fechaIngreso}}</span>
+                <span>{{promotorSeleccionado.fecIngreso}}</span>
             </div>
         </div>
     </div>

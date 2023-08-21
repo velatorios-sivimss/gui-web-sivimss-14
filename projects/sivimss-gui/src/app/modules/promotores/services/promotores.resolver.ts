@@ -3,6 +3,7 @@ import { Resolve } from '@angular/router';
 import { Observable, forkJoin } from 'rxjs';
 import { PromotoresService } from './promotores.service';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
+import { HttpRespuesta } from '../../../models/http-respuesta.interface';
 
 @Injectable()
 export class PromotoresResolver implements Resolve<any> {
@@ -12,6 +13,7 @@ export class PromotoresResolver implements Resolve<any> {
     resolve(): Observable<any> {
         const niveles$: Observable<TipoDropdown[]> = this.promotoresService.obtenerCatalogoNiveles();
         const delegaciones$: Observable<TipoDropdown[]> = this.promotoresService.obtenerCatalogoDelegaciones();
-        return forkJoin([niveles$, delegaciones$]);
+        const catalogoVelatorio$: Observable<HttpRespuesta<any>> = this.promotoresService.obtenerCatalogos({ catalogo: 1 });
+        return forkJoin([niveles$, delegaciones$, catalogoVelatorio$]);
     }
 }

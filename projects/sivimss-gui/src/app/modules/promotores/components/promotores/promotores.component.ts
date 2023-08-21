@@ -5,7 +5,7 @@ import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/al
 import { OverlayPanel } from "primeng/overlaypanel";
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DIEZ_ELEMENTOS_POR_PAGINA, Accion } from "../../../../utils/constantes";
-import { BuscarPromotores, Promotor, PromotoresBusqueda } from "../../models/promotores.interface";
+import { BuscarCatalogo, BuscarPromotores, CambiarEstatus, Promotor, PromotoresBusqueda } from "../../models/promotores.interface";
 import { LazyLoadEvent } from "primeng/api";
 import { ActivatedRoute, Router } from '@angular/router';
 import { VerDetallePromotoresComponent } from '../ver-detalle-promotores/ver-detalle-promotores.component';
@@ -19,6 +19,8 @@ import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { finalize } from 'rxjs';
 
 interface HttpResponse {
   respuesta: string;
@@ -44,6 +46,9 @@ export class PromotoresComponent implements OnInit {
   public catalogoDelegaciones: TipoDropdown[] = [];
   public catalogoVelatorios: TipoDropdown[] = [];
   public catalogoPlacas: TipoDropdown[] = [];
+  public mostrarModalConfirmacion: boolean = false;
+  public mensajeModal: string = "";
+  public realizoBusqueda: boolean = false;
 
   promotoresServicio: any[] = [
     {
@@ -64,7 +69,7 @@ export class PromotoresComponent implements OnInit {
   promotorSeleccionado!: Promotor;
   detalleRef!: DynamicDialogRef;
   filtroForm!: FormGroup;
-  promotoresServicioFiltrados: any[] = [];
+  promotoresFiltrados: TipoDropdown[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -76,6 +81,7 @@ export class PromotoresComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private promotoresService: PromotoresService,
     private mensajesSistemaService: MensajesSistemaService,
+    private loaderService: LoaderService,
   ) {
   }
 
@@ -109,7 +115,7 @@ export class PromotoresComponent implements OnInit {
     }
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
     if (!idDelegacion) return;
-    this.promotoresService.obtenerVelatorios(idDelegacion).subscribe({
+    this.promotoresService.velatoriosPorDelegacion(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
@@ -135,20 +141,23 @@ export class PromotoresComponent implements OnInit {
   }
 
   buscarPorFiltros(esFiltro: boolean): void {
-    this.promotoresService.buscarPorFiltros(this.datosPromotoresFiltros(esFiltro), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos) {
-          this.promotores = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        } else {
-          this.promotores = [];
+    this.loaderService.activar();
+    this.promotoresService.buscarPorFiltros(this.datosPromotoresFiltros(esFiltro), this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.promotores = respuesta.datos.content;
+            this.totalElementos = respuesta.datos.totalElements;
+            this.realizoBusqueda = true;
+          } else {
+            this.promotores = [];
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   datosPromotoresFiltros(esFiltro: boolean): BuscarPromotores {
@@ -169,8 +178,12 @@ export class PromotoresComponent implements OnInit {
 
   abrirModalAgregarPromotor(): void {
     this.detalleRef = this.dialogService.open(AgregarPromotoresComponent, {
-      header: "Agregar promotor",
+      header: "Registro nuevo promotor",
       width: "920px"
+    });
+
+    this.detalleRef.onClose.subscribe(() => {
+      this.paginar();
     });
   }
 
@@ -185,21 +198,34 @@ export class PromotoresComponent implements OnInit {
       header: "Modificar promotor",
       width: "920px"
     });
+
+    this.detalleRef.onClose.subscribe(() => {
+      this.paginar();
+    });
   }
 
   agregarPromotor(): void {
     this.alertaService.mostrar(TipoAlerta.Exito, 'Usuario guardado');
   }
 
-  limpiarFormBusqueda() {
+  limpiar(): void {
+    this.realizoBusqueda = false;
     this.filtroForm.reset();
-  }
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
 
-  buscarPromotor() {
-    // De acuerdo a CU al menos un campo con información a buscar
-    if (this.validarAlMenosUnCampoConValor(this.filtroForm)) {
-      // TO DO llamada a servicio para realizar búsqueda
+    if (+usuario.idOficina >= 2) {
+      this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
     }
+
+    if (+usuario.idOficina === 3) {
+      this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    } else {
+      this.catalogoVelatorios = [];
+    }
+    this.cargarVelatorios(true);
+    this.promotores = [];
+    this.totalElementos = 0;
   }
 
   validarAlMenosUnCampoConValor(group: FormGroup) {
@@ -209,19 +235,71 @@ export class PromotoresComponent implements OnInit {
     return true;
   }
 
-  cambiarEstatus(promotor: Promotor) {
-    const modo = promotor.estatus ? Accion.Desactivar : Accion.Activar;
-    this.detalleRef = this.dialogService.open(VerDetallePromotoresComponent, {
-      data: { promotor, modo },
-      header: "Ver detalle",
-      width: "920px"
+  confirmarInhabilitar() {
+    this.mostrarModalConfirmacion = true;
+    this.mensajeModal = '¿Estás seguro de desactivar el registro seleccionado? Promotor';
+  }
+
+  inhabilitarPromotor() {
+    this.loaderService.activar();
+    this.promotoresService.cambiarEstatus(this.datosCambiarEstatus()).pipe(
+      finalize(() => {
+        this.mostrarModalConfirmacion = false;
+        this.loaderService.desactivar();
+      })
+    ).subscribe({
+      next: () => {
+        this.paginar();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
+      }
     });
-    // this.detalleRef.onClose.subscribe((res: HttpResponse) => {
-    //   if (res && res.respuesta === 'Ok' && res.promotor) {
-    //     const foundIndex = this.promotores.findIndex((item: Promotor) => item.id === promotor.id);
-    //     this.promotores[foundIndex] = res.promotor;
-    //   }
-    // });
+  }
+
+  datosCambiarEstatus(): CambiarEstatus {
+    return {
+      idPromotor: this.promotorSeleccionado.idPromotor,
+      estatus: 0,
+    }
+  }
+
+  obtenerNombrePromotor(): string {
+    let query = this.ff.nombrePromotor?.value || '';
+    if (typeof this.ff.nombrePromotor?.value === 'object') {
+      query = this.ff.nombrePromotor?.value?.label;
+    }
+    return query;
+  }
+
+  filtrarPromotores() {
+    let nomPromotor = this.obtenerNombrePromotor();
+    if (nomPromotor?.length >= 3) {
+      const obj: BuscarCatalogo = {
+        idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
+        idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+        nomPromotor,
+        catalogo: 1,
+      }
+      this.promotoresService.obtenerCatalogos(obj).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          let filtrado: TipoDropdown[] = [];
+          if (respuesta.datos && respuesta.datos.length > 0) {
+            respuesta.datos.forEach((e: any) => {
+              filtrado.push({
+                label: e.nomPromotor,
+                value: e.idPromotor,
+              });
+            });
+            this.promotoresFiltrados = filtrado;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
+    }
   }
 
   get ff() {

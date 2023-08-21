@@ -4,7 +4,7 @@ import { HttpRespuesta } from '../../../models/http-respuesta.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'projects/sivimss-gui/src/environments/environment';
 import { Observable, of } from 'rxjs';
-import { BuscarPromotores } from '../models/promotores.interface';
+import { BuscarCatalogo, BuscarPromotores } from '../models/promotores.interface';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
 import { AutenticacionService } from '../../../services/autenticacion.service';
@@ -51,8 +51,12 @@ export class PromotoresService extends BaseService<HttpRespuesta<any>, any> {
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
-  obtenerVelatorios(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+  velatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
     const body: ConsultaVelatorio = { idDelegacion: delegacion }
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
+  }
+
+  obtenerCatalogos(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/nombre-promotor`, buscarCatalogo);
   }
 }
