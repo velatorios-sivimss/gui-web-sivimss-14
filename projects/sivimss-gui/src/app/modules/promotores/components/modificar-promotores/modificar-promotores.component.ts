@@ -167,20 +167,15 @@ export class ModificarPromotoresComponent implements OnInit {
 
     });
     return {
-      curp: this.mpf.curp.value,
-      nomPromotor: this.mpf.nombre.value,
-      aPaterno: this.mpf.primerApellido.value,
-      aMaterno: this.mpf.segundoApellido.value,
-      fecNac: this.mpf.fechaNacimiento.value ? moment(this.mpf.fechaNacimiento.value).format('DD/MM/YYYY') : null,
+      idPromotor: this.promotor.idPromotor,
       correo: this.mpf.correo.value,
-      numEmpleado: this.mpf.numEmpleado.value,
       puesto: this.mpf.puesto.value,
       categoria: this.mpf.categoria.value,
       fecIngreso: this.mpf.fechaIngreso.value ? moment(this.mpf.fechaIngreso.value).format('DD/MM/YYYY') : null,
-      fecBaja: this.mpf.fechaBaja.value ? moment(this.mpf.fechaBaja.value).format('DD/MM/YYYY') : null,
-      sueldoBase: this.mpf.sueldoBase.value,
+      sueldoBase: +this.mpf.sueldoBase.value,
       idVelatorio: this.mpf.velatorio.value,
       fecPromotorDiasDescanso,
+      estatus: this.mpf.estatus.value ? 1 : 0,
     }
   }
 

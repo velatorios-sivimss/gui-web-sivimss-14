@@ -143,7 +143,7 @@ export class AgregarPromotoresComponent implements OnInit {
       puesto: this.apf.puesto.value,
       categoria: this.apf.categoria.value,
       fecIngreso: moment(this.apf.fechaIngreso.value).format('DD/MM/YYYY'),
-      sueldoBase: this.apf.sueldoBase.value,
+      sueldoBase: +this.apf.sueldoBase.value,
       idVelatorio: this.apf.velatorio.value,
       fecPromotorDiasDescanso,
     }

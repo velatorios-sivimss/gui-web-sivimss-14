@@ -32,7 +32,7 @@
         </p-autoComplete>
       </div>
     </div>
-    <div class="row mt-6">
+    <div class="row mt-6" *appValidaRol="['PROMOTORES','CONSULTA']">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
         <button type="button" class="btn btn-primary btn-md ml-5" (click)="paginarPorFiltros();">Buscar</button>
@@ -43,7 +43,8 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Promotores</h2>
-    <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAgregarPromotor()">Agregar promotor</button>
+    <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['PROMOTORES','ALTA']"
+      (click)="abrirModalAgregarPromotor()">Agregar promotor</button>
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="promotores" [paginator]="promotores.length > 0"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
@@ -99,7 +100,7 @@
           </div>
         </td> -->
         <td>
-          <div class="contenedor-celda-iconos">
+          <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
             <a (click)="abrirPanel($event,promotor)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
