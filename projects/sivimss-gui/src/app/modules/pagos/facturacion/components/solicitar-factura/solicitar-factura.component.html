@@ -34,22 +34,38 @@
 <ng-container>
   <app-datos-contratante [nombreContratante]="'Heriberto Angelo Sánchez Maldonado'"
                          [tipoFecha]="2" [fecha]="'01/01/2022'" [fechaPago]="'01/01/2022'"
-                         [concepto]="'Orden de servicio'" [servicios]="servicios" [metodosPago]="metodosPago"></app-datos-contratante>
-  <form [formGroup]="datosContratanteForm" *ngIf="false">
-    <div class="row mb-3 mt-3">
-      <div class="col-md-5">
-        <label class="control-label" for="rfc">RFC del contratante<span class="req">*</span>:</label>
-        <input id="rfc" class="form-control" formControlName="rfc"
-               placeholder="Inserta el rfc">
-      </div>
-      <div class="col-md-5">
-        <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
-        <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
-               placeholder="Inserta el correo">
-      </div>
-      <div class="col-md-2">
-        <button type="submit" class="ml-4 btn btn-primary btn-md mt-5">Buscar</button>
+                         [concepto]="'Orden de servicio'" [servicios]="servicios"
+                         [metodosPago]="metodosPago"></app-datos-contratante>
+  <div class="panel-busqueda mb-6">
+    <div class="row mb-3 mt-3 mr-3 ml-3">
+      <form [formGroup]="datosContratanteForm">
+        <div class="col-md-6">
+          <div class="grid">
+            <div class="col-9">
+              <label class="control-label" for="rfc">RFC del contratante<span class="req">*</span>:</label>
+              <input id="rfc" class="form-control" formControlName="rfc"
+                     placeholder="Inserta el rfc">
+              <span class="campo-obligatorio"
+                    *ngIf="pr?.rfc?.errors?.required && (pr?.rfc?.dirty || pr?.rfc?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-3 mt-3">
+              <button type="submit" class="ml-4 btn btn-primary btn-md mt-5">Buscar</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
+          <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
+                 placeholder="Inserta el correo">
+          <span class="campo-obligatorio"
+                *ngIf="pr?.correoElectronico?.errors?.required && (pr?.correoElectronico?.dirty || pr?.correoElectronico?.touched)">Este campo es obligatorio *.</span>
+        </div>
+      </form>
+    </div>
+    <div class="row mb-4 ml-3">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
       </div>
     </div>
-  </form>
+  </div>
 </ng-container>

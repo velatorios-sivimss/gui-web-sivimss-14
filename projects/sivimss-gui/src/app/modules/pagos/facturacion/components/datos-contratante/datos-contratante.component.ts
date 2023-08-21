@@ -15,4 +15,5 @@ export class DatosContratanteComponent {
   @Input() concepto: string = '';
   @Input() servicios: ServiciosContratados[] = [];
   @Input() metodosPago: MetodosPagoFact[] = [];
+  @Input() activeIndex: number = 0;
 }

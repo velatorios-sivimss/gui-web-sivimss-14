@@ -19,14 +19,13 @@ export class SolicitarFacturaComponent implements OnInit {
   solicitudForm!: FormGroup;
   indice: number = 0;
   tiposFactura: TipoDropdown[] = TIPO_FACTURACION;
-  folios: TipoDropdown[] = [];
   datosContratanteForm!: FormGroup;
   servicios: any[] = REGISTROS_PAGOS;
 
   metodosPago: MetodosPagoFact[] = [{
     metodo: 'Vale Paritaria',
     importe: 10000
-  },{
+  }, {
     metodo: 'Tarjeta Credito',
     importe: 10000
   }]
@@ -36,6 +35,7 @@ export class SolicitarFacturaComponent implements OnInit {
 
   ngOnInit(): void {
     this.inicializarForm();
+    this.inicializarFormRFC();
   }
 
   inicializarForm(): void {
@@ -43,6 +43,13 @@ export class SolicitarFacturaComponent implements OnInit {
       tipoFactura: [{value: null, disabled: false}, [Validators.required]],
       folio: [{value: null, disabled: false}, [Validators.required]],
     });
+  }
+
+  inicializarFormRFC(): void {
+    this.datosContratanteForm = this.formBuilder.group({
+      rfc: [{value: null, disabled: false}, [Validators.required]],
+      correoElectronico: [{value: null, disabled: false}, [Validators.required]],
+    })
   }
 
   limpiar(): void {
@@ -63,5 +70,9 @@ export class SolicitarFacturaComponent implements OnInit {
 
   get pf() {
     return this.solicitudForm?.controls;
+  }
+
+  get pr() {
+    return this.datosContratanteForm?.controls;
   }
 }
