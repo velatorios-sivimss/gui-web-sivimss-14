@@ -68,5 +68,66 @@
       </div>
     </div>
   </div>
-  <app-datos-receptor></app-datos-receptor>
+  <app-datos-receptor
+    [nombreReceptor]="'Heriberto Angelo Sánchez Maldonado'"
+    [tipoPersona]="'Persona física'"
+    [regimenFiscal]="'620 - Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas'"
+    [domicilioFiscal]="'C.P. 00666, Lázaro Cárdenas 112, Industrial Globo, Santiago de Querétaro, Querétaro.'">
+  </app-datos-receptor>
+</ng-container>
+<ng-container>
+  <form [formGroup]="datosCFDIForm">
+    <div class="row mb-3 mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="cfdi">Uso del CFDI<span class="req">*</span>:</label>
+        <p-dropdown id="cfdi" class="form-control" formControlName="cfdi" [options]="temp"
+                    placeholder="Selecciona el uso del CFDI">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.cfdi?.errors?.required && (pcf?.cfdi?.dirty || pcf?.cfdi?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="metodoPago">Método de pago<span class="req">*</span>:</label>
+        <p-dropdown id="metodoPago" class="form-control" formControlName="metodoPago" [options]="temp"
+                    placeholder="Ingresa el método de pago">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.metodoPago?.errors?.required && (pcf?.metodoPago?.dirty || pcf?.metodoPago?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="formaPago">Forma de pago<span class="req">*</span>:</label>
+        <p-dropdown id="formaPago" class="form-control" formControlName="formaPago" [options]="temp"
+                    placeholder="Ingresa la forma de pago">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.formaPago?.errors?.required && (pcf?.formaPago?.dirty || pcf?.formaPago?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3 mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="observaciones1">Observaciones (automático)<span class="req">*</span>:</label>
+        <input id="observaciones1" class="form-control" formControlName="observaciones1"
+               placeholder="Observaciones">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="observaciones2">Observaciones<span class="req">*</span>:</label>
+        <input id="observaciones2" class="form-control" formControlName="observaciones2"
+               placeholder="Ingresa las observaciones">
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.observaciones2?.errors?.required && (pcf?.observaciones2?.dirty || pcf?.observaciones2?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 flex justify-content-end mb-4">
+        <button type="reset" class="ml-4 btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="datosCFDIForm.invalid">Generar factura
+        </button>
+      </div>
+    </div>
+  </form>
 </ng-container>

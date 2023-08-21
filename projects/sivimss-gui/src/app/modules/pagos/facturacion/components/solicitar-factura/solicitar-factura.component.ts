@@ -17,10 +17,12 @@ export class SolicitarFacturaComponent implements OnInit {
   private filtroFormDir!: FormGroupDirective;
 
   solicitudForm!: FormGroup;
+  datosContratanteForm!: FormGroup;
+  datosCFDIForm!: FormGroup;
   indice: number = 0;
   tiposFactura: TipoDropdown[] = TIPO_FACTURACION;
-  datosContratanteForm!: FormGroup;
   servicios: any[] = REGISTROS_PAGOS;
+  temp: TipoDropdown[] = [];
 
   metodosPago: MetodosPagoFact[] = [{
     metodo: 'Vale Paritaria',
@@ -36,6 +38,7 @@ export class SolicitarFacturaComponent implements OnInit {
   ngOnInit(): void {
     this.inicializarForm();
     this.inicializarFormRFC();
+    this.inicializarFormCFDI();
   }
 
   inicializarForm(): void {
@@ -49,7 +52,17 @@ export class SolicitarFacturaComponent implements OnInit {
     this.datosContratanteForm = this.formBuilder.group({
       rfc: [{value: null, disabled: false}, [Validators.required]],
       correoElectronico: [{value: null, disabled: false}, [Validators.required]],
-    })
+    });
+  }
+
+  inicializarFormCFDI(): void {
+    this.datosCFDIForm = this.formBuilder.group({
+      cfdi: [{value: null, disabled: false}, [Validators.required]],
+      metodoPago: [{value: null, disabled: false}, [Validators.required]],
+      formaPago: [{value: null, disabled: false}, [Validators.required]],
+      observaciones1: [{value: '000000000', disabled: true}, [Validators.required]],
+      observaciones2: [{value: null, disabled: false}],
+    });
   }
 
   limpiar(): void {
@@ -75,4 +88,9 @@ export class SolicitarFacturaComponent implements OnInit {
   get pr() {
     return this.datosContratanteForm?.controls;
   }
+
+  get pcf() {
+    return this.datosCFDIForm?.controls;
+  }
+
 }
