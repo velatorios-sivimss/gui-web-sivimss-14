@@ -23,6 +23,7 @@ import {FacturacionService} from "./services/facturacion.service";
 import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 import { DatosContratanteComponent } from './components/datos-contratante/datos-contratante.component';
 import { DatosReceptorComponent } from './components/datos-receptor/datos-receptor.component';
+import {DialogModule} from "primeng/dialog";
 
 
 @NgModule({
@@ -35,25 +36,26 @@ import { DatosReceptorComponent } from './components/datos-receptor/datos-recept
     DatosContratanteComponent,
     DatosReceptorComponent
   ],
-    imports: [
-        CommonModule,
-        FacturacionRoutingModule,
-        TituloPrincipalModule,
-        FormsModule,
-        ReactiveFormsModule,
-        DropdownModule,
-        CalendarModule,
-        UtileriaModule,
-        ValidaRolModule,
-        OverlayPanelModule,
-        OverlayPanelOpcionesModule,
-        TableModule,
-        InputSwitchModule,
-        NgOptimizedImage,
-        TablePanelModule,
-        AccordionModule,
-        BtnRegresarModule
-    ],
+  imports: [
+    CommonModule,
+    FacturacionRoutingModule,
+    TituloPrincipalModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    CalendarModule,
+    UtileriaModule,
+    ValidaRolModule,
+    OverlayPanelModule,
+    OverlayPanelOpcionesModule,
+    TableModule,
+    InputSwitchModule,
+    NgOptimizedImage,
+    TablePanelModule,
+    AccordionModule,
+    BtnRegresarModule,
+    DialogModule
+  ],
   providers: [FacturacionService]
 })
 export class FacturacionModule { }
