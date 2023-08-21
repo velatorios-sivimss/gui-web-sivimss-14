@@ -5,10 +5,18 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { OverlayPanel } from "primeng/overlaypanel";
-import { VerDetallePromotoresComponent } from '../ver-detalle-promotores/ver-detalle-promotores.component';
 import { Promotor } from '../../models/promotores.interface';
-import { Accion } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { CURP, EMAIL } from 'projects/sivimss-gui/src/app/utils/regex';
+import { CURP } from 'projects/sivimss-gui/src/app/utils/regex';
+import { UsuarioService } from '../../../usuarios/services/usuario.service';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { finalize } from 'rxjs';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import * as moment from 'moment';
+import { PromotoresService } from '../../services/promotores.service';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 
 interface HttpResponse {
   respuesta: string;
@@ -22,95 +30,38 @@ interface HttpResponse {
   providers: [DialogService]
 })
 export class AgregarPromotoresComponent implements OnInit {
+  readonly POSICION_CATALOGO_VELATORIO: number = 2;
+  readonly NOT_FOUND_RENAPO: string = "CURP no válido.";
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  opciones: any[] = [
-    {
-      label: 'Opción 1',
-      value: 0,
-    },
-    {
-      label: 'Opción 2',
-      value: 1,
-    },
-    {
-      label: 'Opción 3',
-      value: 2,
-    }
-  ];
-
-  regiones: any[] = [
-    {
-      label: 'Nacional',
-      value: 0,
-    },
-    {
-      label: 'Delegacional',
-      value: 1,
-    },
-    {
-      label: 'Velatorio',
-      value: 2,
-    }
-  ];
-
-  catalogoArticulos: any[] = [
-    {
-      label: 'Ataúd',
-      value: 0,
-    },
-    {
-      label: 'Urna',
-      value: 1,
-    },
-    {
-      label: 'Cartucho',
-      value: 2,
-    },
-    {
-      label: 'Empaques traslado aéreo',
-      value: 3,
-    },
-    {
-      label: 'Bolsa para cadáver',
-      value: 4,
-    },
-    {
-      label: 'Otro',
-      value: 5,
-    },
-  ];
-
-  tipoArticulos: any[] = [];
-  tituloEliminar: string = '';
-  intentoPorGuardar: boolean = false;
-
-  agregarPromotorForm!: FormGroup;
+  public catalogoVelatorios: TipoDropdown[] = [];
+  public tipoArticulos: any[] = [];
+  public tituloEliminar: string = '';
+  public intentoPorGuardar: boolean = false;
+  public agregarPromotorForm!: FormGroup;
+  public mostrarModalConfirmacion: boolean = false;
+  public mostrarModalPromotorDuplicado: boolean = false;
+  public mensajeModal: string = "";
 
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
-    private alertaService: AlertaService,
     private route: ActivatedRoute,
     public ref: DynamicDialogRef,
+    private usuarioService: UsuarioService,
+    private loaderService: LoaderService,
+    private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private promotoresService: PromotoresService,
   ) {
   }
 
   ngOnInit(): void {
-    this.breadcrumbService.actualizar([
-      {
-        icono: 'imagen-icono-operacion-sivimss.svg',
-        titulo: 'Administración de catálogos'
-      },
-      {
-        icono: '',
-        titulo: 'Promotores'
-      }
-    ]);
     this.inicializarAgregarPromotorForm();
+    this.cargarCatalogo();
   }
 
   inicializarAgregarPromotorForm() {
@@ -118,89 +69,130 @@ export class AgregarPromotoresComponent implements OnInit {
       id: [{ value: null, disabled: true }],
       numEmpleado: [{ value: null, disabled: false }, [Validators.maxLength(10), Validators.required]],
       curp: [{ value: null, disabled: false }, [Validators.maxLength(18), Validators.required, Validators.pattern(CURP)]],
-      nombre: [{ value: null, disabled: false }, [Validators.maxLength(30), Validators.required]],
-      primerApellido: [{ value: null, disabled: false }, [Validators.maxLength(20), Validators.required]],
-      segundoApellido: [{ value: null, disabled: false }, [Validators.maxLength(20), Validators.required]],
-      fechaNacimiento: [{ value: null, disabled: false }, Validators.required],
+      nombre: [{ value: null, disabled: true }, [Validators.maxLength(30), Validators.required]],
+      primerApellido: [{ value: null, disabled: true }, [Validators.maxLength(20), Validators.required]],
+      segundoApellido: [{ value: null, disabled: true }, [Validators.maxLength(20), Validators.required]],
+      fechaNacimiento: [{ value: null, disabled: true }, Validators.required],
       fechaIngreso: [{ value: null, disabled: false }, Validators.required],
       fechaBaja: [{ value: null, disabled: true }],
       sueldoBase: [{ value: null, disabled: false }, [Validators.maxLength(10), Validators.required]],
-      velatorio: [{ value: null, disabled: false }, Validators.required],
-      categoria: [{ value: null, disabled: false }, [Validators.maxLength(20), Validators.required]],
+      velatorio: [{ value: null, disabled: false }, [Validators.required]],
+      categoria: [{ value: null, disabled: false }, [Validators.maxLength(20)]],
       antiguedad: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
-      correo: [{ value: null, disabled: false }, [Validators.maxLength(30), Validators.required,
-      Validators.email, Validators.pattern(EMAIL)]],
+      correo: [{ value: null, disabled: false }, [Validators.maxLength(30), Validators.pattern('[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}')]],
       puesto: [{ value: null, disabled: false }, [Validators.maxLength(20), Validators.required]],
-      diasDescanso: [{ value: null, disabled: false }, Validators.required],
-      estatus: [{ value: true, disabled: false }, Validators.required],
+      diasDescanso: [{ value: null, disabled: false }, []],
+      estatus: [{ value: true, disabled: true }, []],
     });
   }
 
-  abrirModalDetallePromotor() {
-    return 0;
+  cargarCatalogo(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_VELATORIO].datos, "velatorio", "idVelatorio");
   }
 
-  agregarPromotor(): void {
-    this.alertaService.mostrar(TipoAlerta.Exito, 'Promotor guardado');
+  cerrarDialogo() {
+    this.ref.close();
   }
 
-  cerrarDialogo(promotor?: Promotor) {
-    this.ref.close({
-      respuesta: 'Ok',
-      promotor,
-    });
-  }
-
-  verDetalleGuardarPromotor(): void {
-    this.intentoPorGuardar = true;
+  confirmarGuardar() {
     this.agregarPromotorForm.markAllAsTouched();
+    if (this.agregarPromotorForm.invalid) return;
+    this.mostrarModalConfirmacion = true;
+    this.mensajeModal = `¿Estás seguro de agregar este nuevo registro? Promotor`;
+  }
 
-    if (this.agregarPromotorForm.valid) {
-      const values = this.agregarPromotorForm.getRawValue();
-      const nuevoPromotor: Promotor = {
-        ...values,
-        id: 1,
-      };
-      const detalleRef: DynamicDialogRef = this.dialogService.open(VerDetallePromotoresComponent, {
-        data: { promotor: nuevoPromotor, modo: Accion.Agregar },
-        header: "Agregar promotor",
-        width: "920px"
-      });
-
-      detalleRef.onClose.subscribe((res: HttpResponse) => {
-        if (res && res.respuesta === 'Ok') {
-          this.cerrarDialogo();
+  guardarPromotor() {
+    this.loaderService.activar();
+    this.promotoresService.guardar(this.datosGuardar()).pipe(
+      finalize(() => {
+        this.mostrarModalConfirmacion = false;
+        this.loaderService.desactivar()
+      })
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.codigo === 200 && !respuesta.error) {
+          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente. Promotor`);
+          this.ref.close({ estatus: true });
+        } else {
+          this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
+          this.mostrarModalPromotorDuplicado = true;
         }
-      });
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
+      }
+    });
+  }
+
+  datosGuardar() {
+    let fecPromotorDiasDescanso: string[] = [];
+    this.apf.diasDescanso.value?.forEach((element: Object) => {
+      fecPromotorDiasDescanso.push(moment(element).format('DD/MM/YYYY'));
+
+    });
+    return {
+      curp: this.apf.curp.value,
+      nomPromotor: this.apf.nombre.value,
+      aPaterno: this.apf.primerApellido.value,
+      aMaterno: this.apf.segundoApellido.value,
+      fecNac: this.apf.fechaNacimiento.value,
+      correo: this.apf.correo.value,
+      numEmpleado: this.apf.numEmpleado.value,
+      puesto: this.apf.puesto.value,
+      categoria: this.apf.categoria.value,
+      fecIngreso: moment(this.apf.fechaIngreso.value).format('DD/MM/YYYY'),
+      sueldoBase: +this.apf.sueldoBase.value,
+      idVelatorio: this.apf.velatorio.value,
+      fecPromotorDiasDescanso,
     }
   }
 
-  consultarRenapo() {
-    //TO DO Realizar consulta a RENAPO cuando campos de nombre y fecha nacimiento tengan datos
-    if (this.validarPreconsultaRenapo()) {
-      //CURP Dommy para prueba
-      this.f.curp.setValue('OEAF771012HMCRGR09');
-      //En caso de no existir CURP mostrar msj
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'No se encontró información relacionada a tu búsqueda.');
-    }
+  validarCurpRenapo(): void {
+    if (this.apf.curp.invalid) return;
+    this.loaderService.activar();
+    this.limpiarCamposRenapo();
+    this.usuarioService.consultarCurpRenapo(this.apf.curp.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos?.message !== '') {
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.NOT_FOUND_RENAPO);
+          this.apf.curp.setErrors({ 'incorrect': true });
+        } else {
+          this.apf.curp.setErrors(null);
+          this.apf.nombre.setValue(respuesta.datos?.nombre);
+          this.apf.primerApellido.setValue(respuesta.datos?.apellido1);
+          this.apf.segundoApellido.setValue(respuesta.datos?.apellido2);
+          this.apf.fechaNacimiento.setValue(respuesta.datos?.fechNac);
+        }
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+        this.apf.curp.setErrors({ 'incorrect': true });
+      }
+    });
   }
 
-  validarPreconsultaRenapo(): boolean {
-    if (this.agregarPromotorForm.get('nombre')?.valid &&
-      this.agregarPromotorForm.get('primerApellido')?.valid &&
-      this.agregarPromotorForm.get('segundoApellido')?.valid &&
-      this.agregarPromotorForm.get('fechaNacimiento')?.valid) {
-      return true;
-    }
-    return false;
+  limpiarCamposRenapo() {
+    this.apf.nombre.setValue(null);
+    this.apf.primerApellido.setValue(null);
+    this.apf.segundoApellido.setValue(null);
+    this.apf.fechaNacimiento.setValue(null);
   }
 
   handleFechaIngreso() {
-    //TO DO Calcular Antigüedad
-    console.log(this.f.fechaIngreso.value);
+    const monthDiff = moment().month() - moment(this.apf.fechaIngreso.value).month();
+    const yearDiff = moment().year() - moment(this.apf.fechaIngreso.value).year();
+    if (yearDiff < 1) {
+      this.apf.antiguedad.setValue(`${monthDiff} ${monthDiff > 0 && monthDiff < 10 ? 'mes' : 'meses'}`);
+    } else {
+      this.apf.antiguedad.setValue(`${yearDiff} ${yearDiff < 2 ? 'año' : 'años'}`);
+    }
   }
 
-  get f() {
+  get apf() {
     return this.agregarPromotorForm.controls;
   }
 }

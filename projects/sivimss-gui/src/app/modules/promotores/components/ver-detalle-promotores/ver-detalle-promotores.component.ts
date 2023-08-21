@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LazyLoadEvent } from 'primeng/api/lazyloadevent';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { Accion } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { Promotor } from '../../models/promotores.interface';
+import { PromotoresService } from '../../services/promotores.service';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-ver-detalle-promotores',
@@ -29,25 +31,19 @@ export class VerDetallePromotoresComponent implements OnInit {
     private alertaService: AlertaService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private promotoresService: PromotoresService,
   ) {
     this.promotorSeleccionado = this.config.data?.promotor;
     this.accionEntrada = this.config.data?.modo;
   }
 
   ngOnInit(): void {
+    this.buscarPorFiltros();
     this.inicializarModo();
   }
 
   inicializarModo() {
     switch (this.accionEntrada) {
-      case Accion.Agregar:
-        this.preguntaConfirmacion = '¿Estás seguro de agregar este nuevo promotor?';
-        this.mensajeConfirmacion = this.MENSAJE_PROMOTOR_AGREGADO;
-        break;
-      case Accion.Modificar:
-        this.preguntaConfirmacion = '¿Estás seguro de modificar este promotor?';
-        this.mensajeConfirmacion = this.MENSAJE_PROMOTOR_MODIFICADO;
-        break;
       case Accion.Activar:
         this.preguntaConfirmacion = '¿Estás seguro de activar este promotor?';
         this.mensajeConfirmacion = this.MENSAJE_PROMOTOR_ACTIVADO;
@@ -58,6 +54,26 @@ export class VerDetallePromotoresComponent implements OnInit {
         break;
       default:
         break;
+    }
+  }
+
+  buscarPorFiltros(): void {
+    if (this.promotorSeleccionado.idPromotor) {
+      this.promotoresService.obtenerDetallePromotor(this.promotorSeleccionado.idPromotor).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta.datos);
+
+          // if (respuesta.datos) {
+          //   this.promotores = respuesta.datos.content;
+          // } else {
+          //   this.promotores = [];
+          // }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      });
     }
   }
 
