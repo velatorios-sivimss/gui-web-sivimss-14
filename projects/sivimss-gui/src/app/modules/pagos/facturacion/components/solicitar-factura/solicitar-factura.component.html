@@ -36,7 +36,7 @@
                          [tipoFecha]="2" [fecha]="'01/01/2022'" [fechaPago]="'01/01/2022'"
                          [concepto]="'Orden de servicio'" [servicios]="servicios"
                          [metodosPago]="metodosPago"></app-datos-contratante>
-  <div class="panel-busqueda mb-6">
+  <div class="panel-busqueda mb-1">
     <div class="row mb-3 mt-3 mr-3 ml-3">
       <form [formGroup]="datosContratanteForm">
         <div class="col-md-6">
@@ -68,4 +68,5 @@
       </div>
     </div>
   </div>
+  <app-datos-receptor></app-datos-receptor>
 </ng-container>
