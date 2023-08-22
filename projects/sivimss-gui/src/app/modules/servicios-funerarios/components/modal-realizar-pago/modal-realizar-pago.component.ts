@@ -121,7 +121,7 @@ export class ModalRealizarPagoComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.alertaService.mostrar(TipoAlerta.Exito,  "Pago modificado correctamente.")
+        this.alertaService.mostrar(TipoAlerta.Exito,  "Pago realizado correctamente. ")
         this.ref.close(true)
       },
       error: (error:HttpErrorResponse) => {

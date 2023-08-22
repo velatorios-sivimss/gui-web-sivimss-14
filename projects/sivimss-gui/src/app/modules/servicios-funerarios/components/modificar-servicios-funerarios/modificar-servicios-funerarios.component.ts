@@ -85,7 +85,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       'nomPaquete','idPaquete');
     this.paqueteBackUp = respuesta[this.POSICION_PAQUETE].datos;
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
-    this.serviciosFunerariosService.consultarPlanSFPA(1)
     this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
     this.consultarFormulario();
     this.consultarNumeroPagos(this.idPlanSfpa);

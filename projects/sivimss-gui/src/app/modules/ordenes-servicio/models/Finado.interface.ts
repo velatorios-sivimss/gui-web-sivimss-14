@@ -28,4 +28,5 @@ export interface FinadoInterface {
   idTipoPension: number | null;
   idContratoPrevision: number | null;
   idVelatorioContratoPrevision: number | null;
+  idFinado: number | null;
 }
