@@ -1,17 +1,21 @@
 <app-titulo-principal titulo="Solicitar factura"></app-titulo-principal>
 <ng-container>
-  <form [formGroup]="solicitudForm">
+  <form [formGroup]="solicitudForm" (reset)="limpiar()">
     <div class="row mb-3 mt-3">
       <div class="col-md-6">
         <label class="control-label" for="tipoFactura">Tipo de factura<span class="req">*</span>:</label>
         <p-dropdown id="tipoFactura" class="form-control" formControlName="tipoFactura" [options]="tiposFactura"
                     placeholder="Selecciona el tipo de factura">
         </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pf?.tipoFactura?.errors?.required && (pf?.tipoFactura?.dirty || pf?.tipoFactura?.touched)">Este campo es obligatorio *.</span>
       </div>
-      <div class="col-md-6">
-        <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span>:</label>
+      <div class="col-md-6" *ngIf="pf?.tipoFactura?.value">
+        <label class="control-label" for="folio">{{folio}}<span class="req">*</span>:</label>
         <input id="folio" class="form-control" formControlName="folio"
                placeholder="Inserta el folio">
+        <span class="campo-obligatorio"
+              *ngIf="pf?.folio?.errors?.required && (pf?.folio?.dirty || pf?.folio?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-4">
@@ -19,97 +23,111 @@
         <span class="control-label">*Campos obligatorios</span>
       </div>
     </div>
-    <div class="row ">
+    <div class="row" *ngIf="pf?.tipoFactura?.value">
       <div class="col-md-12 flex justify-content-end mb-4">
-        <button type="button" class="btn btn-gold btn-md">Cancelar</button>
-        <button type="button" class="ml-4 btn btn-default btn-md">Limpiar</button>
-        <button type="submit" class="ml-4 btn btn-primary btn-md">Buscar</button>
+        <button type="reset" class="ml-4 btn btn-default btn-md" [disabled]="solicitudForm.pristine">Limpiar</button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="solicitudForm.pristine">Buscar</button>
       </div>
     </div>
   </form>
 </ng-container>
 <ng-container>
-  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor" [activeIndex]="0">
-    <p-accordionTab>
-      <ng-template pTemplate="header">
-        <div class="sivimss-acoordion-header">
-          Heriberto Angelo Sánchez Maldonado
-        </div>
-      </ng-template>
-      <ng-template pTemplate="content" *ngIf="false">
-        <form [formGroup]="datosContratanteForm">
-          <div class="row mb-3 mt-3">
-            <div class="col-md-5">
+  <app-datos-contratante [nombreContratante]="'Heriberto Angelo Sánchez Maldonado'"
+                         [tipoFecha]="2" [fecha]="'01/01/2022'" [fechaPago]="'01/01/2022'"
+                         [concepto]="'Orden de servicio'" [servicios]="servicios"
+                         [metodosPago]="metodosPago"></app-datos-contratante>
+  <div class="panel-busqueda mb-1">
+    <div class="row mb-3 mt-3 mr-3 ml-3">
+      <form [formGroup]="datosContratanteForm">
+        <div class="col-md-6">
+          <div class="grid">
+            <div class="col-9">
               <label class="control-label" for="rfc">RFC del contratante<span class="req">*</span>:</label>
               <input id="rfc" class="form-control" formControlName="rfc"
                      placeholder="Inserta el rfc">
+              <span class="campo-obligatorio"
+                    *ngIf="pr?.rfc?.errors?.required && (pr?.rfc?.dirty || pr?.rfc?.touched)">Este campo es obligatorio *.</span>
             </div>
-            <div class="col-md-5">
-              <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
-              <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
-                     placeholder="Inserta el correo">
-            </div>
-            <div class="col-md-2">
+            <div class="col-3 mt-3">
               <button type="submit" class="ml-4 btn btn-primary btn-md mt-5">Buscar</button>
             </div>
           </div>
-        </form>
-      </ng-template>
-      <ng-template pTemplate="content">
-        <app-table-panel>
-          <div class="row table-panel-row">
-            <div class="col-md-2">
-              <div class="table-panel-column">
-                <label>Fecha de ODS</label>
-                <span>01/01/2022</span>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="table-panel-column">
-                <label>Fecha de pago</label>
-                <span>01/01/2022</span>
-              </div>
-            </div>
-            <div class="col-md-2">
-              <div class="table-panel-column">
-                <label>Concepto de pago</label>
-                <span>Orden de servicio</span>
-              </div>
-            </div>
-          </div>
-        </app-table-panel>
-        <div class="flex justify-content-between align-items-center">
-          <h2 class="subtitulo mt-2">Método de pago</h2>
         </div>
-
-        <div class="flex justify-content-between align-items-center">
-          <h2 class="subtitulo mt-2">Servicios ODS</h2>
+        <div class="col-md-6">
+          <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
+          <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
+                 placeholder="Inserta el correo">
+          <span class="campo-obligatorio"
+                *ngIf="pr?.correoElectronico?.errors?.required && (pr?.correoElectronico?.dirty || pr?.correoElectronico?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <p-table styleClass="mt-5 mb-8" [value]="servicios">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>No. consecutivo</th>
-              <th>Grupo</th>
-              <th>Concepto</th>
-              <th>Cantidad</th>
-              <th>Clave SAT</th>
-              <th>Importe /Monto</th>
-              <th>Total</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-servicio>
-            <tr>
-              <td>{{servicio.noConsecutivo}}</td>
-              <td>{{servicio.grupo}}</td>
-              <td>{{servicio.concepto}}</td>
-              <td>{{servicio.cantidad}}</td>
-              <td>{{servicio.claveSat}}</td>
-              <td>{{servicio.importe}}</td>
-              <td>{{servicio.total}}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </ng-template>
-    </p-accordionTab>
-  </p-accordion>
+      </form>
+    </div>
+    <div class="row mb-4 ml-3">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
+      </div>
+    </div>
+  </div>
+  <app-datos-receptor
+    [nombreReceptor]="'Heriberto Angelo Sánchez Maldonado'"
+    [tipoPersona]="'Persona física'"
+    [regimenFiscal]="'620 - Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas'"
+    [domicilioFiscal]="'C.P. 00666, Lázaro Cárdenas 112, Industrial Globo, Santiago de Querétaro, Querétaro.'">
+  </app-datos-receptor>
+</ng-container>
+<ng-container>
+  <form [formGroup]="datosCFDIForm">
+    <div class="row mb-3 mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="cfdi">Uso del CFDI<span class="req">*</span>:</label>
+        <p-dropdown id="cfdi" class="form-control" formControlName="cfdi" [options]="temp"
+                    placeholder="Selecciona el uso del CFDI">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.cfdi?.errors?.required && (pcf?.cfdi?.dirty || pcf?.cfdi?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="metodoPago">Método de pago<span class="req">*</span>:</label>
+        <p-dropdown id="metodoPago" class="form-control" formControlName="metodoPago" [options]="temp"
+                    placeholder="Ingresa el método de pago">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.metodoPago?.errors?.required && (pcf?.metodoPago?.dirty || pcf?.metodoPago?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="formaPago">Forma de pago<span class="req">*</span>:</label>
+        <p-dropdown id="formaPago" class="form-control" formControlName="formaPago" [options]="temp"
+                    placeholder="Ingresa la forma de pago">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.formaPago?.errors?.required && (pcf?.formaPago?.dirty || pcf?.formaPago?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3 mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="observaciones1">Observaciones (automático)<span class="req">*</span>:</label>
+        <input id="observaciones1" class="form-control" formControlName="observaciones1"
+               placeholder="Observaciones">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="observaciones2">Observaciones<span class="req">*</span>:</label>
+        <input id="observaciones2" class="form-control" formControlName="observaciones2"
+               placeholder="Ingresa las observaciones">
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.observaciones2?.errors?.required && (pcf?.observaciones2?.dirty || pcf?.observaciones2?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 flex justify-content-end mb-4">
+        <button type="reset" class="ml-4 btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="datosCFDIForm.invalid">Generar factura
+        </button>
+      </div>
+    </div>
+  </form>
 </ng-container>
