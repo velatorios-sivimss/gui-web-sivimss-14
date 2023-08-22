@@ -1,13 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {UsuarioEnSesion} from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
-import {AutenticacionService} from "projects/sivimss-gui/src/app/services/autenticacion.service";
-import {Subscription} from "rxjs";
-import {NotificacionesService} from "../../services/notificaciones.service";
-import {HttpRespuesta} from "../../models/http-respuesta.interface";
-import {HttpErrorResponse} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {MensajesSistemaService} from '../../services/mensajes-sistema.service';
-import {AlertaService, TipoAlerta} from "../../shared/alerta/services/alerta.service";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UsuarioEnSesion } from "projects/sivimss-gui/src/app/models/usuario-en-sesion.interface";
+import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import { Subscription } from "rxjs";
+import { NotificacionesService } from "../../services/notificaciones.service";
+import { HttpRespuesta } from "../../models/http-respuesta.interface";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { MensajesSistemaService } from '../../services/mensajes-sistema.service';
+import { AlertaService, TipoAlerta } from "../../shared/alerta/services/alerta.service";
 
 export interface NotificacionInterface {
   path?: string;
@@ -45,21 +45,45 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     private mensajesSistemaService: MensajesSistemaService
   ) {
     this.existeNotificacion = false;
-    this.notificacionService.consultaNotificacion().subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    this.notificacionService.consultaNotificacion().subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos.length < 1) {
           return
         }
+        const horaActual = new Date();
+        const horaLimiteInicio = new Date();
+        const horaLimiteFin = new Date();
+
+        horaLimiteInicio.setHours(15, 0, 0, 0);
+        horaLimiteFin.setHours(23, 59, 59, 999);
+
+        if (horaActual >= horaLimiteInicio && horaActual <= horaLimiteFin) {
+          console.log('La hora actual está en el rango permitido.');
+          respuesta.datos.forEach((notificacion: any) => {
+            if (notificacion.cu === "69") {
+              if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)){
+                this.notificaciones.push(notificacion);
+              }
+            }
+          });
+        } else {
+          console.log('La hora actual está fuera del rango permitido.');
+        }
+
         respuesta.datos.forEach((notificacion: any) => {
-          if (notificacion.mensaje.trim() != "" && notificacion.cu.includes("9")) {
-            this.notificaciones.push(notificacion)
+          if (notificacion.cu === "9") {
+            if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)){
+              this.notificaciones.push(notificacion);
+            }
           }
         });
 
 
         respuesta.datos.forEach((notificacion: any) => {
-          if (notificacion.cu.includes("40")) {
-            this.notificaciones.push(notificacion)
+          if (notificacion.cu === "40") {
+            if (!this.notificacionYaEmpujada(this.notificaciones, notificacion)){
+              this.notificaciones.push(notificacion);
+            }
           }
         });
 
@@ -67,11 +91,15 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
           this.existeNotificacion = true
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error)
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
-    )
+    });
+  }
+
+  notificacionYaEmpujada(notificaciones: any[], notificacion: any): boolean {
+    return notificaciones.some(notif => notif.mensaje === notificacion.mensaje);
   }
 
   ngOnInit(): void {
@@ -121,7 +149,7 @@ export class SubHeaderPrivadoComponent implements OnInit, OnDestroy {
     if (this.router.url.includes('/reservar-salas/(salas:salas)')) {
       validacionRuta = true
     }
-    this.router.navigate(['../../', notificacion.botones.url?.toLowerCase(), {outlets: {salas: "salas"}}]).then(() => {
+    this.router.navigate(['../../', notificacion.botones.url?.toLowerCase(), { outlets: { salas: "salas" } }]).then(() => {
       if (validacionRuta) {
         window.location.reload()
       }
