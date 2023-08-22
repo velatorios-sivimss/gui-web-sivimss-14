@@ -1,8 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {FormGroup} from "@angular/forms";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {REGISTROS_PAGOS} from "../../constants/dummies";
+import {TIPO_FACTURACION} from "../../constants/tipoFacturacion";
+import {MetodosPagoFact} from "../../models/metodosPagoFact.interface";
 
 @Component({
   selector: 'app-solicitar-factura',
@@ -11,19 +13,84 @@ import {REGISTROS_PAGOS} from "../../constants/dummies";
 })
 export class SolicitarFacturaComponent implements OnInit {
 
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
 
   solicitudForm!: FormGroup;
-  indice: number = 0;
-  tiposFactura: TipoDropdown[] = [];
-  folios: TipoDropdown[] = [];
   datosContratanteForm!: FormGroup;
+  datosCFDIForm!: FormGroup;
+  indice: number = 0;
+  tiposFactura: TipoDropdown[] = TIPO_FACTURACION;
+  servicios: any[] = REGISTROS_PAGOS;
+  temp: TipoDropdown[] = [];
 
-  constructor() {
+  metodosPago: MetodosPagoFact[] = [{
+    metodo: 'Vale Paritaria',
+    importe: 10000
+  }, {
+    metodo: 'Tarjeta Credito',
+    importe: 10000
+  }]
+
+  constructor(private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
+    this.inicializarForm();
+    this.inicializarFormRFC();
+    this.inicializarFormCFDI();
+  }
+
+  inicializarForm(): void {
+    this.solicitudForm = this.formBuilder.group({
+      tipoFactura: [{value: null, disabled: false}, [Validators.required]],
+      folio: [{value: null, disabled: false}, [Validators.required]],
+    });
+  }
+
+  inicializarFormRFC(): void {
+    this.datosContratanteForm = this.formBuilder.group({
+      rfc: [{value: null, disabled: false}, [Validators.required]],
+      correoElectronico: [{value: null, disabled: false}, [Validators.required]],
+    });
+  }
+
+  inicializarFormCFDI(): void {
+    this.datosCFDIForm = this.formBuilder.group({
+      cfdi: [{value: null, disabled: false}, [Validators.required]],
+      metodoPago: [{value: null, disabled: false}, [Validators.required]],
+      formaPago: [{value: null, disabled: false}, [Validators.required]],
+      observaciones1: [{value: '000000000', disabled: true}, [Validators.required]],
+      observaciones2: [{value: null, disabled: false}],
+    });
+  }
+
+  limpiar(): void {
+    if (this.solicitudForm) {
+      this.filtroFormDir.resetForm({});
+    }
   }
 
   protected readonly DIEZ_ELEMENTOS_POR_PAGINA = DIEZ_ELEMENTOS_POR_PAGINA;
-  servicios: any[] = REGISTROS_PAGOS;
+
+  get folio(): string {
+    const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
+    if (![1, 2, 3, 4].includes(tipoFactura)) return '';
+    if (tipoFactura === 1) return 'Folio de ODS';
+    if (tipoFactura === 3) return 'Número de permiso';
+    return 'Folio del Convenio';
+  }
+
+  get pf() {
+    return this.solicitudForm?.controls;
+  }
+
+  get pr() {
+    return this.datosContratanteForm?.controls;
+  }
+
+  get pcf() {
+    return this.datosCFDIForm?.controls;
+  }
+
 }
