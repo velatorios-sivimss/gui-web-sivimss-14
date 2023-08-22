@@ -92,12 +92,10 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
 
   consultarFormulario(): void {
     this.cargadorService.activar();
-    debugger
     this.serviciosFunerariosService.consultarPlanSFPA(this.idPlanSfpa).pipe(
       finalize(()=>this.cargadorService.desactivar())
     ).subscribe({
       next:(respuesta: HttpRespuesta<any>)=> {
-        debugger
         this.folioConvenio = respuesta.datos.numFolioPlanSFPA;
         this.nombreVelatorio = respuesta.datos.desIdVelatorio;
         this.fecIngresa = respuesta.datos.fecIngreso;
