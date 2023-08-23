@@ -16,6 +16,7 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
 
   private readonly _filtros: string = 'buscar-comisiones';
   private readonly _imprimirComisiones: string = 'gendocto-comisiones';
+  private readonly _imprimirDetalleComisiones: string = 'gendetal-comisiones';
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
     const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
@@ -68,5 +69,15 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirComisiones}/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
+
+  descargarReporteDetalleComisiones(body: any): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirDetalleComisiones}/generarDocumento/pdf`
+      , body, {headers, responseType: 'blob' as 'json'});
+  }
+
 
 }

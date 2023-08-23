@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-cancelar-factura',
@@ -11,7 +11,7 @@ export class CancelarFacturaComponent implements OnInit {
 
   motivos: TipoDropdown[] = [];
   cancelarForm!: FormGroup;
-  indice: number = 0;
+  mostrarDialogCancelacion: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -22,28 +22,15 @@ export class CancelarFacturaComponent implements OnInit {
     this.inicializarCancelarForm();
   }
 
-  limpiarFiltros(): void {
-
-  }
-
-  private inicializarCancelarForm(): void {
+  inicializarCancelarForm(): void {
     this.cancelarForm = this.formBuilder.group({
-      motivoCancelacion: [{value: null, disabled: false}],
-      folioRelacionado: [{value: null, disabled: false}]
-    })
+      motivoCancelacion: [{value: null, disabled: false}, [Validators.required]],
+      folioRelacionado: [{value: null, disabled: false}, [Validators.required]]
+    });
   }
 
-  guardar(): void {
-    if (this.indice === 0) {
-      this.indice++;
-      return;
-    }
+  get fc() {
+    return this.cancelarForm.controls;
   }
 
-  cancelar(): void {
-    if (this.indice === 1) {
-      this.indice--;
-      return;
-    }
-  }
 }

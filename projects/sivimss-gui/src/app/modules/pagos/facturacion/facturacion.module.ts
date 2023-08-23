@@ -19,6 +19,11 @@ import { EnviarFacturaComponent } from './components/enviar-factura/enviar-factu
 import {TablePanelModule} from "../../../shared/table-panel/table-panel.module";
 import { VerDetalleFacturaComponent } from './components/ver-detalle-factura/ver-detalle-factura.component';
 import {AccordionModule} from "primeng/accordion";
+import {FacturacionService} from "./services/facturacion.service";
+import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
+import { DatosContratanteComponent } from './components/datos-contratante/datos-contratante.component';
+import { DatosReceptorComponent } from './components/datos-receptor/datos-receptor.component';
+import {DialogModule} from "primeng/dialog";
 
 
 @NgModule({
@@ -27,25 +32,30 @@ import {AccordionModule} from "primeng/accordion";
     SolicitarFacturaComponent,
     CancelarFacturaComponent,
     EnviarFacturaComponent,
-    VerDetalleFacturaComponent
+    VerDetalleFacturaComponent,
+    DatosContratanteComponent,
+    DatosReceptorComponent
   ],
-    imports: [
-        CommonModule,
-        FacturacionRoutingModule,
-        TituloPrincipalModule,
-        FormsModule,
-        ReactiveFormsModule,
-        DropdownModule,
-        CalendarModule,
-        UtileriaModule,
-        ValidaRolModule,
-        OverlayPanelModule,
-        OverlayPanelOpcionesModule,
-        TableModule,
-        InputSwitchModule,
-        NgOptimizedImage,
-        TablePanelModule,
-        AccordionModule
-    ]
+  imports: [
+    CommonModule,
+    FacturacionRoutingModule,
+    TituloPrincipalModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    CalendarModule,
+    UtileriaModule,
+    ValidaRolModule,
+    OverlayPanelModule,
+    OverlayPanelOpcionesModule,
+    TableModule,
+    InputSwitchModule,
+    NgOptimizedImage,
+    TablePanelModule,
+    AccordionModule,
+    BtnRegresarModule,
+    DialogModule
+  ],
+  providers: [FacturacionService]
 })
 export class FacturacionModule { }

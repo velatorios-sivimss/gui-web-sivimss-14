@@ -205,7 +205,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
         if(respuesta.datos){
           this.curpDesactivado = false;
           if(respuesta.mensaje.includes("interno")){
-            let [anio,mes,dia]= respuesta.datos[0].fechaNacimiento.split('-');
+            let [anio,mes,dia]= respuesta.datos[0].fechaNacimiento?.split('-');
             dia = dia.substr(0,2);
             const fecha = new Date(anio+"-"+mes+"-"+dia)
             this.fds.nombre.setValue(respuesta.datos[0].nomPersona);

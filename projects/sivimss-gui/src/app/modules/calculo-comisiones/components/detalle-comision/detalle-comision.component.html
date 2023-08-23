@@ -276,21 +276,30 @@
         </ng-template>
     </p-accordionTab>
 </p-accordion>
-<ng-template pTemplate="paginatorleft">
-</ng-template>
-<ng-template pTemplate="paginatorright">
-    <div class="paginator-template">
-        <div class="export-table">
-            <span class="export-table-text">Exportar tabla</span>
-            <div class="export-table-icons">
-                <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-                <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
-            </div>
+<div class="flex justify-content-end mb-3">
+    <div class="export-table">
+        <span class="export-table-text">Exportar tabla</span>
+        <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf" (click)="guardarPDF()">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel" (click)="guardarExcel()">
         </div>
     </div>
-</ng-template>
+</div>
 <ng-container>
     <div class="flex justify-content-end mb-3">
         <button class="ml-4 mt-3 btn btn-danger btn-md" [routerLink]="'../../'">Regresar</button>
     </div>
 </ng-container>
+
+<p-dialog [(visible)]="mostrarModalDescargaExitosa" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}" [draggable]="false" [resizable]="false" header="">
+    <ng-template pTemplate="content">
+        <div class="flex flex-column align-items-center justify-content-center">
+            <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center">
+            <button class="btn btn-primary btn-md" (click)="mostrarModalDescargaExitosa = false">Aceptar</button>
+        </div>
+    </ng-template>
+</p-dialog>
