@@ -12,8 +12,9 @@
       </div>
       <div class="col-md-6" *ngIf="pf?.tipoFactura?.value">
         <label class="control-label" for="folio">{{folio}}<span class="req">*</span>:</label>
-        <input id="folio" class="form-control" formControlName="folio"
-               placeholder="Inserta el folio">
+        <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="folios"
+                    placeholder="Selecciona el folio">
+        </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="pf?.folio?.errors?.required && (pf?.folio?.dirty || pf?.folio?.touched)">Este campo es obligatorio *.</span>
       </div>

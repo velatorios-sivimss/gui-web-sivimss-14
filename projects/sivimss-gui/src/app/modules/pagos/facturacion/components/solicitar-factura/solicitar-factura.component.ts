@@ -21,6 +21,7 @@ export class SolicitarFacturaComponent implements OnInit {
   datosCFDIForm!: FormGroup;
   indice: number = 0;
   tiposFactura: TipoDropdown[] = TIPO_FACTURACION;
+  folios: TipoDropdown[] = [];
   servicios: any[] = REGISTROS_PAGOS;
   temp: TipoDropdown[] = [];
 
