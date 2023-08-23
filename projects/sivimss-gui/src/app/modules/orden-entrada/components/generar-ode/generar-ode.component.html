@@ -1,3 +1,4 @@
+<app-titulo-principal style="width: 100%" titulo="Orden de entrada"></app-titulo-principal>
 <form [formGroup]="formulario">
   <div class="row mb-3">
     <div class="col-md-6">
@@ -86,8 +87,8 @@
       </p-dropdown>
     </div>
   </div>
-  <div class="flex justify-content-end">
-    <button type="button" class="ml-4 mt-3 btn btn-danger btn-md">Cancelar</button>
-    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md">Guardar</button>
+  <div class="flex justify-content-end mb-3">
+    <button type="button" class="ml-4 mt-3 btn btn-danger btn-md" routerLink="../">Cancelar</button>
+    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" (click)="generarODE()">Guardar</button>
   </div>
 </form>
