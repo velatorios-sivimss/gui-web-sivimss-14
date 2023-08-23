@@ -13,6 +13,7 @@ import {PaginadoConsultaOrdenEntrada} from "../../models/paginado-consulta-orden
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
 import {DialogService} from "primeng/dynamicdialog";
 import {GenerarOdeComponent} from "../generar-ode/generar-ode.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-consulta-orden-entrada',
@@ -91,7 +92,8 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     private alertaService: AlertaService,
     private readonly dialogService: DialogService,
     private formBuilder: FormBuilder,
-    public ordenEntradaService: OrdenEntradaService
+    public ordenEntradaService: OrdenEntradaService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -140,11 +142,12 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
   }
 
   abrirModalGenerarODE(): void {
-    const ref = this.dialogService.open(GenerarOdeComponent, {
-      header: 'Orden de entrada',
-      style: { maxWidth: '876px', width: '100%' },
-      data:{}
-    })
+    this.router.navigate(["./orden-entrada/generar-ode"])
+    // const ref = this.dialogService.open(GenerarOdeComponent, {
+    //   header: 'Orden de entrada',
+    //   style: { maxWidth: '876px', width: '100%' },
+    //   data:{}
+    // })
   }
 
   get f() {
