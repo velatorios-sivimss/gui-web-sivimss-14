@@ -179,6 +179,10 @@ export const idsModulos: DatoModulo = {
         ruta: 'convenios-prevision-funeraria/renovacion-extemporanea',
         icono: 'default-icon.svg'
     },
+    '115': {
+        ruta: '/promotores',
+        icono: 'default-icon.svg'
+    },
 };
 
 
