@@ -47,7 +47,7 @@
 
       <div class="row mb-3" *ngIf="!btcf.tipoConvenio.value">
         <div class="col-md-6">
-          <label class="control-label" for="folio">Folio:</label>
+          <label class="control-label" for="folio">Folio de un convenio:</label>
           <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa folio" folioOdsAlphanumeric
             trimmer>
           <span class="campo-obligatorio"
@@ -55,7 +55,7 @@
             Campo obligatorio</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="rfc">RFC:</label>
+          <label class="control-label" for="rfc">RFC de un convenio:</label>
           <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa rfc" alphanumericOnly trimmer>
           <span class="campo-obligatorio" *ngIf="btcf.rfc?.errors?.required && (btcf.rfc?.dirty || btcf.rfc?.touched)">
             Campo obligatorio</span>
