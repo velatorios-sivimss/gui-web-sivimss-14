@@ -56,14 +56,10 @@ export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
   realizarCierre(datos: any) {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/actualiza-estatus-cierre`, datos);
   }
-
-  descargarReporte<T>(body: T): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/reporte-balance-caja`, body,
-      {headers, responseType: 'blob' as 'json'})
+  
+  generarReporte(filtro:any) : Observable<HttpRespuesta<any>> {
+    const tipo = filtro.tipoReporte;
+    return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/reporte-balance-caja`, filtro)
   }
 
   obtenerFoliosODS(idVelatorio: string): Observable<HttpRespuesta<any>> {
