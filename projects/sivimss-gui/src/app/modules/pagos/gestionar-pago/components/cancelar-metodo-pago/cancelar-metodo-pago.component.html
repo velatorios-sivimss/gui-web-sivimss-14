@@ -31,7 +31,7 @@
     <div class="col-md-12">
       <label class="control-label" for="motivoCancelacion">Motivo de la cancelación<span class="req">*</span>:</label>
       <textarea rows="5" cols="30" id="motivoCancelacion" class="control-label" formControlName="motivoCancelacion"
-                pInputTextarea [maxlength]="100" placeholder="Ingresa el motivo de la cancelación"></textarea>
+                pInputTextarea [maxlength]="100" placeholder="Ingresa el motivo de la cancelación" withoutSpecialChar></textarea>
       <span class="campo-obligatorio"
             *ngIf="pc?.motivoCancelacion?.errors?.required && (pc?.motivoCancelacion?.dirty || pc?.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
     </div>
@@ -44,7 +44,7 @@
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-gold btn-md ml-5" (click)="ref.close()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="cancelarPagoForm.invalid">Aceptar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="cancelarPagoForm.invalid || pc?.motivoCancelacion?.value === ''">Aceptar</button>
     </div>
   </div>
 </form>

@@ -73,6 +73,9 @@ import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
     RadioButtonModule,
     BtnRegresarModule
   ],
+  exports: [
+    SinCaracteresEspecialesDirective
+  ],
   providers: [SolicitudesPagoService]
 })
 export class SolicitudesPagoModule {
