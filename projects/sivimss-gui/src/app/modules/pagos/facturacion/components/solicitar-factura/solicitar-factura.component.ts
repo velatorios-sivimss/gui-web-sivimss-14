@@ -94,4 +94,7 @@ export class SolicitarFacturaComponent implements OnInit {
     return this.datosCFDIForm?.controls;
   }
 
+  obtenerFolios(): void {
+
+  }
 }

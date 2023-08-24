@@ -27,10 +27,14 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   override buscarPorPagina(pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
+    const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, {}, {params});
+  }
+
+  obtenerFolioODS(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-folios-facturacion`, );
   }
 
 }
