@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ActivatedRoute} from "@angular/router";
 import {TipoDropdown} from '../../../../models/tipo-dropdown';
@@ -295,6 +295,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('importeLetra')?.setValue(null);
     this.solicitudPagoForm.get('importeLetra')?.clearValidators();
     this.solicitudPagoForm.get('observaciones')?.setValue(null);
+    this.solicitudPagoForm.get('observaciones')?.clearValidators();
     this.solicitudPagoForm.get('numeroContrato')?.setValue(null);
     this.solicitudPagoForm.get('numeroContrato')?.clearValidators();
     this.solicitudPagoForm.get('banco')?.setValue(null);

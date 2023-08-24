@@ -44,7 +44,7 @@
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
       <button type="button" class="btn btn-gold btn-md ml-5" (click)="ref.close()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="cancelarPagoForm.invalid || pc?.motivoCancelacion?.value === ''">Aceptar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="cancelarPagoForm.invalid">Aceptar</button>
     </div>
   </div>
 </form>
