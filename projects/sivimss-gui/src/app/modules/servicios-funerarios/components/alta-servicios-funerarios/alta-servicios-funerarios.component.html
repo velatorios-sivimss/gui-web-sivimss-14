@@ -246,6 +246,8 @@
             <label class="control-label" for="curpContratante">CURP<span class="req">*</span>:</label>
             <input id="curpContratante" class="form-control" formControlName="curp" placeholder="Ingresa el CURP"
                    (change)="convertirMayusculas(2)" (blur)="consultarCurp(1)" maxlength="18">
+            <span class="campo-obligatorio"
+                  *ngIf="fdc.curp?.errors?.required && (fdc.curp?.dirty || fdc.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="rfcContratante">R.F.C.<span class="req">*</span>:</label>
@@ -354,6 +356,8 @@
             <input id="correoElectronicoContratante" class="form-control" formControlName="correoElectronico"
                    placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(1)"
                    (blur)="consultarCorreo(1)">
+            <span class="campo-obligatorio"
+                  *ngIf="fdc.correoElectronico?.errors?.required && (fdc.correoElectronico?.dirty || fdc.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="telefonoContratante">Teléfono<span class="req">*</span>:</label>
