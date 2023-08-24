@@ -6,14 +6,20 @@ import * as moment from "moment/moment";
 import {LazyLoadEvent} from "primeng/api";
 import {OverlayPanel} from "primeng/overlaypanel";
 
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {OrdenEntradaService} from "../../services/orden-entrada.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {PaginadoConsultaOrdenEntrada} from "../../models/paginado-consulta-orden-entrada.interface";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
 import {DialogService} from "primeng/dynamicdialog";
-import {GenerarOdeComponent} from "../generar-ode/generar-ode.component";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {HttpErrorResponse} from "@angular/common/http";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {CatalogoFolioODE} from "../../models/catalogos.interface";
 
 @Component({
   selector: 'app-consulta-orden-entrada',
@@ -25,7 +31,14 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
+  readonly POSICION_DELEGACIONES: number = 0;
+  readonly POSICION_NIVELES: number = 1;
+  readonly POSICION_CONTRATOS: number = 2
+
   formulario!: FormGroup;
+
+  folioCatalogosODE!:CatalogoFolioODE[];
+  catalogoFolios!: TipoDropdown[];
 
   ordenesEntrada: PaginadoConsultaOrdenEntrada[] = [
     {
@@ -94,10 +107,14 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     private formBuilder: FormBuilder,
     public ordenEntradaService: OrdenEntradaService,
     private router: Router,
+    private route: ActivatedRoute,
+    private readonly loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
     this.inicializarFormulario();
+    this.inicializarCatalogos();
   }
 
   inicializarFormulario(): void {
@@ -113,6 +130,40 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     });
   }
 
+  inicializarCatalogos(): void {
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
+    this.folioCatalogosODE = respuesta[this.POSICION_CONTRATOS].datos
+    // POSICION_CONTRATOS
+  }
+
+  filtrarOrdenes(): void {
+    let query = this.obtenerFolioContratos()
+    let filtered: TipoDropdown[] = [];
+
+    if(query?.length < 3)return;
+    for (let i = 0; i < (this.folioCatalogosODE as CatalogoFolioODE[]).length; i++) {
+      let folio = (this.folioCatalogosODE as any[])[i];
+      if (folio.NUM_CONTRATO.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push({
+          label: folio.NUM_CONTRATO,
+          value: folio.ID_CONTRATO
+        })
+      }
+    }
+    this.catalogoFolios = filtered;
+
+  }
+
+  obtenerFolioContratos(): string {
+    let query = this.f.ordenEntrada?.value || '';
+    if (typeof this.f.ordenEntrada?.value === 'object') {
+      query = this.f.ordenEntrada?.value?.label;
+    }
+    return query?.toLowerCase();
+  }
+
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (event) {
       this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1))
@@ -124,6 +175,22 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
+  consultarVelatorios(): void {
+
+      this.loaderService.activar();
+    this.ordenEntradaService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos,"nomVelatorio","idVelatorio");
+      },
+      error:(error:HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error,
+          this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+      }
+    });
+  }
+
   validarFechaFinal(): void {
     if (!this.f.fechaInicial?.value || !this.f.fechaFinal?.value) {
       return
@@ -131,6 +198,19 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     if (this.f.fechaInicial.value > this.f.fechaFinal.value) {
       this.mostrarModalFechaMayor = true;
     }
+  }
+
+  consultarProveedores(): void {
+    this.loaderService.activar();
+    this.ordenEntradaService.consultarPromotores(this.f.ordenEntrada.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+      }
+    })
   }
 
   abrirModalCancelarODE(): void {
