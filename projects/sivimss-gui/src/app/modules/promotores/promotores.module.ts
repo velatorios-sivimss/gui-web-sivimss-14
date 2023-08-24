@@ -22,6 +22,7 @@ import { OverlayPanelModule } from "primeng/overlaypanel";
 import { CheckboxModule } from 'primeng/checkbox';
 import {CalendarModule} from 'primeng/calendar';
 import { UsuarioService } from '../usuarios/services/usuario.service';
+import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { UsuarioService } from '../usuarios/services/usuario.service';
     UtileriaModule,
     AutoCompleteModule,
     CalendarModule,
+    ValidaRolModule,
   ],
   providers: [
     PromotoresService,
