@@ -207,8 +207,7 @@ export class BalanceCajaComponent implements OnInit {
       folioNuevoConvenio: this.filtroFormBalanceCaja.get("folioNuevo")?.value,
       folioRenovacionConvenio: this.filtroFormBalanceCaja.get("folioRenovacion")?.value,
       fecha: this.datePipe.transform(this.filtroFormBalanceCaja.get("fecha")?.value, 'YYYY-MM-dd'),
-      idMetodoPago: this.filtroFormBalanceCaja.get("metodo")?.value === "" ? null : this.filtroFormBalanceCaja.get("metodo")?.value,
-      tipoReporte: "pdf"
+      idMetodoPago: this.filtroFormBalanceCaja.get("metodo")?.value === "" ? null : this.filtroFormBalanceCaja.get("metodo")?.value
     }
   }
 
@@ -240,24 +239,39 @@ export class BalanceCajaComponent implements OnInit {
     });
   }
 
-  exportarArchivo(extension: string) {
-    this.cargadorService.activar();
-    let filtros = this.crearSolicitudFiltros();
+  generarArchivo(tipoReporte: string): void {
     const configuracionArchivo: OpcionesArchivos = {};
-    if(extension.includes("xls")){
-      configuracionArchivo.ext = "xlsx";
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
     }
-    filtros.tipoReporte = extension;
-    this.descargaArchivosService.descargarArchivo(this.balanceCajaService.descargarReporte(filtros)).pipe(
+    this.cargadorService.activar();
+    const busqueda = this.crearSolicitudFiltros();
+    busqueda.tipoReporte = tipoReporte;
+    this.balanceCajaService.generarReporte(busqueda).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: any) => {
-        console.log(respuesta)
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>) => {
+        const file = new Blob([this.descargaArchivosService.base64_2Blob(
+            respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)}
+        );
+        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+          finalize(() => this.cargadorService.desactivar())
+        ).subscribe(
+          (repuesta) => {
+            this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+            this.mostrarModalConfirmacion = true;
+          },
+          (error) => {
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+          }
+        )
       },
-      error: (error: HttpErrorResponse) => {
-        console.log(error)
-      },
-    });
+      (error: HttpErrorResponse) => {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, msg);
+      }
+    )
   }
 
   abrirModalCierre(): void {
