@@ -81,6 +81,8 @@ export class SolicitudesPagoComponent implements OnInit {
 
   readonly POSICION_CATALOGO_EJERCICIOS: number = 0;
   readonly POSICION_CATALOGO_TIPOSOLICITUD: number = 1;
+  MENSAJE_FILTROS: string = 'Selecciona por favor un criterio de búsqueda.';
+  mostrarModalFiltros: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -227,6 +229,13 @@ export class SolicitudesPagoComponent implements OnInit {
 
   paginarConFiltros(): void {
     const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
+    const form =  this.filtroFormSolicitudesPago.getRawValue();
+    const valores: string[] = Object.values(form);
+    console.log(valores);
+    if (valores.every(v => v === null)) {
+      this.mostrarModalFiltros = true;
+      return;
+    }
     this.cargadorService.activar();
     this.solicitudesPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
