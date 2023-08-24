@@ -7,7 +7,10 @@ import {GenerarOdeComponent} from "./components/generar-ode/generar-ode.componen
 const routes: Routes = [
   {
     path: '',
-    component: OrdenEntradaComponent
+    component: OrdenEntradaComponent,
+    resolve: {
+      respuesta: OrdenEntradaResolver
+    }
   },
   {
     path:'generar-ode',
