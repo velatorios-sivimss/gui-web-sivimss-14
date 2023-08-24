@@ -3,11 +3,18 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PaginadoConsultaStock} from "../../models/paginado-consulta-stock.interface";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {OrdenEntradaService} from "../../services/orden-entrada.service";
 import {LazyLoadEvent} from "primeng/api";
 import {PaginadoConsultaOrdenEntrada} from "../../models/paginado-consulta-orden-entrada.interface";
 import {OverlayPanel} from "primeng/overlaypanel";
+import {ActivatedRoute} from "@angular/router";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-consulta-stock',
@@ -18,6 +25,9 @@ export class ConsultaStockComponent implements OnInit {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  readonly POSICION_DELEGACIONES: number = 0;
+  readonly POSICION_NIVELES: number = 1;
 
   formulario!: FormGroup;
 
@@ -66,11 +76,15 @@ export class ConsultaStockComponent implements OnInit {
   constructor(
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
-    public ordenEntradaService: OrdenEntradaService
+    public ordenEntradaService: OrdenEntradaService,
+    private route: ActivatedRoute,
+    private readonly loaderService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
     this.inicializarFormulario();
+    this.inicializarCatalogos()
   }
 
   inicializarFormulario(): void {
@@ -82,6 +96,28 @@ export class ConsultaStockComponent implements OnInit {
       ordenEntrada: [{value:null, disabled: false}],
          categoria: [{value:null, disabled: false}],
         asignacion: [{value:null, disabled: false}]
+    });
+  }
+
+  inicializarCatalogos(): void {
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
+  }
+
+  consultarVelatorios(): void {
+
+    this.loaderService.activar();
+    this.ordenEntradaService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos,"nomVelatorio","idVelatorio");
+      },
+      error:(error:HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error,
+          this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+      }
     });
   }
 
