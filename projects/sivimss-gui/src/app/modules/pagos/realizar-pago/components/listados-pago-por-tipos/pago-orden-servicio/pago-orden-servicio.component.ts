@@ -109,7 +109,6 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   registrarPago(): void {
-    this.filtroFormDir.resetForm({});
     this.tipoPago = [...TIPO_PAGO_CATALOGOS_ODS];
     if (this.pagoSeleccionado.valeP > 0 || this.pagoSeleccionado.nss) {
       this.tipoPago.shift()
