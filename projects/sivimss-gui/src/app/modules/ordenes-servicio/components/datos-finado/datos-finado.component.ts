@@ -714,14 +714,13 @@ export class DatosFinadoComponent implements OnInit {
       ).format('yyyy-MM-DD');
       this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
       this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.fechaDeceso = moment(
+      this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion ?  moment(
         datosEtapaFinado.datosFinado.fechaDefuncion
-      ).format('yyyy-MM-DD');
+      ).format('yyyy-MM-DD') : null;
       this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
       this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
-      this.finado.hora = moment(datosEtapaFinado.datosFinado.horaDeceso).format(
-        'HH:mm'
-      );
+      this.finado.hora = datosEtapaFinado.datosFinado.horaDeceso ? moment(datosEtapaFinado.datosFinado.horaDeceso).format(
+        'HH:mm') : null;
       this.finado.idClinicaAdscripcion =
         datosEtapaFinado.datosFinado.clinicaAdscripcion;
       this.finado.idUnidadProcedencia =

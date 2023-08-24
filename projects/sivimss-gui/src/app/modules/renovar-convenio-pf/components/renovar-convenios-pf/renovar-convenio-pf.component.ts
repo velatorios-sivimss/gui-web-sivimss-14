@@ -136,6 +136,8 @@ export class RenovarConvenioPfComponent implements OnInit {
     this.renovarConvenioPfService.verificarDocumentacion(this.datosVerificarDocumentacion()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200) {
+          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(192);
+          this.alertaService.mostrar(TipoAlerta.Exito, msg);
           this.renovarPlan();
         }
       },

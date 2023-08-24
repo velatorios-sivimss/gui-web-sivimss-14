@@ -1,159 +1,166 @@
 <div class="grid">
-  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
-  <app-titulo-principal titulo="Realizar balance de caja" class="col"></app-titulo-principal>
+    <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+    <app-titulo-principal titulo="Realizar balance de caja" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroFormBalanceCaja" (ngSubmit)="buscar()" (reset)="limpiar()">
-    <div class="grid mb-3">
-      <div class="col-4">
-        <label class="control-label" for="nivel">Nivel:</label>
-        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-                    placeholder="Selecciona el nivel">
-        </p-dropdown>
-      </div>
-      <div class="col-4">
-        <label class="control-label" for="delegacion">Delegación:</label>
-        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones"
-                    placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
-        </p-dropdown>
-      </div>
-      <div class="col-4">
-        <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                    placeholder="Selecciona el velatorio" [filter]="true">
-        </p-dropdown>
-      </div>
-    </div>
-    <div class="grid mb-3">
-      <div class="col-4">
-        <label class="control-label" for="tipoConvenio">Tipo de convenios:</label>
-        <p-dropdown id="tipoConvenio" class="form-control" [(ngModel)]="convenioSeleccionado" [options]="tipoConvenio"
-                    placeholder="Selecciona tipo de convenio" [filter]="true" [ngModelOptions]="{ standalone: true }">
-        </p-dropdown>
-      </div>
-      <div class="col-4" *ngIf="[1,2].includes(convenioSeleccionado)">
-        <label class="control-label" for="folioODS">Folio de la orden de Servicio (ODS):</label>
-        <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa folio" />
-      </div>
-      <div class="col-4" *ngIf="[1,3].includes(convenioSeleccionado)">
-        <label class="control-label" for="folioNuevo">Folio del Nuevo convenio de previsión funeraria (PNCPF): </label>
-        <input id="folioNuevo" class="form-control" formControlName="folioNuevo" placeholder="Ingresa folio" />
-        <!-- <p-dropdown id="folioNuevo" class="form-control" formControlName="folioNuevo" [options]="opciones"
-                    placeholder="Ingresa folio" [filter]="true">
-        </p-dropdown> -->
-      </div>
-      <div class="col-4" *ngIf="[1,4].includes(convenioSeleccionado)">
-        <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria (PRCPF):</label>
-        <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion" placeholder="Ingresa folio" />
-      </div>
-      <div class="col-4">
-        <label class="control-label" for="metodo">Método de pago:</label>
-        <p-dropdown id="metodo" class="form-control" formControlName="metodo" [options]="opciones"
-                    placeholder="Ingresa método de pago" [filter]="true">
-        </p-dropdown>
-      </div>
-      <div class="col-4">
-        <label class="control-label" for="fecha">Fecha:</label>
-        <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
-                    placeholder="Selecciona la fecha" dateFormat="dd/mm/yy"
-                    [minDate]="filtroFormBalanceCaja.get('metodo')?.value" [maxDate]="fechaActual">
-        </p-calendar>
-      </div>
-    </div>
-    <div class="row mt-6">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="reset" class="btn btn-default btn-md">Limpiar
+    <form [formGroup]="filtroFormBalanceCaja" (ngSubmit)="buscar()" (reset)="limpiar()">
+        <div class="grid mb-3">
+            <div class="col-4">
+                <label class="control-label" for="nivel">Nivel:</label>
+                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles" placeholder="Selecciona el nivel">
+                </p-dropdown>
+            </div>
+            <div class="col-4">
+                <label class="control-label" for="delegacion">Delegación:</label>
+                <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
+                </p-dropdown>
+            </div>
+            <div class="col-4">
+                <label class="control-label" for="velatorio">Velatorio:</label>
+                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="grid mb-3">
+            <div class="col-4">
+                <label class="control-label" for="tipoConvenio">Tipo de convenios:</label>
+                <p-dropdown id="tipoConvenio" class="form-control" [(ngModel)]="convenioSeleccionado" [options]="tipoConvenio" placeholder="Selecciona tipo de convenio" [filter]="true" [ngModelOptions]="{ standalone: true }">
+                </p-dropdown>
+            </div>
+            <div class="col-4" *ngIf="[1,2].includes(convenioSeleccionado)">
+                <label class="control-label" for="folioODS">Folio de la orden de Servicio (ODS):</label>
+                <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa folio" />
+            </div>
+            <div class="col-4" *ngIf="[1,3].includes(convenioSeleccionado)">
+                <label class="control-label" for="folioNuevo">Folio del Nuevo convenio de previsión funeraria (PNCPF): </label>
+                <input id="folioNuevo" class="form-control" formControlName="folioNuevo" placeholder="Ingresa folio" />
+            </div>
+            <div class="col-4" *ngIf="[1,4].includes(convenioSeleccionado)">
+                <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria
+          (PRCPF):</label>
+                <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion" placeholder="Ingresa folio" />
+            </div>
+            <div class="col-4">
+                <label class="control-label" for="metodo">Método de pago:</label>
+                <p-dropdown id="metodo" class="form-control" formControlName="metodo" [options]="opciones" placeholder="Ingresa método de pago" [filter]="true">
+                </p-dropdown>
+            </div>
+            <div class="col-4">
+                <label class="control-label" for="fecha">Fecha:</label>
+                <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy" [maxDate]="fechaActual">
+                </p-calendar>
+            </div>
+        </div>
+        <div class="row mt-6">
+            <div class="col-md-12 flex justify-content-end">
+                <button type="reset" class="btn btn-default btn-md">Limpiar
         </button>
-        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
-      </div>
-    </div>
-  </form>
+                <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+            </div>
+        </div>
+    </form>
 </div>
 
 <section class="mt-5">
-  <div class="flex justify-content-between align-items-center">
-    <h2 class="subtitulo">Campos de Reporte</h2>
-    <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 1" (click)="abrirModalCierre()">Realizar cierre</button>
-    <!-- <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalCierre()">Realizar cierre</button> -->
-  </div>
+    <div class="flex justify-content-between align-items-center" *appValidaRol="['BALANCE_CAJA','MODIFICACION']">
+        <h2 class="subtitulo">Campos de Reporte</h2>
+        <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 13" (click)="abrirModalCierre()">Realizar cierre</button>
+    </div>
 
-  <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0"
-           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-           [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
+    <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
 
-    <ng-template pTemplate="header">
-      <tr>
-        <th id="columna_balance_caja_fecha">Fecha</th>
-        <th id="columna_balance_caja_delegacion">Delegacion</th>
-        <th id="columna_balance_caja_velatorio">Velatorio</th>
-        <th id="columna_balance_caja_folio">Folio</th>
-        <th id="columna_balance_caja_tipo_ingreso">Tipo de ingreso</th>
-        <th id="columna_balance_caja_estatus_pago">Estatus de pago</th>
-        <th id="columna_balance_caja_metodo_pago">Método de pago</th>
-        <th id="columna_balance_caja_importe">Importe</th>
-        <th id="columna_balance_caja_ingreso_neto">Ingreso neto</th>
-        <th id="columna_balance_caja_estatus_caja">Estatus caja</th>
-        <th id="columna_balance_caja_fecha_cierre">Fecha y hora de cierre</th>
-        <th id="columna_balance_caja_estatus"></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-balance>
-      <tr>
-        <td>{{balance.fecha}}</td>
-        <td>{{balance.delegacion}} </td>
-        <td>{{balance.velatorio}} </td>
-        <td>{{balance.folio}}</td>
-        <td>{{balance.tipoIngreso}}</td>
-        <td>{{balance.estatusPago}}</td>
-        <td>{{balance.metodoPago}}</td>
-        <td>{{balance.importe | currency }}</td>
-        <td>{{balance.ingresoNeto | currency }}</td>
-        <td>{{balance.estatusCaja}}</td>
-        <td>{{balance.fecHoraCierre}}</td>
-        <td>
-          <div class="contenedor-celda-iconos">
-            <!-- <a (click)="abrirDetalleComision(balance)">
-              <img src="assets/images/imagen-icono-ver.svg" alt="Ver">
-            </a> -->
-            <a (click)="abrirPanel($event,balance)">
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-            </a>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <th colspan="12" class="p-2 text-center font-bold text-xl" id="balance_caja_sin_resultados">
-          No se encontró información relacionada a tu búsqueda.
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="paginatorleft">
-      <div class="paginator-template">
-        <span class="total-elements"> {{balanceCaja.length}} de {{totalElementos}} </span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="paginatorright">
-      <div class="paginator-template" *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
-        <div class="export-table">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
+        <ng-template pTemplate="header">
+            <tr>
+                <th id="columna_balance_caja_fecha">Fecha</th>
+                <th id="columna_balance_caja_delegacion">Delegacion</th>
+                <th id="columna_balance_caja_velatorio">Velatorio</th>
+                <th id="columna_balance_caja_folio">Folio</th>
+                <th id="columna_balance_caja_tipo_ingreso">Tipo de ingreso</th>
+                <th id="columna_balance_caja_estatus_pago">Estatus de pago</th>
+                <th id="columna_balance_caja_metodo_pago">Método de pago</th>
+                <th id="columna_balance_caja_importe">Importe</th>
+                <th id="columna_balance_caja_ingreso_neto">Ingreso neto</th>
+                <th id="columna_balance_caja_estatus_caja">Estatus caja</th>
+                <th id="columna_balance_caja_fecha_cierre">Fecha y hora de cierre</th>
+                <th id="columna_balance_caja_estatus"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-balance>
+            <tr>
+                <td>{{balance.fecha}}</td>
+                <td>{{balance.delegacion}} </td>
+                <td>{{balance.velatorio}} </td>
+                <td>{{balance.folio}}</td>
+                <td>{{balance.tipoIngreso}}</td>
+                <td>{{balance.estatusPago}}</td>
+                <td>{{balance.metodoPago}}</td>
+                <td>{{balance.importe | currency }}</td>
+                <td>{{balance.ingresoNeto | currency }}</td>
+                <td>{{balance.estatusCaja}}</td>
+                <td>{{balance.fecHoraCierre}}</td>
+                <td>
+                    <div class="contenedor-celda-iconos">
+                        <a (click)="abrirPanel($event,balance)">
+                            <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <th colspan="12" class="p-2 text-center font-bold text-xl" id="balance_caja_sin_resultados">
+                    No se encontró información relacionada a tu búsqueda.
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <tr>
+                <td colspan="12">
+                    <div class="flex justify-content-between table-footer">
+                        <div class="flex flex-column">
+                            <span class="text-2xl font-normal">Total de ingresos</span>
+                            <span class="font-bold text-2xl">{{ totalIngresos | currency }}</span>
+                        </div>
+                        <div class="flex flex-column">
+                            <span class="text-2xl font-normal">Total de importe</span>
+                            <span class="font-bold text-2xl">{{ totalImporte | currency }}</span>
+                        </div>
+                        <div class="flex flex-column">
+                            <span class="text-2xl font-normal">Total de registros</span>
+                            <span class="font-bold text-2xl">{{ totalElementos }}</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+                <span class="total-elements"> {{balanceCaja.length}} de {{totalElementos}} </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <div class="paginator-template" *appValidaRol="['BALANCE_CAJA','IMPRIMIR']">
+                <div class="export-table">
+                    <span class="export-table-text">Exportar tabla</span>
+                    <div class="export-table-icons">
 
-            <img class="icon-export-table" (click)="exportarArchivo('pdf')"  src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" (click)="exportarArchivo('xls')"  src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
-          </div>
-        </div>
-      </div>
-    </ng-template>
-  </p-table>
+                        <img class="icon-export-table" (click)="exportarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+                        <img class="icon-export-table" (click)="exportarArchivo('xls')" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
 </section>
 
 <p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion *ngIf="esModificacion" titulo="Modificar pago" routerLink="modificar-pago"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion *ngIf="!esModificacion" titulo="Motivo de pago" routerLink="modificar-pago"></app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones *appValidaRol="['BALANCE_CAJA','MODIFICACION']">
+            <app-overlay-panel-opcion *ngIf="esModificacion" titulo="Modificar pago" routerLink="modificar-pago"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion *ngIf="!esModificacion" titulo="Motivo de pago" routerLink="modificar-pago"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
 </p-overlayPanel>

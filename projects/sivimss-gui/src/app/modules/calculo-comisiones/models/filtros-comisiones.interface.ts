@@ -4,5 +4,6 @@ export interface FiltrosComisiones {
   idVelatorio: number,
   promotores: string,
   fechaInicial: any,
-  fechaFinal: any
+  fechaFinal: any,
+  tipoReporte: string
 }

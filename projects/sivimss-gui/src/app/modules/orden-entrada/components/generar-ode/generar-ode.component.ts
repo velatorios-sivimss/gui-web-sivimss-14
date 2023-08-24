@@ -47,6 +47,10 @@ export class GenerarOdeComponent implements OnInit {
     );
   }
 
+  generarODE(): void {
+
+  }
+
   get f(){
     return this.formulario.controls;
   }

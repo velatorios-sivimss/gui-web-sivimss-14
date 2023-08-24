@@ -2,11 +2,16 @@ import {Router, RouterModule, Routes} from "@angular/router";
 import {OrdenEntradaComponent} from "./components/orden-entrada/orden-entrada.component";
 import {NgModule} from "@angular/core";
 import {OrdenEntradaResolver} from "./services/orden-entrada.resolver";
+import {GenerarOdeComponent} from "./components/generar-ode/generar-ode.component";
 
 const routes: Routes = [
   {
     path: '',
     component: OrdenEntradaComponent
+  },
+  {
+    path:'generar-ode',
+    component: GenerarOdeComponent
   }
 ];
 

@@ -119,6 +119,7 @@ export class ModificarDatosFinadoComponent
   idDomicilio: number | null = null;
 
   idPersona: number | null = null;
+  idFinado: number | null = null;
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -243,12 +244,14 @@ export class ModificarDatosFinadoComponent
     ) {
       nacionalidad = 2;
     }
-    this.idPersona = datosEtapaFinado.datosFinado.idPersona;
+    this.idPersona = datosEtapaFinado.datosFinado.idPersona == 0 ? null : datosEtapaFinado.datosFinado.idPersona;
+    this.idFinado = datosEtapaFinado.datosFinado.idFinado == 0 ? null : datosEtapaFinado.datosFinado.idFinado;
     this.idDomicilio = datosEtapaFinado.direccion.idDomicilio;
     // this.idPersona = datosEtapaFinado.datosFinado.
     let esObito: boolean;
     let extremidad: boolean;
     let horaDeceso: any;
+    let fechaDeceso:any;
     if(typeof  datosEtapaFinado.datosFinado.esObito == "string"){
       datosEtapaFinado.datosFinado.esObito.includes("true") ? esObito = true : esObito = false;
     }else{
@@ -263,6 +266,11 @@ export class ModificarDatosFinadoComponent
     if(typeof datosEtapaFinado.datosFinado.horaDeceso == "string"){
       const [horas,minutos] = datosEtapaFinado.datosFinado.horaDeceso.split(':')
       datosEtapaFinado.datosFinado.horaDeceso = new Date(+anio,+mes,+dia,+horas,+minutos)
+    }
+    if(typeof datosEtapaFinado.datosFinado.fechaDefuncion == "string" ){
+      const [dia, mes, anio] = datosEtapaFinado.datosFinado.fechaDefuncion.split('/');
+      // fechaDeceso = new Date(anio + '/' + mes + '/' + dia);
+      datosEtapaFinado.datosFinado.fechaDefuncion = new Date(anio + '/' + mes + '/' + dia);
     }
 
     let edad;
@@ -1038,7 +1046,7 @@ export class ModificarDatosFinadoComponent
         segundoApellido: formulario.datosFinado.segundoApellido,
         fechaNacimiento: moment(formulario.datosFinado.fechaNacimiento).format('YYYY-MM-DD'),
         edad: formulario.datosFinado.edad,
-        sexo: formulario.datosFinado.sexo,
+        sexo: formulario.datosFinado.sexo == 0 ? null : formulario.datosFinado.sexo,
         otroTipoSexo: formulario.datosFinado.otroTipoSexo,
         nacionalidad: formulario.datosFinado.nacionalidad,
         lugarNacimiento: formulario.datosFinado.lugarNacimiento,
@@ -1051,6 +1059,7 @@ export class ModificarDatosFinadoComponent
         unidadProcedencia: formulario.datosFinado.unidadProcedencia,
         procedenciaFinado: formulario.datosFinado.procedenciaFinado,
         tipoPension: formulario.datosFinado.tipoPension,
+        idFinado: this.idFinado
       },
       direccion: {
         calle: formulario.direccion.calle,
@@ -1093,7 +1102,9 @@ export class ModificarDatosFinadoComponent
     // this.finado.cp = null;
     // this.finado.idPersona = null;
     this.altaODS.idContratantePf = this.idContratante;
+      this.finado.idFinado = null;
     if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
+      this.finado.idFinado = this.idFinado;
       this.finado.rfc = null;
       this.finado.curp = datosEtapaFinado.datosFinado.curp;
       this.finado.nss = datosEtapaFinado.datosFinado.nss;
@@ -1135,7 +1146,8 @@ export class ModificarDatosFinadoComponent
       this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
       this.cpFinado.idDomicilio = this.idDomicilio;
       this.finado.cp = this.cpFinado;
-      this.finado.idPersona = this.idPersona;
+      this.finado.idPersona = this.idPersona ?? null;
+      this.finado.idFinado = this.idFinado ?? null;
     }
 
     this.altaODS.finado = this.finado;

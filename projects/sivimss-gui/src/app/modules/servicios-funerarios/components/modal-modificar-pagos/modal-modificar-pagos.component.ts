@@ -156,7 +156,7 @@ export class ModalModificarPagosComponent implements OnInit {
 
   generarObjetoModificar(): RegistrarPago {
     return {
-      idPlan: +this.idPlanSpfa,
+      idPago: +this.idPlanSpfa,
       idTipoPago: +this.formulario.metodoPago.value ?? null,
       fechaPago: this.formulario.fecha.value ? moment(this.formulario.fecha.value).format('YYYY-MM-DD') : null,
       numeroAutorizacion: this.formulario.numeroAutorizacion.value ?? null,
@@ -174,6 +174,7 @@ export class ModalModificarPagosComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        this.alertaService.mostrar(TipoAlerta.Exito,  "Pago modificado correctamente.")
         this.ref.close(true)
       },
       error: (error:HttpErrorResponse) => {

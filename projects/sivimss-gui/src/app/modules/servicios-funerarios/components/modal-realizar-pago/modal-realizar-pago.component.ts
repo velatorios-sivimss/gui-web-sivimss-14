@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { CATALOGOS_DUMMIES } from "../../../servicios/constants/dummies";
+import {Component, OnInit} from '@angular/core';
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
 import * as moment from "moment";
@@ -122,6 +121,7 @@ export class ModalRealizarPagoComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+        this.alertaService.mostrar(TipoAlerta.Exito,  "Pago realizado correctamente. ")
         this.ref.close(true)
       },
       error: (error:HttpErrorResponse) => {

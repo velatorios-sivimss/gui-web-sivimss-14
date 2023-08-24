@@ -8,6 +8,7 @@ export const funcionalidades: { [valor: string]: string } = {
   'VELATORIOS': '8',
   'SALAS_RESERVACION': '9',
   'CONTRATANTES': '11',
+  'PROMOTORES': '15',
   'GENERAR_RECIBO_PAGO': '23',
   'CONSULTAR_ODS': '24',
   'RENOVAR_CONVENIO_PF': '29',
@@ -21,6 +22,7 @@ export const funcionalidades: { [valor: string]: string } = {
   'CONSULTAR_DONADOS': '64',
   'SOLICITAR_PAGO': '65',
   'GESTIONAR_PAGO': '66',
+  'BALANCE_CAJA': '69',
   'RENOVACION_EXTEMPORANEA': '71',
   //Agregar los que falten.
 }

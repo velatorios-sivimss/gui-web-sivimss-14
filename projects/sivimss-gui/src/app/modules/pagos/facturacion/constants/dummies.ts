@@ -1,4 +1,6 @@
-export const REGISTROS_PAGOS = [
+import {ServiciosContratados} from "../models/serviciosContratados.interface";
+
+export const REGISTROS_PAGOS: ServiciosContratados[] = [
   {
     noConsecutivo: '1',
     grupo: 'Traslado',

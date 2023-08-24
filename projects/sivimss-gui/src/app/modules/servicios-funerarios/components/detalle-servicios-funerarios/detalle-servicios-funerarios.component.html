@@ -115,16 +115,30 @@
         </ng-template>
       </p-table>
       <div class="row ml-5">
-        <div class="col-md-7 mt-6" *ngIf="detalleServicio?.restante">
-          <span>Aún debes pagar esta cantidad para cubrir el total del plan SPFA <span
-            class="font-bold">{{detalleServicio.restante | currency:"USD":"symbol"}}</span></span>
+        <div class="col-md-7 mt-6" >
+          <span>Aún debes pagar esta cantidad para cubrir el total del plan SPFA
+            <span class="font-bold" *ngIf="detalleServicio?.restante; else sinRestante">
+              {{detalleServicio.restante | currency:"USD":"symbol"}}
+            </span>
+            <ng-template #sinRestante>
+              <span class="font-bold">
+                {{detalleServicio.total | currency:"USD":"symbol"}}
+              </span>
+            </ng-template>
+          </span>
         </div>
         <div class="col-md-5">
           <div class="flex justify-content-end">
-            <div class="col-md-4" *ngIf="detalleServicio?.totalPagado">
+            <div class="col-md-4">
               <label>Total pagado</label><br/>
-              <span>{{detalleServicio.totalPagado | currency:"USD":"symbol"}}</span>
+              <span *ngIf="detalleServicio?.totalPagado; else sinTotalPagado">
+                {{detalleServicio.totalPagado | currency:"USD":"symbol"}}
+              </span>
             </div>
+            <ng-template #sinTotalPagado>
+              <span>{{0 | currency:"USD":"symbol"}}</span>
+            </ng-template>
+
             <div class="col-md-4" *ngIf="detalleServicio?.total">
               <label>Total a pagar</label><br/>
               <span>{{detalleServicio.total | currency:"USD":"symbol"}}</span>
@@ -137,15 +151,15 @@
 </section>
 
 <section>
-  <div class="paginator-template flex justify-content-end">
-    <div class="export-table">
-      <span class="export-table-text">Exportar tabla</span><br/>
-      <div class="export-table-icons flex justify-content-between px-4">
-        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
-      </div>
-    </div>
-  </div>
+<!--  <div class="paginator-template flex justify-content-end">-->
+<!--    <div class="export-table">-->
+<!--      <span class="export-table-text">Exportar tabla</span><br/>-->
+<!--      <div class="export-table-icons flex justify-content-between px-4">-->
+<!--        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">-->
+<!--        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
   <div class="row mb-6">
     <div class="flex mt-4 justify-content-end">
       <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../">Regresar</button>
@@ -161,7 +175,7 @@
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-<p-overlayPanel #overlayPanelHeader>
+<p-overlayPanel #overlayPanelHeader >
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion onCloseOnNavigation titulo="Realizar pago" (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>

@@ -131,6 +131,10 @@ export const idsModulos: DatoModulo = {
         ruta: '/generar-nota-remision',
         icono: 'generar-nota-remision.svg'
     },
+    '69': {
+        ruta: '/balance-cajas',
+        icono: 'default-icon.svg'
+    },
     '70': {
         ruta: '/gestionar-tramites',
         icono: 'default-icon.svg'
@@ -173,6 +177,10 @@ export const idsModulos: DatoModulo = {
     },
     '71': {
         ruta: 'convenios-prevision-funeraria/renovacion-extemporanea',
+        icono: 'default-icon.svg'
+    },
+    '115': {
+        ruta: '/promotores',
         icono: 'default-icon.svg'
     },
 };
