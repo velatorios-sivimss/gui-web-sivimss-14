@@ -8,7 +8,9 @@ export class OrdenEntradaResolver implements Resolve<any> {
 
   constructor(private ordenEntradaService: OrdenEntradaService) {}
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-
-    return forkJoin([]);
+    const catDelegacion$ = this.ordenEntradaService.obtenerCatalogoDelegaciones();
+    const catNivel$ = this.ordenEntradaService.obtenerCatalogoNiveles();
+    const foliosODE$ = this.ordenEntradaService.consultarFolioODE();
+    return forkJoin([catDelegacion$,catNivel$,foliosODE$]);
   }
 }

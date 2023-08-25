@@ -9,7 +9,7 @@
     <div class="col-md-6">
       <label class="control-label" for="delegacion">Delegación:</label>
       <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-                  placeholder="Seleccionar la delegación" [filter]="true" filterBy="label">
+                  placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)="consultarVelatorios()">
       </p-dropdown>
     </div>
   </div>
@@ -21,21 +21,18 @@
       </p-dropdown>
     </div>
     <div class="col-md-6">
-  <!--                    (onSelect)="seleccionaPanteon($event)"  [suggestions]="panteonServicioFiltrados"-->
-  <!--                    (completeMethod)="filtrarPateon($event)"-->
       <label class="control-label" for="ordenEntrada">Orden de entrada:</label>
       <p-autoComplete id="ordenEntrada"  class="form-control" formControlName="ordenEntrada"
-                      autocomplete="000000"
-                      [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50"
-                      class="p-autocomplete" placeholder="Ingresa la orden de entrada"
-                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+                      [showEmptyMessage]="true" [suggestions]="catalogoFolios" (completeMethod)="filtrarOrdenes()"
+                      [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa la orden de entrada" field="label"
+                      [inputStyleClass]="'input-autocomplete'" [maxlength]="50" (change)="consultarProveedores()">
       </p-autoComplete>
     </div>
   </div>
   <div class="row mb-3">
     <div class="col-md-6">
-      <!--                    (onSelect)="seleccionaPanteon($event)"  [suggestions]="panteonServicioFiltrados"-->
-      <!--                    (completeMethod)="filtrarPateon($event)"-->
+                          [suggestions]="panteonServicioFiltrados"
+                          (completeMethod)="filtrarPateon($event)"
       <label class="control-label" for="ordenEntrada">Proveedor:</label>
       <p-autoComplete id="proveedor"  class="form-control" formControlName="proveedor"
                       autocomplete="proveedor"
