@@ -213,6 +213,8 @@ export class SolicitudesPagoComponent implements OnInit {
         data: this.solicitudPagoSeleccionado
       },
     );
+
+    this.aceptarRef.onClose.subscribe(() => this.seleccionarPaginacion());
   }
 
   abrirModalRechazarSolicitudPago(): void {
@@ -229,9 +231,8 @@ export class SolicitudesPagoComponent implements OnInit {
 
   paginarConFiltros(): void {
     const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros("pdf");
-    const form =  this.filtroFormSolicitudesPago.getRawValue();
+    const form = this.filtroFormSolicitudesPago.getRawValue();
     const valores: string[] = Object.values(form);
-    console.log(valores);
     if (valores.every(v => v === null)) {
       this.mostrarModalFiltros = true;
       return;
