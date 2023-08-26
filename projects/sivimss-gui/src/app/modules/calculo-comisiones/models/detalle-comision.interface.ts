@@ -9,6 +9,7 @@
     puesto?: string;
     correo?: string;
     fecNacimiento?: string;
+    diasDescanso?: string;
     fecIngreso?: string;
     sueldoBase?: number;
     idPromotor?: number;
