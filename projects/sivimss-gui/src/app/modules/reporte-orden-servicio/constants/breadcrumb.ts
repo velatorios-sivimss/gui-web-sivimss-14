@@ -7,7 +7,7 @@ export const SERVICIO_BREADCRUMB: ElementoBreadcrumb[] = [
   },
   {
     icono: '',
-    titulo: 'Servicios funerarios pago anticipado SFPA'
+    titulo: 'Reportes'
   },
 ]
 
