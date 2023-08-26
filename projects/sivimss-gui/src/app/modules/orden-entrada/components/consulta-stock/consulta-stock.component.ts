@@ -83,19 +83,19 @@ export class ConsultaStockComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.inicializarFormulario();
-    this.inicializarCatalogos()
+     this.inicializarFormulario();
+     this.inicializarCatalogos()
   }
 
   inicializarFormulario(): void {
-
     this.formulario= this.formBuilder.group({
              nivel: [{value:null, disabled: false}],
-        delegacion: [{value:null, disabled: false}],
          velatorio: [{value:null, disabled: false}],
       ordenEntrada: [{value:null, disabled: false}],
          categoria: [{value:null, disabled: false}],
-        asignacion: [{value:null, disabled: false}]
+        asignacion1: [{value:null, disabled: false}],
+        asignacion2: [{value:null, disabled: false}],
+        asignacion3: [{value:null, disabled: false}]
     });
   }
 
@@ -130,10 +130,6 @@ export class ConsultaStockComponent implements OnInit {
     if (event) {
       this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1))
     }
-  }
-
-  abrirModalDevolver(): void {
-
   }
 
   get f() {

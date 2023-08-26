@@ -1,0 +1,58 @@
+<div class="flex">
+  <app-btn-regresar class="mr-2" style="
+      margin-top:10px;
+      z-index: 300;
+      border: solid 2px;
+      height: 38px;
+      width: 47px;
+      padding-left: 6px;
+      border-radius: 5px;" [routerLink]="['/orden-entrada']"></app-btn-regresar>
+  <app-titulo-principal style="width: 100%" titulo="Realizar balance de caja"></app-titulo-principal>
+</div>
+<h3 class="subtitulo my-4">Devolver artículo</h3>
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      Folio ODE DOC-000009
+    </div>
+  </ng-template>
+  <div class="row table-panel-row">
+    <div class="col-md-4">
+      <div class="table-panel-column">
+        <label>Fecha ODE</label>
+        <span> 10-01-2021</span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="table-panel-column">
+        <label>Folio artículo</label>
+        <span>DOC-000009</span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="table-panel-column">
+        <label>Artículo</label>
+        <span> Vasija </span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+<form class="mt-3">
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <label class="control-label">Motivo de la devolución<span class="req">*</span>:</label>
+      <textarea class="form-control" rows="6"></textarea>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>
+    </div>
+    <div class="col-md-6 flex justify-content-end">
+      <button class="btn btn-gold btn-md">Cancelar</button>
+      <button class="btn btn-primary btn-md ml-3">Devolver</button>
+    </div>
+  </div>
+</form>
+
+
