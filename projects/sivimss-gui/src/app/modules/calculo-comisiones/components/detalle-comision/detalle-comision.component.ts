@@ -46,6 +46,7 @@ export class DetalleComisionComponent implements OnInit {
   listaComisiones!: DetalleComisiones[];
   formComisiones!: FormGroup;
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
+  mostrarExportar: boolean = false;
   registrarCalcularComisionRef!: DynamicDialogRef
   totalODS: number = 0;
   totalConveniosPF: number = 0;
@@ -117,7 +118,7 @@ export class DetalleComisionComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             this.listaComisiones = respuesta.datos;
-          //  this.abrirModarCalcularComision();
+            this.mostrarExportar = true;
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -184,7 +185,9 @@ export class DetalleComisionComponent implements OnInit {
     });
   }
   crearReporteDetalleComisiones(tipoReporte: string): FormatoDetalleComisiones {
+    const mes = this.formComisiones.get('mes')?.value !== null ? moment(this.formComisiones.get('mes')?.value).format('MM') : null;
     return {
+      idPromotor: this.detallePromotor.idPromotor,
       numEmpleado: this.detallePromotor.numEmpleado,
       curp: this.detallePromotor.curp,
       nombre: this.detallePromotor.nombre,
@@ -197,15 +200,16 @@ export class DetalleComisionComponent implements OnInit {
       puesto: this.detallePromotor.puesto,
       correo: this.detallePromotor.correo,
       categoria: this.detallePromotor.categoria,
-      diasDescanso: "",
+      diasDescanso: this.detallePromotor.diasDescanso,
       monComision: this.detallePromotor.montoComision,
+      anioCalculo: this.formComisiones.get("anio")?.value,
+      mesCalculo: mes,
+      numOrdenesServicio: this.listaComisiones.length > 0 ?  this.listaComisiones[0].numOrdenesServicio : 0,
+      monComisionODS: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monComisionODS : 0,
+      numConveniosPF: this.listaComisiones.length > 0 ?  this.listaComisiones[0].numConveniosPF : 0,
+      monConveniosPF: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monConveniosPF : 0,
+      monBonoAplicado: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monBonoAplicado : 0,
       tipoReporte: tipoReporte
-      /*
-      numOrdenesServicio: this.listaComisiones.numOrdenesServicio,
-      monComisionODS: this.listaComisiones.monComisionODS,
-      numConveniosPF: this.listaComisiones.numConveniosPF,
-      monConveniosPF: this.listaComisiones.monConveniosPF,
-      monBonoAplicado: this.listaComisiones.monBonoAplicado,*/
     }
   }
 
