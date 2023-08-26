@@ -19,9 +19,10 @@ import {AccordionModule} from "primeng/accordion";
 import {ModificarMetodoPagoComponent} from './components/modificar-metodo-pago/modificar-metodo-pago.component';
 import {CancelarMetodoPagoComponent} from './components/cancelar-metodo-pago/cancelar-metodo-pago.component';
 import {InputTextareaModule} from "primeng/inputtextarea";
-import { IrAPagoComponent } from './components/ir-a-pago/ir-a-pago.component';
+import {IrAPagoComponent} from './components/ir-a-pago/ir-a-pago.component';
 import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 import {DialogModule} from "primeng/dialog";
+import {UtileriaModule} from "../../../shared/utileria/utileria.module";
 
 
 @NgModule({
@@ -30,7 +31,7 @@ import {DialogModule} from "primeng/dialog";
     DetalleGestionPagoComponent,
     ModificarMetodoPagoComponent,
     CancelarMetodoPagoComponent,
-    IrAPagoComponent
+    IrAPagoComponent,
   ],
   imports: [
     CommonModule,
@@ -49,7 +50,8 @@ import {DialogModule} from "primeng/dialog";
     InputTextareaModule,
     FormsModule,
     BtnRegresarModule,
-    DialogModule
+    DialogModule,
+    UtileriaModule
   ],
   providers: [GestionarPagoService]
 })

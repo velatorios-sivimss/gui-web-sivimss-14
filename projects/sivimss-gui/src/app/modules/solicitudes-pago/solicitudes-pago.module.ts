@@ -4,7 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import {DropdownModule} from 'primeng/dropdown';
 import {DynamicDialogModule} from 'primeng/dynamicdialog';
-import { RadioButtonModule } from "primeng/radiobutton";
+import {RadioButtonModule} from "primeng/radiobutton";
 import {TableModule} from 'primeng/table';
 import {InputSwitchModule} from 'primeng/inputswitch';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
@@ -33,7 +33,6 @@ import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 import {AprobarSolicitudPagoComponent} from "./components/aprobar-solicitud-pago/aprobar-solicitud-pago.component";
 import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directive";
 import {PanelModule} from "primeng/panel";
-import {SinCaracteresEspecialesDirective} from "./directives/sin-caracteres-especiales.directive";
 import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
@@ -45,7 +44,6 @@ import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
     VerDetalleSolicitudPagoComponent,
     AprobarSolicitudPagoComponent,
     RegexFolioFiscalDirective,
-    SinCaracteresEspecialesDirective,
   ],
   imports: [
     CalendarModule,

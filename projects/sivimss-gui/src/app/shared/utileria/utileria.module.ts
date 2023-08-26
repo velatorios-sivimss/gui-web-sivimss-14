@@ -11,6 +11,7 @@ import {PopoverDirective} from "./directives/popover.directive";
 import {TextColorDirective} from "./directives/text-color.directive";
 import { FolioODSAlphanumericDirective } from './directives/folio-ods-alphanumeric.directive';
 import {LettersDirectiveTextArea} from "./directives/only-letters-text-area.directive";
+import { WithoutSpecialCharDirective } from './directives/without-special-char.directive';
 
 @NgModule({
   declarations: [
@@ -25,23 +26,25 @@ import {LettersDirectiveTextArea} from "./directives/only-letters-text-area.dire
     PopoverDirective,
     TextColorDirective,
     FolioODSAlphanumericDirective,
+    WithoutSpecialCharDirective,
   ],
   imports: [
     CommonModule
   ],
-  exports: [
-    NumberDirective,
-    TwoDigitDecimaNumbersDirective,
-    LettersDirective,
-    LettersDirectiveTextArea,
-    AlphanumericDirective,
-    TrimmerDirective,
-    TextDirective,
-    OnCloseOnNavigationDirective,
-    PopoverDirective,
-    TextColorDirective,
-    FolioODSAlphanumericDirective,
-  ]
+    exports: [
+        NumberDirective,
+        TwoDigitDecimaNumbersDirective,
+        LettersDirective,
+        LettersDirectiveTextArea,
+        AlphanumericDirective,
+        TrimmerDirective,
+        TextDirective,
+        OnCloseOnNavigationDirective,
+        PopoverDirective,
+        TextColorDirective,
+        FolioODSAlphanumericDirective,
+        WithoutSpecialCharDirective,
+    ]
 })
 export class UtileriaModule {
 }
