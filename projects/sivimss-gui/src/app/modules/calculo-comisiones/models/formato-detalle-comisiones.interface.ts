@@ -1,5 +1,5 @@
 export interface FormatoDetalleComisiones {
-    // Promotor
+    idPromotor?: number;
     numEmpleado?: string;
     curp?: string;
     nombre?: string;
@@ -14,14 +14,13 @@ export interface FormatoDetalleComisiones {
     categoria?: string;
     diasDescanso?: string;
     monComision?: number;
-  
-    // Datos Comisión
-    numOrdenesServicio?: number;
+    anioCalculo?: string;
+    mesCalculo?: any;
+    monBonoAplicado?: number;
+    monConveniosPF?: number;
     monComisionODS?: number;
     numConveniosPF?: number;
-    monConveniosPF?: number;
-    monBonoAplicado?: number;
-    
+    numOrdenesServicio?: number;
     tipoReporte?: string;
 }
 

@@ -1,4 +1,9 @@
-<app-titulo-principal titulo="Consultar detalle"></app-titulo-principal>
+<div class="grid">
+    <app-btn-regresar class="mr-2 mt-5 border-return-button" routerLink="../../">
+        <a><img width="30" height="32" src="/assets/images/flecha-atras.svg" alt="Flecha atrás"></a>
+    </app-btn-regresar>
+    <app-titulo-principal titulo="Consultar detalle" class="col"></app-titulo-principal>
+</div>
 <p-accordion styleClass="sivimss-accordion">
     <p-accordionTab>
         <ng-template pTemplate="header">
@@ -138,8 +143,8 @@
                             <tr>
                                 <td> {{folioODS.fechaODS}} </td>
                                 <td> {{folioODS.cveFolio}} </td>
-                                <td> {{folioODS.nombreArticulo}} </td>
                                 <td> {{folioODS.nomFinado}} </td>
+                                <td> {{folioODS.lugarCaptacion}} </td>
                                 <td> {{folioODS.importeODS | currency}} </td>
                             </tr>
                         </ng-template>
@@ -276,7 +281,7 @@
         </ng-template>
     </p-accordionTab>
 </p-accordion>
-<div class="flex justify-content-end mb-3">
+<div class="flex justify-content-end mb-3" *ngIf="mostrarExportar">
     <div class="export-table">
         <span class="export-table-text">Exportar tabla</span>
         <div class="export-table-icons">
@@ -285,11 +290,6 @@
         </div>
     </div>
 </div>
-<ng-container>
-    <div class="flex justify-content-end mb-3">
-        <button class="ml-4 mt-3 btn btn-danger btn-md" [routerLink]="'../../'">Regresar</button>
-    </div>
-</ng-container>
 
 <p-dialog [(visible)]="mostrarModalDescargaExitosa" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}" [draggable]="false" [resizable]="false" header="">
     <ng-template pTemplate="content">

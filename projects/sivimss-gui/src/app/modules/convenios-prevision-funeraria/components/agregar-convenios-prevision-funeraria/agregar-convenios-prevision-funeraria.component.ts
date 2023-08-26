@@ -405,7 +405,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       idPromotor: this.ff.listaPromotor.value ? this.ff.listaPromotor.value.toString() : "",
       idPersona :event.idPersona ? event.idPersona.toString() : null,
       idDomicilio :null,
-      idContratante : this.ff.idContratante.value ? this.ff.idContratante.value.toString(): "" ,
+      idContratante : this.ff.idContratante.value ? this.ff.idContratante.value.toString(): null ,
 
       // numeroConvenio: this.ff.numeroConvenio.value,
       // rfcCurp: this.ff.rfcCurp.value,
