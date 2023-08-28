@@ -24,6 +24,7 @@ export const funcionalidades: { [valor: string]: string } = {
   'GESTIONAR_PAGO': '66',
   'BALANCE_CAJA': '69',
   'RENOVACION_EXTEMPORANEA': '71',
+  'AGREGAR_PLAN_SFPA': '68'
   //Agregar los que falten.
 }
 export const permisos: { [valor: string]: string } = {
