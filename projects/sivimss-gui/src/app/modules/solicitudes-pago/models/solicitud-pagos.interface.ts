@@ -1,4 +1,5 @@
 export interface SolicitudPago {
+  idUnidadOperartiva: number | null;
   motRechazo?: string;
   desEstatusSolicitud: string;
   idSolicitud: number;
@@ -10,7 +11,6 @@ export interface SolicitudPago {
   desTipoSolicitud: string;
   idEstatus: string;
   idVelatorio: number | null;
-  idUnidadOperativa: number | null;
   importe: number;
 }
 
