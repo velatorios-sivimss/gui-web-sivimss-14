@@ -56,7 +56,6 @@ export class DetalleComisionComponent implements OnInit {
   constructor(
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
-    private route: ActivatedRoute,
     private calculoComisionesService: CalculoComisionesService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
@@ -64,6 +63,7 @@ export class DetalleComisionComponent implements OnInit {
     private cargadorService: LoaderService,
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -92,7 +92,6 @@ export class DetalleComisionComponent implements OnInit {
     ) => acc +  (obj.importeODS!) ,
     0);
   }
-
 
   importeTotalConveniosPf(): void {
     this.totalConveniosPF = this.detalleConveniosPF.reduce((
