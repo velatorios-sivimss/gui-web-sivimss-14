@@ -97,6 +97,8 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
   fechaRango = moment().subtract(10, 'years').toDate();
   mostrarModalFechaMayor: boolean = false;
 
+  mostrarModalCerrarODE:boolean = false;
+
   numPaginaActual: number = 0
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
   totalElementos: number = 0
@@ -113,8 +115,8 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.inicializarFormulario();
-    this.inicializarCatalogos();
+     this.inicializarFormulario();
+     this.inicializarCatalogos();
   }
 
   inicializarFormulario(): void {
@@ -132,9 +134,13 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
 
   inicializarCatalogos(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
-    this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
-    this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
-    this.folioCatalogosODE = respuesta[this.POSICION_CONTRATOS].datos
+    // this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
+    // this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
+    // this.folioCatalogosODE = respuesta[this.POSICION_CONTRATOS].datos
+
+    this.catalogoNiveles = [];
+    this.catalogoDelegaciones = [];
+    this.folioCatalogosODE = [];
     // POSICION_CONTRATOS
   }
 
@@ -213,16 +219,13 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     })
   }
 
-  abrirModalCancelarODE(): void {
-
-  }
-
   abrirModalCerrarODE(): void {
-
+    this.mostrarModalCerrarODE = true;
   }
 
   abrirModalGenerarODE(): void {
-    this.router.navigate(["./orden-entrada/generar-ode"])
+
+    // this.router.navigate(["./orden-entrada/generar-ode"])
     // const ref = this.dialogService.open(GenerarOdeComponent, {
     //   header: 'Orden de entrada',
     //   style: { maxWidth: '876px', width: '100%' },

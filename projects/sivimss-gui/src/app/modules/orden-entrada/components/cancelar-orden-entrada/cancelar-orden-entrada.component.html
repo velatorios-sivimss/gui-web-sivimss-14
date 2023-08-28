@@ -1,0 +1,124 @@
+<div class="flex">
+  <app-btn-regresar class="mr-2" style="
+      margin-top:10px;
+      z-index: 300;
+      border: solid 2px;
+      height: 38px;
+      width: 47px;
+      padding-left: 6px;
+      border-radius: 5px;" routerLink="../.."></app-btn-regresar>
+  <app-titulo-principal style="width: 100%" titulo="Cancelar orden de entrada"></app-titulo-principal>
+</div>
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      ID ODE
+    </div>
+  </ng-template>
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span class="text-2xl">Estatus</span>
+        <span class="font-bold text-2xl activo">Activo</span>
+      </div>
+    </div>
+  </ng-template>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Folio ODE</label>
+        <span> DOC-00001</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Fecha</label>
+        <span>11-06-2023 </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>No.contrato</label>
+        <span> 187694654 </span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Velatorio</label>
+        <span>No. 14 San Luis Potosi y CD Valles </span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Proveedor</label>
+        <span> Maquiladoras del Noroeste S.A. de C.V.</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Folio proveedor</label>
+        <span>10654654654</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Número de artículos</label>
+        <span>10</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Modelo</label>
+        <span>734-ataud de pino-mod6543</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Categoría (artículo)</label>
+        <span>Ataud</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Costo</label>
+        <span>$20,000.00</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Precio</label>
+        <span>$23,500.00</span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+<div class="row mt-3">
+  <div class="col-md-12 flex justify-content-end">
+    <button class="btn btn-gold btn-md">Cerrar</button>
+    <button class="btn btn-primary btn-md ml-5" (click)="mostrarModalCancelarODE = true">Cancelar</button>
+  </div>
+</div>
+
+
+<p-dialog [(visible)]="mostrarModalCancelarODE" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="Cancelar orden de entrada">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">¿Desea continuar con la cancelación?</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-gold btn-md" (click)="mostrarModalCancelarODE = false">Cancelar</button>
+      <button class="btn btn-primary btn-md ml-3" (click)="mostrarModalCancelarODE = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

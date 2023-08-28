@@ -1,90 +1,96 @@
-<app-titulo-principal style="width: 100%" titulo="Orden de entrada"></app-titulo-principal>
-<form [formGroup]="formulario">
+<div class="flex">
+  <app-btn-regresar class="mr-2" style="
+      margin-top:10px;
+      z-index: 300;
+      border: solid 2px;
+      height: 38px;
+      width: 47px;
+      padding-left: 6px;
+      border-radius: 5px;" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal style="width: 100%" titulo="Órden de entrada"></app-titulo-principal>
+</div>
+<form [formGroup]="formulario" class="border-400 border-2 p-5 mb-8 shadow-2">
   <div class="row mb-3">
-    <div class="col-md-6">
-      <label class="control-label" for="idOde">ID ODE:</label>
-      <input id="idOde" class="form-control" formControlName="idOde" placeholder="Ingresa el ID ODE">
-      <span class="campo-obligatorio"
-            *ngIf="f.idIde?.errors?.required && (f.idIde?.dirty || f.idIde?.touched)">Campo obligatorio</span>
-    </div>
-    <div class="col-md-6">
-      <label class="control-label" for="folioOde">Folio ODE:</label>
-      <input id="folioOde" class="form-control" formControlName="folioOde" placeholder="Ingresa el folio ODE">
-      <span class="campo-obligatorio"
-            *ngIf="f.folioOde?.errors?.required && (f.folioOde?.dirty || f.folioOde?.touched)">Campo obligatorio</span>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <label class="control-label" for="contrato">Contrato<span class="req">*</span>:</label>
-      <p-autoComplete id="contrato"  class="form-control" formControlName="contrato"
-                      autocomplete="000000"
-                      [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50"
-                      class="p-autocomplete" placeholder="Ingresa el contrato"
-                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
-      </p-autoComplete>
+      <input id="contrato" class="form-control" formControlName="contrato" placeholder="Ingresar contrato">
       <span class="campo-obligatorio"
-            *ngIf="f.contrato?.errors?.required && (f.contrato?.dirty || f.contrato?.touched)">Este campo es obligatorio *.</span>
+            *ngIf="f.contrato?.errors?.required && (f.contrato?.dirty || f.contrato?.touched)">Campo obligatorio</span>
     </div>
-    <div class="col-md-6">
-      <label class="control-label" for="contrato">Proveedor:</label>
-      <p-autoComplete id="proveedor"  class="form-control" formControlName="proveedor"
-                      autocomplete="000000"
-                      [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50"
-                      class="p-autocomplete" placeholder="Ingresa el contrato"
-                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
-      </p-autoComplete>
+    <div class="col-md-4">
+      <label class="control-label" for="idOde">ID ODE:</label>
+      <input id="idOde" class="form-control" formControlName="idOde" placeholder="ID ODE">
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="folioOde">FOLIO ODE:</label>
+      <input id="folioOde" class="form-control" formControlName="folioOde" placeholder="Folio ODE">
     </div>
   </div>
   <div class="row mb-3">
-    <div class="col-md-6">
-      <label class="control-label" for="categoria">Cateogoría<span class="req">*</span>:</label>
+    <div class="col-md-4">
+      <label class="control-label" for="proveedor">Proveedor:</label>
+      <input id="proveedor" class="form-control" formControlName="proveedor" placeholder="Ingresar proveedor">
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="folioProveedor">Folio proveedor:</label>
+      <input id="folioProveedor" class="form-control" formControlName="folioProveedor"
+             placeholder="Ingresar folio proveedor">
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="categoria">Cateogoría (Artículo)<span class="req">*</span>:</label>
       <p-dropdown id="categoria" class="form-control" formControlName="categoria" [options]="categorias"
                   placeholder="Seleccionar la categoría" [filter]="true" filterBy="label">
       </p-dropdown>
       <span class="campo-obligatorio"
             *ngIf="f.categoria?.errors?.required && (f.categoria?.dirty || f.categoria?.touched)">Este campo es obligatorio *.</span>
     </div>
-    <div class="col-md-6">
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-8">
       <label class="control-label" for="modelo">Modelo:</label>
       <p-dropdown id="modelo" class="form-control" formControlName="modelo" [options]="modelos"
                   placeholder="Seleccionar el modelo" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <label class="control-label" for="velatorio">Velatorio:</label>
       <input id="velatorio" class="form-control" formControlName="velatorio" placeholder="Ingresa el velatorio">
     </div>
-    <div class="col-md-6">
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-4">
       <label class="control-label" for="costo">Costo:</label>
       <input id="costo" class="form-control" formControlName="costo" placeholder="Ingresa el costo">
     </div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <label class="control-label" for="precio">Precio:</label>
-      <input id="precio" class="form-control" formControlName="precio" placeholder="Ingresa el precio">
-    </div>
-    <div class="col-md-6">
-      <label class="control-label" for="numeroArticulos">Agregar el número de artículos<span class="req">*</span>:</label>
+    <div class="col-md-4">
+      <label class="control-label" for="numeroArticulos">Agregar el número de artículos<span
+        class="req">*</span>:</label>
       <input id="numeroArticulos" class="form-control" formControlName="numeroArticulos" placeholder="Ingresa el costo">
       <span class="campo-obligatorio"
             *ngIf="f.numeroArticulos?.errors?.required && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched)">Campo obligatorio</span>
     </div>
+    <div class="col-md-4">
+      <label class="control-label" for="precio">Precio:</label>
+      <input id="precio" class="form-control" formControlName="precio" placeholder="Ingresa el precio">
+    </div>
   </div>
   <div class="row mb-3">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <label class="control-label" for="fecha">Fecha:</label>
       <p-calendar styleClass="form-control" id="fecha" formControlName="fecha" [showIcon]="true"
                   dateFormat="dd/mm/yy" placeholder="Fecha"></p-calendar>
     </div>
-    <div class="col-md-6">
-      <label class="control-label" for="fecha">Estatus:</label>
+    <div class="col-md-4">
+      <label class="control-label" for="estatus">Estatus:</label>
       <p-dropdown id="estatus" class="form-control" formControlName="estatus" [options]="estatus"
                   placeholder="Seleccionar el estatus" [filter]="true" filterBy="label">
       </p-dropdown>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>
     </div>
   </div>
   <div class="flex justify-content-end mb-3">

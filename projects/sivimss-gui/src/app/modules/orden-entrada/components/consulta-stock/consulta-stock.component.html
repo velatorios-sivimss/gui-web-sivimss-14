@@ -7,53 +7,51 @@
       </p-dropdown>
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="delegacion">Delegación:</label>
-      <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-                  placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)="consultarVelatorios()">
-      </p-dropdown>
-    </div>
-  </div>
-  <div class="row mb-3">
-    <div class="col-md-6">
       <label class="control-label" for="velatorio">Velatorio:</label>
       <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
                   placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
+  </div>
+  <div class="row mb-4">
     <div class="col-md-6">
-      <!--                    (onSelect)="seleccionaPanteon($event)"  [suggestions]="panteonServicioFiltrados"-->
-      <!--                    (completeMethod)="filtrarPateon($event)"-->
-      <label class="control-label" for="ordenEntrada">Orden de entrada:</label>
-      <p-autoComplete id="ordenEntrada"  class="form-control" formControlName="ordenEntrada"
-                      autocomplete="000000"
-                      [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50"
-                      class="p-autocomplete" placeholder="Ingresa la orden de entrada"
-                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
-      </p-autoComplete>
+      <label class="control-label" for="ordenEntrada">Orden de entrada (ODE):</label>
+      <input id="ordenEntrada" type="text" class="form-control"
+             placeholder="Ingresa la orden de entrada"
+      >
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="categoria">Categoria (Artículos):</label>
+      <input id="categoria" type="text" class="form-control"
+             placeholder="Ingresa categoría"
+      >
     </div>
   </div>
-  <div class="row mb-6">
+  <div class="row mb-4">
     <div class="col-md-6">
-      <!--                    (onSelect)="seleccionaPanteon($event)"  [suggestions]="panteonServicioFiltrados"-->
-      <!--                    (completeMethod)="filtrarPateon($event)"-->
-      <label class="control-label" for="categoria">Categoría:</label>
-      <p-autoComplete id="categoria"  class="form-control" formControlName="categoria"
-                      autocomplete="000000"
-                      [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50"
-                      class="p-autocomplete" placeholder="Ingresa la categoría"
-                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
-      </p-autoComplete>
+      <div class="mb-3">
+        <label class="control-label">Asignación:</label>
+      </div>
+      <div class="flex">
+        <div class="flex align-items-center mr-4">
+          <p-checkbox inputId="todos" formControlName="asignacion1" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <label [for]="'todos'" class="control-label mb-0 font-normal">Todos</label>
+        </div>
+        <div class="flex align-items-center mr-4">
+          <p-checkbox inputId="consignado" formControlName="asignacion2" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <label [for]="'consignado'" class="control-label mb-0 font-normal">Consignado</label>
+        </div>
+        <div class="flex align-items-center mr-4">
+          <p-checkbox inputId="donado" formControlName="asignacion3" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <label [for]="'donado'" class="control-label mb-0 font-normal">Donado</label>
+        </div>
+      </div>
+      <span class="mensaje-inferior-campo-obligatorio inline-block mt-2">*Campos obligatorios</span>
     </div>
-    <div class="col-md-6">
-      <label class="control-label" for="nivel">Asignación:</label>
-      <p-dropdown id="asignacion" class="form-control" formControlName="asignacion" [options]="asignacion"
-                  placeholder="Seleccionar la asignación" [filter]="true" filterBy="label">
-      </p-dropdown>
+    <div class="col-md-6 flex justify-content-end">
+      <button class="btn btn-default btn-md">Limpiar</button>
+      <button class="btn btn-primary btn-md ml-5">Buscar</button>
     </div>
-  </div>
-  <div class="flex justify-content-between ">
-    <h2 class="subtitulo">Stock</h2>
-    <button type="button" class="btn btn-primary btn-md">Buscar</button>
   </div>
 </form>
 <section>
@@ -78,8 +76,7 @@
         <td pResizableColumn> {{stock.articulo}} </td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirPanel($event,stock)" onCloseOnNavigation>
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            <a (click)="abrirPanel($event,stock)" onCloseOnNavigation class="pi pi-ellipsis-v inline-flex w-auto">
             </a>
           </div>
         </td>
@@ -102,7 +99,7 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table"  src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
             <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
           </div>
         </div>
@@ -113,7 +110,7 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Devolver" (click)="abrirModalDevolver()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Devolución" [routerLink]="['/pagos/realizar-balance-caja']"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

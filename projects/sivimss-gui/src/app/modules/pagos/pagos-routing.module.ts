@@ -1,7 +1,7 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {PermiteUsuarioLogueadoGuard} from "../../guards/permite-usuario-logueado.guard";
-import {PaginaNoEncontradaComponent} from "../../components/pagina-no-encontrada/pagina-no-encontrada.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { PermiteUsuarioLogueadoGuard } from "../../guards/permite-usuario-logueado.guard";
+import { PaginaNoEncontradaComponent } from "../../components/pagina-no-encontrada/pagina-no-encontrada.component";
 
 const routes: Routes = [
   {
@@ -32,9 +32,14 @@ const routes: Routes = [
       {
         path: 'gestionar-pago',
         loadChildren: () => import('./gestionar-pago/gestionar-pago.module').then(m => m.GestionarPagoModule),
+      },
+      {
+        path: 'realizar-balance-caja',
+        loadChildren: () => import('./realizar-balance-caja/realizar-balance-caja.module').then(m => m.RealizarBalanceCajaModule)
       }
     ]
-  }
+  },
+
 ];
 
 @NgModule({
