@@ -166,7 +166,7 @@ export class GestionarPagoComponent implements OnInit {
 
   paginarConFiltros(): void {
     this.cargadorService.activar();
-    const filtros = this.filtroGestionarPagoForm.getRawValue();
+    const filtros =this.generarSolicitudFiltros();
     this.gestionarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -178,6 +178,25 @@ export class GestionarPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       },
     });
+  }
+
+  generarSolicitudFiltros(){
+    let filtros: any = {
+      idVelatorio: this.filtroGestionarPagoForm.get('velatorio')?.value,
+      fechaIni: this.filtroGestionarPagoForm.get('elaboracionInicio')?.value,
+      fechaFin: this.filtroGestionarPagoForm.get('elaboracionFin')?.value,
+      nomContratante: this.filtroGestionarPagoForm.get('nombreContratante')?.value
+    }
+    if (this.filtroGestionarPagoForm.get('folioODS')?.value) {
+      filtros = {... filtros, folioODS: this.filtroGestionarPagoForm.get('folioODS')?.value};
+    }
+    if (this.filtroGestionarPagoForm.get('folioPNCPF')?.value) {
+      filtros = {... filtros, folioPNCPF: this.filtroGestionarPagoForm.get('folioPNCPF')?.value};
+    }
+    if (this.filtroGestionarPagoForm.get('folioPRCPF')?.value) {
+      filtros = {... filtros, folioPRCPF: this.filtroGestionarPagoForm.get('folioPRCPF')?.value};
+    }
+    return filtros;
   }
 
   paginar(): void {

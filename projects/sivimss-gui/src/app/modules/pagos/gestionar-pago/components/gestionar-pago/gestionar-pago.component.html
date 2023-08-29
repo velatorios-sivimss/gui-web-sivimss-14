@@ -70,7 +70,7 @@
     </div>
   </form>
 </div>
-<section class="mt-5">
+<section class="mt-5 mb-3">
   <p-table styleClass="mt-5 mb-8" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
            (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
@@ -112,6 +112,7 @@
         <th colspan="9" class="p-2 text-center font-bold text-xl" id="gestionar_pago_sin_resultados">
           No se encontro información relacionada a tu búsqueda
         </th>
+        <hr>
       </tr>
     </ng-template>
     <ng-template pTemplate="paginatorleft">
