@@ -162,14 +162,15 @@ export class InformacionServicioSFComponent implements OnInit {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
     datosPresupuesto.forEach((datos: any) => {
-
-      if (datos.concepto.trim() == 'Velación en capilla') {
+      if (datos.concepto.trim() == 'Velación en capilla' ||
+          datos.concepto.trim() =='Capilla en Velatorio') {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
       }
 
-      if (datos.concepto.trim() == 'Velación en domicilio') {
+      if (datos.concepto.trim() == 'Velación en domicilio' ||
+          datos.concepto.trim() =='Renta de equipo para velación en domicilio') {
         this.validaDomicilio = true;
         this.lugarVelacion.calle.enable();
         this.lugarVelacion.exterior.enable();

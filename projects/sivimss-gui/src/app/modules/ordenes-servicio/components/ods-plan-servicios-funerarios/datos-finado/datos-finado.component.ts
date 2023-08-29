@@ -576,9 +576,11 @@ export class DatosFinadoSFComponent implements OnInit {
   }
 
   validarBotonAceptar(): boolean {
-    if(this.form.invalid){
-      return true;
-    }
-    return false;
+    return this.form.invalid
+    // return his.form.invalid ? true : false;
+    // if(this.form.invalid){
+    //   return true;
+    // }
+    // return false;
   }
 }
