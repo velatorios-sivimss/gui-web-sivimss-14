@@ -576,23 +576,6 @@ export class DatosFinadoSFComponent implements OnInit {
   }
 
   validarBotonAceptar(): boolean {
-
-    if(this.datosFinado.tipoOrden.value == 2){
-      if(this.form.invalid || !this.validacionPersonaConvenio){
-        return true;
-      }
-    }
-    if(this.datosFinado.tipoOrden.value == 1){
-      if(this.form.invalid){
-        return true;
-      }
-    }
-    if(this.datosFinado.tipoOrden.value == 3){
-      if(this.form.invalid){
-        return true;
-      }
-    }
-
     if(this.form.invalid){
       return true;
     }
