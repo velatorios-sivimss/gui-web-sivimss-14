@@ -2,6 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
 import { DetalleODS, DetallePromotor, DetalleConvenioPF, DetalleComisiones,FiltroComisiones } from '../../models/detalle-comision.interface';
+import { FormatoDetalleComisiones, OpcionesArchivos } from '../../models/formato-detalle-comisiones.interface'; 
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { ActivatedRoute } from '@angular/router';
 import {CalculoComisionesService} from '../../services/calculo-comisiones.service';
@@ -10,6 +11,8 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { CATALOGOS_DUMMIES } from '../../../articulos/constants/dummies';
@@ -20,7 +23,7 @@ import * as moment from "moment/moment";
   selector: 'app-detalle-comision',
   templateUrl: './detalle-comision.component.html',
   styleUrls: ['./detalle-comision.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 
 export class DetalleComisionComponent implements OnInit {
@@ -32,8 +35,10 @@ export class DetalleComisionComponent implements OnInit {
   @Input() detalleForm: DetallePromotor | undefined;
 
   registrarEntradaEquipoRef!: DynamicDialogRef;
+  mostrarModalDescargaExitosa: boolean = false;
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
   totalElementos: number = 0;
   detallePromotor!: DetallePromotor;
   detalleODS!: DetalleODS[];
@@ -41,6 +46,7 @@ export class DetalleComisionComponent implements OnInit {
   listaComisiones!: DetalleComisiones[];
   formComisiones!: FormGroup;
   opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
+  mostrarExportar: boolean = false;
   registrarCalcularComisionRef!: DynamicDialogRef
   totalODS: number = 0;
   totalConveniosPF: number = 0;
@@ -50,11 +56,14 @@ export class DetalleComisionComponent implements OnInit {
   constructor(
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
-    private route: ActivatedRoute,
     private calculoComisionesService: CalculoComisionesService,
+    private descargaArchivosService: DescargaArchivosService,
+    private mensajesSistemaService: MensajesSistemaService,
     private readonly loaderService: LoaderService,
+    private cargadorService: LoaderService,
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -84,7 +93,6 @@ export class DetalleComisionComponent implements OnInit {
     0);
   }
 
-
   importeTotalConveniosPf(): void {
     this.totalConveniosPF = this.detalleConveniosPF.reduce((
       acc,
@@ -109,7 +117,7 @@ export class DetalleComisionComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             this.listaComisiones = respuesta.datos;
-          //  this.abrirModarCalcularComision();
+            this.mostrarExportar = true;
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -140,9 +148,68 @@ export class DetalleComisionComponent implements OnInit {
   }
 
   guardarPDF(): void {
+    const solicitud: FormatoDetalleComisiones = this.crearReporteDetalleComisiones("pdf");
+    this.cargadorService.activar();
+    this.descargaArchivosService.descargarArchivo(this.calculoComisionesService.descargarReporteDetalleComisiones(solicitud)).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: boolean): void => {
+        this.mostrarModalDescargaExitosa = true;
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
   }
 
   guardarExcel(): void {
+    const solicitud: FormatoDetalleComisiones = this.crearReporteDetalleComisiones('xls');
+    this.cargadorService.activar();
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
+    this.descargaArchivosService.descargarArchivo(this.calculoComisionesService.descargarReporteDetalleComisiones(solicitud), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: boolean): void => {
+        this.mostrarModalDescargaExitosa = true;
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
+  crearReporteDetalleComisiones(tipoReporte: string): FormatoDetalleComisiones {
+    const mes = this.formComisiones.get('mes')?.value !== null ? moment(this.formComisiones.get('mes')?.value).format('MM') : null;
+    return {
+      idPromotor: this.detallePromotor.idPromotor,
+      numEmpleado: this.detallePromotor.numEmpleado,
+      curp: this.detallePromotor.curp,
+      nombre: this.detallePromotor.nombre,
+      primerApellido: this.detallePromotor.primerApellido,
+      segundoApellido: this.detallePromotor.segundoApellido,
+      fecNacimiento: this.detallePromotor.fecNacimiento,
+      fecIngreso: this.detallePromotor.fecIngreso,
+      velatorio: this.detallePromotor.velatorio,
+      sueldoBase: this.detallePromotor.sueldoBase,
+      puesto: this.detallePromotor.puesto,
+      correo: this.detallePromotor.correo,
+      categoria: this.detallePromotor.categoria,
+      diasDescanso: this.detallePromotor.diasDescanso,
+      monComision: this.detallePromotor.montoComision,
+      anioCalculo: this.formComisiones.get("anio")?.value,
+      mesCalculo: mes,
+      numOrdenesServicio: this.listaComisiones.length > 0 ?  this.listaComisiones[0].numOrdenesServicio : 0,
+      monComisionODS: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monComisionODS : 0,
+      numConveniosPF: this.listaComisiones.length > 0 ?  this.listaComisiones[0].numConveniosPF : 0,
+      monConveniosPF: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monConveniosPF : 0,
+      monBonoAplicado: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monBonoAplicado : 0,
+      tipoReporte: tipoReporte
+    }
   }
 
   buscar(): void {

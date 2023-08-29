@@ -31,7 +31,7 @@
     <div class="col-md-12">
       <label class="control-label" for="motivoCancelacion">Motivo de la cancelación<span class="req">*</span>:</label>
       <textarea rows="5" cols="30" id="motivoCancelacion" class="control-label" formControlName="motivoCancelacion"
-                pInputTextarea [maxlength]="100" placeholder="Ingresa el motivo de la cancelación"></textarea>
+                pInputTextarea [maxlength]="100" placeholder="Ingresa el motivo de la cancelación" withoutSpecialChar></textarea>
       <span class="campo-obligatorio"
             *ngIf="pc?.motivoCancelacion?.errors?.required && (pc?.motivoCancelacion?.dirty || pc?.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
     </div>

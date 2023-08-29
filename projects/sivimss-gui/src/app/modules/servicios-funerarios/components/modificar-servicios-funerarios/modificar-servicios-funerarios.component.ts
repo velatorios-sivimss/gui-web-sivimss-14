@@ -85,7 +85,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       'nomPaquete','idPaquete');
     this.paqueteBackUp = respuesta[this.POSICION_PAQUETE].datos;
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
-    this.serviciosFunerariosService.consultarPlanSFPA(1)
     this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
     this.consultarFormulario();
     this.consultarNumeroPagos(this.idPlanSfpa);
@@ -386,7 +385,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         }
       },
       (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
     )
   }
@@ -445,7 +444,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         }
       },
       (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
     )
   }
@@ -462,7 +461,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         }
       },
       error:(error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
     });
   }
@@ -517,7 +516,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         if(respuesta.datos.pais == 119)formularios[posicion].nacionalidad.setValue(1);
       },
       (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
     );
   }
@@ -740,7 +739,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       telefonoFijo: this.fdc.telefono.value,
       correo: this.fdc.correoElectronico.value,
       tipoPersona: "",
-      ine: "",
+      ine: null,
       cp: {
         desCalle: this.fdc.calle.value,
         numExterior: this.fdc.numeroExterior.value,
@@ -780,7 +779,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
           telefonoFijo: this.fda.telefono.value,
           correo: this.fda.correoElectronico.value,
           tipoPersona: "",
-          ine: "",
+          ine: null,
           cp: {
             desCalle: this.fda.calle.value,
             numExterior: this.fda.numeroExterior.value,

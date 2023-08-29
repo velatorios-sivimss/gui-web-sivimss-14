@@ -934,7 +934,7 @@ export class ModificarDatosContratanteComponent
     let formulario = this.form.getRawValue();
     let datosEtapaContratante = {
       idOrdenServicio: this.idODS,
-      idParentesco: formulario.datosContratante.parentesco,
+      idParentesco: formulario.datosContratante.parentesco == 0 ? null : formulario.datosContratante.parentesco,
       contratante: {
         idPersona: this.idPersona,
         idContratante: this.idContratante,
@@ -1044,6 +1044,7 @@ export class ModificarDatosContratanteComponent
 
     let datosEtapaFinado = {
       datosFinado: {
+        idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,

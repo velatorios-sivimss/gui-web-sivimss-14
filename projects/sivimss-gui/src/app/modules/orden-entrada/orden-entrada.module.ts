@@ -4,12 +4,14 @@ import {NgModule} from "@angular/core";
 
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {CalendarModule} from "primeng/calendar";
+import { CheckboxModule } from "primeng/checkbox";
 import {DialogModule} from "primeng/dialog";
 import {DialogService} from "primeng/dynamicdialog";
 import {DropdownModule} from "primeng/dropdown";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {SelectButtonModule} from "primeng/selectbutton";
 import {TableModule} from "primeng/table";
+import { CeldaStickyModule } from "projects/sivimss-gui/src/app/shared/celda-sticky/celda-sticky.module";
 import {TablePanelModule} from "../../shared/table-panel/table-panel.module";
 import {TabViewModule} from "primeng/tabview";
 
@@ -25,13 +27,15 @@ import {OrdenEntradaService} from "./services/orden-entrada.service";
 import { ConsultaOrdenEntradaComponent } from './components/consulta-orden-entrada/consulta-orden-entrada.component';
 import { ConsultaStockComponent } from './components/consulta-stock/consulta-stock.component';
 import { GenerarOdeComponent } from './components/generar-ode/generar-ode.component';
+import { CancelarOrdenEntradaComponent } from './components/cancelar-orden-entrada/cancelar-orden-entrada.component';
 
 @NgModule({
   declarations: [
     OrdenEntradaComponent,
     ConsultaOrdenEntradaComponent,
     ConsultaStockComponent,
-    GenerarOdeComponent
+    GenerarOdeComponent,
+    CancelarOrdenEntradaComponent
   ],
   imports: [
     FormsModule,
@@ -56,6 +60,8 @@ import { GenerarOdeComponent } from './components/generar-ode/generar-ode.compon
 
     ValidaRolModule,
     OrdenEntradaRoutingModule,
+    CeldaStickyModule,
+    CheckboxModule,
   ],
   providers: [
     OrdenEntradaService,

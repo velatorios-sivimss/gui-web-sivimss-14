@@ -15,6 +15,7 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _modificarPago: string = 'genpago-modifica';
   private readonly _eliminarPago: string = 'genpago-cancela';
   private readonly _imprimirPago: string = 'genpago-docto';
+  private readonly _filtros: string = 'genpago-buscar';
 
   body = {velatorio: null}
 
@@ -52,7 +53,7 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
     const params: HttpParams = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._paginado}`,
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/${this._filtros}`,
       filtros, {params});
   }
 
