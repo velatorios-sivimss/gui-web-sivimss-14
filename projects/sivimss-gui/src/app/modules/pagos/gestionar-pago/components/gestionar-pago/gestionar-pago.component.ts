@@ -65,6 +65,8 @@ export class GestionarPagoComponent implements OnInit {
   mostrarModalDescargaExitosa: boolean = false;
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
+  central!: boolean;
+
   constructor(private breadcrumbService: BreadcrumbService,
               private formBuilder: FormBuilder,
               private gestionarPagoService: GestionarPagoService,
@@ -96,8 +98,12 @@ export class GestionarPagoComponent implements OnInit {
 
   inicializarForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroGestionarPagoForm = this.formBuilder.group({
-      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: obtenerNivelUsuarioLogueado(usuario) === 3}],
+      velatorio: [{
+        value: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario),
+        disabled: obtenerNivelUsuarioLogueado(usuario) === 3
+      }],
       folioODS: [{value: null, disabled: false}],
       folioPNCPF: [{value: null, disabled: false}],
       folioPRCPF: [{value: null, disabled: false}],
@@ -118,7 +124,7 @@ export class GestionarPagoComponent implements OnInit {
     if (this.filtroGestionarPagoForm) {
       this.tipoFolio = null;
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroFormDir.resetForm({velatorio: obtenerVelatorioUsuarioLogueado(usuario)});
+      this.filtroFormDir.resetForm({velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)});
     }
     this.numPaginaActual = 0;
     this.paginar();
@@ -126,7 +132,8 @@ export class GestionarPagoComponent implements OnInit {
 
   obtenerVelatorios(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.gestionarPagoService.obtenerVelatoriosPorDelegacion(usuario?.idDelegacion).subscribe({
+    const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null
+    this.gestionarPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
@@ -166,7 +173,7 @@ export class GestionarPagoComponent implements OnInit {
 
   paginarConFiltros(): void {
     this.cargadorService.activar();
-    const filtros =this.generarSolicitudFiltros();
+    const filtros = this.generarSolicitudFiltros();
     this.gestionarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -180,7 +187,7 @@ export class GestionarPagoComponent implements OnInit {
     });
   }
 
-  generarSolicitudFiltros(){
+  generarSolicitudFiltros() {
     let filtros: any = {
       idVelatorio: this.filtroGestionarPagoForm.get('velatorio')?.value,
       fechaIni: this.filtroGestionarPagoForm.get('elaboracionInicio')?.value,
@@ -188,13 +195,13 @@ export class GestionarPagoComponent implements OnInit {
       nomContratante: this.filtroGestionarPagoForm.get('nombreContratante')?.value
     }
     if (this.filtroGestionarPagoForm.get('folioODS')?.value) {
-      filtros = {... filtros, folioODS: this.filtroGestionarPagoForm.get('folioODS')?.value};
+      filtros = {...filtros, folioODS: this.filtroGestionarPagoForm.get('folioODS')?.value};
     }
     if (this.filtroGestionarPagoForm.get('folioPNCPF')?.value) {
-      filtros = {... filtros, folioPNCPF: this.filtroGestionarPagoForm.get('folioPNCPF')?.value};
+      filtros = {...filtros, folioPNCPF: this.filtroGestionarPagoForm.get('folioPNCPF')?.value};
     }
     if (this.filtroGestionarPagoForm.get('folioPRCPF')?.value) {
-      filtros = {... filtros, folioPRCPF: this.filtroGestionarPagoForm.get('folioPRCPF')?.value};
+      filtros = {...filtros, folioPRCPF: this.filtroGestionarPagoForm.get('folioPRCPF')?.value};
     }
     return filtros;
   }
