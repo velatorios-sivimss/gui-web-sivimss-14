@@ -1,0 +1,42 @@
+.separador {
+  margin: .5rem 0 1rem 0;
+  border-top: 1px solid #7D7E7E;
+}
+
+.grid-resultado {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+
+  & > :hover {
+    background-color: #F7F8F8;
+    cursor:pointer;
+  }
+}
+
+.input-busqueda {
+  position: relative;
+
+  .limpiar-input {
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(-75%, -50%);
+  }
+  .buscar-icon {
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    position: absolute;
+    top: 12px;
+    right: 40px;
+  }
+}
+
+//
+//#map {
+//  height: 400px;
+//}
