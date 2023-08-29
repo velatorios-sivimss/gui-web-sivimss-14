@@ -1,0 +1,41 @@
+<div class="p-4">
+  <div class="row">
+    <div class="col-md-12 flex justify-content-center align-items-center">
+      <div class="flex flex-wrap gap-3">
+        <div class="flex align-items-center" *ngFor="let asignacion of tipoAsignacion">
+          <p-radioButton [inputId]="asignacion" name="asignacion" [value]="asignacion" [(ngModel)]="selectIdAsignacion"
+            (onClick)="limpiarSelects()"></p-radioButton>
+          <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='1'"> Consignado </label>
+          <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='3'"> Donado </label>
+          <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='5'"> Económico </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <label class="control-label" for="ataudes">Ataúdes<span class="req">*</span>:</label>
+      <p-dropdown  id="ataudes" class="form-control" [(ngModel)]="ataudSeleccionado" placeholder="Selecciona un ataúd"
+        [options]="listaAtaudes" (onChange)="buscarProveedor()" [filter]="true" filterBy="label" appendTo="body" ></p-dropdown>
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
+      <p-dropdown #dd id="proveedor" class="form-control" [(ngModel)]="proveedorSeleccionado"
+        placeholder="Selecciona un proveedor" [options]="listaProveedores"
+        (onChange)="buscarAtaudInventario(dd)" [filter]="true" filterBy="label"appendTo="body" ></p-dropdown>
+    </div>
+    <div class="col-md-4">
+      <label class="control-label" for="ataudesInentario">Ataúdes Inventario<span class="req">*</span>:</label>
+      <p-dropdown #ddAtaud id="ataudesInentario" class="form-control" [(ngModel)]="selectAtaudInventario"
+        placeholder="Selecciona un ataúd" [options]="listaAtaudesInventario"
+        (onChange)="onchangeInventario(ddAtaud)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
+    </div>
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button class="btn btn-default btn-md" type="button" (click)="cerrarModal()">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" type="button" [disabled]="!ddAtaud.value" (click)="aceptarModal()">Agregar</button>
+    </div>
+  </div>
+</div>
