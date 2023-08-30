@@ -66,6 +66,21 @@ import {DatosContratanteSFComponent} from "./components/ods-plan-servicios-funer
 import {DatosFinadoSFComponent} from "./components/ods-plan-servicios-funerarios/datos-finado/datos-finado.component";
 import {CaracteristicasPresupuestoSFComponent} from "./components/ods-plan-servicios-funerarios/caracteristicas-presupuesto/caracteristicas-presupuesto.component";
 import {InformacionServicioSFComponent} from "./components/ods-plan-servicios-funerarios/informacion-servicio/informacion-servicio.component";
+import {
+  ActualizarOrdenServicioSFComponent
+} from "./components/ods-plan-servicios-funerarios/actualizar-orden-servicio/actualizar-orden-servicio.component";
+import {
+  ModificarDatosContratanteSFComponent
+} from "./components/ods-plan-servicios-funerarios/modificar-datos-contratante/modificar-datos-contratante.component";
+import {
+  ModificarDatosFinadoSFComponent
+} from "./components/ods-plan-servicios-funerarios/modificar-datos-finado/modificar-datos-finado.component";
+import {
+  ModificarDatosCaracteristicasContratanteSFComponent
+} from "./components/ods-plan-servicios-funerarios/modificar-datos-caracteristicas-contratante/modificar-datos-caracteristicas-contratante.component";
+import {
+  ModificarInformacionServicioSFComponent
+} from "./components/ods-plan-servicios-funerarios/modificar-informacion-servicio/modificar-informacion-servicio.component";
 @NgModule({
     declarations: [
         OrdenesServicioComponent,
@@ -107,7 +122,13 @@ import {InformacionServicioSFComponent} from "./components/ods-plan-servicios-fu
         DatosContratanteSFComponent,
         DatosFinadoSFComponent,
         CaracteristicasPresupuestoSFComponent,
-        InformacionServicioSFComponent
+        InformacionServicioSFComponent,
+        ActualizarOrdenServicioSFComponent,
+        ModificarDatosContratanteSFComponent,
+        ModificarDatosFinadoSFComponent,
+        ModificarDatosCaracteristicasContratanteSFComponent,
+        ModificarInformacionServicioSFComponent
+
     ],
     imports: [
         CommonModule,

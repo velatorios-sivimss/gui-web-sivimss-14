@@ -886,7 +886,8 @@ export class DatosFinadoComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-
+            const[dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
+            const fecha = new Date(anio+"/"+mes+"/"+dia)
             this.datosFinado.curp.setValue(respuesta.datos.curp);
             this.datosFinado.nombre.setValue(respuesta.datos?.nombre);
             this.datosFinado.primerApellido.setValue(respuesta.datos.primerApellido);
@@ -895,11 +896,14 @@ export class DatosFinadoComponent implements OnInit {
 
             //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
             this.datosFinado.nacionalidad.setValue(1);
+            this.datosFinado.fechaNacimiento.setValue(fecha);
 
           }
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
+          this.cambiarTipoSexo();
+          this.cambiarNacionalidad();
         },
         (error: HttpErrorResponse) => {
           console.log(error);
