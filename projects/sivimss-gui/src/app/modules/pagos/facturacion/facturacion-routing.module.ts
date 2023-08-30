@@ -4,7 +4,6 @@ import {FacturacionComponent} from "./components/facturacion/facturacion.compone
 import {CancelarFacturaComponent} from "./components/cancelar-factura/cancelar-factura.component";
 import {EnviarFacturaComponent} from "./components/enviar-factura/enviar-factura.component";
 import {SolicitarFacturaComponent} from "./components/solicitar-factura/solicitar-factura.component";
-import {FacturacionResolver} from "./services/facturacion.resolver";
 
 const routes: Routes = [
   {

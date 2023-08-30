@@ -103,7 +103,7 @@ export class SolicitarFacturaComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        const foliosODS = respuesta[this.POSICION_CATALOGO_FOLIOS_ODS].datos;
+        const foliosODS = respuesta.datos;
         this.folios = mapearArregloTipoDropdown(foliosODS, 'folio', 'folio');
       },
       error: (error: HttpErrorResponse): void => {
