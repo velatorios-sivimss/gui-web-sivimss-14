@@ -36,6 +36,7 @@ import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 import {DetallePagoService} from "./services/detalle-pago.service";
 import { ModalModificarPagosComponent } from './components/modal-modificar-pagos/modal-modificar-pagos.component';
+import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
 
 @NgModule({
   declarations:[
@@ -71,6 +72,7 @@ import { ModalModificarPagosComponent } from './components/modal-modificar-pagos
     AccordionModule,
     UtileriaModule,
     BtnRegresarModule,
+    ValidaRolModule
   ],
   providers:[
     ServiciosFunerariosService,

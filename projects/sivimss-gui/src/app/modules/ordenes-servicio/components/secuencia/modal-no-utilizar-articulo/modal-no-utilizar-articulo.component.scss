@@ -1,0 +1,35 @@
+
+.sivimss-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .75rem;
+  background: #F3F3F3;
+  margin-bottom: 1rem;
+
+  .header-left {
+
+    span {
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 22px;
+      color: #393C3E;
+    }
+
+    b {
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 20px;
+      color: #217A6B;
+    }
+  }
+}
+
+.sivimss-panel-body {
+  padding: 1rem 2.5rem;
+}
+
+.separador {
+  margin: .5rem 0 1rem 0;
+  border-top: 1px solid #7D7E7E;
+}
