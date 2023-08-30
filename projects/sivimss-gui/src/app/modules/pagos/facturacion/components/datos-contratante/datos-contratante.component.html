@@ -2,7 +2,7 @@
   <p-accordionTab>
     <ng-template pTemplate="header">
       <div class="sivimss-acoordion-header">
-        {{nombreContratante}}
+        {{nombreContratante | titlecase}}
       </div>
     </ng-template>
     <ng-template pTemplate="content">
@@ -45,7 +45,7 @@
         <app-table-panel *ngFor="let metodoPago of metodosPago">
           <ng-template appCustomTemplate="left-header">
             <div class="table-panel-header-column">
-              <span class="font-14">{{metodoPago.metodo}}</span>
+              <span class="font-14">{{metodoPago.metodoPago}}</span>
             </div>
           </ng-template>
           <ng-template appCustomTemplate="right-header">
@@ -92,9 +92,9 @@
               <th id="servicios_ods_total">Total</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-servicio>
+          <ng-template pTemplate="body" let-servicio let-noConsecutivo="rowIndex">
             <tr>
-              <td>{{servicio.noConsecutivo}}</td>
+              <td>{{noConsecutivo}}</td>
               <td>{{servicio.grupo}}</td>
               <td>{{servicio.concepto}}</td>
               <td>{{servicio.cantidad}}</td>

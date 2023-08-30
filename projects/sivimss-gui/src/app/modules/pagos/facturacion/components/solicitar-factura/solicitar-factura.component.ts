@@ -12,6 +12,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
+import {DatosContratante} from "../../models/datosContratante.interface";
 
 interface Folio {
   idRegistro: number,
@@ -43,16 +44,8 @@ export class SolicitarFacturaComponent implements OnInit {
   folios: TipoDropdown[] = [];
   servicios: any[] = REGISTROS_PAGOS;
   temp: TipoDropdown[] = [];
-  registroContratante!: any;
   registroFolios: Folio[] = [];
-
-  metodosPago: MetodosPagoFact[] = [{
-    metodo: 'Vale Paritaria',
-    importe: 10000
-  }, {
-    metodo: 'Tarjeta Credito',
-    importe: 10000
-  }]
+  registroContratante!: DatosContratante;
 
   constructor(private formBuilder: FormBuilder,
               private readonly activatedRoute: ActivatedRoute,
@@ -143,6 +136,7 @@ export class SolicitarFacturaComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
+        this.registroContratante = respuesta.datos;
         console.log(respuesta);
       },
       error: (error: HttpErrorResponse): void => {
