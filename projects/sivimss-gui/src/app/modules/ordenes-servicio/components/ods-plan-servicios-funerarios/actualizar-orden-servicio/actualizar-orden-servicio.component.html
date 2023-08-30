@@ -1,0 +1,24 @@
+<div class="border-panel mb-8">
+  <h3>{{titulo}}</h3>
+  <div class="mt-4 flex justify-content-center align-items-center">
+    <app-etapas-actualizacion></app-etapas-actualizacion>
+  </div>
+  <ng-container [ngSwitch]="idEtapaSeleccionada">
+    <ng-container *ngSwitchCase="DATOS_DEL_CONTRATANTE">
+      <app-modificar-datos-contratante-sf
+        (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-modificar-datos-contratante-sf>
+    </ng-container>
+    <ng-container *ngSwitchCase="DATOS_DEL_FINADO">
+      <app-modificar-datos-finado-sf (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-modificar-datos-finado-sf>
+    </ng-container>
+    <ng-container *ngSwitchCase="CARACTERISTICAS_DEL_PRESUPUESTO">
+      <app-modificar-datos-caracteristicas-contratante-sf
+        (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-modificar-datos-caracteristicas-contratante-sf>
+    </ng-container>
+    <ng-container *ngSwitchCase="INFORMACION_DEL_SERVICIO">
+      <app-modificar-informacion-servicio-sf
+        (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-modificar-informacion-servicio-sf>
+    </ng-container>
+  </ng-container>
+
+</div>

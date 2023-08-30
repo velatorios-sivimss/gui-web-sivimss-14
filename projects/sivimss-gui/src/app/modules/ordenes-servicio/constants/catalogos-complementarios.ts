@@ -39,8 +39,11 @@ export const tipoOrden: TipoDropdown[] = [
     label: "Venta de artículos",
     value: 3
   },
+]
+
+export const tipoOrdenSF: TipoDropdown[] = [
   {
     label: "Convenio de Plan de Servicios Funerarios",
-    value: 4
+    value: 1
   }
 ]
