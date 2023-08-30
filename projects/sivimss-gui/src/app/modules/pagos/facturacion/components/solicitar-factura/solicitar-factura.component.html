@@ -32,7 +32,7 @@
     </div>
   </form>
 </ng-container>
-<ng-container>
+<ng-container *ngIf="registroContratante">
   <app-datos-contratante [nombreContratante]="'Heriberto Angelo Sánchez Maldonado'"
                          [tipoFecha]="2" [fecha]="'01/01/2022'" [fechaPago]="'01/01/2022'"
                          [concepto]="'Orden de servicio'" [servicios]="servicios"
@@ -76,7 +76,7 @@
     [domicilioFiscal]="'C.P. 00666, Lázaro Cárdenas 112, Industrial Globo, Santiago de Querétaro, Querétaro.'">
   </app-datos-receptor>
 </ng-container>
-<ng-container>
+<ng-container *ngIf="registroContratante">
   <form [formGroup]="datosCFDIForm">
     <div class="row mb-3 mt-3">
       <div class="col-md-6">

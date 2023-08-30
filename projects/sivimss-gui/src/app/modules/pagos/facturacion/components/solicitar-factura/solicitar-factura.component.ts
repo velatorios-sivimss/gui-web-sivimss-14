@@ -13,6 +13,18 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 
+interface Folio {
+  idRegistro: number,
+  folio: string,
+  idPagoBitacora: number
+}
+
+interface SolicitudDatosContratante {
+  tipoFactura: string,
+  idPagoBitacora: number,
+  idRegistro: number
+}
+
 @Component({
   selector: 'app-solicitar-factura',
   templateUrl: './solicitar-factura.component.html',
@@ -31,9 +43,8 @@ export class SolicitarFacturaComponent implements OnInit {
   folios: TipoDropdown[] = [];
   servicios: any[] = REGISTROS_PAGOS;
   temp: TipoDropdown[] = [];
-
-  readonly POSICION_CATALOGO_FOLIOS_ODS: number = 0;
-
+  registroContratante!: any;
+  registroFolios: Folio[] = [];
 
   metodosPago: MetodosPagoFact[] = [{
     metodo: 'Vale Paritaria',
@@ -97,14 +108,14 @@ export class SolicitarFacturaComponent implements OnInit {
   }
 
   obtenerFolios(): void {
-    const tipoSolicitud = this.solicitudForm.get('tipoFactura')?.value;
+    const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
     this.cargadorService.activar();
-    this.facturacionService.obtenerFolioODS(tipoSolicitud).pipe(
+    this.facturacionService.obtenerFolioODS(tipoFactura).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        const foliosODS = respuesta.datos;
-        this.folios = mapearArregloTipoDropdown(foliosODS, 'folio', 'folio');
+        this.registroFolios = respuesta.datos;
+        this.folios = mapearArregloTipoDropdown(respuesta.datos, 'folio', 'folio');
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -126,6 +137,28 @@ export class SolicitarFacturaComponent implements OnInit {
 
 
   buscarDatosContratante(): void {
+    const solicitud: SolicitudDatosContratante = this.crearSolicitudDatosContratante();
+    this.cargadorService.activar();
+    this.facturacionService.obtenerInfoFolioFacturacion(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        console.log(respuesta);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error)
+      }
+    })
+  }
 
+  crearSolicitudDatosContratante(): SolicitudDatosContratante {
+    const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
+    const folio = this.solicitudForm.get('folio')?.value;
+    const folioSeleccionado = this.registroFolios.find(f => f.folio === folio);
+    return {
+      tipoFactura,
+      idPagoBitacora: folioSeleccionado!.idPagoBitacora,
+      idRegistro: folioSeleccionado!.idRegistro
+    }
   }
 }
