@@ -39,7 +39,9 @@
                            [tipoFecha]="2" [fecha]="registroContratante.fecOds"
                            [fechaPago]="registroContratante.fecPago"
                            [concepto]="registroContratante.concPago" [servicios]="registroContratante.servicios"
-                           [metodosPago]="registroContratante.metodosPago"></app-datos-contratante>
+                           [metodosPago]="registroContratante.metodosPago"
+                           [totalPagado]="registroContratante.totalPagado"
+                           [totalServicios]="registroContratante.totalServicios"></app-datos-contratante>
     <div class="panel-busqueda mb-1">
         <div class="row mb-3 mt-3 mr-3 ml-3">
             <form [formGroup]="datosContratanteForm">

@@ -10,7 +10,7 @@ export interface DatosContratante {
     nomContratante: string
     rfc: string
     servicios: ServiciosContratados[],
-    totalPagado: string,
-    totalServicios: string
+    totalPagado: number,
+    totalServicios: number
 }
 

@@ -17,13 +17,13 @@
                     <label *ngIf="tipoFecha === 1">Fecha de ODS</label>
                     <label *ngIf="tipoFecha === 2">Fecha de contratación / renovación</label>
                     <label *ngIf="tipoFecha === 4">Fecha de contratación</label>
-                    <span>{{fecha}}</span>
+                    <span>{{fecha | date:'dd-MM-YYYY'}}</span>
                   </div>
                 </div>
                 <div class="col" [ngClass]="{ 'pl-3': tipoFecha === 3 }">
                   <div class="table-panel-column">
                     <label>Fecha de pago</label>
-                    <span>{{fechaPago}}</span>
+                    <span>{{fechaPago| date:'dd-MM-YYYY'}}</span>
                   </div>
                 </div>
                 <div class="col">
@@ -70,7 +70,7 @@
               <div class="col ">
                 <span class="flex flex-column etiqueta-base align-items-end">Total pagado</span>
                 <span
-                  class="flex flex-column texto-base align-items-end font-bold active">{{ 1000 | currency}}</span>
+                  class="flex flex-column texto-base align-items-end font-bold active">{{ totalPagado | currency}}</span>
               </div>
             </div>
           </div>
@@ -94,7 +94,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-servicio let-noConsecutivo="rowIndex">
             <tr>
-              <td>{{noConsecutivo}}</td>
+              <td>{{noConsecutivo + 1}}</td>
               <td>{{servicio.grupo}}</td>
               <td>{{servicio.concepto}}</td>
               <td>{{servicio.cantidad}}</td>
@@ -107,7 +107,7 @@
         <div class="row mb-3 mr-4">
           <span class="flex flex-column etiqueta-base align-items-end">Total servicios</span>
           <span
-            class="flex flex-column texto-base align-items-end font-bold active">{{ 1000 | currency}}</span>
+            class="flex flex-column texto-base align-items-end font-bold active">{{ totalServicios | currency}}</span>
         </div>
       </ng-container>
     </ng-template>
