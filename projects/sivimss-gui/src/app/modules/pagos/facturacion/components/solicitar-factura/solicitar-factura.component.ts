@@ -7,6 +7,11 @@ import {TIPO_FACTURACION} from "../../constants/tipoFacturacion";
 import {MetodosPagoFact} from "../../models/metodosPagoFact.interface";
 import {ActivatedRoute} from "@angular/router";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {FacturacionService} from "../../services/facturacion.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-solicitar-factura',
@@ -40,6 +45,8 @@ export class SolicitarFacturaComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private readonly activatedRoute: ActivatedRoute,
+              private facturacionService: FacturacionService,
+              private cargadorService: LoaderService
   ) {
   }
 
@@ -47,13 +54,6 @@ export class SolicitarFacturaComponent implements OnInit {
     this.inicializarForm();
     this.inicializarFormRFC();
     this.inicializarFormCFDI();
-    this.cargarCatalogos();
-  }
-
-  cargarCatalogos(): void {
-    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
-    const foliosODS = respuesta[this.POSICION_CATALOGO_FOLIOS_ODS].datos;
-    this.folios = mapearArregloTipoDropdown(foliosODS, 'folio', 'folio');
   }
 
   inicializarForm(): void {
@@ -96,6 +96,22 @@ export class SolicitarFacturaComponent implements OnInit {
     return 'Folio del Convenio';
   }
 
+  obtenerFolios(): void {
+    const tipoSolicitud = this.solicitudForm.get('tipoFactura')?.value;
+    this.cargadorService.activar();
+    this.facturacionService.obtenerFolioODS(tipoSolicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const foliosODS = respuesta[this.POSICION_CATALOGO_FOLIOS_ODS].datos;
+        this.folios = mapearArregloTipoDropdown(foliosODS, 'folio', 'folio');
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+      }
+    });
+  }
+
   get pf() {
     return this.solicitudForm?.controls;
   }
@@ -108,7 +124,8 @@ export class SolicitarFacturaComponent implements OnInit {
     return this.datosCFDIForm?.controls;
   }
 
-  obtenerFolios(): void {
+
+  buscarDatosContratante(): void {
 
   }
 }

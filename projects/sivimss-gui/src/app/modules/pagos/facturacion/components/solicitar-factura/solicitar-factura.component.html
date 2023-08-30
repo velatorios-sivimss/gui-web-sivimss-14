@@ -1,6 +1,6 @@
 <app-titulo-principal titulo="Solicitar factura"></app-titulo-principal>
 <ng-container>
-  <form [formGroup]="solicitudForm" (reset)="limpiar()">
+  <form [formGroup]="solicitudForm" (reset)="limpiar()" (ngSubmit)="buscarDatosContratante()">
     <div class="row mb-3 mt-3">
       <div class="col-md-6">
         <label class="control-label" for="tipoFactura">Tipo de factura<span class="req">*</span>:</label>

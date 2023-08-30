@@ -22,16 +22,12 @@ const routes: Routes = [
   {
     path: 'solicitar-factura',
     component: SolicitarFacturaComponent,
-    resolve: {
-      respuesta: FacturacionResolver
-    }
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [FacturacionResolver]
 })
 export class FacturacionRoutingModule {
 }
