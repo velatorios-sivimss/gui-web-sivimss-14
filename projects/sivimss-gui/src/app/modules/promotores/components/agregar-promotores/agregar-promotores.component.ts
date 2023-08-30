@@ -5,7 +5,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { OverlayPanel } from "primeng/overlaypanel";
-import { Promotor } from '../../models/promotores.interface';
+import { DiasDescanso, Promotor } from '../../models/promotores.interface';
 import { CURP } from 'projects/sivimss-gui/src/app/utils/regex';
 import { UsuarioService } from '../../../usuarios/services/usuario.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
@@ -31,12 +31,15 @@ interface HttpResponse {
 })
 export class AgregarPromotoresComponent implements OnInit {
   readonly POSICION_CATALOGO_VELATORIO: number = 2;
+  readonly POSICION_CATALOGOS_ENTIDADES: number = 3;
   readonly NOT_FOUND_RENAPO: string = "CURP no válido.";
+  readonly HREF_RENAPO: string = "https://www.gob.mx/curp/";
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
   public catalogoVelatorios: TipoDropdown[] = [];
+  public entidadFederativa: TipoDropdown[] = [];
   public tipoArticulos: any[] = [];
   public tituloEliminar: string = '';
   public intentoPorGuardar: boolean = false;
@@ -72,7 +75,8 @@ export class AgregarPromotoresComponent implements OnInit {
       nombre: [{ value: null, disabled: true }, [Validators.maxLength(30), Validators.required]],
       primerApellido: [{ value: null, disabled: true }, [Validators.maxLength(20), Validators.required]],
       segundoApellido: [{ value: null, disabled: true }, [Validators.maxLength(20), Validators.required]],
-      fechaNacimiento: [{ value: null, disabled: true }, Validators.required],
+      fechaNacimiento: [{ value: null, disabled: false }],
+      entidadFederativa: [{ value: null, disabled: false }, Validators.required],
       fechaIngreso: [{ value: null, disabled: false }, Validators.required],
       fechaBaja: [{ value: null, disabled: true }],
       sueldoBase: [{ value: null, disabled: false }, [Validators.maxLength(10), Validators.required]],
@@ -89,6 +93,7 @@ export class AgregarPromotoresComponent implements OnInit {
   cargarCatalogo(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_VELATORIO].datos, "velatorio", "idVelatorio");
+    this.entidadFederativa = respuesta[this.POSICION_CATALOGOS_ENTIDADES];
   }
 
   cerrarDialogo() {
@@ -127,9 +132,9 @@ export class AgregarPromotoresComponent implements OnInit {
   }
 
   datosGuardar() {
-    let fecPromotorDiasDescanso: string[] = [];
+    let fecPromotorDiasDescanso: DiasDescanso[] = [];
     this.apf.diasDescanso.value?.forEach((element: Object) => {
-      fecPromotorDiasDescanso.push(moment(element).format('DD/MM/YYYY'));
+      fecPromotorDiasDescanso.push({ id: null, fecDescanso: moment(element).format('DD/MM/YYYY') });
 
     });
     return {
@@ -138,6 +143,7 @@ export class AgregarPromotoresComponent implements OnInit {
       aPaterno: this.apf.primerApellido.value,
       aMaterno: this.apf.segundoApellido.value,
       fecNac: this.apf.fechaNacimiento.value,
+      estado: this.apf.entidadFederativa.value,
       correo: this.apf.correo.value,
       numEmpleado: this.apf.numEmpleado.value,
       puesto: this.apf.puesto.value,
@@ -165,7 +171,6 @@ export class AgregarPromotoresComponent implements OnInit {
           this.apf.nombre.setValue(respuesta.datos?.nombre);
           this.apf.primerApellido.setValue(respuesta.datos?.apellido1);
           this.apf.segundoApellido.setValue(respuesta.datos?.apellido2);
-          this.apf.fechaNacimiento.setValue(respuesta.datos?.fechNac);
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -179,7 +184,6 @@ export class AgregarPromotoresComponent implements OnInit {
     this.apf.nombre.setValue(null);
     this.apf.primerApellido.setValue(null);
     this.apf.segundoApellido.setValue(null);
-    this.apf.fechaNacimiento.setValue(null);
   }
 
   handleFechaIngreso() {

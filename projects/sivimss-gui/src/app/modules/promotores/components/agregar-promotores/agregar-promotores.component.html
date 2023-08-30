@@ -18,9 +18,18 @@
     <div class="col-md-6">
       <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
       <input id="curp" class="form-control" formControlName="curp" maxlength="18" placeholder="Ingresa el CURP"
-        alphanumericOnly trimmer (blur)="validarCurpRenapo();">
+        alphanumericOnly trimmer (blur)="validarCurpRenapo();" oninput="this.value = this.value.toUpperCase()">
       <span class="campo-obligatorio" *ngIf="apf.curp?.errors?.required && (apf.curp?.dirty || apf.curp?.touched)">Este
         campo es obligatorio *.</span>
+      <span class="campo-obligatorio"
+        *ngIf="apf?.curp?.errors?.pattern && (apf?.curp?.dirty || apf?.curp?.touched)">CURP no válido.</span>
+      <div class="form-group mb-0 mt-1">
+        <div class="flex justify-content-between align-items-end">
+          <a id="href_renapo" [href]='HREF_RENAPO' target="_blank">
+            <span class="olvidaste-contrasena">No recuerdas tu CURP, da click aquí.</span>
+          </a>
+        </div>
+      </div>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span>:</label>
@@ -62,6 +71,18 @@
         campo es obligatorio *.</span>
     </div>
     <div class="col-md-6">
+      <label class="control-label" for="entidadFederativa">Entidad Federativa<span class="req">*</span>:</label>
+      <p-dropdown id="entidadFederativa" class="form-control" formControlName="entidadFederativa"
+        placeholder="Selecciona la entidad federativa" [options]="entidadFederativa" [filter]="true"
+        filterBy="label"></p-dropdown>
+      <span class="campo-obligatorio"
+        *ngIf="apf.entidadFederativa?.errors?.required && (apf.entidadFederativa?.dirty || apf.entidadFederativa?.touched)">Este
+        campo es obligatorio *.</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
       <label class="control-label" for="fechaIngreso">Fecha ingreso<span class="req">*</span>:</label>
       <p-calendar id="fechaIngreso" formControlName="fechaIngreso" styleClass="form-control"
         (onSelect)="handleFechaIngreso();" [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
@@ -70,9 +91,6 @@
         *ngIf="apf.fechaIngreso?.errors?.required && (apf.fechaIngreso?.dirty || apf.fechaIngreso?.touched)">Este campo
         es obligatorio *.</span>
     </div>
-  </div>
-
-  <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="fechaBaja">Fecha de baja:</label>
       <p-calendar id="fechaBaja" formControlName="fechaBaja" styleClass="form-control" [showIcon]="true"
@@ -82,6 +100,9 @@
         *ngIf="apf.fechaBaja?.errors?.required && (apf.fechaBaja?.dirty || apf.fechaBaja?.touched)">Este campo es
         obligatorio *.</span>
     </div>
+  </div>
+
+  <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="sueldoBase">Sueldo base<span class="req">*</span>:</label>
       <input id="sueldoBase" class="form-control" formControlName="sueldoBase" maxlength="10"
@@ -168,7 +189,7 @@
 
   <div class="flex justify-content-end mb-6">
     <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
-    <button type="button"  class="ml-4 btn btn-primary btn-md" (click)="confirmarGuardar()">
+    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarGuardar()">
       Guardar
     </button>
   </div>

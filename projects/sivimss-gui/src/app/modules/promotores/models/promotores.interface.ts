@@ -63,3 +63,8 @@ export interface BuscarCatalogo {
   nomPromotor?: string | null;
   catalogo?: number | null;
 }
+
+export interface DiasDescanso {
+  id?: number | null;
+  fecDescanso?: string;
+}
