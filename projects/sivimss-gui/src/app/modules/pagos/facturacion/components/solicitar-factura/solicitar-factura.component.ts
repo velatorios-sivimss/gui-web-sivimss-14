@@ -46,6 +46,7 @@ export class SolicitarFacturaComponent implements OnInit {
   temp: TipoDropdown[] = [];
   registroFolios: Folio[] = [];
   registroContratante!: DatosContratante;
+  tipoSolicitud!: 1 | 2 | 3 | 4;
 
   constructor(private formBuilder: FormBuilder,
               private readonly activatedRoute: ActivatedRoute,
@@ -102,6 +103,7 @@ export class SolicitarFacturaComponent implements OnInit {
 
   obtenerFolios(): void {
     const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
+    this.tipoSolicitud = this.solicitudForm.get('tipoFactura')?.value;
     this.cargadorService.activar();
     this.facturacionService.obtenerFolioODS(tipoFactura).pipe(
       finalize(() => this.cargadorService.desactivar())

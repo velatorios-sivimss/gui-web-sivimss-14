@@ -36,7 +36,7 @@
 </ng-container>
 <ng-container *ngIf="registroContratante">
     <app-datos-contratante [nombreContratante]="registroContratante.nomContratante"
-                           [tipoFecha]="2" [fecha]="registroContratante.fecOds"
+                           [tipoFecha]="tipoSolicitud" [fecha]="registroContratante.fecOds"
                            [fechaPago]="registroContratante.fecPago"
                            [concepto]="registroContratante.concPago" [servicios]="registroContratante.servicios"
                            [metodosPago]="registroContratante.metodosPago"
