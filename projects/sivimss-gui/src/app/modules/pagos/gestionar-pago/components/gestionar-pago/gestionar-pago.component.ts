@@ -202,10 +202,10 @@ export class GestionarPagoComponent implements OnInit {
       filtros = {...filtros, folioODS: this.filtroGestionarPagoForm.get('folioODS')?.value};
     }
     if (this.filtroGestionarPagoForm.get('folioPNCPF')?.value) {
-      filtros = {...filtros, folioPNCPF: this.filtroGestionarPagoForm.get('folioPNCPF')?.value};
+      filtros = {...filtros, folioPF: this.filtroGestionarPagoForm.get('folioPNCPF')?.value};
     }
     if (this.filtroGestionarPagoForm.get('folioPRCPF')?.value) {
-      filtros = {...filtros, folioPRCPF: this.filtroGestionarPagoForm.get('folioPRCPF')?.value};
+      filtros = {...filtros, folioRPF: this.filtroGestionarPagoForm.get('folioPRCPF')?.value};
     }
     return filtros;
   }

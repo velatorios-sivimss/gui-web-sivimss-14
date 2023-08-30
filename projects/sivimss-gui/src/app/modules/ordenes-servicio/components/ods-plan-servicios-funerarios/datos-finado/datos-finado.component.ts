@@ -11,7 +11,7 @@ import { TipoDropdown } from '../../../../../models/tipo-dropdown';
 import {
   sexo,
   tipoOrden,
-  nacionalidad,
+  nacionalidad, tipoOrdenSF,
 } from '../../../constants/catalogos-complementarios';
 import { PATRON_CURP } from '../../../../../utils/constantes';
 import { finalize } from 'rxjs/operators';
@@ -55,7 +55,7 @@ export class DatosFinadoSFComponent implements OnInit {
   readonly POSICION_UNIDADES_MEDICAS = 3;
   readonly POSICION_PENSION = 4;
   form!: FormGroup;
-  tipoOrden: TipoDropdown[] = tipoOrden;
+  tipoOrden: TipoDropdown[] = tipoOrdenSF;
 
   tipoSexo: TipoDropdown[] = sexo;
   nacionalidad: TipoDropdown[] = nacionalidad;
@@ -150,7 +150,7 @@ export class DatosFinadoSFComponent implements OnInit {
       .asObservable()
       .subscribe((datosEtapaFinado) => this.inicializarForm(datosEtapaFinado));
     // this.inicializarCalcularEdad();
-    this.datosFinado.tipoOrden.setValue(4);
+    this.datosFinado.tipoOrden.setValue(1);
     // this.changeTipoOrden();
     this.desabilitarTodo();
   }

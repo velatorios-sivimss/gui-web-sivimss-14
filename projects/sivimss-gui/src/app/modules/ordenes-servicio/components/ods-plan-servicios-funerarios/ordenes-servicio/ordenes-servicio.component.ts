@@ -523,7 +523,7 @@ export class OrdenesServicioSFComponent implements OnInit {
     // let od = this.ordenServicioSeleccionada;
     // let estatusODS;
     // this.ordenServicioSeleccionada == 1 ? estatusODS = 1 :
-    this.router.navigate(["ordenes-de-servicio/modificar-orden-de-servicio"],
+    this.router.navigate(["ordenes-de-servicio/ods-plan-sf/modificar-ods-sf"],
       {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:1 }})
   }
 
