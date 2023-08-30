@@ -34,7 +34,8 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   obtenerFolioODS(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-folios-facturacion`, );
+    const body = {"tipoFactura": "1"};
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-folios-facturacion`, body);
   }
 
 }

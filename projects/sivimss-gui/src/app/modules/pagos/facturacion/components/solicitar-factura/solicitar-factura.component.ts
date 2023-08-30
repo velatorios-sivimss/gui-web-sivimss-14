@@ -5,6 +5,8 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {REGISTROS_PAGOS} from "../../constants/dummies";
 import {TIPO_FACTURACION} from "../../constants/tipoFacturacion";
 import {MetodosPagoFact} from "../../models/metodosPagoFact.interface";
+import {ActivatedRoute} from "@angular/router";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-solicitar-factura',
@@ -25,6 +27,9 @@ export class SolicitarFacturaComponent implements OnInit {
   servicios: any[] = REGISTROS_PAGOS;
   temp: TipoDropdown[] = [];
 
+  readonly POSICION_CATALOGO_FOLIOS_ODS: number = 0;
+
+
   metodosPago: MetodosPagoFact[] = [{
     metodo: 'Vale Paritaria',
     importe: 10000
@@ -33,13 +38,22 @@ export class SolicitarFacturaComponent implements OnInit {
     importe: 10000
   }]
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder,
+              private readonly activatedRoute: ActivatedRoute,
+  ) {
   }
 
   ngOnInit(): void {
     this.inicializarForm();
     this.inicializarFormRFC();
     this.inicializarFormCFDI();
+    this.cargarCatalogos();
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    const foliosODS = respuesta[this.POSICION_CATALOGO_FOLIOS_ODS].datos;
+    this.folios = mapearArregloTipoDropdown(foliosODS, 'folio', 'folio');
   }
 
   inicializarForm(): void {
