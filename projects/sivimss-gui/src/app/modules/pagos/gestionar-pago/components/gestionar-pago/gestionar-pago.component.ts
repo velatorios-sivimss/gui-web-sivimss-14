@@ -188,20 +188,24 @@ export class GestionarPagoComponent implements OnInit {
   }
 
   generarSolicitudFiltros() {
+    let elaboracionInicio = this.filtroGestionarPagoForm.get('elaboracionInicio')?.value;
+    if (elaboracionInicio) elaboracionInicio = moment(elaboracionInicio).format('DD/MM/YYYY');
+    let elaboracionFin = this.filtroGestionarPagoForm.get('elaboracionFin')?.value;
+    if (elaboracionFin) elaboracionFin = moment(elaboracionFin).format('DD/MM/YYYY');
     let filtros: any = {
       idVelatorio: this.filtroGestionarPagoForm.get('velatorio')?.value,
-      fechaIni: this.filtroGestionarPagoForm.get('elaboracionInicio')?.value,
-      fechaFin: this.filtroGestionarPagoForm.get('elaboracionFin')?.value,
+      fechaIni: elaboracionInicio,
+      fechaFin: elaboracionFin,
       nomContratante: this.filtroGestionarPagoForm.get('nombreContratante')?.value
     }
     if (this.filtroGestionarPagoForm.get('folioODS')?.value) {
       filtros = {...filtros, folioODS: this.filtroGestionarPagoForm.get('folioODS')?.value};
     }
     if (this.filtroGestionarPagoForm.get('folioPNCPF')?.value) {
-      filtros = {...filtros, folioPNCPF: this.filtroGestionarPagoForm.get('folioPNCPF')?.value};
+      filtros = {...filtros, folioPF: this.filtroGestionarPagoForm.get('folioPNCPF')?.value};
     }
     if (this.filtroGestionarPagoForm.get('folioPRCPF')?.value) {
-      filtros = {...filtros, folioPRCPF: this.filtroGestionarPagoForm.get('folioPRCPF')?.value};
+      filtros = {...filtros, folioRPF: this.filtroGestionarPagoForm.get('folioPRCPF')?.value};
     }
     return filtros;
   }
