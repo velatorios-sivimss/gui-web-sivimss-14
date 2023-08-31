@@ -232,7 +232,7 @@ export class RenovarConvenioPfComponent implements OnInit {
             const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
             this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
           } else {
-            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio`;
+            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda`;
             this.mostrarModalConfirmacion = true;
           }
         }
@@ -261,7 +261,7 @@ export class RenovarConvenioPfComponent implements OnInit {
             const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
             this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
           } else {
-            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio`;
+            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda`;
             this.mostrarModalConfirmacion = true;
           }
         }
