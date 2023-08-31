@@ -232,12 +232,13 @@ export class RenovarConvenioPfComponent implements OnInit {
             const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
             this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
           } else {
-            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanNuevo.folio || ''}`;
+            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio`;
             this.mostrarModalConfirmacion = true;
           }
         }
       },
       error: (error: HttpErrorResponse) => {
+        this.loaderService.desactivar();
         console.error(error);
       }
     });
@@ -260,12 +261,13 @@ export class RenovarConvenioPfComponent implements OnInit {
             const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
             this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
           } else {
-            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio con folio ${datosPlanAnterior.numeroConvenio || ''}`;
+            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda del convenio`;
             this.mostrarModalConfirmacion = true;
           }
         }
       },
       error: (error: HttpErrorResponse) => {
+        this.loaderService.desactivar();
         console.error(error);
       }
     });

@@ -88,9 +88,9 @@ export class ModificarPromotoresComponent implements OnInit {
               id: this.promotor.idPromotor,
               velatorio: this.promotor.idVelatorio,
               entidadFederativa: this.promotor.idLugarNac,
-              fechaNacimiento: new Date(moment(this.promotor.fecBaja, 'DD/MM/YYYY').format('YYYY/MM/DD')),
-              fechaIngreso: new Date(moment(this.promotor.fecNac, 'DD/MM/YYYY').format('YYYY/MM/DD')),
-              fechaBaja: new Date(moment(this.promotor.fecIngreso, 'DD/MM/YYYY').format('YYYY/MM/DD')),
+              fechaNacimiento: this.promotor.fecNac ? new Date(moment(this.promotor.fecNac, 'DD/MM/YYYY').format('YYYY/MM/DD')) : null,
+              fechaIngreso: this.promotor.fecIngreso ? new Date(moment(this.promotor.fecIngreso, 'DD/MM/YYYY').format('YYYY/MM/DD')) : null,
+              fechaBaja: this.promotor.fecBaja ? new Date(moment(this.promotor.fecBaja, 'DD/MM/YYYY').format('YYYY/MM/DD')) : null,
               diasDescanso: arraydiasDescanso,
             });
           }

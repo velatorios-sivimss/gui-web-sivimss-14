@@ -142,7 +142,7 @@ export class AgregarPromotoresComponent implements OnInit {
       nomPromotor: this.apf.nombre.value,
       aPaterno: this.apf.primerApellido.value,
       aMaterno: this.apf.segundoApellido.value,
-      fecNac: this.apf.fechaNacimiento.value,
+      fecNac: moment(this.apf.fechaNacimiento.value).format('DD/MM/YYYY'),
       idLugarNac: this.apf.entidadFederativa.value,
       correo: this.apf.correo.value,
       numEmpleado: this.apf.numEmpleado.value,
