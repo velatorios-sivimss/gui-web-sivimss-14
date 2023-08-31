@@ -88,6 +88,7 @@ import {ModalGenerarTarjetaIdentificacionSFComponent}
 import {GenerarOrdenServicioSfService}
   from "./services/generar-orden-servicio-sf.service";
 import {GestionarEtapasServiceSF} from "./services/gestionar-etapas.service-sf";
+import {GestionarEtapasActualizacionSFService} from "./services/gestionar-etapas-actualizacion-sf.service";
 @NgModule({
     declarations: [
         OrdenesServicioComponent,
@@ -171,7 +172,8 @@ import {GestionarEtapasServiceSF} from "./services/gestionar-etapas.service-sf";
         ActualizarOrdenServicioService,
         GestionarEtapasActualizacionService,
         GenerarOrdenServicioSfService,
-        GestionarEtapasServiceSF
+        GestionarEtapasServiceSF,
+        GestionarEtapasActualizacionSFService
     ],
     exports: [
         DatosContratanteComponent
