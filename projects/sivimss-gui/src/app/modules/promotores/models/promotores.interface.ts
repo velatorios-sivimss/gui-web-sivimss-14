@@ -12,6 +12,7 @@ export interface Promotor {
   aPaterno?: string;
   aMaterno?: string;
   fecNac?: string;
+  idLugarNac?: number;
   correo?: string;
   numEmpleado?: string;
   puesto?: string;
