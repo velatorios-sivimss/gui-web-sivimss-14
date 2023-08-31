@@ -243,7 +243,8 @@ export class GestionarPagoComponent implements OnInit {
 
   guardarPDF(): void {
     this.cargadorService.activar();
-    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado()).pipe(
+    const solicitud = this.crearSolicituDescarga();
+    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud)).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
@@ -259,7 +260,8 @@ export class GestionarPagoComponent implements OnInit {
   guardarExcel(): void {
     this.cargadorService.activar();
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
-    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListadoExcel(), configuracionArchivo).pipe(
+    const solicitud = this.crearSolicituDescarga('xls');
+    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
@@ -270,5 +272,12 @@ export class GestionarPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });
+  }
+
+  crearSolicituDescarga(tipoReporte: string = 'pdf')  {
+    return {
+      ... this.generarSolicitudFiltros(),
+      tipoReporte
+    }
   }
 }
