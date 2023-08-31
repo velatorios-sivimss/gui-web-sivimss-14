@@ -53,6 +53,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ActualizarOrdenServicioService } from '../../../services/actualizar-orden-servicio.service';
 import { GestionarEtapasActualizacionService } from '../../../services/gestionar-etapas-actualizacion.service';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 @Component({
   selector: 'app-modificar-datos-caracteristicas-contratante-sf',
   templateUrl: './modificar-datos-caracteristicas-contratante.component.html',
@@ -147,7 +148,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef
   ) {

@@ -1,7 +1,7 @@
 <div class="row mb-4">
   <div class="col-md-4">
     <label class="control-label" for="paquete">Paquete<span class="req">*</span>:</label>
-    <p-dropdown #dd id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado" [disabled]="bloquearPaquete"
+    <p-dropdown #dd id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado"
       placeholder="Selecciona el paquete" [options]="paquetes" (onClick)="valorPrevio(dd)" (onChange)="confirmarCambioPaquete(dd)" [filter]="true" filterBy="label"appendTo="body"></p-dropdown>
   </div>
   <div class="col-md-6" *ngIf="mostrarTIpoOtorgamiento">

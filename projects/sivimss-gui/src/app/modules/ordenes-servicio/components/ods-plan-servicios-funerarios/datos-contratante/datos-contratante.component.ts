@@ -27,7 +27,7 @@ import { InformacionServicioInterface } from '../../../models/InformacionServici
 import { AltaODSInterface } from '../../../models/AltaODS.interface';
 import { ContratanteInterface } from '../../../models/Contratante.interface';
 import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import { FinadoInterface } from '../../../models/Finado.interface';
+import {FinadoInterface, FinadoSFInterface} from '../../../models/Finado.interface';
 import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
 import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
 import { CaracteristicasDelPresupuestoInterface } from '../../../models/CaracteristicasDelPresupuesto.interface';
@@ -39,6 +39,8 @@ import { InformacionServicioVelacionInterface } from '../../../models/Informacio
 import * as moment from 'moment';
 import { GestionarEtapasService } from '../../../services/gestionar-etapas.service';
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
+import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
 
 @Component({
   selector: 'app-datos-contratante-sf',
@@ -66,31 +68,22 @@ export class DatosContratanteSFComponent implements OnInit {
   pais!: TipoDropdown[];
   parentesco!: TipoDropdown[];
 
-  altaODS: AltaODSInterface = {} as AltaODSInterface;
+  altaODS: AltaODSSFInterface = {} as AltaODSSFInterface;
   contratante: ContratanteInterface = {} as ContratanteInterface;
   cp: CodigoPostalIterface = {} as CodigoPostalIterface;
-  finado: FinadoInterface = {} as FinadoInterface;
-  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface =
-    {} as CaracteristicasPresupuestoInterface;
-  caracteristicasPaquete: CaracteristicasPaqueteInterface =
-    {} as CaracteristicasPaqueteInterface;
-  detallePaquete: Array<DetallePaqueteInterface> =
-    [] as Array<DetallePaqueteInterface>;
-  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface =
-    {} as ServicioDetalleTrasladotoInterface;
+  finado: FinadoSFInterface = {} as FinadoSFInterface;
+  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface = {} as CaracteristicasPresupuestoInterface;
+  caracteristicasPaquete: CaracteristicasPaqueteInterface = {} as CaracteristicasPaqueteInterface;
+  detallePaquete: Array<DetallePaqueteInterface> = [] as Array<DetallePaqueteInterface>;
+  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface = {} as ServicioDetalleTrasladotoInterface;
   paquete: DetallePaqueteInterface = {} as DetallePaqueteInterface;
   cpFinado: CodigoPostalIterface = {} as CodigoPostalIterface;
-  caracteristicasDelPresupuesto: CaracteristicasDelPresupuestoInterface =
-    {} as CaracteristicasDelPresupuestoInterface;
-  detallePresupuesto: Array<DetallePresupuestoInterface> =
-    [] as Array<DetallePresupuestoInterface>;
+  caracteristicasDelPresupuesto: CaracteristicasDelPresupuestoInterface = {} as CaracteristicasDelPresupuestoInterface;
+  detallePresupuesto: Array<DetallePresupuestoInterface> = [] as Array<DetallePresupuestoInterface>;
   presupuesto: DetallePresupuestoInterface = {} as DetallePresupuestoInterface;
-  servicioDetalleTrasladoPresupuesto: ServicioDetalleTrasladotoInterface =
-    {} as ServicioDetalleTrasladotoInterface;
-  informacionServicio: InformacionServicioInterface =
-    {} as InformacionServicioInterface;
-  informacionServicioVelacion: InformacionServicioVelacionInterface =
-    {} as InformacionServicioVelacionInterface;
+  servicioDetalleTrasladoPresupuesto: ServicioDetalleTrasladotoInterface = {} as ServicioDetalleTrasladotoInterface;
+  informacionServicio: InformacionServicioInterface = {} as InformacionServicioInterface;
+  informacionServicioVelacion: InformacionServicioVelacionInterface = {} as InformacionServicioVelacionInterface;
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
 
   idPersona: number | null = null;
@@ -107,7 +100,7 @@ export class DatosContratanteSFComponent implements OnInit {
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
-    private gestionarEtapasService: GestionarEtapasService
+    private gestionarEtapasService: GestionarEtapasServiceSF
   ) {}
 
   ngOnInit(): void {
@@ -138,7 +131,7 @@ export class DatosContratanteSFComponent implements OnInit {
       .subscribe((datosPrevios) => this.llenarAlta(datosPrevios));
   }
 
-  llenarAlta(datosPrevios: AltaODSInterface): void {
+  llenarAlta(datosPrevios: AltaODSSFInterface): void {
     this.altaODS = datosPrevios;
     this.datosContratante.nombre.disable();
     this.datosContratante.primerApellido.disable();
@@ -149,163 +142,33 @@ export class DatosContratanteSFComponent implements OnInit {
 
   inicializarForm(datosEtapaContratante: any): void {
     this.form = this.formBuilder.group({
-      datosContratante: this.formBuilder.group({
-        matricula: [
-          {
-            value: datosEtapaContratante.datosContratante.matricula,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        matriculaCheck: [
-          {
-            value: datosEtapaContratante.datosContratante.matriculaCheck,
-            disabled: false,
-          },
-        ],
-        rfc: [
-          {
-            value: datosEtapaContratante.datosContratante.rfc,
-            disabled: false,
-          },
-          [Validators.pattern(PATRON_RFC)],
-        ],
-        curp: [
-          {
-            value: datosEtapaContratante.datosContratante.curp,
-            disabled: false,
-          },
-          [Validators.required, Validators.pattern(PATRON_CURP)],
-        ],
-        nombre: [
-          {
-            value: datosEtapaContratante.datosContratante.nombre,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        primerApellido: [
-          {
-            value: datosEtapaContratante.datosContratante.primerApellido,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        segundoApellido: [
-          {
-            value: datosEtapaContratante.datosContratante.segundoApellido,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        fechaNacimiento: [
-          {
-            value: datosEtapaContratante.datosContratante.fechaNacimiento,
-            disabled: true,
-          },
-          [Validators.required],
-        ],
-        sexo: [
-          {
-            value: datosEtapaContratante.datosContratante.sexo,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        otroTipoSexo: [
-          {
-            value: datosEtapaContratante.datosContratante.otroTipoSexo,
-            disabled: false,
-          },
-        ],
-        nacionalidad: [
-          {
-            value: datosEtapaContratante.datosContratante.nacionalidad,
-            disabled: false,
-          }
-        ],
-        lugarNacimiento: [
-          {
-            value: datosEtapaContratante.datosContratante.lugarNacimiento,
-            disabled: false,
-          },
-          [],
-        ],
-        paisNacimiento: [
-          {
-            value: datosEtapaContratante.datosContratante.paisNacimiento,
-            disabled: false,
-          },
-        ],
-        telefono: [
-          {
-            value: datosEtapaContratante.datosContratante.telefono,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        correoElectronico: [
-          {
-            value: datosEtapaContratante.datosContratante.correoElectronico,
-            disabled: false,
-          },
-          [Validators.required, Validators.pattern(PATRON_CORREO)],
-        ],
-        parentesco: [
-          {
-            value: datosEtapaContratante.datosContratante.parentesco,
-            disabled: false,
-          },
-        ],
+         datosContratante: this.formBuilder.group({
+                matricula: [{value: datosEtapaContratante.datosContratante.matricula,         disabled: false},[Validators.required]],
+           matriculaCheck: [{value: datosEtapaContratante.datosContratante.matriculaCheck,    disabled: false}],
+                      rfc: [{value: datosEtapaContratante.datosContratante.rfc,               disabled: false},[Validators.pattern(PATRON_RFC)]],
+                     curp: [{value: datosEtapaContratante.datosContratante.curp,              disabled: false},[Validators.required, Validators.pattern(PATRON_CURP)]],
+                   nombre: [{value: datosEtapaContratante.datosContratante.nombre,            disabled: false},[Validators.required]],
+           primerApellido: [{value: datosEtapaContratante.datosContratante.primerApellido,    disabled: false},[Validators.required]],
+          segundoApellido: [{value: datosEtapaContratante.datosContratante.segundoApellido,   disabled: false,},[Validators.required]],
+          fechaNacimiento: [{value: datosEtapaContratante.datosContratante.fechaNacimiento,   disabled:   true},[Validators.required]],
+                     sexo: [{value: datosEtapaContratante.datosContratante.sexo,              disabled: false},[Validators.required],],
+             otroTipoSexo: [{value: datosEtapaContratante.datosContratante.otroTipoSexo,      disabled: false}],
+             nacionalidad: [{value: datosEtapaContratante.datosContratante.nacionalidad,      disabled: false}],
+          lugarNacimiento: [{value: datosEtapaContratante.datosContratante.lugarNacimiento,   disabled: false}],
+           paisNacimiento: [{value: datosEtapaContratante.datosContratante.paisNacimiento,    disabled: false}],
+                 telefono: [{value: datosEtapaContratante.datosContratante.telefono,          disabled: false},[Validators.required]],
+        correoElectronico: [{value: datosEtapaContratante.datosContratante.correoElectronico, disabled: false},[Validators.required, Validators.pattern(PATRON_CORREO)]],
+               parentesco: [{value: datosEtapaContratante.datosContratante.parentesco,        disabled: false}],
       }),
       direccion: this.formBuilder.group({
-        calle: [
-          {
-            value: datosEtapaContratante.direccion.calle,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        noExterior: [
-          {
-            value: datosEtapaContratante.direccion.noExterior,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        noInterior: [
-          {
-            value: datosEtapaContratante.direccion.noInterior,
-            disabled: false,
-          },
-          [],
-        ],
-        cp: [
-          { value: datosEtapaContratante.direccion.cp, disabled: false },
-          [Validators.required],
-        ],
-        colonia: [
-          {
-            value: datosEtapaContratante.direccion.colonia,
-            disabled: false,
-          },
-          [Validators.required],
-        ],
-        municipio: [
-          {
-            value: datosEtapaContratante.direccion.municipio,
-            disabled: true,
-          },
-          [Validators.required],
-        ],
-        estado: [
-          {
-            value: datosEtapaContratante.direccion.estado,
-            disabled: true,
-          },
-          [Validators.required],
-        ],
-      }),
+             calle: [{value: datosEtapaContratante.direccion.calle,      disabled: false},[Validators.required]],
+        noExterior: [{value: datosEtapaContratante.direccion.noExterior, disabled: false},[Validators.required]],
+        noInterior: [{value: datosEtapaContratante.direccion.noInterior, disabled: false}],
+                cp: [{ value: datosEtapaContratante.direccion.cp,        disabled: false },[Validators.required]],
+           colonia: [{value: datosEtapaContratante.direccion.colonia,    disabled: false},[Validators.required]],
+         municipio: [{value: datosEtapaContratante.direccion.municipio,  disabled:  true},[Validators.required]],
+            estado: [{value: datosEtapaContratante.direccion.estado,     disabled:  true},[Validators.required]],
+      })
     });
     this.cambiarValidacion();
     this.idContratante = datosEtapaContratante.datosContratante.idContratante;

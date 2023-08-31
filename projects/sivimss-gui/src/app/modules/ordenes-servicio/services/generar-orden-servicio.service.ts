@@ -273,4 +273,23 @@ export class GenerarOrdenServicioService extends BaseService<
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/orden-servicio-kilometraje`,
       {idServicio:idServicio,idProveedor:idProveedor});
   }
+
+
+
+  generarODSSF(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/orden-guardar-sf`,parametros);
+  }
+  detalleODSSF(idOrdenServicio: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/orden-detalle-sf`,
+      {idOrdenServicio: idOrdenServicio});
+  }
+  actualizarODSSF(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/orden-actualizar-sf`,
+      parametros);
+  }
+  consultarFolioSF(folio:string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar-filtros/orden-consultar-convenio-pa-sf`,
+      {folio: folio});
+  }
+
 }
