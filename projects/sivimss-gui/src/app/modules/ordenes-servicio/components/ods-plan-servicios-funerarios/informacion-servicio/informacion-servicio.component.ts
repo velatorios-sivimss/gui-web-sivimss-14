@@ -10,7 +10,7 @@ import { GestionarEtapasService } from '../../../services/gestionar-etapas.servi
 import { AltaODSInterface } from '../../../models/AltaODS.interface';
 import { ContratanteInterface } from '../../../models/Contratante.interface';
 import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import { FinadoInterface } from '../../../models/Finado.interface';
+import {FinadoInterface, FinadoSFInterface} from '../../../models/Finado.interface';
 import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
 import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
 import { DetallePaqueteInterface } from '../../../models/DetallePaquete.interface';
@@ -38,6 +38,8 @@ import {Router} from "@angular/router";
 import {ConsultarOrdenServicioService} from "../../../services/consultar-orden-servicio.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
+import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
 @Component({
   selector: 'app-informacion-servicio-sf',
   templateUrl: './informacion-servicio.component.html',
@@ -49,10 +51,10 @@ export class InformacionServicioSFComponent implements OnInit {
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   form!: FormGroup;
 
-  altaODS: AltaODSInterface = {} as AltaODSInterface;
+  altaODS: AltaODSSFInterface = {} as AltaODSSFInterface;
   contratante: ContratanteInterface = {} as ContratanteInterface;
   cp: CodigoPostalIterface = {} as CodigoPostalIterface;
-  finado: FinadoInterface = {} as FinadoInterface;
+  finado: FinadoSFInterface = {} as FinadoSFInterface;
   caracteristicasPresupuesto: CaracteristicasPresupuestoInterface =
     {} as CaracteristicasPresupuestoInterface;
   caracteristicasPaquete: CaracteristicasPaqueteInterface =
@@ -96,7 +98,7 @@ export class InformacionServicioSFComponent implements OnInit {
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasService,
+    private gestionarEtapasService: GestionarEtapasServiceSF,
     private router: Router,
     private consultarOrdenServicioService: ConsultarOrdenServicioService,
     private renderer: Renderer2,
@@ -125,30 +127,24 @@ export class InformacionServicioSFComponent implements OnInit {
   ngOnInit(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.idVelatorio = +usuario.idVelatorio;
-    this.gestionarEtapasService.datosEtapaInformacionServicio$
-      .asObservable()
-      .subscribe((datosEtapaInformacionServicio) =>
-        this.inicializarForm(datosEtapaInformacionServicio)
-      );
-
-    this.gestionarEtapasService.datosEtapaCaracteristicas$
-      .asObservable()
-      .subscribe((datosEtapaCaracteristicas) =>
-        this.datosEtapaCaracteristicas(datosEtapaCaracteristicas)
-      );
-
-    this.gestionarEtapasService.altaODS$
-      .asObservable()
-      .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
+    this.gestionarEtapasService.datosEtapaInformacionServicio$.asObservable().subscribe(
+      (datosEtapaInformacionServicio) => this.inicializarForm(datosEtapaInformacionServicio)
+    );
+    this.gestionarEtapasService.datosEtapaCaracteristicas$.asObservable().subscribe(
+        (datosEtapaCaracteristicas) => this.datosEtapaCaracteristicas(datosEtapaCaracteristicas)
+    );
+    this.gestionarEtapasService.altaODS$.asObservable().subscribe(
+      (datodPrevios) => this.llenarAlta(datodPrevios)
+    );
 
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
   }
 
-  llenarAlta(datodPrevios: AltaODSInterface): void {
+  llenarAlta(datodPrevios: AltaODSSFInterface): void {
     this.altaODS = datodPrevios;
-    this.servicioExtremidad = datodPrevios.finado.extremidad
+
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
     // if(Number(this.altaODS.finado.idTipoOrden) < 3){
@@ -300,48 +296,29 @@ export class InformacionServicioSFComponent implements OnInit {
   buscarCapillas(): void {
     this.loaderService.activar();
     const parametros = { idVelatorio: this.idVelatorio };
-    this.gestionarOrdenServicioService
-      .buscarCapillas(parametros)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
-          if (respuesta.error) {
-            this.capillas = [];
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(respuesta.mensaje)
-              );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
-
-            return;
-          }
-          this.capillas = mapearArregloTipoDropdown(
-            datos,
-            'nombreCapilla',
-            'idCapilla'
-          );
-        },
-        (error: HttpErrorResponse) => {
-          try {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
-              );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
-          } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+    this.gestionarOrdenServicioService.buscarCapillas(parametros).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+        {
+          next:(respuesta: HttpRespuesta<any>) => {
+            const datos = respuesta.datos;
+            if (respuesta.error) {
+              this.capillas = [];
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+              this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
+              return;
+            }
+            this.capillas = mapearArregloTipoDropdown(datos,'nombreCapilla','idCapilla');
+          },
+          error:(error: HttpErrorResponse) => {
+            try {
+              const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+              this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
+            } catch (error) {
+              const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+              this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
+            }
           }
         }
       );
@@ -662,7 +639,7 @@ export class InformacionServicioSFComponent implements OnInit {
   guardarODS(): void {
     this.loaderService.activar();
     this.gestionarOrdenServicioService
-      .generarODS(this.altaODS)
+      .generarODSSF(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {

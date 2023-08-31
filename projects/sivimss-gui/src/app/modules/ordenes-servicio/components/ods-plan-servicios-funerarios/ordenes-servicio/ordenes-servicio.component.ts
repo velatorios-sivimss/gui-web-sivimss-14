@@ -32,6 +32,9 @@ import {SERVICIO_BREADCRUMB} from "../../../constants/breadcrumb";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 import {of} from "rxjs";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import {
+  ModalGenerarTarjetaIdentificacionSFComponent
+} from "../modal-generar-tarjeta-identificacion/modal-generar-tarjeta-identificacion.component";
 
 @Component({
   selector: 'app-ordenes-servicio-sf',
@@ -245,7 +248,7 @@ export class OrdenesServicioSFComponent implements OnInit {
   }
 
   abrirModalGenerarTarjetaIdent() {
-    const ref = this.dialogService.open(ModalGenerarTarjetaIdentificacionComponent, {
+    const ref = this.dialogService.open(ModalGenerarTarjetaIdentificacionSFComponent, {
       header: 'Generar tarjeta de identificación',
       style: {maxWidth: '876px', width: '100%'},
       data: {

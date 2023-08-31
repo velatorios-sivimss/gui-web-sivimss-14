@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Validators } from '@angular/forms';
+
 import { BehaviorSubject } from 'rxjs';
+
 import { EtapaEstado } from '../../../shared/etapas/models/etapa-estado.enum';
 import { Etapa } from '../../../shared/etapas/models/etapa.interface';
-import {
-  PATRON_CORREO,
-  PATRON_CURP,
-  PATRON_RFC,
-} from '../../../utils/constantes';
-import { AltaODSInterface } from '../models/AltaODS.interface';
+
+import {AltaODSSFInterface} from "../models/AltaODSSF.interface";
 import { ContratanteInterface } from '../models/Contratante.interface';
 import { CodigoPostalIterface } from '../models/CodigoPostal.interface';
-import { FinadoInterface } from '../models/Finado.interface';
+import { FinadoSFInterface} from '../models/Finado.interface';
 import { CaracteristicasPresupuestoInterface } from '../models/CaracteristicasPresupuesto,interface';
 import { CaracteristicasPaqueteInterface } from '../models/CaracteristicasPaquete.interface';
 import { CaracteristicasDelPresupuestoInterface } from '../models/CaracteristicasDelPresupuesto.interface';
@@ -22,32 +19,23 @@ import { InformacionServicioVelacionInterface } from '../models/InformacionServi
 import { InformacionServicioInterface } from '../models/InformacionServicio.interface';
 
 @Injectable()
-export class GestionarEtapasService {
-  altaODS: AltaODSInterface = {} as AltaODSInterface;
+export class GestionarEtapasServiceSF {
+  altaODS: AltaODSSFInterface = {} as AltaODSSFInterface;
   contratante: ContratanteInterface = {} as ContratanteInterface;
   cp: CodigoPostalIterface = {} as CodigoPostalIterface;
-  finado: FinadoInterface = {} as FinadoInterface;
-  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface =
-    {} as CaracteristicasPresupuestoInterface;
-  caracteristicasPaquete: CaracteristicasPaqueteInterface =
-    {} as CaracteristicasPaqueteInterface;
-  detallePaquete: Array<DetallePaqueteInterface> =
-    [] as Array<DetallePaqueteInterface>;
-  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface =
-    {} as ServicioDetalleTrasladotoInterface;
+  finado: FinadoSFInterface = {} as FinadoSFInterface;
+  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface = {} as CaracteristicasPresupuestoInterface;
+  caracteristicasPaquete: CaracteristicasPaqueteInterface = {} as CaracteristicasPaqueteInterface;
+  detallePaquete: Array<DetallePaqueteInterface> = [] as Array<DetallePaqueteInterface>;
+  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface = {} as ServicioDetalleTrasladotoInterface;
   paquete: DetallePaqueteInterface = {} as DetallePaqueteInterface;
   cpFinado: CodigoPostalIterface = {} as CodigoPostalIterface;
-  caracteristicasDelPresupuesto: CaracteristicasDelPresupuestoInterface =
-    {} as CaracteristicasDelPresupuestoInterface;
-  detallePresupuesto: Array<DetallePresupuestoInterface> =
-    [] as Array<DetallePresupuestoInterface>;
+  caracteristicasDelPresupuesto: CaracteristicasDelPresupuestoInterface = {} as CaracteristicasDelPresupuestoInterface;
+  detallePresupuesto: Array<DetallePresupuestoInterface> = [] as Array<DetallePresupuestoInterface>;
   presupuesto: DetallePresupuestoInterface = {} as DetallePresupuestoInterface;
-  servicioDetalleTrasladoPresupuesto: ServicioDetalleTrasladotoInterface =
-    {} as ServicioDetalleTrasladotoInterface;
-  informacionServicio: InformacionServicioInterface =
-    {} as InformacionServicioInterface;
-  informacionServicioVelacion: InformacionServicioVelacionInterface =
-    {} as InformacionServicioVelacionInterface;
+  servicioDetalleTrasladoPresupuesto: ServicioDetalleTrasladotoInterface = {} as ServicioDetalleTrasladotoInterface;
+  informacionServicio: InformacionServicioInterface = {} as InformacionServicioInterface;
+  informacionServicioVelacion: InformacionServicioVelacionInterface = {} as InformacionServicioVelacionInterface;
   cpVelacion: CodigoPostalIterface = {} as CodigoPostalIterface;
 
   etapas: Etapa[] = [
@@ -143,16 +131,13 @@ export class GestionarEtapasService {
 
   datosEtapaFinado = {
     datosFinado: {
+      folioValido: null,
       tipoOrden: null,
       noContrato: null,
       velatorioPrevision: null,
-      esObito: null,
-      esParaExtremidad: null,
       matricula: null,
-      matriculaCheck: true,
       curp: null,
       nss: null,
-      nssCheck: true,
       nombre: null,
       primerApellido: null,
       segundoApellido: null,
@@ -180,7 +165,6 @@ export class GestionarEtapasService {
       colonia: null,
       municipio: null,
       estado: null,
-      idDomicilio: null
     },
   };
 
@@ -223,23 +207,14 @@ export class GestionarEtapasService {
   };
   detalleODS = [];
   etapas$: BehaviorSubject<Etapa[]> = new BehaviorSubject<Etapa[]>(this.etapas);
-  idEtapaSeleccionada$: BehaviorSubject<number> = new BehaviorSubject<number>(
-    0
-  );
-  datosEtapaContratante$: BehaviorSubject<any> = new BehaviorSubject<any>(
-    this.datosEtapaContratante
-  );
+  idEtapaSeleccionada$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  datosEtapaContratante$: BehaviorSubject<any> = new BehaviorSubject<any>(this.datosEtapaContratante);
 
-  datosEtapaCaracteristicas$: BehaviorSubject<any> = new BehaviorSubject<any>(
-    this.datosEtapaCaracteristicas
-  );
+  datosEtapaCaracteristicas$: BehaviorSubject<any> = new BehaviorSubject<any>(this.datosEtapaCaracteristicas);
 
-  datosEtapaFinado$: BehaviorSubject<any> = new BehaviorSubject<any>(
-    this.datosEtapaFinado
-  );
+  datosEtapaFinado$: BehaviorSubject<any> = new BehaviorSubject<any>(this.datosEtapaFinado);
 
-  datosEtapaInformacionServicio$: BehaviorSubject<any> =
-    new BehaviorSubject<any>(this.datosEtapaInformacionServicio);
+  datosEtapaInformacionServicio$: BehaviorSubject<any> = new BehaviorSubject<any>(this.datosEtapaInformacionServicio);
 
   altaODS$: BehaviorSubject<any> = new BehaviorSubject<any>(this.altaODS);
 
@@ -249,22 +224,21 @@ export class GestionarEtapasService {
     // private authService: AutenticacionService // _http:HttpClient,
     this.altaODS.contratante = this.contratante;
     this.contratante.cp = this.cp;
+
     this.altaODS.finado = this.finado;
     this.finado.cp = this.cpFinado;
+
+
     this.altaODS.caracteristicasPresupuesto = this.caracteristicasPresupuesto;
-    this.caracteristicasPresupuesto.caracteristicasPaquete =
-      this.caracteristicasPaquete;
+    this.caracteristicasPresupuesto.caracteristicasPaquete = this.caracteristicasPaquete;
     this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
     this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
-    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto =
-      this.caracteristicasDelPresupuesto;
-    this.caracteristicasDelPresupuesto.detallePresupuesto =
-      this.detallePresupuesto;
-    this.presupuesto.servicioDetalleTraslado =
-      this.servicioDetalleTrasladoPresupuesto;
+    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto = this.caracteristicasDelPresupuesto;
+    this.caracteristicasDelPresupuesto.detallePresupuesto = this.detallePresupuesto;
+    this.presupuesto.servicioDetalleTraslado = this.servicioDetalleTrasladoPresupuesto;
+
     this.altaODS.informacionServicio = this.informacionServicio;
-    this.informacionServicio.informacionServicioVelacion =
-      this.informacionServicioVelacion;
+    this.informacionServicio.informacionServicioVelacion = this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
   }
 }
