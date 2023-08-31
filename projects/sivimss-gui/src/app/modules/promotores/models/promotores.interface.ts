@@ -12,6 +12,7 @@ export interface Promotor {
   aPaterno?: string;
   aMaterno?: string;
   fecNac?: string;
+  idLugarNac?: number;
   correo?: string;
   numEmpleado?: string;
   puesto?: string;
@@ -22,8 +23,8 @@ export interface Promotor {
   idVelatorio?: number;
   idPromotor?: number;
   estatus?: boolean;
-  fecPromotorDiasDescanso?: string[]
-  promotorDiasDescanso?: string[]
+  fecPromotorDiasDescanso?: string[];
+  promotorDiasDescanso?: DiasDescanso[];
 }
 
 export interface PromotoresBusqueda {
@@ -62,4 +63,10 @@ export interface BuscarCatalogo {
   idVelatorio?: number | null;
   nomPromotor?: string | null;
   catalogo?: number | null;
+}
+
+export interface DiasDescanso {
+  id?: number | null;
+  fecDescanso?: string;
+  estatus?: number | null;
 }
