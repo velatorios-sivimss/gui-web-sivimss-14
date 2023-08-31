@@ -79,7 +79,7 @@ export class ModificarPromotoresComponent implements OnInit {
             this.promotor = respuesta?.datos || [];
 
             let arraydiasDescanso: Date[] = [];
-            this.promotor.promotorDiasDescanso?.forEach((element: any) => {
+            this.promotor.promotorDiasDescanso?.forEach((element: DiasDescanso) => {
               arraydiasDescanso.push(new Date(moment(element.fecDescanso, 'DD/MM/YYYY').format('YYYY/MM/DD')));
             });
 
@@ -167,9 +167,30 @@ export class ModificarPromotoresComponent implements OnInit {
 
   datosModificar() {
     let fecPromotorDiasDescanso: DiasDescanso[] = [];
-    this.mpf.diasDescanso.value?.forEach((element: Object) => {
-      fecPromotorDiasDescanso.push({ id: null, fecDescanso: moment(element).format('DD/MM/YYYY') });
-    });
+    if (this.promotor.promotorDiasDescanso && this.promotor.promotorDiasDescanso.length > 0) {
+      let diasDescansoTemp: string[] = [];
+      this.mpf.diasDescanso.value?.forEach((fecha: Object) => diasDescansoTemp.push(moment(fecha).format('DD/MM/YYYY')));
+      this.promotor.promotorDiasDescanso.forEach((promotorDiaDescanso: DiasDescanso) => {
+        let foundIndex = diasDescansoTemp.findIndex((diaDescanso: string) => diaDescanso === promotorDiaDescanso.fecDescanso);
+        if (foundIndex > -1) {
+          fecPromotorDiasDescanso.push({ id: promotorDiaDescanso.id, fecDescanso: promotorDiaDescanso.fecDescanso, estatus: 1 });
+          diasDescansoTemp.splice(foundIndex, 1);
+        } else {
+          fecPromotorDiasDescanso.push({ id: promotorDiaDescanso.id, fecDescanso: promotorDiaDescanso.fecDescanso, estatus: 0 });
+        }
+      });
+
+      if (diasDescansoTemp.length > 0) {
+        diasDescansoTemp.forEach((diaDescanso: string) => {
+          fecPromotorDiasDescanso.push({ id: null, fecDescanso: diaDescanso, estatus: null });
+        });
+      }
+    } else {
+      this.mpf.diasDescanso.value?.forEach((diaDescanso: string) => {
+        fecPromotorDiasDescanso.push({ id: null, fecDescanso: diaDescanso, estatus: null });
+      });
+    }
+
     return {
       idPromotor: this.promotor.idPromotor,
       correo: this.mpf.correo.value,

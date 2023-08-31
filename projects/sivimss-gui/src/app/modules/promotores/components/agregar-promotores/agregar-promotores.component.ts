@@ -134,7 +134,7 @@ export class AgregarPromotoresComponent implements OnInit {
   datosGuardar() {
     let fecPromotorDiasDescanso: DiasDescanso[] = [];
     this.apf.diasDescanso.value?.forEach((element: Object) => {
-      fecPromotorDiasDescanso.push({ id: null, fecDescanso: moment(element).format('DD/MM/YYYY') });
+      fecPromotorDiasDescanso.push({ id: null, fecDescanso: moment(element).format('DD/MM/YYYY'), estatus: null });
 
     });
     return {

@@ -23,8 +23,8 @@ export interface Promotor {
   idVelatorio?: number;
   idPromotor?: number;
   estatus?: boolean;
-  fecPromotorDiasDescanso?: string[]
-  promotorDiasDescanso?: string[]
+  fecPromotorDiasDescanso?: string[];
+  promotorDiasDescanso?: DiasDescanso[];
 }
 
 export interface PromotoresBusqueda {
@@ -68,4 +68,5 @@ export interface BuscarCatalogo {
 export interface DiasDescanso {
   id?: number | null;
   fecDescanso?: string;
+  estatus?: number | null;
 }
