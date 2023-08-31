@@ -187,7 +187,7 @@ export class ModificarPromotoresComponent implements OnInit {
       }
     } else {
       this.mpf.diasDescanso.value?.forEach((diaDescanso: string) => {
-        fecPromotorDiasDescanso.push({ id: null, fecDescanso: diaDescanso, estatus: null });
+        fecPromotorDiasDescanso.push({ id: null, fecDescanso: moment(diaDescanso).format('DD/MM/YYYY'), estatus: null });
       });
     }
 
