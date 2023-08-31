@@ -1,25 +1,29 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {PaginadoConsultaStock} from "../../models/paginado-consulta-stock.interface";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {OrdenEntradaService} from "../../services/orden-entrada.service";
-import {LazyLoadEvent} from "primeng/api";
-import {PaginadoConsultaOrdenEntrada} from "../../models/paginado-consulta-orden-entrada.interface";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {ActivatedRoute} from "@angular/router";
-import {LoaderService} from "../../../../shared/loader/services/loader.service";
-import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
-import {HttpErrorResponse} from "@angular/common/http";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { PaginadoConsultaStock } from "../../models/paginado-consulta-stock.interface";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { OrdenEntradaService } from "../../services/orden-entrada.service";
+import { LazyLoadEvent } from "primeng/api";
+import { OverlayPanel } from "primeng/overlaypanel";
+import { ActivatedRoute } from "@angular/router";
+import { LoaderService } from "../../../../shared/loader/services/loader.service";
+import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
+import { finalize } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
+import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
+import { HttpErrorResponse } from "@angular/common/http";
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 @Component({
   selector: 'app-consulta-stock',
   templateUrl: './consulta-stock.component.html',
-  styleUrls: ['./consulta-stock.component.scss']
+  styleUrls: ['./consulta-stock.component.scss'],
+  providers: [DescargaArchivosService]
 })
 export class ConsultaStockComponent implements OnInit {
 
@@ -29,29 +33,19 @@ export class ConsultaStockComponent implements OnInit {
   readonly POSICION_DELEGACIONES: number = 0;
   readonly POSICION_NIVELES: number = 1;
 
-  formulario!: FormGroup;
+  mensajeArchivoConfirmacion: string = "";
+  mostrarModalConfirmacion: boolean = false;
 
-  stock: PaginadoConsultaStock[] = [
-    {
-      fechaOde: "12/08/2021",
-      folioOde: "DOC-000001",
-      folioArticulo: "DOC-000001",
-      articulo: "urna",
-      estatus: true
-    },
-    {
-      fechaOde: "12/08/2021",
-      folioOde: "DOC-000002",
-      folioArticulo: "DOC-000002",
-      articulo: "urna",
-      estatus: false
-    }
-  ];
-  stockSeleccionado!: PaginadoConsultaStock;
+  formulario!: FormGroup;
+  paginacionConFiltrado: boolean = false;
+  stock: any[] = [];
+  stockSeleccionado!: any;
 
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
+  catalogoOrdenesEntrada: string[] = [];
+  catalogoCategorias: string[] = [];
 
   asignacion: TipoDropdown[] = [
     {
@@ -68,10 +62,11 @@ export class ConsultaStockComponent implements OnInit {
     },
   ];
 
-  numPaginaActual: number = 0
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
+  numPaginaActual: number = 0
   totalElementos: number = 0
 
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
   constructor(
     private alertaService: AlertaService,
@@ -79,23 +74,26 @@ export class ConsultaStockComponent implements OnInit {
     public ordenEntradaService: OrdenEntradaService,
     private route: ActivatedRoute,
     private readonly loaderService: LoaderService,
+    private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
   ) { }
 
   ngOnInit(): void {
-     this.inicializarFormulario();
-     this.inicializarCatalogos()
+    this.cargarVelatorios(true);
+    this.inicializarFormulario();
+    this.inicializarCatalogos()
   }
 
   inicializarFormulario(): void {
-    this.formulario= this.formBuilder.group({
-             nivel: [{value:null, disabled: false}],
-         velatorio: [{value:null, disabled: false}],
-      ordenEntrada: [{value:null, disabled: false}],
-         categoria: [{value:null, disabled: false}],
-        asignacion1: [{value:null, disabled: false}],
-        asignacion2: [{value:null, disabled: false}],
-        asignacion3: [{value:null, disabled: false}]
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.formulario = this.formBuilder.group({
+      nivel: [{ value: +usuario.idOficina, disabled: false }],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: false }],
+      ordenEntrada: [{ value: null, disabled: false }],
+      categoria: [{ value: null, disabled: false }],
+      asignacion1: [{ value: null, disabled: false }],
+      asignacion2: [{ value: null, disabled: false }],
+      asignacion3: [{ value: null, disabled: false }]
     });
   }
 
@@ -105,31 +103,225 @@ export class ConsultaStockComponent implements OnInit {
     this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
   }
 
-  consultarVelatorios(): void {
-
-    this.loaderService.activar();
-    this.ordenEntradaService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos,"nomVelatorio","idVelatorio");
+  cargarVelatorios(cargaInicial: boolean = false): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.formulario.get('velatorio')?.patchValue("");
+    }
+    if (!usuario.idDelegacion) return;
+    this.ordenEntradaService.obtenerVelatorios(usuario.idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
-      error:(error:HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error,
-          this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
 
-  abrirPanel(event: MouseEvent, stock: PaginadoConsultaStock): void{
+  validarNombre(posicion: number): void {
+    let formularios = [this.f.ordenEntrada];
+    let value = formularios[posicion].value;
+    let nuevoValor = value.replace(/[^a-zA-Z0-9ñÑ\s]+/g, '');
+    nuevoValor = nuevoValor.replace(/\s+/g, ' ');
+    formularios[posicion].setValue(nuevoValor)
+  }
+
+  sinEspacioInicial(posicion: number): void {
+    let formularios = [this.f.ordenEntrada]
+    if (formularios[posicion].value.charAt(posicion).includes(' ')) {
+      formularios[posicion].setValue(formularios[posicion].value.trimStart());
+    }
+  }
+
+  consultarOrdenesEntrada(event: any): void {
+    let usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.loaderService.activar();
+    this.ordenEntradaService.consultarOrdenesEntrada(this.f.ordenEntrada.value, usuario.idVelatorio).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos.length > 0) {
+          this.catalogoOrdenesEntrada = [];
+          respuesta.datos.forEach((ordenEntrada: any) => {
+            this.catalogoOrdenesEntrada.push(ordenEntrada.NUM_FOLIO);
+          });
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+      }
+    });
+  }
+
+  consultarCategorias(event: any): void {
+    this.loaderService.activar();
+    this.ordenEntradaService.consultarCategoria(this.f.categoria.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos.length > 0) {
+          this.catalogoCategorias = [];
+          respuesta.datos.forEach((ordenEntrada: any) => {
+            this.catalogoCategorias.push(ordenEntrada.DES_CATEGORIA_ARTICULO);
+          });
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+      }
+    });
+  }
+
+  buscar(): void {
+    this.numPaginaActual = 0;
+    this.paginacionConFiltrado = true;
+    this.paginarConFiltros();
+  }
+
+  seleccionarPaginacion(event?: LazyLoadEvent): void {
+    this.paginacionConFiltrado = false;
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+    }
+    if (this.paginacionConFiltrado) {
+      this.paginarConFiltros();
+    } else {
+      this.paginar();
+    }
+  }
+
+  paginar(): void {
+    let filtros: any = this.mapearFiltrosBusqueda();
+    this.loaderService.activar();
+    this.ordenEntradaService.buscarStockPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.stock = [];
+          this.stock = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
+  }
+
+  paginarConFiltros(): void {
+    let filtros: any = this.mapearFiltrosBusqueda();
+    this.loaderService.activar();
+    this.ordenEntradaService.buscarStockPorFiltros(0, this.cantElementosPorPagina, filtros)
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.stock = [];
+          this.stock = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
+  }
+
+  abrirPanel(event: MouseEvent, stock: any): void {
     this.stockSeleccionado = stock;
     this.overlayPanel.toggle(event);
   }
 
-  seleccionarPaginacion(event?: LazyLoadEvent): void {
-    if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1))
+  generarArchivo(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
     }
+    this.loaderService.activar();
+    const busqueda = this.mapearDatosReporte(tipoReporte);
+    this.descargaArchivosService.descargarArchivo(this.ordenEntradaService.generarReporteStock(busqueda), configuracionArchivo).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.mostrarModalConfirmacion = true;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        if (mensaje) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
+        } else {
+          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
+        }
+      },
+    });
+    // this.ordenEntradaService.generarReporteOrdenEntrada(busqueda).pipe(
+    //   finalize(() => this.loaderService.desactivar())
+    // ).subscribe({
+    //   next: (respuesta: HttpRespuesta<any>) => {
+    //     const file = new Blob([this.descargaArchivosService.base64_2Blob(
+    //       respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+    //       { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
+    //     );
+    //     this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+    //       finalize(() => this.loaderService.desactivar())
+    //     ).subscribe({
+    //       next: (repuesta) => {
+    //         this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+    //         this.mostrarModalConfirmacion = true;
+    //       },
+    //       error: (error) => {
+    //         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+    //       }
+    //     });
+    //   },
+    //   error: (error: HttpErrorResponse) => {
+    //     const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+    //     this.alertaService.mostrar(TipoAlerta.Error, msg);
+    //   }
+    // })
+  }
+
+  mapearDatosReporte(tipoReporteSeleccionado: string): any {
+    return {
+      idVelatorio: this.formulario.get("velatorio")?.value === "" ? null : this.formulario.get("velatorio")?.value,
+      numFolioOrdenEntrada: this.formulario.get("ordenEntrada")?.value,
+      tipoReporte: tipoReporteSeleccionado
+    }
+  }
+
+  mapearFiltrosBusqueda(): any {
+    const asignacion1 = this.formulario.get("asignacion1")?.value;
+    const asignacion2 = this.formulario.get("asignacion2")?.value;
+    const asignacion3 = this.formulario.get("asignacion3")?.value;
+
+    let idTipoAsignacion: string | null = null;
+
+    if (asignacion1 && asignacion1[0] === 0) {
+      idTipoAsignacion = "1,3";
+    } else {
+      const asignaciones = [asignacion1, asignacion2, asignacion3].filter(value => value !== undefined && value !== null);
+      if (asignaciones.length > 0) {
+        idTipoAsignacion = asignaciones.map(innerArray => innerArray[0]).join(',');
+      }
+    }
+
+    return {
+      idVelatorio: this.formulario.get("velatorio")?.value === "" ? null : this.formulario.get("velatorio")?.value,
+      idOrdenEntrada: this.formulario.get("ordenEntrada")?.value,
+      idCategoriaArticulo: this.formulario.get("categoria")?.value,
+      idTipoAsignacionArt: idTipoAsignacion
+    }
+  }
+
+  limpiar(): void {
+    this.formulario.reset();
+    this.cargarVelatorios(true);
+    this.inicializarFormulario();
+    this.paginar();
   }
 
   get f() {

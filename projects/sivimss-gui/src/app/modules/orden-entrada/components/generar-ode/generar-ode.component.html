@@ -7,13 +7,16 @@
       width: 47px;
       padding-left: 6px;
       border-radius: 5px;" routerLink="../"></app-btn-regresar>
-  <app-titulo-principal style="width: 100%" titulo="Órden de entrada"></app-titulo-principal>
+  <app-titulo-principal style="width: 100%" titulo="Orden de entrada"></app-titulo-principal>
 </div>
 <form [formGroup]="formulario" class="border-400 border-2 p-5 mb-8 shadow-2">
   <div class="row mb-3">
     <div class="col-md-4">
       <label class="control-label" for="contrato">Contrato<span class="req">*</span>:</label>
-      <input id="contrato" class="form-control" formControlName="contrato" placeholder="Ingresar contrato">
+      <p-dropdown id="contrato" class="form-control" formControlName="contrato" [options]="contratos"
+                  placeholder="Seleccionar contrato" (onChange)="onContratoChange($event)" [filter]="true" filterBy="label">
+      </p-dropdown>
+      <!-- <input id="contrato" class="form-control" formControlName="contrato" placeholder="Ingresar contrato"> -->
       <span class="campo-obligatorio"
             *ngIf="f.contrato?.errors?.required && (f.contrato?.dirty || f.contrato?.touched)">Campo obligatorio</span>
     </div>
@@ -39,7 +42,7 @@
     <div class="col-md-4">
       <label class="control-label" for="categoria">Cateogoría (Artículo)<span class="req">*</span>:</label>
       <p-dropdown id="categoria" class="form-control" formControlName="categoria" [options]="categorias"
-                  placeholder="Seleccionar la categoría" [filter]="true" filterBy="label">
+                  placeholder="Seleccionar la categoría" (onChange)="onCategoriaChange($event)" [filter]="true" filterBy="label">
       </p-dropdown>
       <span class="campo-obligatorio"
             *ngIf="f.categoria?.errors?.required && (f.categoria?.dirty || f.categoria?.touched)">Este campo es obligatorio *.</span>
@@ -50,7 +53,7 @@
     <div class="col-md-8">
       <label class="control-label" for="modelo">Modelo:</label>
       <p-dropdown id="modelo" class="form-control" formControlName="modelo" [options]="modelos"
-                  placeholder="Seleccionar el modelo" [filter]="true" filterBy="label">
+                  placeholder="Seleccionar el modelo" (onChange)="onModeloChange($event)" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
     <div class="col-md-4">
@@ -61,25 +64,26 @@
   <div class="row mb-3">
     <div class="col-md-4">
       <label class="control-label" for="costo">Costo:</label>
-      <input id="costo" class="form-control" formControlName="costo" placeholder="Ingresa el costo">
+      <input id="costo" class="form-control" formControlName="costo" [value]="f.costo.value | currency" placeholder="Ingresa el costo">
     </div>
     <div class="col-md-4">
       <label class="control-label" for="numeroArticulos">Agregar el número de artículos<span
         class="req">*</span>:</label>
-      <input id="numeroArticulos" class="form-control" formControlName="numeroArticulos" placeholder="Ingresa el costo">
+      <input id="numeroArticulos" class="form-control" formControlName="numeroArticulos" placeholder="Ingresa el costo" maxlength="5">
       <span class="campo-obligatorio"
             *ngIf="f.numeroArticulos?.errors?.required && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched)">Campo obligatorio</span>
+      <span class="campo-obligatorio"
+            *ngIf="f.numeroArticulos?.errors?.max && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched)">El valor debe ser igual o menor a {{ maxNumeroArticulos }}</span>
     </div>
     <div class="col-md-4">
       <label class="control-label" for="precio">Precio:</label>
-      <input id="precio" class="form-control" formControlName="precio" placeholder="Ingresa el precio">
+      <input id="precio" class="form-control" formControlName="precio" [value]="f.precio.value | currency" placeholder="Ingresa el precio">
     </div>
   </div>
   <div class="row mb-3">
     <div class="col-md-4">
       <label class="control-label" for="fecha">Fecha:</label>
-      <p-calendar styleClass="form-control" id="fecha" formControlName="fecha" [showIcon]="true"
-                  dateFormat="dd/mm/yy" placeholder="Fecha"></p-calendar>
+      <input id="precio" class="form-control" formControlName="fecha" placeholder="Ingresa el precio" dateFormat="dd/mm/yy">
     </div>
     <div class="col-md-4">
       <label class="control-label" for="estatus">Estatus:</label>
@@ -95,6 +99,21 @@
   </div>
   <div class="flex justify-content-end mb-3">
     <button type="button" class="ml-4 mt-3 btn btn-danger btn-md" routerLink="../">Cancelar</button>
-    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" (click)="generarODE()">Guardar</button>
+    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" (click)="mostrarModalAgregarODE = true">Guardar</button>
   </div>
 </form>
+
+<p-dialog [(visible)]="mostrarModalAgregarODE" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="Cerrar ODE">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">¿Estás seguro de agregar este nuevo registro?</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-gold btn-md" (click)="mostrarModalAgregarODE = false">Cancelar</button>
+      <button class="btn btn-primary btn-md ml-3" (click)="generarODE()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
