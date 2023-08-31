@@ -14,7 +14,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { AltaODSInterface } from '../../../models/AltaODS.interface';
 import { ContratanteInterface } from '../../../models/Contratante.interface';
 import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import { FinadoInterface } from '../../../models/Finado.interface';
+import {FinadoInterface, FinadoSFInterface} from '../../../models/Finado.interface';
 import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
 import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
 import { DetallePaqueteInterface } from '../../../models/DetallePaquete.interface';
@@ -48,6 +48,8 @@ import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import { GestionarEtapasActualizacionService } from '../../../services/gestionar-etapas-actualizacion.service';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
+import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 
 @Component({
   selector: 'app-modificar-datos-contratante-sf',
@@ -66,10 +68,10 @@ export class ModificarDatosContratanteSFComponent
   readonly POSICION_ESTADO = 1;
   readonly POSICION_PARENTESCO = 2;
 
-  altaODS: AltaODSInterface = {} as AltaODSInterface;
+  altaODS: AltaODSSFInterface = {} as AltaODSSFInterface;
   contratante: ContratanteInterface = {} as ContratanteInterface;
   cp: CodigoPostalIterface = {} as CodigoPostalIterface;
-  finado: FinadoInterface = {} as FinadoInterface;
+  finado: FinadoSFInterface = {} as FinadoSFInterface;
   caracteristicasPresupuesto: CaracteristicasPresupuestoInterface =
     {} as CaracteristicasPresupuestoInterface;
   caracteristicasPaquete: CaracteristicasPaqueteInterface =
@@ -120,7 +122,7 @@ export class ModificarDatosContratanteSFComponent
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef
   ) {
@@ -169,18 +171,16 @@ export class ModificarDatosContratanteSFComponent
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     else this.ocultarFolioEstatus = false;
 
-    this.gestionarEtapasService.datosContratante$
-      .asObservable()
-      .subscribe((datosContratante) =>
-        this.llenarFormmulario(
+    this.gestionarEtapasService.datosContratante$.asObservable().subscribe(
+      (datosContratante) =>this.llenarFormmulario(
           datosContratante,
           Number(this.rutaActiva.snapshot.queryParams.idODS),
           Number(this.rutaActiva.snapshot.queryParams.idEstatus)
         )
       );
-    this.gestionarEtapasService.datosConsultaODS$
-      .asObservable()
-      .subscribe((datosConsultaODS) => (this.datosConsulta = datosConsultaODS));
+    this.gestionarEtapasService.datosConsultaODS$.asObservable().subscribe(
+      (datosConsultaODS) => (this.datosConsulta = datosConsultaODS)
+    );
   }
 
 
