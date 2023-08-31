@@ -57,6 +57,7 @@ import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.i
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
+import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 
 @Component({
   selector: 'app-modificar-informacion-servicio-sf',
@@ -129,7 +130,7 @@ export class ModificarInformacionServicioSFComponent
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
     private generarOrdenServicioService: GenerarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef,
     private router: Router,
@@ -296,7 +297,7 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          { value: datos.gestionadoPorPromotor, disabled: false },
+          { value: datos.gestionadoPorPromotor, disabled: true },
           [Validators.required],
         ],
         promotor: [

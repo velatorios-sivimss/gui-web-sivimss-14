@@ -3,25 +3,25 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { FormTarjetaIdentificacion } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/models/form-tarjeta-identificacion.enum";
 import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {LoaderService} from "../../../../shared/loader/services/loader.service";
-import {ConsultarOrdenServicioService} from "../../services/consultar-orden-servicio.service";
-import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CatalogoOperadores} from "../../constants/catalogos.interface";
-import {OrdenServicioPaginado} from "../../models/orden-servicio-paginado.interface";
-import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
-import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {LoaderService} from "../../../../../shared/loader/services/loader.service";
+import {ConsultarOrdenServicioService} from "../../../services/consultar-orden-servicio.service";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {CatalogoOperadores} from "../../../constants/catalogos.interface";
+import {OrdenServicioPaginado} from "../../../models/orden-servicio-paginado.interface";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 
 @Component({
-  selector: 'app-modal-generar-tarjeta-identificacion',
+  selector: 'app-modal-generar-tarjeta-identificacion-sf',
   templateUrl: './modal-generar-tarjeta-identificacion.component.html',
   styleUrls: ['./modal-generar-tarjeta-identificacion.component.scss'],
   providers: [DescargaArchivosService]
 })
-export class ModalGenerarTarjetaIdentificacionComponent implements OnInit {
+export class ModalGenerarTarjetaIdentificacionSFComponent implements OnInit {
   readonly FormTarjetaIdentificacion = FormTarjetaIdentificacion;
   pasoForm: FormTarjetaIdentificacion = FormTarjetaIdentificacion.Seleccionar;
   dummy!: string;

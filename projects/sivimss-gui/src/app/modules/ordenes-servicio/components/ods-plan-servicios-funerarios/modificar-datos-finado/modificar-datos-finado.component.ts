@@ -53,6 +53,7 @@ import { GestionarEtapasActualizacionService } from '../../../services/gestionar
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { ModalConvenioPfComponent } from '../../modal-convenio-pf/modal-convenio-pf.component';
+import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 
 @Component({
   selector: 'app-modificar-datos-finado-sf',
@@ -127,7 +128,7 @@ export class ModificarDatosFinadoSFComponent
     private breadcrumbService: BreadcrumbService,
     private dialogService: DialogService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private rutaActiva: ActivatedRoute,
