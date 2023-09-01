@@ -11,6 +11,7 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
 
   private readonly _filtros: string = 'consultar-folios-facturacion';
   private readonly _infoFiltros: string = 'consultar-info-folios-facturacion';
+  private readonly _rfc: string = 'consultar-rfc-facturacion';
 
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "", "", 100, "consultar-tabla-facturacion", "", "");
@@ -43,6 +44,11 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
 
   obtenerInfoFolioFacturacion(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._infoFiltros}`, body);
+  }
+
+  consultarRFC(rfc: string): Observable<HttpRespuesta<any>> {
+    const body = { rfc };
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._rfc}`, body);
   }
 
 }

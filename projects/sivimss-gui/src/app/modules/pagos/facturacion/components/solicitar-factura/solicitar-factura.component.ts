@@ -13,6 +13,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
 import {DatosContratante} from "../../models/datosContratante.interface";
+import {RegistroRFC} from "../../models/registroRFC.interface";
 
 interface Folio {
   idRegistro: number,
@@ -46,6 +47,7 @@ export class SolicitarFacturaComponent implements OnInit {
   temp: TipoDropdown[] = [];
   registroFolios: Folio[] = [];
   registroContratante!: DatosContratante;
+  registroRFC!: RegistroRFC;
   tipoSolicitud!: 1 | 2 | 3 | 4;
 
   constructor(private formBuilder: FormBuilder,
@@ -139,12 +141,11 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroContratante = respuesta.datos;
-        console.log(respuesta);
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error)
       }
-    })
+    });
   }
 
   crearSolicitudDatosContratante(): SolicitudDatosContratante {
@@ -156,5 +157,21 @@ export class SolicitarFacturaComponent implements OnInit {
       idPagoBitacora: folioSeleccionado!.idPagoBitacora,
       idRegistro: folioSeleccionado!.idRegistro
     }
+  }
+
+  buscarRFC(): void {
+    const rfc = this.datosContratanteForm.get('rfc')?.value;
+    this.cargadorService.activar();
+    this.facturacionService.consultarRFC(rfc).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.registroRFC = respuesta.datos;
+        console.log(respuesta);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error)
+      }
+    });
   }
 }

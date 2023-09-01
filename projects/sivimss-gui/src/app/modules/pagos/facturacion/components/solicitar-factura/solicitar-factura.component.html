@@ -56,7 +56,8 @@
                                   *ngIf="pr?.rfc?.errors?.required && (pr?.rfc?.dirty || pr?.rfc?.touched)">Este campo es obligatorio *.</span>
                         </div>
                         <div class="col-3 mt-3">
-                            <button type="submit" class="ml-4 btn btn-primary btn-md mt-5">Buscar</button>
+                            <button type="submit" class="ml-4 btn btn-primary btn-md mt-5" (click)="buscarRFC()"
+                            [disabled]="!datosContratanteForm.get('rfc')?.value">Buscar</button>
                         </div>
                     </div>
                 </div>
@@ -76,14 +77,14 @@
             </div>
         </div>
     </div>
-    <app-datos-receptor
-            [nombreReceptor]="'Heriberto Angelo Sánchez Maldonado'"
-            [tipoPersona]="'Persona física'"
-            [regimenFiscal]="'620 - Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas'"
+    <app-datos-receptor *ngIf="registroRFC"
+            [nombreReceptor]="registroRFC.razonSocial"
+            [tipoPersona]="registroRFC.tipoPersona"
+            [regimenFiscal]="registroRFC.regimenFiscal"
             [domicilioFiscal]="'C.P. 00666, Lázaro Cárdenas 112, Industrial Globo, Santiago de Querétaro, Querétaro.'">
     </app-datos-receptor>
 </ng-container>
-<ng-container *ngIf="registroContratante">
+<ng-container *ngIf="registroRFC">
     <form [formGroup]="datosCFDIForm">
         <div class="row mb-3 mt-3">
             <div class="col-md-6">
