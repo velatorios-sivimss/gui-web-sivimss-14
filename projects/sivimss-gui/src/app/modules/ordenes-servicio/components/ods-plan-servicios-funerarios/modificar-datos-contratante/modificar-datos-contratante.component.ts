@@ -50,6 +50,7 @@ import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrum
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-modificar-datos-contratante-sf',
@@ -113,6 +114,7 @@ export class ModificarDatosContratanteSFComponent
   idDomicilio: number | null = null;
   idODS: number | null = null;
   datosConsulta: any = {};
+  colonias:TipoDropdown[] = [];
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -349,6 +351,10 @@ export class ModificarDatosContratanteSFComponent
   }
 
   llenarFormmulario(datos: any, idODS: number, tipoODS: number): void {
+    if(datos.hasOwnProperty('contratante')){
+      let coloniasLista: any = [{'nombre': datos.contratante.cp.desColonia}]
+      this.colonias = mapearArregloTipoDropdown(coloniasLista,'nombre','nombre')
+    }
     if (Object.entries(datos).length === 0) {
       return;
     }
@@ -668,6 +674,7 @@ export class ModificarDatosContratanteSFComponent
               );
               datos.telefono.includes('null') ? this.datosContratante.telefono.patchValue(null) : this.datosContratante.telefono.setValue(datos.telefono);
               datos.correo.includes('null') ? this.datosContratante.correoElectronico.patchValue(null) : this.datosContratante.correoElectronico.setValue(datos.correo);
+              this.colonias = [{label:datos.colonia,value: datos.colonia}]
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.municipio.setValue(datos.municipio);
               this.direccion.estado.setValue(datos.estado);
@@ -809,6 +816,7 @@ export class ModificarDatosContratanteSFComponent
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -1044,8 +1052,10 @@ export class ModificarDatosContratanteSFComponent
 
     let datosEtapaFinado = {
       datosFinado: {
+        folioConvenioPa: finado.folioConvenioPa,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
+        idContratoPrevision: finado.idContratoPrevision,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,
         velatorioPrevision: finado.idVelatorioContratoPrevision,

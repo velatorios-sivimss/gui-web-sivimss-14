@@ -206,9 +206,9 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     if (Number(this.altaODS.finado.idTipoOrden) == 3) {
       this.bloquearPaquete = true;
     }
-    this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
-    this.esExtremidad = Number(this.altaODS.finado.extremidad);
-    this.esObito = Number(this.altaODS.finado.esobito);
+    // this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
+    // this.esExtremidad = Number(this.altaODS.finado.extremidad);
+    // this.esObito = Number(this.altaODS.finado.esobito);
   }
 
   inicializarForm(datos: any): void {

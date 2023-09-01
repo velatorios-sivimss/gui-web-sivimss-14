@@ -48,6 +48,7 @@ import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import { GestionarEtapasActualizacionService } from '../../services/gestionar-etapas-actualizacion.service';
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-modificar-datos-contratante',
@@ -111,6 +112,7 @@ export class ModificarDatosContratanteComponent
   idDomicilio: number | null = null;
   idODS: number | null = null;
   datosConsulta: any = {};
+  colonias: TipoDropdown[] = [];
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -349,6 +351,11 @@ export class ModificarDatosContratanteComponent
   }
 
   llenarFormmulario(datos: any, idODS: number, tipoODS: number): void {
+    if(datos.hasOwnProperty('contratante')){
+      let coloniasLista: any = [{'nombre': datos.contratante.cp.desColonia}]
+        this.colonias = mapearArregloTipoDropdown(coloniasLista,'nombre','nombre')
+    }
+
     if (Object.entries(datos).length === 0) {
       return;
     }
@@ -809,6 +816,7 @@ export class ModificarDatosContratanteComponent
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
