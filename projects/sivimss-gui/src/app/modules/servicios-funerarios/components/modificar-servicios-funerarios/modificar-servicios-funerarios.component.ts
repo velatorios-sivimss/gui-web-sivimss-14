@@ -86,8 +86,10 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     this.paqueteBackUp = respuesta[this.POSICION_PAQUETE].datos;
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
     this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
-    this.consultarFormulario();
-    this.consultarNumeroPagos(this.idPlanSfpa);
+    setTimeout(()=> {
+      this.consultarFormulario();
+      this.consultarNumeroPagos(this.idPlanSfpa);
+    },500)
   }
 
   consultarFormulario(): void {
@@ -112,41 +114,41 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     const [anio, mes, dia] = afiliado.titularesBeneficiarios[0].fecNacimiento.split('-');
     const fecha = new Date(anio + '/' + mes + '/' + dia);
     this.datosAfiliadoForm = this.formBuilder.group({
-                   curp: [{value: afiliado.titularesBeneficiarios[0].curp, disabled:false},
+                   curp: [{value: afiliado.titularesBeneficiarios[0].curp, disabled:true},
                          [Validators.required, Validators.pattern(PATRON_CURP)]],
-                    rfc: [{value: afiliado.titularesBeneficiarios[0].rfc, disabled:false},
+                    rfc: [{value: afiliado.titularesBeneficiarios[0].rfc, disabled:true},
                          [Validators.required, Validators.pattern(PATRON_RFC)]],
-              matricula: [{value: afiliado.titularesBeneficiarios[0].matricula, disabled:false},],
-                    nss: [{value: afiliado.titularesBeneficiarios[0].nss, disabled:false},
+              matricula: [{value: afiliado.titularesBeneficiarios[0].matricula, disabled:true},],
+                    nss: [{value: afiliado.titularesBeneficiarios[0].nss, disabled:true},
                          [Validators.required]],
-                 nombre: [{value: afiliado.titularesBeneficiarios[0].nomPersona, disabled:false},
+                 nombre: [{value: afiliado.titularesBeneficiarios[0].nomPersona, disabled:true},
                          [Validators.required]],
-         primerApellido: [{value: afiliado.titularesBeneficiarios[0].primerApellido, disabled:false},
+         primerApellido: [{value: afiliado.titularesBeneficiarios[0].primerApellido, disabled:true},
                          [Validators.required]],
-        segundoApellido: [{value: afiliado.titularesBeneficiarios[0].segundoApellido, disabled:false},
+        segundoApellido: [{value: afiliado.titularesBeneficiarios[0].segundoApellido, disabled:true},
                          [Validators.required]],
-                   sexo: [{value: +afiliado.titularesBeneficiarios[0].sexo, disabled:false},
+                   sexo: [{value: +afiliado.titularesBeneficiarios[0].sexo, disabled:true},
                          [Validators.required]],
-               otroSexo: [{value: afiliado.titularesBeneficiarios[0].otroSexo, disabled:false}],
-        fechaNacimiento: [{value: fecha, disabled:false},
+               otroSexo: [{value: afiliado.titularesBeneficiarios[0].otroSexo, disabled:true}],
+        fechaNacimiento: [{value: fecha, disabled:true},
                          [Validators.required]],
-           nacionalidad: [{value: +afiliado?.titularesBeneficiarios[0].idPais == 119 ? 1 : 2, disabled:false},
+           nacionalidad: [{value: +afiliado?.titularesBeneficiarios[0].idPais == 119 ? 1 : 2, disabled:true},
                          [Validators.required]],
-        lugarNacimiento: [{value: +afiliado?.titularesBeneficiarios[0].idEstado ?? null, disabled:false},
+        lugarNacimiento: [{value: +afiliado?.titularesBeneficiarios[0].idEstado ?? null, disabled:true},
                          [Validators.required]],
-         paisNacimiento: [{value: +afiliado?.titularesBeneficiarios[0].idPais ?? null, disabled:false}],
-               telefono: [{value: afiliado.titularesBeneficiarios[0].telefono, disabled:false},
+         paisNacimiento: [{value: +afiliado?.titularesBeneficiarios[0].idPais ?? null, disabled:true}],
+               telefono: [{value: afiliado.titularesBeneficiarios[0].telefono, disabled:true},
                          [Validators.required]],
-      correoElectronico: [{value: afiliado.titularesBeneficiarios[0].correo, disabled:false},
+      correoElectronico: [{value: afiliado.titularesBeneficiarios[0].correo, disabled:true},
                          [Validators.required, Validators.pattern(PATRON_CORREO)]],
-                     cp: [{value: afiliado.titularesBeneficiarios[0].cp.codigoPostal, disabled:false},
+                     cp: [{value: afiliado.titularesBeneficiarios[0].cp.codigoPostal, disabled:true},
                          [Validators.required]],
-                  calle: [{value: afiliado.titularesBeneficiarios[0].cp.desCalle, disabled:false},
+                  calle: [{value: afiliado.titularesBeneficiarios[0].cp.desCalle, disabled:true},
                          [Validators.required]],
-         numeroInterior: [{value: afiliado.titularesBeneficiarios[0].cp.numInterior, disabled:false}],
-         numeroExterior: [{value: afiliado.titularesBeneficiarios[0].cp.numExterior, disabled:false},
+         numeroInterior: [{value: afiliado.titularesBeneficiarios[0].cp.numInterior, disabled:true}],
+         numeroExterior: [{value: afiliado.titularesBeneficiarios[0].cp.numExterior, disabled:true},
                          [Validators.required]],
-                colonia: [{value: afiliado.titularesBeneficiarios[0].cp.desColonia, disabled:false},
+                colonia: [{value: afiliado.titularesBeneficiarios[0].cp.desColonia, disabled:true},
                          [Validators.required]],
               municipio: [{value: afiliado.titularesBeneficiarios[0].cp.desMunicipio, disabled:true},
                          [Validators.required]],
@@ -154,7 +156,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
                          [Validators.required]],
             tipoPaquete: [{value: +afiliado.idPaquete, disabled:false},
                          [Validators.required]],
-             numeroPago: [{value: +afiliado.idTipoPagoMensual, disabled:false},
+             numeroPago: [{value: +afiliado.idTipoPagoMensual, disabled:false },
                          [Validators.required]],
     });
     this.idNumeroPagoOriginal = +afiliado.idTipoPagoMensual
@@ -232,9 +234,9 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
      };
    }
 
+   //  const false = contratante?.indTitularSubstituto ? true : false;
     this.datosContratanteForm = this.formBuilder.group({
-           datosIguales: [{value: contratante?.indTitularSubstituto ?? true, disabled:false},
-                         [Validators.required]],
+           datosIguales: [{value: false, disabled:false}, [Validators.required]],
                    curp: [{value: objetoContratante.curp, disabled:false},
                          [Validators.required, Validators.pattern(PATRON_CURP)]],
                     rfc: [{value: objetoContratante.rfc, disabled:false},
@@ -280,7 +282,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
                  estado: [{value: objetoContratante.cp?.desEstado, disabled:false},
                          [Validators.required]],
     });
-    if(contratante.titularesBeneficiarios.length == 1)this.datosContratanteForm.disable();
+    this.datosContratanteForm.disable();
     if(this.fdc.sexo.value == 3){
       this.fdc.otroSexo.setValidators(Validators.required);
       this.fdc.otroSexo.updateValueAndValidity();
@@ -600,33 +602,59 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   }
 
   datosIguales(esIgual: boolean): void {
-    if(!esIgual){
-      this.datosContratanteForm.reset();
-      this.fdc.datosIguales.setValue(false);
+    esIgual ? this.fdc.datosIguales.setValue(true) : this.fdc.datosIguales.setValue(false);
+    // if(esIgual){
+    //   this.fdc.datosIguales.setValue(true);
+    //   return
+    // }
+    if(esIgual){
+      this.fdc.curp.enable()
+      this.fdc.rfc.enable()
+      this.fdc.matricula.enable()
+      this.fdc.nss.enable()
+      this.fdc.nombre.enable()
+      this.fdc.primerApellido.enable()
+      this.fdc.segundoApellido.enable()
+      this.fdc.sexo.enable()
+      this.fdc.otroSexo.enable()
+      this.fdc.fechaNacimiento.enable()
+      this.fdc.nacionalidad.enable()
+      this.fdc.lugarNacimiento.enable()
+      this.fdc.paisNacimiento.enable()
+      this.fdc.telefono.enable()
+      this.fdc.correoElectronico.enable()
+      this.fdc.cp.enable()
+      this.fdc.calle.enable()
+      this.fdc.numeroInterior.enable()
+      this.fdc.numeroExterior.enable()
+      this.fdc.colonia.enable()
       return
     }
-    this.fdc.curp.setValue(this.fda.curp.value);
-    this.fdc.rfc.setValue(this.fda.rfc.value);
-    this.fdc.matricula.setValue(this.fda.matricula.value);
-    this.fdc.nss.setValue(this.fda.nss.value);
-    this.fdc.nombre.setValue(this.fda.nombre.value);
-    this.fdc.primerApellido.setValue(this.fda.primerApellido.value);
-    this.fdc.segundoApellido.setValue(this.fda.segundoApellido.value);
-    this.fdc.sexo.setValue(this.fda.sexo.value);
-    this.fdc.otroSexo.setValue(this.fda.otroSexo.value);
-    this.fdc.fechaNacimiento.setValue(this.fda.fechaNacimiento.value);
-    this.fdc.nacionalidad.setValue(this.fda.nacionalidad.value);
-    this.fdc.lugarNacimiento.setValue(this.fda.lugarNacimiento.value);
-    this.fdc.paisNacimiento.setValue(this.fda.paisNacimiento.value);
-    this.fdc.telefono.setValue(this.fda.telefono.value);
-    this.fdc.correoElectronico.setValue(this.fda.correoElectronico.value);
-    this.fdc.cp.setValue(this.fda.cp.value);
-    this.fdc.calle.setValue(this.fda.calle.value);
-    this.fdc.numeroInterior.setValue(this.fda.numeroInterior.value);
-    this.fdc.numeroExterior.setValue(this.fda.numeroExterior.value);
-    this.fdc.colonia.setValue(this.fda.colonia.value);
-    this.fdc.municipio.setValue(this.fda.municipio.value);
-    this.fdc.estado.setValue(this.fda.estado.value);
+    this.fdc.curp.disable()
+    this.fdc.rfc.disable()
+    this.fdc.matricula.disable()
+    this.fdc.nss.disable()
+    this.fdc.nombre.disable()
+    this.fdc.primerApellido.disable()
+    this.fdc.segundoApellido.disable()
+    this.fdc.sexo.disable()
+    this.fdc.otroSexo.disable()
+    this.fdc.fechaNacimiento.disable()
+    this.fdc.nacionalidad.disable()
+    this.fdc.lugarNacimiento.disable()
+    this.fdc.paisNacimiento.disable()
+    this.fdc.telefono.disable()
+    this.fdc.correoElectronico.disable()
+    this.fdc.cp.disable()
+    this.fdc.calle.disable()
+    this.fdc.numeroInterior.disable()
+    this.fdc.numeroExterior.disable()
+    this.fdc.colonia.disable()
+    this.fdc.municipio.disable()
+    this.fdc.estado.disable()
+
+
+
   }
 
   limpiarFormulario(posicion: number):void{

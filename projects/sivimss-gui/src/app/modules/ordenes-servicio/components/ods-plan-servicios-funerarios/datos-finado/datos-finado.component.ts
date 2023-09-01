@@ -43,6 +43,7 @@ import { ModalConvenioPfComponent } from '../../modal-convenio-pf/modal-convenio
 import { Persona } from '../../../models/Persona.interface';
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GenerarOrdenServicioSfService} from "../../../services/generar-orden-servicio-sf.service";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-datos-finado-sf',
@@ -105,6 +106,7 @@ export class DatosFinadoSFComponent implements OnInit {
   idPersona: number | null = null;
   idDomicilio: number | null = null;
   folioInvalido: boolean = true;
+  colonias: TipoDropdown[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -479,8 +481,10 @@ export class DatosFinadoSFComponent implements OnInit {
       next: (respuesta:HttpRespuesta<any>) => {
         this.folioInvalido = false
         if(respuesta.datos!= null){
+          const listaColonias:any = [{nombre: respuesta.datos.contratante.cp.desColonia}]
           const [anio,mes,dia] = respuesta.datos.contratante.fechaNac.split('-');
           const fecha = new Date(anio + '/' + mes + '/' + dia);
+          this.colonias = mapearArregloTipoDropdown(listaColonias,'nombre','nombre')
           this.idContratoPrevision = respuesta.datos.idConvenioPa
           this.idPersona = respuesta.datos.contratante.idPersona;
           this.idDomicilio = respuesta.datos.contratante.cp.idDomicilio

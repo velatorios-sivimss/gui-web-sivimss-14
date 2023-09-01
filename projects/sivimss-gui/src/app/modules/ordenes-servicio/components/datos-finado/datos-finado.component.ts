@@ -40,6 +40,7 @@ import { InformacionServicioVelacionInterface } from '../../models/InformacionSe
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
 import { ModalConvenioPfComponent } from '../modal-convenio-pf/modal-convenio-pf.component';
 import { Persona } from '../../models/Persona.interface';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-datos-finado',
@@ -102,6 +103,7 @@ export class DatosFinadoComponent implements OnInit {
   validacionPersonaConvenio: boolean = false;
 
   idPersona: number | null = null;
+  colonias: TipoDropdown[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -1000,6 +1002,7 @@ export class DatosFinadoComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
