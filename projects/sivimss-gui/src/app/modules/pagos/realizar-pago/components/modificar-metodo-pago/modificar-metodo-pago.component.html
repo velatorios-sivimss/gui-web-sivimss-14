@@ -100,9 +100,9 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Cancelar" (click)="cancelarTipoPago()">
+      <app-overlay-panel-opcion titulo="Cancelar" (click)="cancelarTipoPago()" onCloseOnNavigation>
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarTipoPago()">
+      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarTipoPago()" onCloseOnNavigation>
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

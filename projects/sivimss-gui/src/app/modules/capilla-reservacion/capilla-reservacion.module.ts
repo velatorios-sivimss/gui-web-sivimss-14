@@ -30,6 +30,7 @@ import {
   PrevisualizacionArchivoComponent
 } from "./components/calendario/previsualizacion-archivo/previsualizacion-archivo.component";
 import {PdfViewerModule} from "ng2-pdf-viewer";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations:[CapillaReservacionComponent, RegistrarEntradaComponent, RegistrarSalidaComponent, CalendarioComponent, DetalleActividadDiaComponent,PrevisualizacionArchivoComponent],
@@ -55,6 +56,7 @@ import {PdfViewerModule} from "ng2-pdf-viewer";
     ValidaRolModule,
     UtileriaModule,
     PdfViewerModule,
+    BtnRegresarModule,
   ],
   providers:[
     CapillaReservacionService
