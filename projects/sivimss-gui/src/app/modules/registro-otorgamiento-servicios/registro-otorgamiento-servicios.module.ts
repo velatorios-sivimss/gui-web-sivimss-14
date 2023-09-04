@@ -22,6 +22,7 @@ import {TablePanelModule} from "../../shared/table-panel/table-panel.module";
 import {RegistroOtorgamientoServiciosRoutingModule} from "./registro-otorgamiento-servicios.routing";
 import {RegistroOtorgamientoServiciosService} from "./services/registro-otorgamiento-servicios.service";
 import { CheckboxModule } from "primeng/checkbox";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { CheckboxModule } from "primeng/checkbox";
     OverlayPanelModule,
     OverlayPanelOpcionesModule,
     TablePanelModule,
-    CheckboxModule
+    CheckboxModule,
+    BtnRegresarModule
   ],
   providers:[
     RegistroOtorgamientoServiciosService
