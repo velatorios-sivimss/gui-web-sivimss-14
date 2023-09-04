@@ -310,8 +310,10 @@ export class ConsultaDonacionesComponent implements OnInit {
           finalize(() => this.loaderService.desactivar())
         ).subscribe(
           (repuesta) => {
-            this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-            this.mostrarModalConfirmacion = true;
+            if (respuesta) {
+              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+              this.mostrarModalConfirmacion = true;
+            }
           },
           (error) => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))

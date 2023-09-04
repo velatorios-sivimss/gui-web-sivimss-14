@@ -44,6 +44,7 @@ import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
 import { ValueConverterPipe } from "./pipes/value.converter.pipe";
 import { InputNumberModule } from "primeng/inputnumber";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -56,32 +57,33 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     DetalleMantenimientoComponent,
     ValueConverterPipe
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    MantenimientoVehicularRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    CheckboxModule,
-    RadioButtonModule,
-    UtileriaModule,
-    TabViewModule,
-    CeldaStickyModule,
-    ValidaRolModule,
-    InputNumberModule,
-    ConfirmDialogModule,
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        MantenimientoVehicularRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        CheckboxModule,
+        RadioButtonModule,
+        UtileriaModule,
+        TabViewModule,
+        CeldaStickyModule,
+        ValidaRolModule,
+        InputNumberModule,
+        ConfirmDialogModule,
+        BtnRegresarModule,
+    ],
   providers: [MantenimientoVehicularService],
 })
 export class MantenimientoVehicularModule {
