@@ -86,10 +86,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     this.paqueteBackUp = respuesta[this.POSICION_PAQUETE].datos;
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
     this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
-    setTimeout(()=> {
       this.consultarFormulario();
-      this.consultarNumeroPagos(this.idPlanSfpa);
-    },500)
+      // this.consultarNumeroPagos(this.idPlanSfpa);
   }
 
   consultarFormulario(): void {
@@ -103,6 +101,10 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         this.fecIngresa = respuesta.datos.fecIngreso;
         this.inicializarFormDatosAfiliado(respuesta.datos);
         this.inicializarFormDatosContratante(respuesta.datos ? respuesta.datos : null);
+        if(respuesta.datos.numPago > 0){
+          this.fda.tipoPaquete.disable();
+          this.fda.numeroPago.disable();
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
