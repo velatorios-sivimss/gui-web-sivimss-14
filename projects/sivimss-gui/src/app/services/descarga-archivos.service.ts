@@ -18,8 +18,7 @@ export class DescargaArchivosService {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], {type: contentType});
-    return blob;
+    return new Blob([byteArray], {type: contentType});
   }
 
   obtenerContentType(options: OpcionesArchivos = {}): string {

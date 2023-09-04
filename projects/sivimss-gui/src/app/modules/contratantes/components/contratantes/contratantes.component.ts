@@ -196,8 +196,10 @@ export class ContratantesComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.modalConfirmacion();
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.modalConfirmacion();
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
