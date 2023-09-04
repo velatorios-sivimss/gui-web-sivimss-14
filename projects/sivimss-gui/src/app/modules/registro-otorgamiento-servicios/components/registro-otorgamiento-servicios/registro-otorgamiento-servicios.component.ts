@@ -70,7 +70,7 @@ export class RegistroOtorgamientoServiciosComponent implements OnInit {
     });
   }
 
-  consultaOtorgamientoServicios(): void {
+  consultaOtorgamientoServicios(bandera: boolean): void {
     this.loaderService.activar();
     let folio = this.f.folioODS.value;
     this.folioODS = folio;
@@ -86,10 +86,12 @@ export class RegistroOtorgamientoServiciosComponent implements OnInit {
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
                 parseInt(respuesta.mensaje)
               );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            if(bandera){
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
+              );
+            }
             this.mostrarRegistros = false;
             return;
           }
@@ -149,7 +151,7 @@ export class RegistroOtorgamientoServiciosComponent implements OnInit {
     );
     this.situarServicioRef.onClose.subscribe((estatus: boolean) => {
       if (estatus) {
-        this.consultaOtorgamientoServicios();
+        this.consultaOtorgamientoServicios(false);
       }
     });
   }
@@ -166,7 +168,7 @@ export class RegistroOtorgamientoServiciosComponent implements OnInit {
 
     this.otorgamientoServicioRef.onClose.subscribe((estatus: boolean) => {
       if (estatus) {
-        this.consultaOtorgamientoServicios();
+        this.consultaOtorgamientoServicios(false);
       }
     });
   }
