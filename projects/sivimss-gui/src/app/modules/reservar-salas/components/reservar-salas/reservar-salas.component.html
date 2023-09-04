@@ -1,12 +1,15 @@
-<app-titulo-principal titulo="Reservar sala"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../../"></app-btn-regresar>
+  <app-titulo-principal titulo="Reservar sala" class="col"></app-titulo-principal>
+</div>
 <div class="row">
-    <div class="col-md-12 flex justify-content-center mb-3">
-        <p-selectButton [options]="OpcionesReservarSalas" optionLabel="icon" (onChange)="redirigirOpcionSala($event)"
-            [(ngModel)]="opcionSala" optionDisabled="inactive">
-            <ng-template let-item>
-                <i [class]="item.icon"></i>
-            </ng-template>
-        </p-selectButton>
-    </div>
+  <div class="col-md-12 flex justify-content-center mb-3">
+    <p-selectButton [options]="OpcionesReservarSalas" optionLabel="icon" (onChange)="redirigirOpcionSala($event)"
+                    [(ngModel)]="opcionSala" optionDisabled="inactive">
+      <ng-template let-item>
+        <i [class]="item.icon"></i>
+      </ng-template>
+    </p-selectButton>
+  </div>
 </div>
 <router-outlet name="salas"></router-outlet>

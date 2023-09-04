@@ -1,12 +1,6 @@
-<div class="flex">
-  <app-btn-regresar class="mr-2" style="
-      z-index: 300;
-      border: solid 2px;
-      height: 38px;
-      width: 47px;
-      padding-left: 6px;
-      border-radius: 5px;" routerLink="../"></app-btn-regresar>
-  <app-titulo-principal style="width: 100%" titulo="Órdenes de servicio"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="Órdenes de servicio"></app-titulo-principal>
 </div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
