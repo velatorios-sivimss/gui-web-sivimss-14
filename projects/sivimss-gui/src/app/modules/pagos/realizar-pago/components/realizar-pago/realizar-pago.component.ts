@@ -83,6 +83,7 @@ export class RealizarPagoComponent implements OnInit {
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   realizarPagoModal: boolean = false;
+  central!: boolean;
 
   constructor(private breadcrumbService: BreadcrumbService,
               private formBuilder: FormBuilder,
@@ -117,10 +118,11 @@ export class RealizarPagoComponent implements OnInit {
 
   inicializarForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroForm = this.formBuilder.group({
       nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
       velatorio: [{
-        value: obtenerVelatorioUsuarioLogueado(usuario),
+        value: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario),
         disabled: obtenerNivelUsuarioLogueado(usuario) === 3
       }],
       folioOrden: [{value: null, disabled: false}, []],
@@ -296,7 +298,8 @@ export class RealizarPagoComponent implements OnInit {
 
   obtenerVelatorios(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.realizarPagoService.obtenerVelatoriosPorDelegacion(usuario?.idDelegacion).subscribe({
+    const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null
+    this.realizarPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
