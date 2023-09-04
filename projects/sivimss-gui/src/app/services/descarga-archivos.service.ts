@@ -39,6 +39,7 @@ export class DescargaArchivosService {
         },
       ],
     };
+    let operacionExitosa = false;
 
     return archivo$.pipe(
       switchMap((archivoBlob: Blob) => {
@@ -61,12 +62,16 @@ export class DescargaArchivosService {
           return fileHandle.createWritable().then((writable: FileSystemWritableFileStream): boolean => {
             void writable.write(archivoBlob);
             void writable.close();
+            operacionExitosa = true;
             return true;
           });
         });
       }),
       catchError((error) => {
-        console.log(error);
+        if (!operacionExitosa) {
+          return of(false);
+        }
+        console.log(error)
         throw 'Error al guardar el archivo.';
       })
     );

@@ -185,7 +185,7 @@ export class RealizarPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
@@ -204,7 +204,7 @@ export class RealizarPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {

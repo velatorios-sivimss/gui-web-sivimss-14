@@ -248,7 +248,7 @@ export class GestionarPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
       },
       error: (error): void => {
         const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
@@ -265,7 +265,7 @@ export class GestionarPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
       },
       error: (error): void => {
         const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
