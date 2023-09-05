@@ -33,7 +33,8 @@ interface RegistroProveedor {
   nomProveedor: string,
   cuenta: string,
   banco: string,
-  idProveedor: number
+  idProveedor: number,
+  numeroContrato?: string
 }
 
 @Component({
@@ -136,6 +137,8 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('banco')?.setValue(registro?.banco);
     this.solicitudPagoForm.get('cuenta')?.setValue(registro?.cuenta);
     this.solicitudPagoForm.get('claveBancaria')?.setValue(registro?.cveBancaria);
+    if ([5,6].includes(this.tipoSolicitud))  this.solicitudPagoForm.get('numeroContrato')?.setValue(registro?.numeroContrato);
+
   }
 
   crearSolicitudPago(): void {
@@ -256,6 +259,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('importe')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('importe')?.disable();
     this.solicitudPagoForm.get('numeroContrato')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('numeroContrato')?.disable();
     this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('concepto')?.disable();
     this.solicitudPagoForm.get('concepto')?.setValue('Pago de artículos funerarios comercializados.');
@@ -264,6 +268,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   validacionesPagoContrato(): void {
     this.solicitudPagoForm.get('importe')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('numeroContrato')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('numeroContrato')?.disable();
     this.solicitudPagoForm.get('importe')?.disable();
     this.validacionesBasicas();
   }
