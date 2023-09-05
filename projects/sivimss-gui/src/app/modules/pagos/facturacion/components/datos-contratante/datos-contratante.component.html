@@ -99,8 +99,8 @@
               <td>{{servicio.concepto}}</td>
               <td>{{servicio.cantidad}}</td>
               <td>{{servicio.claveSat}}</td>
-              <td>{{servicio.importe}}</td>
-              <td>{{servicio.total}}</td>
+              <td>{{servicio.importe | currency}}</td>
+              <td>{{servicio.total | currency}}</td>
             </tr>
           </ng-template>
         </p-table>
