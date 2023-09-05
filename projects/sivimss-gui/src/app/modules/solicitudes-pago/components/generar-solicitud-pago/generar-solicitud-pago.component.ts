@@ -216,9 +216,10 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   convertirImporte(): void {
     this.solicitudPagoForm.get('importeLetra')?.setValue('');
     const importe = this.solicitudPagoForm.get('importe')?.value;
+    console.log(importe)
     if (!importe) return;
     const importeLetra: string = convertirNumeroPalabra(+importe);
-    this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1));
+    this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1) + ' pesos');
   }
 
   seleccionarResponsable(): void {
