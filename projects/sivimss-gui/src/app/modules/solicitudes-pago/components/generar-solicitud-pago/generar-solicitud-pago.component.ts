@@ -219,9 +219,9 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   convertirImporte(): void {
     this.solicitudPagoForm.get('importeLetra')?.setValue('');
     const importe = this.solicitudPagoForm.get('importe')?.value;
-    console.log(importe)
     if (!importe) return;
     const importeLetra: string = convertirNumeroPalabra(+importe);
+    this.solicitudPagoForm.get('importe')?.setValue(`$ ${importe}`);
     this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1) + ' pesos');
   }
 
@@ -341,7 +341,8 @@ export class GenerarSolicitudPagoComponent implements OnInit {
           this.limpiarImportes();
         }
         this.partidaPresupuestal = respuesta.datos;
-        this.solicitudPagoForm.get('importe')?.setValue(this.partidaPresupuestal[0].importeTotal);
+        const [partidaSeleccionada] = this.partidaPresupuestal;
+        this.solicitudPagoForm.get('importe')?.setValue(partidaSeleccionada.importeTotal);
         this.convertirImporte();
       },
       error: (error: HttpErrorResponse): void => {
@@ -481,5 +482,11 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   mostrarMensajeSolicitudCorrecta(): void {
     this.alertaService.mostrar(TipoAlerta.Exito, 'Tu solicitud de pago ha sido generada exitosamente.')
     this.referencia.close();
+  }
+
+  resetImporte(): void {
+    const importe = this.solicitudPagoForm.get('importe')?.value;
+    if (!importe) return;
+    this.solicitudPagoForm.get('importe')?.setValue(importe.substring(2));
   }
 }
