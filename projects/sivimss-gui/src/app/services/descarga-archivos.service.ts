@@ -18,8 +18,7 @@ export class DescargaArchivosService {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], {type: contentType});
-    return blob;
+    return new Blob([byteArray], {type: contentType});
   }
 
   obtenerContentType(options: OpcionesArchivos = {}): string {
@@ -39,6 +38,7 @@ export class DescargaArchivosService {
         },
       ],
     };
+    let operacionExitosa = false;
 
     return archivo$.pipe(
       switchMap((archivoBlob: Blob) => {
@@ -61,12 +61,16 @@ export class DescargaArchivosService {
           return fileHandle.createWritable().then((writable: FileSystemWritableFileStream): boolean => {
             void writable.write(archivoBlob);
             void writable.close();
+            operacionExitosa = true;
             return true;
           });
         });
       }),
       catchError((error) => {
-        console.log(error);
+        if (!operacionExitosa) {
+          return of(false);
+        }
+        console.log(error)
         throw 'Error al guardar el archivo.';
       })
     );

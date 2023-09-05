@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
 import { DetalleODS, DetallePromotor, DetalleConvenioPF, DetalleComisiones,FiltroComisiones } from '../../models/detalle-comision.interface';
-import { FormatoDetalleComisiones, OpcionesArchivos } from '../../models/formato-detalle-comisiones.interface'; 
+import { FormatoDetalleComisiones, OpcionesArchivos } from '../../models/formato-detalle-comisiones.interface';
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { ActivatedRoute } from '@angular/router';
 import {CalculoComisionesService} from '../../services/calculo-comisiones.service';
@@ -16,7 +16,7 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import { CATALOGOS_DUMMIES } from '../../../articulos/constants/dummies';
-import { ModalComisionComponent } from '../modal-comision/modal-comision.component';  
+import { ModalComisionComponent } from '../modal-comision/modal-comision.component';
 import * as moment from "moment/moment";
 
 @Component({
@@ -154,7 +154,7 @@ export class DetalleComisionComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
@@ -173,7 +173,7 @@ export class DetalleComisionComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {

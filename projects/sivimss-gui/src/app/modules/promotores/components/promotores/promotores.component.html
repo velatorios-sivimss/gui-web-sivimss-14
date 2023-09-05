@@ -90,15 +90,6 @@
         <td>{{promotor.puesto}}</td>
         <td>{{promotor.categoria}}</td>
         <td>{{promotor.estatus ? 'Activo' : 'Inactivo'}}</td>
-        <!-- <td>
-          <div class="contenedor-inputswitch">
-            <p-inputSwitch [(ngModel)]="promotor.estatus"
-              (click)="promotor.estatus = !promotor.estatus; cambiarEstatus(promotor);">
-            </p-inputSwitch>
-            <span class="activo" *ngIf="promotor.estatus">Activo</span>
-            <span class="inactivo" *ngIf="!promotor.estatus">Inactivo</span>
-          </div>
-        </td> -->
         <td>
           <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
             <a (click)="abrirPanel($event,promotor)">

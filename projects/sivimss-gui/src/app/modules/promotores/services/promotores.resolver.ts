@@ -14,6 +14,7 @@ export class PromotoresResolver implements Resolve<any> {
         const niveles$: Observable<TipoDropdown[]> = this.promotoresService.obtenerCatalogoNiveles();
         const delegaciones$: Observable<TipoDropdown[]> = this.promotoresService.obtenerCatalogoDelegaciones();
         const catalogoVelatorio$: Observable<HttpRespuesta<any>> = this.promotoresService.obtenerCatalogos({ catalogo: 1 });
-        return forkJoin([niveles$, delegaciones$, catalogoVelatorio$]);
+        const catalogoEstados$: Observable<TipoDropdown[]> = this.promotoresService.obtenerCatalogoEstados();
+        return forkJoin([niveles$, delegaciones$, catalogoVelatorio$, catalogoEstados$]);
     }
 }

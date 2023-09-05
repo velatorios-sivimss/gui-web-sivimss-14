@@ -18,10 +18,9 @@ import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/e
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { GestionarEtapasService } from '../../../services/gestionar-etapas.service';
 
-import { AltaODSInterface } from '../../../models/AltaODS.interface';
 import { ContratanteInterface } from '../../../models/Contratante.interface';
 import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import { FinadoInterface } from '../../../models/Finado.interface';
+import { FinadoSFInterface} from '../../../models/Finado.interface';
 import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
 import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
 import { CaracteristicasDelPresupuestoInterface } from '../../../models/CaracteristicasDelPresupuesto.interface';
@@ -49,6 +48,8 @@ import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/me
 import { ModalEliminarArticuloComponent } from '../../modal-eliminar-articulo/modal-eliminar-articulo.component';
 import { ModalDonarArticuloComponent } from '../../modal-donar-articulo/modal-donar-articulo.component';
 import { UsuarioEnSesion } from '../../../../../models/usuario-en-sesion.interface';
+import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
+import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
 
 @Component({
   selector: 'app-caracteristicas-presupuesto-sf',
@@ -71,10 +72,10 @@ export class CaracteristicasPresupuestoSFComponent
   mostrarModalAgregarAtaud: boolean = false;
   formAgregarAtaud!: FormGroup;
 
-  altaODS: AltaODSInterface = {} as AltaODSInterface;
+  altaODS: AltaODSSFInterface = {} as AltaODSSFInterface;
   contratante: ContratanteInterface = {} as ContratanteInterface;
   cp: CodigoPostalIterface = {} as CodigoPostalIterface;
-  finado: FinadoInterface = {} as FinadoInterface;
+  finado: FinadoSFInterface = {} as FinadoSFInterface;
   caracteristicasPresupuesto: CaracteristicasPresupuestoInterface =
     {} as CaracteristicasPresupuestoInterface;
   caracteristicasPaquete: CaracteristicasPaqueteInterface =
@@ -141,7 +142,7 @@ export class CaracteristicasPresupuestoSFComponent
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasService,
+    private gestionarEtapasService: GestionarEtapasServiceSF,
     private changeDetector: ChangeDetectorRef
   ) {
     this.altaODS.contratante = this.contratante;
@@ -149,47 +150,33 @@ export class CaracteristicasPresupuestoSFComponent
     this.altaODS.finado = this.finado;
     this.finado.cp = this.cpFinado;
     this.altaODS.caracteristicasPresupuesto = this.caracteristicasPresupuesto;
-    this.caracteristicasPresupuesto.caracteristicasPaquete =
-      this.caracteristicasPaquete;
+    this.caracteristicasPresupuesto.caracteristicasPaquete = this.caracteristicasPaquete;
     this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
     this.paquete.servicioDetalleTraslado = this.servicioDetalleTraslado;
-    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto =
-      this.caracteristicasDelPresupuesto;
-    this.caracteristicasDelPresupuesto.detallePresupuesto =
-      this.detallePresupuesto;
-    this.presupuesto.servicioDetalleTraslado =
-      this.servicioDetalleTrasladoPresupuesto;
+    this.caracteristicasPresupuesto.caracteristicasDelPresupuesto = this.caracteristicasDelPresupuesto;
+    this.caracteristicasDelPresupuesto.detallePresupuesto = this.detallePresupuesto;
+    this.presupuesto.servicioDetalleTraslado = this.servicioDetalleTrasladoPresupuesto;
     this.altaODS.informacionServicio = this.informacionServicio;
-    this.informacionServicio.informacionServicioVelacion =
-      this.informacionServicioVelacion;
+    this.informacionServicio.informacionServicioVelacion = this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
   }
 
   ngOnInit(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(
-      localStorage.getItem('usuario') as string
-    );
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.idVelatorio = +usuario.idVelatorio;
     this.buscarPaquetes();
-    this.gestionarEtapasService.altaODS$
-      .asObservable()
-      .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
 
-    this.gestionarEtapasService.datosEtapaCaracteristicas$
-      .asObservable()
-      .subscribe((datosEtapaCaracteristicas) =>
-        this.inicializarForm(datosEtapaCaracteristicas)
-      );
+    this.gestionarEtapasService.altaODS$.asObservable().subscribe(
+      (datodPrevios) => this.llenarAlta(datodPrevios)
+    );
+    this.gestionarEtapasService.datosEtapaCaracteristicas$.asObservable().subscribe(
+      (datosEtapaCaracteristicas) =>this.inicializarForm(datosEtapaCaracteristicas)
+    );
   }
 
-  llenarAlta(datodPrevios: AltaODSInterface): void {
+  llenarAlta(datodPrevios: AltaODSSFInterface): void {
     this.altaODS = datodPrevios;
-    if (Number(this.altaODS.finado.idTipoOrden) == 3) {
-      this.bloquearPaquete = true;
-    }
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
-    this.esExtremidad = Number(this.altaODS.finado.extremidad);
-    this.esObito = Number(this.altaODS.finado.esobito);
   }
 
   inicializarForm(datos: any): void {
@@ -200,63 +187,40 @@ export class CaracteristicasPresupuestoSFComponent
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
     this.total = datos.total;
     this.form = this.formBuilder.group({
-      observaciones: [
-        { value: datos.observaciones, disabled: false },
-      ],
-      notasServicio: [
-        { value: datos.notasServicio, disabled: false },
-      ],
+      observaciones: [{ value: datos.observaciones, disabled: false }],
+      notasServicio: [{ value: datos.notasServicio, disabled: false }],
     });
   }
 
   buscarPaquetes(): void {
     this.loaderService.activar();
     const parametros = { idVelatorio: this.idVelatorio };
-    this.gestionarOrdenServicioService
-      .consultarPaquetes(parametros)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+    this.gestionarOrdenServicioService.consultarPaquetes(parametros).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+        {
+        next:(respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
             const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(respuesta.mensaje)
-              );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
-
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
             return;
           }
-          this.paquetes = mapearArregloTipoDropdown(
-            datos,
-            'nombrePaquete',
-            'idPaquete'
-          );
+          this.paquetes = mapearArregloTipoDropdown(datos,'nombrePaquete','idPaquete');
         },
-        (error: HttpErrorResponse) => {
+        error:(error: HttpErrorResponse) => {
           try {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
-              );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
           } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+            this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
           }
         }
-      );
+      }
+    )
   }
 
   confirmarCambioPaquete(dd:Dropdown): void {

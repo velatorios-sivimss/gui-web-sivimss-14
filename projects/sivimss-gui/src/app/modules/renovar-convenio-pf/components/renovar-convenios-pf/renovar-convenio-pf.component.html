@@ -30,7 +30,7 @@
         <div class="col-md-6">
           <label class="control-label" for="numConvenio">Número de Convenio:</label>
           <input id="numConvenio" class="form-control" formControlName="numConvenio" placeholder="Ingresa número"
-            alphanumericOnly trimmer>
+            numbersOnly trimmer>
           <span class="campo-obligatorio"
             *ngIf="btcf.numConvenio.errors?.required && (btcf.numConvenio.dirty || btcf.numConvenio.touched)">
             Campo obligatorio</span>
@@ -38,7 +38,7 @@
         <div class="col-md-6">
           <label class="control-label" for="nombreContratante">Número de Contratante:</label>
           <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
-            placeholder="Ingresa número" alphanumericOnly trimmer>
+            placeholder="Ingresa número" numbersOnly trimmer>
           <span class="campo-obligatorio"
             *ngIf="btcf.nombreContratante?.errors?.required && (btcf.nombreContratante?.dirty || btcf.nombreContratante?.touched)">
             Campo obligatorio</span>
@@ -48,15 +48,15 @@
       <div class="row mb-3" *ngIf="!btcf.tipoConvenio.value">
         <div class="col-md-6">
           <label class="control-label" for="folio">Folio de un convenio:</label>
-          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa folio" folioOdsAlphanumeric
-            trimmer>
+          <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa folio" maxlength="45"
+            folioOdsAlphanumeric trimmer>
           <span class="campo-obligatorio"
             *ngIf="btcf.folio.errors?.required && (btcf.folio.dirty || btcf.folio.touched)">
             Campo obligatorio</span>
         </div>
         <div class="col-md-6">
           <label class="control-label" for="rfc">RFC de un convenio:</label>
-          <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa rfc" alphanumericOnly trimmer>
+          <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa rfc" maxlength="13" alphanumericOnly trimmer>
           <span class="campo-obligatorio" *ngIf="btcf.rfc?.errors?.required && (btcf.rfc?.dirty || btcf.rfc?.touched)">
             Campo obligatorio</span>
         </div>

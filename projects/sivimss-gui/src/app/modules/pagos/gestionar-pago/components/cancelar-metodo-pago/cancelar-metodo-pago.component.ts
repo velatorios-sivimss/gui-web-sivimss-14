@@ -26,6 +26,10 @@ export class CancelarMetodoPagoComponent implements OnInit {
   cancelarPagoForm!: FormGroup;
   idFlujo!: number;
   idPago!: number;
+  cancelarPago: number = 1;
+
+  readonly CAPTURA_DE_CANCELACION: number = 1;
+  readonly RESUMEN_DE_CANCELACION: number = 2;
 
   constructor(private formBuilder: FormBuilder,
               public config: DynamicDialogConfig,

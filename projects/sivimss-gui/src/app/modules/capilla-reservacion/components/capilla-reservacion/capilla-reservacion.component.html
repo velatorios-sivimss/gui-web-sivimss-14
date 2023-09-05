@@ -1,4 +1,7 @@
-<app-titulo-principal titulo="Reservar capilla"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal titulo="Reservar capilla" class="col"></app-titulo-principal>
+</div>
 <div class="row">
   <div class="col-md-12 flex justify-content-center mb-3">
     <p-selectButton [options]="opciones" [(ngModel)]="value" optionLabel="icon" optionValue="value"

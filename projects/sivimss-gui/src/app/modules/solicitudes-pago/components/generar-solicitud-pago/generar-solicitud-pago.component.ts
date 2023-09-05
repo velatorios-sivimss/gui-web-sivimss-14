@@ -33,7 +33,8 @@ interface RegistroProveedor {
   nomProveedor: string,
   cuenta: string,
   banco: string,
-  idProveedor: number
+  idProveedor: number,
+  numeroContrato?: string
 }
 
 @Component({
@@ -136,6 +137,8 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('banco')?.setValue(registro?.banco);
     this.solicitudPagoForm.get('cuenta')?.setValue(registro?.cuenta);
     this.solicitudPagoForm.get('claveBancaria')?.setValue(registro?.cveBancaria);
+    if ([5,6].includes(this.tipoSolicitud))  this.solicitudPagoForm.get('numeroContrato')?.setValue(registro?.numeroContrato);
+
   }
 
   crearSolicitudPago(): void {
@@ -218,7 +221,8 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     const importe = this.solicitudPagoForm.get('importe')?.value;
     if (!importe) return;
     const importeLetra: string = convertirNumeroPalabra(+importe);
-    this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1));
+    this.solicitudPagoForm.get('importe')?.setValue(`$ ${importe}`);
+    this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1) + ' pesos');
   }
 
   seleccionarResponsable(): void {
@@ -255,6 +259,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('importe')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('importe')?.disable();
     this.solicitudPagoForm.get('numeroContrato')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('numeroContrato')?.disable();
     this.solicitudPagoForm.get('folioFiscal')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('concepto')?.disable();
     this.solicitudPagoForm.get('concepto')?.setValue('Pago de artículos funerarios comercializados.');
@@ -263,6 +268,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   validacionesPagoContrato(): void {
     this.solicitudPagoForm.get('importe')?.setValidators([Validators.required]);
     this.solicitudPagoForm.get('numeroContrato')?.setValidators([Validators.required]);
+    this.solicitudPagoForm.get('numeroContrato')?.disable();
     this.solicitudPagoForm.get('importe')?.disable();
     this.validacionesBasicas();
   }
@@ -335,7 +341,8 @@ export class GenerarSolicitudPagoComponent implements OnInit {
           this.limpiarImportes();
         }
         this.partidaPresupuestal = respuesta.datos;
-        this.solicitudPagoForm.get('importe')?.setValue(this.partidaPresupuestal[0].importeTotal);
+        const [partidaSeleccionada] = this.partidaPresupuestal;
+        this.solicitudPagoForm.get('importe')?.setValue(partidaSeleccionada.importeTotal);
         this.convertirImporte();
       },
       error: (error: HttpErrorResponse): void => {
@@ -475,5 +482,11 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   mostrarMensajeSolicitudCorrecta(): void {
     this.alertaService.mostrar(TipoAlerta.Exito, 'Tu solicitud de pago ha sido generada exitosamente.')
     this.referencia.close();
+  }
+
+  resetImporte(): void {
+    const importe = this.solicitudPagoForm.get('importe')?.value;
+    if (!importe) return;
+    this.solicitudPagoForm.get('importe')?.setValue(importe.substring(2));
   }
 }

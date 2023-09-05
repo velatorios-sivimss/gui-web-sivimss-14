@@ -53,6 +53,9 @@ import { GestionarEtapasActualizacionService } from '../../../services/gestionar
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { ModalConvenioPfComponent } from '../../modal-convenio-pf/modal-convenio-pf.component';
+import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
+import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
   selector: 'app-modificar-datos-finado-sf',
@@ -120,6 +123,8 @@ export class ModificarDatosFinadoSFComponent
 
   idPersona: number | null = null;
   idFinado: number | null = null;
+  folioInvalido: boolean = true;
+  colonias: TipoDropdown[] = [];
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -127,7 +132,9 @@ export class ModificarDatosFinadoSFComponent
     private breadcrumbService: BreadcrumbService,
     private dialogService: DialogService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private gestionarEtapasService: GestionarEtapasActualizacionSFService,
+
+    private gestionarOrdenServicioSFService: GenerarOrdenServicioService,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private rutaActiva: ActivatedRoute,
@@ -160,6 +167,7 @@ export class ModificarDatosFinadoSFComponent
     this.estado = respuesta[this.POSICION_ESTADO];
     this.unidadesMedicas = respuesta[this.POSICION_UNIDADES_MEDICAS];
     this.tipoPension = respuesta[this.POSICION_PENSION];
+    this.folioInvalido = false;
     // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
@@ -233,6 +241,10 @@ export class ModificarDatosFinadoSFComponent
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio,mes,dia] = fechaActual.split('-')
     let nacionalidad = 1;
+    if(datosEtapaFinado.hasOwnProperty('direccion')){
+      let coloniasLista: any = [{'nombre': datosEtapaFinado.direccion.colonia}]
+      this.colonias = mapearArregloTipoDropdown(coloniasLista,'nombre','nombre')
+    }
     if (
       datosEtapaFinado.datosFinado.idEstado == null ||
       datosEtapaFinado.datosFinado.idEstado == ''
@@ -278,11 +290,12 @@ export class ModificarDatosFinadoSFComponent
       edad = moment().diff(a, 'years');
     }
 
+
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
                  tipoOrden: [{ value: datosEtapaFinado.datosFinado.tipoOrden, disabled: false},
                             [Validators.required]],
-                noContrato: [{ value: datosEtapaFinado.datosFinado.noContrato, disabled: false},
+                noContrato: [{ value: datosEtapaFinado.datosFinado.folioConvenioPa, disabled: false},
                             [Validators.required]],
         velatorioPrevision: [{ value: datosEtapaFinado.datosFinado.velatorioPrevision,disabled: false},
                             [Validators.required]],
@@ -563,197 +576,89 @@ export class ModificarDatosFinadoSFComponent
   // }
 
   consultarFolioPf(event: any): void {
-    const ref = this.dialogService.open(ModalConvenioPfComponent, {
-      header: 'Número de contrato',
-      style: { maxWidth: '876px', width: '100%' },
-      data: { folio: this.datosFinado.noContrato.value },
-    });
-    ref.onClose.subscribe((persona: any) => {
-      let [anio, mes, dia]: any = persona.finado.fechaNac?.split('-');
-      this.validacionPersonaConvenio = true;
-      dia = dia.substr(0, 2);
-      const fecha = new Date(anio + '/' + mes + '/' + dia);
-      this.datosFinado.matricula.setValue(persona.finado.matricula);
-      this.datosFinado.curp.setValue(persona.finado.curp);
-      this.datosFinado.nss.setValue(persona.finado.nss);
-      this.datosFinado.nombre.setValue(persona.finado.nomPersona);
-      this.datosFinado.primerApellido.setValue(persona.finado.primerApellido);
-      this.datosFinado.segundoApellido.setValue(persona.finado.segundoApellido);
-      this.datosFinado.fechaNacimiento.setValue(fecha);
-      this.datosFinado.sexo.setValue(persona?.finado.sexo);
-      this.datosFinado.velatorioPrevision.setValue(persona.nombreVelatorio);
-      if (Number(persona.finado.idPais) == 119) {
-        this.datosFinado.nacionalidad.setValue(1);
-        this.datosFinado.lugarNacimiento.setValue(Number(persona.finado.idEstado));
-      } else {
-        this.datosFinado.nacionalidad.setValue(2);
-        this.datosFinado.paisNacimiento.setValue(Number(persona.finado.idPais));
+    if(!this.datosFinado.noContrato.value)return;
+    this.loaderService.activar()
+    this.gestionarOrdenServicioSFService.consultarFolioSF(this.datosFinado.noContrato.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta:HttpRespuesta<any>) => {
+        this.folioInvalido = false
+        if(respuesta.datos!= null){
+          const listaColonias:any = [{nombre: respuesta.datos.contratante.cp.desColonia}]
+          const [anio,mes,dia] = respuesta.datos.contratante.fechaNac.split('-');
+          const fecha = new Date(anio + '/' + mes + '/' + dia);
+          this.colonias = mapearArregloTipoDropdown(listaColonias,'nombre','nombre')
+          this.idContratoPrevision = respuesta.datos.idConvenioPa
+          this.idPersona = respuesta.datos.contratante.idPersona;
+          this.idDomicilio = respuesta.datos.contratante.cp.idDomicilio
+          this.idVelatorioContratoPrevision = respuesta.datos.idVelatorio;
+
+          this.direccion.calle.setValue(respuesta.datos.contratante.cp.desCalle);
+          this.direccion.noExterior.setValue(respuesta.datos.contratante.cp.numExterior);
+          this.direccion.noInterior.setValue(respuesta.datos.contratante.cp.numInterior);
+          this.direccion.cp.setValue(respuesta.datos.contratante.cp.codigoPostal);
+          this.direccion.colonia.setValue(respuesta.datos.contratante.cp.desColonia);
+          this.direccion.municipio.setValue(respuesta.datos.contratante.cp.desMunicipio);
+          this.direccion.estado.setValue(respuesta.datos.contratante.cp.desEstado);
+
+          this.datosFinado.curp.setValue(respuesta.datos.contratante.curp);
+          this.datosFinado.nss.setValue(respuesta.datos.contratante.nss);
+          this.datosFinado.nombre.setValue(respuesta.datos.contratante.nomPersona);
+          this.datosFinado.primerApellido.setValue(respuesta.datos.contratante.primerApellido);
+          this.datosFinado.segundoApellido.setValue(respuesta.datos.contratante.segundoApellido);
+          this.datosFinado.sexo.setValue(+respuesta.datos.contratante.sexo);
+          this.datosFinado.otroTipoSexo.setValue(respuesta.datos.contratante.otroSexo);
+          this.datosFinado.fechaNacimiento.setValue(fecha);
+          this.datosFinado.nacionalidad.setValue(+respuesta.datos.contratante.nacionalidad);
+          this.datosFinado.lugarNacimiento.setValue(+respuesta.datos.contratante.idEstado);
+          this.datosFinado.paisNacimiento.setValue(+respuesta.datos.contratante.idPais);
+          this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);
+          this.datosFinado.matricula.setValue(respuesta.datos.contratante.matricula);
+          this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
+          this.cambiarTipoSexo();
+          this.cambiarNacionalidad();
+          return
+        }
+        this.folioInvalido = true
+        this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+          +respuesta.mensaje
+        ));
+
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+          +error.error.mensaje
+        ));
       }
-      this.datosFinado.sexo.setValue(Number(persona.finado.sexo));
-      this.datosFinado.otroTipoSexo.setValue(persona.finado.otroSexo);
-
-      this.idVelatorioContratoPrevision = +persona.idVelacion;
-      this.idContratoPrevision = +persona.idContrato
-      this.idPersona = +persona.finado.idPersona
-      this.idContratante = +persona.idContratantePf
-
-      // this.cambiarTipoSexo();
-      // this.cambiarNacionalidad();
-    });
+    })
   }
 
-  // async cambiarValidacionMatricula() {
-  //   this.datosFinado.matricula.enable();
-  //   if (!this.datosFinado.matriculaCheck.value) {
-  //     this.datosFinado.matricula.disable();
-  //     this.datosFinado.matricula.clearValidators();
-  //     this.datosFinado.matricula.patchValue(null);
-  //     return;
-  //   }
-  //   this.datosFinado.matricula.setValidators(Validators.required);
-  //   this.datosFinado.matricula.patchValue(this.datosFinado.matricula.value);
-  // }
+  cambiarTipoSexo(): void {
+    if (this.datosFinado.sexo.value == 3) {
+      this.datosFinado.otroTipoSexo.enabled;
+      this.datosFinado.otroTipoSexo.setValidators(Validators.required);
+      return;
+    }
+    this.datosFinado.otroTipoSexo.disabled;
+    this.datosFinado.otroTipoSexo.clearValidators();
+    this.datosFinado.otroTipoSexo.setValue(null);
+  }
 
-  // async cambiarValidacionNSS() {
-  //   this.datosFinado.nss.enable();
-  //   if (!this.datosFinado.nssCheck.value) {
-  //     this.datosFinado.nss.disable();
-  //     this.datosFinado.nss.clearValidators();
-  //     this.datosFinado.nss.patchValue(null);
-  //     return;
-  //   }
-  //   this.datosFinado.nss.setValidators(Validators.required);
-  //   this.datosFinado.nss.patchValue(this.datosFinado.nss.value);
-  // }
-
-  // async changeTipoOrden(modificacion?: boolean) {
-  //   const idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
-  //   if(!modificacion)this.form.reset();
-  //   if (idTipoOden == 1) {
-  //     this.habilitarTodo();
-  //     this.datosFinado.tipoOrden.setValue(1);
-  //     this.datosFinado.matriculaCheck.setValue(true);
-  //     this.datosFinado.nssCheck.setValue(true);
-  //     this.radonlyEstremidad = false;
-  //     this.datosFinado.nombre.disable();
-  //     this.datosFinado.primerApellido.disable();
-  //     this.datosFinado.segundoApellido.disable();
-  //     this.datosFinado.noContrato.disable();
-  //     this.datosFinado.velatorioPrevision.disable();
-  //     this.datosFinado.fechaNacimiento.disable();
-  //     this.radonlyNoContrato = true;
-  //     this.agregarValidaciones();
-  //   } else if (idTipoOden == 2) {
-  //     this.habilitarTodo();
-  //     this.datosFinado.tipoOrden.setValue(2);
-  //     this.radonlyEstremidad = false;
-  //     this.radonlyNoContrato = false;
-  //     this.datosFinado.velatorioPrevision.disable();
-  //     this.datosFinado.nombre.disable();
-  //     this.datosFinado.primerApellido.disable();
-  //     this.datosFinado.segundoApellido.disable();
-  //     this.datosFinado.fechaNacimiento.disable();
-  //     this.datosFinado.matriculaCheck.setValue(true);
-  //     this.datosFinado.nssCheck.setValue(true);
-  //     this.agregarValidaciones();
-  //   } else {
-  //     this.desabilitarTodo();
-  //     this.datosFinado.tipoOrden.setValue(3);
-  //     this.datosFinado.matricula.disable();
-  //     this.datosFinado.nss.disable();
-  //     this.datosFinado.nssCheck.disable();
-  //     this.datosFinado.matriculaCheck.disable();
-  //     this.removerValidaciones();
-  //     this.datosFinado.esParaExtremidad.disable();
-  //     this.datosFinado.esObito.disable();
-  //   }
-  // }
-
-  // async esExtremidad(validacion: boolean) {
-  //   const idTipoOrden = Number(this.form.value.datosFinado.tipoOrden);
-  //
-  //   this.datosFinado.esParaExtremidad.setValue(validacion);
-  //   if (validacion && (idTipoOrden == 1 || idTipoOrden == 2)) {
-  //     this.datosFinado.velatorioPrevision.disable();
-  //     this.desabilitarTodo();
-  //     this.datosFinado.esObito.patchValue(null)
-  //     this.datosFinado.esObito.disable();
-  //     this.datosFinado.esParaExtremidad.enable();
-  //
-  //   } else if (idTipoOrden == 3) {
-  //     this.desabilitarTodo();
-  //     this.datosFinado.esObito.disable();
-  //     this.datosFinado.esParaExtremidad.disable();
-  //   } else {
-  //     this.habilitarTodo();
-  //     this.datosFinado.velatorioPrevision.disable();
-  //   }
-  // }
-
-  // activaDesactivaTodo(valida: string): void {
-  //   if (valida == 'activa') {
-  //     this.datosFinado.nss.disable();
-  //     this.datosFinado.matricula.disable();
-  //     this.radonlyEstremidad = true;
-  //     this.radonlyNoContrato = true;
-  //     this.radonlyCurp = true;
-  //     this.removerValidaciones();
-  //   } else {
-  //     this.datosFinado.nss.enable();
-  //     this.radonlyEstremidad = false;
-  //     this.datosFinado.matricula.enable();
-  //     this.radonlyNoContrato = false;
-  //     this.radonlyCurp = false;
-  //     this.agregarValidaciones();
-  //   }
-  // }
-
-  // async esObito(validacion: boolean) {
-  //   //curp nss matricula se bloquean
-  //   if(this.datosFinado.esParaExtremidad.value)return;
-  //   let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
-  //   let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
-  //   this.datosFinado.esObito.setValue(validacion);
-  //   if (validacion) {
-  //     this.datosFinado.matricula.disable();
-  //     this.datosFinado.nss.disable();
-  //     this.datosFinado.curp.disable();
-  //     this.datosFinado.matricula.setValue(null);
-  //     this.datosFinado.nss.setValue(null);
-  //     this.datosFinado.curp.setValue(null);
-  //   } else if (!validacion && idTipoOden != 3 && !esEstremidad) {
-  //     this.datosFinado.matricula.enable();
-  //     this.datosFinado.nss.enable();
-  //     this.datosFinado.curp.enable();
-  //   }
-  // }
-
-  // cambiarTipoSexo(): void {
-  //   if (this.datosFinado.sexo.value == 3) {
-  //     this.datosFinado.otroTipoSexo.enabled;
-  //     this.datosFinado.otroTipoSexo.setValidators(Validators.required);
-  //     return;
-  //   }
-  //   this.datosFinado.otroTipoSexo.disabled;
-  //   this.datosFinado.otroTipoSexo.clearValidators();
-  //   this.datosFinado.otroTipoSexo.setValue(null);
-  // }
-
-  // cambiarNacionalidad(): void {
-  //   if (this.datosFinado.nacionalidad.value == 1) {
-  //     this.datosFinado.paisNacimiento.disabled;
-  //     this.datosFinado.paisNacimiento.clearValidators();
-  //     this.datosFinado.paisNacimiento.reset();
-  //     this.datosFinado.lugarNacimiento.enabled;
-  //     this.datosFinado.lugarNacimiento.setValidators(Validators.required);
-  //     return;
-  //   }
-  //   this.datosFinado.lugarNacimiento.disabled;
-  //   this.datosFinado.lugarNacimiento.clearValidators();
-  //   this.datosFinado.lugarNacimiento.reset();
-  //   this.datosFinado.paisNacimiento.enabled;
-  //   this.datosFinado.paisNacimiento.setValidators(Validators.required);
-  // }
+  cambiarNacionalidad(): void {
+    if (this.datosFinado.nacionalidad.value == 1) {
+      this.datosFinado.paisNacimiento.disabled;
+      this.datosFinado.paisNacimiento.clearValidators();
+      this.datosFinado.paisNacimiento.reset();
+      this.datosFinado.lugarNacimiento.enabled;
+      this.datosFinado.lugarNacimiento.setValidators(Validators.required);
+      return;
+    }
+    this.datosFinado.lugarNacimiento.disabled;
+    this.datosFinado.lugarNacimiento.clearValidators();
+    this.datosFinado.lugarNacimiento.reset();
+    this.datosFinado.paisNacimiento.enabled;
+    this.datosFinado.paisNacimiento.setValidators(Validators.required);
+  }
 
   limpiarConsultaDatosPersonales(): void {
     this.datosFinado.nombre.patchValue(null);
@@ -917,20 +822,17 @@ export class ModificarDatosFinadoSFComponent
     let formulario = this.form.getRawValue();
     let datosEtapaFinado = {
       datosFinado: {
+        folioValido: !this.folioInvalido,
         tipoOrden: formulario.datosFinado.tipoOrden,
         noContrato: formulario.datosFinado.noContrato,
         velatorioPrevision: formulario.datosFinado.velatorioPrevision,
-        esObito: formulario.datosFinado.esObito,
-        esParaExtremidad: formulario.datosFinado.esParaExtremidad,
         matricula: formulario.datosFinado.matricula,
-        matriculaCheck: formulario.datosFinado.matriculaCheck,
         curp: formulario.datosFinado.curp,
         nss: formulario.datosFinado.nss,
-        nssCheck: formulario.datosFinado.nssCheck,
         nombre: formulario.datosFinado.nombre,
         primerApellido: formulario.datosFinado.primerApellido,
         segundoApellido: formulario.datosFinado.segundoApellido,
-        fechaNacimiento: moment(formulario.datosFinado.fechaNacimiento).format('YYYY-MM-DD'),
+        fechaNacimiento: formulario.datosFinado.fechaNacimiento,
         edad: formulario.datosFinado.edad,
         sexo: formulario.datosFinado.sexo == 0 ? null : formulario.datosFinado.sexo,
         otroTipoSexo: formulario.datosFinado.otroTipoSexo,
@@ -945,7 +847,6 @@ export class ModificarDatosFinadoSFComponent
         unidadProcedencia: formulario.datosFinado.unidadProcedencia,
         procedenciaFinado: formulario.datosFinado.procedenciaFinado,
         tipoPension: formulario.datosFinado.tipoPension,
-        idFinado: this.idFinado
       },
       direccion: {
         calle: formulario.direccion.calle,
@@ -959,11 +860,45 @@ export class ModificarDatosFinadoSFComponent
     };
 
     //direcccion
-    this.finado.cp = null;
-    this.finado.idTipoOrden = datosEtapaFinado.datosFinado.tipoOrden;
-    this.finado.extremidad = datosEtapaFinado.datosFinado.esParaExtremidad;
-    this.finado.esobito = datosEtapaFinado.datosFinado.esObito;
-    this.finado.rfc = null;
+    // this.finado.cp = null;
+    // this.finado.idTipoOrden = 4;
+    // this.finado.rfc = null;
+    // this.finado.curp = datosEtapaFinado.datosFinado.curp;
+    // this.finado.nss = datosEtapaFinado.datosFinado.nss;
+    // this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
+    // this.finado.primerApellido = datosEtapaFinado.datosFinado.primerApellido;
+    // this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
+    // this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
+    // this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
+    // this.finado.fechaNac = datosEtapaFinado.datosFinado.fechaNacimiento;
+    // this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+    // this.finado.idEstado = datosEtapaFinado.direccion.estado;
+    // this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion;
+    // this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
+    // this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
+    // this.finado.hora = datosEtapaFinado.datosFinado.horaDeceso;
+    // this.finado.idClinicaAdscripcion = datosEtapaFinado.datosFinado.clinicaAdscripcion;
+    // this.finado.idUnidadProcedencia = datosEtapaFinado.datosFinado.unidadProcedencia;
+    // this.finado.procedenciaFinado = datosEtapaFinado.datosFinado.procedenciaFinado;
+    // this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
+    // this.finado.idContratoPrevision = this.idContratoPrevision;
+    // this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
+    // this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
+    // this.finado.cp = null;
+    // this.finado.idPersona = null;
+    this.cpFinado.idDomicilio = this.idDomicilio;
+    this.cpFinado.desCalle = datosEtapaFinado.direccion.calle;
+    this.cpFinado.numExterior = datosEtapaFinado.direccion.noExterior;
+    this.cpFinado.numInterior = datosEtapaFinado.direccion.noInterior;
+    this.cpFinado.codigoPostal = datosEtapaFinado.direccion.cp;
+    this.cpFinado.desColonia = datosEtapaFinado.direccion.colonia;
+    this.cpFinado.desMunicipio = datosEtapaFinado.direccion.municipio;
+    this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
+    this.finado.cp = this.cpFinado;
+
+    this.finado.idTipoOrden = 4;
+
+    this.altaODS.idContratantePf = this.idContratante;
     this.finado.curp = datosEtapaFinado.datosFinado.curp;
     this.finado.nss = datosEtapaFinado.datosFinado.nss;
     this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
@@ -971,70 +906,27 @@ export class ModificarDatosFinadoSFComponent
     this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
     this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
     this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-    this.finado.fechaNac = datosEtapaFinado.datosFinado.fechaNacimiento;
-    this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
-    this.finado.idEstado = datosEtapaFinado.direccion.estado;
-    this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion;
+    this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.tipoOrden).format('yyyy-MM-DD');
+    this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
+    this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+    this.finado.fechaDeceso = moment(datosEtapaFinado.datosFinado.fechaDefuncion).format('yyyy-MM-DD');
     this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
     this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
-    this.finado.hora = datosEtapaFinado.datosFinado.horaDeceso;
+    this.finado.hora = moment(datosEtapaFinado.datosFinado.horaDeceso).format('HH:mm');
     this.finado.idClinicaAdscripcion = datosEtapaFinado.datosFinado.clinicaAdscripcion;
     this.finado.idUnidadProcedencia = datosEtapaFinado.datosFinado.unidadProcedencia;
     this.finado.procedenciaFinado = datosEtapaFinado.datosFinado.procedenciaFinado;
     this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
     this.finado.idContratoPrevision = this.idContratoPrevision;
-    this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
-    this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
-    // this.finado.cp = null;
-    // this.finado.idPersona = null;
-    this.altaODS.idContratantePf = this.idContratante;
-      this.finado.idFinado = null;
-    if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
-      this.finado.idFinado = this.idFinado;
-      this.finado.rfc = null;
-      this.finado.curp = datosEtapaFinado.datosFinado.curp;
-      this.finado.nss = datosEtapaFinado.datosFinado.nss;
-      this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
-      this.finado.primerApellido = datosEtapaFinado.datosFinado.primerApellido;
-      this.finado.segundoApellido =
-        datosEtapaFinado.datosFinado.segundoApellido;
-      this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
-      this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-      this.finado.fechaNac = moment(
-        datosEtapaFinado.datosFinado.tipoOrden
-      ).format('yyyy-MM-DD');
-      this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.fechaDeceso = moment(
-        datosEtapaFinado.datosFinado.fechaDefuncion
-      ).format('yyyy-MM-DD');
-      this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
-      this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
-      this.finado.hora = moment(datosEtapaFinado.datosFinado.horaDeceso).format(
-        'HH:mm'
-      );
-      this.finado.idClinicaAdscripcion =
-        datosEtapaFinado.datosFinado.clinicaAdscripcion;
-      this.finado.idUnidadProcedencia =
-        datosEtapaFinado.datosFinado.unidadProcedencia;
-      this.finado.procedenciaFinado =
-        datosEtapaFinado.datosFinado.procedenciaFinado;
-      this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
-      this.finado.idContratoPrevision = this.idContratoPrevision;
-      this.finado.idVelatorioContratoPrevision =
-        this.idVelatorioContratoPrevision;
-      this.cpFinado.desCalle = datosEtapaFinado.direccion.calle;
-      this.cpFinado.numExterior = datosEtapaFinado.direccion.noExterior;
-      this.cpFinado.numInterior = datosEtapaFinado.direccion.noInterior;
-      this.cpFinado.codigoPostal = datosEtapaFinado.direccion.cp;
-      this.cpFinado.desColonia = datosEtapaFinado.direccion.colonia;
-      this.cpFinado.desMunicipio = datosEtapaFinado.direccion.municipio;
-      this.cpFinado.desEstado = datosEtapaFinado.direccion.estado;
-      this.cpFinado.idDomicilio = this.idDomicilio;
-      this.finado.cp = this.cpFinado;
-      this.finado.idPersona = this.idPersona ?? null;
-      this.finado.idFinado = this.idFinado ?? null;
-    }
+    this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision;
+    this.finado.idPersona = this.idPersona ?? null;
+    this.finado.idFinado = this.idFinado;
+    this.finado.rfc = null;
+
+
+
+
+
 
     this.altaODS.finado = this.finado;
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
@@ -1105,5 +997,7 @@ export class ModificarDatosFinadoSFComponent
     this.seleccionarEtapa.emit(0);
     this.datosAlta();
   }
-
+  validarBotonAceptar(): boolean {
+    return this.form.invalid || this.folioInvalido
+  }
 }

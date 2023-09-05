@@ -57,6 +57,8 @@ import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.i
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
+import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
+import {GenerarOrdenServicioSFComponent} from "../generar-orden-servicio/generar-orden-servicio.component";
 
 @Component({
   selector: 'app-modificar-informacion-servicio-sf',
@@ -129,7 +131,8 @@ export class ModificarInformacionServicioSFComponent
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
     private generarOrdenServicioService: GenerarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private generarODSSF: GenerarOrdenServicioService,
+    private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef,
     private router: Router,
@@ -296,7 +299,7 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          { value: datos.gestionadoPorPromotor, disabled: false },
+          { value: datos.gestionadoPorPromotor, disabled: true },
           [Validators.required],
         ],
         promotor: [
@@ -660,73 +663,76 @@ export class ModificarInformacionServicioSFComponent
   preorden(): void {
     this.altaODS.idEstatus = 1;
     this.llenarDatos();
-    Number(this.estatusUrl) == 1 ? this.guardarODS(0) : this.guardarODSComplementaria(0);
+    this.guardarODS(0)
+    // Number(this.estatusUrl) == 1 ? this.guardarODS(0) : this.guardarODSComplementaria(0);
   }
 
   guardarODS(consumoTablas:number): void {
     let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
     this.loaderService.activar();
-    this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
+    this.generarODSSF.actualizarODSSF(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
-          if (respuesta.error) {
-            this.salas = [];
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(respuesta.mensaje)
+        {
+          next:(respuesta: HttpRespuesta<any>) => {
+            const datos = respuesta.datos;
+            if (respuesta.error) {
+              this.salas = [];
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                  parseInt(respuesta.mensaje)
+                );
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
               );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+
+              return;
+            }
+            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio,consumoTablas);
+            this.descargarOrdenServicio(
+              respuesta.datos.idOrdenServicio,
+              respuesta.datos.idEstatus
             );
 
-            return;
-          }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio,consumoTablas);
-          this.descargarOrdenServicio(
-            respuesta.datos.idOrdenServicio,
-            respuesta.datos.idEstatus
-          );
 
-
-          if(this.altaODS.idEstatus == 2){
-            const ExitoMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(respuesta.mensaje)
+            if(this.altaODS.idEstatus == 2){
+              const ExitoMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                  parseInt(respuesta.mensaje)
+                );
+              this.alertaService.mostrar(
+                TipoAlerta.Exito,
+                ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
               );
-            this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
-            );
-          }else{
-            this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
-            );
-          }
-
-
-          this.router.navigate(['ordenes-de-servicio']);
-        },
-        (error: HttpErrorResponse) => {
-          try {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
+            }else{
+              this.alertaService.mostrar(
+                TipoAlerta.Exito,
+                'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
               );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
-          } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            }
+
+
+            this.router.navigate(['ordenes-de-servicio']);
+          },
+          error:(error: HttpErrorResponse) => {
+            try {
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                  parseInt(error.error.mensaje)
+                );
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
+              );
+            } catch (error) {
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
+              );
+            }
           }
         }
       );
@@ -989,10 +995,10 @@ export class ModificarInformacionServicioSFComponent
   }
 
   generada(): void {
-    this.altaODS.idEstatus = 1;
+    this.altaODS.idEstatus = 2;
     this.llenarDatos();
-
-    Number(this.estatusUrl)==1 ? this.guardarODS(1) : this.guardarODSComplementaria(1);
+    this.guardarODS(1)
+    // Number(this.estatusUrl)==1 ? this.guardarODS(1) : this.guardarODSComplementaria(1);
 
     // this.guardarODS(1);
   }

@@ -27,6 +27,7 @@ import {PdfViewerModule} from "ng2-pdf-viewer";
 import { DialogModule } from 'primeng/dialog';
 import { PrevisualizacionArchivoComponent } from './components/calendario-vehiculos/previsualizacion-archivo/previsualizacion-archivo.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -39,27 +40,28 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     RegistrarSalidaComponent,
     PrevisualizacionArchivoComponent,
   ],
-  imports: [
-    CommonModule,
-    DropdownModule,
-    ControlVehiculosRoutingModule,
-    SelectButtonModule,
-    TableModule,
-    TabViewModule,
-    TituloPrincipalModule,
-    FormsModule,
-    TablePanelModule,
-    ReactiveFormsModule,
-    CalendarModule,
-    FullCalendarModule,
-    AccordionModule,
-    UtileriaModule,
-    InputNumberModule,
-    ValidaRolModule,
-    PdfViewerModule,
-    DialogModule,
-    ConfirmDialogModule
-  ],
+    imports: [
+        CommonModule,
+        DropdownModule,
+        ControlVehiculosRoutingModule,
+        SelectButtonModule,
+        TableModule,
+        TabViewModule,
+        TituloPrincipalModule,
+        FormsModule,
+        TablePanelModule,
+        ReactiveFormsModule,
+        CalendarModule,
+        FullCalendarModule,
+        AccordionModule,
+        UtileriaModule,
+        InputNumberModule,
+        ValidaRolModule,
+        PdfViewerModule,
+        DialogModule,
+        ConfirmDialogModule,
+        BtnRegresarModule
+    ],
   providers: [
     ControlVehiculosService
   ]

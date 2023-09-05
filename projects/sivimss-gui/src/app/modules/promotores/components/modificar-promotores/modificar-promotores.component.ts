@@ -6,7 +6,7 @@ import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadc
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { OverlayPanel } from "primeng/overlaypanel";
 import { VerDetallePromotoresComponent } from '../ver-detalle-promotores/ver-detalle-promotores.component';
-import { Promotor } from '../../models/promotores.interface';
+import { DiasDescanso, Promotor } from '../../models/promotores.interface';
 import { Accion } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { CURP, EMAIL } from 'projects/sivimss-gui/src/app/utils/regex';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
@@ -34,6 +34,7 @@ interface HttpResponse {
 export class ModificarPromotoresComponent implements OnInit {
 
   readonly POSICION_CATALOGO_VELATORIO: number = 2;
+  readonly POSICION_CATALOGOS_ENTIDADES: number = 3;
   readonly NOT_FOUND_RENAPO: string = "CURP no válido.";
 
   @ViewChild(OverlayPanel)
@@ -41,6 +42,7 @@ export class ModificarPromotoresComponent implements OnInit {
 
   public promotor!: Promotor;
   public catalogoVelatorios: TipoDropdown[] = [];
+  public entidadFederativa: TipoDropdown[] = [];
   public modificarPromotorForm!: FormGroup;
   public mostrarModalConfirmacion: boolean = false;
   public mostrarModalPromotorDuplicado: boolean = false;
@@ -77,7 +79,7 @@ export class ModificarPromotoresComponent implements OnInit {
             this.promotor = respuesta?.datos || [];
 
             let arraydiasDescanso: Date[] = [];
-            this.promotor.promotorDiasDescanso?.forEach((element: any) => {
+            this.promotor.promotorDiasDescanso?.forEach((element: DiasDescanso) => {
               arraydiasDescanso.push(new Date(moment(element.fecDescanso, 'DD/MM/YYYY').format('YYYY/MM/DD')));
             });
 
@@ -85,9 +87,10 @@ export class ModificarPromotoresComponent implements OnInit {
               ...this.promotor,
               id: this.promotor.idPromotor,
               velatorio: this.promotor.idVelatorio,
-              fechaNacimiento: new Date(moment(this.promotor.fecBaja, 'DD/MM/YYYY').format('YYYY/MM/DD')),
-              fechaIngreso: new Date(moment(this.promotor.fecNac, 'DD/MM/YYYY').format('YYYY/MM/DD')),
-              fechaBaja: new Date(moment(this.promotor.fecIngreso, 'DD/MM/YYYY').format('YYYY/MM/DD')),
+              entidadFederativa: this.promotor.idLugarNac,
+              fechaNacimiento: this.promotor.fecNac ? new Date(moment(this.promotor.fecNac, 'DD/MM/YYYY').format('YYYY/MM/DD')) : null,
+              fechaIngreso: this.promotor.fecIngreso ? new Date(moment(this.promotor.fecIngreso, 'DD/MM/YYYY').format('YYYY/MM/DD')) : null,
+              fechaBaja: this.promotor.fecBaja ? new Date(moment(this.promotor.fecBaja, 'DD/MM/YYYY').format('YYYY/MM/DD')) : null,
               diasDescanso: arraydiasDescanso,
             });
           }
@@ -108,6 +111,7 @@ export class ModificarPromotoresComponent implements OnInit {
       primerApellido: [{ value: null, disabled: true }, [Validators.maxLength(20), Validators.required]],
       segundoApellido: [{ value: null, disabled: true }, [Validators.maxLength(20), Validators.required]],
       fechaNacimiento: [{ value: null, disabled: true }, Validators.required],
+      entidadFederativa: [{ value: null, disabled: true }, Validators.required],
       fechaIngreso: [{ value: null, disabled: false }, Validators.required],
       fechaBaja: [{ value: null, disabled: true }],
       sueldoBase: [{ value: null, disabled: false }, [Validators.maxLength(10), Validators.required]],
@@ -124,6 +128,7 @@ export class ModificarPromotoresComponent implements OnInit {
   cargarCatalogo(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_VELATORIO].datos, "velatorio", "idVelatorio");
+    this.entidadFederativa = respuesta[this.POSICION_CATALOGOS_ENTIDADES];
   }
   cerrarDialogo() {
     this.ref.close();
@@ -161,11 +166,31 @@ export class ModificarPromotoresComponent implements OnInit {
   }
 
   datosModificar() {
-    let fecPromotorDiasDescanso: string[] = [];
-    this.mpf.diasDescanso.value?.forEach((element: Object) => {
-      fecPromotorDiasDescanso.push(moment(element).format('DD/MM/YYYY'));
+    let fecPromotorDiasDescanso: DiasDescanso[] = [];
+    if (this.promotor.promotorDiasDescanso && this.promotor.promotorDiasDescanso.length > 0) {
+      let diasDescansoTemp: string[] = [];
+      this.mpf.diasDescanso.value?.forEach((fecha: Object) => diasDescansoTemp.push(moment(fecha).format('DD/MM/YYYY')));
+      this.promotor.promotorDiasDescanso.forEach((promotorDiaDescanso: DiasDescanso) => {
+        let foundIndex = diasDescansoTemp.findIndex((diaDescanso: string) => diaDescanso === promotorDiaDescanso.fecDescanso);
+        if (foundIndex > -1) {
+          fecPromotorDiasDescanso.push({ id: promotorDiaDescanso.id, fecDescanso: promotorDiaDescanso.fecDescanso, estatus: 1 });
+          diasDescansoTemp.splice(foundIndex, 1);
+        } else {
+          fecPromotorDiasDescanso.push({ id: promotorDiaDescanso.id, fecDescanso: promotorDiaDescanso.fecDescanso, estatus: 0 });
+        }
+      });
 
-    });
+      if (diasDescansoTemp.length > 0) {
+        diasDescansoTemp.forEach((diaDescanso: string) => {
+          fecPromotorDiasDescanso.push({ id: null, fecDescanso: diaDescanso, estatus: null });
+        });
+      }
+    } else {
+      this.mpf.diasDescanso.value?.forEach((diaDescanso: string) => {
+        fecPromotorDiasDescanso.push({ id: null, fecDescanso: moment(diaDescanso).format('DD/MM/YYYY'), estatus: null });
+      });
+    }
+
     return {
       idPromotor: this.promotor.idPromotor,
       correo: this.mpf.correo.value,

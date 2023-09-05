@@ -30,15 +30,15 @@ const routes: Routes = [
       respuesta: ConsultarOrdenServicioResolver,
     },
   },
+  // {
+  //   path: 'ods-plan-sf',
+  //   component: OrdenesServicioSFComponent,
+  //   resolve: {
+  //     respuesta: ConsultarOrdenServicioResolver,
+  //   },
+  // },
   {
-    path: 'ods-plan-sf',
-    component: OrdenesServicioSFComponent,
-    resolve: {
-      respuesta: ConsultarOrdenServicioResolver,
-    },
-  },
-  {
-    path: 'ods-plan-sf/generar-ods-sf',
+    path: 'generar-ods-sf',
     component: GenerarOrdenServicioSFComponent,
     resolve: {
       respuesta: GenerarOrdenServicioResolver,
@@ -59,7 +59,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'ods-plan-sf/modificar-ods-sf',
+    path: 'modificar-ods-sf',
     component: ActualizarOrdenServicioSFComponent,
     resolve: {
       respuesta: ActualizarOrdenServicioResolver,
