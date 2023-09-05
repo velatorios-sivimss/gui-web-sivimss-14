@@ -1,5 +1,7 @@
-<app-titulo-principal titulo="Registro de Nuevo Plan SFPA"></app-titulo-principal>
-
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Registro de Nuevo Plan SFPA" class="col"></app-titulo-principal>
+</div>
 <div class="row mb-3">
   <div class="col-md-3">
     <label class="control-label" for="tipoContratacion">Tipo de contratación<span class="req">*</span>:</label>
@@ -34,12 +36,12 @@
           <div class="col-md-3">
             <label class="control-label" for="matricula">Matrícula:</label>
             <input id="matricula" class="form-control" formControlName="matricula" placeholder="Ingresa la matrícula"
-            maxlength="10" numbersOnly (blur)="consultarMatricula(0)">
+                   maxlength="10" numbersOnly (blur)="consultarMatricula(0)">
           </div>
           <div class="col-md-3">
             <label class="control-label" for="nss">NSS<span class="req">*</span>:</label>
             <input id="nss" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" maxlength="11"
-            (blur)="consultarNSS(0)">
+                   (blur)="consultarNSS(0)">
             <span class="campo-obligatorio"
                   *ngIf="fda.nss?.errors?.required && (fda.nss?.dirty || fda.nss?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -55,14 +57,16 @@
           <div class="col-md-4">
             <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
             <input id="primerApellido" class="form-control" formControlName="primerApellido"
-                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(1)" lettersOnly>
+                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(1)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fda.primerApellido?.errors?.required && (fda.primerApellido?.dirty || fda.primerApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-4">
             <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
             <input id="segundoApellido" class="form-control" formControlName="segundoApellido"
-                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(2)" lettersOnly>
+                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(2)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fda.segundoApellido?.errors?.required && (fda.segundoApellido?.dirty || fda.segundoApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -78,7 +82,8 @@
           </div>
           <div class="col-md-3">
             <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
-            <p-dropdown appendTo="body" id="sexo" class="form-control" formControlName="sexo" (onChange)="cambiarSexo(0)"
+            <p-dropdown appendTo="body" id="sexo" class="form-control" formControlName="sexo"
+                        (onChange)="cambiarSexo(0)"
                         [options]="sexo" [filter]="true" filterBy="label"
                         placeholder="Selecciona el sexo">
             </p-dropdown>
@@ -123,14 +128,14 @@
             <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
             <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
                    placeholder="Ingresa el correo electrónico" (change)="convertirMinusculas(0)"
-                    (blur)="consultarCorreo(0)">
+                   (blur)="consultarCorreo(0)">
             <span class="campo-obligatorio"
                   *ngIf="fda.correoElectronico?.errors?.required && (fda.correoElectronico?.dirty || fda.correoElectronico?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
             <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
             <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono"
-            numbersOnly maxlength="10">
+                   numbersOnly maxlength="10">
             <span class="campo-obligatorio"
                   *ngIf="fda.telefono?.errors?.required && (fda.telefono?.dirty || fda.telefono?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -141,7 +146,7 @@
           <div class="col-md-3">
             <label class="control-label" for="calle">Calle<span class="req">*</span>:</label>
             <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
-            maxlength="30">
+                   maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fda.calle?.errors?.required && (fda.calle?.dirty || fda.calle?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -160,7 +165,7 @@
           <div class="col-md-3">
             <label class="control-label" for="cp">C.P.<span class="req">*</span>:</label>
             <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa el C.P." maxlength="5"
-            numbersOnly (blur)="consultarCodigoPostal(0)">
+                   numbersOnly (blur)="consultarCodigoPostal(0)">
             <span class="campo-obligatorio"
                   *ngIf="fda.cp?.errors?.required && (fda.cp?.dirty || fda.cp?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -169,7 +174,7 @@
           <div class="col-md-4">
             <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
             <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
-            maxlength="45">
+                   maxlength="45">
             <span class="campo-obligatorio"
                   *ngIf="fda.colonia?.errors?.required && (fda.colonia?.dirty || fda.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -229,12 +234,12 @@
             <div class="flex mt-2">
               <div class="flex align-items-center mx-2">
                 <p-radioButton [inputId]="'si'" name="datosIguales" [value]="true"
-                     (click)="datosIguales(true)" formControlName="datosIguales"></p-radioButton>
+                               (click)="datosIguales(true)" formControlName="datosIguales"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'si'">Si</label>
               </div>
               <div class="flex align-items-center mx-2">
                 <p-radioButton [inputId]="'no'" name="datosIguales" [value]="false"
-                     (click)="datosIguales(false)" formControlName="datosIguales"></p-radioButton>
+                               (click)="datosIguales(false)" formControlName="datosIguales"></p-radioButton>
                 <label class="control-label m-0 mx-3" [for]="'no'">No</label>
               </div>
             </div>
@@ -263,7 +268,8 @@
           </div>
           <div class="col-md-3">
             <label class="control-label" for="nssContratante">NSS<span class="req">*</span>:</label>
-            <input id="nssContratante" class="form-control" formControlName="nss" placeholder="Ingresa el NSS" maxlength="11"
+            <input id="nssContratante" class="form-control" formControlName="nss" placeholder="Ingresa el NSS"
+                   maxlength="11"
                    (blur)="consultarNSS(1)">
             <span class="campo-obligatorio"
                   *ngIf="fdc.nss?.errors?.required && (fdc.nss?.dirty || fdc.nss?.touched)">Este campo es obligatorio *.</span>
@@ -281,7 +287,8 @@
             <label class="control-label" for="primerApellidoContratante">Primer apellido<span
               class="req">*</span>:</label>
             <input id="primerApellidoContratante" class="form-control" formControlName="primerApellido"
-                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(4)" lettersOnly>
+                   placeholder="Ingresa el primer apellido" maxlength="20" (keyup.space)="sinEspacioDoble(4)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdc.primerApellido?.errors?.required && (fdc.primerApellido?.dirty || fdc.primerApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -289,7 +296,8 @@
             <label class="control-label" for="segundoApellidoContratante">Segundo apellido<span
               class="req">*</span>:</label>
             <input id="segundoApellidoContratante" class="form-control" formControlName="segundoApellido"
-                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(5)" lettersOnly>
+                   placeholder="Ingresa el segundo apellido" maxlength="20" (keyup.space)="sinEspacioDoble(5)"
+                   lettersOnly>
             <span class="campo-obligatorio"
                   *ngIf="fdc.segundoApellido?.errors?.required && (fdc.segundoApellido?.dirty || fdc.segundoApellido?.touched)">Este campo es obligatorio *.</span>
           </div>
@@ -333,7 +341,8 @@
           </div>
           <div class="col-md-3" *ngIf="fdc.nacionalidad.value == 2">
             <label class="control-label" for="paisNacimientoContratante">País de nacimiento</label>
-            <p-dropdown appendTo="body" id="paisNacimientoContratante" class="form-control" formControlName="paisNacimiento"
+            <p-dropdown appendTo="body" id="paisNacimientoContratante" class="form-control"
+                        formControlName="paisNacimiento"
                         [options]="paises" [filter]="true" filterBy="label"
                         placeholder="Selecciona el país de nacimiento">
             </p-dropdown>
@@ -341,7 +350,8 @@
           <div class="col-md-3" *ngIf="fdc.nacionalidad.value == 1">
             <label class="control-label" for="lugarNacimientoContratante">Lugar de nacimiento<span
               class="req">*</span>:</label>
-            <p-dropdown appendTo="body" id="lugarNacimientoContratante" class="form-control" formControlName="lugarNacimiento"
+            <p-dropdown appendTo="body" id="lugarNacimientoContratante" class="form-control"
+                        formControlName="lugarNacimiento"
                         [options]="estados" [filter]="true" filterBy="label"
                         placeholder="Selecciona el lugar de nacimiento">
             </p-dropdown>
@@ -372,12 +382,13 @@
           <div class="col-md-3">
             <label class="control-label" for="calleContratante">Calle<span class="req">*</span>:</label>
             <input id="calleContratante" class="form-control" formControlName="calle" placeholder="Ingresa la calle"
-            maxlength="30">
+                   maxlength="30">
             <span class="campo-obligatorio"
                   *ngIf="fdc.calle?.errors?.required && (fdc.calle?.dirty || fdc.calle?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-3">
-            <label class="control-label" for="numeroExteriorContratante">Número exterior<span class="req">*</span>:</label>
+            <label class="control-label" for="numeroExteriorContratante">Número exterior<span
+              class="req">*</span>:</label>
             <input id="numeroExteriorContratante" class="form-control" formControlName="numeroExterior"
                    placeholder="Ingresa el númrto exterior" alphanumericOnly maxlength="10">
             <span class="campo-obligatorio"
@@ -434,11 +445,13 @@
 
 <div class="flex justify-content-end mb-3">
   <button class="ml-4 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-  <button class="ml-4 btn btn-primary btn-md" [disabled]="validarBotonGuardar()" (click)="confirmarGuardado = true"> Guardar </button>
+  <button class="ml-4 btn btn-primary btn-md" [disabled]="validarBotonGuardar()" (click)="confirmarGuardado = true">
+    Guardar
+  </button>
 </div>
 
 <p-dialog header="" [(visible)]="confirmarGuardado" [style]="{width: '50vw'}"
-          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
+          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true">
   <div class="row">
     <p class="text-center">¿Estás seguro de agregar este nuevo registro?</p>
   </div>
@@ -451,19 +464,20 @@
 </p-dialog>
 
 <p-dialog header="" [(visible)]="confirmarAceptarPaquete" [style]="{width: '50vw'}"
-          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
+          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true">
   <div class="row">
     <p class="text-justify">{{infoPaqueteSeleccionado}}</p>
   </div>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
-      <button type="button" class="btn btn-primary btn-md ml-5" (click)="confirmarAceptarPaquete = false">Aceptar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="confirmarAceptarPaquete = false">Aceptar
+      </button>
     </div>
   </div>
 </p-dialog>
 
 <p-dialog header="" [(visible)]="confirmacionDatosExistentes" [style]="{width: '50vw'}"
-          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true"  >
+          [draggable]="false" [resizable]="false" [showHeader]="true" [modal]="true">
   <div class="row">
     <p class="text-center">{{mensajeDatosExistentes}}</p>
   </div>
