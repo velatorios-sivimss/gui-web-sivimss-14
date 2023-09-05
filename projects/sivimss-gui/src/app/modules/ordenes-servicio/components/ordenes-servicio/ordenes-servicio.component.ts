@@ -80,6 +80,8 @@ export class OrdenesServicioComponent implements OnInit {
   ordenesServicio: OrdenServicioPaginado[] = [];
   ordenServicioSeleccionada!: any;
 
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+
   constructor(
     private formBuilder: FormBuilder,
     private consultarOrdenServicioService: ConsultarOrdenServicioService,
@@ -169,8 +171,8 @@ export class OrdenesServicioComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-             delegacion: [{value: null, disabled: false}],
-              velatorio: [{value: null, disabled: false}],
+             delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled:  +this.rolLocalStorage.idOficina >= 2}],
+              velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3}],
             numeroFolio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
            nombreFinado: [{value: null, disabled: false}],
@@ -179,6 +181,7 @@ export class OrdenesServicioComponent implements OnInit {
          numeroContrato: [{value: null, disabled: false}],
                 estatus: [{value: null, disabled: false}]
     });
+    this.consultarVelatorioPorID()
   }
 
   paginar(event?: LazyLoadEvent): void {
