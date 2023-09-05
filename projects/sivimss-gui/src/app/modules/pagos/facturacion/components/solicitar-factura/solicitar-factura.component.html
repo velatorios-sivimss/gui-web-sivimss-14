@@ -91,7 +91,7 @@
     <div class="row mb-3 mt-3">
       <div class="col-md-6">
         <label class="control-label" for="cfdi">Uso del CFDI<span class="req">*</span>:</label>
-        <p-dropdown id="cfdi" class="form-control" formControlName="cfdi" [options]="temp"
+        <p-dropdown id="cfdi" class="form-control" formControlName="cfdi" [options]="cfdi"
                     placeholder="Selecciona el uso del CFDI">
         </p-dropdown>
         <span class="campo-obligatorio"
@@ -99,7 +99,7 @@
       </div>
       <div class="col-md-3">
         <label class="control-label" for="metodoPago">Método de pago<span class="req">*</span>:</label>
-        <p-dropdown id="metodoPago" class="form-control" formControlName="metodoPago" [options]="temp"
+        <p-dropdown id="metodoPago" class="form-control" formControlName="metodoPago" [options]="metodosPago"
                     placeholder="Ingresa el método de pago">
         </p-dropdown>
         <span class="campo-obligatorio"
@@ -107,7 +107,7 @@
       </div>
       <div class="col-md-3">
         <label class="control-label" for="formaPago">Forma de pago<span class="req">*</span>:</label>
-        <p-dropdown id="formaPago" class="form-control" formControlName="formaPago" [options]="temp"
+        <p-dropdown id="formaPago" class="form-control" formControlName="formaPago" [options]="formasPago"
                     placeholder="Ingresa la forma de pago">
         </p-dropdown>
         <span class="campo-obligatorio"
@@ -143,3 +143,4 @@
     </div>
   </form>
 </ng-container>
+<div class="mt-5"></div>

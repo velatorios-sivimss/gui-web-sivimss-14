@@ -4,7 +4,6 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {REGISTROS_PAGOS} from "../../constants/dummies";
 import {TIPO_FACTURACION} from "../../constants/tipoFacturacion";
-import {MetodosPagoFact} from "../../models/metodosPagoFact.interface";
 import {ActivatedRoute} from "@angular/router";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {FacturacionService} from "../../services/facturacion.service";
@@ -44,7 +43,9 @@ export class SolicitarFacturaComponent implements OnInit {
   tiposFactura: TipoDropdown[] = TIPO_FACTURACION;
   folios: TipoDropdown[] = [];
   servicios: any[] = REGISTROS_PAGOS;
-  temp: TipoDropdown[] = [];
+  cfdi: TipoDropdown[] = [];
+  metodosPago: TipoDropdown[] = [];
+  formasPago: TipoDropdown[] = [];
   registroFolios: Folio[] = [];
   registroContratante!: DatosContratante;
   registroRFC!: RegistroRFC;
