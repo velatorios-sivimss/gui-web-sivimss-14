@@ -188,6 +188,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     const unidadSeleccionada = this.solicitudPagoForm.get('unidadSeleccionada')?.value
     const referenciaUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value
     const tipoSolicitud = this.solicitudPagoForm.get('tipoSolicitud')?.value;
+    const impTotal = this.solicitudPagoForm.get('importe')?.value;
     return {
       concepto: this.solicitudPagoForm.get('concepto')?.value,
       cveFolioConsignados: null,
@@ -204,7 +205,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       nomRemitente: this.solicitudPagoForm.get('nomRemitente')?.value,
       numReferencia: this.solicitudPagoForm.get('referenciaTD')?.value ?? '1',
       fechaElabora: this.validarFecha(this.solicitudPagoForm.get('fechaElaboracion')?.value),
-      impTotal: this.solicitudPagoForm.get('importe')?.value,
+      impTotal: impTotal.replace('$ ', ''),
       observaciones: this.solicitudPagoForm.get('observaciones')?.value,
       idProveedor: [1, 4, 5].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
       beneficiario: [2, 3].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
@@ -220,6 +221,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('importeLetra')?.setValue('');
     const importe = this.solicitudPagoForm.get('importe')?.value;
     if (!importe) return;
+    importe.replace('$ ', '');
     const importeLetra: string = convertirNumeroPalabra(+importe);
     this.solicitudPagoForm.get('importe')?.setValue(`$ ${importe}`);
     this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1) + ' pesos');
