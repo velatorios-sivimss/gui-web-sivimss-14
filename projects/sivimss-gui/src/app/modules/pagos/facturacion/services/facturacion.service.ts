@@ -15,6 +15,7 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _cfdi: string = 'consultar-cfdi-facturacion';
   private readonly _metodosPago: string = 'consultar-metodo-pago-facturacion';
   private readonly _formasPago: string = 'consultar-forma-pago-facturacion';
+  private readonly _crearFactura: string = 'crear_factura';
 
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "", "", 100, "consultar-tabla-facturacion", "", "");
@@ -69,4 +70,7 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._formasPago}`, body);
   }
 
+  generarSolicitudPago(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._crearFactura}`, body);
+  }
 }
