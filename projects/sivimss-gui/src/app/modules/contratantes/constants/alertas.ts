@@ -7,5 +7,5 @@ export const ALERTA_ESTATUS: string[] = [
 export const MENSAJE_CONFIRMACION: string[] = [
   "¿Estás seguro de activar el registro seleccionado del contratante?",
   "¿Estás seguro de desactivar el registro seleccionado del contratante?",
-  "¿Estás seguro de modificar el registro?",
+  "¿Estás seguro de modificar el registro del contratante?",
 ];
