@@ -10,7 +10,7 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import * as moment from 'moment';
-import { TIPO_SEXO, CATALOGO_NACIONALIDAD, CATALOGO_SEXO } from '../../constants/catalogos-complementarios';
+import { CATALOGO_NACIONALIDAD, CATALOGO_SEXO } from '../../constants/catalogos-complementarios';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { finalize } from 'rxjs';
@@ -206,7 +206,7 @@ export class ModificarContratantesComponent implements OnInit {
     } else {
       this.dgf.rfc.setValidators(Validators.maxLength(13));
       this.dgf.rfc.updateValueAndValidity();
-      const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/);
+      const regex: RegExp = new RegExp(/^([A-Z,Ñ&]{3,4}(\d{2})(0[1-9]|1[0-2])(0[1-9]|1\d|2\d|3[0-1])[A-Z|\d]{3})$/);
       if (!regex.test(this.dgf.rfc.value)) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
         this.dgf.rfc.setErrors({ 'incorrect': true });

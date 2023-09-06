@@ -86,10 +86,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     this.paqueteBackUp = respuesta[this.POSICION_PAQUETE].datos;
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
     this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
-    setTimeout(()=> {
       this.consultarFormulario();
-      this.consultarNumeroPagos(this.idPlanSfpa);
-    },500)
+      // this.consultarNumeroPagos(this.idPlanSfpa);
   }
 
   consultarFormulario(): void {
@@ -103,6 +101,10 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         this.fecIngresa = respuesta.datos.fecIngreso;
         this.inicializarFormDatosAfiliado(respuesta.datos);
         this.inicializarFormDatosContratante(respuesta.datos ? respuesta.datos : null);
+        if(respuesta.datos.numPago > 0){
+          this.fda.tipoPaquete.disable();
+          this.fda.numeroPago.disable();
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
@@ -118,7 +120,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
                          [Validators.required, Validators.pattern(PATRON_CURP)]],
                     rfc: [{value: afiliado.titularesBeneficiarios[0].rfc, disabled:true},
                          [Validators.required, Validators.pattern(PATRON_RFC)]],
-              matricula: [{value: afiliado.titularesBeneficiarios[0].matricula, disabled:true},],
+              matricula: [{value: afiliado.titularesBeneficiarios[0].matricula, disabled:false},],
                     nss: [{value: afiliado.titularesBeneficiarios[0].nss, disabled:true},
                          [Validators.required]],
                  nombre: [{value: afiliado.titularesBeneficiarios[0].nomPersona, disabled:true},
@@ -137,16 +139,16 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         lugarNacimiento: [{value: +afiliado?.titularesBeneficiarios[0].idEstado ?? null, disabled:true},
                          [Validators.required]],
          paisNacimiento: [{value: +afiliado?.titularesBeneficiarios[0].idPais ?? null, disabled:true}],
-               telefono: [{value: afiliado.titularesBeneficiarios[0].telefono, disabled:true},
+               telefono: [{value: afiliado.titularesBeneficiarios[0].telefono, disabled:false},
                          [Validators.required]],
-      correoElectronico: [{value: afiliado.titularesBeneficiarios[0].correo, disabled:true},
+      correoElectronico: [{value: afiliado.titularesBeneficiarios[0].correo, disabled:false},
                          [Validators.required, Validators.pattern(PATRON_CORREO)]],
                      cp: [{value: afiliado.titularesBeneficiarios[0].cp.codigoPostal, disabled:true},
                          [Validators.required]],
-                  calle: [{value: afiliado.titularesBeneficiarios[0].cp.desCalle, disabled:true},
+                  calle: [{value: afiliado.titularesBeneficiarios[0].cp.desCalle, disabled:false},
                          [Validators.required]],
-         numeroInterior: [{value: afiliado.titularesBeneficiarios[0].cp.numInterior, disabled:true}],
-         numeroExterior: [{value: afiliado.titularesBeneficiarios[0].cp.numExterior, disabled:true},
+         numeroInterior: [{value: afiliado.titularesBeneficiarios[0].cp.numInterior, disabled:false}],
+         numeroExterior: [{value: afiliado.titularesBeneficiarios[0].cp.numExterior, disabled:false},
                          [Validators.required]],
                 colonia: [{value: afiliado.titularesBeneficiarios[0].cp.desColonia, disabled:true},
                          [Validators.required]],
@@ -353,6 +355,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
             formularioEnUso[posicion].nacionalidad.setValue(2);
             formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
           }
+          formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc);
+          formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss);
           this.consultarCodigoPostal(posicion);
           return;
         }
@@ -429,6 +433,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
             formularioEnUso[posicion].nacionalidad.setValue(2);
             formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
           }
+          formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc);
+          formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss);
           this.consultarCodigoPostal(posicion);
           return;
         }
@@ -611,23 +617,23 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       this.fdc.curp.enable()
       this.fdc.rfc.enable()
       this.fdc.matricula.enable()
-      this.fdc.nss.enable()
-      this.fdc.nombre.enable()
-      this.fdc.primerApellido.enable()
-      this.fdc.segundoApellido.enable()
-      this.fdc.sexo.enable()
-      this.fdc.otroSexo.enable()
-      this.fdc.fechaNacimiento.enable()
-      this.fdc.nacionalidad.enable()
-      this.fdc.lugarNacimiento.enable()
-      this.fdc.paisNacimiento.enable()
-      this.fdc.telefono.enable()
-      this.fdc.correoElectronico.enable()
-      this.fdc.cp.enable()
-      this.fdc.calle.enable()
-      this.fdc.numeroInterior.enable()
-      this.fdc.numeroExterior.enable()
-      this.fdc.colonia.enable()
+      // this.fdc.nss.enable()
+      // this.fdc.nombre.enable()
+      // this.fdc.primerApellido.enable()
+      // this.fdc.segundoApellido.enable()
+      // this.fdc.sexo.enable()
+      // this.fdc.otroSexo.enable()
+      // this.fdc.fechaNacimiento.enable()
+      // this.fdc.nacionalidad.enable()
+      // this.fdc.lugarNacimiento.enable()
+      // this.fdc.paisNacimiento.enable()
+      // this.fdc.telefono.enable()
+      // this.fdc.correoElectronico.enable()
+      // this.fdc.cp.enable()
+      // this.fdc.calle.enable()
+      // this.fdc.numeroInterior.enable()
+      // this.fdc.numeroExterior.enable()
+      // this.fdc.colonia.enable()
       return
     }
     this.fdc.curp.disable()

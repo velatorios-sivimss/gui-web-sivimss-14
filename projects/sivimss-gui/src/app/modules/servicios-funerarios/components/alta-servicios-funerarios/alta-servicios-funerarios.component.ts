@@ -200,6 +200,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             formularioEnUso[posicion].nacionalidad.setValue(2);
             formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
           }
+          formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc);
+          formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss);
           this.consultarCodigoPostal(posicion);
           this.cambiarNacionalidad(posicion);
           return;
@@ -279,6 +281,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             formularioEnUso[posicion].nacionalidad.setValue(2);
             formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
           }
+          formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc);
+          formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss);
           this.consultarCodigoPostal(posicion);
           this.cambiarNacionalidad(posicion);
           return;

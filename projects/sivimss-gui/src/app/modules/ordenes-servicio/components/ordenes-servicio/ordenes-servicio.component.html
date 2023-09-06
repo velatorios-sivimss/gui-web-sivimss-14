@@ -1,12 +1,6 @@
-<div class="flex">
-  <app-btn-regresar class="mr-2" style="
-      z-index: 300;
-      border: solid 2px;
-      height: 38px;
-      width: 47px;
-      padding-left: 6px;
-      border-radius: 5px;" routerLink="../"></app-btn-regresar>
-  <app-titulo-principal style="width: 100%" titulo="Órdenes de servicio"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="Órdenes de servicio"></app-titulo-principal>
 </div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
@@ -188,8 +182,8 @@
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')
           && !ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')" (click)="modificarODS()" titulo="Modificar"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')
-                            && ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')" (click)="modificarODSsf()" titulo="Modificar"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios') && ordenServicioSeleccionada.tiempoGeneracionODSHrs <= 24" (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
+          && ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')" (click)="modificarODSsf()" titulo="Modificar"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')  && ordenServicioSeleccionada.tiempoGeneracionODSHrs <= 24 " (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
       </div>
       <div *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
         <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>

@@ -1,5 +1,5 @@
 <div class="grid">
-  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
   <app-titulo-principal class="col" titulo="Administrar usuarios contratantes"></app-titulo-principal>
 </div>
 <div class="border-panel">
@@ -54,26 +54,27 @@
   <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="contratantes"
            [paginator]="contratantes.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
            [totalRecords]="totalElementos"
-           [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+           [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [resizableColumns]="true"
+           [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
-        <th scope="col">CURP</th>
-        <th scope="col">NSS</th>
-        <th scope="col">Nombre completo</th>
-        <th scope="col">R.F.C</th>
-        <th scope="col">Fecha de nacimiento</th>
-        <th scope="col">Teléfono</th>
+        <th pResizableColumn scope="col">CURP</th>
+        <th pResizableColumn scope="col">NSS</th>
+        <th pResizableColumn scope="col">Nombre completo</th>
+        <th pResizableColumn scope="col">R.F.C</th>
+        <th pResizableColumn scope="col">Fecha de nacimiento</th>
+        <th pResizableColumn scope="col">Teléfono</th>
         <th scope="col">Estatus</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-contratante>
       <tr>
-        <td> {{contratante.curp}}</td>
-        <td> {{contratante.nss}}</td>
-        <td> {{contratante.nomContratante}}</td>
-        <td> {{contratante.rfc}}</td>
-        <td> {{contratante.fecNacimiento}}</td>
-        <td> {{contratante.tel}}</td>
+        <td pResizableColumn> {{contratante.curp}}</td>
+        <td pResizableColumn> {{contratante.nss}}</td>
+        <td pResizableColumn> {{contratante.nomContratante}}</td>
+        <td pResizableColumn> {{contratante.rfc}}</td>
+        <td pResizableColumn> {{contratante.fecNacimiento}}</td>
+        <td pResizableColumn> {{contratante.tel}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-inputswitch" *appValidaRol="['CONTRATANTES','MODIFICAR']">
