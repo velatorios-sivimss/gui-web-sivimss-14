@@ -6,4 +6,5 @@ export interface OrdenSubrogacion {
     folioOds?: string;
     proveedor?: string;
     nombreFinado?: string;
+    tipoServicio?: string;
 }

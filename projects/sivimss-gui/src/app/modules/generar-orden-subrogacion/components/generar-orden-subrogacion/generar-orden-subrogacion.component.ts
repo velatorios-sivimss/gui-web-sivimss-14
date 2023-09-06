@@ -37,6 +37,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
       folioOds: 'DOC-000001',
       proveedor: 'Artículos y servicios Alta calidad del Noreste S.A. de C.V.',
       nombreFinado: 'Irma Jimenez Loranca',
+      tipoServicio: '',
     },
     {
       id: 2,
@@ -44,6 +45,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
       folioOds: 'DOC-000001',
       proveedor: 'Artículos y servicios Alta calidad del Noreste S.A. de C.V.',
       nombreFinado: 'Irma Jimenez Loranca',
+      tipoServicio: '',
     },
   ];
   public ordenSeleccionado!: OrdenSubrogacion;
