@@ -15,6 +15,7 @@ import {DatosContratante} from "../../models/datosContratante.interface";
 import {RegistroRFC} from "../../models/registroRFC.interface";
 import {forkJoin, Observable} from "rxjs";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {SolicitudGenerarFact} from "../../models/solicitudGenerarFact.interface";
 
 interface Folio {
   idRegistro: number,
@@ -232,6 +233,67 @@ export class SolicitarFacturaComponent implements OnInit {
     this.cfdi = [];
     this.metodosPago = [];
     this.formasPago = [];
+  }
+
+  generarSolicitudFactura(): void {
+
+  }
+
+  generarSolicitud(): SolicitudGenerarFact {
+    return {
+      cfdi: {desCfdi: "", idCfdi: 0},
+      correo: "",
+      domicilioFiscal: {
+        calle: '',
+        email: '',
+        paisResidencia: '',
+        telefono1: '',
+        telefono2: '',
+        calr: '',
+        ccrh: '',
+        cp: '',
+        dalr: '',
+        dcrh: '',
+        caractDomicilio: '',
+        ccolonia: '',
+        centFed: '',
+        clocalidad: '',
+        cmunicipio: '',
+        dcolonia: '',
+        dentFed: '',
+        dentreCalle1: '',
+        dentreCalle2: '',
+        dinmueble: '',
+        dlocalidad: '',
+        dmunicipio: '',
+        dreferencia: '',
+        dvialidad: '',
+        faltaDom: '',
+        nexterior: '',
+        ninterior: '',
+        tinmueble: '',
+        ttel1: '',
+        ttel2: '',
+        tvialidad: ''
+      },
+      folio: "",
+      forPago: {desForPago: "", idForPago: 0},
+      idPagoBitacora: 0,
+      idRegistro: 0,
+      idVelatorio: 0,
+      metPagoFac: {desMetPagoFac: "", idMetPagoFac: 0},
+      nomContratante: "",
+      obsAutomatica: "",
+      obsManual: "",
+      razonSocial: "",
+      regimenFiscal: "",
+      rfc: "",
+      servicios: [],
+      tipoFactura: "",
+      tipoPersona: "",
+      totalPagado: "",
+      totalServicios: ""
+    }
   }
 
   get pf() {

@@ -136,7 +136,7 @@
     <div class="row">
       <div class="col-md-12 flex justify-content-end mb-4">
         <button type="reset" class="ml-4 btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
-        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="datosCFDIForm.invalid">Generar
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="datosCFDIForm.invalid" (click)="generarSolicitudFactura()">Generar
           factura
         </button>
       </div>
