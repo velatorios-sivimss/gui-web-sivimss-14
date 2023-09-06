@@ -27,6 +27,15 @@ interface SolicitudDatosContratante {
   idRegistro: number
 }
 
+interface MetodoPagoFacturacion {
+  desMetPagoFac: string,
+  idMetPagoFac: number
+}
+
+interface FormaPagoFacturacion {
+
+}
+
 @Component({
   selector: 'app-solicitar-factura',
   templateUrl: './solicitar-factura.component.html',
@@ -187,9 +196,11 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta): void => {
         const cfdi = respuesta[POSICION_CFDI].datos;
+        this.cfdi = mapearArregloTipoDropdown(cfdi, 'desCfdi', 'idCfdi');
         const metodosPago = respuesta[POSICION_METODOS_PAGO].datos;
+        this.metodosPago = mapearArregloTipoDropdown(metodosPago, 'desMetPagoFac', 'idMetPagoFac');
         const formasPago = respuesta[POSICION_FORMAS_PAGO].datos;
-
+        this.formasPago = mapearArregloTipoDropdown(formasPago, 'desForPago', 'idForPago');
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
