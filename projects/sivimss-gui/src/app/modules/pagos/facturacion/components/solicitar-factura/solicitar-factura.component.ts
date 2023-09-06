@@ -13,6 +13,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {finalize} from "rxjs/operators";
 import {DatosContratante} from "../../models/datosContratante.interface";
 import {RegistroRFC} from "../../models/registroRFC.interface";
+import {forkJoin, Observable} from "rxjs";
 
 interface Folio {
   idRegistro: number,
@@ -168,11 +169,43 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroRFC = respuesta.datos;
-        console.log(respuesta);
+        this.cargarCatalogosTipoPersona(this.registroRFC.tipoPersona)
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error)
       }
     });
+  }
+
+  cargarCatalogosTipoPersona(tipoPersona: string): void {
+    const POSICION_CFDI: number = 0;
+    const POSICION_METODOS_PAGO: number = 1;
+    const POSICION_FORMAS_PAGO: number = 2;
+    this.cargadorService.activar();
+    forkJoin([this.cargarCatalogoCFDI(tipoPersona), this.cargarCatalogoMetodosPago(tipoPersona), this.cargarCatalogoFormasPago(tipoPersona)]).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta): void => {
+        const cfdi = respuesta[POSICION_CFDI].datos;
+        const metodosPago = respuesta[POSICION_METODOS_PAGO].datos;
+        const formasPago = respuesta[POSICION_FORMAS_PAGO].datos;
+
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+      }
+    })
+  }
+
+  cargarCatalogoCFDI(tipoPersona: string): Observable<HttpRespuesta<any>> {
+    return this.facturacionService.consultarCFDI(tipoPersona);
+  }
+
+  cargarCatalogoMetodosPago(tipoPersona: string): Observable<HttpRespuesta<any>> {
+    return this.facturacionService.consultarMetodosPago(tipoPersona);
+  }
+
+  cargarCatalogoFormasPago(tipoPersona: string): Observable<HttpRespuesta<any>> {
+    return this.facturacionService.consultarFormasPago(tipoPersona);
   }
 }
