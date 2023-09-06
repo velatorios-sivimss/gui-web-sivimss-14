@@ -14,6 +14,7 @@ import {finalize} from "rxjs/operators";
 import {DatosContratante} from "../../models/datosContratante.interface";
 import {RegistroRFC} from "../../models/registroRFC.interface";
 import {forkJoin, Observable} from "rxjs";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 
 interface Folio {
   idRegistro: number,
@@ -64,7 +65,8 @@ export class SolicitarFacturaComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private readonly activatedRoute: ActivatedRoute,
               private facturacionService: FacturacionService,
-              private cargadorService: LoaderService
+              private cargadorService: LoaderService,
+              private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -154,7 +156,8 @@ export class SolicitarFacturaComponent implements OnInit {
         this.registroContratante = respuesta.datos;
       },
       error: (error: HttpErrorResponse): void => {
-        console.log(error)
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -181,7 +184,8 @@ export class SolicitarFacturaComponent implements OnInit {
         this.cargarCatalogosTipoPersona(this.registroRFC.tipoPersona)
       },
       error: (error: HttpErrorResponse): void => {
-        console.log(error)
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
@@ -203,7 +207,8 @@ export class SolicitarFacturaComponent implements OnInit {
         this.formasPago = mapearArregloTipoDropdown(formasPago, 'desForPago', 'idForPago');
       },
       error: (error: HttpErrorResponse): void => {
-        console.log(error);
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     })
   }
