@@ -28,15 +28,6 @@ interface SolicitudDatosContratante {
   idRegistro: number
 }
 
-interface MetodoPagoFacturacion {
-  desMetPagoFac: string,
-  idMetPagoFac: number
-}
-
-interface FormaPagoFacturacion {
-
-}
-
 @Component({
   selector: 'app-solicitar-factura',
   templateUrl: './solicitar-factura.component.html',
@@ -44,8 +35,14 @@ interface FormaPagoFacturacion {
 })
 export class SolicitarFacturaComponent implements OnInit {
 
-  @ViewChild(FormGroupDirective)
-  private filtroFormDir!: FormGroupDirective;
+  @ViewChild("solicitudDirForm", {read: FormGroupDirective})
+  private solicitudDirForm!: FormGroupDirective;
+
+  @ViewChild("CFDIDirForm", {read: FormGroupDirective})
+  private CFDIDirForm!: FormGroupDirective;
+
+  @ViewChild("datosContratanteDirForm", {read: FormGroupDirective})
+  private datosContratanteDirForm!: FormGroupDirective;
 
   solicitudForm!: FormGroup;
   datosContratanteForm!: FormGroup;
@@ -101,8 +98,14 @@ export class SolicitarFacturaComponent implements OnInit {
   }
 
   limpiar(): void {
-    if (this.solicitudForm) {
-      this.filtroFormDir.resetForm({});
+    if (this.solicitudForm && this.solicitudDirForm) {
+      this.solicitudDirForm.resetForm({});
+    }
+    if (this.datosCFDIForm && this.CFDIDirForm) {
+      this.CFDIDirForm.resetForm({});
+    }
+    if (this.datosContratanteForm && this.datosContratanteDirForm) {
+      this.datosContratanteDirForm.resetForm({});
     }
   }
 
@@ -120,6 +123,7 @@ export class SolicitarFacturaComponent implements OnInit {
     const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
     this.tipoSolicitud = this.solicitudForm.get('tipoFactura')?.value;
     this.cargadorService.activar();
+    this.limpiarFolios();
     this.facturacionService.obtenerFolioODS(tipoFactura).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
@@ -128,9 +132,16 @@ export class SolicitarFacturaComponent implements OnInit {
         this.folios = mapearArregloTipoDropdown(respuesta.datos, 'folio', 'folio');
       },
       error: (error: HttpErrorResponse): void => {
-        console.log(error);
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+
+  limpiarFolios(): void {
+    this.registroFolios = [];
+    this.folios = [];
+    this.solicitudForm.get('folio')?.setValue(null);
   }
 
   get pf() {
@@ -154,6 +165,7 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroContratante = respuesta.datos;
+        this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante.rfc)
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);

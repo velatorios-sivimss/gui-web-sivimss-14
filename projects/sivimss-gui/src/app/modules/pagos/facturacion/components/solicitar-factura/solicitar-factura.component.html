@@ -1,6 +1,6 @@
 <app-titulo-principal titulo="Solicitar factura"></app-titulo-principal>
 <ng-container>
-  <form [formGroup]="solicitudForm" (reset)="limpiar()" (ngSubmit)="buscarDatosContratante()">
+  <form [formGroup]="solicitudForm" (reset)="limpiar()" (ngSubmit)="buscarDatosContratante()" #solicitudDirForm>
     <div class="row mb-3 mt-3">
       <div class="col-md-6">
         <label class="control-label" for="tipoFactura">Tipo de factura<span class="req">*</span>:</label>
@@ -44,7 +44,7 @@
                          [totalServicios]="registroContratante.totalServicios"></app-datos-contratante>
   <div class="panel-busqueda mb-1">
     <div class="row mb-3 mt-3 mr-3 ml-3">
-      <form [formGroup]="datosContratanteForm">
+      <form [formGroup]="datosContratanteForm" #datosContratanteDirForm>
         <div class="col-md-6">
           <div class="grid">
             <div class="col-9">
@@ -87,7 +87,7 @@
   </app-datos-receptor>
 </ng-container>
 <ng-container *ngIf="registroRFC">
-  <form [formGroup]="datosCFDIForm">
+  <form [formGroup]="datosCFDIForm" #CFDIDirForm>
     <div class="row mb-3 mt-3">
       <div class="col-md-6">
         <label class="control-label" for="cfdi">Uso del CFDI<span class="req">*</span>:</label>
