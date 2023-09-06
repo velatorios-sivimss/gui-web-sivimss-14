@@ -96,15 +96,15 @@ export class DetalleRegistroOtorgamientoServiciosComponent implements OnInit {
                 parseInt(error.error.mensaje)
               );
             this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+              TipoAlerta.Error,
+              'Error al guardar la información. Intenta nuevamente. '
             );
           } catch (error) {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
             this.alertaService.mostrar(
               TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
+              'Error al guardar la información. Intenta nuevamente.'
             );
           }
         },
