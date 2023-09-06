@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes, UrlSerializer} from '@angular/router';
-import {PaginaNoEncontradaComponent} from './components/pagina-no-encontrada/pagina-no-encontrada.component';
-import {BloqueaUsuarioLogueadoGuard} from 'projects/sivimss-gui/src/app/guards/bloquea-usuario-logueado.guard';
-import {PermiteUsuarioLogueadoGuard} from 'projects/sivimss-gui/src/app/guards/permite-usuario-logueado.guard';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes, UrlSerializer } from '@angular/router';
+import { PaginaNoEncontradaComponent } from './components/pagina-no-encontrada/pagina-no-encontrada.component';
+import { BloqueaUsuarioLogueadoGuard } from 'projects/sivimss-gui/src/app/guards/bloquea-usuario-logueado.guard';
+import { PermiteUsuarioLogueadoGuard } from 'projects/sivimss-gui/src/app/guards/permite-usuario-logueado.guard';
 
 const routes: Routes = [
   {
@@ -197,17 +197,22 @@ const routes: Routes = [
   },
   {
     path: 'reporte-orden-servicio',
-    loadChildren: () => import ('./modules/reporte-orden-servicio/reporte-orden-servicio.module').then(m => m.ReporteOrdenServicioModule),
+    loadChildren: () => import('./modules/reporte-orden-servicio/reporte-orden-servicio.module').then(m => m.ReporteOrdenServicioModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: 'orden-entrada',
-    loadChildren: () => import ('./modules/orden-entrada/orden-entrada.module').then(m => m.OrdenEntradaModule),
+    loadChildren: () => import('./modules/orden-entrada/orden-entrada.module').then(m => m.OrdenEntradaModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: 'balance-cajas',
     loadChildren: () => import('./modules/balance-cajas/balance-caja.module').then(m => m.BalanceCajaModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'generar-orden-de-subrogacion',
+    loadChildren: () => import('./modules/generar-orden-subrogacion/generar-orden-subrogacion.module').then(m => m.GenerarOrdenSubrogacionModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
