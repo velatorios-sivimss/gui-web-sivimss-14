@@ -44,22 +44,21 @@ export class GenerarOrdenFormatoComponent implements OnInit {
 
   inicializarEditForm(): void {
     this.editForm = this.formBuilder.group({
-      version: new FormControl({ value: null, disabled: true }, []),
+      version: new FormControl({ value: '1.0.0', disabled: true }, []),
       fecha: new FormControl({ value: null, disabled: false }, []),
       hora: new FormControl({ value: null, disabled: false }, []),
       delegacion: new FormControl({ value: null, disabled: false }, []),
       velatorio: new FormControl({ value: null, disabled: false }, []),
-
       razonSocial: new FormControl({ value: null, disabled: false }, []),
       numOrden: new FormControl({ value: null, disabled: false }, []),
       fechaOrden: new FormControl({ value: null, disabled: false }, []),
-
       nombreFinado: new FormControl({ value: null, disabled: false }, []),
       tipoTraslado: new FormControl({ value: null, disabled: false }, []),
-
       servicios: new FormControl({ value: null, disabled: false }, []),
       especificaciones: new FormControl({ value: null, disabled: false }, []),
-
+      lugarOrigen: new FormControl({ value: null, disabled: false }, []),
+      lugarDestino: new FormControl({ value: null, disabled: false }, []),
+      distancia: new FormControl({ value: null, disabled: false }, []),
       nombreOperador: new FormControl({ value: null, disabled: false }, []),
       nombreAcompanante: new FormControl({ value: null, disabled: false }, []),
       numCarroza: new FormControl({ value: null, disabled: false }, []),

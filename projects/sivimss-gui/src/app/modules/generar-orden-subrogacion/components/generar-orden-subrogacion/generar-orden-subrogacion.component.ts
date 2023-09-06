@@ -77,11 +77,11 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl([{ value: null, disabled: false }], []),
-      velatorio: new FormControl([{ value: null, disabled: false }], []),
-      folio: new FormControl([{ value: null, disabled: false }], []),
-      proveedor: new FormControl([{ value: null, disabled: false }], []),
-      fecha: new FormControl([{ value: null, disabled: false }], []),
+      nivel: new FormControl({ value: null, disabled: false }, []),
+      velatorio: new FormControl({ value: null, disabled: false }, []),
+      folio: new FormControl({ value: null, disabled: false }, []),
+      proveedor: new FormControl({ value: null, disabled: false }, []),
+      fecha: new FormControl({ value: null, disabled: false }, []),
     });
   }
 
