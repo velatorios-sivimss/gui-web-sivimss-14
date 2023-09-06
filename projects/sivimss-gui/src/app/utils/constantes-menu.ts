@@ -183,6 +183,10 @@ export const idsModulos: DatoModulo = {
         ruta: '/promotores',
         icono: 'default-icon.svg'
     },
+    '76': {
+      ruta: 'ordenes-de-servicio/generar-ods-sf',
+      icono: 'default-icon.svg'
+    },
 };
 
 
