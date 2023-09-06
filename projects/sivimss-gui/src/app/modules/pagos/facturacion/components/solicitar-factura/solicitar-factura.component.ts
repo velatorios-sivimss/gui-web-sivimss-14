@@ -35,6 +35,8 @@ interface SolicitudDatosContratante {
 })
 export class SolicitarFacturaComponent implements OnInit {
 
+  readonly DIEZ_ELEMENTOS_POR_PAGINA: number = DIEZ_ELEMENTOS_POR_PAGINA;
+
   @ViewChild("solicitudDirForm", {read: FormGroupDirective})
   private solicitudDirForm!: FormGroupDirective;
 
@@ -55,9 +57,10 @@ export class SolicitarFacturaComponent implements OnInit {
   metodosPago: TipoDropdown[] = [];
   formasPago: TipoDropdown[] = [];
   registroFolios: Folio[] = [];
-  registroContratante!: DatosContratante;
+  registroContratante: DatosContratante | null = null;
   registroRFC!: RegistroRFC;
   tipoSolicitud!: 1 | 2 | 3 | 4;
+
 
   constructor(private formBuilder: FormBuilder,
               private readonly activatedRoute: ActivatedRoute,
@@ -107,9 +110,10 @@ export class SolicitarFacturaComponent implements OnInit {
     if (this.datosContratanteForm && this.datosContratanteDirForm) {
       this.datosContratanteDirForm.resetForm({});
     }
+    this.registroContratante = null;
+    this.limpiarCatalogos();
   }
 
-  protected readonly DIEZ_ELEMENTOS_POR_PAGINA = DIEZ_ELEMENTOS_POR_PAGINA;
 
   get folio(): string {
     const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
@@ -144,19 +148,6 @@ export class SolicitarFacturaComponent implements OnInit {
     this.solicitudForm.get('folio')?.setValue(null);
   }
 
-  get pf() {
-    return this.solicitudForm?.controls;
-  }
-
-  get pr() {
-    return this.datosContratanteForm?.controls;
-  }
-
-  get pcf() {
-    return this.datosCFDIForm?.controls;
-  }
-
-
   buscarDatosContratante(): void {
     const solicitud: SolicitudDatosContratante = this.crearSolicitudDatosContratante();
     this.cargadorService.activar();
@@ -165,7 +156,7 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroContratante = respuesta.datos;
-        this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante.rfc)
+        this.datosContratanteForm.get('rfc')?.setValue(this.registroContratante!.rfc)
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -206,6 +197,7 @@ export class SolicitarFacturaComponent implements OnInit {
     const POSICION_CFDI: number = 0;
     const POSICION_METODOS_PAGO: number = 1;
     const POSICION_FORMAS_PAGO: number = 2;
+    this.limpiarCatalogos();
     this.cargadorService.activar();
     forkJoin([this.cargarCatalogoCFDI(tipoPersona), this.cargarCatalogoMetodosPago(tipoPersona), this.cargarCatalogoFormasPago(tipoPersona)]).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -222,7 +214,7 @@ export class SolicitarFacturaComponent implements OnInit {
         console.error("ERROR: ", error);
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
-    })
+    });
   }
 
   cargarCatalogoCFDI(tipoPersona: string): Observable<HttpRespuesta<any>> {
@@ -235,5 +227,23 @@ export class SolicitarFacturaComponent implements OnInit {
 
   cargarCatalogoFormasPago(tipoPersona: string): Observable<HttpRespuesta<any>> {
     return this.facturacionService.consultarFormasPago(tipoPersona);
+  }
+
+  limpiarCatalogos(): void {
+    this.cfdi = [];
+    this.metodosPago = [];
+    this.formasPago = [];
+  }
+
+  get pf() {
+    return this.solicitudForm?.controls;
+  }
+
+  get pr() {
+    return this.datosContratanteForm?.controls;
+  }
+
+  get pcf() {
+    return this.datosCFDIForm?.controls;
   }
 }
