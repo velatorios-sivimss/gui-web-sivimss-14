@@ -16,7 +16,11 @@ import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
@@ -84,6 +88,8 @@ export class SolicitudesPagoComponent implements OnInit {
   MENSAJE_FILTROS: string = 'Selecciona por favor un criterio de búsqueda.';
   mostrarModalFiltros: boolean = false;
 
+  central!: boolean;
+
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -113,8 +119,12 @@ export class SolicitudesPagoComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroFormSolicitudesPago = this.formBuilder.group({
-      velatorio: [{value: usuario?.idVelatorio, disabled: false}],
+      velatorio: [{
+        value: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario),
+        disabled: obtenerNivelUsuarioLogueado(usuario) === 3
+      }],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
       ejercFiscal: [{value: null, disabled: false}],
@@ -279,7 +289,10 @@ export class SolicitudesPagoComponent implements OnInit {
     this.numPaginaActual = 0;
     if (this.filtroFormSolicitudesPago) {
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroFormDir.resetForm({velatorio: usuario?.idVelatorio});
+      const DEFAULT = {
+        velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)
+      }
+      this.filtroFormDir.resetForm(DEFAULT);
     }
     this.obtenerVelatorios();
     this.paginar();
@@ -287,7 +300,8 @@ export class SolicitudesPagoComponent implements OnInit {
 
   obtenerVelatorios(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.solicitudesPagoService.obtenerVelatoriosPorDelegacion(usuario.idDelegacion).subscribe({
+    const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
+    this.solicitudesPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
@@ -307,7 +321,7 @@ export class SolicitudesPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta) => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error) => {
@@ -326,7 +340,7 @@ export class SolicitudesPagoComponent implements OnInit {
       configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
@@ -341,7 +355,7 @@ export class SolicitudesPagoComponent implements OnInit {
     return {
       idSolicitud: this.solicitudPagoSeleccionado.idSolicitud,
       idTipoSolicitud: this.solicitudPagoSeleccionado.idTipoSolicitid,
-      idUnidadOperativa: this.solicitudPagoSeleccionado.idUnidadOperativa ?? null,
+      idUnidadOperativa: this.solicitudPagoSeleccionado.idUnidadOperartiva ?? null,
       idVelatorio: this.solicitudPagoSeleccionado.idVelatorio ?? null,
       cantidadLetra: convertirNumeroPalabra(this.solicitudPagoSeleccionado.importe),
       tipoReporte

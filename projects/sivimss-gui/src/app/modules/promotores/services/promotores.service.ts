@@ -59,4 +59,9 @@ export class PromotoresService extends BaseService<HttpRespuesta<any>, any> {
   obtenerCatalogos(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/nombre-promotor`, buscarCatalogo);
   }
+
+  obtenerCatalogoEstados():Observable<TipoDropdown[]> {
+    const estados = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_estados'));
+    return of(mapearArregloTipoDropdown(estados, "desc", "id"));
+  }
 }

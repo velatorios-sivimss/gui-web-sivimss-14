@@ -40,6 +40,7 @@ import { InformacionServicioVelacionInterface } from '../../models/InformacionSe
 import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
 import { ModalConvenioPfComponent } from '../modal-convenio-pf/modal-convenio-pf.component';
 import { Persona } from '../../models/Persona.interface';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-datos-finado',
@@ -102,6 +103,7 @@ export class DatosFinadoComponent implements OnInit {
   validacionPersonaConvenio: boolean = false;
 
   idPersona: number | null = null;
+  colonias: TipoDropdown[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -886,7 +888,8 @@ export class DatosFinadoComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-
+            const[dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
+            const fecha = new Date(anio+"/"+mes+"/"+dia)
             this.datosFinado.curp.setValue(respuesta.datos.curp);
             this.datosFinado.nombre.setValue(respuesta.datos?.nombre);
             this.datosFinado.primerApellido.setValue(respuesta.datos.primerApellido);
@@ -895,11 +898,14 @@ export class DatosFinadoComponent implements OnInit {
 
             //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
             this.datosFinado.nacionalidad.setValue(1);
+            this.datosFinado.fechaNacimiento.setValue(fecha);
 
           }
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
+          this.cambiarTipoSexo();
+          this.cambiarNacionalidad();
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -996,6 +1002,7 @@ export class DatosFinadoComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre

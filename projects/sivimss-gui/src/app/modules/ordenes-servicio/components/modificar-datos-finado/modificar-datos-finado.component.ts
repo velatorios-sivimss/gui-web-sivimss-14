@@ -53,6 +53,7 @@ import { GestionarEtapasActualizacionService } from '../../services/gestionar-et
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import { ModalConvenioPfComponent } from '../modal-convenio-pf/modal-convenio-pf.component';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-modificar-datos-finado',
@@ -120,6 +121,7 @@ export class ModificarDatosFinadoComponent
 
   idPersona: number | null = null;
   idFinado: number | null = null;
+  colonias: TipoDropdown[] = [];
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -203,6 +205,8 @@ export class ModificarDatosFinadoComponent
         (respuesta: HttpRespuesta<any>) => {
           this.loaderService.desactivar();
           if (respuesta) {
+            const[dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
+            const fecha = new Date(anio+"/"+mes+"/"+dia)
 
             this.datosFinado.curp.setValue(respuesta.datos.curp);
             this.datosFinado.nombre.setValue(respuesta.datos?.nombre);
@@ -212,11 +216,14 @@ export class ModificarDatosFinadoComponent
 
             //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
             this.datosFinado.nacionalidad.setValue(1);
+            this.datosFinado.fechaNacimiento.setValue(fecha);
 
           }
           this.direccion.colonia.patchValue(null);
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
+          this.cambiarTipoSexo();
+          this.cambiarNacionalidad();
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -238,8 +245,11 @@ export class ModificarDatosFinadoComponent
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio,mes,dia] = fechaActual.split('-')
     let nacionalidad = 1;
-    if (
-      datosEtapaFinado.datosFinado.idEstado == null ||
+    if(datosEtapaFinado.hasOwnProperty('direccion')){
+      let coloniasLista: any = [{'nombre': datosEtapaFinado.direccion.colonia}]
+      this.colonias = mapearArregloTipoDropdown(coloniasLista,'nombre','nombre')
+    }
+    if (datosEtapaFinado.datosFinado.idEstado == null ||
       datosEtapaFinado.datosFinado.idEstado == ''
     ) {
       nacionalidad = 2;
@@ -607,6 +617,7 @@ export class ModificarDatosFinadoComponent
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre

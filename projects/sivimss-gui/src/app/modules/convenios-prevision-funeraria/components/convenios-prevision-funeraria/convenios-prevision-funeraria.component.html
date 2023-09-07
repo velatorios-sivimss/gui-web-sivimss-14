@@ -1,20 +1,23 @@
-<app-titulo-principal titulo="Consultar los convenios nuevos y de renovación de previsión funeraria">
-</app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Consultar los convenios nuevos y de renovación de previsión funeraria"
+                        class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="folioConvenio">Folio convenio:</label>
         <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
-          placeholder="Ingresa el no. de folio" maxlength="12" trimmer folioOdsAlphanumeric>
+               placeholder="Ingresa el no. de folio" maxlength="12" trimmer folioOdsAlphanumeric>
         <span class="campo-obligatorio"
-          *ngIf="ff.folioConvenio?.errors?.required && (ff.folioConvenio?.dirty || ff.folioConvenio?.touched)">
+              *ngIf="ff.folioConvenio?.errors?.required && (ff.folioConvenio?.dirty || ff.folioConvenio?.touched)">
           Campo obligatorio</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="rfc">RFC:</label>
         <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC" maxlength="13" trimmer
-          alphanumericOnly>
+               alphanumericOnly>
         <span class="campo-obligatorio" *ngIf="ff.rfc?.errors?.required && (ff.rfc?.dirty || ff.rfc?.touched)">
           Campo obligatorio</span>
       </div>
@@ -23,14 +26,14 @@
       <div class="col-md-6">
         <label class="control-label" for="nombre">Nombre:</label>
         <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre" maxlength="75"
-          trimmer alphanumericOnly>
+               trimmer alphanumericOnly>
         <span class="campo-obligatorio" *ngIf="ff.nombre?.errors?.required && (ff.nombre?.dirty || ff.nombre?.touched)">
           Campo obligatorio</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="curp">CURP:</label>
         <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP" maxlength="18"
-          trimmer alphanumericOnly>
+               trimmer alphanumericOnly>
         <span class="campo-obligatorio" *ngIf="ff.curp?.errors?.required && (ff.curp?.dirty || ff.curp?.touched)">
           Campo obligatorio</span>
       </div>
@@ -39,17 +42,18 @@
       <div class="col-md-6">
         <label class="control-label" for="estatusConvenio">Estatus del convenio:</label>
         <p-dropdown id="estatusConvenio" class="form-control" formControlName="estatusConvenio"
-          [options]="estatusConvenio" placeholder="Selecciona el estatus del convenio" [filter]="true" filterBy="label">
+                    [options]="estatusConvenio" placeholder="Selecciona el estatus del convenio" [filter]="true"
+                    filterBy="label">
         </p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="ff.estatusConvenio?.errors?.required && (ff.estatusConvenio?.dirty || ff.estatusConvenio?.touched)">
+              *ngIf="ff.estatusConvenio?.errors?.required && (ff.estatusConvenio?.dirty || ff.estatusConvenio?.touched)">
           Campo obligatorio</span>
       </div>
     </div>
   </form>
   <div class="flex justify-content-end">
     <button class="btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-    <button class="ml-4 btn btn-default btn-md" (click)="limpiar()">Limpiar Filtros</button>
+    <button class="ml-4 btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
     <button class="ml-4 btn btn-primary btn-md" (click)="buscar()">
       Buscar
     </button>
@@ -59,13 +63,15 @@
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Convenios</h2>
     <button type="button" class="btn btn-primary btn-lg" routerLink="./ingresar-nuevo-convenio">Agregar
-      convenio</button>
+      convenio
+    </button>
   </div>
 
   <p-table #tablaConvenio appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [(selection)]="selectedConvenioPrevision"
-    (onRowSelect)="onRowSelect($event)" [value]="convenioPrevision" [paginator]="convenioPrevision.length > 0"
-    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos.tablaConvenios" [pageLinks]="3"
-    [(first)]="numPaginaActual.tablaConvenios" (onLazyLoad)="paginar($event)" [globalFilterFields]="['folioConvenio']">
+           (onRowSelect)="onRowSelect($event)" [value]="convenioPrevision" [paginator]="convenioPrevision.length > 0"
+           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos.tablaConvenios" [pageLinks]="3"
+           [(first)]="numPaginaActual.tablaConvenios" (onLazyLoad)="paginar($event)"
+           [globalFilterFields]="['folioConvenio']">
     <ng-template pTemplate="header">
       <tr>
         <th id="radio" style="width: 4rem"></th>
@@ -121,9 +127,9 @@
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" (click)="descargarPDF()" src="assets/images/imagen-icono-pdf.svg"
-              alt="exportar pdf">
+                 alt="exportar pdf">
             <img class="icon-export-table" (click)="descargarExcel()" src="assets/images/imagen-icono-excel.svg"
-              alt="exportar excel">
+                 alt="exportar excel">
           </div>
         </div>
       </div>
@@ -136,15 +142,15 @@
       <app-overlay-panel-opcion titulo="Renovar" (click)="renovarConvenio()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Modificar" (click)="modificarConvenio()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('Activo')"
-        (click)="cambiarEstatusConvenio()" titulo="Desactivar"></app-overlay-panel-opcion>
+                                (click)="cambiarEstatusConvenio()" titulo="Desactivar"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('Inactivo')"
-        (click)="cambiarEstatusConvenio()" titulo="Activar"></app-overlay-panel-opcion>
+                                (click)="cambiarEstatusConvenio()" titulo="Activar"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ver Convenio PF nuevo" (click)="generarReporteConvenioNuevo()"
-        *ngIf="convenioSeleccionado.tipoPlan === 1 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+                                *ngIf="convenioSeleccionado.tipoPlan === 1 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ver Convenio PF anterior" (click)="generarReporteConvenioAnterior()"
-        *ngIf="convenioSeleccionado.tipoPlan === 2 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+                                *ngIf="convenioSeleccionado.tipoPlan === 2 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Ver Hoja de afiliación" (click)="generarReporteAnexo()"
-        *ngIf="convenioSeleccionado.tipoPlan === 2 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+                                *ngIf="convenioSeleccionado.tipoPlan === 2 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
@@ -154,8 +160,9 @@
       <ng-template pTemplate="header">Datos del afiliado</ng-template>
       <ng-template pTemplate="content">
         <p-table #tablaAfiliado [value]="datosAfiliado" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos.tablaAfiliados" [pageLinks]="3" [(first)]="numPaginaActual.tablaAfiliados"
-          [globalFilterFields]="['rfc']">
+                 [totalRecords]="totalElementos.tablaAfiliados" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaAfiliados"
+                 [globalFilterFields]="['rfc']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Velatorio</th>
@@ -185,8 +192,8 @@
       <ng-template pTemplate="header">Vigencia del convenio</ng-template>
       <ng-template pTemplate="content">
         <p-table #tablaVigencia [value]="vigenciaConvenio" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos.tablaVigenciaConvenio" [pageLinks]="3"
-          [(first)]="numPaginaActual.tablaVigenciaConvenio" [globalFilterFields]="['folioConvenio']">
+                 [totalRecords]="totalElementos.tablaVigenciaConvenio" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaVigenciaConvenio" [globalFilterFields]="['folioConvenio']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Convenio</th>
@@ -210,8 +217,8 @@
       <ng-template pTemplate="header">Factura del convenio</ng-template>
       <ng-template pTemplate="content">
         <p-table #tablaFactura [value]="facturaConvenio" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos.tablaFacturaConvenio" [pageLinks]="3"
-          [(first)]="numPaginaActual.tablaFacturaConvenio" [globalFilterFields]="['factura']">
+                 [totalRecords]="totalElementos.tablaFacturaConvenio" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaFacturaConvenio" [globalFilterFields]="['factura']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Factura</th>
@@ -246,8 +253,8 @@
       <ng-template pTemplate="header">Beneficiarios</ng-template>
       <ng-template pTemplate="content">
         <p-table #tablaBeneficiario [value]="beneficiario" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos.tablaBeneficiario" [pageLinks]="3"
-          [(first)]="numPaginaActual.tablaBeneficiario" [globalFilterFields]="['nombre']">
+                 [totalRecords]="totalElementos.tablaBeneficiario" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaBeneficiario" [globalFilterFields]="['nombre']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Beneficiario</th>
@@ -271,8 +278,9 @@
       <ng-template pTemplate="header">Siniestros</ng-template>
       <ng-template pTemplate="content">
         <p-table #tablaSiniestro [value]="siniestro" [rows]="cantElementosPorPagina" [lazy]="true"
-          [totalRecords]="totalElementos.tablaSiniestros" [pageLinks]="3" [(first)]="numPaginaActual.tablaSiniestros"
-          [globalFilterFields]="['folioSinisestro']">
+                 [totalRecords]="totalElementos.tablaSiniestros" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaSiniestros"
+                 [globalFilterFields]="['folioSinisestro']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Velatorio</th>
@@ -304,7 +312,7 @@
 </section>
 
 <p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-  [draggable]="false" [resizable]="false" header="">
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>

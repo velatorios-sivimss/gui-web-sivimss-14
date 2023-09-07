@@ -59,6 +59,36 @@ import { ModalConvenioPfComponent } from './components/modal-convenio-pf/modal-c
 import { ActualizarOrdenServicioService } from './services/actualizar-orden-servicio.service';
 import { GestionarEtapasActualizacionService } from './services/gestionar-etapas-actualizacion.service';
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
+import {OrdenesServicioSFComponent}
+  from "./components/ods-plan-servicios-funerarios/ordenes-servicio/ordenes-servicio.component";
+import {CancelarOrdenServicioSFComponent}
+  from "./components/ods-plan-servicios-funerarios/cancelar-orden-servicio/cancelar-orden-servicio.component";
+import {GenerarOrdenServicioSFComponent}
+  from "./components/ods-plan-servicios-funerarios/generar-orden-servicio/generar-orden-servicio.component";
+import {DatosContratanteSFComponent}
+  from "./components/ods-plan-servicios-funerarios/datos-contratante/datos-contratante.component";
+import {DatosFinadoSFComponent}
+  from "./components/ods-plan-servicios-funerarios/datos-finado/datos-finado.component";
+import {CaracteristicasPresupuestoSFComponent}
+  from "./components/ods-plan-servicios-funerarios/caracteristicas-presupuesto/caracteristicas-presupuesto.component";
+import {InformacionServicioSFComponent}
+  from "./components/ods-plan-servicios-funerarios/informacion-servicio/informacion-servicio.component";
+import {ActualizarOrdenServicioSFComponent}
+  from "./components/ods-plan-servicios-funerarios/actualizar-orden-servicio/actualizar-orden-servicio.component";
+import {ModificarDatosContratanteSFComponent}
+  from "./components/ods-plan-servicios-funerarios/modificar-datos-contratante/modificar-datos-contratante.component";
+import {ModificarDatosFinadoSFComponent}
+  from "./components/ods-plan-servicios-funerarios/modificar-datos-finado/modificar-datos-finado.component";
+import {ModificarDatosCaracteristicasContratanteSFComponent}
+  from "./components/ods-plan-servicios-funerarios/modificar-datos-caracteristicas-contratante/modificar-datos-caracteristicas-contratante.component";
+import {ModificarInformacionServicioSFComponent}
+  from "./components/ods-plan-servicios-funerarios/modificar-informacion-servicio/modificar-informacion-servicio.component";
+import {ModalGenerarTarjetaIdentificacionSFComponent}
+  from "./components/ods-plan-servicios-funerarios/modal-generar-tarjeta-identificacion/modal-generar-tarjeta-identificacion.component";
+import {GenerarOrdenServicioSfService}
+  from "./services/generar-orden-servicio-sf.service";
+import {GestionarEtapasServiceSF} from "./services/gestionar-etapas.service-sf";
+import {GestionarEtapasActualizacionSFService} from "./services/gestionar-etapas-actualizacion-sf.service";
 @NgModule({
     declarations: [
         OrdenesServicioComponent,
@@ -93,6 +123,21 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
         ActualizarOrdenServicioComponent,
         ModificarDatosCaracteristicasContratanteComponent,
         ModalConvenioPfComponent,
+        /*NUEVOS MÓDULOS*/
+        OrdenesServicioSFComponent,
+        CancelarOrdenServicioSFComponent,
+        GenerarOrdenServicioSFComponent,
+        DatosContratanteSFComponent,
+        DatosFinadoSFComponent,
+        CaracteristicasPresupuestoSFComponent,
+        InformacionServicioSFComponent,
+        ActualizarOrdenServicioSFComponent,
+        ModificarDatosContratanteSFComponent,
+        ModificarDatosFinadoSFComponent,
+        ModificarDatosCaracteristicasContratanteSFComponent,
+        ModificarInformacionServicioSFComponent,
+        ModalGenerarTarjetaIdentificacionSFComponent
+
     ],
     imports: [
         CommonModule,
@@ -126,6 +171,9 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
         ConsultarOrdenServicioService,
         ActualizarOrdenServicioService,
         GestionarEtapasActualizacionService,
+        GenerarOrdenServicioSfService,
+        GestionarEtapasServiceSF,
+        GestionarEtapasActualizacionSFService
     ],
     exports: [
         DatosContratanteComponent

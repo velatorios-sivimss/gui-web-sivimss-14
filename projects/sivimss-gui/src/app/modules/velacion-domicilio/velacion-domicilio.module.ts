@@ -24,6 +24,7 @@ import { UtileriaModule } from "../../shared/utileria/utileria.module";
 import { EliminarArticuloComponent } from "./components/eliminar-articulo/eliminar-articulo.component";
 import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     ValidaRolModule,
     UtileriaModule,
     ConfirmDialogModule,
+    BtnRegresarModule,
   ],
   providers:[
     VelacionDomicilioService,

@@ -32,6 +32,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { UsuarioService } from '../usuarios/services/usuario.service';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
     ConfirmDialogModule,
     DialogModule,
     ValidaRolModule,
+    BtnRegresarModule,
   ],
   providers: [
     RenovarConvenioPfService,

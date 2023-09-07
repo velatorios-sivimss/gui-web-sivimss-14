@@ -1,0 +1,63 @@
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
+  <app-titulo-principal titulo="Realizar balance de caja" class="col"></app-titulo-principal>
+</div>
+<app-table-panel *ngIf="detalleArticulo">
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">Folio ODE {{ detalleArticulo.NUM_FOLIO_ODE }}</span>
+    </div>
+  </ng-template>
+  <div class="panel-table-container">
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Fecha ODE:</label>
+          <span>{{ detalleArticulo.FEC_ODE }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Folio artículo:</label>
+          <span>{{ detalleArticulo.FOLIO_ARTICULO }}</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Articulo:</label>
+          <span>{{ detalleArticulo.DES_MODELO_ARTICULO }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+
+<ng-container>
+  <form [formGroup]="formulario">
+    <div class="row mb-3 mt-3">
+      <div class="col-md-12">
+        <label class="control-label" for="modificarPago">Motivo de de la devolucion<span class="req">*</span>:</label>
+        <textarea rows="4" class="form-control" pInputTextarea formControlName="devolucionMotivo"
+          placeholder="Ingresa el motivo de la devolución" maxlength="100"></textarea>
+        <span class="campo-obligatorio"
+          *ngIf="f.devolucionMotivo?.errors?.required && (f.devolucionMotivo?.dirty || f.devolucionMotivo?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <span class="mensaje-inferior-campo-obligatorio">
+          *Campos obligatorios
+        </span>
+      </div>
+    </div>
+  </form>
+</ng-container>
+<section>
+  <div class="row mb-3">
+    <div class="col-md-12 flex justify-content-end align-items-center">
+      <button class="ml-4 btn btn-default btn-md" routerLink="../">Cancelar</button>
+      <button class="ml-4 btn btn-md btn-primary" (click)="devolver()">Devolver</button>
+    </div>
+  </div>
+</section>

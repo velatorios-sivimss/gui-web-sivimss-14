@@ -1,0 +1,268 @@
+h3 {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 45px;
+    text-transform: uppercase;
+    color: #272829;
+    margin: 0;
+}
+
+.seccion-folio {
+    border-bottom: 0px !important;
+    height: 40px;
+}
+
+.texto-centrado {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.valor-subtitulo {
+    color: #272829;
+}
+
+.border-custorm {
+    background: #F3F3F3;
+    border: 0.5px solid #E7F8E1;
+    border-radius: 5px;
+}
+
+.border-external {
+    background: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+}
+
+.body {
+    padding: 15px 0px;
+}
+
+.titulo-body {
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+
+    .title-center {
+        font-style: normal;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 26px;
+        color: #000000;
+        margin: 0;
+        margin-top: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+}
+
+.title-head {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 26px;
+    color: #000000;
+    margin: 0;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.general-font {
+    font-style: normal;
+    font-size: 14px;
+    line-height: 26px;
+    color: #000000;
+    margin: 0;
+    text-align: justify;
+}
+
+.etiqueta-obligatorios {
+    color: #393C3E;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+}
+
+.etiqueta-firma {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 17px;
+    color: #000000;
+}
+
+.etiqueta-form {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 20px;
+    color: #484848;
+}
+
+.etiqueta-conformidad {
+    color: #000000;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 30px;
+}
+
+.etiqueta-subtitulo {
+    color: #000000;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.subtitulo-derecho {
+    color: #000000;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 21px;
+    line-height: 40px;
+    padding-left: 52px;
+}
+
+.subtitulo {
+    line-height: 75px;
+}
+
+.subtitulo label {
+    color: #000000;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-item {
+    margin-left: 5px;
+    text-align: left;
+}
+
+.column-card {
+    width: 48%;
+}
+
+.card {
+    background: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    height: 250px;
+}
+
+.container-card {
+    bottom: -140px;
+    margin: 25px;
+    position: relative;
+}
+
+.etiqueta-totales {
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 20px;
+    color: #484848;
+}
+
+.logos {
+    margin-left: 0px;
+    margin-right: 0px;
+    height: 87px;
+}
+
+.logos div {
+    align-items: center;
+    border-radius: 15px;
+    display: flex;
+    height: 87px;
+    justify-content: center;
+}
+
+.logo-imss {
+    background-color: #235B4E;
+    width: 186px;
+}
+
+.float-left {
+    float: left;
+
+}
+
+.float-right {
+    float: right;
+}
+
+.logo-fibeso {
+    background-color: #FFFFFF;
+    border: 1px solid #235B4E;
+    width: 254px;
+}
+
+.logos div span {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 45px;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
+}
+
+.texto-imss {
+    color: #FFFFFF;
+}
+
+.texto-fibeso {
+    color: #235B4E;
+}
+
+.content-body {
+    border: 1px solid #000000;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.sub-content {
+    margin: 20px 15px;
+}
+
+.parte-nombre {
+    margin-right: 20px;
+    width: 40%;
+}
+
+.parte-firma {
+    width: 60%;
+}
+
+.container-gral {
+    margin: 35px;
+}
+
+.linea-firma {
+    border-bottom: 1px solid #000000;
+    margin-bottom: 0px !important;
+}
+
+hr.linea-firma {
+    border-top: 1px solid #000000;
+    margin-bottom: 0px !important;
+}
+
+.table-panel-column {
+    text-align: center;
+}

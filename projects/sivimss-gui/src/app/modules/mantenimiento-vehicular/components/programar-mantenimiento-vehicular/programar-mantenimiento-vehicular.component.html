@@ -1,4 +1,7 @@
-<app-titulo-principal titulo="Programar Mantenimiento Vehicular"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Programar Mantenimiento Vehicular" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroFormProgramarMantenimiento" (submit)="buscar()">
     <div class="row mb-3">

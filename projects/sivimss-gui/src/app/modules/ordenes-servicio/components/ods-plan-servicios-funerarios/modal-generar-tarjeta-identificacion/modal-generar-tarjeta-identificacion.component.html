@@ -1,0 +1,56 @@
+<ng-container
+  *ngIf="pasoForm === FormTarjetaIdentificacion.Seleccionar; then templateSeleccionar else templateConfirmacion"></ng-container>
+<ng-template #templateSeleccionar>
+  <form [formGroup]="form">
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label for="nombreOperador" class="control-label">Nombre del operador<span class="req">*</span>:</label>
+        <p-dropdown id="nombreOperador" class="form-control" formControlName="nombreOperador" appendTo="body"
+                    placeholder="Selecciona el operador" [filter]="true" filterBy="label"
+                    [options]="operadores"></p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="f.nombreOperador?.errors?.required && (f.nombreOperador?.dirty || f.nombreOperador?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+      <span class="etiqueta-base">
+        *Campos obligatorios
+      </span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-md btn-gold" (click)="cerrarModal()">Cancelar</button>
+        <button class="ml-6 btn btn-md btn-primary" [disabled]="form.invalid" (click)="guardar()">Agregar operador</button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #templateConfirmacion>
+  <hr>
+  <div class="row">
+    <div class="col-md-6 flex flex-column">
+      <span class="etiqueta-base">Nombre del operador*:</span>
+      <span class="texto-base">Berenice Tila Morado</span>
+    </div>
+    <div class="col-md-6 flex flex-column">
+      <span class="label-base">Folio de la órden vinculada*:</span>
+      <span class="texto-base">DOC-167589-2022</span>
+    </div>
+  </div>
+  <hr>
+  <div class="row my-6">
+    <div class="col-md-12">
+      <p class="etiqueta-base text-center">¿Estás seguro que deseas generar esta tarjeta de identificación?</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-md btn-gold" (click)="cancelarConfirmacion()">Cancelar</button>
+      <button type="button" class="ml-6 btn btn-md btn-primary" (click)="guardar()">Aceptar</button>
+    </div>
+  </div>
+</ng-template>
+

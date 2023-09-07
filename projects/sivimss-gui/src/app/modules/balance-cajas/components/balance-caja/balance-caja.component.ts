@@ -24,8 +24,8 @@ import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-se
 import {RealizarCierreComponent} from '../realizar-cierre/realizar-cierre.component';
 import {TIPO_CONVENIOS} from "../../constants/convenios";
 import {TIPO_PAGO} from "../../constants/tipos-pago";
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { DatePipe } from '@angular/common';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {DatePipe} from '@angular/common';
 
 type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
 
@@ -259,8 +259,10 @@ export class BalanceCajaComponent implements OnInit {
           finalize(() => this.cargadorService.desactivar())
         ).subscribe(
           (repuesta) => {
-            this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-            this.mostrarModalConfirmacion = true;
+            if (respuesta) {
+              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+              this.mostrarModalConfirmacion = true;
+            }
           },
           (error) => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))

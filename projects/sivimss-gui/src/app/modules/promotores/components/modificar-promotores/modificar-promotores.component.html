@@ -62,6 +62,18 @@
         campo es obligatorio *.</span>
     </div>
     <div class="col-md-6">
+      <label class="control-label" for="entidadFederativa">Entidad Federativa<span class="req">*</span>:</label>
+      <p-dropdown id="entidadFederativa" class="form-control" formControlName="entidadFederativa"
+        placeholder="Selecciona la entidad federativa" [options]="entidadFederativa" [filter]="true"
+        filterBy="label"></p-dropdown>
+      <span class="campo-obligatorio"
+        *ngIf="mpf.entidadFederativa?.errors?.required && (mpf.entidadFederativa?.dirty || mpf.entidadFederativa?.touched)">Este
+        campo es obligatorio *.</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
       <label class="control-label" for="fechaIngreso">Fecha ingreso<span class="req">*</span>:</label>
       <p-calendar id="fechaIngreso" formControlName="fechaIngreso" styleClass="form-control"
         (onSelect)="handleFechaIngreso();" [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
@@ -70,9 +82,6 @@
         *ngIf="mpf.fechaIngreso?.errors?.required && (mpf.fechaIngreso?.dirty || mpf.fechaIngreso?.touched)">Este campo
         es obligatorio *.</span>
     </div>
-  </div>
-
-  <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="fechaBaja">Fecha de baja:</label>
       <p-calendar id="fechaBaja" formControlName="fechaBaja" styleClass="form-control" [showIcon]="true"
@@ -82,6 +91,9 @@
         *ngIf="mpf.fechaBaja?.errors?.required && (mpf.fechaBaja?.dirty || mpf.fechaBaja?.touched)">Este campo es
         obligatorio *.</span>
     </div>
+  </div>
+
+  <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="sueldoBase">Sueldo base<span class="req">*</span>:</label>
       <input id="sueldoBase" class="form-control" formControlName="sueldoBase" maxlength="10"

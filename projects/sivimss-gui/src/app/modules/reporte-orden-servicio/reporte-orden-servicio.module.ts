@@ -16,6 +16,7 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
 import {ReporteOrdenServicioComponent} from "./components/reporte-orden-servicio/reporte-orden-servicio.component";
 import {ReporteOrdenServicioService} from "./services/reporte-orden-servicio.service";
 import {ReporteOrdenServicioRoutingModule} from "./reporte-orden-servicio-routing.module";
+import {AutoCompleteModule} from "primeng/autocomplete";
 
 @NgModule({
   declarations: [ReporteOrdenServicioComponent],
@@ -34,7 +35,8 @@ import {ReporteOrdenServicioRoutingModule} from "./reporte-orden-servicio-routin
     BtnRegresarModule,
     TituloPrincipalModule,
     UtileriaModule,
-    ValidaRolModule
+    ValidaRolModule,
+    AutoCompleteModule,
 
   ],
   providers: [

@@ -65,6 +65,8 @@ export class GestionarPagoComponent implements OnInit {
   mostrarModalDescargaExitosa: boolean = false;
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
+  central!: boolean;
+
   constructor(private breadcrumbService: BreadcrumbService,
               private formBuilder: FormBuilder,
               private gestionarPagoService: GestionarPagoService,
@@ -96,8 +98,12 @@ export class GestionarPagoComponent implements OnInit {
 
   inicializarForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroGestionarPagoForm = this.formBuilder.group({
-      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: obtenerNivelUsuarioLogueado(usuario) === 3}],
+      velatorio: [{
+        value: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario),
+        disabled: obtenerNivelUsuarioLogueado(usuario) === 3
+      }],
       folioODS: [{value: null, disabled: false}],
       folioPNCPF: [{value: null, disabled: false}],
       folioPRCPF: [{value: null, disabled: false}],
@@ -118,7 +124,7 @@ export class GestionarPagoComponent implements OnInit {
     if (this.filtroGestionarPagoForm) {
       this.tipoFolio = null;
       const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-      this.filtroFormDir.resetForm({velatorio: obtenerVelatorioUsuarioLogueado(usuario)});
+      this.filtroFormDir.resetForm({velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)});
     }
     this.numPaginaActual = 0;
     this.paginar();
@@ -126,7 +132,8 @@ export class GestionarPagoComponent implements OnInit {
 
   obtenerVelatorios(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.gestionarPagoService.obtenerVelatoriosPorDelegacion(usuario?.idDelegacion).subscribe({
+    const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null
+    this.gestionarPagoService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
@@ -166,7 +173,7 @@ export class GestionarPagoComponent implements OnInit {
 
   paginarConFiltros(): void {
     this.cargadorService.activar();
-    const filtros = this.filtroGestionarPagoForm.getRawValue();
+    const filtros = this.generarSolicitudFiltros();
     this.gestionarPagoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
@@ -178,6 +185,29 @@ export class GestionarPagoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       },
     });
+  }
+
+  generarSolicitudFiltros() {
+    let elaboracionInicio = this.filtroGestionarPagoForm.get('elaboracionInicio')?.value;
+    if (elaboracionInicio) elaboracionInicio = moment(elaboracionInicio).format('DD/MM/YYYY');
+    let elaboracionFin = this.filtroGestionarPagoForm.get('elaboracionFin')?.value;
+    if (elaboracionFin) elaboracionFin = moment(elaboracionFin).format('DD/MM/YYYY');
+    let filtros: any = {
+      idVelatorio: this.filtroGestionarPagoForm.get('velatorio')?.value,
+      fechaIni: elaboracionInicio,
+      fechaFin: elaboracionFin,
+      nomContratante: this.filtroGestionarPagoForm.get('nombreContratante')?.value
+    }
+    if (this.filtroGestionarPagoForm.get('folioODS')?.value) {
+      filtros = {...filtros, folioODS: this.filtroGestionarPagoForm.get('folioODS')?.value};
+    }
+    if (this.filtroGestionarPagoForm.get('folioPNCPF')?.value) {
+      filtros = {...filtros, folioPF: this.filtroGestionarPagoForm.get('folioPNCPF')?.value};
+    }
+    if (this.filtroGestionarPagoForm.get('folioPRCPF')?.value) {
+      filtros = {...filtros, folioRPF: this.filtroGestionarPagoForm.get('folioPRCPF')?.value};
+    }
+    return filtros;
   }
 
   paginar(): void {
@@ -213,12 +243,12 @@ export class GestionarPagoComponent implements OnInit {
 
   guardarPDF(): void {
     this.cargadorService.activar();
-    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado()).pipe(
+    const solicitud = this.crearSolicituDescarga();
+    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud)).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
-        console.log(respuesta)
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
       },
       error: (error): void => {
         const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
@@ -230,17 +260,24 @@ export class GestionarPagoComponent implements OnInit {
   guardarExcel(): void {
     this.cargadorService.activar();
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext: "xlsx"}
-    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListadoExcel(), configuracionArchivo).pipe(
+    const solicitud = this.crearSolicituDescarga('xls');
+    this.descargaArchivosService.descargarArchivo(this.gestionarPagoService.descargarListado(solicitud), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
-        console.log(respuesta)
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
       },
       error: (error): void => {
         const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
         this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });
+  }
+
+  crearSolicituDescarga(tipoReporte: string = 'pdf')  {
+    return {
+      ... this.generarSolicitudFiltros(),
+      tipoReporte
+    }
   }
 }
