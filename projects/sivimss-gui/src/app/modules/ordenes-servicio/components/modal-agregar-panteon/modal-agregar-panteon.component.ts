@@ -9,6 +9,8 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {Panteon} from "../../models/Panteon.interface";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-modal-agregar-panteon',
@@ -19,6 +21,7 @@ export class ModalAgregarPanteonComponent implements OnInit {
 
   form!: FormGroup;
   panteonServicioFiltrados: string[] = [];
+  colonias:TipoDropdown[] = [];
 
   constructor(
     private alertaService: AlertaService,
@@ -158,6 +161,7 @@ export class ModalAgregarPanteonComponent implements OnInit {
           this.f.noExterior.disable();
           this.f.noInterior.setValue(respuesta.datos[0]?.numInterior)
           this.f.noInterior.disable();
+          this.colonias = [{label: respuesta.datos[0]?.desColonia, value: respuesta.datos[0]?.desColonia}];
           this.f.colonia.setValue(respuesta.datos[0]?.desColonia)
           this.f.colonia.disable();
           this.f.municipio.setValue(respuesta.datos[0]?.desMunicipio)
@@ -248,12 +252,13 @@ export class ModalAgregarPanteonComponent implements OnInit {
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            this.f.colonia.setValue(respuesta.datos[0].nombre);
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
+            // this.f.colonia.setValue(respuesta.datos[0].nombre);
             this.f.municipio.setValue(
-              respuesta.datos[0].localidad.municipio.nombre
+              respuesta.datos[0].municipio.nombre
             );
             this.f.estado.setValue(
-              respuesta.datos[0].localidad.municipio.entidadFederativa.nombre
+              respuesta.datos[0].municipio.entidadFederativa.nombre
             );
             return;
           }
