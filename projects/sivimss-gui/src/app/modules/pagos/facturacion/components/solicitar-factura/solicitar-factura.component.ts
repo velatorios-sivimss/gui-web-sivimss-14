@@ -237,6 +237,14 @@ export class SolicitarFacturaComponent implements OnInit {
 
   generarSolicitudFactura(): void {
     const solicitudFactura: SolicitudGenerarFact = this.generarSolicitud();
+    this.facturacionService.generarSolicitudPago(solicitudFactura).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    })
   }
 
   generarSolicitud(): SolicitudGenerarFact {
@@ -249,7 +257,10 @@ export class SolicitarFacturaComponent implements OnInit {
     const correo = this.datosContratanteForm.get('correoElectronico')?.value;
     const rfc = this.datosContratanteForm.get('rfc')?.value;
     const folio = this.solicitudForm.get('folio')?.value;
+    const tipoFactura = this.solicitudForm.get('tipoFactura')?.value;
     const folioSeleccionado = this.registroFolios.find(f => f.folio === folio);
+    const obsAutomatica = this.datosCFDIForm.get('observaciones1')?.value;
+    const obsManual = this.datosCFDIForm.get('observaciones2')?.value;
     return {
       cfdi: {desCfdi: CFDI!.label, idCfdi: CFDI!.value as number},
       correo,
@@ -290,17 +301,17 @@ export class SolicitarFacturaComponent implements OnInit {
       forPago: {desForPago: FORMA_PAGO!.label, idForPago: FORMA_PAGO!.value as number},
       idPagoBitacora: folioSeleccionado!.idPagoBitacora,
       idRegistro: folioSeleccionado!.idRegistro,
-      idVelatorio: 0,
+      idVelatorio: this.registroContratante!.idVelatorio,
       metPagoFac: {desMetPagoFac: METODO_PAGO!.label, idMetPagoFac: METODO_PAGO!.value as number},
-      nomContratante: "",
-      obsAutomatica: "",
-      obsManual: "",
-      razonSocial: "",
-      regimenFiscal: "",
+      nomContratante: this.registroContratante!.nomContratante,
+      obsAutomatica,
+      obsManual,
+      razonSocial: this.registroRFC.razonSocial,
+      regimenFiscal: this.registroRFC.regimenFiscal,
       rfc,
       servicios: this.registroContratante!.servicios,
-      tipoFactura: "",
-      tipoPersona: "",
+      tipoFactura,
+      tipoPersona: this.registroRFC.tipoPersona,
       totalPagado: this.registroContratante!.totalPagado.toString(),
       totalServicios: this.registroContratante!.totalServicios.toString()
     }
