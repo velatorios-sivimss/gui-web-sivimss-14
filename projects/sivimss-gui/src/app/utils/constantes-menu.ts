@@ -188,8 +188,8 @@ export const idsModulos: DatoModulo = {
     icono: 'default-icon.svg'
   },
   '75': {
-    ruta: '/promotores',
-    icono: 'default-icon.svg'
+    ruta: '/generar-formato-actividades',
+    icono: 'generar-formato-actividades.svg'
   },
 };
 

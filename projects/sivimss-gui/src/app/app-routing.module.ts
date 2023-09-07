@@ -216,6 +216,11 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
+    path: 'generar-formato-de-actividades',
+    loadChildren: () => import('./modules/generar-formato-actividades/generar-formato-actividades.module').then(m => m.GenerarFormatoActividadesModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
     path: '**',
     component: PaginaNoEncontradaComponent,
   },
