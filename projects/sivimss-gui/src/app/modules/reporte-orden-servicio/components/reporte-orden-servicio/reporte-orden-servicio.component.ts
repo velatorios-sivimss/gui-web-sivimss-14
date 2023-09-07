@@ -43,9 +43,34 @@ export class ReporteOrdenServicioComponent implements OnInit {
     {value: 1, label: 'Reportes'},
     {value: 2, label: 'Previsiones funerarias'}
   ]
-  reportes: TipoDropdown[] = [
-    {value: 1, label: 'Reporte de órdenes de servicio'},
-  ]
+  reportes: TipoDropdown[] =[
+    {value:1, label:'	Reporte de órdenes de servicio'},
+    {value:2, label:'	Concentrado de Facturas'},
+    {value:3, label:'	Reporte resumen pago proveedor'},
+    {value:4, label:'	Reporte detalle pago'},
+    {value:5, label:'	Reporte detalle importe-servicios'},
+    {value:6, label:'	Reporte de Comisiones de Promotores'},
+    {value:7, label:'	Reporte de servicios velatorio'},
+    {value:8, label:'	Concentrado de Siniestros de Previsión Funeraria'},
+    {value:9, label:'	Concentrado de Servicios Pago Anticipado'}
+    ];
+
+  filtroODS!: TipoDropdown[];
+  listaODS: any;
+
+  promotor!: TipoDropdown[];
+
+  anio!: TipoDropdown[];
+  mes!: TipoDropdown[];
+  tipoODSBandera: boolean = false;
+  numeroODSBandera: boolean = false;
+  promotorBandera: boolean = false;
+  anioBandera: boolean = false;
+  mesBandera: boolean = false;
+  fechaInicialBandera: boolean = false;
+  fechaFinalBandera: boolean = false;
+  banderaEstatusODS: boolean = false;
+
 
   constructor(
     private alertaService: AlertaService,
@@ -73,13 +98,19 @@ export class ReporteOrdenServicioComponent implements OnInit {
 
   inicializarForm(): void {
     this.filtroForm = this.formBuilder.group({
+      tipoReporte:[{value:null,disabled:false}],
+      reporte:[{value:null,disabled:false}],
       nivel: [{value: +this.rolLocalStorage.idOficina, disabled:true}],
       delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled:+this.rolLocalStorage.idOficina >= 2 }],
       velatorio: [{value: null, disabled:+this.rolLocalStorage.idOficina === 3 }],
       idTipoODS: [{value:null,disabled:false}],
-      idEstatusODS: [{value:null,disabled:false}, [Validators.required]],
+      idEstatusODS: [{value:null,disabled:false}],
       fechaIni: [{value:null,disabled:false}],
       fechaFin: [{value:null,disabled:false}],
+      numeroOds: [{value:null,disabled:false}],
+      promotor: [{value:null,disabled:false}],
+      anio: [{value:null,disabled:false}],
+      mes: [{value:null,disabled:false}],
 
       preorden: [{value:null,disabled:false}],
       generada: [{value:null,disabled:false}],
@@ -131,6 +162,82 @@ export class ReporteOrdenServicioComponent implements OnInit {
 
   exportarReporte(): void {
 
+  }
+
+  filtrarODS(): void {
+    let query = this.obtenerNombreContratantesDescripcion();
+    let filtered: any[] = [];
+    if(query?.length < 3)return;
+    for (let i = 0; i < (this.listaODS as any[]).length; i++) {
+      let ods = (this.listaODS as any[])[i];
+      if (ods.folioODS?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+
+        filtered.push({label: "",value: ""});
+      }
+    }
+    this.filtroODS = filtered;
+  }
+
+  obtenerNombreContratantesDescripcion(): string {
+    let query = this.ff.numeroOds?.value || '';
+    if (typeof this.ff.numeroOds?.value === 'object') {
+      query = this.ff.numeroOds?.value?.label;
+    }
+    return query?.toLowerCase();
+  }
+
+  cambiarReporte(): void {
+    this.tipoODSBandera = false;
+    this.numeroODSBandera = false;
+    this.promotorBandera = false;
+    this.anioBandera = false;
+    this.mesBandera = false;
+    this.fechaInicialBandera = false;
+    this.fechaFinalBandera = false;
+    this.banderaEstatusODS = false;
+
+
+    switch (this.ff.reporte.value) {
+      case 1:
+        this.tipoODSBandera = true;
+        this.banderaEstatusODS = true;
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+      break;
+      case 2:
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+      break;
+      case 3:
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+      break;
+      case 5:
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+      break;
+      case 6:
+        this.numeroODSBandera = true;
+        this.promotorBandera = false;
+        this.anioBandera = false;
+        this.mesBandera = false;
+      break;
+      case 7:
+        this.numeroODSBandera = true;
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+      break;
+      case 8:
+        this.numeroODSBandera = true;
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+      break;
+      case 9:
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+      break;
+
+    }
   }
 
   get ff(){

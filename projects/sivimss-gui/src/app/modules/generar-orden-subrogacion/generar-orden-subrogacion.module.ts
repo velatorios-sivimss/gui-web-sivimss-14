@@ -24,6 +24,7 @@ import { DetalleGenerarOrdenComponent } from './components/detalle-generar-orden
 import { GenerarOrdenSubrogacionRoutingModule } from "./generar-orden-subrogacion-routing.module";
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { GenerarOrdenFormatoComponent } from "./components/generar-orden-formato/generar-orden-formato.component";
+import { RadioButtonModule } from "primeng/radiobutton";
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { GenerarOrdenFormatoComponent } from "./components/generar-orden-formato
     ConfirmDialogModule,
     UtileriaModule,
     AutoCompleteModule,
-    ValidaRolModule
+    ValidaRolModule,
+    RadioButtonModule,
   ],
   providers: [
     GenerarOrdenSubrogacionService

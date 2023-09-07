@@ -37,6 +37,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
       folioOds: 'DOC-000001',
       proveedor: 'Artículos y servicios Alta calidad del Noreste S.A. de C.V.',
       nombreFinado: 'Irma Jimenez Loranca',
+      tipoServicio: '',
     },
     {
       id: 2,
@@ -44,6 +45,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
       folioOds: 'DOC-000001',
       proveedor: 'Artículos y servicios Alta calidad del Noreste S.A. de C.V.',
       nombreFinado: 'Irma Jimenez Loranca',
+      tipoServicio: '',
     },
   ];
   public ordenSeleccionado!: OrdenSubrogacion;
@@ -77,17 +79,21 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      nivel: new FormControl([{ value: null, disabled: false }], []),
-      velatorio: new FormControl([{ value: null, disabled: false }], []),
-      folio: new FormControl([{ value: null, disabled: false }], []),
-      proveedor: new FormControl([{ value: null, disabled: false }], []),
-      fecha: new FormControl([{ value: null, disabled: false }], []),
+      nivel: new FormControl({ value: null, disabled: false }, []),
+      velatorio: new FormControl({ value: null, disabled: false }, []),
+      folio: new FormControl({ value: null, disabled: false }, []),
+      proveedor: new FormControl({ value: null, disabled: false }, []),
+      fecha: new FormControl({ value: null, disabled: false }, []),
     });
   }
 
   abrirPanel(event: MouseEvent, ordenSeleccionado: OrdenSubrogacion): void {
     this.ordenSeleccionado = ordenSeleccionado;
     this.overlayPanel.toggle(event);
+  }
+
+  detalleOrdenSubrogacion(): void {
+    void this.router.navigate([`detalle/${this.ordenSeleccionado.id}`], { relativeTo: this.activatedRoute });
   }
 
   generarOrdenSubrogacion(): void {
