@@ -38,8 +38,6 @@ export class DescargaArchivosService {
         },
       ],
     };
-    let operacionExitosa = false;
-
     return archivo$.pipe(
       switchMap((archivoBlob: Blob) => {
 
@@ -61,16 +59,13 @@ export class DescargaArchivosService {
           return fileHandle.createWritable().then((writable: FileSystemWritableFileStream): boolean => {
             void writable.write(archivoBlob);
             void writable.close();
-            operacionExitosa = true;
             return true;
           });
         });
       }),
       catchError((error) => {
-        if (!operacionExitosa) {
-          return of(false);
-        }
-        console.log(error)
+        if(error.toString().includes('The user aborted a request')) return of(false);
+        console.log(error.toString())
         throw 'Error al guardar el archivo.';
       })
     );
