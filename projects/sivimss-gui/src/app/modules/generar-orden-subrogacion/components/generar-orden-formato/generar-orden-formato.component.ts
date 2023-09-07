@@ -1,17 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem } from "primeng/api";
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { ConfirmationService } from "primeng/api";
+import { DynamicDialogConfig } from "primeng/dynamicdialog";
+import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { GenerarOrdenSubrogacionService } from '../../services/generar-orden-subrogacion.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import * as moment from 'moment';
+import { AlertaService } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { finalize } from 'rxjs';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { DatePipe } from '@angular/common';
 
 @Component({

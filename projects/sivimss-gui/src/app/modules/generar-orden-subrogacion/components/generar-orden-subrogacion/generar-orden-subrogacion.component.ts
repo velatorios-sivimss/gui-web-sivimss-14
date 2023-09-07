@@ -92,6 +92,10 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
+  detalleOrdenSubrogacion(): void {
+    void this.router.navigate([`detalle/${this.ordenSeleccionado.id}`], { relativeTo: this.activatedRoute });
+  }
+
   generarOrdenSubrogacion(): void {
     void this.router.navigate([`formato/${this.ordenSeleccionado.id}`], { relativeTo: this.activatedRoute });
   }
