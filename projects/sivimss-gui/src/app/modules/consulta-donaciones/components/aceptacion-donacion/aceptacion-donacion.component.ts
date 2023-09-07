@@ -109,7 +109,7 @@ export class AceptacionDonacionComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
 
       }
