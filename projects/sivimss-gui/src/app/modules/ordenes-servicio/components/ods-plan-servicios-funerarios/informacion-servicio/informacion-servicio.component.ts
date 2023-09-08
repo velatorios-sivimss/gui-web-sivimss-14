@@ -678,21 +678,11 @@ export class InformacionServicioSFComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           try {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
-              );
-            this.alertaService.mostrar(
-              TipoAlerta.Error,
-              errorMsg || 'Error al guardar la información. Intenta nuevamente.'
-            );
+            const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
+            this.alertaService.mostrar(TipoAlerta.Error,errorMsg );
           } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Error,
-              errorMsg || 'Error al guardar la información. Intenta nuevamente.'
-            );
+            const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
+            this.alertaService.mostrar(TipoAlerta.Error,errorMsg);
           }
         }
       );
