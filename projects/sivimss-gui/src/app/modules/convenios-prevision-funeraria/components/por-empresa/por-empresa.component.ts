@@ -129,26 +129,6 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
       }
     )
 
-
-
-
-
-
-
-
-
-
-    // if(respuesta.datos[0].tieneConvenio>0){
-    //   if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
-    //     this.folioRedireccion = respuesta.datos[0].folioConvenio;
-    //     this.fechaRedireccion = respuesta.datos[0].fecha;
-    //     this.confirmarRedireccionamiento = true
-    //     return
-    //   }else{
-    //     window.location.reload()
-    //   }
-    // }
-
     this.validarFormularioVacio();
   }
 
@@ -265,6 +245,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
       this.validarFormularioVacio(changes.consultarFormularioValido.currentValue,'externo')
     }
 
+    debugger
     if(this.confirmacionGuardado){
       this.formularioEmpresa .emit(
         {

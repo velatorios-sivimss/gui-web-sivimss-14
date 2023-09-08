@@ -71,6 +71,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
     )
 
 
+    debugger
 
     if(this.objetoDetalleEmpresa.empresa){
       this.descripcionPais = this.paises.filter(pais =>{

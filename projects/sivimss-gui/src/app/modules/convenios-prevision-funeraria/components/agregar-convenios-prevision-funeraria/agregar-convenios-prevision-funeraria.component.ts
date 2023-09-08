@@ -378,7 +378,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
 
          nombreEmpresa: event.nombre,
          razonSocial: event.razonSocial,
-         rfc: event.nombre,
+         rfc: event.rfc,
          pais: event.pais,
          cp: event.cp,
          colonia: event.colonia,

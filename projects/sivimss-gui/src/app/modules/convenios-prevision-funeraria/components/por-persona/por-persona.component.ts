@@ -241,6 +241,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
           this.fp.sexo.setValue(respuesta.datos[0].sexo);
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo)
+          this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
         }else if( respuesta.mensaje === ""){
           if(respuesta.datos.curp === "" || respuesta.datos.curp == null){
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
