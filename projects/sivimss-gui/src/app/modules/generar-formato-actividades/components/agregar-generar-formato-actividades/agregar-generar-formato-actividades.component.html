@@ -1,6 +1,6 @@
 <app-titulo-principal titulo="Generar formato de actividades"></app-titulo-principal>
-<form [formGroup]="agregarGenerarFormatoActividadesForm">
-  <div class="border-panel">
+<div class="border-panel">
+  <form [formGroup]="agregarGenerarFormatoActividadesForm">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="folio">Folio de formato:</label>
@@ -32,172 +32,204 @@
         <button type="button" class="btn btn-primary btn-md ml-5" (click)="agregarRegistro();">Agregar</button>
       </div>
     </div>
+  </form>
 
-    <p-table styleClass="mt-5 mb-8" [value]="actividades" dataKey="id" editMode="row"
-      [paginator]="actividades.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos"
-      [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
-      <ng-template pTemplate="header">
-        <tr>
-          <th id="fecha" rowspan="2">Fecha</th>
-          <th id="horario" colspan="2">Horario</th>
-          <th id="personal" colspan="2">Personal del velatorio</th>
-          <th id="numero" rowspan="2">Número de pláticas</th>
-          <th id="sede" colspan="4">Sede*</th>
-        </tr>
-        <tr>
-          <th id="hora-inicial">Hora inicio</th>
-          <th id="hora-termino">Hora término</th>
-          <th id="personal">Personal velatorio</th>
-          <th id="puesto">Puesto</th>
-          <th id="unidad">Unidad IMSS</th>
-          <th id="empresa">Empresa</th>
-          <th id="actividad">Actividad realizada</th>
-          <th id="acciones">Acciones</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-actividad let-editing="editing" let-ri="rowIndex">
-        <tr [pEditableRow]="actividad">
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.fecha" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.fecha}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.horarioInicial" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.horarioInicial}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.horarioFinal" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.horarioFinal}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.personalVelatorio" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.personalVelatorio}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.puesto" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.puesto}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.numPlaticas" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.numPlaticas}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.unidadImss" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.unidadImss}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.empresa" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.empresa}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="actividad.actividadRealizada" required>
-              </ng-template>
-              <ng-template pTemplate="output">
-                {{actividad.actividadRealizada}}
-              </ng-template>
-            </p-cellEditor>
-          </td>
-          <td>
-            <div class="flex align-items-center justify-content-center gap-2">
-              <a *ngIf="!editing" pRipple pInitEditableRow (click)="onRowEditInit(actividad)">
-                <!-- <img src="assets/images/imagen-icono-ver.svg" alt="Ver"> -->
-                <img src="assets/images/imagen-icono-pencil-modificar.svg" alt="icono editar">
-              </a>
-              <a *ngIf="!editing" pRipple pCancelEditableRow (click)="onRowEditInit(actividad)">
-                <img src="assets/images/imagen-icono-eliminar.svg" alt="Ver">
-              </a>
+  <p-table styleClass="mt-5 mb-8" [value]="actividades" dataKey="id" editMode="row" [paginator]="actividades.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th id="fecha" style="width:8%" rowspan="2">Fecha</th>
+        <th id="horario" colspan="2">Horario</th>
+        <th id="personal" colspan="2">Personal del velatorio</th>
+        <th id="numero" style="width:5%" rowspan="2">Número de pláticas</th>
+        <th id="sede" colspan="3">Sede*</th>
+        <th id="observaciones" style="width:10%" rowspan="2">Observaciones</th>
+        <th id="evidencia" style="width:5%" rowspan="2">Evidencia</th>
+        <th id="acciones" style="width:5%" rowspan="2">Acciones</th>
+      </tr>
+      <tr>
+        <th id="hora-inicial" style="width:7%">Hora inicio</th>
+        <th id="hora-termino" style="width:7%">Hora término</th>
+        <th id="personal">Personal velatorio</th>
+        <th id="puesto">Puesto</th>
+        <th id="unidad">Unidad IMSS</th>
+        <th id="empresa">Empresa</th>
+        <th id="actividad">Actividad realizada</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-actividad let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="actividad">
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-calendar styleClass="form-control" id="fechaInicio" [(ngModel)]="actividad.fecha" [showIcon]="false"
+                dateFormat="dd/mm/yy" placeholder=""></p-calendar>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.fecha}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-calendar styleClass="form-control" [(ngModel)]="actividad.horarioInicial" [showIcon]="false"
+                placeholder="00:00" [timeOnly]="true"></p-calendar>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.horarioInicial}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-calendar styleClass="form-control" [(ngModel)]="actividad.horarioFinal" [showIcon]="false"
+                placeholder="00:00" [timeOnly]="true"></p-calendar>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.horarioFinal}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown id="promotor" class="form-control" [(ngModel)]="actividad.personalVelatorio"
+                [options]="catalogoPromotores" placeholder="" [filter]="true">
+              </p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.personalVelatorio}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" style="width:100%" [value]="actividad.puesto">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.puesto}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="number" style="width:100%" [(ngModel)]="actividad.numPlaticas" maxlength="2">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.numPlaticas}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" style="width:100%" [(ngModel)]="actividad.unidadImss" maxlength="30">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.unidadImss}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" style="width:100%" [(ngModel)]="actividad.empresa" maxlength="30">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.empresa}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" style="width:100%" [(ngModel)]="actividad.actividadRealizada"
+                maxlength="20">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.actividadRealizada}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" style="width:100%" [(ngModel)]="actividad.observaciones" maxlength="50">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.observaciones}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <div class="contenedor-inputswitch">
+                <p-inputSwitch [(ngModel)]="actividad.evidencia"></p-inputSwitch>
+                <span class="activo" *ngIf="actividad.evidencia">Si</span>
+                <span class="inactivo" *ngIf="!actividad.evidencia">No</span>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{actividad.evidencia ? 'Si' : 'No'}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <div class="flex align-items-center justify-content-center gap-2">
+            <a *ngIf="!editing" pRipple pInitEditableRow (click)="onRowEditInit(actividad)">
+              <!-- <img src="assets/images/imagen-icono-ver.svg" alt="Ver"> -->
+              <img src="assets/images/imagen-icono-pencil-modificar.svg" alt="icono editar">
+            </a>
+            <a *ngIf="!editing" pRipple pCancelEditableRow (click)="onRowEditInit(actividad)">
+              <img src="assets/images/imagen-icono-eliminar.svg" alt="Ver">
+            </a>
 
-              <a *ngIf="editing" pRipple pSaveEditableRow (click)="onRowEditSave(actividad)">
-                <img src="assets/images/imagen-icono-guardar.svg" alt="Ver">
-              </a>
-              <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
-                (click)="onRowEditCancel(actividad, ri)" class="p-button-rounded p-button-text p-button-danger">
-              </button>
+            <a *ngIf="editing" pRipple pSaveEditableRow (click)="onRowEditSave(actividad)">
+              <img src="assets/images/imagen-icono-guardar.svg" alt="Ver">
+            </a>
+            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+              (click)="onRowEditCancel(actividad, ri)" class="p-button-rounded p-button-text p-button-danger">
+            </button>
 
-              <!-- <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+            <!-- <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
                 (click)="onRowEditSave(actividad)" class="p-button-rounded p-button-text p-button-success mr-2">
               </button>
               <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
                 (click)="onRowEditCancel(actividad, ri)" class="p-button-rounded p-button-text p-button-danger">
               </button> -->
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="paginatorleft">
-        <div class="paginator-template">
-          <span class="total-elements">{{actividades.length}} de {{totalElementos}}</span>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="paginatorright">
-      </ng-template>
-    </p-table>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{actividades.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+    </ng-template>
+  </p-table>
 
-  </div>
+</div>
 
-  <div class="row mb-2">
-    <div class="col-md-12">
-      <span>*Campos obligatorios</span>
-    </div>
+<div class="row mb-2">
+  <div class="col-md-12">
+    <span>*Campos obligatorios</span>
   </div>
+</div>
 
-  <div class="flex justify-content-end mb-6">
-    <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarGuardar()">
-      Generar formato
-    </button>
-  </div>
-</form>
+<div class="flex justify-content-end mb-6">
+  <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
+  <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarGuardar()">
+    Generar formato
+  </button>
+</div>
 
 <p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
   [draggable]="false" [resizable]="false" header="">
