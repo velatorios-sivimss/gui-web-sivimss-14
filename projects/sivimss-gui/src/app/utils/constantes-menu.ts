@@ -192,10 +192,3 @@ export const idsModulos: DatoModulo = {
     icono: 'generar-formato-actividades.svg'
   },
 };
-
-
-
-
-
-
-
