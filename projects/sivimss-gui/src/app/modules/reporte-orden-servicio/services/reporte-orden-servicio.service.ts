@@ -39,6 +39,10 @@ export class ReporteOrdenServicioService extends BaseService<HttpRespuesta<any>,
       filtros);
   }
 
+  consultarTipoReportes(tipoReporte: number ): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos_reportes}buscar-reportes/${tipoReporte}`);
+  }
+
 
 
 }

@@ -43,17 +43,7 @@ export class ReporteOrdenServicioComponent implements OnInit {
     {value: 1, label: 'Reportes'},
     {value: 2, label: 'Previsiones funerarias'}
   ]
-  reportes: TipoDropdown[] =[
-    {value:1, label:'	Reporte de órdenes de servicio'},
-    {value:2, label:'	Concentrado de Facturas'},
-    {value:3, label:'	Reporte resumen pago proveedor'},
-    {value:4, label:'	Reporte detalle pago'},
-    {value:5, label:'	Reporte detalle importe-servicios'},
-    {value:6, label:'	Reporte de Comisiones de Promotores'},
-    {value:7, label:'	Reporte de servicios velatorio'},
-    {value:8, label:'	Concentrado de Siniestros de Previsión Funeraria'},
-    {value:9, label:'	Concentrado de Servicios Pago Anticipado'}
-    ];
+  reportes!: TipoDropdown[];
 
   filtroODS!: TipoDropdown[];
   listaODS: any;
@@ -153,7 +143,21 @@ export class ReporteOrdenServicioComponent implements OnInit {
   }
 
   estatusODS(estatusODS?: number):void {
-
+    if(!estatusODS && this.ff.todos.value == true){
+      this.ff.preorden.setValue(true);
+      this.ff.generada.setValue(true);
+      this.ff.cancelada.setValue(true);
+      this.ff.pagada.setValue(true);
+      this.ff.enTransito.setValue(true);
+      this.ff.concluida.setValue(true);
+    }else if(!estatusODS && this.ff.todos.value == false){
+      this.ff.preorden.setValue(false);
+      this.ff.generada.setValue(false);
+      this.ff.cancelada.setValue(false);
+      this.ff.pagada.setValue(false);
+      this.ff.enTransito.setValue(false);
+      this.ff.concluida.setValue(false);
+    }
   }
 
   limpiarFiltros(): void {
@@ -203,6 +207,10 @@ export class ReporteOrdenServicioComponent implements OnInit {
         this.banderaEstatusODS = true;
         this.fechaInicialBandera = true;
         this.fechaFinalBandera = true;
+        this.ff.idEstatusODS.setValidators(Validators.required);
+
+
+
       break;
       case 2:
         this.fechaInicialBandera = true;
@@ -218,9 +226,9 @@ export class ReporteOrdenServicioComponent implements OnInit {
       break;
       case 6:
         this.numeroODSBandera = true;
-        this.promotorBandera = false;
-        this.anioBandera = false;
-        this.mesBandera = false;
+        this.promotorBandera = true;
+        this.anioBandera = true;
+        this.mesBandera = true;
       break;
       case 7:
         this.numeroODSBandera = true;
@@ -240,8 +248,29 @@ export class ReporteOrdenServicioComponent implements OnInit {
     }
   }
 
+  cambiarTipoReporte(): void {
+    this.cambiarReporte();
+    this.loaderService.activar()
+    this.reporteOrdenServicioService.consultarTipoReportes(this.ff.tipoReporte.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+
+        this.reportes = mapearArregloTipoDropdown(respuesta.datos.reportes,'nombreReporte','idReporte');
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    });
+  }
+
+
   get ff(){
     return this.filtroForm.controls;
   }
 
+  validarFormulario(): boolean {
+    this.ff;
+    return false;
+  }
 }
