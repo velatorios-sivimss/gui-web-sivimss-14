@@ -61,8 +61,8 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
                        segundoApellido: [{value: null, disabled: false}, [Validators.required]],
                             parentesco: [{value: null, disabled: false}, [Validators.required]],
                                   curp: [{value: null, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
-                                   rfc: [{value: null, disabled: false}, [Validators.pattern(PATRON_RFC)]],
-                        actaNacimiento: [{value: null, disabled: false}, [Validators.required]],
+                                   rfc: [{value: null, disabled: false}],
+                        actaNacimiento: [{value: null, disabled: false}],
                      correoElectronico: [{value: null, disabled: false}, [Validators.required,Validators.pattern(PATRON_CORREO)]],
                               telefono: [{value: null, disabled: false}, [Validators.required]],
       validaActaNacimientoBeneficiario: [{value: null, disabled: true}],
@@ -145,8 +145,13 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
   }
 
   validarRFC(): void {
-    if (this.beneficiarioForm.controls.rfc?.errors?.pattern){
+    this.f.rfc.clearValidators();
+    this.f.rfc.updateValueAndValidity();
+    if(this.f.rfc.value.includes('XAXX010101000'))return;
+    if(!this.f.rfc.value.match(PATRON_RFC)){
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
+      this.f.rfc.setValidators(Validators.pattern(PATRON_RFC));
+      this.f.rfc.updateValueAndValidity();
     }
   }
 
@@ -167,7 +172,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
       parentesco: this.f.parentesco.value.toString(),
       curp: this.f.curp.value.toString(),
       rfc: this.f.rfc.value ? this.f.rfc.value.toString() : "",
-      actaNacimiento: this.f.actaNacimiento.value.toString(),
+      actaNacimiento: "",
       correoElectronico: this.f.correoElectronico.value.toString(),
       telefono: this.f.telefono.value.toString(),
       documentacion:{

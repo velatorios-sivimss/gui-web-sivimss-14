@@ -71,6 +71,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
     )
 
 
+    debugger
 
     if(this.objetoDetalleEmpresa.empresa){
       this.descripcionPais = this.paises.filter(pais =>{
@@ -97,7 +98,7 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
         return enfermedad.value == this.objetoDetallePersona.persona?.enfermedadPreexistente;
       });
 
-      this.descripcionPromotor = this.paises.filter(promotor =>{
+      this.descripcionPromotor = this.promotores.filter(promotor =>{
         return promotor.value == this.objetoDetallePersona.idPromotor
       });
 

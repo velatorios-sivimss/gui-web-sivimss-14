@@ -35,6 +35,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {TipoPaquete} from "../../models/tipo-paquete.interface";
 import * as moment from 'moment';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-agregar-persona-convenios-prevision-funeraria',
@@ -82,6 +83,8 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   flujo!: any;
 
   fechaActual = new Date();
+
+  colonias:TipoDropdown[] = [];
 
 
   constructor(
@@ -143,7 +146,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
              otraEnferdedad: [{value: null, disabled: false}],
                        sexo: [{value:null, disabled: false}, [Validators.required]],
                    otroSexo: [{value:null, disabled: false}, [Validators.required]],
-            fechaNacimiento: [{value:null, disabled: false}, [Validators.required]],
+            fechaNacimiento: [{value:null, disabled: true}, [Validators.required]],
           entidadFederativa: [{value:null, disabled: false}, [Validators.required]]
     });
   }
@@ -216,9 +219,9 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe({
         next:(respuesta: HttpRespuesta<any>) => {
+          this.colonias = mapearArregloTipoDropdown(respuesta.datos,'colonia','colonia')
           this.fp.estado.setValue(respuesta.datos[0]?.estado);
           this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
-          this.fp.colonia.setValue(respuesta.datos[0]?.colonia);
           this.fp.pais.setValue(119);
         },
         error:(error:HttpErrorResponse) => {
@@ -274,25 +277,30 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        // this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        // this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        // this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        if(respuesta.mensaje === ""){
+        if((respuesta.datos[0]?.curp ?? null) != null){
+          const [anio,mes,dia] = respuesta.datos[0].fechaNacimiento.split('-')
+          this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
+          this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
+          this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+          this.fp.rfc.setValue(respuesta.datos[0].rfc)
+          this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
+          this.fp.telefono.setValue(respuesta.datos[0].telefono)
+          this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
+          this.fp.sexo.setValue(respuesta.datos[0].sexo);
+          this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo);
+          this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
+        }else if( respuesta.mensaje === ""){
+          if(respuesta.datos.curp === "" || respuesta.datos.curp == null){
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+            return
+          }
+          const [dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
           this.fp.nombre.setValue(respuesta.datos.nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
-          // this.fp.idPersona.setValue(respuesta.datos.idPersona)
-          return
+          this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
+          this.fp.sexo.setValue(+respuesta.datos.sexo);
         }
-        this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        // this.fp.idPersona.setValue(respuesta.datos[0].idPersona)
-        this.fp.rfc.setValue(respuesta.datos[0].rfc)
-        this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-        this.fp.telefono.setValue(respuesta.datos[0].telefono)
-
-
       },
       (error:HttpErrorResponse) => {
         console.log(error);

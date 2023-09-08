@@ -99,8 +99,8 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
                        segundoApellido: [{value: this.datosBeneficiario.segundoApellido, disabled: false}, [Validators.required]],
                             parentesco: [{value: +this.datosBeneficiario.parentesco, disabled: false}, [Validators.required]],
                                   curp: [{value: this.datosBeneficiario.curp, disabled: false}, [Validators.required, Validators.pattern(PATRON_CURP)]],
-                                   rfc: [{value: this.datosBeneficiario.rfc, disabled: false}, [Validators.pattern(PATRON_RFC)]],
-                        actaNacimiento: [{value: this.datosBeneficiario.actaNacimiento, disabled: false}, [Validators.required]],
+                                   rfc: [{value: this.datosBeneficiario.rfc, disabled: false}],
+                        actaNacimiento: [{value: null, disabled: false}],
                      correoElectronico: [{value: this.datosBeneficiario.correoElectronico, disabled: false}, [Validators.required, Validators.pattern(PATRON_CORREO)]],
                               telefono: [{value: this.datosBeneficiario.telefono, disabled: false}, [Validators.required]],
       validaActaNacimientoBeneficiario: [{value: actaCheck, disabled: false}],
@@ -184,6 +184,23 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
     });
   }
 
+  validarRFC(): void {
+    this.f.rfc.clearValidators();
+    this.f.rfc.updateValueAndValidity();
+    if(this.f.rfc.value.includes('XAXX010101000'))return;
+    if(!this.f.rfc.value.match(PATRON_RFC)){
+      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
+      this.f.rfc.setValidators(Validators.pattern(PATRON_RFC));
+      this.f.rfc.updateValueAndValidity();
+    }
+  }
+
+  validarCorreoElectronico(): void {
+    if (this.beneficiarioForm.controls.correoElectronico?.errors?.pattern){
+      this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(50));
+    }
+  }
+
   aceptar(): void {
     const beneficiarioGuardar: BeneficiarioInterface = {
       velatorio: this.f.velatorio.value.toString(),
@@ -195,7 +212,7 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
       parentesco: this.f.parentesco.value.toString(),
       curp: this.f.curp.value.toString(),
       rfc: this.f.rfc.value.toString(),
-      actaNacimiento: this.f.actaNacimiento.value.toString(),
+      actaNacimiento: "",
       correoElectronico: this.f.correoElectronico.value.toString(),
       telefono: this.f.telefono.value.toString(),
       documentacion:{
