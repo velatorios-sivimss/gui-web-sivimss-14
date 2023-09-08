@@ -14,6 +14,7 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {Empresa} from "../../models/empresa.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-por-empresa',
@@ -45,6 +46,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
   folioRedireccion: string = "";
   fechaRedireccion: string = "";
   confirmarRedireccionamiento: boolean = false;
+  colonias:TipoDropdown[] = [];
 
 
   constructor(
@@ -158,9 +160,10 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        this.colonias = mapearArregloTipoDropdown(respuesta.datos,'colonia','colonia')
         this.fe.estado.setValue(respuesta.datos[0]?.estado);
         this.fe.municipio.setValue(respuesta.datos[0]?.municipio);
-        this.fe.colonia.setValue(respuesta.datos[0]?.colonia);
+        // this.fe.colonia.setValue(respuesta.datos[0]?.colonia);
       },
       (error:HttpErrorResponse) => {
         console.log(error);

@@ -164,7 +164,10 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
-            <input maxlength="45" id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia">
+<!--            <input maxlength="45" id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia">-->
+            <p-dropdown id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
+                        [options]="colonias" [filter]="true" filterBy="label"></p-dropdown>
+
             <span class="campo-obligatorio"
                   *ngIf="fds.colonia?.errors?.required && (fds.colonia?.dirty || fds.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>

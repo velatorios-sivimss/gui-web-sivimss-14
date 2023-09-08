@@ -73,6 +73,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   datosAdministrador!: DatosAdministrador;
   existeStock: boolean = true;
   curpDesactivado: boolean = false;
+  colonias:TipoDropdown[] = [];
 
 
 
@@ -197,13 +198,20 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   consultaCURP(): void {
     if(!this.fds.curp.value){return}
     this.loaderService.activar();
-    this.limpiarFormularioDatosSolicitante();
+    this.limpiarFormularioDatosSolicitante('curp');
     this.consultaDonacionesService.consultaCURP(this.fds.curp.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(respuesta.datos){
           this.curpDesactivado = false;
+
+          if(respuesta.mensaje.includes("34")){
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+            return
+          }
+
+
           if(respuesta.mensaje.includes("interno")){
             let [anio,mes,dia]= respuesta.datos[0].fechaNacimiento?.split('-');
             dia = dia.substr(0,2);
@@ -253,7 +261,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
   consultaRFC(): void {
     if(!this.fds.rfc.value){return}
     this.loaderService.activar();
-    this.limpiarFormularioDatosSolicitante();
+    this.limpiarFormularioDatosSolicitante("rfc");
     this.consultaDonacionesService.consultaRFC(this.fds.rfc.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
@@ -305,9 +313,10 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
         if(respuesta){
+          this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
         this.fds.municipio.setValue(respuesta.datos[0].municipio.nombre);
         this.fds.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
-        this.fds.colonia.setValue(respuesta.datos[11].nombre);
+        // this.fds.colonia.setValue(respuesta.datos[0].nombre);
           return
         }
         this.fds.municipio.patchValue(null);
@@ -321,12 +330,12 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     )
   }
 
-  limpiarFormularioDatosSolicitante(): void {
+  limpiarFormularioDatosSolicitante(origen: string): void {
     this.fds.nombre.patchValue(null);
     this.fds.primerApellido.patchValue(null);
     this.fds.segundoApellido.patchValue(null);
     this.fds.fechaNacimiento.patchValue(null);
-    this.fds.sexo.patchValue(null);
+    if(origen.includes("curp")) this.fds.sexo.patchValue(null)
     this.fds.nacionalidad.patchValue(null);
   }
 
