@@ -27,6 +27,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {TipoPaquete} from "../../models/tipo-paquete.interface";
 import * as moment from 'moment';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-por-persona',
@@ -72,6 +73,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
   confirmarRedireccionamiento: boolean = false;
 
   fechaActual= new Date();
+  colonias:TipoDropdown[] = [];
 
   constructor(
     private alertaService: AlertaService,
@@ -132,7 +134,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
                 tipoPaquete: [{value:null, disabled: false}, [Validators.required]],
                        sexo: [{value:null, disabled: false}, [Validators.required]],
                    otroSexo: [{value:null, disabled: false}, [Validators.required]],
-            fechaNacimiento: [{value:null, disabled: false}, [Validators.required]],
+            fechaNacimiento: [{value:null, disabled: true}, [Validators.required]],
           entidadFederativa: [{value:null, disabled: false}, [Validators.required]]
     })
   }
@@ -227,12 +229,30 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.mensaje === ""){
+
+        if((respuesta.datos[0]?.curp ?? null) != null){
+          const [anio,mes,dia] = respuesta.datos[0].fechaNacimiento.split('-')
+          this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
+          this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
+          this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+          this.fp.rfc.setValue(respuesta.datos[0].rfc)
+          this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
+          this.fp.telefono.setValue(respuesta.datos[0].telefono)
+          this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
+          this.fp.sexo.setValue(respuesta.datos[0].sexo);
+          this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo)
+          this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
+        }else if( respuesta.mensaje === ""){
+          if(respuesta.datos.curp === "" || respuesta.datos.curp == null){
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+            return
+          }
+          const [dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
           this.fp.nombre.setValue(respuesta.datos.nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
-          this.fp.idPersona.setValue(respuesta.datos.idPersona)
-          return
+          this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
+          this.fp.sexo.setValue(+respuesta.datos.sexo);
         }
         if(respuesta.datos[0].tieneConvenio>0){
           if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
@@ -244,13 +264,6 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
             window.location.reload()
           }
         }
-        this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        this.fp.idPersona.setValue(respuesta.datos[0].idPersona)
-        this.fp.rfc.setValue(respuesta.datos[0].rfc)
-        this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-        this.fp.telefono.setValue(respuesta.datos[0].telefono)
       },
       (error:HttpErrorResponse) => {
         console.log(error);
@@ -337,9 +350,9 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
+        this.colonias = mapearArregloTipoDropdown(respuesta.datos,'colonia','colonia')
         this.fp.estado.setValue(respuesta.datos[0]?.estado);
         this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
-        this.fp.colonia.setValue(respuesta.datos[0]?.colonia)
         this.fp.pais.setValue(119);
         this.validarFormularioVacio(false,'local');
       },

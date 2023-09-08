@@ -59,8 +59,6 @@
         alphanumericOnly (blur)="validarCURP()">
         <span class="campo-obligatorio"
               *ngIf="f.curp?.errors?.required && (f.curp?.dirty || f.curp?.touched)">Este campo es obligatorio *.</span>
-        <span class="campo-obligatorio"
-              *ngIf="f.curp?.errors?.pattern && (f.curp?.dirty || f.curp?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="rfc">R.F.C:</label>
@@ -69,13 +67,6 @@
       </div>
     </div>
     <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="control-label" for="actaNacimiento">Acta de nacimiento<span class="req">*</span>:</label>
-        <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento" placeholder="Ingresa no. de acta"
-        numbersOnly maxlength="8">
-        <span class="campo-obligatorio"
-              *ngIf="f.actaNacimiento?.errors?.required && (f.actaNacimiento?.dirty || f.actaNacimiento?.touched)">Este campo es obligatorio *.</span>
-      </div>
       <div class="col-md-4">
         <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
         <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
