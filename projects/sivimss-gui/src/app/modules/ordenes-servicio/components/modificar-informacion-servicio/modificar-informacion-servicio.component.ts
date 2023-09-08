@@ -712,21 +712,11 @@ export class ModificarInformacionServicioComponent
         },
         (error: HttpErrorResponse) => {
           try {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
-              );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
+            this.alertaService.mostrar(TipoAlerta.Error,errorMsg);
           } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
+            this.alertaService.mostrar(TipoAlerta.Error,errorMsg);
           }
         }
       );
@@ -774,20 +764,11 @@ export class ModificarInformacionServicioComponent
         (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
-              );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
+            this.alertaService.mostrar(TipoAlerta.Error,errorMsg );
           } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
+            this.alertaService.mostrar(TipoAlerta.Info,errorMsg );
           }
         }
       );

@@ -14,13 +14,13 @@
       <div class="col-md-6">
         <label class="control-label" for="nivel">Tipo de reporte:</label>
         <p-dropdown appendTo="body" id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReporte"
-                    placeholder="Selecciona el tipo de reporte">
+                    placeholder="Selecciona el tipo de reporte" (onChange)="cambiarTipoReporte()" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nivel">Reportes:</label>
         <p-dropdown appendTo="body" id="reporte" class="form-control" formControlName="reporte" [options]="reportes"
-                    placeholder="Selecciona el reporte" (onChange)="cambiarReporte()">
+                    placeholder="Selecciona el reporte" (onChange)="cambiarReporte()" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
     </div>
@@ -34,12 +34,10 @@
               *ngIf="ff.nivel?.errors?.required && (ff.nivel?.dirty || ff.nivel?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="delegacion">Delegaci&oacute;n<span class="req">*:</span></label>
+        <label class="control-label" for="delegacion">Delegaci&oacute;n:</label>
         <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
                     [options]="delegaciones" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()" [filter]="true" filterBy="label">
         </p-dropdown>
-        <span class="campo-obligatorio"
-              *ngIf="ff.delegacion?.errors?.required && (ff.delegacion?.dirty || ff.delegacion?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="velatorio">Velatorio:</label>
@@ -74,7 +72,7 @@
       <div class="col-md-6" *ngIf="promotorBandera">
         <label class="control-label" for="nivel">Promotor:</label>
         <p-dropdown appendTo="body" id="promotor" class="form-control" formControlName="promotor" [options]="promotor"
-                    placeholder="Selecciona el promotor">
+                    placeholder="Selecciona el promotor" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-6" *ngIf="anioBandera">
@@ -140,7 +138,7 @@
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="submit" class="btn btn-default btn-md" (click)="limpiarFiltros()">Limpiar filtros</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="exportarReporte()" >Buscar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="validarFormulario()" (click)="exportarReporte()" >Buscar</button>
     </div>
   </div>
   <div class="flex justify-content-end mb-3">

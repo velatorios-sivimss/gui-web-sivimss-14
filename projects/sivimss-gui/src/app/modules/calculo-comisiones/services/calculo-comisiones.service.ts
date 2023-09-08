@@ -61,6 +61,14 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}?servicio=listprom-comisiones`);
   }
 
+  calcularComisiones(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/calcular-comisiones`,body);
+  }
+
+  guardarDetalleComisiones(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/guardadet-comisiones`,body);
+  }
+
   descargarListadoComisiones(body: any): Observable<Blob> {
     const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',

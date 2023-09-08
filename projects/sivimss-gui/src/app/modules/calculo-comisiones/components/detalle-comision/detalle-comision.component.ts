@@ -109,6 +109,7 @@ export class DetalleComisionComponent implements OnInit {
   }
 
   obtenerDetalleComision() {
+    this.listaComisiones=[];
     if (this.detallePromotor.idPromotor) {
       const filtros: FiltroComisiones = this.filtrosCalculoComision();
       this.calculoComisionesService.obtenerDetalleComisiones(filtros).pipe(
@@ -118,6 +119,43 @@ export class DetalleComisionComponent implements OnInit {
           if (respuesta.datos) {
             this.listaComisiones = respuesta.datos;
             this.mostrarExportar = true;
+            this.calcularComisiones();
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      });
+    }
+  }
+
+  calcularComisiones() {
+    if (this.detallePromotor.idPromotor) {
+      const filtros: FiltroComisiones = this.filtrosCalculoComision();
+      this.calculoComisionesService.calcularComisiones(filtros).pipe(
+        finalize(() => this.loaderService.desactivar())
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.guardarDetalleComision();
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        }
+      });
+    }
+  }
+
+  guardarDetalleComision() {
+    if (this.detallePromotor.idPromotor) {
+      const filtros: FiltroComisiones = this.filtrosCalculoComision();
+      this.calculoComisionesService.guardarDetalleComisiones(filtros).pipe(
+        finalize(() => this.loaderService.desactivar())
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.datos) {
+            this.alertaService.mostrar(TipoAlerta.Exito, "Calculo de comisiones exitoso");
           }
         },
         error: (error: HttpErrorResponse) => {
