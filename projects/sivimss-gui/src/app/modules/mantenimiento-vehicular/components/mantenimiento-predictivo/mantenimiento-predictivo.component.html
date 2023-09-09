@@ -12,7 +12,8 @@
         <div class="col-md-6">
           <label class="control-label" for="delegacion">Delegacion*:</label>
           <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-            placeholder="Selecciona la delegacion" [filter]="true" (onChange)="cargarVelatorios(); this.obtenerPlacas();">
+            placeholder="Selecciona la delegacion" [filter]="true"
+            (onChange)="cargarVelatorios(); this.obtenerPlacas();">
           </p-dropdown>
           <span class="campo-obligatorio"
             *ngIf="fmp?.delegacion?.errors?.required && (fmp?.delegacion?.dirty || fmp?.delegacion?.touched)">Este campo
@@ -73,10 +74,18 @@
     </form>
   </div>
 </ng-container>
+
 <ng-container *ngIf="verDetallePredictivo">
   <div class="separador"></div>
   <p-accordion styleClass="sivimss-accordion" [activeIndex]="0">
     <p-accordionTab>
+
+      <div class="row mb-3" *ngIf="realizoBusqueda && titulosSeleccionados.length === 0">
+        <div class="col-md-12 text-center font-bold text-xl">
+          No se encontró información relacionada a tu búsqueda en mantenimiento predictivo
+        </div>
+      </div>
+
       <div class="mb-3" *ngFor="let tituloSeleccionado of titulosSeleccionados">
         <ng-template pTemplate="header">
           <h5 class="titulo-acordion">{{vehiculoSeleccionado.DES_PLACAS}}</h5>
@@ -181,9 +190,8 @@
   <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../">Cerrar</button>
 </div>
 
-<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
-          [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
