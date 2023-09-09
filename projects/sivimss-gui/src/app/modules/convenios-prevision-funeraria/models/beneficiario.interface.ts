@@ -1,4 +1,7 @@
 export interface BeneficiarioInterface {
+
+  delegacion?: number;
+  desDelegacion?: string;
   velatorio?: number;
   descVelatorio?: string;
   fechaNacimiento?: any;
