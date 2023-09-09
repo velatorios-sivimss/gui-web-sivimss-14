@@ -245,7 +245,6 @@ export class PorEmpresaComponent implements OnInit, OnChanges,AfterViewInit {
       this.validarFormularioVacio(changes.consultarFormularioValido.currentValue,'externo')
     }
 
-    debugger
     if(this.confirmacionGuardado){
       this.formularioEmpresa .emit(
         {

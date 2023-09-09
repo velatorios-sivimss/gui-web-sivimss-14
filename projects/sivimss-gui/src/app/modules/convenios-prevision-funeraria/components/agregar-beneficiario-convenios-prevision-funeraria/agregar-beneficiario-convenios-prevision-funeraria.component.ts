@@ -15,6 +15,7 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {BeneficiarioInterface} from "../../models/beneficiario.interface";
 import * as moment from 'moment';
+import {catalogoVelatorio} from "../../../ordenes-servicio/constants/catalogos.interface";
 
 @Component({
   selector: 'app-agregar-beneficiario-convenios-prevision-funeraria',
@@ -24,6 +25,7 @@ import * as moment from 'moment';
 export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements OnInit {
 
   readonly POSICION_PARENTESCO   = 2;
+  readonly POSICION_DELEGACIONES = 5;
 
   beneficiarioForm!: FormGroup;
 
@@ -32,6 +34,9 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
 
   hoy = new Date();
   curpDesactivado!: boolean;
+
+  delegaciones!: TipoDropdown[];
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private alertaService: AlertaService,
@@ -47,13 +52,15 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
     let respuesta = this.route.snapshot.data['respuesta'];
     this.parentesco = respuesta[this.POSICION_PARENTESCO]!.map((parentesco: TipoDropdown) => (
       {label: parentesco.label, value: parentesco.value} )) || [];
+    this.delegaciones = respuesta[this.POSICION_DELEGACIONES];
     this.inicializarBeneficiarioForm();
     this.consultaVelatorio();
   }
 
   inicializarBeneficiarioForm(): void {
     this.beneficiarioForm = this.formBuilder.group({
-                             velatorio: [{value: null, disabled: true}, [Validators.required]],
+      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled:  +this.rolLocalStorage.idOficina >= 2},[Validators.required]],
+      velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3},[Validators.required]],
                        fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
                                   edad: [{value: null, disabled: false}, [Validators.required]],
                                 nombre: [{value: null, disabled: false}, [Validators.required]],
@@ -163,6 +170,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
 
   aceptar(): void {
     const beneficiarioGuardar: BeneficiarioInterface = {
+      delegacion: this.f.delegacion.value.toString(),
       velatorio: this.f.velatorio.value.toString(),
       fechaNacimiento: moment(this.f.fechaNacimiento.value).format('yyyy-MM-DD'),
       edad: this.f.edad.value.toString(),
@@ -196,6 +204,24 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
       otraEnfermedad: this.f.otraEnfermedad.value.toString(),
     }
     this.ref.close(beneficiarioGuardar);
+  }
+
+
+  consultarVelatorioPorID(): void {
+    this.loaderService.activar();
+    this.agregarConvenioPFService.consultarVelatorios(+this.f.delegacion.value).pipe(
+      finalize(()=>this.loaderService.desactivar())
+    ).subscribe(
+      (respuesta: HttpRespuesta<any>): void => {
+        // this.consultarUnidadMedica();
+        this.velatorio = respuesta.datos.map((velatorio: any) => (
+          { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
+      },
+      (error:HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
+      }
+    )
   }
 
   cancelar(): void {
