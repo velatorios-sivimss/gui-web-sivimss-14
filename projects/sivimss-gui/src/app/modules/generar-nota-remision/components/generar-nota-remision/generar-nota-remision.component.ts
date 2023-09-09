@@ -4,13 +4,17 @@ import {OverlayPanel} from 'primeng/overlaypanel';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
 import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown,
+  obtenerDelegacionUsuarioLogueado,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {BusquedaFiltro, ClavesEstatus, GenerarReporte, NotaRemision} from '../../models/nota-remision.interface';
 import {GenerarNotaRemisionService} from '../../services/generar-nota-remision.service';
 import * as moment from "moment/moment";
@@ -21,6 +25,7 @@ import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services
 import {mensajes} from '../../../reservar-salas/constants/mensajes';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-generar-nota-remision',
@@ -31,14 +36,17 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 export class GenerarNotaRemisionComponent implements OnInit {
   readonly POSICION_NIVELES: number = 0;
   readonly POSICION_DELEGACIONES: number = 1;
-  readonly POSICION_VELATORIOS: number = 2;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
+
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  paginacionConFiltrado: boolean = false;
 
   notasRemision: NotaRemision[] = [];
   notaRemisionSeleccionada: NotaRemision = {
@@ -76,16 +84,14 @@ export class GenerarNotaRemisionComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private descargaArchivosService: DescargaArchivosService,
-    private readonly loaderService: LoaderService,
+    private readonly cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
-
-  async ngOnInit() {
+  ngOnInit(): void {
     this.actualizarBreadcrumb();
-    await this.inicializarFiltroForm();
-    this.obtenerFoliosGenerados();
+    this.inicializarFiltroForm();
     this.cargarCatalogos();
   }
 
@@ -93,40 +99,37 @@ export class GenerarNotaRemisionComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
+    const delegacion = this.filtroForm.get('delegacion')?.value;
+    if (delegacion) this.obtenerVelatorios();
+    this.obtenerFoliosGenerados();
   }
 
   actualizarBreadcrumb(): void {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
-  async inicializarFiltroForm() {
+  inicializarFiltroForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina > 1}],
-      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2}],
-      velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3}],
+      nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: +this.rolLocalStorage.idOficina >= 2}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: +this.rolLocalStorage.idOficina === 3}],
       folio: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}],
       fechaFinal: [{value: null, disabled: false}],
     });
-    await this.obtenerVelatorios();
   }
 
   generarNotaRemision(): void {
-    this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute}).then(() => {
-    }).catch(() => {
-    });
+    void this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
   }
 
   verDetalleNotaRemision(): void {
-    this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute}).then(() => {
-    }).catch(() => {
-    });
+    void this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
   }
 
   cancelarNotaRemision(): void {
-    this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute}).then(() => {
-    }).catch(() => {
-    });
+    void this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
   }
 
   abrirPanel(event: MouseEvent, notaRemisionSeleccionada: NotaRemision): void {
@@ -134,40 +137,52 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
-  paginar(event?: LazyLoadEvent): void {
-    if (event?.first !== undefined && event.rows !== undefined) {
-      this.numPaginaActual = Math.floor(event.first / event.rows);
-    } else {
-      this.numPaginaActual = 0;
+  seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
-    this.notasRemision = [];
-    this.generarNotaRemisionService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        this.notasRemision = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
+    if (this.paginacionConFiltrado) {
+      this.paginarConFiltros();
+    } else {
+      this.paginar();
+    }
+  }
+
+  paginar(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const filtros = {
+      nivel: obtenerNivelUsuarioLogueado(usuario),
+      velatorio: obtenerVelatorioUsuarioLogueado(usuario),
+      delegacion: obtenerDelegacionUsuarioLogueado(usuario)
+    };
+    this.generarNotaRemisionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.notasRemision = respuesta.datos?.content ?? [];
+        this.totalElementos = respuesta.datos?.totalElements ?? 0;
       },
-      error: (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
 
-  buscarFoliosNotaRemision() {
+  buscar(): void {
     this.numPaginaActual = 0;
-    this.buscarPorFiltros();
+    this.paginacionConFiltrado = true;
+    this.paginarConFiltros();
   }
 
-  buscarPorFiltros(): void {
-    this.generarNotaRemisionService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos?.content.length > 0) {
-          this.notasRemision = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        } else {
-          this.notasRemision = [];
-          this.totalElementos = 0;
-        }
+  paginarConFiltros(): void {
+    this.cargadorService.activar();
+    const filtros: BusquedaFiltro = this.obtenerObjetoParaFiltrado()
+    this.generarNotaRemisionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.notasRemision = respuesta.datos?.content ?? [];
+        this.totalElementos = respuesta.datos?.totalElements ?? 0;
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
@@ -177,61 +192,67 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   obtenerObjetoParaFiltrado(): BusquedaFiltro {
+    let fechaInicial = this.filtroForm.get('fechaInicial')?.value;
+    if (fechaInicial) fechaInicial = moment(this.f.fechaInicial.value).format('DD/MM/YYYY');
+    let fechaFinal = this.filtroForm.get('fechaFinal')?.value;
+    if (fechaFinal) fechaFinal = moment(this.f.fechaInicial.value).format('DD/MM/YYYY');
     return {
-      idNivel: +this.f.nivel.value || null,
-      idDelegacion: +this.f.delegacion.value || null,
-      idVelatorio: +this.f.velatorio.value || null,
-      folioODS: this.f.folio.value?.label,
-      fecIniODS: this.f.fechaInicial.value ? moment(this.f.fechaInicial.value).format('DD/MM/YYYY') : null,
-      fecFinODS: this.f.fechaFinal.value ? moment(this.f.fechaFinal.value).format('DD/MM/YYYY') : null,
+      idNivel: this.filtroForm.get('nivel')?.value,
+      idDelegacion: this.filtroForm.get('delegacion')?.value,
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      folioODS: this.filtroForm.get('folio')?.value,
+      fecIniODS: fechaInicial,
+      fecFinODS: fechaFinal,
     }
   }
 
-
   limpiar(): void {
-    this.alertaService.limpiar();
-    this.filtroForm.reset();
-    this.filtroForm.get('nivel')?.patchValue(+this.rolLocalStorage.idOficina);
-    this.filtroForm.get('delegacion')?.patchValue(+this.rolLocalStorage.idDelegacion);
-    this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio);
-    this.obtenerVelatorios();
+    this.paginacionConFiltrado = false;
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
+    this.catalogoVelatorios = [];
+    this.foliosGenerados = [];
+    this.filtroFormDir.resetForm({
+      nivel: obtenerNivelUsuarioLogueado(usuario),
+      velatorio: obtenerVelatorioUsuarioLogueado(usuario),
+      delegacion
+    });
+    this.numPaginaActual = 0;
+    this.seleccionarDelegacion();
     this.paginar();
   }
 
-  obtenerFoliosGenerados() {
-    const iddelegacion = +this.f.delegacion.value;
-    const idVelatorio = +this.f.velatorio.value;
-    this.generarNotaRemisionService.buscarTodasOdsGeneradas(iddelegacion, idVelatorio).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        let filtrado: TipoDropdown[] = [];
-        if (respuesta?.datos.length > 0) {
-          respuesta?.datos.forEach((e: any) => {
-            filtrado.push({
-              label: e.nombre,
-              value: e.id,
-            });
-          });
-          this.foliosGenerados = filtrado;
-        } else {
-          this.foliosGenerados = [];
-        }
+  obtenerFoliosGenerados(): void {
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    const idVelatorio = this.filtroForm.get('velatorio')?.value;
+    this.generarNotaRemisionService.buscarTodasOdsGeneradas(idDelegacion, idVelatorio).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.foliosGenerados = mapearArregloTipoDropdown(respuesta.datos, "nombre", "nombre");
       },
-      error: (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
   }
 
-  async obtenerVelatorios() {
+  obtenerVelatorios(): void {
     this.foliosGenerados = [];
-    this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
+    const delegacion = this.filtroForm.get('delegacion')?.value;
+    this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
-      error: (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+
+  seleccionarDelegacion(): void {
+    this.obtenerVelatorios();
+    this.obtenerFoliosGenerados();
   }
 
   generarReporteNotaRemision(tipoReporte: string): void {
@@ -240,22 +261,21 @@ export class GenerarNotaRemisionComponent implements OnInit {
       configuracionArchivo.ext = "xlsx"
     }
 
-    this.loaderService.activar();
+    this.cargadorService.activar();
     const busqueda: GenerarReporte = this.filtrosArchivos(tipoReporte);
     this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
-      finalize(() => this.loaderService.desactivar())
+      finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: any) => {
+      next: (respuesta: any): void => {
         console.log(respuesta);
         this.mostrarModalDescargaExitosa = true;
       },
-      error: (error: HttpErrorResponse) => {
-        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+      error: (error: HttpErrorResponse): void => {
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
         this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       },
     });
   }
-
 
   filtrosArchivos(tipoReporte: string): GenerarReporte {
     return {
@@ -268,5 +288,6 @@ export class GenerarNotaRemisionComponent implements OnInit {
   get f() {
     return this.filtroForm?.controls;
   }
+
 
 }
