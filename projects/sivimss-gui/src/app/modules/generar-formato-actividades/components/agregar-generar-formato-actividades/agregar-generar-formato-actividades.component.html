@@ -1,4 +1,9 @@
 <app-titulo-principal titulo="Generar formato de actividades"></app-titulo-principal>
+
+<div class="border-panel panel-custom">
+  <h1 class="subtitulo-base-lg">INFORME DE PROMOCIÓN Y DIFUSIÓN</h1>
+</div>
+
 <div class="border-panel">
   <form [formGroup]="agregarGenerarFormatoActividadesForm">
     <div class="row mb-3">
@@ -6,10 +11,14 @@
         <label class="control-label" for="folio">Folio de formato:</label>
         <input id="folio" class="form-control" formControlName="folio" placeholder="">
       </div>
-
       <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio:</label>
-        <input id="velatorio" class="form-control" formControlName="velatorio" placeholder="">
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio" (onChange)="consultarPromotores()">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="apf.velatorio?.errors?.required && (apf.velatorio?.dirty || apf.velatorio?.touched)">Este campo es
+          obligatorio *.</span>
       </div>
     </div>
 
@@ -34,15 +43,20 @@
     </div>
   </form>
 
-  <p-table styleClass="mt-5 mb-8" [value]="actividades" dataKey="id" editMode="row" [paginator]="actividades.length > 0"
-    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [tableStyle]="{'min-width': '50rem'}">
+</div>
+
+<section class="mt-5">
+
+  <p-table styleClass="mt-5" [value]="actividades" dataKey="idActividad" editMode="row"
+    [paginator]="actividades.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos"
+    [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)"
+    [tableStyle]="{'min-width': '50rem', 'border-bottom': '2px solid #484848'}">
     <ng-template pTemplate="header">
       <tr>
         <th id="fecha" style="width:8%" rowspan="2">Fecha</th>
-        <th id="horario" colspan="2">Horario</th>
-        <th id="personal" colspan="2">Personal del velatorio</th>
-        <th id="numero" style="width:5%" rowspan="2">Número de pláticas</th>
+        <th id="horario" colspan="2">Horario*</th>
+        <th id="personal" colspan="2">Personal del velatorio*</th>
+        <th id="numero" style="width:5%" rowspan="2">Número de pláticas*</th>
         <th id="sede" colspan="3">Sede*</th>
         <th id="observaciones" style="width:10%" rowspan="2">Observaciones</th>
         <th id="evidencia" style="width:5%" rowspan="2">Evidencia</th>
@@ -63,8 +77,8 @@
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-calendar styleClass="form-control" id="fechaInicio" [(ngModel)]="actividad.fecha" [showIcon]="false"
-                dateFormat="dd/mm/yy" placeholder=""></p-calendar>
+              <p-calendar styleClass="form-control" appendTo="body" id="fechaInicio" [(ngModel)]="actividad.fecha"
+                [showIcon]="false" dateFormat="dd/mm/yy" placeholder=""></p-calendar>
             </ng-template>
             <ng-template pTemplate="output">
               {{actividad.fecha}}
@@ -74,8 +88,8 @@
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-calendar styleClass="form-control" [(ngModel)]="actividad.horarioInicial" [showIcon]="false"
-                placeholder="00:00" [timeOnly]="true"></p-calendar>
+              <p-calendar styleClass="form-control" appendTo="body" [(ngModel)]="actividad.horarioInicial"
+                [showIcon]="false" placeholder="00:00" [timeOnly]="true"></p-calendar>
             </ng-template>
             <ng-template pTemplate="output">
               {{actividad.horarioInicial}}
@@ -85,8 +99,8 @@
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-calendar styleClass="form-control" [(ngModel)]="actividad.horarioFinal" [showIcon]="false"
-                placeholder="00:00" [timeOnly]="true"></p-calendar>
+              <p-calendar styleClass="form-control" appendTo="body" [(ngModel)]="actividad.horarioFinal"
+                [showIcon]="false" placeholder="00:00" [timeOnly]="true"></p-calendar>
             </ng-template>
             <ng-template pTemplate="output">
               {{actividad.horarioFinal}}
@@ -96,7 +110,7 @@
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-dropdown id="promotor" class="form-control" [(ngModel)]="actividad.personalVelatorio"
+              <p-dropdown id="promotor" class="form-control" appendTo="body" [(ngModel)]="actividad.personalVelatorio"
                 [options]="catalogoPromotores" placeholder="" [filter]="true">
               </p-dropdown>
             </ng-template>
@@ -108,7 +122,7 @@
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <input pInputText type="text" style="width:100%" [value]="actividad.puesto">
+              <input pInputText type="text" style="width:100%" [value]="actividad.puesto" [disabled]="true">
             </ng-template>
             <ng-template pTemplate="output">
               {{actividad.puesto}}
@@ -182,27 +196,20 @@
         </td>
         <td>
           <div class="flex align-items-center justify-content-center gap-2">
-            <a *ngIf="!editing" pRipple pInitEditableRow (click)="onRowEditInit(actividad)">
-              <!-- <img src="assets/images/imagen-icono-ver.svg" alt="Ver"> -->
-              <img src="assets/images/imagen-icono-pencil-modificar.svg" alt="icono editar">
+            <a [id]='actividad.idActividad' class="btn-actions" *ngIf="!editing" pRipple pInitEditableRow
+              (click)="onRowEditInit(actividad)">
+              <img src="assets/images/imagen-icono-pencil-modificar.svg" alt="Editar">
             </a>
-            <a *ngIf="!editing" pRipple pCancelEditableRow (click)="onRowEditInit(actividad)">
-              <img src="assets/images/imagen-icono-eliminar.svg" alt="Ver">
+            <a class="btn-actions" *ngIf="!editing" pRipple pDeleteEditableRow (click)="onRowDelete(actividad)">
+              <img src="assets/images/imagen-icono-eliminar.svg" alt="Eliminar">
             </a>
-
-            <a *ngIf="editing" pRipple pSaveEditableRow (click)="onRowEditSave(actividad)">
-              <img src="assets/images/imagen-icono-guardar.svg" alt="Ver">
+            <a class="btn-actions" *ngIf="editing" pRipple pSaveEditableRow (click)="onRowEditSave(actividad)">
+              <img src="assets/images/imagen-icono-guardar.svg" alt="Guardar">
             </a>
-            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
-              (click)="onRowEditCancel(actividad, ri)" class="p-button-rounded p-button-text p-button-danger">
+            <button class="btn-actions" *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+              icon="pi pi-times" (click)="onRowEditCancel(actividad, ri)"
+              class="p-button-rounded p-button-text p-button-danger">
             </button>
-
-            <!-- <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
-                (click)="onRowEditSave(actividad)" class="p-button-rounded p-button-text p-button-success mr-2">
-              </button>
-              <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
-                (click)="onRowEditCancel(actividad, ri)" class="p-button-rounded p-button-text p-button-danger">
-              </button> -->
           </div>
         </td>
       </tr>
@@ -216,35 +223,19 @@
     </ng-template>
   </p-table>
 
-</div>
 
-<div class="row mb-2">
-  <div class="col-md-12">
-    <span>*Campos obligatorios</span>
+  <div class="flex justify-content-between">
+    <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>
+    <span class="subtitulo fs-2x">Número de pláticas al mes: {{actividades.length}}</span>
   </div>
-</div>
 
-<div class="flex justify-content-end mb-6">
-  <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
-  <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarGuardar()">
-    Generar formato
-  </button>
-</div>
-
-<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-  [draggable]="false" [resizable]="false" header="">
-  <ng-template pTemplate="content">
-    <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{mensajeModal}}</span>
-    </div>
-  </ng-template>
-  <ng-template pTemplate="footer">
-    <div class="flex justify-content-center">
-      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Cancelar</button>
-      <button class="btn btn-primary btn-md" (click)="guardarPromotor()">Aceptar</button>
-    </div>
-  </ng-template>
-</p-dialog>
+  <div class="flex justify-content-end mt-6 mb-6">
+    <button class="btn btn-gold btn-md" [routerLink]="'../'">Cancelar</button>
+    <button type="button" class="ml-4 btn btn-primary btn-md">
+      Generar formato
+    </button>
+  </div>
+</section>
 
 <p-dialog [(visible)]="mostrarModalPromotorDuplicado" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
   [draggable]="false" [resizable]="false" header="">

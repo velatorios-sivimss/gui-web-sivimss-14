@@ -9,7 +9,6 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { PromotoresRoutingModule } from './generar-formato-actividades-routing.module';
 import { GenerarFormatoActividadesComponent } from './components/generar-formato-actividades/generar-formato-actividades.component';
 import { AgregarGenerarFormatoActividadesComponent } from './components/agregar-generar-formato-actividades/agregar-generar-formato-actividades.component';
-import { VerDetalleGenerarFormatoActividadesComponent } from './components/ver-detalle-generar-formato-actividades/ver-detalle-generar-formato-actividades.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TituloPrincipalModule } from "../../shared/titulo-principal/titulo-principal.module";
 import { GenerarFormatoActividadesService } from "./services/generar-formato-actividades.service";
@@ -27,7 +26,6 @@ import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
   declarations: [
     GenerarFormatoActividadesComponent,
     AgregarGenerarFormatoActividadesComponent,
-    VerDetalleGenerarFormatoActividadesComponent,
   ],
   imports: [
     CommonModule,

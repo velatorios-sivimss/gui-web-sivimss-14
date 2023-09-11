@@ -161,11 +161,15 @@ export class GenerarFormatoActividadesComponent implements OnInit {
     }
   }
 
-  irAGenerarFormatoActividades(): void {
+  agregarFormatoActividades(): void {
     void this.router.navigate([`agregar-actividades`], { relativeTo: this.activatedRoute });
   }
 
-  irADetalleFormatoActividades(): void {
+  modificarFormatoActividades(): void {
+    void this.router.navigate([`modificar-actividades`], { relativeTo: this.activatedRoute });
+  }
+
+  detalleFormatoActividades(): void {
     void this.router.navigate([`detalle-de-actividades/${this.actividadSeleccionada.idFormato}`], { relativeTo: this.activatedRoute });
   }
 

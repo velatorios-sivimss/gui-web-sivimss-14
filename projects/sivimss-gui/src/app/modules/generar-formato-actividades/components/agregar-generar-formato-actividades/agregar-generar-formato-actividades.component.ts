@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { OverlayPanel } from "primeng/overlaypanel";
-import { GenerarFormatoActividades, GenerarFormatoActividadesBusqueda } from '../../models/generar-formato-actividades.interface';
+import { BuscarCatalogo, GenerarFormatoActividades, GenerarFormatoActividadesBusqueda } from '../../models/generar-formato-actividades.interface';
 import { UsuarioService } from '../../../usuarios/services/usuario.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
@@ -27,39 +27,21 @@ import { LazyLoadEvent } from 'primeng/api';
   providers: [DialogService, DynamicDialogRef]
 })
 export class AgregarGenerarFormatoActividadesComponent implements OnInit {
-  readonly POSICION_CATALOGO_VELATORIO: number = 2;
-  readonly POSICION_CATALOGOS_ENTIDADES: number = 3;
-
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+
+  readonly POSICION_CATALOGO_VELATORIO: number = 2;
+  readonly POSICION_CATALOGOS_ENTIDADES: number = 3;
 
   public numPaginaActual: number = 0;
   public cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   public totalElementos: number = 0;
-  public catalogoNiveles: TipoDropdown[] = [];
-  public catalogoDelegaciones: TipoDropdown[] = [];
   public catalogoVelatorios: TipoDropdown[] = [];
-  public catalogoPlacas: TipoDropdown[] = [];
   public catalogoPromotores: TipoDropdown[] = [];
-  public mostrarModalConfirmacion: boolean = false;
   public mensajeModal: string = "";
   public realizoBusqueda: boolean = false;
   public clonedProducts: { [s: string]: GenerarFormatoActividadesBusqueda } = {};
-  public actividades: GenerarFormatoActividadesBusqueda[] = [
-    {
-      fecha: '08/09/2023',
-      horarioInicial: '08:35',
-      horarioFinal: '08:35',
-      personalVelatorio: 'q',
-      puesto: 1,
-      numPlaticas: 'q',
-      unidadImss: 'q',
-      empresa: 'q',
-      actividadRealizada: 'q',
-      observaciones: 'q',
-      evidencia: true,
-    }
-  ];
+  public actividades: GenerarFormatoActividadesBusqueda[] = [];
 
   public entidadFederativa: TipoDropdown[] = [];
   public tipoArticulos: any[] = [];
@@ -68,6 +50,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   public agregarGenerarFormatoActividadesForm!: FormGroup;
   public mostrarModalPromotorDuplicado: boolean = false;
   public fechaActual: Date = new Date();
+  public agregandoRegistro: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -92,7 +75,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   inicializarAgregarActividadesForm() {
     this.agregarGenerarFormatoActividadesForm = this.formBuilder.group({
       folio: new FormControl({ value: null, disabled: true }, []),
-      velatorio: new FormControl({ value: null, disabled: true }, []),
+      velatorio: new FormControl({ value: null, disabled: false }, [Validators.required]),
       fechaInicio: new FormControl({ value: null, disabled: false }, [Validators.required]),
       fechaFinal: new FormControl({ value: null, disabled: false }, [Validators.required]),
     });
@@ -105,7 +88,30 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   }
 
   agregarRegistro() {
+    if (!this.agregandoRegistro) {
+      this.actividades.unshift({
+        idFormato: null,
+        idActividad: null,
+        fecha: null,
+        horarioInicial: null,
+        horarioFinal: null,
+        personalVelatorio: null,
+        puesto: null,
+        numPlaticas: null,
+        unidadImss: null,
+        empresa: null,
+        actividadRealizada: null,
+        observaciones: null,
+        evidencia: null,
+      });
 
+      this.agregandoRegistro = true;
+
+      setTimeout(() => {
+        let elements = document.getElementById('null');
+        elements?.click();
+      }, 100);
+    }
   }
 
   paginar(event?: LazyLoadEvent): void {
@@ -121,71 +127,141 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     this.ref.close();
   }
 
-  confirmarGuardar() {
-    this.agregarGenerarFormatoActividadesForm.markAllAsTouched();
-    if (this.agregarGenerarFormatoActividadesForm.invalid) return;
-    this.mostrarModalConfirmacion = true;
-    this.mensajeModal = `¿Estás seguro de agregar este nuevo registro? Promotor`;
+  consultarPromotores() {
+    let obj: BuscarCatalogo = {
+      idCatalogo: 1,
+      idVelatorio: this.apf.velatorio.value,
+    }
+    this.generarFormatoActividadesService.obtenerCatalogos(obj).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catalogoPromotores = respuesta.datos;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+      }
+    });
   }
 
-  guardarPromotor() {
+  obtenerActividades() {
     this.loaderService.activar();
-    this.generarFormatoActividadesService.guardar(this.datosGuardar()).pipe(
+    this.generarFormatoActividadesService.obtenerActividades(this.apf.folio.value, this.numPaginaActual, this.cantElementosPorPagina).pipe(
       finalize(() => {
-        this.mostrarModalConfirmacion = false;
+        this.loaderService.desactivar()
+      })
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.actividades = respuesta.datos;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+      }
+    });
+  }
+
+  obtenerDatosFormato() {
+    this.loaderService.activar();
+    this.generarFormatoActividadesService.obtenerDetalleFormato(this.apf.folio.value).pipe(
+      finalize(() => {
+        this.loaderService.desactivar()
+      })
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.agregarGenerarFormatoActividadesForm.patchValue({
+          folio: respuesta.datos.folio,
+          velatorio: respuesta.datos.velatorio,
+          fechaInicio: respuesta.datos.fechaInicio,
+          fechaFinal: respuesta.datos.fechaFinal,
+        })
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+      }
+    });
+  }
+
+  agregarActividad(actividad: GenerarFormatoActividadesBusqueda) {
+    this.loaderService.activar();
+    this.generarFormatoActividadesService.agregarActividad(this.datosGuardar(actividad)).pipe(
+      finalize(() => {
         this.loaderService.desactivar()
       })
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
-          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente. Promotor`);
-          this.ref.close({ estatus: true });
-        } else {
-          this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
-          this.mostrarModalPromotorDuplicado = true;
+          this.obtenerActividades();
         }
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
 
-  datosGuardar() {
-    return {
-      curp: this.apf.curp.value,
-      nomPromotor: this.apf.nombre.value,
-      aPaterno: this.apf.primerApellido.value,
-      aMaterno: this.apf.segundoApellido.value,
-      fecNac: moment(this.apf.fechaNacimiento.value).format('DD/MM/YYYY'),
-      idLugarNac: this.apf.entidadFederativa.value,
-      correo: this.apf.correo.value,
-      numEmpleado: this.apf.numEmpleado.value,
-      puesto: this.apf.puesto.value,
-      categoria: this.apf.categoria.value,
-      fecIngreso: moment(this.apf.fechaIngreso.value).format('DD/MM/YYYY'),
-      sueldoBase: +this.apf.sueldoBase.value,
-      idVelatorio: this.apf.velatorio.value
+  eliminarActividad(idActividad: number | null | undefined) {
+    if (idActividad) {
+      this.loaderService.activar();
+      this.generarFormatoActividadesService.eliminarActividad(idActividad).pipe(
+        finalize(() => {
+          this.loaderService.desactivar()
+        })
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
     }
   }
 
-  onRowEditInit(generarFormatoActividadesBusqueda: GenerarFormatoActividadesBusqueda) {
-    console.log(generarFormatoActividadesBusqueda);
-
-    this.clonedProducts[0] = { ...generarFormatoActividadesBusqueda };
+  datosGuardar(actividad: GenerarFormatoActividadesBusqueda): GenerarFormatoActividades {
+    return {
+      idFormato: this.apf.folio.value,
+      idVelatorio: this.apf.velatorio.value,
+      fecInicio: this.apf.fechaInicio.value,
+      fecFin: this.apf.fechaFinal.value,
+      actividades: {
+        idActividad: actividad.idActividad,
+        fecActividad: actividad.fecha,
+        hrInicio: actividad.horarioInicial,
+        hrFin: actividad.horarioFinal,
+        idPromotor: actividad.personalVelatorio,
+        numPlaticas: actividad.numPlaticas,
+        unidad: actividad.unidadImss,
+        empresa: actividad.empresa,
+        actividadRealizada: actividad.actividadRealizada,
+        observaciones: actividad.observaciones,
+        evidencia: actividad.evidencia,
+      }
+    }
   }
 
-  onRowEditSave(generarFormatoActividades: GenerarFormatoActividades) {
-    // if (product.price > 0) {
-    //   delete this.clonedProducts[product.id as string];
-    //   this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Product is updated' });
-    // } else {
-    //   this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Invalid Price' });
-    // }
+  onRowEditInit(actividad: GenerarFormatoActividadesBusqueda) {
+    if (!this.agregandoRegistro) {
+      this.clonedProducts['nuevo'] = { ...actividad };
+    }
   }
 
-  onRowEditCancel(generarFormatoActividades: GenerarFormatoActividades, index: number) {
+  onRowEditSave(actividad: GenerarFormatoActividadesBusqueda) {
+    this.agregarActividad(actividad);
+  }
+
+  onRowDelete(actividad: GenerarFormatoActividadesBusqueda) {
+    if (!this.agregandoRegistro) {
+      let index = this.actividades.findIndex((item: GenerarFormatoActividadesBusqueda) => item.idActividad === actividad.idActividad);
+      if (index !== -1) {
+        this.eliminarActividad(this.actividades[index].idActividad);
+        this.actividades.splice(index, 1);
+      }
+    }
+  }
+
+  onRowEditCancel(actividad: GenerarFormatoActividadesBusqueda, index: number) {
+    if (!actividad.idActividad) {
+      this.actividades.shift();
+      this.agregandoRegistro = false;
+    }
     // this.products[index] = this.clonedProducts[product.id as string];
     // delete this.clonedProducts[product.id as string];
   }

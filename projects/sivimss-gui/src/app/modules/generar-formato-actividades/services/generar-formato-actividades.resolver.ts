@@ -13,8 +13,7 @@ export class GenerarFormatoActividadesResolver implements Resolve<any> {
     resolve(): Observable<any> {
         const niveles$: Observable<TipoDropdown[]> = this.generarFormatoActividadesService.obtenerCatalogoNiveles();
         const delegaciones$: Observable<TipoDropdown[]> = this.generarFormatoActividadesService.obtenerCatalogoDelegaciones();
-        const catalogoVelatorio$: Observable<HttpRespuesta<any>> = this.generarFormatoActividadesService.obtenerCatalogos({ catalogo: 1 });
-        const catalogoEstados$: Observable<TipoDropdown[]> = this.generarFormatoActividadesService.obtenerCatalogoEstados();
-        return forkJoin([niveles$, delegaciones$, catalogoVelatorio$, catalogoEstados$]);
+        const catalogoVelatorio$: Observable<HttpRespuesta<any>> = this.generarFormatoActividadesService.obtenerVelatorios({ catalogo: 1 });
+        return forkJoin([niveles$, delegaciones$, catalogoVelatorio$]);
     }
 }
