@@ -58,7 +58,7 @@
     <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['PROMOTORES','ALTA']"
       (click)="irAGenerarFormatoActividades()">Generar formato de actividades</button>
   </div>
-  <p-table styleClass="mt-5 mb-8" [value]="actividades" editMode="row" [paginator]="actividades.length > 0"
+  <p-table styleClass="mt-5 mb-8" [value]="actividades" [paginator]="actividades.length > 0"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
     [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
@@ -70,72 +70,22 @@
         <th id="acciones">Acciones</th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-actividad let-editing="editing" let-ri="rowIndex">
-      <tr [pEditableRow]="actividad">
-        <td>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <input pInputText type="text" [(ngModel)]="actividad.fecha" required>
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{actividad.fecha}}
-            </ng-template>
-          </p-cellEditor>
-        </td>
-        <td>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <input pInputText type="text" [(ngModel)]="actividad.folio" required>
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{actividad.folio}}
-            </ng-template>
-          </p-cellEditor>
-        </td>
-        <td>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <input pInputText type="text" [(ngModel)]="actividad.velatorio" required>
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{actividad.velatorio}}
-            </ng-template>
-          </p-cellEditor>
-        </td>
-        <td>
-          <p-cellEditor>
-            <ng-template pTemplate="input">
-              <input pInputText type="text" [(ngModel)]="actividad.numActividaes" required>
-            </ng-template>
-            <ng-template pTemplate="output">
-              {{actividad.numActividaes}}
-            </ng-template>
-          </p-cellEditor>
-        </td>
+    <ng-template pTemplate="body" let-actividad>
+      <tr>
+        <td>{{actividad.fecha}}</td>
+        <td>{{actividad.folio}}</td>
+        <td>{{actividad.velatorio}}</td>
+        <td>{{actividad.numActividaes}}</td>
         <td>
           <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
-            <a (click)="abrirPanel($event,actividad)">
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            <a (click)="irAGenerarFormatoActividades()">
+              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+            </a>
+            <a (click)="irAGenerarFormatoActividades()">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono editar">
             </a>
           </div>
         </td>
-
-        <td>
-          <div class="flex align-items-center justify-content-center gap-2">
-            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
-              (click)="onRowEditInit(actividad)" class="p-button-rounded p-button-text"></button>
-            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
-              (click)="onRowEditInit(actividad)" class="p-button-rounded p-button-text"></button>
-            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
-              (click)="onRowEditSave(actividad)"
-              class="p-button-rounded p-button-text p-button-success mr-2"></button>
-            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
-              (click)="onRowEditCancel(actividad, ri)"
-              class="p-button-rounded p-button-text p-button-danger"></button>
-          </div>
-        </td>
-
-
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">

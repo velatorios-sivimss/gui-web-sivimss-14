@@ -49,7 +49,7 @@ export class VerDetalleGenerarFormatoActividadesComponent implements OnInit {
       horarioInicial: 'q',
       horarioFinal: 'q',
       personalVelatorio: 'q',
-      puesto: 'q',
+      puesto: 1,
       numPlaticas: 'q',
       unidadImss: 'q',
       empresa: 'q',

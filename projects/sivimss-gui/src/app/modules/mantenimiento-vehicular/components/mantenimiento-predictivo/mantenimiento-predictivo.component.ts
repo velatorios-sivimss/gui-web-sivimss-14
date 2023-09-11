@@ -37,7 +37,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
 
   vehiculos: VehiculoMantenimiento[] = []
   vehiculoSeleccionado!: VehiculoMantenimiento;
-
+  realizoBusqueda: boolean = false;
   filtroForm!: FormGroup
   verDetallePredictivo: boolean = false;
   rangoFecha: string = '';
@@ -132,6 +132,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
   }
 
   limpiar(): void {
+    this.realizoBusqueda = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
 
@@ -157,6 +158,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     const filtros: FiltrosMantenimientoPredictivo = this.generarSolicitudFiltros();
     this.mantenimientoVehicularService.buscarReporteMttoPreventivo(filtros).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
+        this.realizoBusqueda = true;
         if (respuesta.datos?.content.length > 0) {
           this.vehiculos = respuesta.datos.content;
           this.vehiculoSeleccionado = respuesta.datos.content[0];

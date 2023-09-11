@@ -17,7 +17,7 @@ export interface Actividades {
   empresa?: string;
   actividadRealizada?: string;
   observaciones?: string;
-  evidencia?: number;
+  evidencia?: boolean;
 }
 
 export interface GenerarFormatoActividadesBusqueda {
@@ -29,11 +29,13 @@ export interface GenerarFormatoActividadesBusqueda {
   horarioInicial?: string;
   horarioFinal?: string;
   personalVelatorio?: string;
-  puesto?: string;
+  puesto?: number;
   numPlaticas?: string;
   unidadImss?: string;
   empresa?: string;
   actividadRealizada?: string;
+  observaciones?: string;
+  evidencia?: boolean;
 }
 
 export interface BuscarGenerarFormatoActividades {

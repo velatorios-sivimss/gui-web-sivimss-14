@@ -40,21 +40,24 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   public catalogoDelegaciones: TipoDropdown[] = [];
   public catalogoVelatorios: TipoDropdown[] = [];
   public catalogoPlacas: TipoDropdown[] = [];
+  public catalogoPromotores: TipoDropdown[] = [];
   public mostrarModalConfirmacion: boolean = false;
   public mensajeModal: string = "";
   public realizoBusqueda: boolean = false;
   public clonedProducts: { [s: string]: GenerarFormatoActividadesBusqueda } = {};
   public actividades: GenerarFormatoActividadesBusqueda[] = [
     {
-      fecha: 'q',
-      horarioInicial: 'q',
-      horarioFinal: 'q',
+      fecha: '08/09/2023',
+      horarioInicial: '08:35',
+      horarioFinal: '08:35',
       personalVelatorio: 'q',
-      puesto: 'q',
+      puesto: 1,
       numPlaticas: 'q',
       unidadImss: 'q',
       empresa: 'q',
       actividadRealizada: 'q',
+      observaciones: 'q',
+      evidencia: true,
     }
   ];
 
@@ -168,6 +171,8 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   }
 
   onRowEditInit(generarFormatoActividadesBusqueda: GenerarFormatoActividadesBusqueda) {
+    console.log(generarFormatoActividadesBusqueda);
+
     this.clonedProducts[0] = { ...generarFormatoActividadesBusqueda };
   }
 
