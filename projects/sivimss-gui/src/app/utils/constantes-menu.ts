@@ -119,6 +119,10 @@ export const idsModulos: DatoModulo = {
     ruta: '',
     icono: 'pagos.svg'
   },
+  '37': {
+    ruta: '/generar-orden-de-subrogacion',
+    icono: 'default-icon.svg'
+  },
   '64': {
     ruta: '/consulta-donaciones',
     icono: 'default-icon.svg'
@@ -190,5 +194,13 @@ export const idsModulos: DatoModulo = {
   '75': {
     ruta: '/generar-formato-actividades',
     icono: 'generar-formato-actividades.svg'
+  },
+  '77': {
+    ruta: '',
+    icono: 'default-icon.svg'
+  },
+  '78': {
+    ruta: 'orden-entrada',
+    icono: 'default-icon.svg'
   },
 };

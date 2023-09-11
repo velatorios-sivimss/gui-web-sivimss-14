@@ -196,7 +196,7 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'reporte-orden-servicio',
+    path: 'reportes',
     loadChildren: () => import('./modules/reporte-orden-servicio/reporte-orden-servicio.module').then(m => m.ReporteOrdenServicioModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
