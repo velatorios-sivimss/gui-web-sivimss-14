@@ -80,27 +80,27 @@
         <div class="flex justify-content-between align-items-center">
           <h2 class="subtitulo mt-3">Servicios ODS</h2>
         </div>
-        <p-table styleClass="mt-5 mb-6" [value]="servicios">
+        <p-table styleClass="mt-5 mb-6" [value]="servicios" [resizableColumns]="true" [columnResizeMode]="'expand'">
           <ng-template pTemplate="header">
             <tr>
-              <th id="servicios_ods_consecutivo">Consecutivo</th>
-              <th id="servicios_ods_grupo">Grupo</th>
-              <th id="servicios_ods_concepto">Concepto</th>
-              <th id="servicios_ods_cantidad">Cantidad</th>
-              <th id="servicios_ods_sat">Clave SAT</th>
-              <th id="servicios_ods_importe">Importe /Monto</th>
-              <th id="servicios_ods_total">Total</th>
+              <th pResizableColumn id="servicios_ods_consecutivo">Consecutivo</th>
+              <th pResizableColumn id="servicios_ods_grupo">Grupo</th>
+              <th pResizableColumn id="servicios_ods_concepto">Concepto</th>
+              <th pResizableColumn id="servicios_ods_cantidad">Cantidad</th>
+              <th pResizableColumn id="servicios_ods_sat">Clave SAT</th>
+              <th pResizableColumn id="servicios_ods_importe">Importe /Monto</th>
+              <th pResizableColumn id="servicios_ods_total">Total</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-servicio let-noConsecutivo="rowIndex">
             <tr>
-              <td>{{noConsecutivo + 1}}</td>
-              <td>{{servicio.grupo}}</td>
-              <td>{{servicio.concepto}}</td>
-              <td>{{servicio.cantidad}}</td>
-              <td>{{servicio.claveSat}}</td>
-              <td>{{servicio.importe | currency}}</td>
-              <td>{{servicio.total | currency}}</td>
+              <td pResizableColumn>{{noConsecutivo + 1}}</td>
+              <td pResizableColumn>{{servicio.grupo}}</td>
+              <td pResizableColumn>{{servicio.concepto}}</td>
+              <td pResizableColumn>{{servicio.cantidad}}</td>
+              <td pResizableColumn>{{servicio.claveSat}}</td>
+              <td pResizableColumn>{{servicio.importe | currency}}</td>
+              <td pResizableColumn>{{servicio.total | currency}}</td>
             </tr>
           </ng-template>
         </p-table>
