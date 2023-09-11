@@ -72,17 +72,18 @@
     </ng-template>
     <ng-template pTemplate="body" let-actividad>
       <tr>
-        <td>{{actividad.fecha}}</td>
+        <td>{{actividad.fecElaboracion}}</td>
         <td>{{actividad.folio}}</td>
         <td>{{actividad.velatorio}}</td>
-        <td>{{actividad.numActividaes}}</td>
+        <td>{{actividad.numActividades}}</td>
         <td>
           <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
-            <a (click)="detalleFormatoActividades()">
+            <a (click)="detalleFormatoActividades(actividad)">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
-            <a (click)="modificarFormatoActividades()">
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono editar">
+            <a (click)="modificarFormatoActividades(actividad)">
+              <img src="assets/images/imagen-icono-pencil-modificar.svg" *ngIf="actividad.banderaModificar"
+                alt="icono editar">
             </a>
           </div>
         </td>

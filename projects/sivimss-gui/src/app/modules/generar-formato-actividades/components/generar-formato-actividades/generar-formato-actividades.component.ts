@@ -48,7 +48,7 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   public realizoBusqueda: boolean = false;
 
   public actividades: GenerarFormatoActividadesBusqueda[] = [];
-  public actividadSeleccionada!: GenerarFormatoActividades;
+  public actividadSeleccionada!: GenerarFormatoActividadesBusqueda;
   public detalleRef!: DynamicDialogRef;
   public filtroForm!: FormGroup;
   public promotoresFiltrados: TipoDropdown[] = [];
@@ -78,9 +78,9 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   inicializarFiltroForm() {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: true }],
-      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
+      nivel: [{ value: +usuario?.idOficina, disabled: true }],
+      delegacion: [{ value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2 }, []],
+      velatorio: [{ value: +usuario?.idVelatorio, disabled: +usuario?.idOficina === 3 }, []],
       nombrePromotor: [{ value: null, disabled: false }],
       folio: new FormControl({ value: null, disabled: false }, []),
       fechaInicio: new FormControl({ value: null, disabled: false }, []),
@@ -147,8 +147,8 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   }
 
   datosPromotoresFiltros(esFiltro: boolean): BuscarGenerarFormatoActividades {
-    let nomPromotor: string | null = null;
     if (esFiltro) {
+      let nomPromotor: string | null;
       if (typeof this.ff.nombrePromotor?.value === 'object') {
         nomPromotor = this.ff.nombrePromotor?.value?.label;
       } else {
@@ -165,15 +165,15 @@ export class GenerarFormatoActividadesComponent implements OnInit {
     void this.router.navigate([`agregar-actividades`], { relativeTo: this.activatedRoute });
   }
 
-  modificarFormatoActividades(): void {
-    void this.router.navigate([`modificar-actividades`], { relativeTo: this.activatedRoute });
+  modificarFormatoActividades(actividadSeleccionada: GenerarFormatoActividadesBusqueda): void {
+    void this.router.navigate([`modificar-actividades/${actividadSeleccionada.idFormatoRegistro}`], { relativeTo: this.activatedRoute });
   }
 
-  detalleFormatoActividades(): void {
-    void this.router.navigate([`detalle-de-actividades/${this.actividadSeleccionada.idFormato}`], { relativeTo: this.activatedRoute });
+  detalleFormatoActividades(actividadSeleccionada: GenerarFormatoActividadesBusqueda): void {
+    void this.router.navigate([`detalle-de-actividades/${actividadSeleccionada.idFormatoRegistro}`], { relativeTo: this.activatedRoute });
   }
 
-  abrirPanel(event: MouseEvent, actividadSeleccionada: GenerarFormatoActividades): void {
+  abrirPanel(event: MouseEvent, actividadSeleccionada: GenerarFormatoActividadesBusqueda): void {
     this.actividadSeleccionada = actividadSeleccionada;
     this.overlayPanel.toggle(event);
   }
@@ -186,14 +186,14 @@ export class GenerarFormatoActividadesComponent implements OnInit {
     this.realizoBusqueda = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
+    this.filtroForm.get('nivel')?.patchValue(+usuario?.idOficina);
 
-    if (+usuario.idOficina >= 2) {
-      this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
+    if (+usuario?.idOficina >= 2) {
+      this.filtroForm.get('delegacion')?.patchValue(+usuario?.idDelegacion);
     }
 
-    if (+usuario.idOficina === 3) {
-      this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    if (+usuario?.idOficina === 3) {
+      this.filtroForm.get('velatorio')?.patchValue(+usuario?.idVelatorio);
     } else {
       this.catalogoVelatorios = [];
     }
