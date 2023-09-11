@@ -3,7 +3,6 @@ import { RouterModule, Route } from '@angular/router';
 import { GenerarFormatoActividadesComponent } from './components/generar-formato-actividades/generar-formato-actividades.component';
 import { GenerarFormatoActividadesResolver } from './services/generar-formato-actividades.resolver';
 import { AgregarGenerarFormatoActividadesComponent } from './components/agregar-generar-formato-actividades/agregar-generar-formato-actividades.component';
-import { VerDetalleGenerarFormatoActividadesComponent } from './components/ver-detalle-generar-formato-actividades/ver-detalle-generar-formato-actividades.component';
 
 const routes: Route[] = [
   {
@@ -22,7 +21,14 @@ const routes: Route[] = [
   },
   {
     path: 'detalle-de-actividades/:id',
-    component: VerDetalleGenerarFormatoActividadesComponent,
+    component: AgregarGenerarFormatoActividadesComponent,
+    resolve: {
+      respuesta: GenerarFormatoActividadesResolver
+    },
+  },
+  {
+    path: 'modificar-actividades/:id',
+    component: AgregarGenerarFormatoActividadesComponent,
     resolve: {
       respuesta: GenerarFormatoActividadesResolver
     },

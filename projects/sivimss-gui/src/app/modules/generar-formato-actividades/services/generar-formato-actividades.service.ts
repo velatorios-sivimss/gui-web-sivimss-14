@@ -4,7 +4,7 @@ import { HttpRespuesta } from '../../../models/http-respuesta.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'projects/sivimss-gui/src/environments/environment';
 import { Observable, of } from 'rxjs';
-import { BuscarCatalogo, BuscarGenerarFormatoActividades } from '../models/generar-formato-actividades.interface';
+import { BuscarCatalogo, BuscarGenerarFormatoActividades, GenerarFormatoActividades } from '../models/generar-formato-actividades.interface';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
 import { AutenticacionService } from '../../../services/autenticacion.service';
@@ -19,8 +19,8 @@ export class GenerarFormatoActividadesService extends BaseService<HttpRespuesta<
   private readonly _delegacion: string = 'catalogo_delegaciones';
 
   constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "insertar-generar-formato-actividades", "modificar-generar-formato-actividades",
-      15, "catalogo-generar-formato-actividades", "detalle-generar-formato-actividades", "cambiar-estatus");
+    super(_http, `${environment.api.mssivimss}`, "registrar-actividad", "registrar-actividad",
+      75, "buscar-formato", "detalle-actividades", "cambiar-estatus");
   }
 
   buscarPorFiltros(filtros: BuscarGenerarFormatoActividades, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -30,15 +30,32 @@ export class GenerarFormatoActividadesService extends BaseService<HttpRespuesta<
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, filtros, { params });
   }
 
-  obtenerGenerarFormatoActividades(filtros: BuscarGenerarFormatoActividades): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._paginado}`, filtros);
+  obtenerDetalleFormato(id: number): Observable<HttpRespuesta<any>> {
+    const params = new HttpParams()
+      .append("servicio", 'detalle-formato')
+      .append("palabra", id);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar`, { params });
   }
 
-  obtenerDetalleGenerarFormatoActividades(id: number): Observable<HttpRespuesta<any>> {
+  obtenerActividades(id: number, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
     const params = new HttpParams()
+      .append("pagina", pagina)
+      .append("tamanio", tamanio)
       .append("servicio", this._detalle)
       .append("palabra", id);
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar`, { params });
+  }
+
+  agregarActividad(generarFormatoActividades: GenerarFormatoActividades): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._agregar}`, { generarFormatoActividades });
+  }
+
+  eliminarActividad(idActividad: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/eliminar-actividad`, { idActividad });
+  }
+
+  obtenerCatalogo(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/catalogo`, buscarCatalogo);
   }
 
   obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
@@ -56,12 +73,11 @@ export class GenerarFormatoActividadesService extends BaseService<HttpRespuesta<
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
-  obtenerCatalogos(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/nombre-promotor`, buscarCatalogo);
+  obtenerVelatorios(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `15/buscar/nombre-promotor`, buscarCatalogo);
   }
 
-  obtenerCatalogoEstados(): Observable<TipoDropdown[]> {
-    const estados = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_estados'));
-    return of(mapearArregloTipoDropdown(estados, "desc", "id"));
+  obtenerCatalogos(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/catalogo`, buscarCatalogo);
   }
 }
