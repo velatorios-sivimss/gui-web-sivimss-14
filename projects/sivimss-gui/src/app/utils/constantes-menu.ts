@@ -192,7 +192,7 @@ export const idsModulos: DatoModulo = {
     icono: 'default-icon.svg'
   },
   '75': {
-    ruta: '/generar-formato-actividades',
+    ruta: '/generar-formato-de-actividades',
     icono: 'generar-formato-actividades.svg'
   },
   '77': {
