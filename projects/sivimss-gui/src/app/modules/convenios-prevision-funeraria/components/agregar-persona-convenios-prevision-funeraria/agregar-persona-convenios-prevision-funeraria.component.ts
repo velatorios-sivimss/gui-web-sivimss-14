@@ -289,6 +289,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.fp.sexo.setValue(respuesta.datos[0].sexo);
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo);
           this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
+          this.cambioTipoSexo();
         }else if( respuesta.mensaje === ""){
           if(respuesta.datos.curp === "" || respuesta.datos.curp == null){
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
@@ -300,6 +301,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
           this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
           this.fp.sexo.setValue(+respuesta.datos.sexo);
+          this.cambioTipoSexo();
         }
       },
       (error:HttpErrorResponse) => {
