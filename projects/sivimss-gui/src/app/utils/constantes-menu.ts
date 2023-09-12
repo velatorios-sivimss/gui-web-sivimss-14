@@ -119,6 +119,10 @@ export const idsModulos: DatoModulo = {
     ruta: '',
     icono: 'pagos.svg'
   },
+  '37': {
+    ruta: '/generar-orden-de-subrogacion',
+    icono: 'default-icon.svg'
+  },
   '64': {
     ruta: '/consulta-donaciones',
     icono: 'default-icon.svg'

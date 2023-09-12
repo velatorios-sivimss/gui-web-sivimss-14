@@ -280,31 +280,6 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
         }
       },
     });
-    // this.ordenEntradaService.generarReporteOrdenEntrada(busqueda).pipe(
-    //   finalize(() => this.loaderService.desactivar())
-    // ).subscribe({
-    //   next: (respuesta: HttpRespuesta<any>) => {
-    //     const file = new Blob([this.descargaArchivosService.base64_2Blob(
-    //       respuesta.datos[0], this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-    //       { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
-    //     );
-    //     this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-    //       finalize(() => this.loaderService.desactivar())
-    //     ).subscribe({
-    //       next: (repuesta) => {
-    //         this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-    //         this.mostrarModalConfirmacion = true;
-    //       },
-    //       error: (error) => {
-    //         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-    //       }
-    //     });
-    //   },
-    //   error: (error: HttpErrorResponse) => {
-    //     const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-    //     this.alertaService.mostrar(TipoAlerta.Error, msg);
-    //   }
-    // })
   }
 
   cerrarOrdenEntrada() {

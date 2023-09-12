@@ -7,35 +7,36 @@ export interface GenerarFormatoActividades {
 }
 
 export interface Actividades {
-  idActividad?: number;
-  fecActividad?: string;
-  hrInicio?: string;
-  hrFin?: string;
-  idPromotor?: number;
-  numPlaticas?: number;
-  unidad?: string;
-  empresa?: string;
-  actividadRealizada?: string;
-  observaciones?: string;
-  evidencia?: boolean;
+  idActividad?: number | null;
+  fecActividad?: string | null;
+  hrInicio?: string | null;
+  hrFin?: string | null;
+  idPromotor?: number | null;
+  numPlaticas?: number | null;
+  unidad?: string | null;
+  empresa?: string | null;
+  actividadRealizada?: string | null;
+  observaciones?: string | null;
+  evidencia?: boolean | null;
 }
 
 export interface GenerarFormatoActividadesBusqueda {
-  idFormato?: number;
-  fecha?: string;
-  folio?: string;
-  velatorio?: string;
-  numActividaes?: string;
-  horarioInicial?: string;
-  horarioFinal?: string;
-  personalVelatorio?: string;
-  puesto?: number;
-  numPlaticas?: string;
-  unidadImss?: string;
-  empresa?: string;
-  actividadRealizada?: string;
-  observaciones?: string;
-  evidencia?: boolean;
+  idFormato?: number | null;
+  idActividad?: number | null;
+  fecha?: string | null;
+  folio?: string | null;
+  velatorio?: string | null;
+  numActividaes?: string | null;
+  horarioInicial?: string | null;
+  horarioFinal?: string | null;
+  personalVelatorio?: number | null;
+  puesto?: number | null;
+  numPlaticas?: number | null;
+  unidadImss?: string | null;
+  empresa?: string | null;
+  actividadRealizada?: string | null;
+  observaciones?: string | null;
+  evidencia?: boolean | null;
 }
 
 export interface BuscarGenerarFormatoActividades {
@@ -47,8 +48,7 @@ export interface BuscarGenerarFormatoActividades {
 }
 
 export interface BuscarCatalogo {
-  idDelegacion?: number | null;
-  idVelatorio?: number | null;
-  nomPromotor?: string | null;
   catalogo?: number | null;
+  idCatalogo?: number | null;
+  idVelatorio?: number | null;
 }
