@@ -1,5 +1,5 @@
 export interface GenerarFormatoActividades {
-  idFormato?: number;
+  idFormatoRegistro?: number;
   idVelatorio?: number;
   fecInicio?: string;
   fecFin?: string;
@@ -21,12 +21,12 @@ export interface Actividades {
 }
 
 export interface GenerarFormatoActividadesBusqueda {
-  idFormato?: number | null;
+  idFormatoRegistro?: number | null;
   idActividad?: number | null;
-  fecha?: string | null;
+  fecElaboracion?: string | null;
   folio?: string | null;
   velatorio?: string | null;
-  numActividaes?: string | null;
+  numActividades?: string | null;
   horarioInicial?: string | null;
   horarioFinal?: string | null;
   personalVelatorio?: number | null;
@@ -37,6 +37,7 @@ export interface GenerarFormatoActividadesBusqueda {
   actividadRealizada?: string | null;
   observaciones?: string | null;
   evidencia?: boolean | null;
+  banderaModificar?: number | null;
 }
 
 export interface BuscarGenerarFormatoActividades {

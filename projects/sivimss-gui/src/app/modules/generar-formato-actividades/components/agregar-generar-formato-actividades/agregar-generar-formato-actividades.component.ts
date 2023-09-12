@@ -90,9 +90,9 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   agregarRegistro() {
     if (!this.agregandoRegistro) {
       this.actividades.unshift({
-        idFormato: null,
+        idFormatoRegistro: null,
         idActividad: null,
-        fecha: null,
+        fecElaboracion: null,
         horarioInicial: null,
         horarioFinal: null,
         personalVelatorio: null,
@@ -217,13 +217,13 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
 
   datosGuardar(actividad: GenerarFormatoActividadesBusqueda): GenerarFormatoActividades {
     return {
-      idFormato: this.apf.folio.value,
+      idFormatoRegistro: this.apf.folio.value,
       idVelatorio: this.apf.velatorio.value,
       fecInicio: this.apf.fechaInicio.value,
       fecFin: this.apf.fechaFinal.value,
       actividades: {
         idActividad: actividad.idActividad,
-        fecActividad: actividad.fecha,
+        fecActividad: actividad.fecElaboracion,
         hrInicio: actividad.horarioInicial,
         hrFin: actividad.horarioFinal,
         idPromotor: actividad.personalVelatorio,
