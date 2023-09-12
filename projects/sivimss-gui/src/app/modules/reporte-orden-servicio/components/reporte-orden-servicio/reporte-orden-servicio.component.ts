@@ -16,6 +16,9 @@ import {ReporteOrdenServicioService} from "../../services/reporte-orden-servicio
 import {SERVICIO_BREADCRUMB_CLEAR} from "../../../servicios-funerarios/constants/breadcrumb";
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {TIPO_ARCHIVO} from "../../constants/tipo-archivo";
+import {of} from "rxjs";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 
 @Component({
   selector: 'app-reporte-orden-servicio',
@@ -52,6 +55,7 @@ export class ReporteOrdenServicioComponent implements OnInit {
 
   anio!: TipoDropdown[];
   mes!: TipoDropdown[];
+  exportar: TipoDropdown[] = TIPO_ARCHIVO;
   tipoODSBandera: boolean = false;
   numeroODSBandera: boolean = false;
   promotorBandera: boolean = false;
@@ -60,6 +64,7 @@ export class ReporteOrdenServicioComponent implements OnInit {
   fechaInicialBandera: boolean = false;
   fechaFinalBandera: boolean = false;
   banderaEstatusODS: boolean = false;
+  estatusSeleccionODS!: number | null;
 
 
   constructor(
@@ -92,7 +97,7 @@ export class ReporteOrdenServicioComponent implements OnInit {
       reporte:[{value:null,disabled:false}],
       nivel: [{value: +this.rolLocalStorage.idOficina, disabled:true}],
       delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled:+this.rolLocalStorage.idOficina >= 2 }],
-      velatorio: [{value: null, disabled:+this.rolLocalStorage.idOficina === 3 }],
+      velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled:+this.rolLocalStorage.idOficina === 3 }],
       idTipoODS: [{value:null,disabled:false}],
       idEstatusODS: [{value:null,disabled:false}],
       fechaIni: [{value:null,disabled:false}],
@@ -101,6 +106,7 @@ export class ReporteOrdenServicioComponent implements OnInit {
       promotor: [{value:null,disabled:false}],
       anio: [{value:null,disabled:false}],
       mes: [{value:null,disabled:false}],
+      exportar: [{value:null,disabled:false}],
 
       preorden: [{value:null,disabled:false}],
       generada: [{value:null,disabled:false}],
@@ -114,8 +120,9 @@ export class ReporteOrdenServicioComponent implements OnInit {
 
   inicializarCatalogos(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
-    this.niveles = respuesta[this.POSICION_NIVELES];
     this.delegaciones = respuesta[this.POSICION_DELEGACIONES];
+    this.niveles = respuesta[this.POSICION_NIVELES];
+    this.delegaciones.push({label:'Todos', value:null})
   }
 
   validarFechaFinal(): void {
@@ -128,12 +135,19 @@ export class ReporteOrdenServicioComponent implements OnInit {
   }
 
   cambiarDelegacion(): void {
+    if(this.ff.delegacion.value === null) {
+      this.ff.velatorio.patchValue(null);
+      this.velatorios = [];
+      return;
+    }
     this.loaderService.activar();
     this.reporteOrdenServicioService.obtenerCatalogoVelatoriosPorDelegacion(this.ff.delegacion.value).pipe(
       finalize(()=> this.loaderService.desactivar())
     ).subscribe({
       next:(respuesta: HttpRespuesta<any>) => {
+        respuesta.datos.push({"idVelatorio": null,"nomVelatorio": "Todos"})
         this.velatorios = mapearArregloTipoDropdown(respuesta.datos,"nomVelatorio","idVelatorio");
+        // this.ff.velatorio.reset();
       },
       error:(error:HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error,
@@ -142,30 +156,131 @@ export class ReporteOrdenServicioComponent implements OnInit {
     });
   }
 
-  estatusODS(estatusODS?: number):void {
-    if(!estatusODS && this.ff.todos.value == true){
-      this.ff.preorden.setValue(true);
-      this.ff.generada.setValue(true);
-      this.ff.cancelada.setValue(true);
-      this.ff.pagada.setValue(true);
-      this.ff.enTransito.setValue(true);
-      this.ff.concluida.setValue(true);
-    }else if(!estatusODS && this.ff.todos.value == false){
-      this.ff.preorden.setValue(false);
-      this.ff.generada.setValue(false);
-      this.ff.cancelada.setValue(false);
-      this.ff.pagada.setValue(false);
-      this.ff.enTransito.setValue(false);
-      this.ff.concluida.setValue(false);
-    }
+  estatusODS(estatusODS: number | null):void {
+    let listadoEstatus = ['preorden','generada','cancelada','pagada','enTransito','concluida','todos'];
+    if(estatusODS != 1)this.ff.preorden.reset()
+    if(estatusODS != 2)this.ff.generada.reset()
+    if(estatusODS != 0)this.ff.cancelada.reset()
+    if(estatusODS != 4)this.ff.pagada.reset()
+    if(estatusODS != 3)this.ff.enTransito.reset()
+    if(estatusODS != 6)this.ff.concluida.reset()
+    if(estatusODS != null)this.ff.todos.reset()
+    this.estatusSeleccionODS = estatusODS;
   }
 
   limpiarFiltros(): void {
     this.filtroForm.reset();
+    this.cambiarReporte();
+    this.cambiarDelegacion();
+    this.ff.nivel.setValue(+this.rolLocalStorage.idOficina);
+    this.ff.delegacion.setValue(+this.rolLocalStorage.idDelegacion || null);
+    this.ff.velatorio.setValue(+this.rolLocalStorage.idVelatorio || null);
+
   }
 
   exportarReporte(): void {
+    /*
+    * 1	Reporte de órdenes de servicio
+      2	Concentrado de Facturas
+      3	Reporte resumen pago proveedor
+      4	Reporte detalle pago
+      5	Reporte detalle importe-servicios
+      6	Reporte de Comisiones de Promotores
+      7	Reporte de servicios velatorio
+      8	Concentrado de Siniestros de Previsión Funeraria
+      9	Concentrado de Servicios Pago Anticipado
+    */
+    this.loaderService.activar();
+    const filtros = this.consultarFiltros(this.ff.reporte.value);
+    const configuracionArchivo: OpcionesArchivos = {};
+    if(filtros.tipoReporte.includes("xls")){
+      configuracionArchivo.ext = "xlsx"
+    }
+    let tipoReporte: TipoDropdown[] = [
+      {
+        label: '/genera-reporte-ods',
+        value: 1
+      }
+    ]
+    let nombreReporte: string = "";
+    tipoReporte.forEach(element => {
+      if(element.value == this.ff.tipoReporte.value){
+        nombreReporte = element.label;
+      }
+    });
+    this.reporteOrdenServicioService.generarReporte(filtros,nombreReporte).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+          finalize(() => this.loaderService.desactivar())
+        ).subscribe(
+          (repuesta) => {
+            //TODO verificar si se necesita agregar mensaje de confirmación
+          },
+          (error) => {
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+          }
+        )
+      },
+      error:(error:HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
+      }
+    });
+  }
 
+  consultarFiltros(tipoReporte: number): any {
+    switch (this.ff.reporte.value) {
+      case 1:
+        return {
+          idVelatorio: this.ff.velatorio.value,
+          idDelegacion: this.ff.delegacion.value,
+          idTipoODS: this.ff.idTipoODS.value,
+          idEstatusODS: this.estatusSeleccionODS,
+          fechaIni: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
+          fechaFin: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
+          tipoReporte:this.ff.exportar.value == 1 ? 'pdf' : 'xls',
+        }
+        break;
+      case 2:
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+        break;
+      case 3:
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+        break;
+      case 5:
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+        break;
+      case 6:
+        this.numeroODSBandera = true;
+        this.promotorBandera = true;
+        this.anioBandera = true;
+        this.mesBandera = true;
+        break;
+      case 7:
+        this.numeroODSBandera = true;
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+        break;
+      case 8:
+        this.numeroODSBandera = true;
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+        break;
+      case 9:
+        this.fechaInicialBandera = true;
+        this.fechaFinalBandera = true;
+        break;
+
+    }
   }
 
   filtrarODS(): void {
@@ -190,6 +305,8 @@ export class ReporteOrdenServicioComponent implements OnInit {
     return query?.toLowerCase();
   }
 
+
+
   cambiarReporte(): void {
     this.tipoODSBandera = false;
     this.numeroODSBandera = false;
@@ -199,18 +316,13 @@ export class ReporteOrdenServicioComponent implements OnInit {
     this.fechaInicialBandera = false;
     this.fechaFinalBandera = false;
     this.banderaEstatusODS = false;
+    this.filtroForm.clearValidators();
+    this.filtroForm.updateValueAndValidity();
 
 
     switch (this.ff.reporte.value) {
       case 1:
-        this.tipoODSBandera = true;
-        this.banderaEstatusODS = true;
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
-        this.ff.idEstatusODS.setValidators(Validators.required);
-
-
-
+        this.reporteOrdenesServicios();
       break;
       case 2:
         this.fechaInicialBandera = true;
@@ -244,7 +356,6 @@ export class ReporteOrdenServicioComponent implements OnInit {
         this.fechaInicialBandera = true;
         this.fechaFinalBandera = true;
       break;
-
     }
   }
 
@@ -262,6 +373,15 @@ export class ReporteOrdenServicioComponent implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  reporteOrdenesServicios(): void{
+    this.tipoODSBandera = true;
+    this.banderaEstatusODS = true;
+    this.fechaInicialBandera = true;
+    this.fechaFinalBandera = true;
+    this.ff.idEstatusODS.setValidators(Validators.required);
+    this.ff.idEstatusODS.updateValueAndValidity();
   }
 
 
