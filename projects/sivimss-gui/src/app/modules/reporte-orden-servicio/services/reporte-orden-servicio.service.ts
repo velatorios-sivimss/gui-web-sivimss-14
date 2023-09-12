@@ -43,6 +43,11 @@ export class ReporteOrdenServicioService extends BaseService<HttpRespuesta<any>,
     return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos_reportes}buscar-reportes/${tipoReporte}`);
   }
 
+  generarReporte(filtros: any,tipoReporte: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar` + tipoReporte,
+      filtros);
+  }
+
 
 
 }
