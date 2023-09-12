@@ -1,9 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
+import { LocationStrategy } from '@angular/common';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { AlertaService } from "../../../../shared/alerta/services/alerta.service";
 import { OverlayPanel } from "primeng/overlaypanel";
 import { BuscarCatalogo, GenerarFormatoActividades, GenerarFormatoActividadesBusqueda } from '../../models/generar-formato-actividades.interface';
 import { UsuarioService } from '../../../usuarios/services/usuario.service';
@@ -51,12 +52,14 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   public mostrarModalPromotorDuplicado: boolean = false;
   public fechaActual: Date = new Date();
   public agregandoRegistro: boolean = false;
+  public mode: 'detail' | 'update' | 'create' = 'create';
 
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
+    private url: LocationStrategy,
     public ref: DynamicDialogRef,
     private usuarioService: UsuarioService,
     private loaderService: LoaderService,
@@ -67,6 +70,11 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.url.path().includes('modificar')) {
+      this.mode = 'detail';
+    } else if (this.url.path().includes('detalle')) {
+      this.mode = 'update';
+    }
     this.breadcrumbService.actualizar(GENERAR_FORMATO_BREADCRUMB);
     this.inicializarAgregarActividadesForm();
     this.cargarCatalogo();
@@ -75,14 +83,14 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   inicializarAgregarActividadesForm() {
     this.agregarGenerarFormatoActividadesForm = this.formBuilder.group({
       folio: new FormControl({ value: null, disabled: true }, []),
-      velatorio: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      fechaInicio: new FormControl({ value: null, disabled: false }, [Validators.required]),
-      fechaFinal: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      velatorio: new FormControl({ value: null, disabled: this.mode !== 'create' }, [Validators.required]),
+      fechaInicio: new FormControl({ value: null, disabled: this.mode !== 'create' }, [Validators.required]),
+      fechaFinal: new FormControl({ value: null, disabled: this.mode !== 'create' }, [Validators.required]),
     });
   }
 
   cargarCatalogo(): void {
-    const respuesta = this.route.snapshot.data["respuesta"];
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_VELATORIO].datos, "velatorio", "idVelatorio");
     this.entidadFederativa = respuesta[this.POSICION_CATALOGOS_ENTIDADES];
   }
