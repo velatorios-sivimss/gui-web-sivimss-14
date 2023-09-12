@@ -138,7 +138,7 @@ export class ModificarPromotoresComponent implements OnInit {
     this.modificarPromotorForm.markAllAsTouched();
     if (this.modificarPromotorForm.invalid) return;
     this.mostrarModalConfirmacion = true;
-    this.mensajeModal = `¿Estás seguro de modificar el registro? Promotor`;
+    this.mensajeModal = `¿Está seguro de modificar el Promotor?`;
   }
 
   guardarPromotor() {
@@ -151,7 +151,7 @@ export class ModificarPromotoresComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
-          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente. Promotor`);
+          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente Promotor.`);
           this.ref.close({ estatus: true });
         } else {
           this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);

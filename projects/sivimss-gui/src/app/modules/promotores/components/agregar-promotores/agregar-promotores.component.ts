@@ -104,7 +104,7 @@ export class AgregarPromotoresComponent implements OnInit {
     this.agregarPromotorForm.markAllAsTouched();
     if (this.agregarPromotorForm.invalid) return;
     this.mostrarModalConfirmacion = true;
-    this.mensajeModal = `¿Estás seguro de agregar este nuevo registro? Promotor`;
+    this.mensajeModal = `¿Está seguro de agregar este nuevo Promotor?`;
   }
 
   guardarPromotor() {
@@ -117,7 +117,7 @@ export class AgregarPromotoresComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
-          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente. Promotor`);
+          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente Promotor`);
           this.ref.close({ estatus: true });
         } else {
           this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
