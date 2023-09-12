@@ -8,5 +8,9 @@ export const GENERAR_FORMATO_BREADCRUMB: ElementoBreadcrumb[] = [
   {
     icono: '',
     titulo: 'Operación'
+  },
+  {
+    icono: '',
+    titulo: 'Generar formato de actividades'
   }
 ];
