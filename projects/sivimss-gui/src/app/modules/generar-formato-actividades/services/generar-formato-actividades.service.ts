@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from '../../../utils/base-service';
 import { HttpRespuesta } from '../../../models/http-respuesta.interface';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from 'projects/sivimss-gui/src/environments/environment';
 import { Observable, of } from 'rxjs';
 import { BuscarCatalogo, BuscarGenerarFormatoActividades, GenerarFormatoActividades } from '../models/generar-formato-actividades.interface';
@@ -79,5 +79,14 @@ export class GenerarFormatoActividadesService extends BaseService<HttpRespuesta<
 
   obtenerCatalogos(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/catalogo`, buscarCatalogo);
+  }
+
+  generarReporteConsulta(reporte: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/reporte-actividades/generarDocumento/pdf`
+      , reporte, { headers, responseType: 'blob' as 'json' });
   }
 }

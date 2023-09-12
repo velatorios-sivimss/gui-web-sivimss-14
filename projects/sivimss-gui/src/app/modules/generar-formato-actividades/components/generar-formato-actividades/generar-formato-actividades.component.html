@@ -31,14 +31,14 @@
           campo es obligatorio *.</span>
       </div>
       <div class="col-md-8">
-        <label class="control-label" for="fechaInicio">Rango de fechas:</label>
+        <label class="control-label" for="fecInicio">Rango de fechas:</label>
       </div>
       <div class="col-md-4">
-        <p-calendar styleClass="form-control" id="fechaInicio" formControlName="fechaInicio" [showIcon]="true"
+        <p-calendar styleClass="form-control" id="fecInicio" formControlName="fecInicio" [showIcon]="true"
           dateFormat="dd/mm/yy" placeholder="Fecha inicial"></p-calendar>
       </div>
       <div class="col-md-4">
-        <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
+        <p-calendar styleClass="form-control" id="fecFin" formControlName="fecFin" [showIcon]="true"
           dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual"></p-calendar>
       </div>
     </div>
@@ -47,7 +47,7 @@
     <div class="row mt-6" *appValidaRol="['PROMOTORES','CONSULTA']">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
-        <button type="button" class="btn btn-primary btn-md ml-5" (click)="paginarPorFiltros();">Buscar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
       </div>
     </div>
   </form>
@@ -72,17 +72,18 @@
     </ng-template>
     <ng-template pTemplate="body" let-actividad>
       <tr>
-        <td>{{actividad.fecha}}</td>
+        <td>{{actividad.fecElaboracion}}</td>
         <td>{{actividad.folio}}</td>
         <td>{{actividad.velatorio}}</td>
-        <td>{{actividad.numActividaes}}</td>
+        <td>{{actividad.numActividades}}</td>
         <td>
           <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
-            <a (click)="detalleFormatoActividades()">
+            <a (click)="detalleFormatoActividades(actividad)">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
-            <a (click)="modificarFormatoActividades()">
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono editar">
+            <a (click)="modificarFormatoActividades(actividad)">
+              <img src="assets/images/imagen-icono-pencil-modificar.svg" *ngIf="actividad.banderaModificar"
+                alt="icono editar">
             </a>
           </div>
         </td>
@@ -103,11 +104,13 @@
     </ng-template>
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table">
+        <div class="export-table" *appValidaRol="['PROMOTORES','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="generarReporteTabla('pdf');">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="generarReporteTabla('xls');">
           </div>
         </div>
       </div>
@@ -119,12 +122,12 @@
   [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{mensajeModal}}</span>
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
     <div class="flex justify-content-center">
-      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Cancelar</button>
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

@@ -137,8 +137,9 @@ export class ModificarPromotoresComponent implements OnInit {
   confirmarGuardar() {
     this.modificarPromotorForm.markAllAsTouched();
     if (this.modificarPromotorForm.invalid) return;
+    this.modificarPromotorForm.markAsDirty();
     this.mostrarModalConfirmacion = true;
-    this.mensajeModal = `¿Estás seguro de modificar el registro? Promotor`;
+    this.mensajeModal = `¿Está seguro de modificar el Promotor?`;
   }
 
   guardarPromotor() {
@@ -151,7 +152,7 @@ export class ModificarPromotoresComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
-          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente. Promotor`);
+          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente Promotor.`);
           this.ref.close({ estatus: true });
         } else {
           this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
@@ -193,9 +194,9 @@ export class ModificarPromotoresComponent implements OnInit {
 
     return {
       idPromotor: this.promotor.idPromotor,
-      correo: this.mpf.correo.value,
-      puesto: this.mpf.puesto.value,
-      categoria: this.mpf.categoria.value,
+      correo: this.mpf.correo.value.trim(),
+      puesto: this.mpf.puesto.value.trim(),
+      categoria: this.mpf.categoria.value.trim(),
       fecIngreso: this.mpf.fechaIngreso.value ? moment(this.mpf.fechaIngreso.value).format('DD/MM/YYYY') : null,
       sueldoBase: +this.mpf.sueldoBase.value,
       idVelatorio: this.mpf.velatorio.value,

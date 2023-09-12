@@ -104,7 +104,7 @@ export class AgregarPromotoresComponent implements OnInit {
     this.agregarPromotorForm.markAllAsTouched();
     if (this.agregarPromotorForm.invalid) return;
     this.mostrarModalConfirmacion = true;
-    this.mensajeModal = `¿Estás seguro de agregar este nuevo registro? Promotor`;
+    this.mensajeModal = `¿Está seguro de agregar este nuevo Promotor?`;
   }
 
   guardarPromotor() {
@@ -117,7 +117,7 @@ export class AgregarPromotoresComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200 && !respuesta.error) {
-          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente. Promotor`);
+          this.alertaService.mostrar(TipoAlerta.Exito, `Agregado correctamente Promotor`);
           this.ref.close({ estatus: true });
         } else {
           this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
@@ -139,15 +139,15 @@ export class AgregarPromotoresComponent implements OnInit {
     });
     return {
       curp: this.apf.curp.value,
-      nomPromotor: this.apf.nombre.value,
-      aPaterno: this.apf.primerApellido.value,
-      aMaterno: this.apf.segundoApellido.value,
+      nomPromotor: this.apf.nombre.value.trim(),
+      aPaterno: this.apf.primerApellido.value.trim(),
+      aMaterno: this.apf.segundoApellido.value.trim(),
       fecNac: moment(this.apf.fechaNacimiento.value).format('DD/MM/YYYY'),
       idLugarNac: this.apf.entidadFederativa.value,
-      correo: this.apf.correo.value,
+      correo: this.apf.correo.value.trim(),
       numEmpleado: this.apf.numEmpleado.value,
-      puesto: this.apf.puesto.value,
-      categoria: this.apf.categoria.value,
+      puesto: this.apf.puesto.value.trim(),
+      categoria: this.apf.categoria.value.trim(),
       fecIngreso: moment(this.apf.fechaIngreso.value).format('DD/MM/YYYY'),
       sueldoBase: +this.apf.sueldoBase.value,
       idVelatorio: this.apf.velatorio.value,
