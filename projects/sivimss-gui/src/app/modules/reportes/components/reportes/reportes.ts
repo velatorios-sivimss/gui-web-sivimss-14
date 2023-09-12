@@ -12,7 +12,7 @@ import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ReporteOrdenServicioService} from "../../services/reporte-orden-servicio.service";
+import {ReportesService} from "../../services/reportes.service";
 import {SERVICIO_BREADCRUMB_CLEAR} from "../../../servicios-funerarios/constants/breadcrumb";
 import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
@@ -21,12 +21,12 @@ import {of} from "rxjs";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 
 @Component({
-  selector: 'app-reporte-orden-servicio',
-  templateUrl: './reporte-orden-servicio.component.html',
-  styleUrls: ['./reporte-orden-servicio.component.scss'],
+  selector: 'app-reportes',
+  templateUrl: './reportes.html',
+  styleUrls: ['./reportes.scss'],
   providers: [DescargaArchivosService]
 })
-export class ReporteOrdenServicioComponent implements OnInit {
+export class Reportes implements OnInit {
 
   readonly POSICION_DELEGACIONES: number = 0;
   readonly POSICION_NIVELES: number = 1;
@@ -75,7 +75,7 @@ export class ReporteOrdenServicioComponent implements OnInit {
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private route: ActivatedRoute,
-    private reporteOrdenServicioService:ReporteOrdenServicioService,
+    private reporteOrdenServicioService:ReportesService,
     private descargaArchivosService: DescargaArchivosService,
   ) { }
 

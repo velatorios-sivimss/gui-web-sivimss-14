@@ -11,7 +11,7 @@ import {AgregarPlanSFPA} from "../../servicios-funerarios/models/servicios-funer
 import {FiltroReporte} from "../models/filtro-reporte.interface";
 
 @Injectable()
-export class ReporteOrdenServicioService extends BaseService<HttpRespuesta<any>, any>{
+export class ReportesService extends BaseService<HttpRespuesta<any>, any>{
 
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, '', '', 25, '', '', '');
