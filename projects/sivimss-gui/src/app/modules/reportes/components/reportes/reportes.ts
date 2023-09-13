@@ -100,8 +100,6 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     this.validaciones.set(1, () => this.validacionesOrdenesServicio())
-    this.validaciones.set(3, () => this.validacionesResumenPagoProveedor())
-    this.validaciones.set(4, () => this.validacionesDetallePago())
     this.validaciones.set(5, () => this.validacionesDetalleImporteServicios())
     this.validaciones.set(6, () => this.validacionesComisionesPromotores())
     this.validaciones.set(7, () => this.validacionesServiciosVelatorios())
@@ -432,18 +430,6 @@ export class Reportes implements OnInit {
   }
 
   validacionesOrdenesServicio(): void {
-
-  }
-
-  validacionesConcentradoFacturas(): void {
-
-  }
-
-  validacionesResumenPagoProveedor(): void {
-
-  }
-
-  validacionesDetallePago(): void {
 
   }
 

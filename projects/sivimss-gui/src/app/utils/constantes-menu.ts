@@ -210,5 +210,9 @@ export const idsModulos: DatoModulo = {
   '265': {
     ruta: 'reportes',
     icono: 'default-icon.svg'
+  },
+  '47': {
+    ruta: 'comisiones',
+    icono: 'default-icon.svg'
   }
 };
