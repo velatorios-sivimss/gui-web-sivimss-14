@@ -401,7 +401,8 @@ export class CaracteristicasPresupuestoComponent
       ) {
         this.mostrarProveedor = true;
       }
-      if (paqueteSeleccionado.idTipoServicio == '') {
+      if (paqueteSeleccionado.idTipoServicio == '' &&
+          paqueteSeleccionado.grupo.toUpperCase().includes('ATA')) {
         this.mostrarAtaudes = true;
       }
       if (Number(paqueteSeleccionado.idServicio) > 0) {

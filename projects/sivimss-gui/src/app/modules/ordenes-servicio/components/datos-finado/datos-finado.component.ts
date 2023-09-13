@@ -286,8 +286,7 @@ export class DatosFinadoComponent implements OnInit {
           {
             value: datosEtapaFinado.datosFinado.clinicaAdscripcion,
             disabled: false,
-          },
-          [Validators.required],
+          }
         ],
         unidadProcedencia: [
           {
@@ -305,7 +304,6 @@ export class DatosFinadoComponent implements OnInit {
         ],
         tipoPension: [
           { value: datosEtapaFinado.datosFinado.tipoPension, disabled: false },
-          [Validators.required],
         ],
       }),
       direccion: this.formBuilder.group({

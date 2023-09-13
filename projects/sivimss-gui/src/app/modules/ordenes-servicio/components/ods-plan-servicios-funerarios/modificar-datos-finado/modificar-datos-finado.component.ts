@@ -335,8 +335,7 @@ export class ModificarDatosFinadoSFComponent
          unidadProcedencia: [{ value: datosEtapaFinado.datosFinado.unidadProcedencia,disabled: false}],
          procedenciaFinado: [{ value: datosEtapaFinado.datosFinado.procedenciaFinado,disabled: false},
                             [Validators.required],],
-               tipoPension: [{ value: datosEtapaFinado.datosFinado.tipoPension, disabled: false },
-                            [Validators.required]],
+               tipoPension: [{ value: datosEtapaFinado.datosFinado.tipoPension, disabled: false }],
       }),
       direccion: this.formBuilder.group({
              calle: [{ value: datosEtapaFinado.direccion.calle, disabled: false },
