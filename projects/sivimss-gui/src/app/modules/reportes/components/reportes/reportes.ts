@@ -207,6 +207,7 @@ export class Reportes implements OnInit {
   limpiarFiltros(): void {
     this.cambiarReporte();
     this.cambiarDelegacion(true);
+    this.exportar = [];
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormDir.resetForm({
       nivel: obtenerNivelUsuarioLogueado(usuario),
@@ -372,14 +373,6 @@ export class Reportes implements OnInit {
       case 1:
         this.reporteOrdenesServicios();
         break;
-      case 2:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
-        break;
-      case 3:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
-        break;
       case 5:
         this.fechaInicialBandera = true;
         this.fechaFinalBandera = true;
@@ -403,6 +396,8 @@ export class Reportes implements OnInit {
       case 9:
         this.fechaInicialBandera = true;
         this.fechaFinalBandera = true;
+        break;
+      default:
         break;
     }
   }
