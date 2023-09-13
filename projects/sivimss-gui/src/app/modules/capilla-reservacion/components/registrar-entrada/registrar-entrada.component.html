@@ -23,7 +23,7 @@
         <div class="col-md-6">
           <label class="control-label" for="folioODS">Folio de la ODS <span class="req">*</span>:</label>
           <input id="folioODS" type="text" class="form-control" formControlName="folioODS" (blur)="consultaODS()"
-                 placeholder="Ingresa el folio de la ODS">
+                 placeholder="Ingresa el folio de la ODS" folioOdsAlphanumeric trimmer>
           <span class="campo-obligatorio"
                 *ngIf="ref.folioODS?.errors?.required && (ref.folioODS?.dirty || ref.folioODS?.touched)">Este campo es obligatorio *.</span>
         </div>

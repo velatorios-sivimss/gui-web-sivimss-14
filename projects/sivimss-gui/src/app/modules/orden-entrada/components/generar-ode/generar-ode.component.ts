@@ -174,7 +174,7 @@ export class GenerarOdeComponent implements OnInit {
     return {
       idContrato: this.idContratoSeleccionado,
       idArticulo: this.idModeloSeleccionado,
-      numArticulo: this.formulario.get("numeroArticulos")?.value,
+      numArticulo: this.formulario.get("numeroArticulos")?.value ? this.formulario.get("numeroArticulos")?.value : 0,
       folioProveedor: this.formulario.get("folioProveedor")?.value,
       desModeloArticulo: this.descripcionModeloSeleccionado,
       fecIngreso: this.datePipe.transform(new Date(), 'YYYY-MM-dd')
