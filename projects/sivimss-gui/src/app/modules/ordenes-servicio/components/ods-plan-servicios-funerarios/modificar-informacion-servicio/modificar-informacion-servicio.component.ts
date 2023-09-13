@@ -374,15 +374,13 @@ export class ModificarInformacionServicioSFComponent
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
     datosPresupuesto.forEach((datos: any) => {
-      if (datos.concepto.trim() == 'Velación en capilla' ||
-        datos.concepto.trim() =='Capilla en Velatorio') {
+      if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
       }
 
-      if (datos.concepto.trim() == 'Velación en domicilio' ||
-        datos.concepto.trim() =='Renta de equipo para velación en domicilio') {
+      if (datos.concepto.trim() == 'Velación en domicilio') {
         this.validaDomicilio = true;
         this.lugarVelacion.calle.enable();
         this.lugarVelacion.exterior.enable();
@@ -395,8 +393,8 @@ export class ModificarInformacionServicioSFComponent
       }
 
       if (
-        datos.concepto.toUpperCase().trim().includes('CREMACIÓN') ||
-        datos.concepto.toUpperCase().trim().includes('CREMACION')
+        datos.grupo.toUpperCase().trim().includes('CREMACIÓN') ||
+        datos.grupo.toUpperCase().trim().includes('CREMACION')
       ) {
         this.lugarCremacion.sala.enable();
         this.lugarCremacion.fecha.enable();

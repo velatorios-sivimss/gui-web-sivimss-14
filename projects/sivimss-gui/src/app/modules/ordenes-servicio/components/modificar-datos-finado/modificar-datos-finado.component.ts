@@ -417,8 +417,7 @@ export class ModificarDatosFinadoComponent
           {
             value: datosEtapaFinado.datosFinado.clinicaAdscripcion,
             disabled: false,
-          },
-          [],
+          }
         ],
         unidadProcedencia: [
           {
@@ -435,8 +434,7 @@ export class ModificarDatosFinadoComponent
           [Validators.required],
         ],
         tipoPension: [
-          { value: datosEtapaFinado.datosFinado.tipoPension, disabled: false },
-          [Validators.required],
+          { value: datosEtapaFinado.datosFinado.tipoPension, disabled: false }
         ],
       }),
       direccion: this.formBuilder.group({

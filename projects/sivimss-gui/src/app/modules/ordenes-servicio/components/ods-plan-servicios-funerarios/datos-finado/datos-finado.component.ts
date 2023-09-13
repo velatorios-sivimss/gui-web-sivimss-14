@@ -187,10 +187,10 @@ export class DatosFinadoSFComponent implements OnInit {
                causaDeceso: [{value: datosEtapaFinado.datosFinado.causaDeceso,       disabled: false },[Validators.required]],
                lugarDeceso: [{value: datosEtapaFinado.datosFinado.lugarDeceso,       disabled: false },[Validators.required]],
                 horaDeceso: [{value: datosEtapaFinado.datosFinado.horaDeceso,        disabled: false },[Validators.required]],
-        clinicaAdscripcion: [{value: datosEtapaFinado.datosFinado.clinicaAdscripcion,disabled: false,},[Validators.required]],
+        clinicaAdscripcion: [{value: datosEtapaFinado.datosFinado.clinicaAdscripcion,disabled: false,}],
          unidadProcedencia: [{value: datosEtapaFinado.datosFinado.unidadProcedencia, disabled: false,},[Validators.required]],
          procedenciaFinado: [{value: datosEtapaFinado.datosFinado.procedenciaFinado, disabled: false,},[Validators.required]],
-               tipoPension: [{value: datosEtapaFinado.datosFinado.tipoPension,       disabled: false },[Validators.required]]
+               tipoPension: [{value: datosEtapaFinado.datosFinado.tipoPension,       disabled: false }]
       }),
       direccion: this.formBuilder.group({
              calle: [{ value: datosEtapaFinado.direccion.calle,      disabled: false },[Validators.required]],
