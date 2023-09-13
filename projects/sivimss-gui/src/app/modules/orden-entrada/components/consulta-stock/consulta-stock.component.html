@@ -25,7 +25,7 @@
     </div>
     <div class="col-md-6">
       <label class="control-label" for="categoria">Categoria (Artículos):</label>
-      <<p-autoComplete id="categoria" class="form-control" formControlName="categoria" (keyup)="validarNombre(0)"
+      <p-autoComplete id="categoria" class="form-control" formControlName="categoria" (keyup)="validarNombre(0)"
         (keyup.space)="sinEspacioInicial(0)" autocomplete="categoria" [suggestions]="catalogoCategorias"
         (completeMethod)="consultarCategorias($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
         [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa categoría"

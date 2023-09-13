@@ -11,7 +11,7 @@ import {AgregarPlanSFPA} from "../../servicios-funerarios/models/servicios-funer
 import {FiltroReporte} from "../models/filtro-reporte.interface";
 
 @Injectable()
-export class ReporteOrdenServicioService extends BaseService<HttpRespuesta<any>, any>{
+export class ReportesService extends BaseService<HttpRespuesta<any>, any>{
 
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, '', '', 25, '', '', '');
@@ -41,6 +41,11 @@ export class ReporteOrdenServicioService extends BaseService<HttpRespuesta<any>,
 
   consultarTipoReportes(tipoReporte: number ): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos_reportes}buscar-reportes/${tipoReporte}`);
+  }
+
+  generarReporte(filtros: any,tipoReporte: string): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar` + tipoReporte,
+      filtros);
   }
 
 
