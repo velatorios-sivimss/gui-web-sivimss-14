@@ -6,13 +6,15 @@
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="tipoReporte">Tipo de reporte:</label>
-        <p-dropdown appendTo="body" id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReporte"
-                    placeholder="Selecciona el tipo de reporte" (onChange)="cambiarTipoReporte()" [filter]="true" filterBy="label">
+        <label class="control-label" for="tipoReporte">Tipo de reporte<span class="req">*:</span></label>
+        <p-dropdown appendTo="body" id="tipoReporte" class="form-control" formControlName="tipoReporte"
+                    [options]="tipoReporte"
+                    placeholder="Selecciona el tipo de reporte" (onChange)="cambiarTipoReporte()" [filter]="true"
+                    filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="reporte">Reportes:</label>
+        <label class="control-label" for="reporte">Reportes<span class="req">*:</span></label>
         <p-dropdown appendTo="body" id="reporte" class="form-control" formControlName="reporte" [options]="reportes"
                     placeholder="Selecciona el reporte" (onChange)="cambiarReporte()" [filter]="true" filterBy="label">
         </p-dropdown>
@@ -30,7 +32,8 @@
       <div class="col-md-3">
         <label class="control-label" for="delegacion">Delegaci&oacute;n:</label>
         <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
-                    [options]="delegaciones" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()" [filter]="true" filterBy="label">
+                    [options]="delegaciones" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-3">
@@ -40,7 +43,7 @@
         </p-dropdown>
       </div>
       <div class="col-md-3">
-        <label class="control-label" for="exportar">Exportar a:</label>
+        <label class="control-label" for="exportar">Exportar a<span class="req">*:</span></label>
         <p-dropdown appendTo="body" id="exportar" class="form-control" formControlName="exportar" [options]="exportar"
                     placeholder="Selecciona el tipo archivo">
         </p-dropdown>
@@ -59,7 +62,8 @@
         <label class="control-label" for="numeroOds">Número de ODS:</label>
         <p-autoComplete id="numeroOds" class="form-control" formControlName="numeroOds"
                         [showEmptyMessage]="true" [suggestions]="filtroODS" (completeMethod)="filtrarODS()"
-                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa el número de ODS" field="label"
+                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete"
+                        placeholder="Ingresa el número de ODS" field="label"
                         [inputStyleClass]="'input-autocomplete'"
         >
           <ng-template let-ods pTemplate="item">
@@ -88,15 +92,17 @@
                     [options]="mes" placeholder="Selecciona el mes" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
-      <div class="col-md-6" *ngIf="fechaInicialBandera">
+      <div class="col-md-6" *ngIf="[2].includes(idReporte)">
         <label class="control-label" for="fechaIni">Fecha Inicial:</label>
         <p-calendar styleClass="form-control" id="fechaIni" formControlName="fechaIni" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Fecha Inicial" [minDate]="fechaRango" (onSelect)="validarFechaFinal()"></p-calendar>
+                    dateFormat="dd-mm-yy" placeholder="Fecha Inicial" [minDate]="fechaRango"
+                    (onSelect)="validarFechaFinal()"></p-calendar>
       </div>
-      <div class="col-md-6" *ngIf="fechaFinalBandera">
+      <div class="col-md-6" *ngIf="[2].includes(idReporte)">
         <label class="control-label" for="fechaFin">Fecha Final:</label>
         <p-calendar styleClass="form-control" id="fechaFin" formControlName="fechaFin" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Fecha Final" [maxDate]="fechaActual" (onSelect)="validarFechaFinal()"></p-calendar>
+                    dateFormat="dd-mm-yy" placeholder="Fecha Final" [maxDate]="fechaActual"
+                    (onSelect)="validarFechaFinal()"></p-calendar>
       </div>
     </div>
 
@@ -104,49 +110,59 @@
       <div class="col-md-7">
         <label class="control-label">Estatus de ODS<span class="req">*:</span></label>
         <div class="align-items-center">
-            <p-checkbox inputId="prerden" formControlName="preorden" styleClass="mr-2" (click)="estatusODS(1)" [binary]="true">
-            </p-checkbox>
-            <label [for]="'prerden'" class="control-label mr-2">Pre-orden</label>
+          <p-checkbox inputId="prerden" formControlName="preorden" styleClass="mr-2" (click)="estatusODS(1)"
+                      [binary]="true">
+          </p-checkbox>
+          <label [for]="'prerden'" class="control-label mr-2">Pre-orden</label>
 
-            <p-checkbox inputId="generada" formControlName="generada" styleClass="mr-2" (click)="estatusODS(2)" [binary]="true">
-            </p-checkbox>
-            <label [for]="'generada'" class="control-label mr-2">Generada</label>
+          <p-checkbox inputId="generada" formControlName="generada" styleClass="mr-2" (click)="estatusODS(2)"
+                      [binary]="true">
+          </p-checkbox>
+          <label [for]="'generada'" class="control-label mr-2">Generada</label>
 
-            <p-checkbox inputId="cancelada" formControlName="cancelada" styleClass="mr-2" (click)="estatusODS(0)" [binary]="true">
-            </p-checkbox>
-            <label [for]="'cancelada'" class="control-label mr-2">Cancelada</label>
+          <p-checkbox inputId="cancelada" formControlName="cancelada" styleClass="mr-2" (click)="estatusODS(0)"
+                      [binary]="true">
+          </p-checkbox>
+          <label [for]="'cancelada'" class="control-label mr-2">Cancelada</label>
 
-            <p-checkbox inputId="pagada" formControlName="pagada" styleClass="mr-2" (click)="estatusODS(4)" [binary]="true">
-            </p-checkbox>
-            <label [for]="'pagada'" class="control-label mr-2">Pagada</label>
+          <p-checkbox inputId="pagada" formControlName="pagada" styleClass="mr-2" (click)="estatusODS(4)"
+                      [binary]="true">
+          </p-checkbox>
+          <label [for]="'pagada'" class="control-label mr-2">Pagada</label>
 
-            <p-checkbox inputId="enTransito" formControlName="enTransito" styleClass="mr-2" (click)="estatusODS(3)" [binary]="true">
-            </p-checkbox>
-            <label [for]="'enTransito'" class="control-label mr-2">En tránsito</label>
+          <p-checkbox inputId="enTransito" formControlName="enTransito" styleClass="mr-2" (click)="estatusODS(3)"
+                      [binary]="true">
+          </p-checkbox>
+          <label [for]="'enTransito'" class="control-label mr-2">En tránsito</label>
 
-            <p-checkbox inputId="concluida" formControlName="concluida" styleClass="mr-2" (click)="estatusODS(6)" [binary]="true">
-            </p-checkbox>
-            <label [for]="'concluida'" class="control-label mr-2">Concluida</label>
+          <p-checkbox inputId="concluida" formControlName="concluida" styleClass="mr-2" (click)="estatusODS(6)"
+                      [binary]="true">
+          </p-checkbox>
+          <label [for]="'concluida'" class="control-label mr-2">Concluida</label>
 
-            <p-checkbox inputId="todos" formControlName="todos" styleClass="mr-2" (click)="estatusODS(null)" [binary]="true">
-            </p-checkbox>
-            <label [for]="'todos'" class="control-label mr-2">Todos</label>
+          <p-checkbox inputId="todos" formControlName="todos" styleClass="mr-2" (click)="estatusODS(null)"
+                      [binary]="true">
+          </p-checkbox>
+          <label [for]="'todos'" class="control-label mr-2">Todos</label>
         </div>
       </div>
     </div>
   </form>
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md" (click)="limpiarFiltros()">Limpiar filtros</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="validarFormulario()" (click)="exportarReporte()" >Exportar</button>
+      <button type="submit" class="btn btn-default btn-md" (click)="limpiarFiltros()" [disabled]="filtroForm.pristine">
+        Limpiar filtros
+      </button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
+              (click)="exportarReporte()">Exportar
+      </button>
     </div>
   </div>
 </div>
 
-
 <p-dialog [(visible)]="mostrarModalFechaMayor" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">La fecha inicial no puede ser mayor que la fecha final.</span>
@@ -155,6 +171,22 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-content-center">
       <button class="btn btn-primary btn-md" (click)="mostrarModalFechaMayor = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="mostrarModalFiltros" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{MENSAJE_FILTROS}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalFiltros = false">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>
