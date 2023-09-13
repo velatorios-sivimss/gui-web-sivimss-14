@@ -28,6 +28,7 @@ import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 })
 export class Reportes implements OnInit {
 
+  validaciones: Map<number, any> = new Map();
   readonly POSICION_DELEGACIONES: number = 0;
   readonly POSICION_NIVELES: number = 1;
 
@@ -77,7 +78,28 @@ export class Reportes implements OnInit {
     private route: ActivatedRoute,
     private reporteOrdenServicioService:ReportesService,
     private descargaArchivosService: DescargaArchivosService,
-  ) { }
+  ) {
+    /*
+    * 1	Reporte de órdenes de servicio
+      2	Concentrado de Facturas
+      3	Reporte resumen pago proveedor
+      4	Reporte detalle pago
+      5	Reporte detalle importe-servicios
+      6	Reporte de Comisiones de Promotores
+      7	Reporte de servicios velatorio
+      8	Concentrado de Siniestros de Previsión Funeraria
+      9	Concentrado de Servicios Pago Anticipado
+    */
+    this.validaciones.set(1,() => this.validacionesOrdenesServicio())
+    this.validaciones.set(2,() => this.validacionesConcentradoFacturas())
+    this.validaciones.set(3,() => this.validacionesResumenPagoProveedor())
+    this.validaciones.set(4,() => this.validacionesDetallePago())
+    this.validaciones.set(5,() => this.validacionesDetalleImporteServicios())
+    this.validaciones.set(6,() => this.validacionesComisionesPromotores())
+    this.validaciones.set(7,() => this.validacionesServiciosVelatorios())
+    this.validaciones.set(8,() => this.validacionesConcentradoSiniestrosPF())
+    this.validaciones.set(9,() => this.validacionesConcentradoServicioPA())
+  }
 
   fechaActual = new Date();
   mostrarModalFechaMayor: boolean = false;
@@ -382,6 +404,34 @@ export class Reportes implements OnInit {
     this.fechaFinalBandera = true;
     this.ff.idEstatusODS.setValidators(Validators.required);
     this.ff.idEstatusODS.updateValueAndValidity();
+  }
+
+  validacionesOrdenesServicio(): void {
+
+  }
+  validacionesConcentradoFacturas(): void {
+
+  }
+  validacionesResumenPagoProveedor(): void {
+
+  }
+  validacionesDetallePago(): void {
+
+  }
+  validacionesDetalleImporteServicios(): void {
+
+  }
+  validacionesComisionesPromotores(): void {
+
+  }
+  validacionesServiciosVelatorios(): void {
+
+  }
+  validacionesConcentradoSiniestrosPF(): void {
+
+  }
+  validacionesConcentradoServicioPA(): void {
+
   }
 
 
