@@ -207,4 +207,8 @@ export const idsModulos: DatoModulo = {
     ruta: 'generar-orden-de-subrogacion',
     icono: 'default-icon.svg'
   },
+  '265': {
+    ruta: 'reportes',
+    icono: 'default-icon.svg'
+  }
 };
