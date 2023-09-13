@@ -302,6 +302,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
           this.fp.sexo.setValue(+respuesta.datos.sexo);
           this.cambioTipoSexo();
+          this.consultarLugarNacimiento(respuesta.datos.desEstado);
         }
       },
       (error:HttpErrorResponse) => {
@@ -309,6 +310,39 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       }
     )
   }
+
+  consultarLugarNacimiento(entidad:string): void {
+    const entidadEditada = this.accentsTidy(entidad);
+    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+      this.fp.lugarNacimiento.setValue(11);
+      return
+    }
+    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+      this.fp.lugarNacimiento.setValue(7);
+      return
+    }
+    this.estado.forEach((element:any) => {
+      const entidadIteracion =  this.accentsTidy(element.label);
+      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+        this.fp.entidadFederativa.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r=s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    return r;
+  };
 
   consultaRFC(): void {
     if(!this.fp.rfc.value){return}
