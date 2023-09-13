@@ -92,16 +92,16 @@
                     [options]="mes" placeholder="Selecciona el mes" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
-      <div class="col-md-6" *ngIf="fechaInicialBandera">
+      <div class="col-md-6" *ngIf="[2].includes(idReporte)">
         <label class="control-label" for="fechaIni">Fecha Inicial:</label>
         <p-calendar styleClass="form-control" id="fechaIni" formControlName="fechaIni" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Fecha Inicial" [minDate]="fechaRango"
+                    dateFormat="dd-mm-yy" placeholder="Fecha Inicial" [minDate]="fechaRango"
                     (onSelect)="validarFechaFinal()"></p-calendar>
       </div>
-      <div class="col-md-6" *ngIf="fechaFinalBandera">
+      <div class="col-md-6" *ngIf="[2].includes(idReporte)">
         <label class="control-label" for="fechaFin">Fecha Final:</label>
         <p-calendar styleClass="form-control" id="fechaFin" formControlName="fechaFin" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Fecha Final" [maxDate]="fechaActual"
+                    dateFormat="dd-mm-yy" placeholder="Fecha Final" [maxDate]="fechaActual"
                     (onSelect)="validarFechaFinal()"></p-calendar>
       </div>
     </div>
@@ -171,6 +171,22 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-content-center">
       <button class="btn btn-primary btn-md" (click)="mostrarModalFechaMayor = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="mostrarModalFiltros" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{MENSAJE_FILTROS}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalFiltros = false">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

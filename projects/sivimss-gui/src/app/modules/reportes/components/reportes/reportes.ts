@@ -35,6 +35,9 @@ export class Reportes implements OnInit {
   @ViewChild(FormGroupDirective)
   private filtroFormDir!: FormGroupDirective;
 
+  MENSAJE_FILTROS: string = 'Selecciona por favor un criterio de búsqueda.';
+  mostrarModalFiltros: boolean = false;
+
   validaciones: Map<number, any> = new Map();
   readonly POSICION_DELEGACIONES: number = 0;
   readonly POSICION_NIVELES: number = 1;
@@ -219,6 +222,7 @@ export class Reportes implements OnInit {
       8	Concentrado de Siniestros de Previsión Funeraria
       9	Concentrado de Servicios Pago Anticipado
     */
+    if (!this.validarFiltros()) return;
     this.loaderService.activar();
     const filtros = this.consultarFiltros(this.ff.reporte.value);
     const configuracionArchivo: OpcionesArchivos = {};
@@ -261,6 +265,16 @@ export class Reportes implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
       }
     });
+  }
+
+  validarFiltros(): boolean {
+    const form = this.filtroForm.getRawValue();
+    const valores: string[] = Object.values(form);
+    if (valores.some(v => v !== null)) {
+      return true;
+    }
+    this.mostrarModalFiltros = true;
+    return false;
   }
 
   consultarFiltros(tipoReporte: number): any {
@@ -345,7 +359,6 @@ export class Reportes implements OnInit {
     this.banderaEstatusODS = false;
     this.filtroForm.clearValidators();
     this.filtroForm.updateValueAndValidity();
-
 
     switch (this.ff.reporte.value) {
       case 1:
@@ -451,6 +464,9 @@ export class Reportes implements OnInit {
 
   }
 
+  get idReporte(): number {
+    return this.filtroForm.get('reporte')?.value
+  }
 
   get ff() {
     return this.filtroForm.controls;
