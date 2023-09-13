@@ -100,7 +100,6 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     this.validaciones.set(1, () => this.validacionesOrdenesServicio())
-    this.validaciones.set(2, () => this.validacionesConcentradoFacturas())
     this.validaciones.set(3, () => this.validacionesResumenPagoProveedor())
     this.validaciones.set(4, () => this.validacionesDetallePago())
     this.validaciones.set(5, () => this.validacionesDetalleImporteServicios())
@@ -156,6 +155,12 @@ export class Reportes implements OnInit {
     this.niveles = respuesta[this.POSICION_NIVELES];
     this.delegaciones = [...DELEGACION, ...respuesta[this.POSICION_DELEGACIONES]];
     this.cambiarDelegacion(true);
+  }
+
+  seleccionarValidaciones(): void {
+    const tipoSolicitud: number = this.filtroForm.get('reporte')?.value as number;
+    if (!this.validaciones.has(tipoSolicitud)) return;
+    this.validaciones.get(tipoSolicitud)();
   }
 
   validarFechaFinal(): void {
@@ -349,6 +354,8 @@ export class Reportes implements OnInit {
   }
 
   cambiarReporte(): void {
+    this.seleccionarValidaciones();
+
     this.tipoODSBandera = false;
     this.numeroODSBandera = false;
     this.promotorBandera = false;
