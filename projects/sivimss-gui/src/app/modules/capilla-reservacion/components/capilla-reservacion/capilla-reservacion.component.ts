@@ -100,6 +100,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
     });
 
     this.cambiarDelegacion();
+    this.obtenerCapillaPorIdVelatorio();
   }
 
   inicializarRegistroEntradaForm(): void {
@@ -115,7 +116,7 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
       capilla: [{ value: null, disabled: false }],
       fechaSalida: [{ value: null, disabled: false }, [Validators.required]],
       horaSalida: [{ value: null, disabled: false }, [Validators.required]],
-    })
+    });
   }
 
   inicializarCalendarioForm(): void {
@@ -208,11 +209,11 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
   }
 
   obtenerCapillaPorIdVelatorio() {
-    let idVelatorio = +this.f.velatorio.value
+    let idVelatorio = +this.f.velatorio.value;
     this.capillaReservacionService.capillaOcupadaPorIdVelatorio(idVelatorio).subscribe(
       (respuesta) => {
         if (respuesta.datos) {
-          this.capilla = respuesta!.datos.map((capilla: any) => {
+          this.capilla = respuesta.datos.map((capilla: any) => {
             return { label: capilla.nomCapilla, value: capilla.idCapilla };
           });
         }

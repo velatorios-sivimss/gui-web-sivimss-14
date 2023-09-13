@@ -155,12 +155,11 @@ export class RegistrarEntradaComponent implements OnInit {
 
   consultaODS(): void {
     this.loaderService.activar();
-    const folioODS = +this.ref.folioODS.value;
-    if(!folioODS){
+    if(!this.ref.folioODS.value){
       this.loaderService.desactivar();
       return;
     }
-    this.capillaReservacionService.consultarODS(folioODS).pipe(
+    this.capillaReservacionService.consultarODS(this.ref.folioODS.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>) => {
