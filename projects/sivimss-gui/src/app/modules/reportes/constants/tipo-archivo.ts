@@ -1,6 +1,6 @@
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 
-export const  TIPO_ARCHIVO: TipoDropdown[] = [
+export const TIPO_ARCHIVO: TipoDropdown[] = [
   {
     label: 'PDF',
     value: 1
@@ -8,5 +8,9 @@ export const  TIPO_ARCHIVO: TipoDropdown[] = [
   {
     label: 'Excel',
     value: 2
+  },
+  {
+    label: 'CSV',
+    value: 3
   }
 ]

@@ -66,7 +66,7 @@ export class Reportes implements OnInit {
 
   anio!: TipoDropdown[];
   mes!: TipoDropdown[];
-  exportar: TipoDropdown[] = TIPO_ARCHIVO;
+  exportar: TipoDropdown[] = [];
   tipoODSBandera: boolean = false;
   numeroODSBandera: boolean = false;
   promotorBandera: boolean = false;
@@ -355,6 +355,7 @@ export class Reportes implements OnInit {
 
   cambiarReporte(): void {
     this.seleccionarValidaciones();
+    this.exportar = this.limpiarTiposExportacion();
 
     this.tipoODSBandera = false;
     this.numeroODSBandera = false;
@@ -479,4 +480,10 @@ export class Reportes implements OnInit {
     return this.filtroForm.controls;
   }
 
+  limpiarTiposExportacion(): TipoDropdown[] {
+    const ARCHIVO: TipoDropdown[] = [...TIPO_ARCHIVO];
+    if ([3].includes(this.idReporte)) return ARCHIVO;
+    ARCHIVO.pop();
+    return ARCHIVO;
+  }
 }
