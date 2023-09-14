@@ -66,7 +66,7 @@ export class Reportes implements OnInit {
 
   anio!: TipoDropdown[];
   mes!: TipoDropdown[];
-  exportar: TipoDropdown[] = TIPO_ARCHIVO;
+  exportar: TipoDropdown[] = [];
   tipoODSBandera: boolean = false;
   numeroODSBandera: boolean = false;
   promotorBandera: boolean = false;
@@ -100,8 +100,6 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     this.validaciones.set(1, () => this.validacionesOrdenesServicio())
-    this.validaciones.set(3, () => this.validacionesResumenPagoProveedor())
-    this.validaciones.set(4, () => this.validacionesDetallePago())
     this.validaciones.set(5, () => this.validacionesDetalleImporteServicios())
     this.validaciones.set(6, () => this.validacionesComisionesPromotores())
     this.validaciones.set(7, () => this.validacionesServiciosVelatorios())
@@ -207,6 +205,7 @@ export class Reportes implements OnInit {
   limpiarFiltros(): void {
     this.cambiarReporte();
     this.cambiarDelegacion(true);
+    this.exportar = [];
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormDir.resetForm({
       nivel: obtenerNivelUsuarioLogueado(usuario),
@@ -355,6 +354,7 @@ export class Reportes implements OnInit {
 
   cambiarReporte(): void {
     this.seleccionarValidaciones();
+    this.exportar = this.limpiarTiposExportacion();
 
     this.tipoODSBandera = false;
     this.numeroODSBandera = false;
@@ -370,14 +370,6 @@ export class Reportes implements OnInit {
     switch (this.ff.reporte.value) {
       case 1:
         this.reporteOrdenesServicios();
-        break;
-      case 2:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
-        break;
-      case 3:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
         break;
       case 5:
         this.fechaInicialBandera = true;
@@ -402,6 +394,8 @@ export class Reportes implements OnInit {
       case 9:
         this.fechaInicialBandera = true;
         this.fechaFinalBandera = true;
+        break;
+      default:
         break;
     }
   }
@@ -439,18 +433,6 @@ export class Reportes implements OnInit {
 
   }
 
-  validacionesConcentradoFacturas(): void {
-
-  }
-
-  validacionesResumenPagoProveedor(): void {
-
-  }
-
-  validacionesDetallePago(): void {
-
-  }
-
   validacionesDetalleImporteServicios(): void {
 
   }
@@ -479,4 +461,10 @@ export class Reportes implements OnInit {
     return this.filtroForm.controls;
   }
 
+  limpiarTiposExportacion(): TipoDropdown[] {
+    const ARCHIVO: TipoDropdown[] = [...TIPO_ARCHIVO];
+    if ([3].includes(this.idReporte)) return ARCHIVO;
+    ARCHIVO.pop();
+    return ARCHIVO;
+  }
 }
