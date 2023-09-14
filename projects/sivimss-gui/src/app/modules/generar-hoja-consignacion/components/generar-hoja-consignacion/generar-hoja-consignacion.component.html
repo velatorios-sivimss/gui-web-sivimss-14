@@ -132,7 +132,7 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones *appValidaRol="['PROMOTORES','MODIFICACION']">
-      <app-overlay-panel-opcion titulo="Cargar factura"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion (click)="abrirModalCargarFactura()" titulo="Cargar factura"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

@@ -220,13 +220,12 @@
       </div>
       <div class="row mb-2">
         <div class="col-md-6">
-          <label class="control-label" for="clinicaAdscripcion">Clínica de adscripción<span
-              class="req">*</span>:</label>
+          <label class="control-label" for="clinicaAdscripcion">Clínica de adscripción:</label>
           <p-dropdown id="clinicaAdscripcion" class="form-control" formControlName="clinicaAdscripcion"
              placeholder="Selecciona clínica de adscripción" [options]="unidadesMedicas"
             [filter]="true" filterBy="label"></p-dropdown>
-          <span class="campo-obligatorio"
-            *ngIf="datosFinado.clinicaAdscripcion?.errors?.required && (datosFinado.clinicaAdscripcion?.dirty || datosFinado.clinicaAdscripcion?.touched)">Este campo es obligatorio *.</span>
+<!--          <span class="campo-obligatorio"-->
+<!--            *ngIf="datosFinado.clinicaAdscripcion?.errors?.required && (datosFinado.clinicaAdscripcion?.dirty || datosFinado.clinicaAdscripcion?.touched)">Este campo es obligatorio *.</span>-->
         </div>
         <div class="col-md-6">
           <label class="control-label" for="unidadProcedencia">Unidad de procedencia<span class="req">*</span>:</label>
@@ -246,12 +245,12 @@
             *ngIf="datosFinado.procedenciaFinado?.errors?.required && (datosFinado.procedenciaFinado?.dirty || datosFinado.procedenciaFinado?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="tipoPension">Tipo de pensión<span class="req">*</span>:</label>
+          <label class="control-label" for="tipoPension">Tipo de pensión:</label>
           <p-dropdown id="tipoPension" class="form-control" formControlName="tipoPension"
             placeholder="Selecciona tipo de pensión" [options]="tipoPension" [filter]="true"
             filterBy="label"></p-dropdown>
-          <span class="campo-obligatorio"
-            *ngIf="datosFinado.tipoPension?.errors?.required && (datosFinado.tipoPension?.dirty || datosFinado.tipoPension?.touched)">Este campo es obligatorio *.</span>
+<!--          <span class="campo-obligatorio"-->
+<!--            *ngIf="datosFinado.tipoPension?.errors?.required && (datosFinado.tipoPension?.dirty || datosFinado.tipoPension?.touched)">Este campo es obligatorio *.</span>-->
         </div>
       </div>
     </ng-container>

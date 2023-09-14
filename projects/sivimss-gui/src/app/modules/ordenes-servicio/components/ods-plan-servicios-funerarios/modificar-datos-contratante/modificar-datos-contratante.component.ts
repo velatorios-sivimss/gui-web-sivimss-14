@@ -641,6 +641,7 @@ export class ModificarDatosContratanteSFComponent
               } else {
                 this.datosContratante.nacionalidad.setValue(2);
               }
+              this.consultarLugarNacimiento(respuesta.datos.desEntidadNac);
             } else {
               let datos = respuesta.datos[0];
               this.idPersona = datos.idPersona;
@@ -702,6 +703,38 @@ export class ModificarDatosContratanteSFComponent
       );
   }
 
+  consultarLugarNacimiento(entidad:string): void {
+    const entidadEditada = this.accentsTidy(entidad);
+    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+      this.datosContratante.lugarNacimiento.setValue(11);
+      return
+    }
+    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+      this.datosContratante.lugarNacimiento.setValue(7);
+      return
+    }
+    this.estado.forEach((element:any) => {
+      const entidadIteracion =  this.accentsTidy(element.label);
+      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+        this.datosContratante.lugarNacimiento.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r=s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    return r;
+  };
   limpiarConsultaDatosPersonales(): void {
     this.datosContratante.nombre.patchValue(null);
     this.datosContratante.primerApellido.patchValue(null);
