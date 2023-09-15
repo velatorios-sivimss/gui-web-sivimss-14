@@ -180,7 +180,7 @@ export class ModificarDatosFinadoComponent
       this.cambiarValidacionMatricula();
       this.inicializarCalcularEdad();
       this.cambiarValidacionNSS();
-      // this.changeTipoOrden(true);
+      // this.changeTipoOrden(true, Number(this.form.value.datosFinado.tipoOrden));
       this.cambiarTipoSexo();
       // this.datosFinado.esParaExtremidad.value;
     },500)
@@ -512,6 +512,10 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.noContrato.enable();
       this.datosFinado.velatorioPrevision.enable();
     }
+    if(Number(this.form.value.datosFinado.tipoOrden) == 3){
+
+    this.changeTipoOrden(true);
+    }
   }
 
   consultarCURP(): void {
@@ -562,6 +566,7 @@ export class ModificarDatosFinadoComponent
               } else {
                 this.datosFinado.nacionalidad.setValue(2);
               }
+              this.consultarLugarNacimiento(respuesta.datos.desEntidadNac);
             } else {
               let datos = respuesta.datos[0];
               let [anio, mes, dia] = respuesta.datos[0].fechaNac.split('-');
@@ -584,8 +589,8 @@ export class ModificarDatosFinadoComponent
               } else {
                 this.datosFinado.nacionalidad.setValue(2);
               }
+              this.datosFinado.lugarNacimiento.setValue(+respuesta.datos[0].idEstado);
             }
-
             this.cambiarTipoSexo();
             this.cambiarNacionalidad();
             return;
@@ -603,6 +608,39 @@ export class ModificarDatosFinadoComponent
         }
       );
   }
+
+  consultarLugarNacimiento(entidad:string): void {
+    const entidadEditada = this.accentsTidy(entidad);
+    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+      this.datosFinado.lugarNacimiento.setValue(11);
+      return
+    }
+    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+      this.datosFinado.lugarNacimiento.setValue(7);
+      return
+    }
+    this.estado.forEach((element:any) => {
+      const entidadIteracion =  this.accentsTidy(element.label);
+      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+        this.datosFinado.lugarNacimiento.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r=s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    return r;
+  };
 
   consultaCP(): void {
     this.loaderService.activar();

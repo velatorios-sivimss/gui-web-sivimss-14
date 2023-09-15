@@ -212,7 +212,6 @@ export class ModificarInformacionServicioComponent
 
 
 
-
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [
@@ -296,7 +295,7 @@ export class ModificarInformacionServicioComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          { value: datos.gestionadoPorPromotor, disabled: false },
+          { value: datos.gestionadoPorPromotor == null ? false : true, disabled: false },
           [Validators.required],
         ],
         promotor: [
@@ -968,7 +967,7 @@ export class ModificarInformacionServicioComponent
   }
 
   generada(): void {
-    this.altaODS.idEstatus = 1;
+    this.altaODS.idEstatus = 2;
     this.llenarDatos();
 
     Number(this.estatusUrl)==1 ? this.guardarODS(1) : this.guardarODSComplementaria(1);
