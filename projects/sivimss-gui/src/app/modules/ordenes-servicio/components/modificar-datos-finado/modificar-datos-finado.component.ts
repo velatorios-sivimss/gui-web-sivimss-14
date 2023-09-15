@@ -180,7 +180,7 @@ export class ModificarDatosFinadoComponent
       this.cambiarValidacionMatricula();
       this.inicializarCalcularEdad();
       this.cambiarValidacionNSS();
-      // this.changeTipoOrden(true);
+      // this.changeTipoOrden(true, Number(this.form.value.datosFinado.tipoOrden));
       this.cambiarTipoSexo();
       // this.datosFinado.esParaExtremidad.value;
     },500)
@@ -511,6 +511,10 @@ export class ModificarDatosFinadoComponent
     } else {
       this.datosFinado.noContrato.enable();
       this.datosFinado.velatorioPrevision.enable();
+    }
+    if(Number(this.form.value.datosFinado.tipoOrden) == 3){
+
+    this.changeTipoOrden(true);
     }
   }
 
