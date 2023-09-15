@@ -195,7 +195,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     let fechaInicial = this.filtroForm.get('fechaInicial')?.value;
     if (fechaInicial) fechaInicial = moment(this.f.fechaInicial.value).format('DD/MM/YYYY');
     let fechaFinal = this.filtroForm.get('fechaFinal')?.value;
-    if (fechaFinal) fechaFinal = moment(this.f.fechaInicial.value).format('DD/MM/YYYY');
+    if (fechaFinal) fechaFinal = moment(this.f.fechaFinal.value).format('DD/MM/YYYY');
     return {
       idNivel: this.filtroForm.get('nivel')?.value,
       idDelegacion: this.filtroForm.get('delegacion')?.value,

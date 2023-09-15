@@ -171,7 +171,7 @@ export class Reportes implements OnInit {
   }
 
   cambiarDelegacion(configuracionInicial: boolean = false): void {
-    if (configuracionInicial) this.filtroForm.get('velatorio')?.patchValue(null);
+    if (!configuracionInicial) this.filtroForm.get('velatorio')?.patchValue(null);
     const delegacion = this.filtroForm.get('delegacion')?.value;
     this.velatorios = [];
     if (!delegacion) return;
@@ -237,6 +237,10 @@ export class Reportes implements OnInit {
       {
         label: '/genera-reporte-ods',
         value: 1
+      },
+      {
+        label: '/genera-reporte-ods',
+        value: 6
       }
     ]
     let nombreReporte: string = "";
