@@ -82,8 +82,8 @@
           maxlength="18" (blur)="consultarCURP()" (keyup)="convertirAMayusculas()">
         <span class="campo-obligatorio"
           *ngIf="datosFinado.curp?.errors?.required && (datosFinado.curp?.dirty || datosFinado.curp?.touched)">Este campo es obligatorio *.</span>
-        <span class="campo-obligatorio"
-          *ngIf="datosFinado.curp?.errors?.pattern && (datosFinado.curp?.dirty || datosFinado.curp?.touched)">Este campo es obligatorio *.</span>
+<!--        <span class="campo-obligatorio"-->
+<!--          *ngIf="datosFinado.curp?.errors?.pattern && (datosFinado.curp?.dirty || datosFinado.curp?.touched)">Este campo es obligatorio *.</span>-->
       </div>
       <div class="col-md-4">
         <label class="control-label" for="nss">NSS<span class="req" *ngIf="datosFinado.nssCheck.value">*</span>:</label>
