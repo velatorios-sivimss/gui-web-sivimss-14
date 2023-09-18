@@ -181,22 +181,24 @@ export class ConsultaDonacionesComponent implements OnInit {
         this.cantElementosPorPagina,
       )
       .subscribe(
-        (respuesta) => {
+        {
+        next:(respuesta) => {
           this.ataudesDonados = respuesta.datos.content || []
           this.totalElementos = respuesta.datos.totalElements || 0
         },
-        (error: HttpErrorResponse) => {
+        error:(error: HttpErrorResponse) => {
           console.error(error);
           const numMnesaje = +error.error.mensaje
           const mensaje = this.mensajesSistemaService.obtenerMensajeSistemaPorId(numMnesaje)
           this.alertaService.mostrar(TipoAlerta.Error, mensaje);
-        },
+        }
+        }
       )
   }
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1))
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1))
     }
     this.paginarPorFiltros()
   }
@@ -217,14 +219,16 @@ export class ConsultaDonacionesComponent implements OnInit {
     this.consultaDonacionesService
       .buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .subscribe(
-        (respuesta) => {
-          this.ataudesDonados = respuesta.datos.content || []
-          this.totalElementos = respuesta.datos.totalElements || 0
-        },
-        (error: HttpErrorResponse) => {
-          console.error(error)
-          this.alertaService.mostrar(TipoAlerta.Error, error.message)
-        },
+        {
+          next:(respuesta) => {
+            this.ataudesDonados = respuesta.datos.content || []
+            this.totalElementos = respuesta.datos.totalElements || 0
+          },
+          error:(error: HttpErrorResponse) => {
+            console.error(error)
+            this.alertaService.mostrar(TipoAlerta.Error, error.message)
+          }
+        }
       )
   }
 
@@ -251,12 +255,15 @@ export class ConsultaDonacionesComponent implements OnInit {
     this.consultaDonacionesService.obtenerCatalogoVelatoriosPorDelegacion(this.ff.delegacion.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
+      {
+        next:(respuesta: HttpRespuesta<any>) => {
+          this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
+            {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
 
-      }, (error: HttpErrorResponse) => {
-        console.log(error);
+        },
+        error:(error: HttpErrorResponse) => {
+          console.log(error);
+        }
       }
     )
   }
@@ -268,26 +275,28 @@ export class ConsultaDonacionesComponent implements OnInit {
     const tipoArchivoConTipoDoc = JSON.parse(tipoArchivo)
     tipoArchivoConTipoDoc['tipoReporte'] = tipoReporte;
     this.consultaDonacionesService.exportarArchivo(tipoArchivoConTipoDoc).subscribe(
-      (respuesta) => {
-        this.base64 = respuesta!.datos
-        if (this.totalElementos == 0) {
-          this.alertaService.mostrar(
-            TipoAlerta.Error,
-            'No se encontró información relacionada a tu búsqueda.',
-          )
-        }
-        const linkSource =
-          'data:application/' + tipoReporte + ';base64,' + this.base64 + '\n'
-        const downloadLink = document.createElement('a')
-        const fileName = 'Ataudes_donados.' + tipoReporte
-        downloadLink.href = linkSource
-        downloadLink.download = fileName
-        downloadLink.click()
-      },
-      (error: HttpErrorResponse) => {
-        console.error(error)
-        this.alertaService.mostrar(TipoAlerta.Error, error.message)
-      },
+      {
+        next:(respuesta) => {
+          this.base64 = respuesta.datos
+          if (this.totalElementos == 0) {
+            this.alertaService.mostrar(
+              TipoAlerta.Error,
+              'No se encontró información relacionada a tu búsqueda.',
+            )
+          }
+          const linkSource =
+            'data:application/' + tipoReporte + ';base64,' + this.base64 + '\n'
+          const downloadLink = document.createElement('a')
+          const fileName = 'Ataudes_donados.' + tipoReporte
+          downloadLink.href = linkSource
+          downloadLink.download = fileName
+          downloadLink.click()
+        },
+        error:(error: HttpErrorResponse) => {
+          console.error(error)
+          this.alertaService.mostrar(TipoAlerta.Error, error.message)
+        },
+      }
     )
   }
 
@@ -301,28 +310,32 @@ export class ConsultaDonacionesComponent implements OnInit {
     this.consultaDonacionesService.generarReporte(busqueda).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        const file = new Blob([this.descargaArchivosService.base64_2Blob(
-            respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)}
-        );
-        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.loaderService.desactivar())
-        ).subscribe(
-          (repuesta) => {
-            if (respuesta) {
-              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-              this.mostrarModalConfirmacion = true;
+      {
+        next:(respuesta: HttpRespuesta<any>) => {
+          const file = new Blob([this.descargaArchivosService.base64_2Blob(
+              respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+            {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)}
+          );
+          this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+            finalize(() => this.loaderService.desactivar())
+          ).subscribe(
+            {
+              next:(repuesta) => {
+                if (respuesta) {
+                  this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                  this.mostrarModalConfirmacion = true;
+                }
+              },
+              error:(error) => {
+                this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+              }
             }
-          },
-          (error) => {
-            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        )
-      },
-      (error: HttpErrorResponse) => {
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, msg);
+          )
+        },
+        error:(error: HttpErrorResponse) => {
+          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+          this.alertaService.mostrar(TipoAlerta.Error, msg);
+        }
       }
     )
   }

@@ -42,7 +42,6 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private alertaService: AlertaService
   ) {
-    // this.buscarDetalle(Number(this.rutaActiva.snapshot.paramMap.get('idODS')));
     this.buscarDetalle(Number(this.rutaActiva.snapshot.queryParams.idODS));
   }
 
@@ -231,9 +230,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-        // if (element.idProveedor != null && element.idProveedor != '') {
           salidaPaquete.push(datos);
-        // }
       }
     }
 
