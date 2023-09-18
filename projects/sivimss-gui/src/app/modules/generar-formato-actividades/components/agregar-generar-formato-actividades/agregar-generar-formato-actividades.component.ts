@@ -53,7 +53,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   public intentoPorGuardar: boolean = false;
   public agregarGenerarFormatoActividadesForm!: FormGroup;
   public agregarActividadForm!: FormGroup;
-  public mostrarModalPromotorDuplicado: boolean = false;
+  public mostrarModal: boolean = false;
   public fechaActual: Date = new Date();
   public agregandoRegistro: boolean = false;
   public descVelatorio: string = '';
@@ -364,8 +364,6 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
       this.actividades.shift();
       this.agregandoRegistro = false;
     }
-    // this.products[index] = this.clonedProducts[product.id as string];
-    // delete this.clonedProducts[product.id as string];
   }
 
   validarFechas() {
@@ -396,8 +394,8 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: () => {
-        // this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        // this.mostrarModalConfirmacion = true;
+        this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.mostrarModal = true;
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
