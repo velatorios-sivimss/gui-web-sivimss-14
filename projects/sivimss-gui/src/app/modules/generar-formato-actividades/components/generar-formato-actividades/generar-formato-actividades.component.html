@@ -25,7 +25,7 @@
       <div class="col-md-4">
         <label class="control-label" for="folio">Folio:</label>
         <input id="folio" class="form-control" formControlName="folio" folioOdsAlphanumeric trimmer
-          placeholder="Ingresa el folio">
+          placeholder="Ingresa el folio" maxlength="11">
         <span class="campo-obligatorio"
           *ngIf="ff.folio?.errors?.required && (ff.folio?.dirty || ff.folio?.touched)">Este
           campo es obligatorio *.</span>
