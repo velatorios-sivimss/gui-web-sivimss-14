@@ -211,6 +211,10 @@ export const idsModulos: DatoModulo = {
     ruta: 'reportes',
     icono: 'default-icon.svg'
   },
+  '39': {
+    ruta: '/generar-hoja-de-consignacion',
+    icono: 'generar-hoja-consignacion.svg'
+  },
   '47': {
     ruta: 'comisiones',
     icono: 'default-icon.svg'

@@ -17,26 +17,27 @@ export interface Actividades {
   empresa?: string | null;
   actividadRealizada?: string | null;
   observaciones?: string | null;
-  evidencia?: boolean | null;
+  evidencia?: number | null;
 }
 
 export interface GenerarFormatoActividadesBusqueda {
   idFormatoRegistro?: number | null;
   idActividad?: number | null;
-  fecElaboracion?: string | null;
+  fecActividad?: string | null;
   folio?: string | null;
   velatorio?: string | null;
   numActividades?: string | null;
-  horarioInicial?: string | null;
-  horarioFinal?: string | null;
-  personalVelatorio?: number | null;
-  puesto?: number | null;
+  hrInicio?: string | null;
+  hrFin?: string | null;
+  idPromotor?: number | null;
+  nomPromotor?: string | null;
+  puesto?: string | null;
   numPlaticas?: number | null;
-  unidadImss?: string | null;
+  unidad?: string | null;
   empresa?: string | null;
   actividadRealizada?: string | null;
   observaciones?: string | null;
-  evidencia?: boolean | null;
+  evidencia?: number | null;
   banderaModificar?: number | null;
 }
 
@@ -52,4 +53,10 @@ export interface BuscarCatalogo {
   catalogo?: number | null;
   idCatalogo?: number | null;
   idVelatorio?: number | null;
+}
+
+export interface CatalogoPromotores {
+  idPromotor?: number;
+  nomPromotor?: string | null;
+  puesto?: string | null;
 }
