@@ -247,8 +247,11 @@
 
   <div class="flex justify-content-end mt-6 mb-6">
     <button class="btn btn-gold btn-md" [routerLink]="'/generar-formato-de-actividades'">Cancelar</button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="generarReporteTabla();">
+    <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="mode !== 'detail'" [disabled]='actividades.length === 0' (click)="generarReporteTabla();">
       Generar formato
+    </button>
+    <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="mode === 'detail'" [disabled]='actividades.length === 0' (click)="previsualizarReporte();">
+      Visualizar formato
     </button>
   </div>
 </section>
