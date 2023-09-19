@@ -273,14 +273,12 @@ export class VelacionDomicilioComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => {
           if (!respuesta.datos && respuesta.error) {
             this.alertaService.mostrar(TipoAlerta.Precaucion, respuesta.mensaje);
+          } else if (respuesta.datos?.content.length === 0) {
+            this.vale = [];
+            this.totalElementos = 0;
           } else {
-            if (respuesta.datos?.content.length === 0) {
-              this.vale = [];
-              this.totalElementos = 0;
-            } else {
-              this.vale = respuesta.datos.content;
-              this.totalElementos = respuesta.datos.totalElements;
-            }
+            this.vale = respuesta.datos.content;
+            this.totalElementos = respuesta.datos.totalElements;
           }
         },
         error: (error: HttpErrorResponse) => {

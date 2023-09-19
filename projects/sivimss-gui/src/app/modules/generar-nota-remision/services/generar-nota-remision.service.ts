@@ -7,7 +7,7 @@ import { Observable, of } from 'rxjs';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { AutenticacionService } from '../../../services/autenticacion.service';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
-import { BusquedaFiltro, ConsultaNotaRemision, GenerarReporte, GenerarDatosReporte } from '../models/nota-remision.interface';
+import { BusquedaFiltro, ConsultaNotaRemision, GenerarDatosReporte } from '../models/nota-remision.interface';
 
 @Injectable()
 export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, any> {

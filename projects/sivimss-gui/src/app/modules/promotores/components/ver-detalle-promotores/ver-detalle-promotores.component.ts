@@ -62,12 +62,6 @@ export class VerDetallePromotoresComponent implements OnInit {
       this.promotoresService.obtenerDetallePromotor(this.promotorSeleccionado.idPromotor).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           console.log(respuesta.datos);
-
-          // if (respuesta.datos) {
-          //   this.promotores = respuesta.datos.content;
-          // } else {
-          //   this.promotores = [];
-          // }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);

@@ -79,8 +79,6 @@
       <div class="col-md-6">
         <label class="control-label" for="fechaOrden">Fecha:</label>
         <input id="fechaOrden" class="form-control" formControlName="fechaOrden" placeholder="Ingresa la fecha">
-        <!-- <p-calendar id="fechaOrden" styleClass="form-control" formControlName="fechaOrden" [showIcon]="true"
-          dateFormat="dd/mm/yy" placeholder="Ingresa fecha"></p-calendar> -->
         <span class="campo-obligatorio"
           *ngIf="ef.fechaOrden?.errors?.required && (ef.fechaOrden?.dirty || ef.fechaOrden?.touched)">Campo
           obligatorio</span>

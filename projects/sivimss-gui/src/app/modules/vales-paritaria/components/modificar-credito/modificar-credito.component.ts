@@ -1,12 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { Funcionalidad } from "projects/sivimss-gui/src/app/modules/roles/models/funcionalidad.interface";
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {AlertaService} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {CATALOGOS} from '../../../usuarios/constants/catalogos_dummies';
-import {ValeParitaria} from "../../models/vale-paritaria.interface";
 import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
 
 
@@ -23,8 +21,8 @@ export class ModificarCreditoComponent implements OnInit {
   opciones: TipoDropdown[] = CATALOGOS;
   actualizarCreditoForm!: FormGroup;
   contadorFuncionalidades = 1;
-  datosValidar: any[]=[];
-  datosSolicitudCredito: any[]=[];
+  datosValidar: any[] = [];
+  datosSolicitudCredito: any[] = [];
 
   formaRecuperacion: any[] = [
     {
@@ -102,7 +100,7 @@ export class ModificarCreditoComponent implements OnInit {
   }
 
 
-   get f() {
+  get f() {
     return this.actualizarCreditoForm.controls;
   }
 

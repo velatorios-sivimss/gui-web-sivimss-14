@@ -15,7 +15,6 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {BeneficiarioInterface} from "../../models/beneficiario.interface";
 import * as moment from 'moment';
-import {catalogoVelatorio} from "../../../ordenes-servicio/constants/catalogos.interface";
 
 @Component({
   selector: 'app-agregar-beneficiario-convenios-prevision-funeraria',
@@ -213,7 +212,6 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
       finalize(()=>this.loaderService.desactivar())
     ).subscribe(
       (respuesta: HttpRespuesta<any>): void => {
-        // this.consultarUnidadMedica();
         this.velatorio = respuesta.datos.map((velatorio: any) => (
           { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
       },

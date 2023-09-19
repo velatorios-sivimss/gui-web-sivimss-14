@@ -83,12 +83,12 @@ export class VerDetallePaquetesComponent implements OnInit {
 
   paginar(event: LazyLoadEvent): void {
     setTimeout(() => {
-      this.servicios = this.paqueteSeleccionado.servicios || [];
+      this.servicios = this.paqueteSeleccionado.servicios ?? [];
       this.totalElementosServicios = this.servicios.length;
     }, 0);
 
     setTimeout(() => {
-      this.articulos = this.paqueteSeleccionado.articulos || [];
+      this.articulos = this.paqueteSeleccionado.articulos ?? [];
       this.totalElementosArticulos = this.articulos.length;
     }, 0);
   }
@@ -134,9 +134,9 @@ export class VerDetallePaquetesComponent implements OnInit {
     return {
       articulos: [],
       costo: 0,
-      desPaquete: this.paqueteSeleccionado.descripcion || "",
+      desPaquete: this.paqueteSeleccionado.descripcion ?? "",
       isRegion: false,
-      nomPaquete: this.paqueteSeleccionado.nombrePaquete || "",
+      nomPaquete: this.paqueteSeleccionado.nombrePaquete ?? "",
       precio: 0,
       estatus: this.paqueteSeleccionado.estatus === true ? 1 : 0
     }
