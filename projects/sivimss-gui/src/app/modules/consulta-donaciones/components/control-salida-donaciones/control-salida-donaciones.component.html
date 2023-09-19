@@ -164,7 +164,6 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
-<!--            <input maxlength="45" id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia">-->
             <p-dropdown id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
                         [options]="colonias" [filter]="true" filterBy="label"></p-dropdown>
 
@@ -180,13 +179,6 @@
         </div>
         <div class="row mb-3">
           <div class="col-md-6">
-<!--            <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>-->
-<!--            <p-dropdown appendTo="body" id="estado" class="form-control" formControlName="estado"-->
-<!--                        [options]="estado"-->
-<!--                        placeholder="Selecciona el estado">-->
-<!--            </p-dropdown>-->
-<!--            <span class="campo-obligatorio"-->
-<!--                  *ngIf="fds.estado?.errors?.required && (fds.estado?.dirty || fds.estado?.touched)">Este campo es obligatorio *.</span>-->
             <label class="control-label" for="estado">Estado<span class="req">*</span>:</label>
             <input id="estado" class="form-control" formControlName="estado" placeholder="Ingresa el estado">
             <span class="campo-obligatorio"
