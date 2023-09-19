@@ -9,7 +9,7 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {GestionarDonacionesService} from "../../../services/gestionar-donaciones.service";
-import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
+import {AlertaService} from "../../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 
 @Component({

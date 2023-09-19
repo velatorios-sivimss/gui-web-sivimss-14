@@ -9,7 +9,6 @@ import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcru
 import {
   ConsultaPaginado,
   GenerarReporte,
-  ServiciosFunerariosInterface
 } from "../../models/servicios-funerarios.interface"
 import {LazyLoadEvent} from "primeng/api";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
@@ -114,8 +113,8 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   paginar(event?: LazyLoadEvent): void {
 
-    if (event && event.first !== undefined && event.rows !== undefined) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1))
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1))
     } else{
       this.numPaginaActual = 0;
     }

@@ -16,7 +16,6 @@
       <p-dropdown id="contrato" class="form-control" formControlName="contrato" [options]="contratos"
                   placeholder="Seleccionar contrato" (onChange)="onContratoChange($event)" [filter]="true" filterBy="label">
       </p-dropdown>
-      <!-- <input id="contrato" class="form-control" formControlName="contrato" placeholder="Ingresar contrato"> -->
       <span class="campo-obligatorio"
             *ngIf="f.contrato?.errors?.required && (f.contrato?.dirty || f.contrato?.touched)">Campo obligatorio</span>
     </div>
