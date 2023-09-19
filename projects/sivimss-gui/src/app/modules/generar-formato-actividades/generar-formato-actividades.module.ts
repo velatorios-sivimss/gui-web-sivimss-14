@@ -21,11 +21,14 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { CalendarModule } from 'primeng/calendar';
 import { UsuarioService } from '../usuarios/services/usuario.service';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import { PdfViewerModule } from "ng2-pdf-viewer";
+import { PrevisualizacionArchivoComponent } from './components/previsualizacion-archivo/previsualizacion-archivo.component';
 
 @NgModule({
   declarations: [
     GenerarFormatoActividadesComponent,
     AgregarGenerarFormatoActividadesComponent,
+    PrevisualizacionArchivoComponent,
   ],
   imports: [
     CommonModule,
@@ -45,6 +48,7 @@ import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
     AutoCompleteModule,
     CalendarModule,
     ValidaRolModule,
+    PdfViewerModule,
   ],
   providers: [
     GenerarFormatoActividadesService,

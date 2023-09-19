@@ -20,6 +20,7 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
+import * as moment from 'moment';
 
 interface HttpResponse {
   respuesta: string;
@@ -166,8 +167,10 @@ export class GenerarFormatoActividadesComponent implements OnInit {
       idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
       idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
       folio: this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
-      fecInicio: this.ff.fecInicio.getRawValue() === '' ? null : this.ff.fecInicio.getRawValue(),
-      fecFin: this.ff.fecFin.getRawValue() === '' ? null : this.ff.fecFin.getRawValue(),
+      fecInicio:
+        !this.ff.fecInicio.value || this.ff.fecInicio.getRawValue() === '' ? null : moment(this.ff.fecInicio.value).format('DD/MM/YYYY'),
+      fecFin:
+        !this.ff.fecFin.value || this.ff.fecFin.getRawValue() === '' ? null : moment(this.ff.fecFin.value).format('DD/MM/YYYY'),
     }
   }
 
@@ -231,9 +234,11 @@ export class GenerarFormatoActividadesComponent implements OnInit {
     this.descargaArchivosService.descargarArchivo(this.generarFormatoActividadesService.generarReporteConsulta(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: () => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.mostrarModalConfirmacion = true;
+      next: (res: boolean) => {
+        if (res) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModalConfirmacion = true;
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
@@ -248,8 +253,10 @@ export class GenerarFormatoActividadesComponent implements OnInit {
       idDelegacion: this.ff.delegacion.value ? +this.ff.delegacion.value : null,
       idVelatorio: this.ff.velatorio.value ? +this.ff.velatorio.value : null,
       folio: this.ff.folio.value ? +this.ff.folio.value : null,
-      fecInicio: this.ff.fecInicio.value ? +this.ff.fecInicio.value : null,
-      fecFin: this.ff.fecFin.value ? +this.ff.fecFin.value : null,
+      fecInicio:
+        !this.ff.fecInicio.value || this.ff.fecInicio.getRawValue() === '' ? null : moment(this.ff.fecInicio.value).format('DD/MM/YYYY'),
+      fecFin:
+        !this.ff.fecFin.value || this.ff.fecFin.getRawValue() === '' ? null : moment(this.ff.fecFin.value).format('DD/MM/YYYY'),
       tipoReporte,
     }
   }

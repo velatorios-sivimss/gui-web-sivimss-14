@@ -90,6 +90,10 @@ export class GenerarFormatoActividadesService extends BaseService<HttpRespuesta<
       , reporte, { headers, responseType: 'blob' as 'json' });
   }
 
+  previsualizarReporte(reporte: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<any>(this._base + `${this._funcionalidad}/formato-actividades/generarDocumento/pdf`, reporte, { responseType: 'blob' as any });
+  }
+
   generarReporteConsulta(reporte: any): Observable<Blob> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
