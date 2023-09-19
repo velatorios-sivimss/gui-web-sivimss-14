@@ -4,7 +4,6 @@ import {
 } from '@angular/router';
 import { Observable, forkJoin } from "rxjs";
 import { VelacionDomicilioService } from './velacion-domicilio.service';
-import { BuscarFoliosOds } from '../models/velacion-domicilio.interface';
 
 @Injectable()
 export class VelacionDomicilioResolver implements Resolve<any> {

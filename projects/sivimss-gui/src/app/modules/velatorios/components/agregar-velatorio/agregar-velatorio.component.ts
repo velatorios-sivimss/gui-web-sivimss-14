@@ -122,7 +122,7 @@ export class AgregarVelatorioComponent implements OnInit {
 
   crearVelatorio(): Velatorio {
     const cpId = this.velatorioForm.get("desColonia")?.value;
-    const colonia: string = this.colonias.find(c => c.value === cpId)?.label || "";
+    const colonia: string = this.colonias.find(c => c.value === cpId)?.label ?? "";
     return {
       administrador: "",
       capillas: 0,
