@@ -23,6 +23,7 @@ import {TIPO_ARCHIVO} from "../../constants/tipo-archivo";
 import {of} from "rxjs";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
+import {MESES} from "../../constants/meses";
 
 @Component({
   selector: 'app-reportes',
@@ -64,17 +65,9 @@ export class Reportes implements OnInit {
 
   promotor!: TipoDropdown[];
 
-  anio!: TipoDropdown[];
-  mes!: TipoDropdown[];
+  anio: TipoDropdown[] = [];
+  mes: TipoDropdown[] = MESES;
   exportar: TipoDropdown[] = [];
-  tipoODSBandera: boolean = false;
-  numeroODSBandera: boolean = false;
-  promotorBandera: boolean = false;
-  anioBandera: boolean = false;
-  mesBandera: boolean = false;
-  fechaInicialBandera: boolean = false;
-  fechaFinalBandera: boolean = false;
-  banderaEstatusODS: boolean = false;
   estatusSeleccionODS!: number | null;
 
   constructor(
@@ -137,6 +130,9 @@ export class Reportes implements OnInit {
       anio: [{value: null, disabled: false}],
       mes: [{value: null, disabled: false}],
       exportar: [{value: null, disabled: false}, [Validators.required]],
+
+      /**/
+
       preorden: [{value: null, disabled: false}],
       generada: [{value: null, disabled: false}],
       cancelada: [{value: null, disabled: false}],
@@ -152,6 +148,9 @@ export class Reportes implements OnInit {
     const DELEGACION: TipoDropdown[] = [{label: 'Todos', value: null}];
     this.niveles = respuesta[this.POSICION_NIVELES];
     this.delegaciones = [...DELEGACION, ...respuesta[this.POSICION_DELEGACIONES]];
+    for(let i = 2000; i <= +moment().format('yyyy'); i++) {
+      this.anio.push({label: i.toString(),value:i})
+    }
     this.cambiarDelegacion(true);
   }
 
@@ -190,7 +189,7 @@ export class Reportes implements OnInit {
     });
   }
 
-  estatusODS(estatusODS: number | null): void {
+  estatusODS(estatusODS: number, valorODS: boolean): void {
     let listadoEstatus = ['preorden', 'generada', 'cancelada', 'pagada', 'enTransito', 'concluida', 'todos'];
     if (estatusODS != 1) this.ff.preorden.reset()
     if (estatusODS != 2) this.ff.generada.reset()
@@ -198,13 +197,16 @@ export class Reportes implements OnInit {
     if (estatusODS != 4) this.ff.pagada.reset()
     if (estatusODS != 3) this.ff.enTransito.reset()
     if (estatusODS != 6) this.ff.concluida.reset()
-    if (estatusODS != null) this.ff.todos.reset()
+    if (estatusODS != 7) this.ff.todos.reset()
     this.estatusSeleccionODS = estatusODS;
+    this.ff.idEstatusODS.setValue(valorODS ? estatusODS : null)
   }
 
   limpiarFiltros(): void {
-    this.cambiarReporte();
+    // this.cambiarReporte();
     this.cambiarDelegacion(true);
+    this.ff.idEstatusODS.clearValidators();
+
     this.exportar = [];
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormDir.resetForm({
@@ -299,36 +301,36 @@ export class Reportes implements OnInit {
         }
         break;
       case 2:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       case 3:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       case 5:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       case 6:
-        this.numeroODSBandera = true;
-        this.promotorBandera = true;
-        this.anioBandera = true;
-        this.mesBandera = true;
+        // this.numeroODSBandera = true;
+        // this.promotorBandera = true;
+        // this.anioBandera = true;
+        // this.mesBandera = true;
         break;
       case 7:
-        this.numeroODSBandera = true;
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.numeroODSBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       case 8:
-        this.numeroODSBandera = true;
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.numeroODSBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       case 9:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
 
     }
@@ -357,47 +359,48 @@ export class Reportes implements OnInit {
   }
 
   cambiarReporte(): void {
-    this.seleccionarValidaciones();
-    this.exportar = this.limpiarTiposExportacion();
-
-    this.tipoODSBandera = false;
-    this.numeroODSBandera = false;
-    this.promotorBandera = false;
-    this.anioBandera = false;
-    this.mesBandera = false;
-    this.fechaInicialBandera = false;
-    this.fechaFinalBandera = false;
-    this.banderaEstatusODS = false;
     this.filtroForm.clearValidators();
     this.filtroForm.updateValueAndValidity();
+    this.seleccionarValidaciones();
+    this.exportar = this.limpiarTiposExportacion();
+    return
+
+    // this.tipoODSBandera = false;
+    // this.numeroODSBandera = false;
+    // this.promotorBandera = false;
+    // this.anioBandera = false;
+    // this.mesBandera = false;
+    // this.fechaInicialBandera = false;
+    // this.fechaFinalBandera = false;
+    // this.banderaEstatusODS = false;
 
     switch (this.ff.reporte.value) {
       case 1:
         this.reporteOrdenesServicios();
         break;
       case 5:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       case 6:
-        this.numeroODSBandera = true;
-        this.promotorBandera = true;
-        this.anioBandera = true;
-        this.mesBandera = true;
+        // this.numeroODSBandera = true;
+        // this.promotorBandera = true;
+        // this.anioBandera = true;
+        // this.mesBandera = true;
         break;
       case 7:
-        this.numeroODSBandera = true;
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.numeroODSBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       case 8:
-        this.numeroODSBandera = true;
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.numeroODSBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       case 9:
-        this.fechaInicialBandera = true;
-        this.fechaFinalBandera = true;
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
         break;
       default:
         break;
@@ -411,7 +414,6 @@ export class Reportes implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-
         this.reportes = mapearArregloTipoDropdown(respuesta.datos.reportes, 'nombreReporte', 'idReporte');
       },
       error: (error: HttpErrorResponse) => {
@@ -421,10 +423,6 @@ export class Reportes implements OnInit {
   }
 
   reporteOrdenesServicios(): void {
-    this.tipoODSBandera = true;
-    this.banderaEstatusODS = true;
-    this.fechaInicialBandera = true;
-    this.fechaFinalBandera = true;
     this.ff.idEstatusODS.setValidators(Validators.required);
     this.ff.idEstatusODS.updateValueAndValidity();
   }
@@ -434,7 +432,8 @@ export class Reportes implements OnInit {
   }
 
   validacionesOrdenesServicio(): void {
-
+    this.ff.idEstatusODS.setValidators(Validators.required);
+    this.ff.idEstatusODS.updateValueAndValidity();
   }
 
   validacionesDetalleImporteServicios(): void {
@@ -463,6 +462,11 @@ export class Reportes implements OnInit {
 
   get ff() {
     return this.filtroForm.controls;
+  }
+
+  consultarValidaciones(): boolean {
+    return this.filtroForm.invalid
+    console.log(this.filtroForm);
   }
 
   limpiarTiposExportacion(): TipoDropdown[] {
