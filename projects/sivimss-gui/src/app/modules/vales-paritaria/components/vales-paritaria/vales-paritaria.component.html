@@ -11,7 +11,7 @@
                 <label class="control-label" for="delegacion">Delegación:</label>
                 <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="opciones" placeholder="Seleccionar el delegacion">
                 </p-dropdown>
-            </div>          
+            </div>
         </div>
         <div class="row mt-3">
             <div class="col-md-6">
@@ -33,13 +33,13 @@
     <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="valesParitaria" [paginator]="valesParitaria.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
         <ng-template pTemplate="header">
             <tr>
-                <th>ID</th>
-                <th>Matricula</th>
-                <th>Delegación</th>
-                <th>Nombre</th>
-                <th>Tipo de contratacion</th>
-                <th>Estatus</th>
-                <th></th>
+                <th scope="col">ID</th>
+                <th scope="col">Matricula</th>
+                <th scope="col">Delegación</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Tipo de contratacion</th>
+                <th scope="col">Estatus</th>
+                <th scope="col"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-vale>
