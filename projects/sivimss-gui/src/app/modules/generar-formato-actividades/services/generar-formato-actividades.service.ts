@@ -47,7 +47,7 @@ export class GenerarFormatoActividadesService extends BaseService<HttpRespuesta<
   }
 
   agregarActividad(generarFormatoActividades: GenerarFormatoActividades): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._agregar}`, { generarFormatoActividades });
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._agregar}`, generarFormatoActividades);
   }
 
   eliminarActividad(idActividad: number): Observable<HttpRespuesta<any>> {
@@ -79,6 +79,15 @@ export class GenerarFormatoActividadesService extends BaseService<HttpRespuesta<
 
   obtenerCatalogos(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/catalogo`, buscarCatalogo);
+  }
+
+  generarReporteActividades(reporte: any): Observable<Blob> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/formato-actividades/generarDocumento/pdf`
+      , reporte, { headers, responseType: 'blob' as 'json' });
   }
 
   generarReporteConsulta(reporte: any): Observable<Blob> {

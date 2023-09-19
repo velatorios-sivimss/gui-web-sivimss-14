@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="Generar formato de actividades"></app-titulo-principal>
+<app-titulo-principal titulo="OPERACIÓN / HOJA DE CONSIGNACIÓN"></app-titulo-principal>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
@@ -25,7 +25,7 @@
       <div class="col-md-4">
         <label class="control-label" for="folio">Folio:</label>
         <input id="folio" class="form-control" formControlName="folio" folioOdsAlphanumeric trimmer
-          placeholder="Ingresa el folio" maxlength="11">
+          placeholder="Ingresa el folio">
         <span class="campo-obligatorio"
           *ngIf="ff.folio?.errors?.required && (ff.folio?.dirty || ff.folio?.touched)">Este
           campo es obligatorio *.</span>
@@ -44,7 +44,7 @@
     </div>
 
 
-    <div class="row mt-6" *appValidaRol="['ACTIVIDADES_PROMOTORES','CONSULTA']">
+    <div class="row mt-6" *appValidaRol="['PROMOTORES','CONSULTA']">
       <div class="col-md-12 flex justify-content-end">
         <button type="button" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
         <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
@@ -55,35 +55,32 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo"></h2>
-    <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['ACTIVIDADES_PROMOTORES','ALTA']"
-      (click)="agregarFormatoActividades()">Generar formato de actividades</button>
+    <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['PROMOTORES','ALTA']"
+      (click)="agregarFormatoActividades()">Generar hoja</button>
   </div>
-  <p-table styleClass="mt-5 mb-8" [value]="actividades" [paginator]="actividades.length > 0"
+  <p-table styleClass="mt-5 mb-8" [value]="hojasConsignacion" [paginator]="hojasConsignacion.length > 0"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
     [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
         <th id="idFecha">Fecha</th>
-        <th id="folio">Folio</th>
-        <th id="velatorio">Velatorio</th>
-        <th id="numActividades">Número de actividades</th>
+        <th id="folio">Folio hoja de consignación</th>
+        <th id="velatorio">Proveedor</th>
         <th id="acciones">Acciones</th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-actividad>
+    <ng-template pTemplate="body" let-hojaConsignacion>
       <tr>
-        <td>{{actividad.fecElaboracion}}</td>
-        <td>{{actividad.folio}}</td>
-        <td>{{actividad.velatorio}}</td>
-        <td>{{actividad.numActividades}}</td>
+        <td>{{hojaConsignacion.fecHojaConsignacion}}</td>
+        <td>{{hojaConsignacion.folioHojaConsignacion}}</td>
+        <td>{{hojaConsignacion.proveedor}}</td>
         <td>
-          <div class="contenedor-celda-iconos" *appValidaRol="['ACTIVIDADES_PROMOTORES','MODIFICAR']">
-            <a (click)="detalleFormatoActividades(actividad)">
+          <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
+            <a (click)="detalleFormatoActividades(hojaConsignacion)">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
             </a>
-            <a (click)="modificarFormatoActividades(actividad)">
-              <img src="assets/images/imagen-icono-pencil-modificar.svg" *ngIf="actividad.banderaModificar"
-                alt="icono editar">
+            <a (click)="abrirPanel($event, hojaConsignacion)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
         </td>
@@ -99,12 +96,12 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{actividades.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{hojasConsignacion.length}} de {{totalElementos}}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table" *appValidaRol="['ACTIVIDADES_PROMOTORES','IMPRIMIR']">
+        <div class="export-table" *appValidaRol="['PROMOTORES','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
@@ -131,3 +128,11 @@
     </div>
   </ng-template>
 </p-dialog>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones *appValidaRol="['PROMOTORES','MODIFICACION']">
+      <app-overlay-panel-opcion (click)="abrirModalCargarFactura()" titulo="Cargar factura"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
