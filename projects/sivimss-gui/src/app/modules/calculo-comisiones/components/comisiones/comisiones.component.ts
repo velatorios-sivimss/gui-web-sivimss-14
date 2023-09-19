@@ -91,7 +91,7 @@ export class ComisionesComponent implements OnInit {
 
   abrirDetalleComision(comisionSeleccionado: ListadoComisiones): void {
     this.comisionSeleccionado = comisionSeleccionado;
-    this.router.navigate([`comisiones/detalle-comision/${comisionSeleccionado.idPromotor}`]).then(() => { }).catch(() => { });
+    void this.router.navigate([`comisiones/detalle-comision/${comisionSeleccionado.idPromotor}`]);
   }
 
   inicializarFiltroForm(): void {
