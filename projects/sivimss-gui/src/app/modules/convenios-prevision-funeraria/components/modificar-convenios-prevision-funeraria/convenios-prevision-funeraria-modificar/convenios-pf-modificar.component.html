@@ -32,8 +32,10 @@
       <div class="row mb-3">
         <div class="col-md-4">
           <label class="control-label" for="tipoContratacion">Tipo de contratación opciones <span class="req">*</span>:</label>
-          <p-dropdown id="tipoContratacion" class="form-control" formControlName="tipoContratacion" [options]="tipoContratacion"
-                      placeholder="Selecciona el tipo de contratación" [filter]="true" filterBy="label" (onChange)="validarTipoContratacion()" >
+          <p-dropdown id="tipoContratacion" class="form-control" formControlName="tipoContratacion"
+                      [options]="tipoContratacion"
+                      placeholder="Selecciona el tipo de contratación" [filter]="true" filterBy="label"
+                      (onChange)="validarTipoContratacion()">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="ff.tipoContratacion?.errors?.required && (ff.tipoContratacion?.dirty || ff.tipoContratacion?.touched)">
@@ -41,7 +43,8 @@
         </div>
         <div class="col-md-4">
           <label class="control-label" for="numeroConvenio">Número de convenio anterior</label>
-          <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio" placeholder="Ingresa el número de convenio"
+          <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio"
+                 placeholder="Ingresa el número de convenio"
                  maxlength="10" (change)="consultarConvenio()">
         </div>
         <div class="col-md-4">
@@ -49,7 +52,7 @@
           <div class="flex">
             <div class="flex align-items-center mx-2">
               <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
-                             formControlName="promotor" (onClick)="existePromotor(true)" ></p-radioButton>
+                             formControlName="promotor" (onClick)="existePromotor(true)"></p-radioButton>
               <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
             </div>
             <div class="flex align-items-center mx-2">
@@ -64,14 +67,15 @@
         <div class="col-md-4" *ngIf="agregarPromotor">
           <label class="control-label" for="listaPromotor">Promotor<span class="req">*</span>:</label>
           <p-dropdown id="listaPromotor" class="form-control" formControlName="listaPromotor" [options]="promotores"
-                      placeholder="Selecciona el promotor" [filter]="true" filterBy="label" (onChange)="validarListadoPormotores()">
+                      placeholder="Selecciona el promotor" [filter]="true" filterBy="label"
+                      (onChange)="validarListadoPormotores()">
           </p-dropdown>
           <span class="campo-obligatorio"
                 *ngIf="ff.listaPromotor?.errors?.required && (ff.listaPromotor?.dirty || ff.listaPromotor?.touched)">
                       Campo obligatorio</span>
         </div>
       </div>
-      <ng-container *ngIf="ff.tipoContratacion.value== 1" >
+      <ng-container *ngIf="ff.tipoContratacion.value== 1">
         <app-por-persona [folioConvenio]="folioConvenioPersona"
                          [confirmacionGuardado]="confirmarGuardadoPersona"
                          [siguienteSeccion]="siguienteSeccion"
@@ -82,7 +86,7 @@
 
         ></app-por-persona>
       </ng-container>
-      <ng-container *ngIf="ff.tipoContratacion.value== 2" >
+      <ng-container *ngIf="ff.tipoContratacion.value== 2">
         <app-por-empresa [folioEmpresa]="folioEmpresa"
                          [confirmacionGuardado]="confirmacionGuardadoEmpresa"
                          [consultarFormularioValido]="consultarFormularioValido"
@@ -103,7 +107,7 @@
     </div>
   </div>
 </ng-container>
-<ng-container *ngIf="indice == 1" >
+<ng-container *ngIf="indice == 1">
   <form [formGroup]="documentacionForm">
     <app-table-panel>
       <div class="row p-3 table-panel-row">
@@ -160,14 +164,20 @@
 <div class="row my-3">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-default btn-md ml-5" routerLink="../">Cancelar</button>
-    <!--    <button type="button"  class="btn btn-default btn-md ml-5" (click)="regresar()" *ngIf="indice > 0 && ff.tipoContratacion.value== 1">Regresar</button>-->
-    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" (click)="siguiente()" *ngIf="indice < menuStep.length && ff.tipoContratacion.value== 1">Siguiente</button>
-<!--    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" *ngIf="indice == menuStep.length && ff.tipoContratacion.value== 1">Guardar</button>-->
-    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarEmpresa" (click)="confirmarGuardarEmpresa()" *ngIf="ff.tipoContratacion.value== 2 && indice < 2">Guardar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona"
+            (click)="siguiente()" *ngIf="indice < menuStep.length && ff.tipoContratacion.value== 1">Siguiente
+    </button>
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarEmpresa"
+            (click)="confirmarGuardarEmpresa()" *ngIf="ff.tipoContratacion.value== 2 && indice < 2">Guardar
+    </button>
 
-    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 2" (click)="guardar('empresa')">Aceptar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 2"
+            (click)="guardar('empresa')">Aceptar
+    </button>
 
-    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 1" (click)="guardar('persona')">Aceptar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 1"
+            (click)="guardar('persona')">Aceptar
+    </button>
 
 
   </div>

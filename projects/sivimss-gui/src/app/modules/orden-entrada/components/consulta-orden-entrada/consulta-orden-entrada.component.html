@@ -17,7 +17,7 @@
     <div class="col-md-6">
       <label class="control-label" for="ordenEntrada">Orden de entrada (ODE):</label>
       <p-autoComplete id="ordenEntrada" class="form-control" formControlName="ordenEntrada" (keyup)="validarNombre(0)"
-        (keyup.space)="sinEspacioInicial(0)" autocomplete="ordenEntrada" 
+        (keyup.space)="sinEspacioInicial(0)" autocomplete="ordenEntrada"
         [suggestions]="catalogoOrdenesEntrada" (completeMethod)="consultarOrdenesEntrada($event)" [showEmptyMessage]="true"
         [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50" class="p-autocomplete"
         placeholder="Ingresa la orden de entrada"
@@ -27,7 +27,7 @@
     <div class="col-md-6">
       <label class="control-label" for="proveedor">Proveedor:</label>
       <p-autoComplete id="proveedor" class="form-control" formControlName="proveedor" (keyup)="validarNombre(0)"
-        (keyup.space)="sinEspacioInicial(0)" autocomplete="proveedor" 
+        (keyup.space)="sinEspacioInicial(0)" autocomplete="proveedor"
         [suggestions]="catalogoProveedores" (completeMethod)="consultarProveedor($event)" [showEmptyMessage]="true"
         [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50" class="p-autocomplete"
         placeholder="Ingresa el proveedor"
@@ -84,7 +84,7 @@
         <th pResizableColumn scope="col">Número de artículos</th>
         <th pResizableColumn scope="col">Fecha ODE</th>
         <th id="columna_orden_entrada_estatus">Estatus</th>
-        <th></th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ordenesEntrada>
