@@ -234,7 +234,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   guardar(): void {
     let personasAgregadas: PersonaInterface = JSON.parse(localStorage.getItem('persona') as string);
     personasAgregadas = this.objectoConfirmacion
-    // personasAgregadas.push(this.objectoConfirmacion);
     localStorage.setItem('persona',JSON.stringify(personasAgregadas));
     if(this.flujo.includes('modificar')){
       this.router.navigate(['convenios-prevision-funeraria/modificar-nuevo-convenio']);
@@ -350,32 +349,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
       return;
     }
-
-    /*
-    this.loaderService.activar();
-    this.agregarConvenioPFService.consultaCURPRFC(this.fp.rfc.value,"").pipe(
-      finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.mensaje === ""){
-          this.fp.nombre.setValue(respuesta.datos.nomPersona);
-          this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
-          this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
-          this.fp.idPersona.setValue(respuesta.datos.idPersona)
-          return
-        }
-        this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        this.fp.curp.setValue(respuesta.datos[0].curp)
-        this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-        this.fp.telefono.setValue(respuesta.datos[0].telefono)
-      },
-      (error:HttpErrorResponse) => {
-        console.log(error);
-      }
-    )
-     */
   }
 
   consultarMatricula(): void {

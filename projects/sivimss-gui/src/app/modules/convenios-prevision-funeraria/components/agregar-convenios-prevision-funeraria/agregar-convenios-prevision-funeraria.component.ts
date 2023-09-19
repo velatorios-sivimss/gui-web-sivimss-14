@@ -263,7 +263,6 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     if(!this.ff.numeroConvenio.value && !this.ff.tipoContratacion.value)return;
     this.validarFormularioVacio();
     this.consultarConvenio();
-    // this.ff.tipoContratacion.value == 1 ? this.consultarConvenioPersona() : this.consultarConvenio();
 
   }
 
@@ -343,7 +342,6 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
   }
 
   validarListadoPormotores(): void{
-    // this.deshabilitarBtnGuardarEmpresa ? this.deshabilitarBtnGuardarEmpresa = false: this.deshabilitarBtnGuardarEmpresa = true;
     this.validarFormularioVacio();
   }
 
@@ -406,10 +404,6 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       idPersona :event.idPersona ? event.idPersona.toString() : null,
       idDomicilio :null,
       idContratante : this.ff.idContratante.value ? this.ff.idContratante.value.toString(): null ,
-
-      // numeroConvenio: this.ff.numeroConvenio.value,
-      // rfcCurp: this.ff.rfcCurp.value,
-
       persona: event,
     }
 
