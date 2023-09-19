@@ -160,6 +160,12 @@ export class ConsultaDonacionesComponent implements OnInit {
       this.filtrosNoSeleccionados = !this.filtrosNoSeleccionados;
       return;
     }
+
+    if (this.ff.fechaDesde.value > this.ff.fechaHasta.value){
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+      return;
+    }
+
     this.totalElementos = 0
     this.numPaginaActual = 0
     this.paginacionConFiltrado = true
