@@ -1,4 +1,3 @@
-// TODO: Borrar en implementación
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 
 export const CATALOGOS_DUMMIES: TipoDropdown[] = [
