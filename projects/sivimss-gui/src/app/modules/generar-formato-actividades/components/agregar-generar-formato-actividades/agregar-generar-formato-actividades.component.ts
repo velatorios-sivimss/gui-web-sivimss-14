@@ -10,7 +10,7 @@ import { BuscarCatalogo, CatalogoPromotores, GenerarFormatoActividades, GenerarF
 import { UsuarioService } from '../../../usuarios/services/usuario.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { finalize } from 'rxjs';
+import { finalize, of } from 'rxjs';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
@@ -19,14 +19,16 @@ import { GenerarFormatoActividadesService } from '../../services/generar-formato
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { LazyLoadEvent } from 'primeng/api';
+import { ConfirmationService, LazyLoadEvent } from 'primeng/api';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { PrevisualizacionArchivoComponent } from '../previsualizacion-archivo/previsualizacion-archivo.component';
 
 @Component({
   selector: 'app-agregar-generar-formato-actividades',
   templateUrl: './agregar-generar-formato-actividades.component.html',
   styleUrls: ['./agregar-generar-formato-actividades.component.scss'],
-  providers: [DialogService, DynamicDialogRef, DescargaArchivosService]
+  providers: [DialogService, DynamicDialogRef, DescargaArchivosService, ConfirmationService]
 })
 export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   @ViewChild(OverlayPanel)
@@ -58,7 +60,8 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   public agregandoRegistro: boolean = false;
   public descVelatorio: string = '';
   public numActividades: number | null = null;
-  public idFormato: number | null = null;
+  public idFormato: number = 0;
+  public mensajeArchivoConfirmacion: string | undefined;
   public mode: 'detail' | 'update' | 'create' = 'create';
 
   constructor(
@@ -75,6 +78,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private generarFormatoActividadesService: GenerarFormatoActividadesService,
     private descargaArchivosService: DescargaArchivosService,
+    private confirmationService: ConfirmationService,
   ) {
   }
 
@@ -262,6 +266,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
               let elements = document.getElementById(`cancel-${actividad.idActividad}`);
               elements?.click();
               this.obtenerActividades();
+              this.obtenerDatosFormato();
               this.agregandoRegistro = false;
             }, 100);
           }
@@ -284,6 +289,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>) => {
           console.log(respuesta);
           this.obtenerActividades();
+          this.obtenerDatosFormato();
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
@@ -294,6 +300,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
 
   datosGuardar(actividad: GenerarFormatoActividadesBusqueda): GenerarFormatoActividades {
     return {
+      idFormato: this.idFormato,
       idFormatoRegistro: this.apf.folio.value,
       idVelatorio: this.apf.velatorio.value,
       fecInicio:
@@ -393,14 +400,61 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     this.descargaArchivosService.descargarArchivo(this.generarFormatoActividadesService.generarReporteActividades({ idFormato: this.idFormato })).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: () => {
-        this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.mostrarModal = true;
+      next: (res: boolean) => {
+        if (res) {
+          this.mensajeModal = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.mostrarModal = true;
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
         const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
         this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
+
+  modalConfirmacion() {
+    this.confirmationService.confirm({
+      message: this.mensajeArchivoConfirmacion,
+      accept: () => { },
+    });
+  }
+
+  previsualizarReporte(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Formato de actividades' };
+    this.loaderService.activar();
+    this.generarFormatoActividadesService.previsualizarReporte({ idFormato: this.idFormato }).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        const file = new Blob([respuesta], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(file);
+        let archivoRef: DynamicDialogRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
+          data: url,
+          header: "",
+          width: "1000px",
+        });
+        archivoRef.onClose.subscribe((response: any) => {
+          if (response) {
+            this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+              finalize(() => this.loaderService.desactivar())
+            ).subscribe({
+              next: (respuesta: any) => {
+                if (respuesta) {
+                  this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                  this.modalConfirmacion();
+                }
+              },
+              error: (error: HttpErrorResponse) => {
+                this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+              }
+            });
+          }
+        })
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
       },
     });
   }
