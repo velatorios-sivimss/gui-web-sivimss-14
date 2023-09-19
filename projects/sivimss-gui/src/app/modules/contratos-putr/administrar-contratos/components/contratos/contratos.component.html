@@ -60,14 +60,14 @@
     [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>No. de permiso</th>
-        <th>Giro</th>
-        <th>Nombre del permisionario</th>
-        <th>Vigencia del permiso</th>
-        <th>Cuota de recuperación</th>
-        <th>Estatus</th>
-        <th></th>
+        <th scope="col">ID</th>
+        <th scope="col">No. de permiso</th>
+        <th scope="col">Giro</th>
+        <th scope="col">Nombre del permisionario</th>
+        <th scope="col">Vigencia del permiso</th>
+        <th scope="col">Cuota de recuperación</th>
+        <th scope="col">Estatus</th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-contrato>
