@@ -144,7 +144,7 @@
       </ng-container>
       <ng-container *appValidaRol="['GENERAR_NOTA_REMISION','MODIFICACION']">
         <app-overlay-panel-opcion
-          *ngIf="notaRemisionSeleccionada?.estatus === 2 && notaRemisionSeleccionada?.total !== 2"
+          *ngIf="notaRemisionSeleccionada?.estatus === 2 && notaRemisionSeleccionada?.total < 2"
           titulo="Cancelar"
           (click)="cancelarNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
       </ng-container>
