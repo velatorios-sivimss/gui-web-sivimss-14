@@ -76,11 +76,9 @@ export class HabilitarRenovacionComponent implements OnInit {
             const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(146);
             this.alertaService.mostrar(TipoAlerta.Exito, msg);
             this.ref.close(true);
-          } else {
-            if (respuesta.mensaje === '36') {
-              const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(36);
-              this.alertaService.mostrar(TipoAlerta.Error, msg);
-            }
+          } else if (respuesta.mensaje === '36') {
+            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(36);
+            this.alertaService.mostrar(TipoAlerta.Error, msg);
           }
         },
         error: (error: HttpErrorResponse): void => {

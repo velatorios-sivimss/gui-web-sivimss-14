@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from '@angular/router';
-import {forkJoin, Observable, of} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {GestionarPagoService} from "./gestionar-pago.service";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 @Injectable()
