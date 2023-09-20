@@ -58,6 +58,23 @@
         <span class="campo-obligatorio"
               *ngIf="ff.idTipoODS?.errors?.required && (ff.idTipoODS?.dirty || ff.idTipoODS?.touched)">Este campo es obligatorio *.</span>
       </div>
+
+      <div class="col-md-6" *ngIf="[7].includes(idReporte)">
+        <label class="control-label" for="folioOds">Folio de la Orden de Servicio:</label>
+        <p-autoComplete id="folioOds" class="form-control" formControlName="folioOds"
+                        [showEmptyMessage]="true" [suggestions]="filtroODS" (completeMethod)="filtrarODS()"
+                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete"
+                        placeholder="Ingresa el folio de la Orden de Servicio" field="label"
+                        [inputStyleClass]="'input-autocomplete'"
+        >
+          <ng-template let-ods pTemplate="item">
+            <div class="autocomplete-item">
+              <div>{{ods.label}}</div>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
+
       <div class="col-md-6" *ngIf="[6].includes(idReporte)">
         <label class="control-label" for="numeroOds">Número de ODS:</label>
         <p-autoComplete id="numeroOds" class="form-control" formControlName="numeroOds"
@@ -92,13 +109,13 @@
                     [options]="mes" placeholder="Selecciona el mes" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
-      <div class="col-md-6" *ngIf="[1,2, 3, 4].includes(idReporte)">
+      <div class="col-md-6" *ngIf="[1, 2, 3, 4, 7].includes(idReporte)">
         <label class="control-label" for="fechaIni">Fecha Inicial:</label>
         <p-calendar styleClass="form-control" id="fechaIni" formControlName="fechaIni" [showIcon]="true"
                     dateFormat="dd-mm-yy" placeholder="Fecha Inicial" [minDate]="fechaRango"
                     (onSelect)="validarFechaFinal()"></p-calendar>
       </div>
-      <div class="col-md-6" *ngIf="[1,2, 3, 4].includes(idReporte)">
+      <div class="col-md-6" *ngIf="[1, 2, 3, 4, 7].includes(idReporte)">
         <label class="control-label" for="fechaFin">Fecha Final:</label>
         <p-calendar styleClass="form-control" id="fechaFin" formControlName="fechaFin" [showIcon]="true"
                     dateFormat="dd-mm-yy" placeholder="Fecha Final" [maxDate]="fechaActual"
