@@ -28,6 +28,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
   ataudes: any[] = [];
   idVelatorio: number = 0;
   idProveedor: number = 0;
+  nombreProveedor: string = '';
   idArticulo: number = 0;
   idInventario: number = 0;
 
@@ -137,6 +138,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
         this.idInventario = datos.idInventario;
         this.idCategoria = datos.idCategoria;
         this.idProveedor = datos.idProveedor;
+        this.nombreProveedor = datos.nombreProveedor;
       }
     });
   }
@@ -159,7 +161,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
       concepto: this.concepto,
       coordOrigen: [],
       coordDestino: [],
-      proveedor: null,
+      proveedor: this.nombreProveedor ?? null,
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,

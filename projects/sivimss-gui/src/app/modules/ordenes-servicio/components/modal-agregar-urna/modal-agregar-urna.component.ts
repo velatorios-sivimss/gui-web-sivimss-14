@@ -30,6 +30,8 @@ export class ModalAgregarUrnaComponent implements OnInit {
   idArticulo: number = 0;
   idInventario: number = 0;
   inventarioSeleccionado:number[] = [];
+  nombreProveedor: string = '';
+  idProveedor: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -134,6 +136,8 @@ export class ModalAgregarUrnaComponent implements OnInit {
         this.idArticulo = datos.idArticulo;
         this.idInventario = datos.idInventario;
         this.idCategoria = datos.idCategoria;
+        this.idProveedor = datos.idProveedor;
+        this.nombreProveedor = datos.nombreProveedor;
       }
     });
   }
@@ -156,14 +160,14 @@ export class ModalAgregarUrnaComponent implements OnInit {
       concepto: this.concepto,
       coordOrigen: [],
       coordDestino: [],
-      proveedor: null,
+      proveedor: this.nombreProveedor ?? null,
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,
       idInventario: this.idInventario,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
-      idProveedor: null,
+      idProveedor: this.idProveedor,
       totalPaquete: this.costo,
       importe: this.costo,
       esDonado: false,

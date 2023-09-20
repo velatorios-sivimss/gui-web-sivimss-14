@@ -62,7 +62,7 @@
       <div class="col-md-6" *ngIf="[7].includes(idReporte)">
         <label class="control-label" for="folioOds">Folio de la Orden de Servicio:</label>
         <p-autoComplete id="folioOds" class="form-control" formControlName="folioOds"
-                        [showEmptyMessage]="true" [suggestions]="filtroODS" (completeMethod)="filtrarODS()"
+                        [showEmptyMessage]="true" [suggestions]="listaFolioODS" (completeMethod)="filtrarFolioODS()"
                         [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete"
                         placeholder="Ingresa el folio de la Orden de Servicio" field="label"
                         [inputStyleClass]="'input-autocomplete'"
@@ -97,14 +97,14 @@
         </p-dropdown>
       </div>
       <div class="col-md-6" *ngIf="[6].includes(idReporte)">
-        <label class="control-label" for="anio">Año: </label>
+        <label class="control-label" for="anio">Año<span class="req">*:</span> </label>
         <p-dropdown appendTo="body" id="anio" class="form-control" formControlName="anio"
                     [options]="anio" placeholder="Selecciona el año" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
 
       <div class="col-md-6" *ngIf="[6].includes(idReporte)">
-        <label class="control-label" for="mes">Mes:</label>
+        <label class="control-label" for="mes">Mes<span class="req">*:</span></label>
         <p-dropdown appendTo="body" id="mes" class="form-control" formControlName="mes"
                     [options]="mes" placeholder="Selecciona el mes" [filter]="true" filterBy="label">
         </p-dropdown>
