@@ -10,6 +10,7 @@ export class ReportesResolver implements Resolve<any> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const catDelegacion$ = this.reporteOrdenServicioService.obtenerCatalogoDelegaciones();
     const catNivel$ = this.reporteOrdenServicioService.obtenerCatalogoNiveles();
-    return forkJoin([catDelegacion$,catNivel$]);
+    const catPromotores$ = this.reporteOrdenServicioService.consultarPromotoresComisionPromotor();
+    return forkJoin([catDelegacion$,catNivel$,catPromotores$]);
   }
 }

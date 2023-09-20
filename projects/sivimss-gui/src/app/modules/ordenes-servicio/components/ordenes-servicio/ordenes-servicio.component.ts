@@ -277,30 +277,39 @@ export class OrdenesServicioComponent implements OnInit {
   }
 
   abrirModalCancelarODS(): void {
-    const ref = this.dialogService.open(CancelarOrdenServicioComponent, {
-      header: 'Cancelar ODS',
-      style: {maxWidth: '876px', width: '100%'},
-      data: {
-        ods: this.ordenServicioSeleccionada
-      }
-    });
-    ref.onClose.subscribe((val: boolean | string) => {
-      if (val) {
-        this.loaderService.activar();
-        this.consultarOrdenServicioService.cancelarODS(val).pipe(
-          finalize(()=>this.loaderService.desactivar())
-        ).subscribe(
-          (respuesta: HttpRespuesta<any>): void => {
-            this.paginar();
-            this.alertaService.mostrar(TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje)));
-          },
-          (error:HttpErrorResponse) => {
-            const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-            this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
+    if( this.ordenServicioSeleccionada.estatus?.includes('Generada') &&
+        this.ordenServicioSeleccionada.tiempoGeneracionODSHrs < 24){
+        const ref = this.dialogService.open(CancelarOrdenServicioComponent, {
+          header: 'Cancelar ODS',
+          style: {maxWidth: '876px', width: '100%'},
+          data: {
+            ods: this.ordenServicioSeleccionada
           }
-        )
-      }
-    });
+        });
+        ref.onClose.subscribe((val: boolean | string) => {
+          if (val) {
+            this.loaderService.activar();
+            this.consultarOrdenServicioService.cancelarODS(val).pipe(
+              finalize(()=>this.loaderService.desactivar())
+            ).subscribe(
+              (respuesta: HttpRespuesta<any>): void => {
+                this.paginar();
+                this.alertaService.mostrar(TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje)));
+              },
+              (error:HttpErrorResponse) => {
+                const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+                this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
+              }
+            )
+          }
+        });
+    }else{
+      this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(210));
+      return
+    }
+
+
+
   }
 
   consultarVelatorioPorID(): void {
