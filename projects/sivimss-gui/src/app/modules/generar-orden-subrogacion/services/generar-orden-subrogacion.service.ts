@@ -4,7 +4,6 @@ import { environment } from 'projects/sivimss-gui/src/environments/environment';
 import { Observable, of } from 'rxjs';
 import { HttpRespuesta } from '../../../models/http-respuesta.interface';
 import { BaseService } from '../../../utils/base-service';
-import { GenerarOrdenSubrogacion } from '../models/generar-orden-subrogacion.interface';
 import { TipoDropdown } from '../../../models/tipo-dropdown';
 import { AutenticacionService } from '../../../services/autenticacion.service';
 import { mapearArregloTipoDropdown } from '../../../utils/funciones';
