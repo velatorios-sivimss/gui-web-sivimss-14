@@ -36,9 +36,8 @@ export class VerActividadSalasComponent implements OnInit {
     this.loaderService.activar();
     this.reservarSalasService.consultarDetalleDia(this.fechaSeleccionada, this.idSala).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: any) => {
-        ;
+    ).subscribe({
+      next: (respuesta: any): void => {
         respuesta.datos.forEach((SalaVelatorioConsultaDia: SalaVelatorioConsultaDia) => {
           const [hoursEntrada, minutesEntrada, secondsEntrada] = SalaVelatorioConsultaDia.horaEntrada.split(':');
           const [hoursSalida, minutesSalida] = SalaVelatorioConsultaDia.horaSalida.split(':');
@@ -55,10 +54,10 @@ export class VerActividadSalasComponent implements OnInit {
         this.salas = respuesta.datos;
         this.mostrarNombre = true;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
       }
-    );
+    });
   }
 
   aceptar(): void {

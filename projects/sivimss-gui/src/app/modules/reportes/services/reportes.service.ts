@@ -7,7 +7,6 @@ import {environment} from "../../../../environments/environment";
 import {Observable, of} from "rxjs";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
-import {AgregarPlanSFPA} from "../../servicios-funerarios/models/servicios-funerarios.interface";
 import {FiltroReporte} from "../models/filtro-reporte.interface";
 
 @Injectable()

@@ -175,8 +175,6 @@
           <p-dropdown id="clinicaAdscripcion" class="form-control" formControlName="clinicaAdscripcion"
              placeholder="Selecciona clínica de adscripción" [options]="unidadesMedicas"
             [filter]="true" filterBy="label"></p-dropdown>
-<!--          <span class="campo-obligatorio"-->
-<!--            *ngIf="datosFinado.clinicaAdscripcion?.errors?.required && (datosFinado.clinicaAdscripcion?.dirty || datosFinado.clinicaAdscripcion?.touched)">Este campo es obligatorio *.</span>-->
         </div>
         <div class="col-md-6">
           <label class="control-label" for="unidadProcedencia">Unidad de procedencia<span class="req">*</span>:</label>
@@ -200,8 +198,6 @@
           <p-dropdown id="tipoPension" class="form-control" formControlName="tipoPension"
             placeholder="Selecciona tipo de pensión" [options]="tipoPension" [filter]="true"
             filterBy="label"></p-dropdown>
-<!--          <span class="campo-obligatorio"-->
-<!--            *ngIf="datosFinado.tipoPension?.errors?.required && (datosFinado.tipoPension?.dirty || datosFinado.tipoPension?.touched)">Este campo es obligatorio *.</span>-->
         </div>
       </div>
     </ng-container>
@@ -238,7 +234,6 @@
         </div>
         <div class="col-md-3">
           <label class="control-label" for="colonia">Colonia<span class="req">*</span>:</label>
-<!--          <input id="colonia" type="text" class="form-control" formControlName="colonia" placeholder="Ingresa colonia">-->
           <p-dropdown id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
                       [options]="colonias" [filter]="true" filterBy="label"></p-dropdown>
           <span class="campo-obligatorio"
@@ -271,7 +266,6 @@
       <div class="col-md-12 flex justify-content-end align-items-center">
         <button class="btn btn-md btn-default" (click)="regresar()">Regresar</button>
         <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-<!--        <button type="button" [disabled]="form.invalid || !validacionPersonaConvenio" (click)="continuar()"-->
         <button type="button" [disabled]="validarBotonAceptar()" (click)="continuar()"
           class="btn btn-md btn-primary ml-5">Aceptar</button>
       </div>

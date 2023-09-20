@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, OnInit,Renderer2} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @Component({
   selector: 'app-previsualizacion-archivo',
