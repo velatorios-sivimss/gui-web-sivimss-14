@@ -151,8 +151,8 @@ export class AdministrarArticulosComponent implements OnInit {
   }
 
   paginar(event?: LazyLoadEvent): void {
-    if (event && event.first !== undefined && event.rows !== undefined) {
-      this.numPaginaActual = Math.floor(event.first / event.rows);
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     } else {
       this.numPaginaActual = 0;
     }
