@@ -260,14 +260,14 @@ export class Reportes implements OnInit {
           {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())
-        ).subscribe(
-          (repuesta) => {
+        ).subscribe({
+          next: (repuesta): void => {
             //TODO verificar si se necesita agregar mensaje de confirmación
           },
-          (error) => {
+          error: (error): void => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
           }
-        )
+        })
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
