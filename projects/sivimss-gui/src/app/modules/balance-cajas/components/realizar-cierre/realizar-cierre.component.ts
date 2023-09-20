@@ -1,22 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { BalanceCajaService } from '../../services/balance-caja.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { mensajes } from '../../../reservar-salas/constants/mensajes';
-import { finalize } from "rxjs/operators";
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {Component} from '@angular/core';
+import {FormGroup} from "@angular/forms";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {BalanceCajaService} from '../../services/balance-caja.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-realizar-cierre',
   templateUrl: './realizar-cierre.component.html',
   styleUrls: ['./realizar-cierre.component.scss']
 })
-export class RealizarCierreComponent implements OnInit {
+export class RealizarCierreComponent {
 
   modificarPagoForm!: FormGroup;
   filtrosBalanceSeleccionados: any;
@@ -29,10 +28,9 @@ export class RealizarCierreComponent implements OnInit {
     private balanceCajaService: BalanceCajaService,
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService
-  ) { }
-
-  ngOnInit(): void {
+  ) {
   }
+
 
   realizarCierre(): void {
     this.loaderService.activar();
@@ -40,8 +38,8 @@ export class RealizarCierreComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.codigo === 200) {
-            this.alertaService.mostrar(TipoAlerta.Exito, "Cierre de caja efectuado correctamente");
-            this.referencia.close(false);
+          this.alertaService.mostrar(TipoAlerta.Exito, "Cierre de caja efectuado correctamente");
+          this.referencia.close(false);
         }
       },
       error: (error: HttpErrorResponse): void => {
