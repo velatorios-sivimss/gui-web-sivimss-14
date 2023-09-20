@@ -1,4 +1,3 @@
-import { SeguimientoNuevoConvenio } from './../../models/seguimiento-nuevo-convenio.interface';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
