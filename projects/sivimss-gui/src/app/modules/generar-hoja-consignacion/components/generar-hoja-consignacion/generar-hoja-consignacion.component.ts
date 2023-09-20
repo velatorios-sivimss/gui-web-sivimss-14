@@ -13,7 +13,7 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import { HttpErrorResponse } from '@angular/common/http';
 import { GenerarHojaConsignacionService } from '../../services/generar-hoja-consignacion.service';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { mapearArregloTipoDropdown, validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
@@ -21,6 +21,7 @@ import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-a
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
 import { AgregarGenerarHojaConsignacionComponent } from '../agregar-generar-hoja-consignacion/agregar-generar-hoja-consignacion.component';
+import * as moment from 'moment';
 
 interface HttpResponse {
   respuesta: string;
@@ -45,18 +46,12 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   public catalogoNiveles: TipoDropdown[] = [];
   public catalogoDelegaciones: TipoDropdown[] = [];
   public catalogoVelatorios: TipoDropdown[] = [];
-  public catalogoPlacas: TipoDropdown[] = [];
+  public catalogoProveedores: TipoDropdown[] = [];
   public mostrarModalConfirmacion: boolean = false;
-  public realizoBusqueda: boolean = false;
+  public busquedaRealizada: boolean = false;
   public mensajeArchivoConfirmacion: string = "";
 
-  public hojasConsignacion: GenerarHojaConsignacionBusqueda[] = [
-    {
-      idHojaConsignacion: 1,
-      fecHojaConsignacion: '14/09/2023',
-      folioHojaConsignacion: '14/09/2023',
-    }
-  ];
+  public hojasConsignacion: GenerarHojaConsignacionBusqueda[] = [];
   public actividadSeleccionada!: GenerarHojaConsignacionBusqueda;
   public detalleRef!: DynamicDialogRef;
   public filtroForm!: FormGroup;
@@ -88,13 +83,13 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   inicializarFiltroForm() {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +usuario?.idOficina, disabled: true }],
-      delegacion: [{ value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2 }, []],
-      velatorio: [{ value: +usuario?.idVelatorio, disabled: +usuario?.idOficina === 3 }, []],
-      nombrePromotor: [{ value: null, disabled: false }],
+      nivel: new FormControl({ value: +usuario?.idOficina, disabled: true }, [Validators.required]),
+      delegacion: new FormControl({ value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2 }, [Validators.required]),
+      velatorio: new FormControl({ value: +usuario?.idVelatorio, disabled: +usuario?.idOficina === 3 }, [Validators.required]),
+      proveedor: new FormControl({ value: null, disabled: false }, [Validators.required]),
       folio: new FormControl({ value: null, disabled: false }, []),
-      fecInicio: new FormControl({ value: null, disabled: false }, []),
-      fecFin: new FormControl({ value: null, disabled: false }, []),
+      fecInicio: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      fecFin: new FormControl({ value: null, disabled: false }, [Validators.required]),
     });
   }
 
@@ -114,6 +109,21 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.generarHojaConsignacionService.velatoriosPorDelegacion(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+        this.cargarProveedores();
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
+
+  cargarProveedores(): void {
+    const idVelatorio = this.filtroForm.get('velatorio')?.value;
+    if (!idVelatorio) return;
+    this.generarHojaConsignacionService.obtenerCatalogos({ idCatalogo: 1, idVelatorio }).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoProveedores = mapearArregloTipoDropdown(respuesta.datos, "proveedor", "idProveedor");
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -123,13 +133,17 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   }
 
   buscar(): void {
-    if (this.ff.fecInicio.value > this.ff.fecFin.value && this.ff.fecFin.value) {
-      const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(20);
-      this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
-      return;
+    if (validarAlMenosUnCampoConValor(this.filtroForm.value)) {
+      if (this.ff.fecInicio.value > this.ff.fecFin.value && this.ff.fecFin.value) {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(20);
+        this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+        return;
+      }
+      this.paginar();
+    } else {
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+      this.filtroForm.markAllAsTouched();
     }
-    this.numPaginaActual = 0;
-    this.buscarPorFiltros();
   }
 
   paginar(event?: LazyLoadEvent): void {
@@ -150,24 +164,13 @@ export class GenerarHojaConsignacionComponent implements OnInit {
 
   buscarPorFiltros(): void {
     this.loaderService.activar();
+    this.hojasConsignacion = [];
     this.generarHojaConsignacionService.buscarPorFiltros(this.datosPromotoresFiltros(), this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.datos) {
-            this.hojasConsignacion = respuesta.datos;
-            this.totalElementos = respuesta.datos.totalElements;
-            this.realizoBusqueda = true;
-          } else {
-            this.hojasConsignacion = [];
-          }
-
-          this.hojasConsignacion = [
-            {
-              idHojaConsignacion: 1,
-              fecHojaConsignacion: '14/09/2023',
-              folioHojaConsignacion: '14/09/2023',
-            }
-          ]
+          this.hojasConsignacion = respuesta.datos ?? [];
+          this.totalElementos = respuesta.datos?.totalElements ?? 0;
+          this.busquedaRealizada = true;
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
@@ -180,22 +183,25 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     return {
       idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
       idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+      idProveedor: this.ff.proveedor.getRawValue() === '' ? null : this.ff.proveedor.getRawValue(),
       folio: this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
-      fecInicio: this.ff.fecInicio.getRawValue() === '' ? null : this.ff.fecInicio.getRawValue(),
-      fecFin: this.ff.fecFin.getRawValue() === '' ? null : this.ff.fecFin.getRawValue(),
+      fecInicio:
+        !this.ff.fecInicio.value || this.ff.fecInicio.getRawValue() === '' ? null : moment(this.ff.fecInicio.value).format('DD/MM/YYYY'),
+      fecFin:
+        !this.ff.fecFin.value || this.ff.fecFin.getRawValue() === '' ? null : moment(this.ff.fecFin.value).format('DD/MM/YYYY'),
     }
   }
 
   agregarFormatoActividades(): void {
-    void this.router.navigate([`agregar-actividades`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`agregar-hoja`], { relativeTo: this.activatedRoute });
   }
 
   modificarFormatoActividades(actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
-    void this.router.navigate([`modificar-actividades/${actividadSeleccionada.idHojaConsignacion}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`modificar-hoja/${actividadSeleccionada.idHojaConsignacion}`], { relativeTo: this.activatedRoute });
   }
 
   detalleFormatoActividades(actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
-    void this.router.navigate([`detalle-de-actividades/${actividadSeleccionada.idHojaConsignacion}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`detalle-de-hoja/${actividadSeleccionada.idHojaConsignacion}`], { relativeTo: this.activatedRoute });
   }
 
   abrirPanel(event: MouseEvent, actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
@@ -222,12 +228,12 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   }
 
   limpiar(): void {
-    this.realizoBusqueda = false;
+    this.busquedaRealizada = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm.get('nivel')?.patchValue(+usuario?.idOficina);
 
-    if (+usuario?.idOficina >= 2) {
+    if (+ usuario?.idOficina >= 2) {
       this.filtroForm.get('delegacion')?.patchValue(+usuario?.idDelegacion);
     }
 
@@ -274,11 +280,15 @@ export class GenerarHojaConsignacionComponent implements OnInit {
 
   filtrosArchivos(tipoReporte: string) {
     return {
-      idDelegacion: this.ff.delegacion.value ? +this.ff.delegacion.value : null,
-      idVelatorio: this.ff.velatorio.value ? +this.ff.velatorio.value : null,
-      folio: this.ff.folio.value ? +this.ff.folio.value : null,
-      fecInicio: this.ff.fecInicio.value ? +this.ff.fecInicio.value : null,
-      fecFin: this.ff.fecFin.value ? +this.ff.fecFin.value : null,
+      idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
+      idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+      idProveedor: this.ff.proveedor.getRawValue() === '' ? null : this.ff.proveedor.getRawValue(),
+      folio: this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
+      fecInicio:
+        !this.ff.fecInicio.value || this.ff.fecInicio.getRawValue() === '' ? null : moment(this.ff.fecInicio.value).format('DD/MM/YYYY'),
+      fecFin:
+        !this.ff.fecFin.value || this.ff.fecFin.getRawValue() === '' ? null : moment(this.ff.fecFin.value).format('DD/MM/YYYY'),
+
       tipoReporte,
     }
   }
