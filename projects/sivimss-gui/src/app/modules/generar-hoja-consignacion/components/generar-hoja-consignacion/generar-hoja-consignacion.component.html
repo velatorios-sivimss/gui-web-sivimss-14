@@ -57,29 +57,32 @@
     </div>
   </form>
 </div>
+
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo"></h2>
     <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['PROMOTORES','ALTA']"
       (click)="agregarFormatoActividades()">Generar hoja</button>
   </div>
+
   <p-table styleClass="mt-5 mb-8" [value]="hojasConsignacion" [paginator]="hojasConsignacion.length > 0"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th id="idFecha">Fecha</th>
-        <th id="folio">Folio hoja de consignación</th>
-        <th id="velatorio">Proveedor</th>
-        <th id="acciones">Acciones</th>
+        <th pResizableColumn id="idFecha">Fecha</th>
+        <th pResizableColumn id="folio">Folio hoja de consignación</th>
+        <th pResizableColumn id="velatorio">Proveedor</th>
+        <th pResizableColumn id="acciones">Acciones</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-hojaConsignacion>
       <tr>
-        <td>{{hojaConsignacion.fecHojaConsignacion}}</td>
-        <td>{{hojaConsignacion.folioHojaConsignacion}}</td>
-        <td>{{hojaConsignacion.proveedor}}</td>
+        <td pResizableColumn>{{hojaConsignacion.fecHojaConsignacion}}</td>
+        <td pResizableColumn>{{hojaConsignacion.folioHojaConsignacion}}</td>
+        <td pResizableColumn>{{hojaConsignacion.proveedor}}</td>
         <td>
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
           <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
             <a (click)="detalleFormatoActividades(hojaConsignacion)">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
@@ -87,6 +90,7 @@
             <a (click)="abrirPanel($event, hojaConsignacion)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
+          </div>
           </div>
         </td>
       </tr>
@@ -136,7 +140,7 @@
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
-    <app-overlay-panel-opciones *appValidaRol="['PROMOTORES','MODIFICACION']">
+    <app-overlay-panel-opciones>
       <app-overlay-panel-opcion (click)="abrirModalCargarFactura()" titulo="Cargar factura"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

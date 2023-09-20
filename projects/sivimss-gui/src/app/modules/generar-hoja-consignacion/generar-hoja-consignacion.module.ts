@@ -21,6 +21,15 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { CalendarModule } from 'primeng/calendar';
 import { UsuarioService } from '../usuarios/services/usuario.service';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import { CeldaStickyModule } from '../../shared/celda-sticky/celda-sticky.module';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { StepsModule } from 'primeng/steps';
+import { AccordionModule } from 'primeng/accordion';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { TabViewModule } from 'primeng/tabview';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
 
 @NgModule({
   declarations: [
@@ -45,6 +54,15 @@ import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
     AutoCompleteModule,
     CalendarModule,
     ValidaRolModule,
+    CeldaStickyModule,
+    DynamicDialogModule,
+    StepsModule,
+    AccordionModule,
+    RadioButtonModule,
+    TabViewModule,
+    InputNumberModule,
+    ConfirmDialogModule,
+    BtnRegresarModule,
   ],
   providers: [
     GenerarHojaConsignacionService,

@@ -51,7 +51,13 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   public busquedaRealizada: boolean = false;
   public mensajeArchivoConfirmacion: string = "";
 
-  public hojasConsignacion: GenerarHojaConsignacionBusqueda[] = [];
+  public hojasConsignacion: GenerarHojaConsignacionBusqueda[] = [
+    {
+      idHojaConsignacion: 1,
+      fecHojaConsignacion: '14/09/2023',
+      folioHojaConsignacion: '14/09/2023',
+    }
+  ];
   public actividadSeleccionada!: GenerarHojaConsignacionBusqueda;
   public detalleRef!: DynamicDialogRef;
   public filtroForm!: FormGroup;
