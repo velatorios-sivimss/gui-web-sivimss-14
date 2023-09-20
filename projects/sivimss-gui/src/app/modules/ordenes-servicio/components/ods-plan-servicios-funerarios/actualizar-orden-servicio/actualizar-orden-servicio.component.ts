@@ -227,9 +227,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit,OnDestroy {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-        // if (element.idProveedor != null && element.idProveedor != '') {
           salidaPaquete.push(datos);
-        // }
       }
     }
 

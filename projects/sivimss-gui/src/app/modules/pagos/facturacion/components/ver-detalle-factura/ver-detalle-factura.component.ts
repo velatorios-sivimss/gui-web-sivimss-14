@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
@@ -6,14 +6,13 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
   templateUrl: './ver-detalle-factura.component.html',
   styleUrls: ['./ver-detalle-factura.component.scss']
 })
-export class VerDetalleFacturaComponent implements OnInit {
+export class VerDetalleFacturaComponent {
 
   constructor(
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
-  ) { }
-
-  ngOnInit(): void {
+  ) {
   }
+
 
 }

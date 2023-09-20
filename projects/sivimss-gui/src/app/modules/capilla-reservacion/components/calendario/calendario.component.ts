@@ -22,8 +22,6 @@ import { finalize } from 'rxjs/operators'
 import { HttpErrorResponse } from '@angular/common/http'
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import { CalendarioCapillas } from '../../models/capilla-reservacion.interface'
-// import { MENU_SALAS } from '../../../reservar-salas/constants/menu-salas';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import * as moment from 'moment'
 
@@ -31,7 +29,6 @@ import { Moment } from 'moment'
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
-import {RegistrarEntradaComponent} from "../registrar-entrada/registrar-entrada.component";
 import {PrevisualizacionArchivoComponent} from "./previsualizacion-archivo/previsualizacion-archivo.component";
 
 @Component({
@@ -85,7 +82,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
     let respuesta = this.route.snapshot.data['respuesta'];
 
-    // this.velatorios = mapearArregloTipoDropdown(respuesta[0]?.datos, 'velatorio', 'id',);
     this.delegaciones = respuesta[1]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
   }
@@ -125,7 +121,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
         }
 
         if (this.velatorio) {
-          // this.cambiarMes('cambio mes');
           this.consultarCapillas();
         }
       },
@@ -194,7 +189,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   // }
 
   handleEvents(events: EventApi[]) {
-    // console.log(events);
     this.currentEvents = events;
   }
 

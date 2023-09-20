@@ -15,7 +15,6 @@
           </div>
         </div>
         <a class="ml-5 cursor-pointer" (click)="overlayPanelHeader.toggle($event)">
-          <!--        <a class="ml-5 cursor-pointer" (click)="abrirPanelHeader($event)">-->
           <img
             src="assets/images/imagen-icono-barras-horizontales.svg"
             alt="icono barras horizontales">
@@ -96,8 +95,7 @@
             <td>{{pagosRealizados.estatusPago}}</td>
             <td>
               <div class="contenedor-celda-iconos">
-<!--                <a class="ml-5 cursor-pointer" (click)="overlayPanelBody.toggle($event)">-->
-                                  <a (click)="abrirPanelBody($event,pagosRealizados)">
+                <a (click)="abrirPanelBody($event,pagosRealizados)">
                   <img
                     src="assets/images/imagen-icono-barras-horizontales.svg"
                     alt="icono barras horizontales">
@@ -115,7 +113,7 @@
         </ng-template>
       </p-table>
       <div class="row ml-5">
-        <div class="col-md-7 mt-6" >
+        <div class="col-md-7 mt-6">
           <span>Aún debes pagar esta cantidad para cubrir el total del plan SPFA
             <span class="font-bold" *ngIf="detalleServicio?.restante; else sinRestante">
               {{detalleServicio.restante | currency:"USD":"symbol"}}
@@ -151,15 +149,6 @@
 </section>
 
 <section>
-<!--  <div class="paginator-template flex justify-content-end">-->
-<!--    <div class="export-table">-->
-<!--      <span class="export-table-text">Exportar tabla</span><br/>-->
-<!--      <div class="export-table-icons flex justify-content-between px-4">-->
-<!--        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">-->
-<!--        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
   <div class="row mb-6">
     <div class="flex mt-4 justify-content-end">
       <button class="ml-6 mt-3 btn btn-primary btn-md" routerLink="../">Regresar</button>
@@ -170,17 +159,18 @@
 <p-overlayPanel #overlayPanelBody>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Modificar método" (click)="abrirModalModificarPago()" ></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Eliminar método" (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion onCloseOnNavigation titulo="Modificar método"
+                                (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion onCloseOnNavigation titulo="Eliminar método"
+                                (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-<p-overlayPanel #overlayPanelHeader >
+<p-overlayPanel #overlayPanelHeader>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Realizar pago" (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
-<!--      <app-overlay-panel-opcion titulo="Ver contrato"></app-overlay-panel-opcion>-->
-<!--      <app-overlay-panel-opcion titulo="Detalles"></app-overlay-panel-opcion>-->
+      <app-overlay-panel-opcion onCloseOnNavigation titulo="Realizar pago"
+                                (click)="abrirModalRealizarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
