@@ -227,10 +227,10 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     this.validarFormularioVacio(false,'local');
     this.agregarConvenioPFService.consultaCURPRFC("",this.fp.curp.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if((respuesta.datos[0]?.curp ?? null) != null){
-          const [anio,mes,dia] = respuesta.datos[0].fechaNacimiento.split('-')
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if ((respuesta.datos[0]?.curp ?? null) != null) {
+          const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-')
           this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
@@ -242,12 +242,12 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo)
           this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
           this.cambioTipoSexo();
-        }else if( respuesta.mensaje === ""){
-          if(respuesta.datos.curp === "" || respuesta.datos.curp == null){
+        } else if (respuesta.mensaje === "") {
+          if (respuesta.datos.curp === "" || respuesta.datos.curp == null) {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
             return
           }
-          const [dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
+          const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/')
           this.fp.nombre.setValue(respuesta.datos.nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
@@ -256,21 +256,21 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.cambioTipoSexo();
           this.consultarLugarNacimiento(respuesta.datos.desEstado);
         }
-        if(respuesta.datos[0].tieneConvenio>0){
-          if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+        if (respuesta.datos[0].tieneConvenio > 0) {
+          if (this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')) {
             this.folioRedireccion = respuesta.datos[0].folioConvenio;
             this.fechaRedireccion = respuesta.datos[0].fecha;
             this.confirmarRedireccionamiento = true
             return
-          }else{
+          } else {
             window.location.reload()
           }
         }
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
       }
-    )
+    })
   }
 
   consultarLugarNacimiento(entidad:string): void {
