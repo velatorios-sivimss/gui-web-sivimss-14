@@ -44,6 +44,11 @@ export class ReportesService extends BaseService<HttpRespuesta<any>, any>{
       {id_delegacion: id_delegacion, id_velatorio:id_velatorio});
   }
 
+  consultarODSServiciosVelatorios(id_delegacion: number, id_velatorio: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/folio-ods`,
+      {id_delegacion: id_delegacion, id_velatorio:id_velatorio});
+  }
+
   consultarPromotoresComisionPromotor(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/consultar-promotores`);
   }

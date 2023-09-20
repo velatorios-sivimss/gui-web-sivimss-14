@@ -28,6 +28,8 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
   articulos: any[] = [];
   idVelatorio: number = 0;
   idArticulo: number = 0;
+  nombreProveedor: string = '';
+  idProveedor: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -82,7 +84,7 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
           this.articulos = mapearArregloTipoDropdown(
             datos,
             'nombreArticulo',
-            'idInventario'
+            'idArticulo'
           );
         },
         (error: HttpErrorResponse) => {
@@ -111,9 +113,11 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
   selecionararticulos(dd: Dropdown): void {
     this.concepto = dd.selectedOption.label;
     this.articulosCompletos.forEach((datos: any) => {
-      if (Number(datos.idInventario) == Number(dd.selectedOption.value)) {
+      if (Number(datos.idArticulo) == Number(dd.selectedOption.value)) {
         this.costo = datos.precio;
         this.idArticulo = datos.idArticulo;
+        this.nombreProveedor = datos.nombreProveedor;
+        this.idProveedor = datos.idProveedor;
       }
     });
   }
@@ -137,14 +141,14 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
       concepto: this.concepto,
       coordOrigen: [],
       coordDestino: [],
-      proveedor: null,
+      proveedor: this.nombreProveedor ?? null,
       fila: -1,
       grupo: 'Artículos complentarios',
       idCategoria: null,
       idInventario: null,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
-      idProveedor: null,
+      idProveedor: this.idProveedor,
       totalPaquete: this.costo,
       importe: this.costo,
       esDonado: false,

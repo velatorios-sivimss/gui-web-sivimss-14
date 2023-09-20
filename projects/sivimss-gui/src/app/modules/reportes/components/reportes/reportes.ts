@@ -26,6 +26,7 @@ import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {MESES} from "../../constants/meses";
 import {Dropdown} from "primeng/dropdown";
+import {NOMBRE_REPORTES} from "../../constants/nombre-reportes";
 
 @Component({
   selector: 'app-reportes',
@@ -67,8 +68,9 @@ export class Reportes implements OnInit {
   reportes!: TipoDropdown[];
 
   filtroODS!: TipoDropdown[];
-  listaODS: any;
+  listaFolioODS: any;
   foliosODS: any;
+  foliosServicioVelatorioODS: any;
 
 
   anio: TipoDropdown[] = [];
@@ -132,6 +134,7 @@ export class Reportes implements OnInit {
       fechaIni: [{value: null, disabled: false}],
       fechaFin: [{value: null, disabled: false}],
       numeroOds: [{value: null, disabled: false}],
+      folioOds: [{value: null, disabled: false}],
       promotor: [{value: null, disabled: false}],
       anio: [{value: null, disabled: false}],
       mes: [{value: null, disabled: false}],
@@ -236,7 +239,7 @@ export class Reportes implements OnInit {
     if (!this.validarFiltros()) return;
     this.loaderService.activar();
     const filtros = this.consultarFiltros(this.ff.reporte.value);
-    const configuracionArchivo: OpcionesArchivos = {};
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: NOMBRE_REPORTES[this.ff.reporte.value - 1]};
     if (filtros.tipoReporte.includes("xls")) {
       configuracionArchivo.ext = "xlsx"
     }
@@ -246,13 +249,18 @@ export class Reportes implements OnInit {
         value: 1
       },
       {
-        label: '/genera-reporte-ods',
+        label: '/generar-reporte-comsiones',
         value: 6
+      },
+      {
+        label: '/reporte-serv-vel',
+        value: 7
       }
+
     ]
     let nombreReporte: string = "";
     tipoReporte.forEach(element => {
-      if (element.value == this.ff.tipoReporte.value) {
+      if (element.value == this.ff.reporte.value) {
         nombreReporte = element.label;
       }
     });
@@ -277,7 +285,7 @@ export class Reportes implements OnInit {
         )
       },
       error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
     });
   }
@@ -321,7 +329,7 @@ export class Reportes implements OnInit {
         return {
           id_delegacion:this.ff.delegacion.value,
           id_velatorio:this.ff.velatorio.value,
-          ods:this.ff.numeroOds.value.value,
+          ods:this.ff.numeroOds.value?.value ?? null,
           idPromotor:this.ff.promotor.value,
           mes:this.ff.mes.value,
           anio:this.ff.anio.value,
@@ -330,9 +338,15 @@ export class Reportes implements OnInit {
         }
         break;
       case 7:
-        // this.numeroODSBandera = true;
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
+
+        return {
+          id_delegacion:this.ff.delegacion.value,
+          id_velatorio:this.ff.velatorio.value,
+          id_ods:144,
+          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
+          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+        }
         break;
       case 8:
         // this.numeroODSBandera = true;
@@ -361,10 +375,32 @@ export class Reportes implements OnInit {
     this.filtroODS = filtered;
   }
 
+  filtrarFolioODS(): void {
+    let query = this.obtenerFolioODS();
+    let filtered: any[] = [];
+    if (query?.length < 3) return;
+    for (let i = 0; i < (this.foliosServicioVelatorioODS as any[]).length; i++) {
+      let registro = (this.foliosServicioVelatorioODS as any[])[i];
+      if (registro.folio_ods?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+
+        filtered.push({label: registro.folio_ods, value: registro.id_ods});
+      }
+    }
+    this.listaFolioODS = filtered;
+  }
+
   obtenerNombreContratantesDescripcion(): string {
     let query = this.ff.numeroOds?.value || '';
     if (typeof this.ff.numeroOds?.value === 'object') {
       query = this.ff.numeroOds?.value?.label;
+    }
+    return query?.toLowerCase();
+  }
+
+  obtenerFolioODS(): string {
+    let query = this.ff.folioOds?.value || '';
+    if (typeof this.ff.folioOds?.value === 'object') {
+      query = this.ff.folioOds?.value?.label;
     }
     return query?.toLowerCase();
   }
@@ -466,7 +502,22 @@ export class Reportes implements OnInit {
   }
 
   validacionesServiciosVelatorios(): void {
-    console.log('Se agrega console por SONAR')
+    // this.ff.mes.setValue(Validators.required);
+    // this.ff.anio.setValue(Validators.required);
+    // this.ff.mes.updateValueAndValidity();
+    // this.ff.anio.updateValueAndValidity();
+
+    this.loaderService.activar();
+    this.reporteOrdenServicioService.consultarODSServiciosVelatorios(this.ff.delegacion.value,this.ff.velatorio.value).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+        this.foliosServicioVelatorioODS = respuesta.datos || [];
+      },
+      error:(error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+      }
+    })
   }
 
   validacionesConcentradoSiniestrosPF(): void {
