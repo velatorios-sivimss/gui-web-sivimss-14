@@ -215,7 +215,7 @@ export class AgregarPaquetesComponent implements OnInit {
         servicios: this.servicios,
         articulos: this.articulos,
       };
-      const detalleRef: DynamicDialogRef = this.dialogService.open(VerDetallePaquetesComponent, {
+      this.dialogService.open(VerDetallePaquetesComponent, {
         data: {paquete: nuevoPaquete, modo: Accion.Agregar},
         header: "Agregar paquete",
         width: "920px"

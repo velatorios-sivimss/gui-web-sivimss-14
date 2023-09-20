@@ -127,8 +127,6 @@
             <label class="control-label" for="colonia">Asentamiento / Colonia<span class="req">*</span>:</label>
             <p-dropdown id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa la colonia"
                         [options]="colonias" [filter]="true" filterBy="label"></p-dropdown>
-<!--            <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa el asentamiento / colonia"-->
-<!--                   maxlength="30">-->
             <span class="campo-obligatorio"
                   *ngIf="fp.colonia?.errors?.required && (fp.colonia?.dirty || fp.colonia?.touched)">Este campo es obligatorio *.</span>
           </div>

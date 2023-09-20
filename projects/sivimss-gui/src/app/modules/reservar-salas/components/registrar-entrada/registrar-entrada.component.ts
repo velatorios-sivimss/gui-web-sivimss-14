@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { HttpErrorResponse } from "@angular/common/http";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {HttpErrorResponse} from "@angular/common/http";
 
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { finalize } from 'rxjs/operators';
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {finalize} from 'rxjs/operators';
 import * as moment from 'moment';
 
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
 
-import { ReservarSalasService } from "../../services/reservar-salas.service";
+import {ReservarSalasService} from "../../services/reservar-salas.service";
 
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { SalaVelatorio } from "../../models/sala-velatorio.interface";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { EntradaSala } from "../../models/registro-sala.interface";
-import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {SalaVelatorio} from "../../models/sala-velatorio.interface";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {EntradaSala} from "../../models/registro-sala.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-registrar-entrada',
@@ -33,7 +33,7 @@ export class RegistrarEntradaComponent implements OnInit {
   idOds!: any;
   tipoSala: number = 0;
   folioValido: boolean = false;
-  opcionesInicio: TipoDropdown[] = [{ label: 'Mantenimiento', value: '1' }, { label: 'Servicio de ODS', value: '2' }];
+  opcionesInicio: TipoDropdown[] = [{label: 'Mantenimiento', value: '1'}, {label: 'Servicio de ODS', value: '2'}];
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
 
 
@@ -51,15 +51,15 @@ export class RegistrarEntradaComponent implements OnInit {
 
   iniciarFormRegistroEntrada(): void {
     this.registroEntradaForm = this.formBuilder.group({
-      inicioDe: [{ value: null, disabled: false }, [Validators.required]],
-      descripcionMantenimiento: [{ value: null, disabled: false }],
-      folioODS: [{ value: null, disabled: false }, [Validators.required]],
-      nombreContratante: [{ value: null, disabled: true }, []],
-      nombreFinado: [{ value: null, disabled: true }, []],
-      nombreResponsable: [{ value: null, disabled: false }, [Validators.required]],
-      nivelGas: [{ value: null, disabled: false }, [Validators.required]],
-      fecha: [{ value: this.fechaActual, disabled: false }, [Validators.required]],
-      hora: [{ value: this.fechaActual, disabled: false }, [Validators.required]],
+      inicioDe: [{value: null, disabled: false}, [Validators.required]],
+      descripcionMantenimiento: [{value: null, disabled: false}],
+      folioODS: [{value: null, disabled: false}, [Validators.required]],
+      nombreContratante: [{value: null, disabled: true}, []],
+      nombreFinado: [{value: null, disabled: true}, []],
+      nombreResponsable: [{value: null, disabled: false}, [Validators.required]],
+      nivelGas: [{value: null, disabled: false}, [Validators.required]],
+      fecha: [{value: this.fechaActual, disabled: false}, [Validators.required]],
+      hora: [{value: this.fechaActual, disabled: false}, [Validators.required]],
     });
   }
 
@@ -78,8 +78,8 @@ export class RegistrarEntradaComponent implements OnInit {
     }
     this.reservarSalasService.consultarODS(folioODS).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.datos) {
           this.folioValido = true;
           this.idOds = respuesta.datos[0]?.idODS;
@@ -93,12 +93,11 @@ export class RegistrarEntradaComponent implements OnInit {
             "Verifica tu información.\n")
         }
       },
-      (error: HttpErrorResponse) => {
-
+      error: (error: HttpErrorResponse): void => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
-    );
+    });
   }
 
   cambioInicioDe(event: any): void {
@@ -144,17 +143,17 @@ export class RegistrarEntradaComponent implements OnInit {
     this.loaderService.activar();
     this.reservarSalasService.guardar(this.datosGuardar()).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.ref.close(true);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
       }
-    );
+    });
   }
 
   datosGuardar(): EntradaSala {

@@ -1,21 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DIEZ_ELEMENTOS_POR_PAGINA, Accion } from "../../../../utils/constantes";
-import { Panteon } from "../../models/panteones.interface";
-import { LazyLoadEvent } from "primeng/api";
-import { ActivatedRoute, Router } from '@angular/router';
-import { VerDetallePanteonesComponent } from '../ver-detalle-panteones/ver-detalle-panteones.component';
-import { AgregarPanteonesComponent } from '../agregar-panteones/agregar-panteones.component';
-import { ModificarPanteonesComponent } from '../modificar-panteones/modificar-panteones.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {DIEZ_ELEMENTOS_POR_PAGINA, Accion} from "../../../../utils/constantes";
+import {Panteon} from "../../models/panteones.interface";
+import {LazyLoadEvent} from "primeng/api";
+import {ActivatedRoute, Router} from '@angular/router';
+import {VerDetallePanteonesComponent} from '../ver-detalle-panteones/ver-detalle-panteones.component';
+import {AgregarPanteonesComponent} from '../agregar-panteones/agregar-panteones.component';
+import {ModificarPanteonesComponent} from '../modificar-panteones/modificar-panteones.component';
 
 interface HttpResponse {
   respuesta: string;
   panteon: Panteon;
 }
+
 @Component({
   selector: 'app-panteones',
   templateUrl: './panteones.component.html',
@@ -146,8 +147,8 @@ export class PanteonesComponent implements OnInit {
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      entidadFederativa: [{ value: null, disabled: false }],
-      nombrePanteon: [{ value: null, disabled: false }],
+      entidadFederativa: [{value: null, disabled: false}],
+      nombrePanteon: [{value: null, disabled: false}],
     });
   }
 
@@ -160,7 +161,7 @@ export class PanteonesComponent implements OnInit {
 
   abrirModalDetallePanteon(panteon: Panteon) {
     this.detalleRef = this.dialogService.open(VerDetallePanteonesComponent, {
-      data: { panteon, modo: Accion.Detalle },
+      data: {panteon, modo: Accion.Detalle},
       header: "Ver detalle",
       width: "920px"
     });
@@ -173,7 +174,7 @@ export class PanteonesComponent implements OnInit {
 
   abrirModalModificarPanteon() {
     this.detalleRef = this.dialogService.open(ModificarPanteonesComponent, {
-      data: { panteon: this.panteonSeleccionado },
+      data: {panteon: this.panteonSeleccionado},
       header: "Modificar panteón",
       width: "920px"
     });
@@ -205,7 +206,7 @@ export class PanteonesComponent implements OnInit {
   cambiarEstatus(panteon: Panteon) {
     const modo = panteon.estatus ? Accion.Desactivar : Accion.Activar;
     this.detalleRef = this.dialogService.open(VerDetallePanteonesComponent, {
-      data: { panteon, modo },
+      data: {panteon, modo},
       header: "Ver detalle",
       width: "920px"
     });

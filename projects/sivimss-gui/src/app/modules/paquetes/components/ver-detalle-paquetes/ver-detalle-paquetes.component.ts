@@ -116,18 +116,18 @@ export class VerDetallePaquetesComponent implements OnInit {
     this.cargadorService.activar();
     this.paquetesService.guardar(nuevoPaquete)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
+      .subscribe({
+        next: (respuesta): void => {
           this.cerrarDialogo();
           this.alertaService.mostrar(TipoAlerta.Exito, this.mensajeConfirmacion);
-          this.router.navigate(['/paquetes'], {
+          void this.router.navigate(['/paquetes'], {
             relativeTo: this.activatedRoute
           });
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
         }
-      );
+      });
   }
 
   crearPaquete(): NuevoPaquete {

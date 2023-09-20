@@ -49,10 +49,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   paginacionConFiltrado: boolean = false;
 
   notasRemision: NotaRemision[] = [];
-  notaRemisionSeleccionada: NotaRemision = {
-    id: 0,
-    idNota: 0
-  };
+  notaRemisionSeleccionada!: NotaRemision;
   filtroForm!: FormGroup;
   creacionRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
@@ -133,6 +130,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   abrirPanel(event: MouseEvent, notaRemisionSeleccionada: NotaRemision): void {
+    console.log(notaRemisionSeleccionada)
     this.notaRemisionSeleccionada = notaRemisionSeleccionada;
     this.overlayPanel.toggle(event);
   }

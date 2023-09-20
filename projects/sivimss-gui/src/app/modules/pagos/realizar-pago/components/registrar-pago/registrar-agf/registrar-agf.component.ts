@@ -30,7 +30,7 @@ export class RegistrarAgfComponent implements OnInit {
   aceptar(): void {
     if (this.indice === 1) {
       this.ref.close();
-      this.router.navigate(['../agf-seleccion-beneficiarios'], {relativeTo: this.route})
+      void this.router.navigate(['../agf-seleccion-beneficiarios'], {relativeTo: this.route})
       return;
     }
     this.indice++;
