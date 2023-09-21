@@ -15,6 +15,9 @@ import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
 export class FacturaProveedorComponent implements OnInit {
 
   public generarHojaConsignacionForm!: FormGroup;
+  public controlName: string = '';
+  public costoTotal: string | null = '';
+  public importeFactura: string | null = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -52,6 +55,39 @@ export class FacturaProveedorComponent implements OnInit {
       idVelatorio: this.apf.velatorio.value,
       fecInicio: this.apf.fechaInicio.value,
       fecFin: this.apf.fechaFinal.value,
+    }
+  }
+
+  handleClick(controlName: string, formato: string) {
+    let elements = document.getElementById(`upload-file-${formato}`);
+    this.controlName = controlName;
+    elements?.click();
+  }
+
+  addAttachment(fileInput: any) {
+    const fileReaded = fileInput.target.files[0];
+
+    if (this.controlName === 'archivoXml') {
+      this.costoTotal = null;
+      this.importeFactura = null;
+      let reader = new FileReader();
+      reader.onload = () => {
+        let xml_content = reader.result ?? '';
+        if (typeof xml_content === 'string') {
+          let parser = new DOMParser();
+          let xmlDoc = parser.parseFromString(xml_content, 'text/xml');
+          let consignacion = xmlDoc.getElementsByTagName('consignacion')[0];
+          this.costoTotal = consignacion.getElementsByTagName('costo')[0].textContent;
+          this.importeFactura = consignacion.getElementsByTagName('importe')[0].textContent;
+        }
+      }
+      if (fileReaded) reader.readAsText(fileReaded);
+    }
+
+    if (fileReaded) {
+      this.generarHojaConsignacionForm.get(this.controlName)?.setValue(fileReaded.name);
+    } else {
+      this.generarHojaConsignacionForm.get(this.controlName)?.setValue(null);
     }
   }
 

@@ -9,7 +9,14 @@
 }
 
 .ms {
+    cursor: pointer;
     position: absolute;
-    top: 0;
-    right: 10px;
-  }
+    top: 26px;
+    right: 16px;
+}
+
+.hidden {
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+}
