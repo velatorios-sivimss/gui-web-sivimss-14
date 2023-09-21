@@ -202,7 +202,6 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       finalize(()=> this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        //TODO agregar id promotor
         if (!respuesta.datos) return;
         this.ff.rfcCurp.setValue(respuesta.datos[0].rfc);
         if (respuesta.datos[0]?.idPromotor) {
