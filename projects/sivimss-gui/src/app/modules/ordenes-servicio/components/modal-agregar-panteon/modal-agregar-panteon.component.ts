@@ -151,8 +151,8 @@ export class ModalAgregarPanteonComponent implements OnInit {
     this.loaderService.activar();
     this.gestionarOrdenServicioService.consultarDatosPanteon(event).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         respuesta.datos.forEach((datosPanteon: any) => {
 
           this.f.calle.setValue(respuesta.datos[0]?.desCalle)
@@ -176,10 +176,10 @@ export class ModalAgregarPanteonComponent implements OnInit {
           this.f.telefono.disable();
         });
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    } )
   }
 
 
@@ -189,15 +189,15 @@ export class ModalAgregarPanteonComponent implements OnInit {
     const objetoPanteon = this.generarObjetoPanteon();
     this.gestionarOrdenServicioService.guardarPanteon(objetoPanteon).pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.ref.close(respuesta.datos[0].idPanteon);
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
 
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(5));
       }
-    )
+    })
   }
 
   generarObjetoPanteon(): Panteon {
@@ -226,19 +226,19 @@ export class ModalAgregarPanteonComponent implements OnInit {
     this.loaderService.activar()
     this.gestionarOrdenServicioService.consultarDatosPanteon(query).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos.length>0){
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos.length > 0) {
           this.panteonServicioFiltrados = [];
-          respuesta.datos.forEach((panteon:any) => {
+          respuesta.datos.forEach((panteon: any) => {
             this.panteonServicioFiltrados.push(panteon.nombrePanteon);
           })
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
 
   consultarCP(): void {
@@ -249,10 +249,10 @@ export class ModalAgregarPanteonComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consutaCP(this.f.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             // this.f.colonia.setValue(respuesta.datos[0].nombre);
             this.f.municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -266,10 +266,10 @@ export class ModalAgregarPanteonComponent implements OnInit {
           this.f.municipio.patchValue(null);
           this.f.estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
 

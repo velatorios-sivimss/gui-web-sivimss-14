@@ -551,8 +551,6 @@ export class DatosContratanteComponent implements OnInit {
             this.direccion.noInterior.setValue(datos.numExterior);
             this.direccion.noExterior.setValue(datos.numInterior);
             this.idDomicilio = datos.idDomicilio;
-
-            return;
           }
           // this.limpiarConsultaDatosPersonales();
         },
@@ -570,10 +568,10 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -587,10 +585,10 @@ export class DatosContratanteComponent implements OnInit {
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   cambiarValidacion(): void {
@@ -809,8 +807,8 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarMatriculaSiap(this.datosContratante.matricula.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (!respuesta.datos) {
             this.alertaService.mostrar(
               TipoAlerta.Precaucion,
@@ -819,10 +817,10 @@ export class DatosContratanteComponent implements OnInit {
             this.datosContratante.matricula.setValue(null);
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      } );
   }
 
   convertirAMayusculas(posicionFormulario: number): void {

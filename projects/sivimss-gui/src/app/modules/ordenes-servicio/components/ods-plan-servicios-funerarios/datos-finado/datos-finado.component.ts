@@ -1,9 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
-import {
-  ModalSeleccionarBeneficiarioComponent
-} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-seleccionar-beneficiario/modal-seleccionar-beneficiario.component';
+
 import {
   AlertaService,
   TipoAlerta,
@@ -12,7 +10,6 @@ import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/
 import {TipoDropdown} from '../../../../../models/tipo-dropdown';
 import {
   sexo,
-  tipoOrden,
   nacionalidad, tipoOrdenSF,
 } from '../../../constants/catalogos-complementarios';
 import {PATRON_CURP} from '../../../../../utils/constantes';
@@ -22,7 +19,6 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {GenerarOrdenServicioService} from '../../../services/generar-orden-servicio.service';
 import {LoaderService} from '../../../../../shared/loader/services/loader.service';
 import {MensajesSistemaService} from '../../../../../services/mensajes-sistema.service';
-import {SERVICIO_BREADCRUMB} from '../../../constants/breadcrumb';
 import {ActivatedRoute} from '@angular/router';
 import * as moment from 'moment';
 import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';

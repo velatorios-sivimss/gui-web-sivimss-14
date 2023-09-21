@@ -69,8 +69,8 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarAtaudes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaAtaudes = [];
@@ -87,12 +87,12 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             'nombreArticulo',
             'idArticulo'
           );
-          if(this.listaAtaudes.length == 0){
+          if (this.listaAtaudes.length == 0) {
             this.alertaService.mostrar(TipoAlerta.Precaucion, "Ya no hay stock de este artículo. " ||
               this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(15));
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             this.alertaService.mostrar(
@@ -108,7 +108,7 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   buscarProveedor(): void {
@@ -119,8 +119,8 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarProveedorAtaudes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaProveedores = [];
@@ -138,7 +138,7 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             'idProveedor'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             this.alertaService.mostrar(
@@ -154,7 +154,7 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   limpiarSelects(): void {
@@ -182,8 +182,8 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarAtaudInventario(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaAtaudesInventario = [];
@@ -202,7 +202,7 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             'idInventario'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             this.alertaService.mostrar(
@@ -218,7 +218,7 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   cerrarModal() {

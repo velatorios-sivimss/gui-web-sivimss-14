@@ -154,11 +154,11 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.generarFormatoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta) => {
-          this.formatoPagare = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.formatoPagare = respuesta.datos.content || [];
+          this.totalElementos = respuesta.datos.totalElements || 0;
         },
-        error: (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
@@ -171,11 +171,11 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.generarFormatoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
-        next: (respuesta) => {
+        next: (respuesta: HttpRespuesta<any>): void => {
           this.formatoPagare = respuesta.datos.content || [];
           this.totalElementos = respuesta.datos.totalElements || 0;
         },
-        error: (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.mensajesSistemaService.mostrarMensajeError(error);
         }

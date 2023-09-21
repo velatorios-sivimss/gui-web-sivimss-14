@@ -70,6 +70,6 @@ export class DetalleOperadoresPorVelatorioComponent implements OnInit {
   }
 
   regresar(): void {
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 }

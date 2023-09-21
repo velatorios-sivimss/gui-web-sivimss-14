@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {EtapaEstado} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum";
 import {Etapa} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
 import {Subscription} from "rxjs";
@@ -9,7 +9,7 @@ import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.servi
   templateUrl: './generar-orden-servicio.component.html',
   styleUrls: ['./generar-orden-servicio.component.scss']
 })
-export class GenerarOrdenServicioSFComponent implements OnInit, OnDestroy {
+export class GenerarOrdenServicioSFComponent implements OnDestroy {
 
   readonly DATOS_DEL_CONTRATANTE = 0;
   readonly DATOS_DEL_FINADO = 1;
@@ -26,8 +26,6 @@ export class GenerarOrdenServicioSFComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {
-  }
 
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {
     //Con esta etapa que se recibe ya se puede modificar su estado.

@@ -53,15 +53,15 @@ export class CancelarOrdenServicioSFComponent implements OnInit {
     this.loaderService.activar();
     this.consultarOrdenServicioService.consultarPrecioCancelacionODS().pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.precioCancelacionODS = respuesta.datos[0].costoCancelacion;
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
       }
-    )
+    })
 
   }
 
