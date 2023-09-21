@@ -2,9 +2,6 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {DialogService} from "primeng/dynamicdialog";
 import {OverlayPanel} from "primeng/overlaypanel";
 import {
-  ModalVerKilometrajeComponent
-} from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-kilometraje/modal-ver-kilometraje.component";
-import {
   ModalEliminarPagoComponent
 } from "projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component";
 import {
@@ -13,8 +10,7 @@ import {
 import {ServiciosFunerariosInterface, DetallePago} from "../../models/servicios-funerarios.interface";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
 import {LazyLoadEvent} from "primeng/api";
-import {Articulo} from "../../../articulos/models/articulos.interface";
-import {ActivatedRoute, ActivatedRouteSnapshot} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {DetallePagoService} from "../../services/detalle-pago.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";

@@ -1,31 +1,38 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { BuscarGenerarHojaConsignacion, GenerarHojaConsignacion, GenerarHojaConsignacionBusqueda } from "../../models/generar-hoja-consignacion.interface";
-import { LazyLoadEvent } from "primeng/api";
-import { ActivatedRoute, Router } from '@angular/router';
-import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { GenerarHojaConsignacionService } from '../../services/generar-hoja-consignacion.service';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { finalize } from 'rxjs';
-import { AgregarGenerarHojaConsignacionComponent } from '../agregar-generar-hoja-consignacion/agregar-generar-hoja-consignacion.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {
+  BuscarGenerarHojaConsignacion,
+  GenerarHojaConsignacion,
+  GenerarHojaConsignacionBusqueda
+} from "../../models/generar-hoja-consignacion.interface";
+import {LazyLoadEvent} from "primeng/api";
+import {ActivatedRoute, Router} from '@angular/router';
+import {GENERAR_FORMATO_BREADCRUMB} from '../../constants/breadcrumb';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {GenerarHojaConsignacionService} from '../../services/generar-hoja-consignacion.service';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {finalize} from 'rxjs';
+import {
+  AgregarGenerarHojaConsignacionComponent
+} from '../agregar-generar-hoja-consignacion/agregar-generar-hoja-consignacion.component';
 
 interface HttpResponse {
   respuesta: string;
   promotor: GenerarHojaConsignacion;
 }
+
 @Component({
   selector: 'app-generar-hoja-consignacion',
   templateUrl: './generar-hoja-consignacion.component.html',
@@ -88,13 +95,13 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   inicializarFiltroForm() {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +usuario?.idOficina, disabled: true }],
-      delegacion: [{ value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2 }, []],
-      velatorio: [{ value: +usuario?.idVelatorio, disabled: +usuario?.idOficina === 3 }, []],
-      nombrePromotor: [{ value: null, disabled: false }],
-      folio: new FormControl({ value: null, disabled: false }, []),
-      fecInicio: new FormControl({ value: null, disabled: false }, []),
-      fecFin: new FormControl({ value: null, disabled: false }, []),
+      nivel: [{value: +usuario?.idOficina, disabled: true}],
+      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2}, []],
+      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario?.idOficina === 3}, []],
+      nombrePromotor: [{value: null, disabled: false}],
+      folio: new FormControl({value: null, disabled: false}, []),
+      fecInicio: new FormControl({value: null, disabled: false}, []),
+      fecFin: new FormControl({value: null, disabled: false}, []),
     });
   }
 
@@ -152,28 +159,28 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.loaderService.activar();
     this.generarHojaConsignacionService.buscarPorFiltros(this.datosPromotoresFiltros(), this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.datos) {
-            this.hojasConsignacion = respuesta.datos;
-            this.totalElementos = respuesta.datos.totalElements;
-            this.realizoBusqueda = true;
-          } else {
-            this.hojasConsignacion = [];
-          }
-
-          this.hojasConsignacion = [
-            {
-              idHojaConsignacion: 1,
-              fecHojaConsignacion: '14/09/2023',
-              folioHojaConsignacion: '14/09/2023',
-            }
-          ]
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos) {
+          this.hojasConsignacion = respuesta.datos;
+          this.totalElementos = respuesta.datos.totalElements;
+          this.realizoBusqueda = true;
+        } else {
+          this.hojasConsignacion = [];
         }
-      });
+
+        this.hojasConsignacion = [
+          {
+            idHojaConsignacion: 1,
+            fecHojaConsignacion: '14/09/2023',
+            folioHojaConsignacion: '14/09/2023',
+          }
+        ]
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    });
   }
 
   datosPromotoresFiltros(): BuscarGenerarHojaConsignacion {
@@ -187,15 +194,15 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   }
 
   agregarFormatoActividades(): void {
-    void this.router.navigate([`agregar-actividades`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`agregar-actividades`], {relativeTo: this.activatedRoute});
   }
 
   modificarFormatoActividades(actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
-    void this.router.navigate([`modificar-actividades/${actividadSeleccionada.idHojaConsignacion}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`modificar-actividades/${actividadSeleccionada.idHojaConsignacion}`], {relativeTo: this.activatedRoute});
   }
 
   detalleFormatoActividades(actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
-    void this.router.navigate([`detalle-de-actividades/${actividadSeleccionada.idHojaConsignacion}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`detalle-de-actividades/${actividadSeleccionada.idHojaConsignacion}`], {relativeTo: this.activatedRoute});
   }
 
   abrirPanel(event: MouseEvent, actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
@@ -207,14 +214,8 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.detalleRef = this.dialogService.open(AgregarGenerarHojaConsignacionComponent, {
       header: "Factura proveedor",
       width: "920px",
-      data: { actividad: this.actividadSeleccionada },
+      data: {actividad: this.actividadSeleccionada},
     });
-
-    // this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
-    //   if (respuesta?.estatus) {
-    //     this.paginar();
-    //   }
-    // });
   }
 
   agregarPromotor(): void {

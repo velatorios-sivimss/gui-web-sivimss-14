@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { ModalNotaRemisionComponent } from '../modal/modal-nota-remision/modal-nota-remision.component';
-import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ArticulosServicios, DetalleNotaRemision, GenerarReporte,  GenerarDatosReporte} from '../../models/nota-remision.interface';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { mensajes } from '../../../reservar-salas/constants/mensajes';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {ModalNotaRemisionComponent} from '../modal/modal-nota-remision/modal-nota-remision.component';
+import {GenerarNotaRemisionService} from '../../services/generar-nota-remision.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ArticulosServicios, DetalleNotaRemision, GenerarDatosReporte} from '../../models/nota-remision.interface';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 @Component({
   selector: 'app-formato-generar-nota-remision',
@@ -31,7 +31,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   creacionRef!: DynamicDialogRef;
   idOds: number = 0;
   servicios: ArticulosServicios[] = [];
-  notaRemisionReporte: GenerarDatosReporte ={};
+  notaRemisionReporte: GenerarDatosReporte = {};
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
@@ -45,7 +45,8 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     private generarNotaRemisionService: GenerarNotaRemisionService,
     private descargaArchivosService: DescargaArchivosService,
     private readonly loaderService: LoaderService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
@@ -63,20 +64,20 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
 
   inicializarNotaRemisionForm(detalle: DetalleNotaRemision) {
     this.notaRemisionForm = this.formBuilder.group({
-      versionDocumento: [{ value: null, disabled: true }],
-      fechaNota: [{ value: new Date(), disabled: true }],
-      velatorioOrigen: [{ value: null, disabled: true }],
-      folioNota: [{ value: null, disabled: true }],
-      dirVelatorio: [{ value: null, disabled: true }],
-      nomSolicitante: [{ value: null, disabled: true }],
-      dirSolicitante: [{ value: null, disabled: true }],
-      curpSolicitante: [{ value: null, disabled: true }],
-      nomVelatorio: [{ value: null, disabled: true }],
-      nomFinado: [{ value: null, disabled: true }],
-      parFinado: [{ value: null, disabled: true }],
-      folioODS: [{ value: null, disabled: true }],
-      nombreConformidad: [{ value: null, disabled: true }],
-      nombreRepresentante: [{ value: null, disabled: true }],
+      versionDocumento: [{value: null, disabled: true}],
+      fechaNota: [{value: new Date(), disabled: true}],
+      velatorioOrigen: [{value: null, disabled: true}],
+      folioNota: [{value: null, disabled: true}],
+      dirVelatorio: [{value: null, disabled: true}],
+      nomSolicitante: [{value: null, disabled: true}],
+      dirSolicitante: [{value: null, disabled: true}],
+      curpSolicitante: [{value: null, disabled: true}],
+      nomVelatorio: [{value: null, disabled: true}],
+      nomFinado: [{value: null, disabled: true}],
+      parFinado: [{value: null, disabled: true}],
+      folioODS: [{value: null, disabled: true}],
+      nombreConformidad: [{value: null, disabled: true}],
+      nombreRepresentante: [{value: null, disabled: true}],
     });
 
     this.notaRemisionForm.patchValue({
@@ -89,7 +90,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     this.creacionRef = this.dialogService.open(ModalNotaRemisionComponent, {
       header: "Aviso",
       width: "920px",
-      data: { mensaje: 'Generando nota de remisión' },
+      data: {mensaje: 'Generando nota de remisión'},
     });
   }
 
@@ -100,12 +101,14 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+    this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute}).then(() => {
+    }).catch(() => {
+    });
   }
 
   generarNotaRemision() {
     this.abrirModalGenerandoNotaRemision();
-    this.generarNotaRemisionService.guardar({ idOrden: this.idOds }).subscribe({
+    this.generarNotaRemisionService.guardar({idOrden: this.idOds}).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.creacionRef.close();
         const mensaje = this.alertas?.filter((msj: any) => {
@@ -114,7 +117,9 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
         if (mensaje && mensaje.length > 0) {
           this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
         }
-        this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+        this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute}).then(() => {
+        }).catch(() => {
+        });
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
@@ -133,7 +138,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     const busqueda: GenerarDatosReporte = this.datosReporte();
     this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe({
       next: (response: any) => {
-        const file = new Blob([response], { type: 'application/pdf' });
+        const file = new Blob([response], {type: 'application/pdf'});
         const url = window.URL.createObjectURL(file);
         window.open(url);
       },

@@ -1,31 +1,36 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { BuscarGenerarFormatoActividades, GenerarFormatoActividades, GenerarFormatoActividadesBusqueda } from "../../models/generar-formato-actividades.interface";
-import { LazyLoadEvent } from "primeng/api";
-import { ActivatedRoute, Router } from '@angular/router';
-import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { GenerarFormatoActividadesService } from '../../services/generar-formato-actividades.service';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { finalize } from 'rxjs';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {
+  BuscarGenerarFormatoActividades,
+  GenerarFormatoActividades,
+  GenerarFormatoActividadesBusqueda
+} from "../../models/generar-formato-actividades.interface";
+import {LazyLoadEvent} from "primeng/api";
+import {ActivatedRoute, Router} from '@angular/router';
+import {GENERAR_FORMATO_BREADCRUMB} from '../../constants/breadcrumb';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {GenerarFormatoActividadesService} from '../../services/generar-formato-actividades.service';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {finalize} from 'rxjs';
 import * as moment from 'moment';
 
 interface HttpResponse {
   respuesta: string;
   promotor: GenerarFormatoActividades;
 }
+
 @Component({
   selector: 'app-generar-formato-actividades',
   templateUrl: './generar-formato-actividades.component.html',
@@ -82,13 +87,13 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   inicializarFiltroForm() {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +usuario?.idOficina, disabled: true }],
-      delegacion: [{ value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2 }, []],
-      velatorio: [{ value: +usuario?.idVelatorio, disabled: +usuario?.idOficina === 3 }, []],
-      nombrePromotor: [{ value: null, disabled: false }],
-      folio: new FormControl({ value: null, disabled: false }, []),
-      fecInicio: new FormControl({ value: null, disabled: false }, []),
-      fecFin: new FormControl({ value: null, disabled: false }, []),
+      nivel: [{value: +usuario?.idOficina, disabled: true}],
+      delegacion: [{value: +usuario?.idDelegacion, disabled: +usuario?.idOficina >= 2}, []],
+      velatorio: [{value: +usuario?.idVelatorio, disabled: +usuario?.idOficina === 3}, []],
+      nombrePromotor: [{value: null, disabled: false}],
+      folio: new FormControl({value: null, disabled: false}, []),
+      fecInicio: new FormControl({value: null, disabled: false}, []),
+      fecFin: new FormControl({value: null, disabled: false}, []),
     });
   }
 
@@ -146,20 +151,20 @@ export class GenerarFormatoActividadesComponent implements OnInit {
     this.loaderService.activar();
     this.generarFormatoActividadesService.buscarPorFiltros(this.datosPromotoresFiltros(), this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          if (respuesta.datos) {
-            this.actividades = respuesta.datos.content;
-            this.totalElementos = respuesta.datos.totalElements;
-            this.realizoBusqueda = true;
-          } else {
-            this.actividades = [];
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos) {
+          this.actividades = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+          this.realizoBusqueda = true;
+        } else {
+          this.actividades = [];
         }
-      });
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    });
   }
 
   datosPromotoresFiltros(): BuscarGenerarFormatoActividades {
@@ -175,15 +180,15 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   }
 
   agregarFormatoActividades(): void {
-    void this.router.navigate([`agregar-actividades`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`agregar-actividades`], {relativeTo: this.activatedRoute});
   }
 
   modificarFormatoActividades(actividadSeleccionada: GenerarFormatoActividadesBusqueda): void {
-    void this.router.navigate([`modificar-actividades/${actividadSeleccionada.idFormatoRegistro}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`modificar-actividades/${actividadSeleccionada.idFormatoRegistro}`], {relativeTo: this.activatedRoute});
   }
 
   detalleFormatoActividades(actividadSeleccionada: GenerarFormatoActividadesBusqueda): void {
-    void this.router.navigate([`detalle-de-actividades/${actividadSeleccionada.idFormatoRegistro}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`detalle-de-actividades/${actividadSeleccionada.idFormatoRegistro}`], {relativeTo: this.activatedRoute});
   }
 
   abrirPanel(event: MouseEvent, actividadSeleccionada: GenerarFormatoActividadesBusqueda): void {
