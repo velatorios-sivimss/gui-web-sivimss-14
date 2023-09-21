@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {Router} from "@angular/router";
 
@@ -7,14 +7,12 @@ import {Router} from "@angular/router";
   templateUrl: './modal-comision.component.html',
   styleUrls: ['./modal-comision.component.scss']
 })
-export class ModalComisionComponent implements OnInit {
+export class ModalComisionComponent {
 
   constructor(
     private router: Router,
     private readonly ref: DynamicDialogRef,
-  ) { }
-
-  ngOnInit(): void {
+  ) {
   }
 
   aceptar(): void {

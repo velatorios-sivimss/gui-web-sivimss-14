@@ -58,11 +58,11 @@ export class ModalConvenioPfComponent implements OnInit {
     this.loaderService.activar();
     this.gestionarOrdenServicioService.consultarContratoPf(this.folioContrato).pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos === null){
-          const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
-          this.alertaService.mostrar(TipoAlerta.Precaucion,errorMsg || 'El contrato de Previsión Funeraria que deseas utilizar no se encuentra vigente. ');
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos === null) {
+          const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
+          this.alertaService.mostrar(TipoAlerta.Precaucion, errorMsg || 'El contrato de Previsión Funeraria que deseas utilizar no se encuentra vigente. ');
           return
         }
         this.idContrato = respuesta.datos.idContratoPF;
@@ -70,29 +70,29 @@ export class ModalConvenioPfComponent implements OnInit {
         this.nombreVelatorio = respuesta.datos.nombreVelatorio;
         this.consultarContratantes();
       },
-      (error: HttpErrorResponse) => {
-        const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error,errorMsg || 'El servicio no responde, no permite más llamadas.');
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
   consultarContratantes(): void {
     this.loaderService.activar();
     this.gestionarOrdenServicioService.consultarContratantesPf(this.idContrato).pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.objetoContratante = respuesta.datos || [];
         this.contratantes = respuesta.datos.map((contratante: any) => (
           {label: contratante.nombreContratante, value: contratante.idContratante}
         ));
       },
-      (error: HttpErrorResponse) => {
-        const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error,errorMsg || 'El servicio no responde, no permite más llamadas.');
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
   consultarBeneficiarios(): void {
@@ -111,19 +111,19 @@ export class ModalConvenioPfComponent implements OnInit {
 
     this.gestionarOrdenServicioService.consultarBeneficiariosPf(this.idContrato,this.formulario.contratante.value).pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.existeSiniestro = true;
         this.objetoBeneficiario = respuesta.datos || [];
         this.beneficiarios = respuesta.datos.map((beneficiario: any) => (
           {label: beneficiario.nombreBeneficiario, value: beneficiario.idPersona}
         ));
       },
-      (error: HttpErrorResponse) => {
-        const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error,errorMsg || 'El servicio no responde, no permite más llamadas.');
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
   guardar(): void {
@@ -133,21 +133,21 @@ export class ModalConvenioPfComponent implements OnInit {
     this.loaderService.activar();
     this.gestionarOrdenServicioService.consultarPersona(idPersona).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.ref.close({
-          finado:respuesta.datos[0],
-          idContrato:this.idContrato,
-          idVelacion:this.idVelatorio,
+          finado: respuesta.datos[0],
+          idContrato: this.idContrato,
+          idVelacion: this.idVelatorio,
           idContratantePf: this.formulario.contratante.value,
           nombreVelatorio: this.nombreVelatorio
         });
       },
-      (error: HttpErrorResponse) => {
-        const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error,errorMsg || 'El servicio no responde, no permite más llamadas.');
+      error: (error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
   obtenerIdPersona(): number {

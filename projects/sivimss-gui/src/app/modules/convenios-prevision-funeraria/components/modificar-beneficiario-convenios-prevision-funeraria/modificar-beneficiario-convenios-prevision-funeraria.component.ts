@@ -251,17 +251,16 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarVelatorios(+this.f.delegacion.value).pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
-        // this.consultarUnidadMedica();
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.velatorio = respuesta.datos.map((velatorio: any) => (
-          { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
   cancelar(): void {
