@@ -22,6 +22,7 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { finalize } from 'rxjs';
 import { AgregarGenerarHojaConsignacionComponent } from '../agregar-generar-hoja-consignacion/agregar-generar-hoja-consignacion.component';
 import * as moment from 'moment';
+import { FacturaProveedorComponent } from '../factura-proveedor/factura-proveedor.component';
 
 interface HttpResponse {
   respuesta: string;
@@ -31,7 +32,7 @@ interface HttpResponse {
   selector: 'app-generar-hoja-consignacion',
   templateUrl: './generar-hoja-consignacion.component.html',
   styleUrls: ['./generar-hoja-consignacion.component.scss'],
-  providers: [DialogService, DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService, DynamicDialogRef]
 })
 export class GenerarHojaConsignacionComponent implements OnInit {
   readonly POSICION_CATALOGOS_NIVELES: number = 0;
@@ -216,7 +217,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   }
 
   abrirModalCargarFactura(): void {
-    this.detalleRef = this.dialogService.open(AgregarGenerarHojaConsignacionComponent, {
+    this.detalleRef = this.dialogService.open(FacturaProveedorComponent, {
       header: "Factura proveedor",
       width: "920px",
       data: { actividad: this.actividadSeleccionada },

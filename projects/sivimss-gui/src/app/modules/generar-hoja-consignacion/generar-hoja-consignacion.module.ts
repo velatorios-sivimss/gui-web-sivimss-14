@@ -30,11 +30,13 @@ import { TabViewModule } from 'primeng/tabview';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
+import { FacturaProveedorComponent } from './components/factura-proveedor/factura-proveedor.component';
 
 @NgModule({
   declarations: [
     GenerarHojaConsignacionComponent,
     AgregarGenerarHojaConsignacionComponent,
+    FacturaProveedorComponent,
   ],
   imports: [
     CommonModule,
