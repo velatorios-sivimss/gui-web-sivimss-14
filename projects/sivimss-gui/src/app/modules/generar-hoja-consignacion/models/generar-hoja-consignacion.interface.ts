@@ -1,3 +1,12 @@
+export interface ProveedoresBusqueda {
+  proveedor?: string | null;
+  fecha?: string | null;
+  folio?: string | null;
+  categoria?: string | null;
+  folioArticulo?: string | null;
+  paquete?: string | null;
+  costo?: string | null;
+}
 export interface GenerarHojaConsignacion {
   idFormatoRegistro?: number;
   idVelatorio?: number;
