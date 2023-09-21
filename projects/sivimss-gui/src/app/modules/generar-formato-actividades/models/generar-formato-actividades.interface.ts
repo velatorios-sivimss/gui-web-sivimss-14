@@ -4,7 +4,7 @@ export interface GenerarFormatoActividades {
   fecInicio?: string;
   fecFin?: string;
   actividades?: Actividades;
-  idFormato?: number;
+  idFormato?: number | null;
 }
 
 export interface Actividades {

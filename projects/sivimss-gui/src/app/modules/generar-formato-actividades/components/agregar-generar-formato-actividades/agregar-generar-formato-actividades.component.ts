@@ -60,7 +60,7 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   public agregandoRegistro: boolean = false;
   public descVelatorio: string = '';
   public numActividades: number | null = null;
-  public idFormato: number = 0;
+  public idFormato: number | null = null;
   public mensajeArchivoConfirmacion: string | undefined;
   public mode: 'detail' | 'update' | 'create' = 'create';
 
