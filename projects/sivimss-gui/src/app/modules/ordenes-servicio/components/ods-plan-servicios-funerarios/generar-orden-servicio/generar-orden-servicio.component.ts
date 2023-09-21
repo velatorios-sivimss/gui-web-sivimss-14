@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { EtapaEstado } from "projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum";
-import { Etapa } from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
-import { GestionarEtapasService } from '../../../services/gestionar-etapas.service';
+import {EtapaEstado} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum";
+import {Etapa} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
 import {Subscription} from "rxjs";
 import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
 
@@ -28,9 +27,6 @@ export class GenerarOrdenServicioSFComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.gestionarEtapasService.etapas$.next(this.etapas);
-    // this.contratanteSubscription$ = this.gestionarEtapasService.datosEtapaContratante$
-    //   .subscribe((datosPrevios) => {});
   }
 
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {
@@ -216,9 +212,6 @@ export class GenerarOrdenServicioSFComponent implements OnInit, OnDestroy {
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(datosEtapaCaracteristicas);
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datosEtapaInformacionServicio);
     this.gestionarEtapasService.etapas$.next(etapas)
-
-
-
 
 
   }

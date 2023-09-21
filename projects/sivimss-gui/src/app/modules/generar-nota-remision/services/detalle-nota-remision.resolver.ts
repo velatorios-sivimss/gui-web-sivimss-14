@@ -14,8 +14,8 @@ export class DetalleNotaRemisionResolver implements Resolve<any> {
     constructor(private generarNotaRemisionService: GenerarNotaRemisionService) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-        const idNota = +(route.paramMap.get('idNota') || 0);
-        const idOds = +(route.paramMap.get('idOds') || 0);
+        const idNota = +(route.paramMap.get('idNota') ?? 0);
+        const idOds = +(route.paramMap.get('idOds') ?? 0);
         const detalleNotaRemision$ = this.generarNotaRemisionService.obtenerDetalleNotaRemision({ idNota, idOrden: idOds });
         const serviciosNotaRemision$ = this.generarNotaRemisionService.obtenerServiciosNotaRemision({ idNota, idOrden: idOds });
         return forkJoin([detalleNotaRemision$, serviciosNotaRemision$]);

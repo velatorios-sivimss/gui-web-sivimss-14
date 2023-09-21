@@ -28,6 +28,7 @@ interface HttpResponse {
   respuesta: string;
   promotor: GenerarHojaConsignacion;
 }
+
 @Component({
   selector: 'app-generar-hoja-consignacion',
   templateUrl: './generar-hoja-consignacion.component.html',
@@ -183,7 +184,20 @@ export class GenerarHojaConsignacionComponent implements OnInit {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      });
+
+        this.hojasConsignacion = [
+          {
+            idHojaConsignacion: 1,
+            fecHojaConsignacion: '14/09/2023',
+            folioHojaConsignacion: '14/09/2023',
+          }
+        ]
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    });
   }
 
   datosPromotoresFiltros(): BuscarGenerarHojaConsignacion {
@@ -220,14 +234,8 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.detalleRef = this.dialogService.open(FacturaProveedorComponent, {
       header: "Factura proveedor",
       width: "920px",
-      data: { actividad: this.actividadSeleccionada },
+      data: {actividad: this.actividadSeleccionada},
     });
-
-    // this.detalleRef.onClose.subscribe((respuesta: ConfirmarContratante) => {
-    //   if (respuesta?.estatus) {
-    //     this.paginar();
-    //   }
-    // });
   }
 
   agregarPromotor(): void {

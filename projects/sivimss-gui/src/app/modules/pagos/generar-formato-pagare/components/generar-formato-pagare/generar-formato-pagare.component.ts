@@ -140,7 +140,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
@@ -153,16 +153,16 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
+      .subscribe({
+        next: (respuesta) => {
           this.formatoPagare = respuesta!.datos.content;
           this.totalElementos = respuesta!.datos.totalElements;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
   }
 
   paginarConFiltros(): void {
@@ -170,16 +170,16 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.cargadorService.activar();
     this.generarFormatoService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
-          this.formatoPagare = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
+      .subscribe({
+        next: (respuesta) => {
+          this.formatoPagare = respuesta.datos.content || [];
+          this.totalElementos = respuesta.datos.totalElements || 0;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           this.mensajesSistemaService.mostrarMensajeError(error);
         }
-      );
+      });
   }
 
   buscar(): void {
@@ -283,14 +283,14 @@ export class GenerarFormatoPagareComponent implements OnInit {
     const solicitudFiltros = JSON.stringify(filtros);
     this.descargaArchivosService.descargarArchivo(this.generarFormatoService.descargarListadoPagaresPDF(solicitudFiltros)).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta) => {
         console.log(respuesta)
       },
-      (error) => {
+      error: (error) => {
         console.log(error)
       },
-    )
+    })
   }
 
   guardarListadoPagaresExcel() {
