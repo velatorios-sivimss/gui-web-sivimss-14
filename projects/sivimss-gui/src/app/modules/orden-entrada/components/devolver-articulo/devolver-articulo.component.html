@@ -36,9 +36,9 @@
   <form [formGroup]="formulario">
     <div class="row mb-3 mt-3">
       <div class="col-md-12">
-        <label class="control-label" for="modificarPago">Motivo de de la devolucion<span class="req">*</span>:</label>
+        <label class="control-label" for="modificarPago">Motivo de la devolución<span class="req">*</span>:</label>
         <textarea rows="4" class="form-control" pInputTextarea formControlName="devolucionMotivo"
-          placeholder="Ingresa el motivo de la devolución" maxlength="100"></textarea>
+          placeholder="Ingresa el motivo de la devolución" maxlength="80"></textarea>
         <span class="campo-obligatorio"
           *ngIf="f.devolucionMotivo?.errors?.required && (f.devolucionMotivo?.dirty || f.devolucionMotivo?.touched)">Este
           campo es obligatorio *.</span>

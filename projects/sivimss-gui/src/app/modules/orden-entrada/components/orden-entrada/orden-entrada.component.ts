@@ -16,7 +16,7 @@ export class OrdenEntradaComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // this.actualizarBreadCrumb();
+    this.actualizarBreadCrumb();
   }
 
   actualizarBreadCrumb(): void {
