@@ -289,7 +289,8 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.mostrarModalCerrarODE = false;
-        this.alertaService.mostrar(TipoAlerta.Exito, "Orden de entrada cerrada correctamente");
+        this.alertaService.mostrar(TipoAlerta.Exito, "Orden de entrada cerrada correctamente.");
+        this.paginarConFiltros();
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);

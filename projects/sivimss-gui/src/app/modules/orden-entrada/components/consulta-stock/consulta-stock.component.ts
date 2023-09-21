@@ -45,7 +45,9 @@ export class ConsultaStockComponent implements OnInit {
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   catalogoOrdenesEntrada: string[] = [];
+  catalogoOrdenesEntradaCompleto: any[] = [];
   catalogoCategorias: string[] = [];
+  catalogoCategoriasCompleto: any[] = [];
 
   asignacion: TipoDropdown[] = [
     {
@@ -145,6 +147,8 @@ export class ConsultaStockComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos.length > 0) {
           this.catalogoOrdenesEntrada = [];
+          this.catalogoOrdenesEntradaCompleto = [];
+          this.catalogoOrdenesEntradaCompleto = respuesta.datos;
           respuesta.datos.forEach((ordenEntrada: any) => {
             this.catalogoOrdenesEntrada.push(ordenEntrada.NUM_FOLIO);
           });
@@ -164,6 +168,8 @@ export class ConsultaStockComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos.length > 0) {
           this.catalogoCategorias = [];
+          this.catalogoCategoriasCompleto = [];
+          this.catalogoCategoriasCompleto = respuesta.datos;
           respuesta.datos.forEach((ordenEntrada: any) => {
             this.catalogoCategorias.push(ordenEntrada.DES_CATEGORIA_ARTICULO);
           });
@@ -258,31 +264,6 @@ export class ConsultaStockComponent implements OnInit {
         }
       },
     });
-    // this.ordenEntradaService.generarReporteOrdenEntrada(busqueda).pipe(
-    //   finalize(() => this.loaderService.desactivar())
-    // ).subscribe({
-    //   next: (respuesta: HttpRespuesta<any>) => {
-    //     const file = new Blob([this.descargaArchivosService.base64_2Blob(
-    //       respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-    //       { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
-    //     );
-    //     this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-    //       finalize(() => this.loaderService.desactivar())
-    //     ).subscribe({
-    //       next: (repuesta) => {
-    //         this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-    //         this.mostrarModalConfirmacion = true;
-    //       },
-    //       error: (error) => {
-    //         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-    //       }
-    //     });
-    //   },
-    //   error: (error: HttpErrorResponse) => {
-    //     const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-    //     this.alertaService.mostrar(TipoAlerta.Error, msg);
-    //   }
-    // })
   }
 
   mapearDatosReporte(tipoReporteSeleccionado: string): any {
@@ -308,11 +289,12 @@ export class ConsultaStockComponent implements OnInit {
         idTipoAsignacion = asignaciones.map(innerArray => innerArray[0]).join(',');
       }
     }
-
+    let ordenEntrada = this.catalogoOrdenesEntradaCompleto.filter( (o) => o.NUM_FOLIO === this.formulario.get("ordenEntrada")?.value); 
+    let categoria = this.catalogoCategoriasCompleto.filter( (c) => c.DES_CATEGORIA_ARTICULO === this.formulario.get("categoria")?.value);
     return {
       idVelatorio: this.formulario.get("velatorio")?.value === "" ? null : this.formulario.get("velatorio")?.value,
-      idOrdenEntrada: this.formulario.get("ordenEntrada")?.value,
-      idCategoriaArticulo: this.formulario.get("categoria")?.value,
+      idOrdenEntrada: ordenEntrada.length > 0  ? ordenEntrada[0].ID_ODE : null,
+      idCategoriaArticulo: categoria.length > 0 ? categoria[0].ID_CATEGORIA_ARTICULO : null,
       idTipoAsignacionArt: idTipoAsignacion
     }
   }

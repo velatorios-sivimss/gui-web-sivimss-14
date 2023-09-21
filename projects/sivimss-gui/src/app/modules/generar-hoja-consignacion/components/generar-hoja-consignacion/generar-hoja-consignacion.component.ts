@@ -184,19 +184,6 @@ export class GenerarHojaConsignacionComponent implements OnInit {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-
-        this.hojasConsignacion = [
-          {
-            idHojaConsignacion: 1,
-            fecHojaConsignacion: '14/09/2023',
-            folioHojaConsignacion: '14/09/2023',
-          }
-        ]
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
     });
   }
 

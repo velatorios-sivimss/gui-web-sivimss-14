@@ -32,6 +32,7 @@ export class GenerarOdeComponent implements OnInit {
   idModeloSeleccionado: number = 0;
   descripcionModeloSeleccionado: string = "";
   maxNumeroArticulos: number = 0;
+  bloquearCampoArticulos: boolean = false;
 
   constructor(
     private alertaService: AlertaService,
@@ -131,6 +132,7 @@ export class GenerarOdeComponent implements OnInit {
   }
 
   onModeloChange(event: any) {
+    this.bloquearCampoArticulos = false;
     const idModeloSeleccionado = event.value;
     this.idModeloSeleccionado = idModeloSeleccionado;
     this.descripcionModeloSeleccionado = event.originalEvent.currentTarget.ariaLabel
@@ -144,7 +146,12 @@ export class GenerarOdeComponent implements OnInit {
           this.formulario.get("costo")?.setValue(respuesta.datos[0].MON_COSTO_UNITARIO);
           this.formulario.get("precio")?.setValue(respuesta.datos[0].MON_PRECIO);
           this.maxNumeroArticulos = respuesta.datos[0].NUM_CANTIDAD_DISPONIBLE;
-          this.formulario.get('numeroArticulos')?.enable();
+          if (this.maxNumeroArticulos <= 0) {
+            this.formulario.get("numeroArticulos")?.setValue(0);
+            this.bloquearCampoArticulos = true;
+          } else {
+            this.formulario.get('numeroArticulos')?.enable();
+          }
         }
       },
       error: (error: HttpErrorResponse) => {

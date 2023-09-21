@@ -1,6 +1,8 @@
 :host {
   position: absolute;
   display: block;
+  z-index: 2;
+  width: 0;
 
   .menu-sidebar {
     transform: translateX(-100%);

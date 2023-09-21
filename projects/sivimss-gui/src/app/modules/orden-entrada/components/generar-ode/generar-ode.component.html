@@ -39,7 +39,7 @@
              placeholder="Ingresar folio proveedor">
     </div>
     <div class="col-md-4">
-      <label class="control-label" for="categoria">Cateogoría (Artículo)<span class="req">*</span>:</label>
+      <label class="control-label" for="categoria">Cateogoría<span class="req">*</span>:</label>
       <p-dropdown id="categoria" class="form-control" formControlName="categoria" [options]="categorias"
                   placeholder="Seleccionar la categoría" (onChange)="onCategoriaChange($event)" [filter]="true" filterBy="label">
       </p-dropdown>
@@ -68,7 +68,7 @@
     <div class="col-md-4">
       <label class="control-label" for="numeroArticulos">Agregar el número de artículos<span
         class="req">*</span>:</label>
-      <input id="numeroArticulos" class="form-control" formControlName="numeroArticulos" placeholder="Ingresa el costo" maxlength="5" [disabled]="maxNumeroArticulos === 0 || f.numeroArticulos.value === 0">
+      <input id="numeroArticulos" class="form-control" formControlName="numeroArticulos" placeholder="Ingresa el costo" maxlength="5" [disabled]="bloquearCampoArticulos">
       <span class="campo-obligatorio"
             *ngIf="f.numeroArticulos?.errors?.required && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched)">Campo obligatorio</span>
       <span class="campo-obligatorio"
@@ -98,7 +98,7 @@
   </div>
   <div class="flex justify-content-end mb-3">
     <button type="button" class="ml-4 mt-3 btn btn-danger btn-md" routerLink="../">Cancelar</button>
-    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" (click)="mostrarModalAgregarODE = true">Guardar</button>
+    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" [disabled]="!formulario.valid" (click)="mostrarModalAgregarODE = true">Guardar</button>
   </div>
 </form>
 

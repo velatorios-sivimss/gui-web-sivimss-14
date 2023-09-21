@@ -17,6 +17,7 @@ export class DevolverArticuloComponent implements OnInit {
 
   formulario!: FormGroup;
   detalleArticulo: any;
+  mostrarModalDevolucion: boolean = false;
 
   constructor(
     private alertaService: AlertaService,
@@ -63,7 +64,7 @@ export class DevolverArticuloComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200) {
-          this.alertaService.mostrar(TipoAlerta.Exito, "Artículo devuelto correctamente");
+          this.alertaService.mostrar(TipoAlerta.Exito, "Se realizó el registro de devolución correctamente.");
           void this.router.navigate(["../.."], {relativeTo: this.activatedRoute});
         }
       },
