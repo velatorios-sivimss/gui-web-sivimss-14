@@ -16,7 +16,6 @@ import { ModalAgregarServicioComponent } from 'projects/sivimss-gui/src/app/modu
 import { ModalVerKilometrajeComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-kilometraje/modal-ver-kilometraje.component';
 import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { GestionarEtapasService } from '../../../services/gestionar-etapas.service';
 
 import { ContratanteInterface } from '../../../models/Contratante.interface';
 import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
@@ -261,8 +260,8 @@ export class CaracteristicasPresupuestoSFComponent
     this.gestionarOrdenServicioService
       .consultarDetallePaquete(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -279,7 +278,7 @@ export class CaracteristicasPresupuestoSFComponent
           this.datosPaquetes = datos;
           this.costoServiciosPorPaquete = datos[0].totalPaquete;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
 
           try {
@@ -300,7 +299,7 @@ export class CaracteristicasPresupuestoSFComponent
             );
           }
         }
-      );
+      });
   }
 
   buscarTipoAsignacion(): void {
@@ -309,8 +308,8 @@ export class CaracteristicasPresupuestoSFComponent
     this.gestionarOrdenServicioService
       .consultarTipoAsignacion(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.tipoAsignacion = [];
             return;
@@ -322,10 +321,10 @@ export class CaracteristicasPresupuestoSFComponent
           }
           this.tipoAsignacion = datos.split(',');
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   abrirPanel(
@@ -551,8 +550,8 @@ export class CaracteristicasPresupuestoSFComponent
     this.gestionarOrdenServicioService
       .consultarProveeedorServicio(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaproveedor = [];
@@ -572,7 +571,7 @@ export class CaracteristicasPresupuestoSFComponent
             'idProveedor'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             const errorMsg: string =
@@ -592,7 +591,7 @@ export class CaracteristicasPresupuestoSFComponent
             );
           }
         }
-      );
+      });
   }
 
   agregarArticulo(datos: any): void {

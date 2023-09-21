@@ -1,25 +1,27 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute } from '@angular/router';
-import { LocationStrategy } from '@angular/common';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService } from "../../../../shared/alerta/services/alerta.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { BuscarCatalogo, GenerarHojaConsignacion, GenerarHojaConsignacionBusqueda, ProveedoresBusqueda } from '../../models/generar-hoja-consignacion.interface';
-import { UsuarioService } from '../../../usuarios/services/usuario.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { finalize } from 'rxjs';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import * as moment from 'moment';
-import { GenerarHojaConsignacionService } from '../../services/generar-hoja-consignacion.service';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { LazyLoadEvent } from 'primeng/api';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute} from '@angular/router';
+import {LocationStrategy} from '@angular/common';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {
+  BuscarCatalogo,
+  GenerarHojaConsignacion,
+  GenerarHojaConsignacionBusqueda,
+  ProveedoresBusqueda
+} from '../../models/generar-hoja-consignacion.interface';
+import {UsuarioService} from '../../../usuarios/services/usuario.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {GenerarHojaConsignacionService} from '../../services/generar-hoja-consignacion.service';
+import {GENERAR_FORMATO_BREADCRUMB} from '../../constants/breadcrumb';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {LazyLoadEvent} from 'primeng/api';
 
 @Component({
   selector: 'app-agregar-generar-hoja-consignacion',
@@ -91,10 +93,10 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
 
   inicializarAgregarActividadesForm() {
     this.agregarGenerarHojaConsignacionForm = this.formBuilder.group({
-      folio: new FormControl({ value: null, disabled: true }, []),
-      velatorio: new FormControl({ value: null, disabled: this.mode !== 'create' }, [Validators.required]),
-      fechaInicio: new FormControl({ value: null, disabled: this.mode !== 'create' }, [Validators.required]),
-      fechaFinal: new FormControl({ value: null, disabled: this.mode !== 'create' }, [Validators.required]),
+      folio: new FormControl({value: null, disabled: true}, []),
+      velatorio: new FormControl({value: null, disabled: this.mode !== 'create'}, [Validators.required]),
+      fechaInicio: new FormControl({value: null, disabled: this.mode !== 'create'}, [Validators.required]),
+      fechaFinal: new FormControl({value: null, disabled: this.mode !== 'create'}, [Validators.required]),
     });
   }
 
