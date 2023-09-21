@@ -56,8 +56,8 @@ export class ModalAgregarAtaudComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarTodoslosAtaudes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.ataudes = [];
             this.ataudesCompletos = [];
@@ -87,17 +87,17 @@ export class ModalAgregarAtaudComponent implements OnInit {
 
           arregloAtaudTemporal = datos;
 
-          this.inventarioSeleccionado.forEach((elemento:any) => {
-            arregloAtaudTemporal = arregloAtaudTemporal.filter((filtro:any) => {
+          this.inventarioSeleccionado.forEach((elemento: any) => {
+            arregloAtaudTemporal = arregloAtaudTemporal.filter((filtro: any) => {
               return filtro.idInventario != elemento;
             });
           });
 
 
           this.ataudesCompletos = arregloAtaudTemporal;
-          if(this.ataudesCompletos.length == 0){
+          if (this.ataudesCompletos.length == 0) {
             const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
-            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+            this.alertaService.mostrar(TipoAlerta.Info, stockMsg || 'Ya no hay stock de este artículo.');
           }
           this.ataudes = mapearArregloTipoDropdown(
             arregloAtaudTemporal,
@@ -105,7 +105,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
             'idInventario'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           try {
             const errorMsg: string =
@@ -125,7 +125,7 @@ export class ModalAgregarAtaudComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   selecionarAtaud(dd: Dropdown): void {
