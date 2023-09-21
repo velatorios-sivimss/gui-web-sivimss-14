@@ -1,48 +1,45 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'primeng/dynamicdialog';
-import { ModalSeleccionarBeneficiarioComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-seleccionar-beneficiario/modal-seleccionar-beneficiario.component';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DialogService} from 'primeng/dynamicdialog';
+import {
+  ModalSeleccionarBeneficiarioComponent
+} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-seleccionar-beneficiario/modal-seleccionar-beneficiario.component';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import { TipoDropdown } from '../../../../../models/tipo-dropdown';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {TipoDropdown} from '../../../../../models/tipo-dropdown';
 import {
   sexo,
   tipoOrden,
   nacionalidad, tipoOrdenSF,
 } from '../../../constants/catalogos-complementarios';
-import { PATRON_CURP } from '../../../../../utils/constantes';
-import { finalize } from 'rxjs/operators';
-import { HttpRespuesta } from '../../../../../models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { GenerarOrdenServicioService } from '../../../services/generar-orden-servicio.service';
-import { LoaderService } from '../../../../../shared/loader/services/loader.service';
-import { MensajesSistemaService } from '../../../../../services/mensajes-sistema.service';
-import { SERVICIO_BREADCRUMB } from '../../../constants/breadcrumb';
-import { ActivatedRoute } from '@angular/router';
+import {PATRON_CURP} from '../../../../../utils/constantes';
+import {finalize} from 'rxjs/operators';
+import {HttpRespuesta} from '../../../../../models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {GenerarOrdenServicioService} from '../../../services/generar-orden-servicio.service';
+import {LoaderService} from '../../../../../shared/loader/services/loader.service';
+import {MensajesSistemaService} from '../../../../../services/mensajes-sistema.service';
+import {SERVICIO_BREADCRUMB} from '../../../constants/breadcrumb';
+import {ActivatedRoute} from '@angular/router';
 import * as moment from 'moment';
-import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-// import { GestionarEtapasService } from '../../../services/gestionar-etapas.service';
+import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
-import { AltaODSInterface } from '../../../models/AltaODS.interface';
-import { ContratanteInterface } from '../../../models/Contratante.interface';
-import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import {FinadoInterface, FinadoSFInterface} from '../../../models/Finado.interface';
-import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
-import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
-import { CaracteristicasDelPresupuestoInterface } from '../../../models/CaracteristicasDelPresupuesto.interface';
-import { DetallePaqueteInterface } from '../../../models/DetallePaquete.interface';
-import { ServicioDetalleTrasladotoInterface } from '../../../models/ServicioDetalleTraslado.interface';
-import { DetallePresupuestoInterface } from '../../../models/DetallePresupuesto.interface';
-import { InformacionServicioVelacionInterface } from '../../../models/InformacionServicioVelacion.interface';
-import { InformacionServicioInterface } from '../../../models/InformacionServicio.interface';
-import { ModalConvenioPfComponent } from '../../modal-convenio-pf/modal-convenio-pf.component';
-import { Persona } from '../../../models/Persona.interface';
+import {ContratanteInterface} from '../../../models/Contratante.interface';
+import {CodigoPostalIterface} from '../../../models/CodigoPostal.interface';
+import {FinadoSFInterface} from '../../../models/Finado.interface';
+import {CaracteristicasPresupuestoInterface} from '../../../models/CaracteristicasPresupuesto,interface';
+import {CaracteristicasPaqueteInterface} from '../../../models/CaracteristicasPaquete.interface';
+import {CaracteristicasDelPresupuestoInterface} from '../../../models/CaracteristicasDelPresupuesto.interface';
+import {DetallePaqueteInterface} from '../../../models/DetallePaquete.interface';
+import {ServicioDetalleTrasladotoInterface} from '../../../models/ServicioDetalleTraslado.interface';
+import {DetallePresupuestoInterface} from '../../../models/DetallePresupuesto.interface';
+import {InformacionServicioVelacionInterface} from '../../../models/InformacionServicioVelacion.interface';
+import {InformacionServicioInterface} from '../../../models/InformacionServicio.interface';
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
-import {GenerarOrdenServicioSfService} from "../../../services/generar-orden-servicio-sf.service";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 @Component({
@@ -155,8 +152,8 @@ export class DatosFinadoSFComponent implements OnInit {
       .asObservable()
       .subscribe((datosEtapaFinado) => this.inicializarForm(datosEtapaFinado));
     this.datosFinado.tipoOrden.setValue(4);
-    if(this.datosFinado.unidadProcedencia.value)this.changeUnidad();
-    if(this.datosFinado.procedenciaFinado.value)this.changeProcedenciaFinado();
+    if (this.datosFinado.unidadProcedencia.value) this.changeUnidad();
+    if (this.datosFinado.procedenciaFinado.value) this.changeProcedenciaFinado();
     this.desabilitarTodo();
   }
 
@@ -166,40 +163,61 @@ export class DatosFinadoSFComponent implements OnInit {
 
   inicializarForm(datosEtapaFinado: any): void {
     this.form = this.formBuilder.group({
-     datosFinado: this.formBuilder.group({
-                 tipoOrden: [{value: datosEtapaFinado.datosFinado.tipoOrden,         disabled: false },[Validators.required]],
-                noContrato: [{value: datosEtapaFinado.datosFinado.noContrato,        disabled: false },[Validators.required]],
-        velatorioPrevision: [{value: datosEtapaFinado.datosFinado.velatorioPrevision,disabled: false},[Validators.required]],
-                 matricula: [{value: datosEtapaFinado.datosFinado.matricula,         disabled: false },[Validators.required]],
-                      curp: [{value: datosEtapaFinado.datosFinado.curp,              disabled: false },[Validators.required, Validators.pattern(PATRON_CURP)]],
-                       nss: [{value: datosEtapaFinado.datosFinado.nss,               disabled: false },[Validators.required]],
-                    nombre: [{value: datosEtapaFinado.datosFinado.nombre,            disabled: false },[Validators.required]],
-            primerApellido: [{value: datosEtapaFinado.datosFinado.primerApellido,    disabled: false,},[Validators.required]],
-           segundoApellido: [{value: datosEtapaFinado.datosFinado.segundoApellido,   disabled: false,},[Validators.required]],
-           fechaNacimiento: [{value: datosEtapaFinado.datosFinado.fechaNacimiento,   disabled: false,},[Validators.required]],
-                      edad: [{value: datosEtapaFinado.datosFinado.edad,              disabled: true },[Validators.required]],
-                      sexo: [{value: datosEtapaFinado.datosFinado.sexo,              disabled: false },[Validators.required]],
-              otroTipoSexo: [{value: datosEtapaFinado.datosFinado.otroTipoSexo,      disabled: false }],
-              nacionalidad: [{value: datosEtapaFinado.datosFinado.nacionalidad,      disabled: false },[Validators.required]],
-           lugarNacimiento: [{value: datosEtapaFinado.datosFinado.lugarNacimiento,   disabled: false,},[Validators.required]],
-            paisNacimiento: [{value: datosEtapaFinado.datosFinado.paisNacimiento,    disabled: false,},],
-            fechaDefuncion: [{value: datosEtapaFinado.datosFinado.fechaDefuncion,    disabled: false},[Validators.required]],
-               causaDeceso: [{value: datosEtapaFinado.datosFinado.causaDeceso,       disabled: false },[Validators.required]],
-               lugarDeceso: [{value: datosEtapaFinado.datosFinado.lugarDeceso,       disabled: false },[Validators.required]],
-                horaDeceso: [{value: datosEtapaFinado.datosFinado.horaDeceso,        disabled: false },[Validators.required]],
-        clinicaAdscripcion: [{value: datosEtapaFinado.datosFinado.clinicaAdscripcion,disabled: false,}],
-         unidadProcedencia: [{value: datosEtapaFinado.datosFinado.unidadProcedencia, disabled: false,},[Validators.required]],
-         procedenciaFinado: [{value: datosEtapaFinado.datosFinado.procedenciaFinado, disabled: false,},[Validators.required]],
-               tipoPension: [{value: datosEtapaFinado.datosFinado.tipoPension,       disabled: false }]
+      datosFinado: this.formBuilder.group({
+        tipoOrden: [{value: datosEtapaFinado.datosFinado.tipoOrden, disabled: false}, [Validators.required]],
+        noContrato: [{value: datosEtapaFinado.datosFinado.noContrato, disabled: false}, [Validators.required]],
+        velatorioPrevision: [{
+          value: datosEtapaFinado.datosFinado.velatorioPrevision,
+          disabled: false
+        }, [Validators.required]],
+        matricula: [{value: datosEtapaFinado.datosFinado.matricula, disabled: false}, [Validators.required]],
+        curp: [{
+          value: datosEtapaFinado.datosFinado.curp,
+          disabled: false
+        }, [Validators.required, Validators.pattern(PATRON_CURP)]],
+        nss: [{value: datosEtapaFinado.datosFinado.nss, disabled: false}, [Validators.required]],
+        nombre: [{value: datosEtapaFinado.datosFinado.nombre, disabled: false}, [Validators.required]],
+        primerApellido: [{value: datosEtapaFinado.datosFinado.primerApellido, disabled: false,}, [Validators.required]],
+        segundoApellido: [{
+          value: datosEtapaFinado.datosFinado.segundoApellido,
+          disabled: false,
+        }, [Validators.required]],
+        fechaNacimiento: [{
+          value: datosEtapaFinado.datosFinado.fechaNacimiento,
+          disabled: false,
+        }, [Validators.required]],
+        edad: [{value: datosEtapaFinado.datosFinado.edad, disabled: true}, [Validators.required]],
+        sexo: [{value: datosEtapaFinado.datosFinado.sexo, disabled: false}, [Validators.required]],
+        otroTipoSexo: [{value: datosEtapaFinado.datosFinado.otroTipoSexo, disabled: false}],
+        nacionalidad: [{value: datosEtapaFinado.datosFinado.nacionalidad, disabled: false}, [Validators.required]],
+        lugarNacimiento: [{
+          value: datosEtapaFinado.datosFinado.lugarNacimiento,
+          disabled: false,
+        }, [Validators.required]],
+        paisNacimiento: [{value: datosEtapaFinado.datosFinado.paisNacimiento, disabled: false,},],
+        fechaDefuncion: [{value: datosEtapaFinado.datosFinado.fechaDefuncion, disabled: false}, [Validators.required]],
+        causaDeceso: [{value: datosEtapaFinado.datosFinado.causaDeceso, disabled: false}, [Validators.required]],
+        lugarDeceso: [{value: datosEtapaFinado.datosFinado.lugarDeceso, disabled: false}, [Validators.required]],
+        horaDeceso: [{value: datosEtapaFinado.datosFinado.horaDeceso, disabled: false}, [Validators.required]],
+        clinicaAdscripcion: [{value: datosEtapaFinado.datosFinado.clinicaAdscripcion, disabled: false,}],
+        unidadProcedencia: [{
+          value: datosEtapaFinado.datosFinado.unidadProcedencia,
+          disabled: false,
+        }, [Validators.required]],
+        procedenciaFinado: [{
+          value: datosEtapaFinado.datosFinado.procedenciaFinado,
+          disabled: false,
+        }, [Validators.required]],
+        tipoPension: [{value: datosEtapaFinado.datosFinado.tipoPension, disabled: false}]
       }),
       direccion: this.formBuilder.group({
-             calle: [{ value: datosEtapaFinado.direccion.calle,      disabled: false },[Validators.required]],
-        noExterior: [{ value: datosEtapaFinado.direccion.noExterior, disabled: false },[Validators.required]],
-        noInterior: [{ value: datosEtapaFinado.direccion.noInterior, disabled: false },],
-                cp: [{ value: datosEtapaFinado.direccion.cp,         disabled: false },[Validators.required]],
-           colonia: [{ value: datosEtapaFinado.direccion.colonia,    disabled: false },[Validators.required]],
-         municipio: [{ value: datosEtapaFinado.direccion.municipio,  disabled: true  },[Validators.required]],
-            estado: [{ value: datosEtapaFinado.direccion.estado,     disabled: false },[Validators.required]],
+        calle: [{value: datosEtapaFinado.direccion.calle, disabled: false}, [Validators.required]],
+        noExterior: [{value: datosEtapaFinado.direccion.noExterior, disabled: false}, [Validators.required]],
+        noInterior: [{value: datosEtapaFinado.direccion.noInterior, disabled: false},],
+        cp: [{value: datosEtapaFinado.direccion.cp, disabled: false}, [Validators.required]],
+        colonia: [{value: datosEtapaFinado.direccion.colonia, disabled: false}, [Validators.required]],
+        municipio: [{value: datosEtapaFinado.direccion.municipio, disabled: true}, [Validators.required]],
+        estado: [{value: datosEtapaFinado.direccion.estado, disabled: false}, [Validators.required]],
       }),
     });
     datosEtapaFinado.datosFinado.folioValido;
@@ -414,7 +432,7 @@ export class DatosFinadoSFComponent implements OnInit {
     this.finado.fechaNac = moment(datosEtapaFinado.datosFinado.tipoOrden).format('yyyy-MM-DD');
     this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
     this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
-    this.finado.fechaDeceso =   moment(datosEtapaFinado.datosFinado.fechaDefuncion).format('yyyy-MM-DD');
+    this.finado.fechaDeceso = moment(datosEtapaFinado.datosFinado.fechaDefuncion).format('yyyy-MM-DD');
     this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
     this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
     this.finado.hora = moment(datosEtapaFinado.datosFinado.horaDeceso).format('HH:mm')
@@ -456,13 +474,13 @@ export class DatosFinadoSFComponent implements OnInit {
 
   desabilitarTodo(): void {
     const formFinado = this.form.controls['datosFinado'] as FormGroup;
-    const formFinadoExentos = ['noContrato','fechaDefuncion','causaDeceso','lugarDeceso','horaDeceso',
-    'clinicaAdscripcion','unidadProcedencia','procedenciaFinado','tipoPension']
+    const formFinadoExentos = ['noContrato', 'fechaDefuncion', 'causaDeceso', 'lugarDeceso', 'horaDeceso',
+      'clinicaAdscripcion', 'unidadProcedencia', 'procedenciaFinado', 'tipoPension']
     const formDireccion = this.form.controls['direccion'] as FormGroup;
     Object.keys(this.datosFinado).forEach((key) => {
-      if(formFinadoExentos.includes(key)) {
+      if (formFinadoExentos.includes(key)) {
         return
-      } else{
+      } else {
         formFinado.controls[key].disable();
       }
     });
@@ -473,18 +491,18 @@ export class DatosFinadoSFComponent implements OnInit {
   }
 
   consultarFolioPf(event: any): void {
-    if(!this.datosFinado.noContrato.value)return;
+    if (!this.datosFinado.noContrato.value) return;
     this.loaderService.activar()
     this.gestionarOrdenServicioService.consultarFolioSF(this.datosFinado.noContrato.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: (respuesta:HttpRespuesta<any>) => {
+      next: (respuesta: HttpRespuesta<any>) => {
         this.folioInvalido = false
-        if(respuesta.datos!= null){
-          const listaColonias:any = [{nombre: respuesta.datos.contratante.cp.desColonia}]
-          const [anio,mes,dia] = respuesta.datos.contratante.fechaNac.split('-');
+        if (respuesta.datos != null) {
+          const listaColonias: any = [{nombre: respuesta.datos.contratante.cp.desColonia}]
+          const [anio, mes, dia] = respuesta.datos.contratante.fechaNac.split('-');
           const fecha = new Date(anio + '/' + mes + '/' + dia);
-          this.colonias = mapearArregloTipoDropdown(listaColonias,'nombre','nombre')
+          this.colonias = mapearArregloTipoDropdown(listaColonias, 'nombre', 'nombre')
           this.idContratoPrevision = respuesta.datos.idConvenioPa
           this.idPersona = respuesta.datos.contratante.idPersona;
           this.idDomicilio = respuesta.datos.contratante.cp.idDomicilio
@@ -517,13 +535,13 @@ export class DatosFinadoSFComponent implements OnInit {
           return
         }
         this.folioInvalido = true
-        this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+        this.alertaService.mostrar(TipoAlerta.Info, this.mensajesSistemaService.obtenerMensajeSistemaPorId(
           +respuesta.mensaje
         ));
 
       },
       error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(
           +error.error.mensaje
         ));
       }

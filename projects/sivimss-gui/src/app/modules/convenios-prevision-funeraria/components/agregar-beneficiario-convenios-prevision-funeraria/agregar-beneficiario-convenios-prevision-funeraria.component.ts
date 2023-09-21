@@ -98,8 +98,8 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
     this.loaderService.activar();
     this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.velatorio = respuesta.datos!.map(
           (velatorio: any) => (
             {label: velatorio.nomVelatorio, value: velatorio.idVelatorio}
@@ -107,10 +107,10 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
         )
         this.f.velatorio.setValue(+usuario.idVelatorio);
       },
-      (error: HttpErrorResponse)=> {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
 
   validarEdad(): void {
@@ -135,13 +135,13 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
     this.agregarConvenioPFService.consultaCURPRFC("",this.f.curp.value).pipe(
       finalize(()=>this.loaderService.desactivar())
     ).subscribe({
-      next: (respuesta:HttpRespuesta<any>) => {
+      next: (respuesta:HttpRespuesta<any>): void => {
         if(respuesta.datos.desEstatusCURP.includes('Baja por Defunción')){
           this.curpDesactivado = true;
           this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
         }
       },
-      error: (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         this.alertaService.mostrar(
           TipoAlerta.Error,
           this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje)
@@ -210,16 +210,16 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarVelatorios(+this.f.delegacion.value).pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.velatorio = respuesta.datos.map((velatorio: any) => (
-          { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
   cancelar(): void {

@@ -193,11 +193,9 @@ export class RenovacionExtemporaneaComponent implements OnInit {
             if (respuesta?.datos) {
               this.convenioSeleccionado = respuesta?.datos;
               this.abrirModalHabilitarRenovacion();
-            } else {
-              if (respuesta.mensaje === '39') {
-                const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-                this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
-              }
+            } else if (respuesta.mensaje === '39') {
+              const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+              this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
             }
           },
           error: (error: HttpErrorResponse): void => {

@@ -1,19 +1,18 @@
-import { Proveedores } from './../../models/proveedores.interface';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { CATALOGOS_DUMMIES } from '../../constants/dummies';
-import { MENU_STEPPER } from '../../constants/menu-stepper';
-// import { Vehiculo } from '../../models/vehiculo.interface';
+import {Proveedores} from './../../models/proveedores.interface';
+import {Component} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MenuItem} from 'primeng/api';
+import {DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {CATALOGOS_DUMMIES} from '../../constants/dummies';
+import {MENU_STEPPER} from '../../constants/menu-stepper';
 
 @Component({
   selector: 'app-modificar-proveedor',
   templateUrl: './modificar-proveedor.component.html',
   styleUrls: ['./modificar-proveedor.component.scss']
 })
-export class ModificarProveedorComponent implements OnInit {
+export class ModificarProveedorComponent {
 
   menuStep: MenuItem[] = MENU_STEPPER;
   indice: number = 0;
@@ -34,8 +33,8 @@ export class ModificarProveedorComponent implements OnInit {
 
 
   constructor(public ref: DynamicDialogRef,
-    public config: DynamicDialogConfig,
-    private formBuilder: FormBuilder) {
+              public config: DynamicDialogConfig,
+              private formBuilder: FormBuilder) {
     const proveedorSeleccionado = this.config.data;
     this.id = proveedorSeleccionado.id;
     this.inicializarAgregarProveedorForm(proveedorSeleccionado);
@@ -43,9 +42,7 @@ export class ModificarProveedorComponent implements OnInit {
     this.inicializarDireccionReferenciaForm(proveedorSeleccionado);
   }
 
-  ngOnInit(): void { }
-
-  inicializarAgregarProveedorForm(proveedorSeleccionado: Proveedores): void  {
+  inicializarAgregarProveedorForm(proveedorSeleccionado: Proveedores): void {
     this.agregarProveedorForm = this.formBuilder.group({
       id: [{value: 1, disabled: true}],
       nombre: [{value: null, disabled: false}, [Validators.required]],
@@ -65,7 +62,7 @@ export class ModificarProveedorComponent implements OnInit {
     });
   }
 
-  inicializaragregarDireccionFiscalForm(proveedorSeleccionado: Proveedores):void {
+  inicializaragregarDireccionFiscalForm(proveedorSeleccionado: Proveedores): void {
     this.agregarDireccionFiscalForm = this.formBuilder.group({
       codigoPostal: [{value: null, disabled: false}, [Validators.required]],
       calle: [{value: null, disabled: false}, [Validators.required]],
@@ -77,7 +74,7 @@ export class ModificarProveedorComponent implements OnInit {
     });
   }
 
-  inicializarDireccionReferenciaForm(proveedorSeleccionado: Proveedores):void {
+  inicializarDireccionReferenciaForm(proveedorSeleccionado: Proveedores): void {
     this.formDireccionReferencia = this.formBuilder.group({
       codigoPostalReferencia: [{value: null, disabled: false}, [Validators.required]],
       calleReferencia: [{value: null, disabled: false}, [Validators.required]],
@@ -114,12 +111,12 @@ export class ModificarProveedorComponent implements OnInit {
   }
 
   abrirAgregarDireccionReferencia() {
-    if(this.direccionReferencia == false){
+    if (this.direccionReferencia == false) {
       this.direccionReferencia = true;
-     //  this.inicializarDireccionReferenciaForm();
-    }else{
-     this.direccionReferencia = false;
-     // this.formDireccionReferencia.reset;
+      //  this.inicializarDireccionReferenciaForm();
+    } else {
+      this.direccionReferencia = false;
+      // this.formDireccionReferencia.reset;
     }
   }
 
@@ -130,6 +127,7 @@ export class ModificarProveedorComponent implements OnInit {
   get adf() {
     return this.agregarDireccionFiscalForm.controls;
   }
+
   get adrf() {
     return this.formDireccionReferencia.controls;
   }

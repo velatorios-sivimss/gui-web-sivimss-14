@@ -1,9 +1,6 @@
 import {Injectable} from "@angular/core";
 
 @Injectable()
-export class OperadoresPorVelatorioService{
+export class OperadoresPorVelatorioService {
 
-  constructor() {
-
-  }
 }

@@ -1,16 +1,16 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {BaseService} from 'projects/sivimss-gui/src/app/utils/base-service';
 import {environment} from 'projects/sivimss-gui/src/environments/environment';
 import {Observable, of} from 'rxjs';
-import { TipoDropdown } from '../../../models/tipo-dropdown';
-import { mapearArregloTipoDropdown } from '../../../utils/funciones';
-import { AutenticacionService } from '../../../services/autenticacion.service';
+import {TipoDropdown} from '../../../models/tipo-dropdown';
+import {mapearArregloTipoDropdown} from '../../../utils/funciones';
+import {AutenticacionService} from '../../../services/autenticacion.service';
 
 @Injectable()
 export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
-  
+
   balanceSeleccionado: any;
   filtrosBalanceSeleccionados: any;
 
@@ -56,9 +56,8 @@ export class BalanceCajaService extends BaseService<HttpRespuesta<any>, any> {
   realizarCierre(datos: any) {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/actualiza-estatus-cierre`, datos);
   }
-  
-  generarReporte(filtro:any) : Observable<HttpRespuesta<any>> {
-    const tipo = filtro.tipoReporte;
+
+  generarReporte(filtro: any): Observable<HttpRespuesta<any>> {
     return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/reporte-balance-caja`, filtro)
   }
 

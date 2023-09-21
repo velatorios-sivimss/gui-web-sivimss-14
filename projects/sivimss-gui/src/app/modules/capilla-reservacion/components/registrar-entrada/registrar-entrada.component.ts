@@ -185,15 +185,14 @@ export class RegistrarEntradaComponent implements OnInit {
     const busqueda = this.filtrosArchivos();
     this.descargaArchivosService.descargarArchivo(this.capillaReservacionService.generarFormatEntregaCapilla(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
-
+    ).subscribe({
+      next: (respuesta): void => {
         console.log(respuesta)
       },
-      (error) => {
+      error: (error): void => {
         console.log(error)
       },
-    )
+    } )
   }
 
   filtrosArchivos() {
