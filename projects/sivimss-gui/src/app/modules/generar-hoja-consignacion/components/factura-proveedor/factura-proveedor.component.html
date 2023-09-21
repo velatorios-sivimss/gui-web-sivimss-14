@@ -1,50 +1,49 @@
-
-  <form [formGroup]="generarHojaConsignacionForm">
-    <div class="row mb-3">
-      <div class="col-md-12">
-        <label class="control-label" for="folio">Folio fiscal de la factura:</label>
-        <input id="folio" class="form-control" formControlName="folio" placeholder="">
-      </div>
+<form [formGroup]="generarHojaConsignacionForm">
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label class="control-label" for="folio">Folio fiscal de la factura:</label>
+      <input id="folio" class="form-control" formControlName="folio" placeholder="">
     </div>
-
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="archivoXml">Andjuntar archivo XML<span class="req">*</span>:</label>
-        <div>
-        <input id="archivoXml" class="form-control" formControlName="archivoXml" placeholder="">
-        <img src="assets/images/imagen-icono-eliminar.svg" class="ms" alt="icono ver">
-      </div>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="archivoPdf">Andjuntar archivo PDF<span class="req">*</span>:</label>
-        <div>
-        <input id="archivoPdf" class="form-control" formControlName="archivoPdf" placeholder="">
-        <img src="assets/images/imagen-icono-eliminar.svg" class="ms" alt="icono ver">
-        </div>
-      </div>
-    </div>
-
-    <div class="row mt-3">
-      <div class="col-md-6">
-        <div class='table-panel-custom'>
-          <label>Costo total en la hoja de consignación:</label>
-          <span>$100,000.00</span>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class='table-panel-custom'>
-          <label>Importe de la factura:</label>
-          <span>$100,000.00</span>
-        </div>
-      </div>
-    </div>
-  </form>
-
-  <div class="row mt-6 label-margen-custom">
-    <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>    
   </div>
 
-  <div class="flex justify-content-end mt-6 mb-6">
-    <button class="btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="guardar()">Guardar</button>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="archivoXml">Andjuntar archivo XML<span class="req">*</span>:</label>
+      <div>
+        <input id="archivoXml" class="form-control" formControlName="archivoXml" readonly>
+        <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="archivoPdf">Andjuntar archivo PDF<span class="req">*</span>:</label>
+      <div>
+        <input id="archivoPdf" class="form-control" formControlName="archivoPdf" readonly>
+        <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+      </div>
+    </div>
   </div>
+
+  <div class="row mt-3">
+    <div class="col-md-6">
+      <div class='table-panel-custom'>
+        <label>Costo total en la hoja de consignación:</label>
+        <span>$100,000.00</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class='table-panel-custom'>
+        <label>Importe de la factura:</label>
+        <span>$100,000.00</span>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="row mt-6 label-margen-custom">
+  <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>
+</div>
+
+<div class="flex justify-content-end mt-6 mb-6">
+  <button class="btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
+  <button type="button" class="ml-4 btn btn-primary btn-md" (click)="guardar()">Guardar</button>
+</div>
