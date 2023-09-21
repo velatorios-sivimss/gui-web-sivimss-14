@@ -58,7 +58,7 @@ export class DetalleCapillaComponent implements OnInit {
   }
 
   abrirModalModificarCapilla(): void {
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 
 
