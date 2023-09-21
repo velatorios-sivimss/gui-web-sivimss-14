@@ -227,10 +227,10 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     this.validarFormularioVacio(false,'local');
     this.agregarConvenioPFService.consultaCURPRFC("",this.fp.curp.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if((respuesta.datos[0]?.curp ?? null) != null){
-          const [anio,mes,dia] = respuesta.datos[0].fechaNacimiento.split('-')
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if ((respuesta.datos[0]?.curp ?? null) != null) {
+          const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-')
           this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
@@ -242,12 +242,12 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo)
           this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
           this.cambioTipoSexo();
-        }else if( respuesta.mensaje === ""){
-          if(respuesta.datos.curp === "" || respuesta.datos.curp == null){
+        } else if (respuesta.mensaje === "") {
+          if (respuesta.datos.curp === "" || respuesta.datos.curp == null) {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
             return
           }
-          const [dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
+          const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/')
           this.fp.nombre.setValue(respuesta.datos.nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
@@ -256,21 +256,21 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.cambioTipoSexo();
           this.consultarLugarNacimiento(respuesta.datos.desEstado);
         }
-        if(respuesta.datos[0].tieneConvenio>0){
-          if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+        if (respuesta.datos[0].tieneConvenio > 0) {
+          if (this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')) {
             this.folioRedireccion = respuesta.datos[0].folioConvenio;
             this.fechaRedireccion = respuesta.datos[0].fecha;
             this.confirmarRedireccionamiento = true
             return
-          }else{
+          } else {
             window.location.reload()
           }
         }
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
       }
-    )
+    })
   }
 
   consultarLugarNacimiento(entidad:string): void {
@@ -328,16 +328,16 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC(this.fp.rfc.value,"").pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
 
-        if(respuesta.datos[0].tieneConvenio>0){
-          if(this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')){
+        if (respuesta.datos[0].tieneConvenio > 0) {
+          if (this.router.url.includes('convenios-prevision-funeraria/ingresar-nuevo-convenio')) {
             this.folioRedireccion = respuesta.datos[0].folioConvenio;
             this.fechaRedireccion = respuesta.datos[0].fecha;
             this.confirmarRedireccionamiento = true
             return
-          }else{
+          } else {
             window.location.reload()
           }
         }
@@ -355,10 +355,10 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
         // this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
         // this.fp.telefono.setValue(respuesta.datos[0].telefono)
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
       }
-    )
+    })
   }
 
   consultarMatricula(): void {
@@ -366,16 +366,16 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarMatriculaSiap(this.fp.matricula.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(!respuesta.datos){
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (!respuesta.datos) {
           this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
         }
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
       }
-    )
+    })
   }
 
   consultarCP(): void {
@@ -383,18 +383,18 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.consutaCP(+this.fp.cp.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        this.colonias = mapearArregloTipoDropdown(respuesta.datos,'colonia','colonia')
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'colonia', 'colonia')
         this.fp.estado.setValue(respuesta.datos[0]?.estado);
         this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
         this.fp.pais.setValue(119);
-        this.validarFormularioVacio(false,'local');
+        this.validarFormularioVacio(false, 'local');
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
       }
-    )
+    })
   }
 
   consultarFolioPersona(): void {
@@ -403,34 +403,32 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarFolioPersona(this.folioConvenio).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(!respuesta.datos)return;
-          const [anio,mes,dia] = respuesta.datos.datosContratante.fechaNacimiento.split('-')
-          this.fp.curp.setValue(respuesta.datos.datosContratante.curp);
-          this.fp.rfc.setValue(respuesta.datos.datosContratante.rfc);
-          this.fp.nombre.setValue(respuesta.datos.datosContratante.nombrePersona);
-          this.fp.primerApellido.setValue(respuesta.datos.datosContratante.primerApellido);
-          this.fp.segundoApellido.setValue(respuesta.datos.datosContratante.segundoApellido);
-          this.fp.correoElectronico.setValue(respuesta.datos.datosContratante.correo);
-          this.fp.telefono.setValue(respuesta.datos.datosContratante.telefono);
-          this.fp.calle.setValue(respuesta.datos.datosContratante.calle);
-          this.fp.numeroExterior.setValue(respuesta.datos.datosContratante.numExterior)
-          this.fp.numeroInterior.setValue(respuesta.datos.datosContratante.numInterior);
-          this.fp.cp.setValue(respuesta.datos.datosContratante.cp);
-          this.fp.colonia.setValue(respuesta.datos.datosContratante.colonia);
-          this.fp.municipio.setValue(respuesta.datos.datosContratante.municipio);
-          this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
-          this.fp.pais.setValue(+respuesta.datos.datosContratante.idPais);
-          this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
-          this.fp.idPersona.setValue(+respuesta.datos.datosContratante.idPersona)
-          this.fp.sexo.setValue(+respuesta.datos.datosContratante.numSexo)
-          this.fp.otroSexo.setValue(respuesta.datos.datosContratante.otroSexo)
-          this.fp.entidadFederativa.setValue(+respuesta.datos.datosContratante.idEstado)
-          this.fp.fechaNacimiento.setValue(new Date(anio + '-' + mes + '-' + dia))
-          this.fp.idContratante.setValue(+respuesta.datos.datosContratante.idContratante)
-
-
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (!respuesta.datos) return;
+        const [anio, mes, dia] = respuesta.datos.datosContratante.fechaNacimiento.split('-')
+        this.fp.curp.setValue(respuesta.datos.datosContratante.curp);
+        this.fp.rfc.setValue(respuesta.datos.datosContratante.rfc);
+        this.fp.nombre.setValue(respuesta.datos.datosContratante.nombrePersona);
+        this.fp.primerApellido.setValue(respuesta.datos.datosContratante.primerApellido);
+        this.fp.segundoApellido.setValue(respuesta.datos.datosContratante.segundoApellido);
+        this.fp.correoElectronico.setValue(respuesta.datos.datosContratante.correo);
+        this.fp.telefono.setValue(respuesta.datos.datosContratante.telefono);
+        this.fp.calle.setValue(respuesta.datos.datosContratante.calle);
+        this.fp.numeroExterior.setValue(respuesta.datos.datosContratante.numExterior)
+        this.fp.numeroInterior.setValue(respuesta.datos.datosContratante.numInterior);
+        this.fp.cp.setValue(respuesta.datos.datosContratante.cp);
+        this.fp.colonia.setValue(respuesta.datos.datosContratante.colonia);
+        this.fp.municipio.setValue(respuesta.datos.datosContratante.municipio);
+        this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
+        this.fp.pais.setValue(+respuesta.datos.datosContratante.idPais);
+        this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
+        this.fp.idPersona.setValue(+respuesta.datos.datosContratante.idPersona)
+        this.fp.sexo.setValue(+respuesta.datos.datosContratante.numSexo)
+        this.fp.otroSexo.setValue(respuesta.datos.datosContratante.otroSexo)
+        this.fp.entidadFederativa.setValue(+respuesta.datos.datosContratante.idEstado)
+        this.fp.fechaNacimiento.setValue(new Date(anio + '-' + mes + '-' + dia))
+        this.fp.idContratante.setValue(+respuesta.datos.datosContratante.idContratante)
 
         this.fp.enfermedadPrexistente.setValue(+respuesta.datos.datosContratante.idEnfermedadPreexistente);
         this.fp.otraEnfermedad.setValue(respuesta.datos.datosContratante.otraEnfermedad);
@@ -463,23 +461,23 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
         // }
 
 
-          // this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
-          // this.fp.matricula.setValue(respuesta.datosContratante.matricula);
-          // this.fp.calle.setValue(respuesta.datos.datosContratante.calle);
-          // this.fp.numeroExterior.setValue(respuesta.datos.datosContratante.numeroExterior);
-          // this.fp.numeroInterior.setValue(respuesta.datos.datosContratante.numeroInterior);
-          // this.fp.cp.setValue(respuesta.datos.datosContratante.cp);
-          // this.fp.colonia.setValue(respuesta.datos.datosContratante.colonia);
-          // this.fp.municipio.setValue(respuesta.datos.datosContratante.municipio);
-          // this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
-          // this.fp.pais.setValue(respuesta.datos.datosContratante.pais);
-          // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
-          // this.fp.otraEnfermedad.setValue(respuesta.datos.datosContratante.otraEnfermedad);
+        // this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
+        // this.fp.matricula.setValue(respuesta.datosContratante.matricula);
+        // this.fp.calle.setValue(respuesta.datos.datosContratante.calle);
+        // this.fp.numeroExterior.setValue(respuesta.datos.datosContratante.numeroExterior);
+        // this.fp.numeroInterior.setValue(respuesta.datos.datosContratante.numeroInterior);
+        // this.fp.cp.setValue(respuesta.datos.datosContratante.cp);
+        // this.fp.colonia.setValue(respuesta.datos.datosContratante.colonia);
+        // this.fp.municipio.setValue(respuesta.datos.datosContratante.municipio);
+        // this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
+        // this.fp.pais.setValue(respuesta.datos.datosContratante.pais);
+        // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
+        // this.fp.otraEnfermedad.setValue(respuesta.datos.datosContratante.otraEnfermedad);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
       }
-    );
+    });
   }
 
 

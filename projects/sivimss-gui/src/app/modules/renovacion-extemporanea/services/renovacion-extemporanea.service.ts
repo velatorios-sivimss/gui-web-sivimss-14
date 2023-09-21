@@ -6,7 +6,6 @@ import { environment } from "projects/sivimss-gui/src/environments/environment";
 import { HttpRespuesta } from "../../../models/http-respuesta.interface";
 import { BaseService } from "../../../utils/base-service";
 import {
-  ConveniosPrevision,
   FiltrosConveniosPrevision,
   GenerarRenovacionConvenio
 } from "../models/convenios-prevision.interface";

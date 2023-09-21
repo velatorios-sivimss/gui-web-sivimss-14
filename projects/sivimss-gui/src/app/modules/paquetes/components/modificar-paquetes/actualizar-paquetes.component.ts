@@ -247,19 +247,11 @@ export class ActualizarPaquetesComponent implements OnInit {
         servicios: this.servicios,
         articulos: this.articulos,
       };
-      const detalleRef: DynamicDialogRef = this.dialogService.open(VerDetallePaquetesComponent, {
+      this.dialogService.open(VerDetallePaquetesComponent, {
         data: { paquete: paqueteActualizado, modo: Accion.Modificar },
         header: "Actualizar paquete",
         width: "920px"
       });
-
-
-      // detalleRef.onClose.subscribe((res: HttpResponse) => {
-      //   if (res && res.respuesta === 'Ok') {
-      //     utils foundIndex = this.paquetes.findIndex((item: Paquete) => item.id === paquete.id);
-      //     this.paquetes[foundIndex] = res.paquete;
-      //   }
-      // });
     }
   }
 

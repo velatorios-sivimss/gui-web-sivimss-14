@@ -31,6 +31,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
   idInventario: number = 0;
   inventarioSeleccionado:number[] = [];
   idProveedor: number = 0;
+  nombreProveedor: string = '';
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -134,6 +135,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
         this.idInventario = datos.idInventario;
         this.idCategoria = datos.idCategoria;
         this.idProveedor = datos.idProveedor;
+        this.nombreProveedor = datos.nombreProveedor;
       }
     });
   }
@@ -156,7 +158,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
       concepto: this.concepto,
       coordOrigen: [],
       coordDestino: [],
-      proveedor: null,
+      proveedor: this.nombreProveedor ?? null,
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,

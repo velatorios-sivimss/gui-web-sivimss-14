@@ -7,7 +7,6 @@ import {environment} from "../../../../environments/environment";
 import {Observable, of} from "rxjs";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
-import {AgregarPlanSFPA} from "../../servicios-funerarios/models/servicios-funerarios.interface";
 import {FiltroReporte} from "../models/filtro-reporte.interface";
 
 @Injectable()
@@ -41,6 +40,11 @@ export class ReportesService extends BaseService<HttpRespuesta<any>, any>{
 
   consultarODSComisionPromotor(id_delegacion: number, id_velatorio: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-ordenes`,
+      {id_delegacion: id_delegacion, id_velatorio:id_velatorio});
+  }
+
+  consultarODSServiciosVelatorios(id_delegacion: number, id_velatorio: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/folio-ods`,
       {id_delegacion: id_delegacion, id_velatorio:id_velatorio});
   }
 

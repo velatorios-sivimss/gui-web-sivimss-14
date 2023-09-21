@@ -10,7 +10,7 @@ export interface NotaRemision {
   folioODS?: string;
   nomContratante?: string;
   motivo?: string;
-  total?: number;
+  total: number;
 }
 
 export type ClavesEstatus = {

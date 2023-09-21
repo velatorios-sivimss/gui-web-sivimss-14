@@ -9,7 +9,7 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="opciones"
-          placeholder="Selecciona velatorio">
+                    placeholder="Selecciona velatorio">
         </p-dropdown>
       </div>
     </div>
@@ -17,16 +17,18 @@
       <div class="col-md-6">
         <label class="control-label" for="tipoSala">Tipo de sala:</label>
         <p-dropdown id="tipoSala" class="form-control" formControlName="tipoSala" [options]="opciones"
-          placeholder="Selecciona tipo de sala">
+                    placeholder="Selecciona tipo de sala">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nombreSala">Nombre de la sala:</label>
         <p-autoComplete id="nombreSala" class="form-control" formControlName="nombreSala"
-          [showEmptyMessage]="true" [suggestions]="salasServicioFiltrados" (completeMethod)="filtrarSalas($event)"
-          [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa nombre de la sala" field="label"
-          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"
-          >
+                        [showEmptyMessage]="true" [suggestions]="salasServicioFiltrados"
+                        (completeMethod)="filtrarSalas($event)"
+                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete"
+                        placeholder="Ingresa nombre de la sala" field="label"
+                        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"
+        >
         </p-autoComplete>
       </div>
     </div>
@@ -44,18 +46,18 @@
     <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAgregarSala()">Agregar sala</button>
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="salas" [paginator]="salas.length > 0"
-    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+           [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Tipo de sala</th>
-        <th>Velatorio</th>
-        <th>Capacidad</th>
-        <th>Disponibilidad</th>
-        <th>Estatus</th>
-        <th></th>
+        <th scope="col">ID</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Tipo de sala</th>
+        <th scope="col">Velatorio</th>
+        <th scope="col">Capacidad</th>
+        <th scope="col">Disponibilidad</th>
+        <th scope="col">Estatus</th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-sala>

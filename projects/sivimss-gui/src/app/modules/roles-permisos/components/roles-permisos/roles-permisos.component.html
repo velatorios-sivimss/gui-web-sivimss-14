@@ -60,12 +60,12 @@
     <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="roles" [paginator]="roles.length > 0" [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion()">
         <ng-template pTemplate="header">
             <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Funcionabilidad</th>
-                <th>Permisos</th>
-                <th>Nivel</th>
-                <th></th>
+                <th scope="col">ID</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Funcionabilidad</th>
+                <th scope="col">Permisos</th>
+                <th scope="col">Nivel</th>
+                <th scope="col"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rol>
@@ -91,7 +91,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr>
-                <th colspan="9" class="p-2 text-center font-bold text-xl">
+                <th colspan="9" class="p-2 text-center font-bold text-xl" id="empty_message_roles_permisos">
                     No se encontro información relacionada a tu búsqueda
                 </th>
             </tr>

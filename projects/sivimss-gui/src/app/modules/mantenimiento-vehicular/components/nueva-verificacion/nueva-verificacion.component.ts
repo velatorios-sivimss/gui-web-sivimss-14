@@ -1,24 +1,23 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MENU_STEPPER } from '../../../inventario-vehicular/constants/menu-stepper';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
-import { ActivatedRoute, Router } from '@angular/router';
-import { obtenerFechaActual, obtenerHoraActual } from "../../../../utils/funciones-fechas";
-import { VerificacionInicio } from "../../models/verificacionInicio.interface";
-import { MantenimientoVehicularService } from "../../services/mantenimiento-vehicular.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { RegistroVerificacionInterface } from "../../models/registroVerificacion.interface";
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { MenuItem } from "primeng/api";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { RespuestaVerificacion } from "../../models/respuestaVerificacion.interface";
-import { VehiculoMantenimiento } from "../../models/vehiculoMantenimiento.interface";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { finalize } from "rxjs/operators";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MENU_STEPPER} from '../../../inventario-vehicular/constants/menu-stepper';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
+import {ActivatedRoute, Router} from '@angular/router';
+import {obtenerFechaActual, obtenerHoraActual} from "../../../../utils/funciones-fechas";
+import {VerificacionInicio} from "../../models/verificacionInicio.interface";
+import {MantenimientoVehicularService} from "../../services/mantenimiento-vehicular.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {RegistroVerificacionInterface} from "../../models/registroVerificacion.interface";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {MenuItem} from "primeng/api";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {RespuestaVerificacion} from "../../models/respuestaVerificacion.interface";
+import {VehiculoMantenimiento} from "../../models/vehiculoMantenimiento.interface";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 type VehiculoVerificacion = Omit<VehiculoMantenimiento, "ID_MTTO_REGISTRO" | "ID_MTTO_SOLICITUD" | "ID_MTTOVERIFINICIO">
 
@@ -52,9 +51,9 @@ export class NuevaVerificacionComponent implements OnInit {
   pasoNuevaVerificacion: number = 1;
 
   calibraciones: any[] = [
-    { rin: 13, presion: 30 },
-    { rin: 14, presion: 32 },
-    { rin: 15, presion: 34 },
+    {rin: 13, presion: 30},
+    {rin: 14, presion: 32},
+    {rin: 15, presion: 34},
   ]
   cicloCompleto: boolean = false;
 
@@ -89,15 +88,15 @@ export class NuevaVerificacionComponent implements OnInit {
 
   inicializarVerificacionForm(): void {
     this.nuevaVerificacionForm = this.formBuilder.group({
-      nivelAceite: [{ value: null, disabled: false }, [Validators.required]],
-      nivelAgua: [{ value: null, disabled: false }, [Validators.required]],
-      calibracionNeumaticosTraseros: [{ value: null, disabled: false }, [Validators.required]],
-      calibracionNeumaticosDelanteros: [{ value: null, disabled: false }, [Validators.required]],
-      nivelCombustible: [{ value: null, disabled: false }, [Validators.required]],
-      nivelBateria: [{ value: null, disabled: false }, [Validators.required]],
-      limpiezaInterior: [{ value: null, disabled: false }, [Validators.required]],
-      limpiezaExterior: [{ value: null, disabled: false }, [Validators.required]],
-      codigoFalla: [{ value: null, disabled: false }, [Validators.required]],
+      nivelAceite: [{value: null, disabled: false}, [Validators.required]],
+      nivelAgua: [{value: null, disabled: false}, [Validators.required]],
+      calibracionNeumaticosTraseros: [{value: null, disabled: false}, [Validators.required]],
+      calibracionNeumaticosDelanteros: [{value: null, disabled: false}, [Validators.required]],
+      nivelCombustible: [{value: null, disabled: false}, [Validators.required]],
+      nivelBateria: [{value: null, disabled: false}, [Validators.required]],
+      limpiezaInterior: [{value: null, disabled: false}, [Validators.required]],
+      limpiezaExterior: [{value: null, disabled: false}, [Validators.required]],
+      codigoFalla: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
@@ -213,23 +212,23 @@ export class NuevaVerificacionComponent implements OnInit {
   abrirRegistroMantenimiento(idMttoVehicular: number): void {
     this.ref.close(true);
     void this.router.navigate(['/programar-mantenimiento-vehicular/detalle-mantenimiento', idMttoVehicular],
-      { queryParams: { tabview: 0 } });
+      {queryParams: {tabview: 0}});
   }
 
   realizarVerificacion(id: number): void {
     this.cargadorService.activar();
     this.mantenimientoVehicularService.obtenerDetalleVerificacion(id).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          if (respuesta.datos.length === 0) return;
-          this.obtenerVehiculo(respuesta.datos[0]);
-          this.llenarFormulario(respuesta.datos[0]);
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.log(error)
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos.length === 0) return;
+        this.obtenerVehiculo(respuesta.datos[0]);
+        this.llenarFormulario(respuesta.datos[0]);
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error)
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   obtenerVehiculo(respuesta: RespuestaVerificacion): void {
