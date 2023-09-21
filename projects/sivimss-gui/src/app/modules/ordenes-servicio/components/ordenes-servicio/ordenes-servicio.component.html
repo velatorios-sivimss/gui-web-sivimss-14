@@ -185,8 +185,11 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion *appValidaRol="['CONSULTAR_ODS','ALTA']" titulo="Generar Orden complementaria"
-                                onCloseOnNavigation (click)="ordenComplementaria()"></app-overlay-panel-opcion>
+      <div *appValidaRol="['CONSULTAR_ODS','ALTA']">
+        <app-overlay-panel-opcion *ngIf="!ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')"
+             titulo="Generar Orden complementaria"
+                                  onCloseOnNavigation (click)="ordenComplementaria()"></app-overlay-panel-opcion>
+      </div>
       <div *appValidaRol="['CONSULTAR_ODS','MODIFICAR']">
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')
           && !ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')"
