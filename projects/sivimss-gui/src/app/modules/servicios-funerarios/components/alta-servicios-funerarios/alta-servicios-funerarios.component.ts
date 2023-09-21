@@ -371,16 +371,16 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarMatriculaSiap(formularioEnUso[posicion].matricula.value).pipe(
       finalize(()=> this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (!respuesta.datos) {
-          this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
+          this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(error.error.mensaje));
       }
-    );
+    } );
   }
 
   consultarNSS(posicion: number): void {
@@ -389,8 +389,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.cargadorService.activar();
     this.serviciosFunerariosService.consultarNSS(formularios[posicion].nss.value).pipe(
       finalize(()=> this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
         const fecha = new Date(Number(anio) + '/' + Number(mes) + '/' + Number(dia));
         formularios[posicion].curp.setValue(respuesta.datos.curp);
@@ -400,20 +400,20 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         formularios[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido)
         formularios[posicion].fechaNacimiento.setValue(fecha);
         formularios[posicion].sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1)
-        if(respuesta.datos.pais == 119)formularios[posicion].nacionalidad.setValue(1);
+        if (respuesta.datos.pais == 119) formularios[posicion].nacionalidad.setValue(1);
 
-        if(respuesta.datos.rfc != null){
-          this.validarUsuarioAfiliado("",respuesta.datos.rfc,"",posicion);
+        if (respuesta.datos.rfc != null) {
+          this.validarUsuarioAfiliado("", respuesta.datos.rfc, "", posicion);
         }
-        if(respuesta.datos.curp != null){
-          this.validarUsuarioAfiliado(respuesta.datos.curp,"","",posicion);
+        if (respuesta.datos.curp != null) {
+          this.validarUsuarioAfiliado(respuesta.datos.curp, "", "", posicion);
         }
 
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
-    );
+    });
   }
 
   sinEspacioDoble(posicion: number): void {
@@ -472,8 +472,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
     this.cargadorService.activar();
     this.serviciosFunerariosService.consutaCP(formularios[posicion].cp.value)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
             formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
             formularios[posicion].municipio.setValue(
@@ -488,10 +488,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
           formularios[posicion].municipio.patchValue(null);
           formularios[posicion].estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      } );
   }
 
   datosIguales(esIgual: boolean): void {
@@ -675,7 +675,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   redireccionarModificar(): void {
-    this.router.navigate(['./servicios-funerarios/modificar-pago'],
+    void this.router.navigate(['./servicios-funerarios/modificar-pago'],
       {
         queryParams:{
           idPlanSfpa: this.idPlanSfpaExistente
@@ -689,7 +689,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   }
 
   cancelar(): void {
-    this.router.navigate(["servicios-funerarios"]);
+    void this.router.navigate(["servicios-funerarios"]);
   }
 
   get fda() {

@@ -138,24 +138,21 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     let curp = "";
     tipo.length <= 13 ? rfc = tipo : curp = tipo;
     if(!this.ff.rfcCurp.value){return}
-
-
     this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC(rfc,curp).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
-        if(tipo.length <= 13){
+        if (tipo.length <= 13) {
           this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
-        }else{
+        } else {
           this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
         }
       }
-    )
+    })
   }
 
   consultarConvenioPersona(): void {
@@ -163,13 +160,13 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarFolioPersona(this.ff.numeroConvenio.value).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
       }
-    );
+    });
   }
 
   consultarConvenio(): void{
@@ -203,21 +200,21 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
 
     this.agregarConvenioPFService.consultarFolioConvenioEmpresa(this.ff.numeroConvenio.value).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         //TODO agregar id promotor
-        if(!respuesta.datos)return;
+        if (!respuesta.datos) return;
         this.ff.rfcCurp.setValue(respuesta.datos[0].rfc);
-        if(respuesta.datos[0]?.idPromotor){
+        if (respuesta.datos[0]?.idPromotor) {
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
           this.ff.listaPromotor.setValue(+respuesta.datos[0].idPromotor);
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error.error);
       }
-    )
+    } )
   }
 
   consultarFolioPersona(): void {
@@ -229,21 +226,21 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
 
     this.agregarConvenioPFService.consultarFolioPersona(this.ff.numeroConvenio.value).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(!respuesta.datos)return;
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (!respuesta.datos) return;
         this.ff.rfcCurp.setValue(respuesta.datos.datosContratante.curp);
-        if(respuesta.datos.datosContratante.idPromotor){
+        if (respuesta.datos.datosContratante.idPromotor) {
           this.ff.idContratante.setValue(respuesta.datos.datosContratante.idContratante);
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
           this.ff.listaPromotor.setValue(+respuesta.datos.datosContratante.idPromotor);
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error.error);
       }
-    )
+    })
   }
 
 
@@ -414,8 +411,8 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.velatorio = respuesta.datos!.map(
           (velatorio: any) => (
             {label: velatorio.nomVelatorio, value: velatorio.idVelatorio}
@@ -424,12 +421,12 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
         let velatorioSeleccionado = this.velatorio.filter(velatorio => {
           return velatorio.value == usuario.idVelatorio;
         })
-        this.velatorioDescripcion =  velatorioSeleccionado[0].label;
+        this.velatorioDescripcion = velatorioSeleccionado[0].label;
       },
-      (error: HttpErrorResponse)=> {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
       }
-    )
+    } )
   }
 
   mofificarModeloPersona(): void {
