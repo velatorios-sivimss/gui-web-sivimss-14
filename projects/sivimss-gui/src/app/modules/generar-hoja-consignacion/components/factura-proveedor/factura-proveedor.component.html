@@ -8,15 +8,19 @@
 
   <div class="row mb-3">
     <div class="col-md-6">
-      <label class="control-label" for="archivoXml">Andjuntar archivo XML<span class="req">*</span>:</label>
-      <div>
+      <label class="control-label" for="archivoXml">Adjuntar archivo XML<span class="req">*</span>:</label>
+      <div (click)="handleClick('archivoXml', 'xml')">
+        <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml" ngf-max-size="2MB"
+          (change)="addAttachment($event)">
         <input id="archivoXml" class="form-control" formControlName="archivoXml" readonly>
         <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
       </div>
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="archivoPdf">Andjuntar archivo PDF<span class="req">*</span>:</label>
-      <div>
+      <label class="control-label" for="archivoPdf">Adjuntar archivo PDF<span class="req">*</span>:</label>
+      <div (click)="handleClick('archivoPdf', 'pdf')">
+        <input class="hidden" type="file" id="upload-file-pdf" name="upload-file-pdf" accept=".pdf" ngf-max-size="2MB"
+          (change)="addAttachment($event)">
         <input id="archivoPdf" class="form-control" formControlName="archivoPdf" readonly>
         <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
       </div>
@@ -27,13 +31,13 @@
     <div class="col-md-6">
       <div class='table-panel-custom'>
         <label>Costo total en la hoja de consignación:</label>
-        <span>$100,000.00</span>
+        <span>{{costoTotal}}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class='table-panel-custom'>
         <label>Importe de la factura:</label>
-        <span>$100,000.00</span>
+        <span>{{importeFactura}}</span>
       </div>
     </div>
   </div>
@@ -45,5 +49,6 @@
 
 <div class="flex justify-content-end mt-6 mb-6">
   <button class="btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
-  <button type="button" class="ml-4 btn btn-primary btn-md" (click)="guardar()">Guardar</button>
+  <button type="button" class="ml-4 btn btn-primary btn-md" [disabled]="generarHojaConsignacionForm.invalid"
+    (click)="guardar()">Guardar</button>
 </div>
