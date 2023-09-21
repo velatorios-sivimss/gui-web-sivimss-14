@@ -4,7 +4,6 @@ import {HttpRespuesta} from "../../../models/http-respuesta.interface";
 import {HttpClient} from "@angular/common/http";
 import {AutenticacionService} from "../../../services/autenticacion.service";
 import {environment} from "../../../../environments/environment";
-import {Observable} from "rxjs";
 
 @Injectable()
 export class GenerarOrdenServicioSfService extends BaseService<HttpRespuesta<any>, any>{

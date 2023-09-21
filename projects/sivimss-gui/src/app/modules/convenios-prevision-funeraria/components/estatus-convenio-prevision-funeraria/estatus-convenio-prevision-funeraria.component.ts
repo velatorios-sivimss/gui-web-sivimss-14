@@ -39,19 +39,19 @@ export class EstatusConvenioPrevisionFunerariaComponent implements OnInit {
     this.agregarConvenioPFService.cambiarEstatusConvenio(
       {folioConvenio:this.convenioSeleccionado.folioConvenio,banderaActivo:estatus}).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        let idMensaje:number;
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        let idMensaje: number;
         estatus ? idMensaje = 69 : idMensaje = 19
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(idMensaje);
         this.alertaService.mostrar(TipoAlerta.Exito, errorMsg);
         this.ref.close(true);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
       }
-    )
+    })
   }
 
   cancelar(): void {

@@ -1,20 +1,19 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { EtapaEstado } from '../../../shared/etapas/models/etapa-estado.enum';
-import { Etapa } from '../../../shared/etapas/models/etapa.interface';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {EtapaEstado} from '../../../shared/etapas/models/etapa-estado.enum';
+import {Etapa} from '../../../shared/etapas/models/etapa.interface';
 
-import { AltaODSInterface } from '../models/AltaODS.interface';
-import { ContratanteInterface } from '../models/Contratante.interface';
-import { CodigoPostalIterface } from '../models/CodigoPostal.interface';
-import {FinadoInterface, FinadoSFInterface} from '../models/Finado.interface';
-import { CaracteristicasPresupuestoInterface } from '../models/CaracteristicasPresupuesto,interface';
-import { CaracteristicasPaqueteInterface } from '../models/CaracteristicasPaquete.interface';
-import { CaracteristicasDelPresupuestoInterface } from '../models/CaracteristicasDelPresupuesto.interface';
-import { DetallePaqueteInterface } from '../models/DetallePaquete.interface';
-import { ServicioDetalleTrasladotoInterface } from '../models/ServicioDetalleTraslado.interface';
-import { DetallePresupuestoInterface } from '../models/DetallePresupuesto.interface';
-import { InformacionServicioVelacionInterface } from '../models/InformacionServicioVelacion.interface';
-import { InformacionServicioInterface } from '../models/InformacionServicio.interface';
+import {ContratanteInterface} from '../models/Contratante.interface';
+import {CodigoPostalIterface} from '../models/CodigoPostal.interface';
+import {FinadoSFInterface} from '../models/Finado.interface';
+import {CaracteristicasPresupuestoInterface} from '../models/CaracteristicasPresupuesto,interface';
+import {CaracteristicasPaqueteInterface} from '../models/CaracteristicasPaquete.interface';
+import {CaracteristicasDelPresupuestoInterface} from '../models/CaracteristicasDelPresupuesto.interface';
+import {DetallePaqueteInterface} from '../models/DetallePaquete.interface';
+import {ServicioDetalleTrasladotoInterface} from '../models/ServicioDetalleTraslado.interface';
+import {DetallePresupuestoInterface} from '../models/DetallePresupuesto.interface';
+import {InformacionServicioVelacionInterface} from '../models/InformacionServicioVelacion.interface';
+import {InformacionServicioInterface} from '../models/InformacionServicio.interface';
 import {AltaODSSFInterface} from "../models/AltaODSSF.interface";
 
 @Injectable()
@@ -23,15 +22,15 @@ export class GestionarEtapasActualizacionSFService {
   contratante: ContratanteInterface = {} as ContratanteInterface;
   cp: CodigoPostalIterface = {} as CodigoPostalIterface;
   finado: FinadoSFInterface = {} as FinadoSFInterface;
-  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface ={} as CaracteristicasPresupuestoInterface;
-  caracteristicasPaquete: CaracteristicasPaqueteInterface ={} as CaracteristicasPaqueteInterface;
-  detallePaquete: Array<DetallePaqueteInterface> =[] as Array<DetallePaqueteInterface>;
-  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface ={} as ServicioDetalleTrasladotoInterface;
+  caracteristicasPresupuesto: CaracteristicasPresupuestoInterface = {} as CaracteristicasPresupuestoInterface;
+  caracteristicasPaquete: CaracteristicasPaqueteInterface = {} as CaracteristicasPaqueteInterface;
+  detallePaquete: Array<DetallePaqueteInterface> = [] as Array<DetallePaqueteInterface>;
+  servicioDetalleTraslado: ServicioDetalleTrasladotoInterface = {} as ServicioDetalleTrasladotoInterface;
   paquete: DetallePaqueteInterface = {} as DetallePaqueteInterface;
   cpFinado: CodigoPostalIterface = {} as CodigoPostalIterface;
   caracteristicasDelPresupuesto: CaracteristicasDelPresupuestoInterface =
     {} as CaracteristicasDelPresupuestoInterface;
-  detallePresupuesto: Array<DetallePresupuestoInterface> =[] as Array<DetallePresupuestoInterface>;
+  detallePresupuesto: Array<DetallePresupuestoInterface> = [] as Array<DetallePresupuestoInterface>;
   presupuesto: DetallePresupuestoInterface = {} as DetallePresupuestoInterface;
   servicioDetalleTrasladoPresupuesto: ServicioDetalleTrasladotoInterface = {} as ServicioDetalleTrasladotoInterface;
   informacionServicio: InformacionServicioInterface = {} as InformacionServicioInterface;
