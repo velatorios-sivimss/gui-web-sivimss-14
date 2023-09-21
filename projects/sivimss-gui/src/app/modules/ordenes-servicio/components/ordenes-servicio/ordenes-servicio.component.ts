@@ -114,14 +114,14 @@ export class OrdenesServicioComponent implements OnInit {
     this.loaderService.activar()
     this.consultarOrdenServicioService.consultaTipoODS().pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.tipoODS = mapearArregloTipoDropdown(respuesta.datos, 'tipoODS', 'idTipoODS') || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error)
       }
-    )
+    })
   }
 
   consultarEstatusODS(): void {

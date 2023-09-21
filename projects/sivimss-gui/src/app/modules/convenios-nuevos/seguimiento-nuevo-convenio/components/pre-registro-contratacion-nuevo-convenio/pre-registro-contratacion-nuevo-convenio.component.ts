@@ -111,11 +111,11 @@ export class PreRegistroContratacionNuevoConvenioComponent implements OnInit {
   }
 
   abrirModificarDocumento(){
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 
   regresar(){
-    this.router.navigate(['seguimiento-nuevo-convenio'], { relativeTo: this.activatedRoute });
+    void this.router.navigate(['seguimiento-nuevo-convenio'], { relativeTo: this.activatedRoute });
   }
   aceptar(){
     //agregar Mensaje

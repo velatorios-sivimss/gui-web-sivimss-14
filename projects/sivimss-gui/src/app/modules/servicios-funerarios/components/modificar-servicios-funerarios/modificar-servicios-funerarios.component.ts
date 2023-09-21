@@ -563,16 +563,14 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         formularios[1].clearValidators();
         formularios[1].updateValueAndValidity();
       }
+    } else if (this.fdc.nacionalidad.value == 1) {
+      formularios[2].reset()
+      formularios[3].setValidators(Validators.required);
     } else {
-      if (this.fdc.nacionalidad.value == 1) {
-        formularios[2].reset()
-        formularios[3].setValidators(Validators.required);
-      } else {
-        formularios[3].reset()
-        formularios[3].patchValue(null);
-        formularios[3].clearValidators();
-        formularios[3].updateValueAndValidity();
-      }
+      formularios[3].reset()
+      formularios[3].patchValue(null);
+      formularios[3].clearValidators();
+      formularios[3].updateValueAndValidity();
     }
   }
 
