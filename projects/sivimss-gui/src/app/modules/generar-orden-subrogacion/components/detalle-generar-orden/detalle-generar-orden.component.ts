@@ -1,24 +1,23 @@
-
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { OverlayPanel } from "primeng/overlaypanel";
-import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { GenerarOrdenSubrogacionService } from '../../services/generar-orden-subrogacion.service';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GenerarOrdenSubrogacion } from '../../models/generar-orden-subrogacion.interface';
-import { ConfirmationService } from 'primeng/api';
-import { DatePipe } from '@angular/common';
-import { finalize } from "rxjs/operators";
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {OverlayPanel} from "primeng/overlaypanel";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {GenerarOrdenSubrogacionService} from '../../services/generar-orden-subrogacion.service';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {GenerarOrdenSubrogacion} from '../../models/generar-orden-subrogacion.interface';
+import {ConfirmationService} from 'primeng/api';
+import {DatePipe} from '@angular/common';
+import {finalize} from "rxjs/operators";
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 
 @Component({
   selector: 'app-detalle-generar-orden',
@@ -75,12 +74,13 @@ export class DetalleGenerarOrdenComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private descargaArchivosService: DescargaArchivosService,
     private datePipe: DatePipe
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.ordenSeleccionada = this.generarOrdenSubrogacionService.ordenSeleccionada;
-    this.horaPartidaConFormato =   this.ordenSeleccionada.horaPartida.substring(0,5);
-    this.horaActual = this.datePipe.transform(new Date(), 'HH:mm:ss')?.substring(0,5);
+    this.horaPartidaConFormato = this.ordenSeleccionada.horaPartida.substring(0, 5);
+    this.horaActual = this.datePipe.transform(new Date(), 'HH:mm:ss')?.substring(0, 5);
     this.cargarVelatorios(true);
     this.inicializarCatalogos();
   }
@@ -93,7 +93,7 @@ export class DetalleGenerarOrdenComponent implements OnInit {
     let delegacionObtenida = this.catalogoDelegaciones.filter(d => d.value === parseInt(usuario.idDelegacion));
     this.delegacionDescripcion = delegacionObtenida[0].label;
   }
-  
+
   cargarVelatorios(cargaInicial: boolean = false): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     if (!cargaInicial) {
@@ -116,7 +116,7 @@ export class DetalleGenerarOrdenComponent implements OnInit {
 
   imprimir() {
     this.loaderService.activar();
-    let datos =  {
+    let datos = {
       idHojaSubrogacion: this.ordenSeleccionada.idHojaSubrogacion
     }
     const configuracionArchivo: OpcionesArchivos = {};
@@ -142,8 +142,7 @@ export class DetalleGenerarOrdenComponent implements OnInit {
   }
 
   modificar(esModificacion: boolean): void {
-    // void this.router.navigate([`formato`], { relativeTo: this.activatedRoute });
-    void this.router.navigate([`formato/${esModificacion}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`formato/${esModificacion}`], {relativeTo: this.activatedRoute});
   }
 
   get ef() {
