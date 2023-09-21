@@ -6,6 +6,7 @@ import {ConfirmacionServicio} from '../../../servicios/models/servicio.interface
 import {Capilla} from '../../models/capilla.interface';
 import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {HttpErrorResponse} from '@angular/common/http';
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 @Component({
   selector: 'app-detalle-capilla',
@@ -73,9 +74,9 @@ export class DetalleCapillaComponent implements OnInit {
     }
   }
 
-  cambiarEstatus() {
-    this.capillaService.cambiarEstatus({idCapilla: this.capillaSeleccionada.idCapilla}).subscribe(
-      (respuesta) => {
+  cambiarEstatus(): void {
+    this.capillaService.cambiarEstatus({idCapilla: this.capillaSeleccionada.idCapilla}).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.codigo === 200) {
           if (this.capillaSeleccionada.estatus) {
             this.alertaService.mostrar(TipoAlerta.Exito, 'Capilla activada correctamente');
@@ -85,11 +86,11 @@ export class DetalleCapillaComponent implements OnInit {
           this.ref.close(this.capillaSeleccionada);
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
 

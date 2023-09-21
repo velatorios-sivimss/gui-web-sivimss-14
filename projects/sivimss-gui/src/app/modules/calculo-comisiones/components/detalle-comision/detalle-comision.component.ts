@@ -1,22 +1,28 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { DetalleODS, DetallePromotor, DetalleConvenioPF, DetalleComisiones,FiltroComisiones } from '../../models/detalle-comision.interface';
-import { FormatoDetalleComisiones, OpcionesArchivos } from '../../models/formato-detalle-comisiones.interface';
-import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { ActivatedRoute } from '@angular/router';
+import {Component, Input, OnInit} from '@angular/core';
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {
+  DetalleODS,
+  DetallePromotor,
+  DetalleConvenioPF,
+  DetalleComisiones,
+  FiltroComisiones
+} from '../../models/detalle-comision.interface';
+import {FormatoDetalleComisiones, OpcionesArchivos} from '../../models/formato-detalle-comisiones.interface';
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {ActivatedRoute} from '@angular/router';
 import {CalculoComisionesService} from '../../services/calculo-comisiones.service';
-import { finalize } from 'rxjs';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {finalize} from 'rxjs';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { CATALOGOS_DUMMIES } from '../../../articulos/constants/dummies';
-import { ModalComisionComponent } from '../modal-comision/modal-comision.component';
+import {CATALOGOS_DUMMIES} from '../../../articulos/constants/dummies';
+import {ModalComisionComponent} from '../modal-comision/modal-comision.component';
 import * as moment from "moment/moment";
 
 @Component({
@@ -64,7 +70,8 @@ export class DetalleComisionComponent implements OnInit {
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     if (!this.detalleForm) {
@@ -87,18 +94,18 @@ export class DetalleComisionComponent implements OnInit {
 
   importeTotalODS(): void {
     this.totalODS = this.detalleODS.reduce((
-      acc,
-      obj,
-    ) => acc +  (obj.importeODS!) ,
-    0);
+        acc,
+        obj,
+      ) => acc + (obj.importeODS!),
+      0);
   }
 
   importeTotalConveniosPf(): void {
     this.totalConveniosPF = this.detalleConveniosPF.reduce((
-      acc,
-      obj,
-    ) => acc +  (obj.importeCPF!) ,
-    0);
+        acc,
+        obj,
+      ) => acc + (obj.importeCPF!),
+      0);
   }
 
   inicializarFiltroForm(): void {
@@ -109,7 +116,7 @@ export class DetalleComisionComponent implements OnInit {
   }
 
   obtenerDetalleComision() {
-    this.listaComisiones=[];
+    this.listaComisiones = [];
     if (this.detallePromotor.idPromotor) {
       const filtros: FiltroComisiones = this.filtrosCalculoComision();
       this.calculoComisionesService.obtenerDetalleComisiones(filtros).pipe(
@@ -221,6 +228,7 @@ export class DetalleComisionComponent implements OnInit {
       },
     });
   }
+
   crearReporteDetalleComisiones(tipoReporte: string): FormatoDetalleComisiones {
     const mes = this.formComisiones.get('mes')?.value !== null ? moment(this.formComisiones.get('mes')?.value).format('MM') : null;
     return {
@@ -241,11 +249,11 @@ export class DetalleComisionComponent implements OnInit {
       monComision: this.detallePromotor.montoComision,
       anioCalculo: this.formComisiones.get("anio")?.value,
       mesCalculo: mes,
-      numOrdenesServicio: this.listaComisiones.length > 0 ?  this.listaComisiones[0].numOrdenesServicio : 0,
-      monComisionODS: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monComisionODS : 0,
-      numConveniosPF: this.listaComisiones.length > 0 ?  this.listaComisiones[0].numConveniosPF : 0,
-      monConveniosPF: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monConveniosPF : 0,
-      monBonoAplicado: this.listaComisiones.length > 0 ?  this.listaComisiones[0].monBonoAplicado : 0,
+      numOrdenesServicio: this.listaComisiones.length > 0 ? this.listaComisiones[0].numOrdenesServicio : 0,
+      monComisionODS: this.listaComisiones.length > 0 ? this.listaComisiones[0].monComisionODS : 0,
+      numConveniosPF: this.listaComisiones.length > 0 ? this.listaComisiones[0].numConveniosPF : 0,
+      monConveniosPF: this.listaComisiones.length > 0 ? this.listaComisiones[0].monConveniosPF : 0,
+      monBonoAplicado: this.listaComisiones.length > 0 ? this.listaComisiones[0].monBonoAplicado : 0,
       tipoReporte: tipoReporte
     }
   }

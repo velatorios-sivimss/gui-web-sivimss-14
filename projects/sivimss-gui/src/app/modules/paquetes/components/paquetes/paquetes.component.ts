@@ -195,9 +195,8 @@ export class PaquetesComponent implements OnInit {
   }
 
   abrirModalModificarPaquete() {
-    // this.inicializarModificarPaqueteForm();
     this.mostrarModalModificarPaquete = true;
-    this.router.navigate(['modificar-paquete', this.paqueteSeleccionado.id], {relativeTo: this.activatedRoute});
+    void this.router.navigate(['modificar-paquete', this.paqueteSeleccionado.id], {relativeTo: this.activatedRoute});
   }
 
   agregarPaquete(): void {

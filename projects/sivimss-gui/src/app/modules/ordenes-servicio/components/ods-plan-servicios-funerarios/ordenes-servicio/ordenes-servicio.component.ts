@@ -493,8 +493,8 @@ export class OrdenesServicioSFComponent implements OnInit {
       this.ordenServicioSeleccionada.idOrdenServicio, estatusODS
     ).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
@@ -508,11 +508,11 @@ export class OrdenesServicioSFComponent implements OnInit {
         link.click();
         link.remove();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    })
   }
 
   modificarODS(): void {

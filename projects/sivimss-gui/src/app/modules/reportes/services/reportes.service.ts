@@ -7,10 +7,9 @@ import {environment} from "../../../../environments/environment";
 import {Observable, of} from "rxjs";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
-import {FiltroReporte} from "../models/filtro-reporte.interface";
 
 @Injectable()
-export class ReportesService extends BaseService<HttpRespuesta<any>, any>{
+export class ReportesService extends BaseService<HttpRespuesta<any>, any> {
 
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, '', '', 25, '', '', '');
@@ -29,34 +28,33 @@ export class ReportesService extends BaseService<HttpRespuesta<any>, any>{
     return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
   }
 
-  obtenerCatalogoVelatoriosPorDelegacion(delegacion:number): Observable<HttpRespuesta<any>>{
+  obtenerCatalogoVelatoriosPorDelegacion(delegacion: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/velatorios/${delegacion}`);
   }
 
 
-  consultarTipoReportes(tipoReporte: number ): Observable<HttpRespuesta<any>> {
+  consultarTipoReportes(tipoReporte: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos_reportes}buscar-reportes/${tipoReporte}`);
   }
 
   consultarODSComisionPromotor(id_delegacion: number, id_velatorio: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-ordenes`,
-      {id_delegacion: id_delegacion, id_velatorio:id_velatorio});
+      {id_delegacion: id_delegacion, id_velatorio: id_velatorio});
   }
 
   consultarODSServiciosVelatorios(id_delegacion: number, id_velatorio: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/folio-ods`,
-      {id_delegacion: id_delegacion, id_velatorio:id_velatorio});
+      {id_delegacion: id_delegacion, id_velatorio: id_velatorio});
   }
 
   consultarPromotoresComisionPromotor(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/consultar-promotores`);
   }
 
-  generarReporte(filtros: any,tipoReporte: string): Observable<HttpRespuesta<any>> {
+  generarReporte(filtros: any, tipoReporte: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar` + tipoReporte,
       filtros);
   }
-
 
 
 }

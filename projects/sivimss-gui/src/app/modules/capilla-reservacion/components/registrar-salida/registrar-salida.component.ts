@@ -66,7 +66,6 @@ export class RegistrarSalidaComponent implements OnInit {
             if (x.idCapilla == this.idCapilla) {
               this.registroCapilla = x;
               this.registroCapilla.fechaEntrada = this.registroCapilla.fechaEntrada?.replace(/-/g, "/");
-              return
             }
           });
         }

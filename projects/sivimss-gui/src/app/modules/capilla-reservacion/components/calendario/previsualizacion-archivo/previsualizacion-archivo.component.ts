@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit,Renderer2} from '@angular/core';
+import {AfterViewInit, Component, Renderer2} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
@@ -6,7 +6,7 @@ import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
   templateUrl: './previsualizacion-archivo.component.html',
   styleUrls: ['./previsualizacion-archivo.component.scss']
 })
-export class PrevisualizacionArchivoComponent implements OnInit,AfterViewInit {
+export class PrevisualizacionArchivoComponent implements AfterViewInit {
 
   blob: string = "";
 
@@ -14,10 +14,7 @@ export class PrevisualizacionArchivoComponent implements OnInit,AfterViewInit {
     private readonly ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private renderer: Renderer2,
-  ) { }
-
-  ngOnInit(): void {
-
+  ) {
   }
 
   ngAfterViewInit(): void {
@@ -26,7 +23,7 @@ export class PrevisualizacionArchivoComponent implements OnInit,AfterViewInit {
 
   guardar(): void {
     let link = this.renderer.createElement('a');
-    link.setAttribute('download','Disponibilidad de capillas');
+    link.setAttribute('download', 'Disponibilidad de capillas');
     link.setAttribute('href', this.blob);
     link.click();
     link.remove();

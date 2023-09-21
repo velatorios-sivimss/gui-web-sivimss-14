@@ -274,10 +274,10 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC("",this.fp.curp.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if((respuesta.datos[0]?.curp ?? null) != null){
-          const [anio,mes,dia] = respuesta.datos[0].fechaNacimiento.split('-')
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if ((respuesta.datos[0]?.curp ?? null) != null) {
+          const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-')
           this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
@@ -289,12 +289,12 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo);
           this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
           this.cambioTipoSexo();
-        }else if( respuesta.mensaje === ""){
-          if(respuesta.datos.curp === "" || respuesta.datos.curp == null){
+        } else if (respuesta.mensaje === "") {
+          if (respuesta.datos.curp === "" || respuesta.datos.curp == null) {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
             return
           }
-          const [dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
+          const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/')
           this.fp.nombre.setValue(respuesta.datos.nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
@@ -304,10 +304,10 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.consultarLugarNacimiento(respuesta.datos.desEstado);
         }
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
 
   consultarLugarNacimiento(entidad:string): void {
@@ -347,7 +347,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     if(!this.fp.rfc.value){return}
     if (this.personaForm.controls.rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
-      return;
     }
   }
 
@@ -356,23 +355,22 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarMatriculaSiap(this.fp.matricula.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(!respuesta.datos){
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (!respuesta.datos) {
           this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
         }
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
 
   limpiarDatosCurpRFC(posicion:number): void {
     this.fp.nombre.patchValue(null)
     this.fp.primerApellido.patchValue(null)
     this.fp.segundoApellido.patchValue(null)
-    // this.fp.idPersona.patchValue(null)
     if(posicion == 1)this.fp.rfc.patchValue(null)
     if(posicion == 2)this.fp.curp.patchValue(null)
     this.fp.correoElectronico.patchValue(null)

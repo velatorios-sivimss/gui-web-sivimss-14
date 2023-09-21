@@ -6,6 +6,7 @@ import { OverlayPanel } from 'primeng/overlaypanel';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { ArticulosService } from '../../services/articulos.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 @Component({
   selector: 'app-detalle-articulos',
@@ -68,9 +69,9 @@ export class DetalleArticulosComponent implements OnInit {
     }
   }
 
-  cambiarEstatus() {
-    this.articulosService.cambiarEstatus({ idArticulo: this.articuloSeleccionado.idArticulo }).subscribe(
-      (respuesta) => {
+  cambiarEstatus(): void {
+    this.articulosService.cambiarEstatus({ idArticulo: this.articuloSeleccionado.idArticulo }).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.codigo === 200) {
           if (this.articuloSeleccionado.estatus) {
             this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo desactivado correctamente');
@@ -80,11 +81,11 @@ export class DetalleArticulosComponent implements OnInit {
           this.ref.close(this.articuloSeleccionado);
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   regresar(): void {
