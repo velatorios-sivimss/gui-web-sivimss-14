@@ -3,41 +3,46 @@
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-4">
-        <label class="control-label" for="nivel">Nivel:</label>
+        <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
         <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
           placeholder="Selecciona el nivel" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="delegacion">Delegación:</label>
+        <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
           placeholder="Selecciona la delegación" (onChange)="cargarVelatorios()" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="velatorio">Velatorio:</label>
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-          placeholder="Selecciona el velatorio" [filter]="true">
+          placeholder="Selecciona el velatorio" [filter]="true" (onChange)="cargarProveedores()">
         </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-4">
-        <label class="control-label" for="folio">Folio:</label>
+        <label class="control-label" for="folio">Folio de hoja de consignación:</label>
         <input id="folio" class="form-control" formControlName="folio" folioOdsAlphanumeric trimmer
           placeholder="Ingresa el folio">
         <span class="campo-obligatorio"
           *ngIf="ff.folio?.errors?.required && (ff.folio?.dirty || ff.folio?.touched)">Este
           campo es obligatorio *.</span>
       </div>
-      <div class="col-md-8">
-        <label class="control-label" for="fecInicio">Rango de fechas:</label>
-      </div>
       <div class="col-md-4">
+        <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
+        <p-dropdown id="proveedor" class="form-control" formControlName="proveedor" [options]="catalogoProveedores"
+          placeholder="Selecciona el proveedor" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-md-2">
+        <label class="control-label" for="fecInicio">Fecha inicial<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" id="fecInicio" formControlName="fecInicio" [showIcon]="true"
           dateFormat="dd/mm/yy" placeholder="Fecha inicial"></p-calendar>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-2">
+        <label class="control-label" for="fecFin">Fecha final<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" id="fecFin" formControlName="fecFin" [showIcon]="true"
           dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual"></p-calendar>
       </div>
@@ -52,29 +57,32 @@
     </div>
   </form>
 </div>
+
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo"></h2>
     <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['PROMOTORES','ALTA']"
       (click)="agregarFormatoActividades()">Generar hoja</button>
   </div>
+
   <p-table styleClass="mt-5 mb-8" [value]="hojasConsignacion" [paginator]="hojasConsignacion.length > 0"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th id="idFecha">Fecha</th>
-        <th id="folio">Folio hoja de consignación</th>
-        <th id="velatorio">Proveedor</th>
-        <th id="acciones">Acciones</th>
+        <th pResizableColumn id="idFecha">Fecha</th>
+        <th pResizableColumn id="folio">Folio hoja de consignación</th>
+        <th pResizableColumn id="velatorio">Proveedor</th>
+        <th pResizableColumn id="acciones">Acciones</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-hojaConsignacion>
       <tr>
-        <td>{{hojaConsignacion.fecHojaConsignacion}}</td>
-        <td>{{hojaConsignacion.folioHojaConsignacion}}</td>
-        <td>{{hojaConsignacion.proveedor}}</td>
+        <td pResizableColumn>{{hojaConsignacion.fecHojaConsignacion}}</td>
+        <td pResizableColumn>{{hojaConsignacion.folioHojaConsignacion}}</td>
+        <td pResizableColumn>{{hojaConsignacion.proveedor}}</td>
         <td>
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
           <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
             <a (click)="detalleFormatoActividades(hojaConsignacion)">
               <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
@@ -83,13 +91,14 @@
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
+          </div>
         </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
         <th colspan="12" class="p-2 text-center font-bold text-xl col-md-12" id="empty-message-mtto-vehicular"
-          *ngIf="realizoBusqueda">
+          *ngIf="busquedaRealizada">
           No se encontró información relacionada a tu búsqueda
         </th>
       </tr>
@@ -100,7 +109,7 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
+      <div class="paginator-template" *ngIf='hojasConsignacion.length > 0'>
         <div class="export-table" *appValidaRol="['PROMOTORES','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
@@ -131,7 +140,7 @@
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
-    <app-overlay-panel-opciones *appValidaRol="['PROMOTORES','MODIFICACION']">
+    <app-overlay-panel-opciones>
       <app-overlay-panel-opcion (click)="abrirModalCargarFactura()" titulo="Cargar factura"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

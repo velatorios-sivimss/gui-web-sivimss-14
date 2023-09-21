@@ -13,21 +13,21 @@ const routes: Route[] = [
     }
   },
   {
-    path: 'agregar-actividades',
+    path: 'agregar-hoja',
     component: AgregarGenerarHojaConsignacionComponent,
     resolve: {
       respuesta: GenerarHojaConsignacionResolver
     },
   },
   {
-    path: 'detalle-de-actividades/:id',
+    path: 'detalle-de-hoja/:id',
     component: AgregarGenerarHojaConsignacionComponent,
     resolve: {
       respuesta: GenerarHojaConsignacionResolver
     },
   },
   {
-    path: 'modificar-actividades/:id',
+    path: 'modificar-hoja/:id',
     component: AgregarGenerarHojaConsignacionComponent,
     resolve: {
       respuesta: GenerarHojaConsignacionResolver
