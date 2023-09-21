@@ -38,7 +38,7 @@ export class DevolverArticuloComponent implements OnInit {
 
   inicializarFormulario(): void {
     this.formulario = this.formBuilder.group({
-      devolucionMotivo: [{value: null, disabled: false}, [Validators.required]]
+      devolucionMotivo: [{value: null, disabled: false}, [Validators.required, Validators.max(80)]]
     });
   }
 

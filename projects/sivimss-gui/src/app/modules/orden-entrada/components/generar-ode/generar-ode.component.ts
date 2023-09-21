@@ -172,7 +172,7 @@ export class GenerarOdeComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error al guardar la información. Intenta nuevamente.");
       }
     });
   }
