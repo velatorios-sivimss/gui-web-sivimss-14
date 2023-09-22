@@ -45,23 +45,23 @@
            appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Administrador</th>
-        <th>Responsable sanitario</th>
-        <th>Salas Cremación</th>
-        <th>Salas Embalsamamiento</th>
-        <th>Capillas de velación</th>
-        <th>Asignación</th>
-        <th>Dirección calle</th>
-        <th>Número exterior</th>
-        <th>Código postal</th>
-        <th>Colonia</th>
-        <th>Municipio</th>
-        <th>Estado</th>
-        <th>Teléfono</th>
-        <th>Estatus</th>
-        <th *appValidaRol="['VELATORIOS','MODIFICAR']"></th>
+        <th scope="col">ID</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Administrador</th>
+        <th scope="col">Responsable sanitario</th>
+        <th scope="col">Salas Cremación</th>
+        <th scope="col">Salas Embalsamamiento</th>
+        <th scope="col">Capillas de velación</th>
+        <th scope="col">Asignación</th>
+        <th scope="col">Dirección calle</th>
+        <th scope="col">Número exterior</th>
+        <th scope="col">Código postal</th>
+        <th scope="col">Colonia</th>
+        <th scope="col">Municipio</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Teléfono</th>
+        <th scope="col">Estatus</th>
+        <th scope="col" *appValidaRol="['VELATORIOS','MODIFICAR']"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-velatorio>

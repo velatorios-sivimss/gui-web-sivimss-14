@@ -1,39 +1,45 @@
 export interface GenerarFormatoActividades {
-  idFormato?: number;
+  idFormatoRegistro?: number;
   idVelatorio?: number;
   fecInicio?: string;
   fecFin?: string;
   actividades?: Actividades;
+  idFormato?: number | null;
 }
 
 export interface Actividades {
-  idActividad?: number;
-  fecActividad?: string;
-  hrInicio?: string;
-  hrFin?: string;
-  idPromotor?: number;
-  numPlaticas?: number;
-  unidad?: string;
-  empresa?: string;
-  actividadRealizada?: string;
-  observaciones?: string;
-  evidencia?: number;
+  idActividad?: number | null;
+  fecActividad?: string | null;
+  hrInicio?: string | null;
+  hrFin?: string | null;
+  idPromotor?: number | null;
+  numPlaticas?: number | null;
+  unidad?: string | null;
+  empresa?: string | null;
+  actividadRealizada?: string | null;
+  observaciones?: string | null;
+  evidencia?: number | null;
 }
 
 export interface GenerarFormatoActividadesBusqueda {
-  idFormato?: number;
-  fecha?: string;
-  folio?: string;
-  velatorio?: string;
-  numActividaes?: string;
-  horarioInicial?: string;
-  horarioFinal?: string;
-  personalVelatorio?: string;
-  puesto?: string;
-  numPlaticas?: string;
-  unidadImss?: string;
-  empresa?: string;
-  actividadRealizada?: string;
+  idFormatoRegistro?: number | null;
+  idActividad?: number | null;
+  fecActividad?: string | null;
+  folio?: string | null;
+  velatorio?: string | null;
+  numActividades?: string | null;
+  hrInicio?: string | null;
+  hrFin?: string | null;
+  idPromotor?: number | null;
+  nomPromotor?: string | null;
+  puesto?: string | null;
+  numPlaticas?: number | null;
+  unidad?: string | null;
+  empresa?: string | null;
+  actividadRealizada?: string | null;
+  observaciones?: string | null;
+  evidencia?: number | null;
+  banderaModificar?: number | null;
 }
 
 export interface BuscarGenerarFormatoActividades {
@@ -45,8 +51,13 @@ export interface BuscarGenerarFormatoActividades {
 }
 
 export interface BuscarCatalogo {
-  idDelegacion?: number | null;
-  idVelatorio?: number | null;
-  nomPromotor?: string | null;
   catalogo?: number | null;
+  idCatalogo?: number | null;
+  idVelatorio?: number | null;
+}
+
+export interface CatalogoPromotores {
+  idPromotor?: number;
+  nomPromotor?: string | null;
+  puesto?: string | null;
 }

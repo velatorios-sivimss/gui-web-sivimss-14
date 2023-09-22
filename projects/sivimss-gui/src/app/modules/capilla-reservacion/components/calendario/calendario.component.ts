@@ -22,8 +22,6 @@ import { finalize } from 'rxjs/operators'
 import { HttpErrorResponse } from '@angular/common/http'
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import { CalendarioCapillas } from '../../models/capilla-reservacion.interface'
-// import { MENU_SALAS } from '../../../reservar-salas/constants/menu-salas';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones'
 import { FormBuilder, FormGroup } from '@angular/forms'
 import * as moment from 'moment'
 
@@ -31,7 +29,6 @@ import { Moment } from 'moment'
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 import {VelatorioInterface} from "../../../reservar-salas/models/velatorio.interface";
-import {RegistrarEntradaComponent} from "../registrar-entrada/registrar-entrada.component";
 import {PrevisualizacionArchivoComponent} from "./previsualizacion-archivo/previsualizacion-archivo.component";
 
 @Component({
@@ -85,7 +82,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
 
     let respuesta = this.route.snapshot.data['respuesta'];
 
-    // this.velatorios = mapearArregloTipoDropdown(respuesta[0]?.datos, 'velatorio', 'id',);
     this.delegaciones = respuesta[1]!.map((delegacion: any) => (
       {label: delegacion.label, value: delegacion.value} )) || [];
   }
@@ -125,7 +121,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
         }
 
         if (this.velatorio) {
-          // this.cambiarMes('cambio mes');
           this.consultarCapillas();
         }
       },
@@ -143,8 +138,8 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       this.capillaReservacionService
         .consultaMes(mes, anio, this.velatorio)
         .pipe()
-        .subscribe(
-          (respuesta: HttpRespuesta<any>) => {
+        .subscribe({
+          next: (respuesta: HttpRespuesta<any>) => {
             this.loaderService.desactivar();
             this.calendarApi = this.calendarioCapillas.getApi();
             respuesta.datos.forEach((capilla: any) => {
@@ -158,7 +153,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
               this.tituloCapillas.forEach((tituloCapillas: any) => {
                 if (tituloCapillas.id == capilla.idCapilla) {
                   bandera = true
-                  return
                 }
               })
               if (!bandera) {
@@ -172,11 +166,11 @@ export class CalendarioComponent implements OnInit, OnDestroy {
             })
             this.tituloCapillas = [...this.tituloCapillas];
           },
-          (error: HttpErrorResponse) => {
+          error: (error: HttpErrorResponse) => {
             console.error(error);
             this.alertaService.mostrar(TipoAlerta.Error, error.message);
           },
-        )
+        })
     }
   }
 
@@ -194,7 +188,6 @@ export class CalendarioComponent implements OnInit, OnDestroy {
   // }
 
   handleEvents(events: EventApi[]) {
-    // console.log(events);
     this.currentEvents = events;
   }
 
@@ -211,8 +204,8 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     }
 
     this.loaderService.activar();
-    this.capillaReservacionService.consultarCapillas(parametros).pipe(finalize(() => this.loaderService.desactivar())).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    this.capillaReservacionService.consultarCapillas(parametros).pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         respuesta.datos.forEach((capilla: any) => {
           let bandera: boolean = false
           this.calendarioCapillas.getApi().addEvent({
@@ -222,14 +215,9 @@ export class CalendarioComponent implements OnInit, OnDestroy {
             color: capilla.color,
           });
 
-          if(respuesta.datos = []){
-
-          }
-
           this.tituloCapillas.forEach((tituloCapillas: any) => {
             if (tituloCapillas.id == capilla.idCapilla) {
               bandera = true;
-              return;
             }
           });
           if (!bandera) {
@@ -242,15 +230,14 @@ export class CalendarioComponent implements OnInit, OnDestroy {
           }
         });
       },
-
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const mensaje = this.alertas.filter((msj: any) => {
           return msj.idMensaje == error?.error?.mensaje;
         })
         this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       },
-    );
+    });
   }
 
 
@@ -274,20 +261,20 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     const busqueda = this.filtrosArchivos(tipoReporte);
     this.descargaArchivosService.descargarArchivo(this.capillaReservacionService.generarReporte(busqueda), configuracionArchivo).pipe(
       finalize( () => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
+    ).subscribe({
+      next: (respuesta) => {
         console.log(respuesta)
       },
-      (error) => {
+      error: (error) => {
         console.log(error)
       },
-    )
+    })
   }
 
   descargarPDF(): void {
     const busqueda = this.filtrosArchivos("pdf");
-    this.capillaReservacionService.generarReporte(busqueda).subscribe(
-      (respuesta:any) => {
+    this.capillaReservacionService.generarReporte(busqueda).subscribe({
+      next: (respuesta: any) => {
         const file = new Blob([respuesta], {type: 'application/pdf'});
         const url = window.URL.createObjectURL(file);
         this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
@@ -296,13 +283,13 @@ export class CalendarioComponent implements OnInit, OnDestroy {
           width: "920px",
         })
       }
-    );
+    });
   }
 
   descargarExcel(): void {
     const busqueda = this.filtrosArchivos("xls");
-    this.capillaReservacionService.generarReporte(busqueda).subscribe(
-      (respuesta:any) => {
+    this.capillaReservacionService.generarReporte(busqueda).subscribe({
+      next: (respuesta: any) => {
         const file = new Blob([respuesta], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,'});
         const url = window.URL.createObjectURL(file);
         this.archivoRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
@@ -311,7 +298,7 @@ export class CalendarioComponent implements OnInit, OnDestroy {
           width: "920px",
         })
       }
-    );
+    });
   }
 
   filtrosArchivos(tipoReporte: string) {
@@ -328,15 +315,15 @@ export class CalendarioComponent implements OnInit, OnDestroy {
     this.loaderService.activar();
     this.capillaReservacionService.obtenerCatalogoVelatoriosPorDelegacion(this.delegacion).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>)=> {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
 
   ngOnDestroy(): void {

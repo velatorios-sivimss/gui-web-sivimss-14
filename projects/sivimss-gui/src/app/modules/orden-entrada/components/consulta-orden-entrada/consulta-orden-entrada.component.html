@@ -17,7 +17,7 @@
     <div class="col-md-6">
       <label class="control-label" for="ordenEntrada">Orden de entrada (ODE):</label>
       <p-autoComplete id="ordenEntrada" class="form-control" formControlName="ordenEntrada" (keyup)="validarNombre(0)"
-        (keyup.space)="sinEspacioInicial(0)" autocomplete="ordenEntrada" 
+        (keyup.space)="sinEspacioInicial(0)" autocomplete="ordenEntrada"
         [suggestions]="catalogoOrdenesEntrada" (completeMethod)="consultarOrdenesEntrada($event)" [showEmptyMessage]="true"
         [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50" class="p-autocomplete"
         placeholder="Ingresa la orden de entrada"
@@ -27,7 +27,7 @@
     <div class="col-md-6">
       <label class="control-label" for="proveedor">Proveedor:</label>
       <p-autoComplete id="proveedor" class="form-control" formControlName="proveedor" (keyup)="validarNombre(0)"
-        (keyup.space)="sinEspacioInicial(0)" autocomplete="proveedor" 
+        (keyup.space)="sinEspacioInicial(0)" autocomplete="proveedor"
         [suggestions]="catalogoProveedores" (completeMethod)="consultarProveedor($event)" [showEmptyMessage]="true"
         [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50" class="p-autocomplete"
         placeholder="Ingresa el proveedor"
@@ -43,7 +43,7 @@
       </p-calendar>
     </div>
     <div class="col-md-3">
-      <label class="control-label" for="fechaFinal">Fecha Inicial:</label>
+      <label class="control-label" for="fechaFinal">Fecha Final<span class="req">*</span>:</label>
       <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
         dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"(onSelect)="validarFechaFinal()">
       </p-calendar>
@@ -55,7 +55,7 @@
     </div>
     <div class="col-md-6 flex justify-content-end">
       <button class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-      <button class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
+      <button class="btn btn-primary btn-md ml-5" (click)="buscar()" [disabled]="f.fechaInicial.value === null && f.fechaFinal.value === null">Buscar</button>
     </div>
   </div>
   <div class="row">
@@ -84,7 +84,7 @@
         <th pResizableColumn scope="col">Número de artículos</th>
         <th pResizableColumn scope="col">Fecha ODE</th>
         <th id="columna_orden_entrada_estatus">Estatus</th>
-        <th></th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ordenesEntrada>
@@ -173,7 +173,7 @@
   [draggable]="false" [resizable]="false" header="Cerrar ODE">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">¿Estáss seguro de cerrar esta ODE?</span>
+      <span class="text-justify">¿Estás seguro de cerrar esta ODE?</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">

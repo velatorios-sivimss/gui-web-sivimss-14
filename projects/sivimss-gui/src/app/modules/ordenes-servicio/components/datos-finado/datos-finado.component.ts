@@ -1,45 +1,42 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'primeng/dynamicdialog';
-import { ModalSeleccionarBeneficiarioComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-seleccionar-beneficiario/modal-seleccionar-beneficiario.component';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DialogService} from 'primeng/dynamicdialog';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import { TipoDropdown } from '../../../../models/tipo-dropdown';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {
   sexo,
   tipoOrden,
   nacionalidad,
 } from '../../constants/catalogos-complementarios';
-import { PATRON_CURP } from '../../../../utils/constantes';
-import { finalize } from 'rxjs/operators';
-import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
-import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
-import { LoaderService } from '../../../../shared/loader/services/loader.service';
-import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
-import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
-import { ActivatedRoute } from '@angular/router';
+import {PATRON_CURP} from '../../../../utils/constantes';
+import {finalize} from 'rxjs/operators';
+import {HttpRespuesta} from '../../../../models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {GenerarOrdenServicioService} from '../../services/generar-orden-servicio.service';
+import {LoaderService} from '../../../../shared/loader/services/loader.service';
+import {MensajesSistemaService} from '../../../../services/mensajes-sistema.service';
+import {ActivatedRoute} from '@angular/router';
 import * as moment from 'moment';
-import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-import { GestionarEtapasService } from '../../services/gestionar-etapas.service';
-import { AltaODSInterface } from '../../models/AltaODS.interface';
-import { ContratanteInterface } from '../../models/Contratante.interface';
-import { CodigoPostalIterface } from '../../models/CodigoPostal.interface';
-import { FinadoInterface } from '../../models/Finado.interface';
-import { CaracteristicasPresupuestoInterface } from '../../models/CaracteristicasPresupuesto,interface';
-import { CaracteristicasPaqueteInterface } from '../../models/CaracteristicasPaquete.interface';
-import { CaracteristicasDelPresupuestoInterface } from '../../models/CaracteristicasDelPresupuesto.interface';
-import { DetallePaqueteInterface } from '../../models/DetallePaquete.interface';
-import { ServicioDetalleTrasladotoInterface } from '../../models/ServicioDetalleTraslado.interface';
-import { DetallePresupuestoInterface } from '../../models/DetallePresupuesto.interface';
-import { InformacionServicioVelacionInterface } from '../../models/InformacionServicioVelacion.interface';
-import { InformacionServicioInterface } from '../../models/InformacionServicio.interface';
-import { ModalConvenioPfComponent } from '../modal-convenio-pf/modal-convenio-pf.component';
-import { Persona } from '../../models/Persona.interface';
+import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import {GestionarEtapasService} from '../../services/gestionar-etapas.service';
+import {AltaODSInterface} from '../../models/AltaODS.interface';
+import {ContratanteInterface} from '../../models/Contratante.interface';
+import {CodigoPostalIterface} from '../../models/CodigoPostal.interface';
+import {FinadoInterface} from '../../models/Finado.interface';
+import {CaracteristicasPresupuestoInterface} from '../../models/CaracteristicasPresupuesto,interface';
+import {CaracteristicasPaqueteInterface} from '../../models/CaracteristicasPaquete.interface';
+import {CaracteristicasDelPresupuestoInterface} from '../../models/CaracteristicasDelPresupuesto.interface';
+import {DetallePaqueteInterface} from '../../models/DetallePaquete.interface';
+import {ServicioDetalleTrasladotoInterface} from '../../models/ServicioDetalleTraslado.interface';
+import {DetallePresupuestoInterface} from '../../models/DetallePresupuesto.interface';
+import {InformacionServicioVelacionInterface} from '../../models/InformacionServicioVelacion.interface';
+import {InformacionServicioInterface} from '../../models/InformacionServicio.interface';
+import {ModalConvenioPfComponent} from '../modal-convenio-pf/modal-convenio-pf.component';
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
@@ -162,11 +159,11 @@ export class DatosFinadoComponent implements OnInit {
     this.form = this.formBuilder.group({
       datosFinado: this.formBuilder.group({
         tipoOrden: [
-          { value: datosEtapaFinado.datosFinado.tipoOrden, disabled: false },
+          {value: datosEtapaFinado.datosFinado.tipoOrden, disabled: false},
           [Validators.required],
         ],
         noContrato: [
-          { value: datosEtapaFinado.datosFinado.noContrato, disabled: false },
+          {value: datosEtapaFinado.datosFinado.noContrato, disabled: false},
           [Validators.required],
         ],
         velatorioPrevision: [
@@ -177,7 +174,7 @@ export class DatosFinadoComponent implements OnInit {
           [Validators.required],
         ],
         esObito: [
-          { value: datosEtapaFinado.datosFinado.esObito, disabled: false },
+          {value: datosEtapaFinado.datosFinado.esObito, disabled: false},
         ],
         esParaExtremidad: [
           {
@@ -186,7 +183,7 @@ export class DatosFinadoComponent implements OnInit {
           },
         ],
         matricula: [
-          { value: datosEtapaFinado.datosFinado.matricula, disabled: false },
+          {value: datosEtapaFinado.datosFinado.matricula, disabled: false},
           [Validators.required],
         ],
         matriculaCheck: [
@@ -196,11 +193,11 @@ export class DatosFinadoComponent implements OnInit {
           },
         ],
         curp: [
-          { value: datosEtapaFinado.datosFinado.curp, disabled: false },
+          {value: datosEtapaFinado.datosFinado.curp, disabled: false},
           [Validators.required, Validators.pattern(PATRON_CURP)],
         ],
         nss: [
-          { value: datosEtapaFinado.datosFinado.nss, disabled: false },
+          {value: datosEtapaFinado.datosFinado.nss, disabled: false},
           [Validators.required],
         ],
 
@@ -211,7 +208,7 @@ export class DatosFinadoComponent implements OnInit {
           },
         ],
         nombre: [
-          { value: datosEtapaFinado.datosFinado.nombre, disabled: false },
+          {value: datosEtapaFinado.datosFinado.nombre, disabled: false},
           [Validators.required],
         ],
         primerApellido: [
@@ -236,18 +233,18 @@ export class DatosFinadoComponent implements OnInit {
           [Validators.required],
         ],
         edad: [
-          { value: datosEtapaFinado.datosFinado.edad, disabled: true },
+          {value: datosEtapaFinado.datosFinado.edad, disabled: true},
           [Validators.required],
         ],
         sexo: [
-          { value: datosEtapaFinado.datosFinado.sexo, disabled: false },
+          {value: datosEtapaFinado.datosFinado.sexo, disabled: false},
           [Validators.required],
         ],
         otroTipoSexo: [
-          { value: datosEtapaFinado.datosFinado.otroTipoSexo, disabled: false },
+          {value: datosEtapaFinado.datosFinado.otroTipoSexo, disabled: false},
         ],
         nacionalidad: [
-          { value: datosEtapaFinado.datosFinado.nacionalidad, disabled: false },
+          {value: datosEtapaFinado.datosFinado.nacionalidad, disabled: false},
           [Validators.required],
         ],
         lugarNacimiento: [
@@ -271,23 +268,22 @@ export class DatosFinadoComponent implements OnInit {
           [Validators.required],
         ],
         causaDeceso: [
-          { value: datosEtapaFinado.datosFinado.causaDeceso, disabled: false },
+          {value: datosEtapaFinado.datosFinado.causaDeceso, disabled: false},
           [Validators.required],
         ],
         lugarDeceso: [
-          { value: datosEtapaFinado.datosFinado.lugarDeceso, disabled: false },
+          {value: datosEtapaFinado.datosFinado.lugarDeceso, disabled: false},
           [Validators.required],
         ],
         horaDeceso: [
-          { value: datosEtapaFinado.datosFinado.horaDeceso, disabled: false },
+          {value: datosEtapaFinado.datosFinado.horaDeceso, disabled: false},
           [Validators.required],
         ],
         clinicaAdscripcion: [
           {
             value: datosEtapaFinado.datosFinado.clinicaAdscripcion,
             disabled: false,
-          },
-          [Validators.required],
+          }
         ],
         unidadProcedencia: [
           {
@@ -304,36 +300,35 @@ export class DatosFinadoComponent implements OnInit {
           [Validators.required],
         ],
         tipoPension: [
-          { value: datosEtapaFinado.datosFinado.tipoPension, disabled: false },
-          [Validators.required],
+          {value: datosEtapaFinado.datosFinado.tipoPension, disabled: false},
         ],
       }),
       direccion: this.formBuilder.group({
         calle: [
-          { value: datosEtapaFinado.direccion.calle, disabled: false },
+          {value: datosEtapaFinado.direccion.calle, disabled: false},
           [Validators.required],
         ],
         noExterior: [
-          { value: datosEtapaFinado.direccion.noExterior, disabled: false },
+          {value: datosEtapaFinado.direccion.noExterior, disabled: false},
           [Validators.required],
         ],
         noInterior: [
-          { value: datosEtapaFinado.direccion.noInterior, disabled: false },
+          {value: datosEtapaFinado.direccion.noInterior, disabled: false},
         ],
         cp: [
-          { value: datosEtapaFinado.direccion.cp, disabled: false },
+          {value: datosEtapaFinado.direccion.cp, disabled: false},
           [Validators.required],
         ],
         colonia: [
-          { value: datosEtapaFinado.direccion.colonia, disabled: false },
+          {value: datosEtapaFinado.direccion.colonia, disabled: false},
           [Validators.required],
         ],
         municipio: [
-          { value: datosEtapaFinado.direccion.municipio, disabled: true },
+          {value: datosEtapaFinado.direccion.municipio, disabled: true},
           [Validators.required],
         ],
         estado: [
-          { value: datosEtapaFinado.direccion.estado, disabled: false },
+          {value: datosEtapaFinado.direccion.estado, disabled: false},
           [Validators.required],
         ],
       }),
@@ -359,12 +354,12 @@ export class DatosFinadoComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosFinado.curp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
-              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
-                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+              if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
+                this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
                 return
               }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
@@ -392,6 +387,7 @@ export class DatosFinadoComponent implements OnInit {
               } else {
                 this.datosFinado.nacionalidad.setValue(2);
               }
+              this.consultarLugarNacimiento(respuesta.datos.desEntidadNac);
             } else {
               let datos = respuesta.datos[0];
               let [anio, mes, dia] = respuesta.datos[0].fechaNac.split('-');
@@ -414,6 +410,7 @@ export class DatosFinadoComponent implements OnInit {
               } else {
                 this.datosFinado.nacionalidad.setValue(2);
               }
+              this.datosFinado.lugarNacimiento.setValue(+respuesta.datos[0].idEstado);
             }
 
             this.cambiarTipoSexo();
@@ -421,13 +418,46 @@ export class DatosFinadoComponent implements OnInit {
             return;
           }
           this.limpiarConsultaDatosPersonales();
-          this.alertaService.mostrar(TipoAlerta.Precaucion,"CURP no valido.");
+          this.alertaService.mostrar(TipoAlerta.Precaucion, "CURP no valido.");
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
+
+  consultarLugarNacimiento(entidad: string): void {
+    const entidadEditada = this.accentsTidy(entidad);
+    if (entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')) {
+      this.datosFinado.lugarNacimiento.setValue(11);
+      return
+    }
+    if (entidadEditada.toUpperCase().includes('DISTRITO FEDERAL') || entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')) {
+      this.datosFinado.lugarNacimiento.setValue(7);
+      return
+    }
+    this.estado.forEach((element: any) => {
+      const entidadIteracion = this.accentsTidy(element.label);
+      if (entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())) {
+        this.datosFinado.lugarNacimiento.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r = s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g), "a");
+    r = r.replace(new RegExp(/æ/g), "ae");
+    r = r.replace(new RegExp(/ç/g), "c");
+    r = r.replace(new RegExp(/[èéêë]/g), "e");
+    r = r.replace(new RegExp(/[ìíîï]/g), "i");
+    r = r.replace(new RegExp(/ñ/g), "n");
+    r = r.replace(new RegExp(/[òóôõö]/g), "o");
+    r = r.replace(new RegExp(/œ/g), "oe");
+    r = r.replace(new RegExp(/[ùúûü]/g), "u");
+    r = r.replace(new RegExp(/[ýÿ]/g), "y");
+    return r;
+  };
 
   inicializarCalcularEdad(): void {
     this.datosFinado.fechaNacimiento.valueChanges.subscribe(() => {
@@ -716,7 +746,7 @@ export class DatosFinadoComponent implements OnInit {
       ).format('yyyy-MM-DD');
       this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
       this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion ?  moment(
+      this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion ? moment(
         datosEtapaFinado.datosFinado.fechaDefuncion
       ).format('yyyy-MM-DD') : null;
       this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
@@ -835,7 +865,7 @@ export class DatosFinadoComponent implements OnInit {
     } else {
       this.habilitarTodo();
       this.datosFinado.velatorioPrevision.disable();
-      if(idTipoOrden == 1)this.datosFinado.noContrato.disable();
+      if (idTipoOrden == 1) this.datosFinado.noContrato.disable();
     }
   }
 
@@ -859,7 +889,7 @@ export class DatosFinadoComponent implements OnInit {
 
   esObito(validacion: boolean): void {
     //curp nss matricula se bloquean
-    if(this.datosFinado.esParaExtremidad.value)return;
+    if (this.datosFinado.esParaExtremidad.value) return;
     this.datosFinado.esObito.setValue(validacion);
     let idTipoOden = Number(this.form.value.datosFinado.tipoOrden);
     let esEstremidad = this.form.value.datosFinado.esParaExtremidad;
@@ -885,16 +915,16 @@ export class DatosFinadoComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarNSS(this.datosFinado.nss.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            const[dia,mes,anio] = respuesta.datos.fechaNacimiento.split('/')
-            const fecha = new Date(anio+"/"+mes+"/"+dia)
+            const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/')
+            const fecha = new Date(anio + "/" + mes + "/" + dia)
             this.datosFinado.curp.setValue(respuesta.datos.curp);
             this.datosFinado.nombre.setValue(respuesta.datos?.nombre);
             this.datosFinado.primerApellido.setValue(respuesta.datos.primerApellido);
             this.datosFinado.segundoApellido.setValue(respuesta.datos.segundoApellido);
-            this.datosFinado.sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1 );
+            this.datosFinado.sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1);
 
             //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
             this.datosFinado.nacionalidad.setValue(1);
@@ -907,20 +937,19 @@ export class DatosFinadoComponent implements OnInit {
           this.cambiarTipoSexo();
           this.cambiarNacionalidad();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultarMatriculaSiap(): void {
     this.loaderService.activar();
-
     this.gestionarOrdenServicioService
       .consultarMatriculaSiap(this.datosFinado.matricula.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
           if (!respuesta.datos) {
             this.alertaService.mostrar(
               TipoAlerta.Precaucion,
@@ -929,10 +958,10 @@ export class DatosFinadoComponent implements OnInit {
             this.datosFinado.matricula.setValue(null);
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.log(error);
         }
-      );
+      });
   }
 
   removerValidaciones(): void {
@@ -975,6 +1004,7 @@ export class DatosFinadoComponent implements OnInit {
       form.controls[key].enable();
     });
   }
+
   agregarValidaciones(): void {
     Object.keys(this.datosFinado).forEach((key) => {
       if (key.includes('esObito') || key.includes('esParaExtremidad')) return;
@@ -984,7 +1014,7 @@ export class DatosFinadoComponent implements OnInit {
     });
 
     Object.keys(this.direccion).forEach((key) => {
-      if (key.includes("noInterior"))return;
+      if (key.includes("noInterior")) return;
       const form = this.form.controls['direccion'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();
@@ -999,10 +1029,10 @@ export class DatosFinadoComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
           if (respuesta) {
-            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -1016,18 +1046,18 @@ export class DatosFinadoComponent implements OnInit {
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultarFolioPf(event: any): void {
-    if(!this.datosFinado.noContrato.value)return;
+    if (!this.datosFinado.noContrato.value) return;
     const ref = this.dialogService.open(ModalConvenioPfComponent, {
       header: 'Número de contrato',
-      style: { maxWidth: '876px', width: '100%' },
-      data: { folio: this.datosFinado.noContrato.value },
+      style: {maxWidth: '876px', width: '100%'},
+      data: {folio: this.datosFinado.noContrato.value},
     });
     ref.onClose.subscribe((persona: any) => {
       let [anio, mes, dia]: any = persona.finado.fechaNac?.split('-');
@@ -1061,41 +1091,42 @@ export class DatosFinadoComponent implements OnInit {
       this.cambiarNacionalidad();
     });
   }
+
   convertirAMayusculas(): void {
     this.datosFinado.curp.setValue(this.datosFinado.curp.value.toUpperCase());
   }
 
-  noEspacioPrincipal(posicion:number): void {
+  noEspacioPrincipal(posicion: number): void {
     let formularios = [
       this.datosFinado.nombre,
       this.datosFinado.primerApellido,
       this.datosFinado.segundoApellido,
       this.datosFinado.procedenciaFinado
     ];
-    if(formularios[posicion].value.charAt(0).includes(' ')){
+    if (formularios[posicion].value.charAt(0).includes(' ')) {
       formularios[posicion].setValue(formularios[posicion].value.trimStart());
     }
   }
 
   validarBotonAceptar(): boolean {
 
-    if(this.datosFinado.tipoOrden.value == 2){
-      if(this.form.invalid || !this.validacionPersonaConvenio){
+    if (this.datosFinado.tipoOrden.value == 2) {
+      if (this.form.invalid || !this.validacionPersonaConvenio) {
         return true;
       }
     }
-    if(this.datosFinado.tipoOrden.value == 1){
-      if(this.form.invalid){
+    if (this.datosFinado.tipoOrden.value == 1) {
+      if (this.form.invalid) {
         return true;
       }
     }
-    if(this.datosFinado.tipoOrden.value == 3){
-      if(this.form.invalid){
+    if (this.datosFinado.tipoOrden.value == 3) {
+      if (this.form.invalid) {
         return true;
       }
     }
 
-    if(this.form.invalid){
+    if (this.form.invalid) {
       return true;
     }
     return false;

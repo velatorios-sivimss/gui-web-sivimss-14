@@ -29,16 +29,6 @@
                  maxlength="10" (change)="consultarConvenio()">
         </div>
         <div class="col-md-4">
-          <label class="control-label" for="rfcCurp">RFC o CURP:</label>
-          <input id="rfcCurp" class="form-control" formControlName="rfcCurp" placeholder="Ingresa el RFC o CURP"
-                 maxlength="18" alphanumericOnly (blur)="consultaRFCCURP()" (keyup)="convertirMayusculas(0)">
-          <span class="campo-obligatorio"
-                *ngIf="ff.rfcCurp?.errors?.required && (ff.rfcCurp?.dirty || ff.rfcCurp?.touched)">
-                              Campo obligatorio</span>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col-md-4">
           <label class="control-label">¿El servicio fue gestionado por un promotor? <span class="req">*</span></label>
           <div class="flex">
             <div class="flex align-items-center mx-2">
@@ -53,6 +43,8 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="row mb-3">
         <div class="col-md-4" *ngIf="agregarPromotor">
           <label class="control-label" for="listaPromotor">Promotor<span class="req">*</span>:</label>
           <p-dropdown id="listaPromotor" class="form-control" formControlName="listaPromotor" [options]="promotores"
@@ -143,11 +135,9 @@
 <div class="row my-3">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-default btn-md ml-5" routerLink="../">Cancelar</button>
-    <!--    <button type="button"  class="btn btn-default btn-md ml-5" (click)="regresar()" *ngIf="indice > 0 && ff.tipoContratacion.value== 1">Regresar</button>-->
     <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona"
             (click)="siguiente()" *ngIf="indice < menuStep.length && ff.tipoContratacion.value== 1">Siguiente
     </button>
-    <!--    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona" *ngIf="indice == menuStep.length && ff.tipoContratacion.value== 1">Guardar</button>-->
     <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarEmpresa"
             (click)="confirmarGuardarEmpresa()" *ngIf="ff.tipoContratacion.value== 2  && indice < 2">Guardar
     </button>

@@ -1,30 +1,28 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 import * as moment from "moment/moment";
 
-import { LazyLoadEvent } from "primeng/api";
-import { OverlayPanel } from "primeng/overlaypanel";
+import {LazyLoadEvent} from "primeng/api";
+import {OverlayPanel} from "primeng/overlaypanel";
 
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OrdenEntradaService } from "../../services/orden-entrada.service";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { PaginadoConsultaOrdenEntrada } from "../../models/paginado-consulta-orden-entrada.interface";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { DialogService } from "primeng/dynamicdialog";
-import { ActivatedRoute, Router } from "@angular/router";
-import { finalize } from "rxjs/operators";
-import { of } from "rxjs";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
-import { HttpErrorResponse } from "@angular/common/http";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
-import { CatalogoFolioODE } from "../../models/catalogos.interface";
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import { DatePipe } from '@angular/common';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OrdenEntradaService} from "../../services/orden-entrada.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {DialogService} from "primeng/dynamicdialog";
+import {ActivatedRoute} from "@angular/router";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {HttpErrorResponse} from "@angular/common/http";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {CatalogoFolioODE} from "../../models/catalogos.interface";
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {DatePipe} from '@angular/common';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 @Component({
   selector: 'app-consulta-orden-entrada',
@@ -81,7 +79,8 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private descargaArchivosService: DescargaArchivosService,
     private datePipe: DatePipe
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.cargarVelatorios(true);
@@ -92,12 +91,12 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.formulario = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: false }],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: false }],
-      ordenEntrada: [{ value: null, disabled: false }],
-      proveedor: [{ value: null, disabled: false }],
-      fechaInicial: [{ value: null, disabled: false }, [Validators.required]],
-      fechaFinal: [{ value: null, disabled: false }, [Validators.required]]
+      nivel: [{value: +usuario.idOficina, disabled: false}],
+      velatorio: [{value: +usuario.idVelatorio, disabled: false}],
+      ordenEntrada: [{value: null, disabled: false}],
+      proveedor: [{value: null, disabled: false}],
+      fechaInicial: [{value: null, disabled: false}, [Validators.required]],
+      fechaFinal: [{value: null, disabled: false}, [Validators.required]]
     });
   }
 
@@ -206,16 +205,16 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     this.loaderService.activar();
     this.ordenEntradaService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.ordenesEntrada = [];
-          this.ordenesEntrada = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.ordenesEntrada = [];
+        this.ordenesEntrada = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   paginarConFiltros(): void {
@@ -223,16 +222,16 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     this.loaderService.activar();
     this.ordenEntradaService.buscarPorFiltros(0, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.ordenesEntrada = [];
-          this.ordenesEntrada = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.ordenesEntrada = [];
+        this.ordenesEntrada = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   abrirPanel(event: MouseEvent, orden: any): void {
@@ -260,7 +259,7 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     }
     this.loaderService.activar();
     const busqueda = this.mapearDatosReporte(tipoReporte);
-    
+
     this.descargaArchivosService.descargarArchivo(this.ordenEntradaService.generarReporteOrdenEntrada(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
@@ -280,31 +279,6 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
         }
       },
     });
-    // this.ordenEntradaService.generarReporteOrdenEntrada(busqueda).pipe(
-    //   finalize(() => this.loaderService.desactivar())
-    // ).subscribe({
-    //   next: (respuesta: HttpRespuesta<any>) => {
-    //     const file = new Blob([this.descargaArchivosService.base64_2Blob(
-    //       respuesta.datos[0], this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-    //       { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
-    //     );
-    //     this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-    //       finalize(() => this.loaderService.desactivar())
-    //     ).subscribe({
-    //       next: (repuesta) => {
-    //         this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-    //         this.mostrarModalConfirmacion = true;
-    //       },
-    //       error: (error) => {
-    //         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-    //       }
-    //     });
-    //   },
-    //   error: (error: HttpErrorResponse) => {
-    //     const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-    //     this.alertaService.mostrar(TipoAlerta.Error, msg);
-    //   }
-    // })
   }
 
   cerrarOrdenEntrada() {
@@ -314,7 +288,8 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.mostrarModalCerrarODE = false;
-        this.alertaService.mostrar(TipoAlerta.Exito, "Orden de entrada cerrada correctamente");
+        this.alertaService.mostrar(TipoAlerta.Exito, "Orden de entrada cerrada correctamente.");
+        this.paginarConFiltros();
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);

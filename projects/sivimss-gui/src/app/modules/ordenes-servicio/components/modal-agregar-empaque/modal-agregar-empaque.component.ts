@@ -31,6 +31,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
   idInventario: number = 0;
   inventarioSeleccionado:number[] = [];
   idProveedor: number = 0;
+  nombreProveedor: string = '';
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -54,8 +55,8 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarEmpaques(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.empaque = [];
             this.empaqueCompletos = [];
@@ -84,16 +85,16 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
           }
           arregloEmpaqueTemporal = datos;
 
-          this.inventarioSeleccionado.forEach((elemento:any) => {
-            arregloEmpaqueTemporal = arregloEmpaqueTemporal.filter((filtro:any) => {
+          this.inventarioSeleccionado.forEach((elemento: any) => {
+            arregloEmpaqueTemporal = arregloEmpaqueTemporal.filter((filtro: any) => {
               return filtro.idInventario != elemento;
             });
           });
 
           this.empaqueCompletos = arregloEmpaqueTemporal;
-          if(this.empaqueCompletos.length == 0){
+          if (this.empaqueCompletos.length == 0) {
             const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
-            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+            this.alertaService.mostrar(TipoAlerta.Info, stockMsg || 'Ya no hay stock de este artículo.');
           }
           this.empaque = mapearArregloTipoDropdown(
             arregloEmpaqueTemporal,
@@ -101,7 +102,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
             'idInventario'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           try {
             const errorMsg: string =
@@ -121,7 +122,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   selecionarEmpaque(dd: Dropdown): void {
@@ -134,6 +135,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
         this.idInventario = datos.idInventario;
         this.idCategoria = datos.idCategoria;
         this.idProveedor = datos.idProveedor;
+        this.nombreProveedor = datos.nombreProveedor;
       }
     });
   }
@@ -156,7 +158,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
       concepto: this.concepto,
       coordOrigen: [],
       coordDestino: [],
-      proveedor: null,
+      proveedor: this.nombreProveedor ?? null,
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,

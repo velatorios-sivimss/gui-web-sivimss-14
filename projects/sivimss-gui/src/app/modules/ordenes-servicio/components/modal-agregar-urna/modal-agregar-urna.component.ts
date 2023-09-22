@@ -30,6 +30,8 @@ export class ModalAgregarUrnaComponent implements OnInit {
   idArticulo: number = 0;
   idInventario: number = 0;
   inventarioSeleccionado:number[] = [];
+  nombreProveedor: string = '';
+  idProveedor: number = 0;
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly ref: DynamicDialogRef,
@@ -53,8 +55,8 @@ export class ModalAgregarUrnaComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarTodaslasUrnas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.urnas = [];
             this.urnasCompletos = [];
@@ -83,17 +85,17 @@ export class ModalAgregarUrnaComponent implements OnInit {
           }
 
           arregloUrnaTemporal = datos;
-          this.inventarioSeleccionado.forEach((elemento:any) => {
-            arregloUrnaTemporal = arregloUrnaTemporal.filter((filtro:any) => {
+          this.inventarioSeleccionado.forEach((elemento: any) => {
+            arregloUrnaTemporal = arregloUrnaTemporal.filter((filtro: any) => {
               return filtro.idInventario != elemento;
             });
           });
 
 
           this.urnasCompletos = arregloUrnaTemporal;
-          if(this.urnasCompletos.length == 0){
+          if (this.urnasCompletos.length == 0) {
             const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
-            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+            this.alertaService.mostrar(TipoAlerta.Info, stockMsg || 'Ya no hay stock de este artículo.');
           }
 
           this.urnas = mapearArregloTipoDropdown(
@@ -102,7 +104,7 @@ export class ModalAgregarUrnaComponent implements OnInit {
             'idInventario'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           try {
             const errorMsg: string =
@@ -122,7 +124,7 @@ export class ModalAgregarUrnaComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   selecionarUrna(dd: Dropdown): void {
@@ -134,6 +136,8 @@ export class ModalAgregarUrnaComponent implements OnInit {
         this.idArticulo = datos.idArticulo;
         this.idInventario = datos.idInventario;
         this.idCategoria = datos.idCategoria;
+        this.idProveedor = datos.idProveedor;
+        this.nombreProveedor = datos.nombreProveedor;
       }
     });
   }
@@ -156,14 +160,14 @@ export class ModalAgregarUrnaComponent implements OnInit {
       concepto: this.concepto,
       coordOrigen: [],
       coordDestino: [],
-      proveedor: null,
+      proveedor: this.nombreProveedor ?? null,
       fila: -1,
       grupo: this.grupo,
       idCategoria: this.idCategoria,
       idInventario: this.idInventario,
       idArticulo: this.idArticulo,
       idTipoServicio: null,
-      idProveedor: null,
+      idProveedor: this.idProveedor,
       totalPaquete: this.costo,
       importe: this.costo,
       esDonado: false,

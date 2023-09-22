@@ -128,7 +128,7 @@ export class VelatoriosComponent implements OnInit, OnDestroy {
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
@@ -141,22 +141,24 @@ export class VelatoriosComponent implements OnInit, OnDestroy {
     this.cargadorService.activar();
     this.velatorioService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>): void => {
-          this.listaVelatorios = respuesta!.datos.content || [];
-          this.totalElementos = respuesta!.datos.totalElements || 0;
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.listaVelatorios = respuesta.datos.content ?? [];
+          this.totalElementos = respuesta.datos.totalElements ?? 0;
         },
-        (error: HttpErrorResponse): void => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      )
+      })
   }
 
   paginarConFiltros(): void {
+    console.log('');
   }
 
   buscar(): void {
+    console.log('');
   }
 
   crearSolicitudFiltros(): FiltrosVelatorio {
@@ -171,6 +173,7 @@ export class VelatoriosComponent implements OnInit, OnDestroy {
   }
 
   cambiarEstatus(): void {
+    console.log('');
   }
 
   procesarRespuestaModal(respuesta: RespuestaModaVelatorio = {}): void {

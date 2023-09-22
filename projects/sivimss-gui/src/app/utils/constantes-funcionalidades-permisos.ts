@@ -14,6 +14,8 @@ export const funcionalidades: { [valor: string]: string } = {
   'RENOVAR_CONVENIO_PF': '29',
   'CAPILLA_RESERVACION': '31',
   'REALIZAR_PAGO': '36',
+  'HOJA_SUBROGACION': '37',
+  'GENERAR_HOJA_CONSIGNACION': '39',
   'MANTENIMIENTO_VEHICULAR': '40',
   'GENERAR_NOTA_REMISION': '54',
   'VALE_SALIDA': '58',
@@ -24,7 +26,8 @@ export const funcionalidades: { [valor: string]: string } = {
   'GESTIONAR_PAGO': '66',
   'BALANCE_CAJA': '69',
   'RENOVACION_EXTEMPORANEA': '71',
-  'AGREGAR_PLAN_SFPA': '68'
+  'AGREGAR_PLAN_SFPA': '68',
+  'ACTIVIDADES_PROMOTORES': '75',
   //Agregar los que falten.
 }
 export const permisos: { [valor: string]: string } = {

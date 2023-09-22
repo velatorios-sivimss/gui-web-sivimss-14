@@ -1,0 +1,152 @@
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="OPERACIÓN / HOJA DE CONSIGNACIÓN"></app-titulo-principal>
+</div>
+
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+          placeholder="Selecciona el nivel" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+          placeholder="Selecciona la delegación" (onChange)="cargarVelatorios()" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio" [filter]="true" (onChange)="cargarProveedores()">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="folio">Folio de hoja de consignación:</label>
+        <input id="folio" class="form-control" formControlName="folio" folioOdsAlphanumeric trimmer
+          placeholder="Ingresa el folio">
+        <span class="campo-obligatorio"
+          *ngIf="ff.folio?.errors?.required && (ff.folio?.dirty || ff.folio?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
+        <p-dropdown id="proveedor" class="form-control" formControlName="proveedor" [options]="catalogoProveedores"
+          placeholder="Selecciona el proveedor" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-md-2">
+        <label class="control-label" for="fecInicio">Fecha inicial<span class="req">*</span>:</label>
+        <p-calendar styleClass="form-control" id="fecInicio" formControlName="fecInicio" [showIcon]="true"
+          dateFormat="dd/mm/yy" placeholder="Fecha inicial"></p-calendar>
+      </div>
+      <div class="col-md-2">
+        <label class="control-label" for="fecFin">Fecha final<span class="req">*</span>:</label>
+        <p-calendar styleClass="form-control" id="fecFin" formControlName="fecFin" [showIcon]="true"
+          dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual"></p-calendar>
+      </div>
+    </div>
+
+
+    <div class="row mt-6" *appValidaRol="['PROMOTORES','CONSULTA']">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo"></h2>
+    <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['PROMOTORES','ALTA']"
+      (click)="agregarFormatoActividades()">Generar hoja</button>
+  </div>
+
+  <p-table styleClass="mt-5 mb-8" [value]="hojasConsignacion" [paginator]="hojasConsignacion.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [columnResizeMode]="'expand'"
+    appActivarUltimaCeldaSticky>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn id="idFecha">Fecha</th>
+        <th pResizableColumn id="folio">Folio hoja de consignación</th>
+        <th pResizableColumn id="velatorio">Proveedor</th>
+        <th pResizableColumn id="acciones">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-hojaConsignacion>
+      <tr>
+        <td pResizableColumn>{{hojaConsignacion.fecHojaConsignacion}}</td>
+        <td pResizableColumn>{{hojaConsignacion.folioHojaConsignacion}}</td>
+        <td pResizableColumn>{{hojaConsignacion.proveedor}}</td>
+        <td>
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
+            <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
+              <a (click)="detalleFormatoActividades(hojaConsignacion)">
+                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+              </a>
+              <a (click)="abrirPanel($event, hojaConsignacion)">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="12" class="p-2 text-center font-bold text-xl col-md-12" id="empty-message-mtto-vehicular"
+          *ngIf="busquedaRealizada">
+          No se encontró información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{hojasConsignacion.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template" *ngIf='hojasConsignacion.length > 0'>
+        <div class="export-table" *appValidaRol="['PROMOTORES','IMPRIMIR']">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="generarReporteTabla('pdf');">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="generarReporteTabla('xls');">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion (click)="abrirModalCargarFactura()" titulo="Cargar factura"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

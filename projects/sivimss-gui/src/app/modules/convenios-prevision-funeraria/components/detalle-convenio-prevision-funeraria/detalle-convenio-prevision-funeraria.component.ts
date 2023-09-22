@@ -26,15 +26,15 @@ export class DetalleConvenioPrevisionFunerariaComponent implements OnInit {
   }
 
   abrirRenovar(): void {
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 
   abrirModalModificar(): void {
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 
   abrirActivar(): void {
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 
 

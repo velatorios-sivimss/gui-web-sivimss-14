@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormBuilder, FormGroup } from '@angular/forms'
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown'
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -38,6 +38,10 @@ type OpcionMtto = 'registroMtto' | 'mtto' | 'verificacion';
   providers: [DialogService, DescargaArchivosService]
 })
 export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestroy {
+  readonly POSICION_CATALOGOS_NIVELES: number = 0;
+  readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
+  readonly POSICION_CATALOGOS_PLACAS: number = 3;
+
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
@@ -49,13 +53,14 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   modificarModal: boolean = false;
   detalleModal: boolean = false;
 
+  mostrarModalConfirmacion: boolean = false;
+  mensajeConfirmacion: string = "";
+
   vehiculos: VehiculoMantenimiento[] = [];
   vehiculoSeleccionado!: VehiculoMantenimiento;
   once: boolean = true;
   filtroFormProgramarMantenimiento!: FormGroup;
   cicloCompleto: boolean = false;
-  mostrarModalConfirmacion: boolean = false;
-  mensajeArchivoConfirmacion: string = "";
   solicitudMttoRef!: DynamicDialogRef;
   nuevaVerificacionRef!: DynamicDialogRef;
   registroMttoRef!: DynamicDialogRef;
@@ -64,10 +69,6 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
   catalogoPlacas: TipoDropdown[] = [];
-
-  readonly POSICION_CATALOGOS_NIVELES: number = 0;
-  readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
-  readonly POSICION_CATALOGOS_PLACAS: number = 3;
 
   usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
@@ -121,9 +122,9 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormProgramarMantenimiento = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: true }],
-      delegacion: [{ value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
+      nivel: [{ value: +usuario?.idOficina, disabled: true }],
+      delegacion: [{ value: +usuario?.idDelegacion, disabled: +usuario.idOficina >= 2 }, []],
+      velatorio: [{ value: +usuario?.idVelatorio, disabled: +usuario.idOficina === 3 }, []],
       placa: [{ value: null, disabled: false }, []],
     });
 
@@ -188,7 +189,9 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     const filtros: FiltrosMantenimientoVehicular | null = this.crearSolicitudFiltrosPorNivel();
     if (filtros) {
       if (!Object.values(filtros).some(v => (v))) {
-        this.alertaService.mostrar(TipoAlerta.Precaucion, 'Selecciona por favor un criterio de búsqueda.');
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(22);
+        this.mostrarModalConfirmacion = true;
+        this.mensajeConfirmacion = msg;
         return;
       }
       this.loaderService.activar();
@@ -365,8 +368,8 @@ export class ProgramarMantenimientoVehicularComponent implements OnInit, OnDestr
     this.descargaArchivosService.descargarArchivo(this.mantenimientoVehicularService.generarReporteTabla(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: (respuesta: any) => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+      next: () => {
+        this.mensajeConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
         this.mostrarModalConfirmacion = true;
       },
       error: (error: HttpErrorResponse) => {

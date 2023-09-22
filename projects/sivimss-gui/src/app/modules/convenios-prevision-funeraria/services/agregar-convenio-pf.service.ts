@@ -96,4 +96,17 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
       {responseType: 'blob' as any});
   }
 
+  obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
+    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+  }
+  // consultarVelatorios(idDelegacion: number): Observable<HttpRespuesta<any>> {
+  //   return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-velatorio`,
+  //     {idDelegacion: idDelegacion});
+  // }
+
+  consultarVelatorios(delegacion:number): Observable<HttpRespuesta<any>>{
+    return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/velatorios/${delegacion}`);
+  }
+
 }

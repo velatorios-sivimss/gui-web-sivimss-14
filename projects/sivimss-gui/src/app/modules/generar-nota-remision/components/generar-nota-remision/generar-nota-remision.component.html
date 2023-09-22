@@ -3,7 +3,7 @@
   <app-titulo-principal titulo="Servicios / Generar nota de remisión" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (ngSubmit)="buscarFoliosNotaRemision()">
+  <form [formGroup]="filtroForm" (ngSubmit)="buscar()">
     <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="nivel">Nivel:</label>
@@ -15,7 +15,7 @@
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
                     placeholder="Seleccionar la delegación" [filter]="true" filterBy="label"
-                    (onChange)='obtenerVelatorios();'>
+                    (onChange)='seleccionarDelegacion();'>
         </p-dropdown>
       </div>
       <div class="col-md-4">
@@ -28,15 +28,14 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-4">
-        <label class="control-label" for="folio">Folio de la ODS<span class="req"
-                                                                      *ngIf="hayCamposObligatorios">*</span>:</label>
+        <label class="control-label" for="folio">Folio de la ODS</label>
         <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="foliosGenerados"
-                    optionLabel="label" placeholder="Selecciona el folio" [filter]="true" filterBy="label">
+                    placeholder="Selecciona el folio" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="fechaInicial">Rango de fechas<span class="req"
-                                                                             *ngIf="hayCamposObligatorios">*</span>:</label>
+        <label class="control-label" for="fechaInicial">Rango de fechas
+          <span class="req" *ngIf="hayCamposObligatorios">*</span>:</label>
         <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true"
                     placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="f!.fechaFinal!.value"
                     [maxDate]="fechaActual">
@@ -69,7 +68,8 @@
 
   <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="notasRemision"
            [paginator]="notasRemision.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
-           [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)"
+           [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="seleccionarPaginacion($event)"
            [resizableColumns]="true" [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
@@ -142,9 +142,9 @@
                                   (click)="generarReporteNotaRemision('xls'); overlayPanel.toggle($event)">
         </app-overlay-panel-opcion>
       </ng-container>
-      <ng-container *appValidaRol="['GENERAR_NOTA_REMISION','MODIFICACION']">
+      <ng-container *appValidaRol="['GENERAR_NOTA_REMISION','MODIFICAR']">
         <app-overlay-panel-opcion
-          *ngIf="notaRemisionSeleccionada?.estatus === 2 && notaRemisionSeleccionada?.total !== 2"
+          *ngIf="notaRemisionSeleccionada?.estatus === 2 && notaRemisionSeleccionada!.total < 2"
           titulo="Cancelar"
           (click)="cancelarNotaRemision(); overlayPanel.toggle($event)"></app-overlay-panel-opcion>
       </ng-container>
@@ -154,7 +154,7 @@
 
 <p-dialog [(visible)]="mostrarModalDescargaExitosa" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>

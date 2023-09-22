@@ -1,14 +1,16 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { DialogService } from "primeng/dynamicdialog";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { ModalVerKilometrajeComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-kilometraje/modal-ver-kilometraje.component";
-import { ModalEliminarPagoComponent } from "projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component";
-import { ModalRealizarPagoComponent } from "projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-realizar-pago/modal-realizar-pago.component";
-import { ServiciosFunerariosInterface, DetallePago } from "../../models/servicios-funerarios.interface";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { LazyLoadEvent } from "primeng/api";
-import { Articulo } from "../../../articulos/models/articulos.interface";
-import {ActivatedRoute, ActivatedRouteSnapshot} from "@angular/router";
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {DialogService} from "primeng/dynamicdialog";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {
+  ModalEliminarPagoComponent
+} from "projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-eliminar-pago/modal-eliminar-pago.component";
+import {
+  ModalRealizarPagoComponent
+} from "projects/sivimss-gui/src/app/modules/servicios-funerarios/components/modal-realizar-pago/modal-realizar-pago.component";
+import {ServiciosFunerariosInterface, DetallePago} from "../../models/servicios-funerarios.interface";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {LazyLoadEvent} from "primeng/api";
+import {ActivatedRoute} from "@angular/router";
 import {DetallePagoService} from "../../services/detalle-pago.service";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
@@ -39,12 +41,11 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   @ViewChild(OverlayPanel)
   overlayPanelBody!: OverlayPanel;
 
-  readonly POSICION_METODO_PAGO:number = 0;
+  readonly POSICION_METODO_PAGO: number = 0;
 
   detallePago: DetallePago[] = [];
   detalleSeleccionado!: PagosRealizados;
   metodosPago!: TipoDropdown[];
-
 
 
   numPaginaActual: number = 0;
@@ -69,38 +70,35 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   ngOnInit(): void {
     let respuesta = this.route.snapshot.data['respuesta'];
     this.metodosPago = mapearArregloTipoDropdown(respuesta[this.POSICION_METODO_PAGO].datos,
-                 'metodoPago', 'idMetodoPago');
+      'metodoPago', 'idMetodoPago');
 
     this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
   }
 
-  consultarDetallePago(idPlanSfpa: number) : void {
-
-    // this.loaderService.activar();
+  consultarDetallePago(idPlanSfpa: number): void {
     this.detallePagoService.obtenerDetallePago(+idPlanSfpa).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.detalleServicio = {
-          contratanteSubstituto:respuesta.datos.detallePlan.contratanteSubstituto,
-          desNumeroPagos:respuesta.datos.detallePlan.desNumeroPagos,
-          nombrePaquete:respuesta.datos.detallePlan.nombrePaquete,
-          estatusPlan:respuesta.datos.detallePlan.estatusPlan,
-          velatorio:respuesta.datos.detallePlan.velatorio,
-          numFolio:respuesta.datos.detallePlan.numFolio,
-          correo:respuesta.datos.detallePlan.correo,
-          estado:respuesta.datos.detallePlan.estado,
-          idPlan:respuesta.datos.detallePlan.idPlan,
-          total:respuesta.datos.detallePlan.total,
+          contratanteSubstituto: respuesta.datos.detallePlan.contratanteSubstituto,
+          desNumeroPagos: respuesta.datos.detallePlan.desNumeroPagos,
+          nombrePaquete: respuesta.datos.detallePlan.nombrePaquete,
+          estatusPlan: respuesta.datos.detallePlan.estatusPlan,
+          velatorio: respuesta.datos.detallePlan.velatorio,
+          numFolio: respuesta.datos.detallePlan.numFolio,
+          correo: respuesta.datos.detallePlan.correo,
+          estado: respuesta.datos.detallePlan.estado,
+          idPlan: respuesta.datos.detallePlan.idPlan,
+          total: respuesta.datos.detallePlan.total,
           restante: respuesta.datos.detallePlan.restante ?? 0,
-          totalPagado:  respuesta.datos.detallePlan.restante ?
-                        Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante) :
-                        0
+          totalPagado: respuesta.datos.detallePlan.restante ?
+            Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante) :
+            0
         }
-        // this.totalPagado = Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante)
         this.pagosRealizados = respuesta.datos.pagos || [];
         this.pagosRealizados.length < Number(this.detalleServicio.desNumeroPagos) ?
-          this.opcionRealizarPagos = true:
+          this.opcionRealizarPagos = true :
           this.opcionRealizarPagos = false
       },
       error: (error: HttpErrorResponse) => {
@@ -158,7 +156,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   }
 
   abrirModalRealizarPago(): void {
-    if(!this.opcionRealizarPagos)return;
+    if (!this.opcionRealizarPagos) return;
     const ref = this.dialogService.open(ModalRealizarPagoComponent, {
       header: 'Realizar pago',
       style: {
@@ -213,7 +211,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       if (val) {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(193);
-        this.alertaService.mostrar(TipoAlerta.Exito,msg)
+        this.alertaService.mostrar(TipoAlerta.Exito, msg)
       }
     });
   }

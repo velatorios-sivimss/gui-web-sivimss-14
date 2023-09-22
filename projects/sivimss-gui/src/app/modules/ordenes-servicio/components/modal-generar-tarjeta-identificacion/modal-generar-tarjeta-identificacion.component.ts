@@ -43,8 +43,6 @@ export class ModalGenerarTarjetaIdentificacionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //Obtener la info que le pasa el componente que abre el modal
-    // this.dummy = this.config.data.dummy;
     this.ODSSeleccionada = this.config.data.ods;
     this.consultarOperadores();
     this.inicializarForm();
@@ -60,16 +58,16 @@ export class ModalGenerarTarjetaIdentificacionComponent implements OnInit {
     this.loaderService.activar();
     this.consultarOrdenServicioService.consultarOperadores().pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
-        this.operadores = respuesta.datos.map((operador:CatalogoOperadores) => (
-          { label: operador.nombreOperador, value: operador.idOperador })) || [];
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.operadores = respuesta.datos.map((operador: CatalogoOperadores) => (
+          {label: operador.nombreOperador, value: operador.idOperador})) || [];
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
 
   }
 
@@ -92,25 +90,25 @@ export class ModalGenerarTarjetaIdentificacionComponent implements OnInit {
     const idODS:number = this.config.data.ods.idOrdenServicio
     this.consultarOrdenServicioService.generarArchivoTarjetaIdetificacion(this.f.nombreOperador.value.toString(),idODS).pipe(
       finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(61));
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
         const url = window.URL.createObjectURL(file);
         window.open(url)
 
 
-          this.ref.close(true);
+        this.ref.close(true);
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    })
   }
 
   get f() {

@@ -247,8 +247,6 @@
   <div class="col-md-12 flex justify-content-end align-items-center">
     <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
     <button class="btn btn-md btn-gold ml-5" routerLink="../">Cancelar</button>
-<!--    <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="form.invalid" (click)="generada()">Generar-->
-<!--      orden de servicio</button>-->
     <button type="button" class="btn btn-md btn-primary ml-5" (click)="generada()">Crear
       Orden de Servicio</button>
   </div>
@@ -259,7 +257,7 @@
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-center">
-        ¿Estás seguro de querer guardar como pre-orden?
+        ¿Estás seguro de querer guardar como pre-orden? Para concluir una ODS se debe seleccionar “Confirmar Orden de Servicio”.
       </span>
     </div>
   </ng-template>

@@ -2,7 +2,14 @@
 
   <form [formGroup]="beneficiarioForm">
     <div class="row mb-3">
-      <div class="col-md-4">
+      <div class="col-md-6">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="delegaciones"
+                    placeholder="Selecciona la delegación" (onChange)="consultarVelatorioPorID()"
+                    [filter]="true" filterBy="label">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio"
                     placeholder="Selecciona velatorio" [options]="velatorio"></p-dropdown>
@@ -23,8 +30,6 @@
         <span class="campo-obligatorio"
               *ngIf="f.edad?.errors?.required && (f.edad?.dirty || f.edad?.touched)">Este campo es obligatorio *.</span>
       </div>
-    </div>
-    <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="nombre">Nombre (s)<span class="req">*</span>:</label>
         <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombre"
@@ -32,6 +37,8 @@
         <span class="campo-obligatorio"
               *ngIf="f.nombre?.errors?.required && (f.nombre?.dirty || f.nombre?.touched)">Este campo es obligatorio *.</span>
       </div>
+    </div>
+    <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="edad">Primer apellido<span class="req">*</span>:</label>
         <input id="primerApellido" class="form-control" formControlName="primerApellido" placeholder="Ingresa primer apellido"
@@ -46,8 +53,6 @@
         <span class="campo-obligatorio"
               *ngIf="f.segundoApellido?.errors?.required && (f.segundoApellido?.dirty || f.segundoApellido?.touched)">Este campo es obligatorio *.</span>
       </div>
-    </div>
-    <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="parentesco">Parentesco<span class="req">*</span>:</label>
         <p-dropdown id="parentesco" class="form-control" formControlName="parentesco"
@@ -55,38 +60,29 @@
         <span class="campo-obligatorio"
               *ngIf="f.parentesco?.errors?.required && (f.parentesco?.dirty || f.parentesco?.touched)">Este campo es obligatorio *.</span>
       </div>
+    </div>
+    <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
         <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18"
                alphanumericOnly (blur)="validarCURP()">
         <span class="campo-obligatorio"
               *ngIf="f.curp?.errors?.required && (f.curp?.dirty || f.curp?.touched)">Este campo es obligatorio *.</span>
-        <span class="campo-obligatorio"
-              *ngIf="f.curp?.errors?.pattern && (f.curp?.dirty || f.curp?.touched)">Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
         <label class="control-label" for="rfc">R.F.C:</label>
         <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa R.F.C." alphanumericOnly
-               maxlength="13">
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="control-label" for="actaNacimiento">Acta de nacimiento<span class="req">*</span>:</label>
-        <input id="actaNacimiento" class="form-control" formControlName="actaNacimiento" placeholder="Ingresa no. de acta"
-               numbersOnly maxlength="8">
-        <span class="campo-obligatorio"
-              *ngIf="f.actaNacimiento?.errors?.required && (f.actaNacimiento?.dirty || f.actaNacimiento?.touched)">Este campo es obligatorio *.</span>
+               maxlength="13" (blur)="validarRFC()">
       </div>
       <div class="col-md-4">
         <label class="control-label" for="correoElectronico">Correo electrónico<span class="req">*</span>:</label>
         <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico"
-               maxlength="45">
+               maxlength="45" (blur)="validarCorreoElectronico()">
         <span class="campo-obligatorio"
               *ngIf="f.correoElectronico?.errors?.required && (f.correoElectronico?.dirty || f.correoElectronico?.touched)">Este campo es obligatorio *.</span>
-        <span class="campo-obligatorio"
-              *ngIf="f.correoElectronico?.errors?.pattern && (f.correoElectronico?.dirty || f.correoElectronico?.touched)">Este campo es obligatorio *.</span>
       </div>
+    </div>
+    <div class="row mb-3">
       <div class="col-md-4">
         <label class="control-label" for="telefono">Teléfono<span class="req">*</span>:</label>
         <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono" maxlength="10" numbersOnly>

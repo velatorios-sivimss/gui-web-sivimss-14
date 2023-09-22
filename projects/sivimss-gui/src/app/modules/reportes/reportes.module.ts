@@ -4,7 +4,7 @@ import {NgModule} from "@angular/core";
 
 import {CalendarModule} from "primeng/calendar";
 import {CheckboxModule} from "primeng/checkbox";
-import { DialogModule } from 'primeng/dialog';
+import {DialogModule} from 'primeng/dialog';
 import {DropdownModule} from "primeng/dropdown";
 import {DialogService, DynamicDialogModule} from "primeng/dynamicdialog";
 
@@ -13,18 +13,18 @@ import {TituloPrincipalModule} from "../../shared/titulo-principal/titulo-princi
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
 
-import {ReporteOrdenServicioComponent} from "./components/reporte-orden-servicio/reporte-orden-servicio.component";
-import {ReporteOrdenServicioService} from "./services/reporte-orden-servicio.service";
-import {ReporteOrdenServicioRoutingModule} from "./reporte-orden-servicio-routing.module";
+import {Reportes} from "./components/reportes/reportes";
+import {ReportesService} from "./services/reportes.service";
+import {ReportesRoutingModule} from "./reportes-routing.module";
 import {AutoCompleteModule} from "primeng/autocomplete";
 
 @NgModule({
-  declarations: [ReporteOrdenServicioComponent],
+  declarations: [Reportes],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ReporteOrdenServicioRoutingModule,
+    ReportesRoutingModule,
 
     CalendarModule,
     CheckboxModule,
@@ -40,8 +40,9 @@ import {AutoCompleteModule} from "primeng/autocomplete";
 
   ],
   providers: [
-    ReporteOrdenServicioService,
+    ReportesService,
     DialogService
   ],
 })
-export class ReporteOrdenServicioModule{}
+export class ReportesModule {
+}

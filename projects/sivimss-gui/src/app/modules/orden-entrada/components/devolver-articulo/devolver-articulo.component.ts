@@ -1,13 +1,12 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
-import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
-import { AlertaService, TipoAlerta } from '../../../../shared/alerta/services/alerta.service';
-import { LoaderService } from '../../../../shared/loader/services/loader.service';
-import { OrdenEntradaService } from '../../services/orden-entrada.service';
-import { finalize } from "rxjs/operators";
+import {HttpErrorResponse} from '@angular/common/http';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpRespuesta} from '../../../../models/http-respuesta.interface';
+import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
+import {LoaderService} from '../../../../shared/loader/services/loader.service';
+import {OrdenEntradaService} from '../../services/orden-entrada.service';
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-devolver-articulo',
@@ -18,6 +17,7 @@ export class DevolverArticuloComponent implements OnInit {
 
   formulario!: FormGroup;
   detalleArticulo: any;
+  mostrarModalDevolucion: boolean = false;
 
   constructor(
     private alertaService: AlertaService,
@@ -26,7 +26,8 @@ export class DevolverArticuloComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params: any) => {
@@ -37,7 +38,7 @@ export class DevolverArticuloComponent implements OnInit {
 
   inicializarFormulario(): void {
     this.formulario = this.formBuilder.group({
-      devolucionMotivo: [{ value: null, disabled: false }, [Validators.required]]
+      devolucionMotivo: [{value: null, disabled: false}, [Validators.required, Validators.max(80)]]
     });
   }
 
@@ -63,7 +64,7 @@ export class DevolverArticuloComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200) {
-          this.alertaService.mostrar(TipoAlerta.Exito, "Artículo devuelto correctamente");
+          this.alertaService.mostrar(TipoAlerta.Exito, "Se realizó el registro de devolución correctamente.");
           void this.router.navigate(["../.."], {relativeTo: this.activatedRoute});
         }
       },

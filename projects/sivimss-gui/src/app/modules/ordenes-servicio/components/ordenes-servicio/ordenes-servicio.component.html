@@ -9,7 +9,7 @@
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="delegaciones"
                     placeholder="Selecciona la delegación" (onChange)="consultarVelatorioPorID()"
-        [filter]="true" filterBy="label">
+                    [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
       <div class="col-md-6">
@@ -28,9 +28,11 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nombreContratante">Nombre del contratante:</label>
-        <p-autoComplete id="nombreContratante" class="form-control" formControlName="nombreContratante"
-                        [showEmptyMessage]="true" [suggestions]="nombreContratantes" (completeMethod)="filtrarContratantes()"
-                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa el nombre del contratante" field="label"
+        <p-autoComplete id="nombreContratante" class="form-control p-autocomplete" formControlName="nombreContratante"
+                        [showEmptyMessage]="true" [suggestions]="nombreContratantes"
+                        (completeMethod)="filtrarContratantes()"
+                        [style]="{'width':'100%'}" [minLength]="3" placeholder="Ingresa el nombre del contratante"
+                        field="label"
                         [inputStyleClass]="'input-autocomplete'"
         >
           <ng-template let-contratante pTemplate="item">
@@ -44,9 +46,10 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nombreFinado">Nombre del finado:</label>
-        <p-autoComplete id="nombreFinado" class="form-control" formControlName="nombreFinado"
+        <p-autoComplete id="nombreFinado" class="form-control p-autocomplete" formControlName="nombreFinado"
                         [showEmptyMessage]="true" [suggestions]="nombreFinados" (completeMethod)="filtrarFinados()"
-                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa el nombre del finado" field="label"
+                        [style]="{'width':'100%'}" [minLength]="3" placeholder="Ingresa el nombre del finado"
+                        field="label"
                         [inputStyleClass]="'input-autocomplete'"
         >
           <ng-template let-contratante pTemplate="item">
@@ -67,7 +70,8 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="unidadProcedencia">Unidad de procedencia<span class="req">*</span>:</label>
-        <p-dropdown id="unidadProcedencia" class="form-control" formControlName="unidadProcedencia" [options]="unidadesMedicas"
+        <p-dropdown id="unidadProcedencia" class="form-control" formControlName="unidadProcedencia"
+                    [options]="unidadesMedicas"
                     placeholder="Selecciona unidad de procedencia"
                     [filter]="true" filterBy="label">
         </p-dropdown>
@@ -92,7 +96,9 @@
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
         <button type="submit" class="btn btn-default btn-md" (click)="limpiarFiltros()">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid" (click)="paginarPorFiltros()">Buscar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
+                (click)="paginarPorFiltros()">Buscar
+        </button>
       </div>
     </div>
   </form>
@@ -100,7 +106,8 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Órdenes de servicio</h2>
-    <button *appValidaRol="['CONSULTAR_ODS','ALTA']" type="button" class="btn btn-primary btn-lg" routerLink="generar-orden-de-servicio">Generar orden de
+    <button *appValidaRol="['CONSULTAR_ODS','ALTA']" type="button" class="btn btn-primary btn-lg"
+            routerLink="generar-orden-de-servicio">Generar orden de
       servicio
     </button>
   </div>
@@ -111,16 +118,16 @@
            appActivarUltimaCeldaSticky [resizableColumns]="true" [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
-        <th>Velatorio.</th>
-        <th>Número de folio.</th>
-        <th>Nombre del contratante.</th>
-        <th>Nombre del finado.</th>
-        <th>Tipo de orden.</th>
-        <th>Unidad de procedencia.</th>
-        <th>Número de contrato / convenio PF.</th>
-        <th>Estado.</th>
-        <th>Notas de servicio</th>
-        <th></th>
+        <th scope="col">Velatorio.</th>
+        <th scope="col">Número de folio.</th>
+        <th scope="col">Nombre del contratante.</th>
+        <th scope="col">Nombre del finado.</th>
+        <th scope="col">Tipo de orden.</th>
+        <th scope="col">Unidad de procedencia.</th>
+        <th scope="col">Número de contrato / convenio PF.</th>
+        <th scope="col">Estado.</th>
+        <th scope="col">Notas de servicio</th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ordenServicio>
@@ -136,10 +143,9 @@
         <td>{{ordenServicio.notasServicio}}</td>
 
         <td>
-          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'60px 40px'}" class="contenedor-celda-iconos">
-<!--            <a routerLink="ver-orden-de-servicio">-->
-<!--              <i class="fs fs-ver"></i>-->
-<!--            </a>-->
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'60px 40px'}"
+               class="contenedor-celda-iconos">
+
             <a (click)="abrirPanel($event,ordenServicio)">
               <i class="fs fs-barras-horizontales"></i>
             </a>
@@ -165,8 +171,10 @@
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
 
-            <img class="icon-export-table" (click)="exportarArchivo('pdf')"  src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" (click)="exportarArchivo('xls')"  src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" (click)="exportarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg"
+                 alt="exportar pdf">
+            <img class="icon-export-table" (click)="exportarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
+                 alt="exportar excel">
           </div>
         </div>
       </div>
@@ -177,20 +185,31 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion *appValidaRol="['CONSULTAR_ODS','ALTA']" titulo="Generar Orden complementaria" onCloseOnNavigation (click)="ordenComplementaria()"></app-overlay-panel-opcion>
+      <div *appValidaRol="['CONSULTAR_ODS','ALTA']">
+        <app-overlay-panel-opcion *ngIf="!ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')"
+             titulo="Generar Orden complementaria"
+                                  onCloseOnNavigation (click)="ordenComplementaria()"></app-overlay-panel-opcion>
+      </div>
       <div *appValidaRol="['CONSULTAR_ODS','MODIFICAR']">
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')
-          && !ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')" (click)="modificarODS()" titulo="Modificar"></app-overlay-panel-opcion>
+          && !ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')"
+                                  (click)="modificarODS()" titulo="Modificar"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')
-          && ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')" (click)="modificarODSsf()" titulo="Modificar"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')  && ordenServicioSeleccionada.tiempoGeneracionODSHrs <= 24 " (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
+          && ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')"
+                                  (click)="modificarODSsf()" titulo="Modificar"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
       </div>
       <div *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
-        <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarContratoServInmediatos()" titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden') || ordenServicioSeleccionada.estatus?.includes('Generada')" (click)="descargarOrdenServicio()" titulo="Descargar Orden de servicio"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="mostrarDescargaEntradas" titulo="Aceptación y control de ataúdes de donación" (click)="descargarEntradas()"></app-overlay-panel-opcion>
-<!--        <app-overlay-panel-opcion *ngIf="mostrarDescagaSalidas" titulo="Aceptación y control de ataúdes de donación" (click)="descargarSalidas()"></app-overlay-panel-opcion>-->
+        <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation
+                                  (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')"
+                                  (click)="descargarContratoServInmediatos()"
+                                  titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion
+          *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden') || ordenServicioSeleccionada.estatus?.includes('Generada')"
+          (click)="descargarOrdenServicio()" titulo="Descargar Orden de servicio"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="mostrarDescargaEntradas" titulo="Aceptación y control de ataúdes de donación"
+                                  (click)="descargarEntradas()"></app-overlay-panel-opcion>
       </div>
     </app-overlay-panel-opciones>
   </ng-template>
@@ -199,7 +218,7 @@
 
 <p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>

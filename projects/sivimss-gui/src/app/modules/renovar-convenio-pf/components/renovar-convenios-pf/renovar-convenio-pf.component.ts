@@ -227,14 +227,12 @@ export class RenovarConvenioPfComponent implements OnInit {
           this.resultadoBusquedaForm.patchValue({
             ...this.convenio
           });
+        } else if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
+          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+          this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
         } else {
-          if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
-            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-            this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
-          } else {
-            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda`;
-            this.mostrarModalConfirmacion = true;
-          }
+          this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda`;
+          this.mostrarModalConfirmacion = true;
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -256,14 +254,12 @@ export class RenovarConvenioPfComponent implements OnInit {
           this.resultadoBusquedaForm.patchValue({
             ...this.convenio
           });
+        } else if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
+          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+          this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
         } else {
-          if (respuesta.mensaje === '39' || respuesta.mensaje === '36') {
-            const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-            this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
-          } else {
-            this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda`;
-            this.mostrarModalConfirmacion = true;
-          }
+          this.mensajeBusqueda = `No se encontró información relacionada a tu búsqueda`;
+          this.mostrarModalConfirmacion = true;
         }
       },
       error: (error: HttpErrorResponse) => {

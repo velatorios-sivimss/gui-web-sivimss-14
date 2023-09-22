@@ -100,7 +100,7 @@
     <ng-template pTemplate="emptymessage">
       <tr>
         <th colspan=9 class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular" *ngIf="realizoBusqueda">
-          No se encontró información relacionada a tu búsqueda
+          No se encontró información relacionada a tu búsqueda en programa mantenimiento vehicular
         </th>
       </tr>
     </ng-template>
@@ -204,7 +204,7 @@
           [draggable]="false" [resizable]="false" header="" >
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+      <span class="text-justify">{{mensajeConfirmacion}}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">

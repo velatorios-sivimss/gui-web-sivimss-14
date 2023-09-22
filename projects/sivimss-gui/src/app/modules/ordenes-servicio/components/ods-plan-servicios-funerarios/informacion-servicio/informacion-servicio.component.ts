@@ -1,45 +1,43 @@
 import {Component, EventEmitter, OnInit, Output, Renderer2} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'primeng/dynamicdialog';
-import { ModalAgregarAtaudComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-ataud/modal-agregar-ataud.component';
-import { ModalAgregarPanteonComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-panteon/modal-agregar-panteon.component';
-import { ModalSeleccionarBeneficiarioComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-seleccionar-beneficiario/modal-seleccionar-beneficiario.component';
-import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { GestionarEtapasService } from '../../../services/gestionar-etapas.service';
-import { AltaODSInterface } from '../../../models/AltaODS.interface';
-import { ContratanteInterface } from '../../../models/Contratante.interface';
-import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import {FinadoInterface, FinadoSFInterface} from '../../../models/Finado.interface';
-import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
-import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
-import { DetallePaqueteInterface } from '../../../models/DetallePaquete.interface';
-import { ServicioDetalleTrasladotoInterface } from '../../../models/ServicioDetalleTraslado.interface';
-import { CaracteristicasDelPresupuestoInterface } from '../../../models/CaracteristicasDelPresupuesto.interface';
-import { DetallePresupuestoInterface } from '../../../models/DetallePresupuesto.interface';
-import { InformacionServicioInterface } from '../../../models/InformacionServicio.interface';
-import { InformacionServicioVelacionInterface } from '../../../models/InformacionServicioVelacion.interface';
-import { GenerarOrdenServicioService } from '../../../services/generar-orden-servicio.service';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DialogService} from 'primeng/dynamicdialog';
+import {
+  ModalAgregarPanteonComponent
+} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-panteon/modal-agregar-panteon.component';
+import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {ContratanteInterface} from '../../../models/Contratante.interface';
+import {CodigoPostalIterface} from '../../../models/CodigoPostal.interface';
+import {FinadoSFInterface} from '../../../models/Finado.interface';
+import {CaracteristicasPresupuestoInterface} from '../../../models/CaracteristicasPresupuesto,interface';
+import {CaracteristicasPaqueteInterface} from '../../../models/CaracteristicasPaquete.interface';
+import {DetallePaqueteInterface} from '../../../models/DetallePaquete.interface';
+import {ServicioDetalleTrasladotoInterface} from '../../../models/ServicioDetalleTraslado.interface';
+import {CaracteristicasDelPresupuestoInterface} from '../../../models/CaracteristicasDelPresupuesto.interface';
+import {DetallePresupuestoInterface} from '../../../models/DetallePresupuesto.interface';
+import {InformacionServicioInterface} from '../../../models/InformacionServicio.interface';
+import {InformacionServicioVelacionInterface} from '../../../models/InformacionServicioVelacion.interface';
+import {GenerarOrdenServicioService} from '../../../services/generar-orden-servicio.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { finalize } from 'rxjs';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {finalize} from 'rxjs';
 
 import * as moment from 'moment';
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
-import {Panteon} from "../../../models/Panteon.interface";
 import {Router} from "@angular/router";
 import {ConsultarOrdenServicioService} from "../../../services/consultar-orden-servicio.service";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
+
 @Component({
   selector: 'app-informacion-servicio-sf',
   templateUrl: './informacion-servicio.component.html',
@@ -84,17 +82,16 @@ export class InformacionServicioSFComponent implements OnInit {
   idPanteon: number | null = null;
   validaDomicilio: boolean = false;
   tipoOrden: number = 0;
-  fechaActual= new Date();
+  fechaActual = new Date();
   servicioExtremidad: boolean = false;
   confirmarGuardado: boolean = false;
-  confirmarPreOrden:boolean = false;
+  confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly dialogService: DialogService,
     private loaderService: LoaderService,
-
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
@@ -124,6 +121,7 @@ export class InformacionServicioSFComponent implements OnInit {
       this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
   }
+
   ngOnInit(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.idVelatorio = +usuario.idVelatorio;
@@ -131,7 +129,7 @@ export class InformacionServicioSFComponent implements OnInit {
       (datosEtapaInformacionServicio) => this.inicializarForm(datosEtapaInformacionServicio)
     );
     this.gestionarEtapasService.datosEtapaCaracteristicas$.asObservable().subscribe(
-        (datosEtapaCaracteristicas) => this.datosEtapaCaracteristicas(datosEtapaCaracteristicas)
+      (datosEtapaCaracteristicas) => this.datosEtapaCaracteristicas(datosEtapaCaracteristicas)
     );
     this.gestionarEtapasService.altaODS$.asObservable().subscribe(
       (datodPrevios) => this.llenarAlta(datodPrevios)
@@ -147,26 +145,19 @@ export class InformacionServicioSFComponent implements OnInit {
 
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
-    // if(Number(this.altaODS.finado.idTipoOrden) < 3){
-    //   this.cortejo.gestionadoPorPromotor.disable();
-    // }else{
-    //   this.cortejo.gestionadoPorPromotor.enable();
-    // }
   }
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
     datosPresupuesto.forEach((datos: any) => {
-      if (datos.concepto.trim() == 'Velación en capilla' ||
-          datos.concepto.trim() =='Capilla en Velatorio') {
+      if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
       }
 
-      if (datos.concepto.trim() == 'Velación en domicilio' ||
-          datos.concepto.trim() =='Renta de equipo para velación en domicilio') {
+      if (datos.concepto.trim() == 'Velación en domicilio') {
         this.validaDomicilio = true;
         this.lugarVelacion.calle.enable();
         this.lugarVelacion.exterior.enable();
@@ -179,8 +170,8 @@ export class InformacionServicioSFComponent implements OnInit {
       }
 
       if (
-        datos.concepto.toUpperCase().trim().includes('CREMACIÓN') ||
-        datos.concepto.toUpperCase().trim().includes('CREMACION')
+        datos.grupo.toUpperCase().trim().includes('CREMACIÓN') ||
+        datos.grupo.toUpperCase().trim().includes('CREMACION')
       ) {
         this.lugarCremacion.sala.enable();
         this.lugarCremacion.fecha.enable();
@@ -194,91 +185,91 @@ export class InformacionServicioSFComponent implements OnInit {
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [
-          { value: datos.idCapilla, disabled: false },
+          {value: datos.idCapilla, disabled: false},
           [Validators.required],
         ],
         fecha: [
-          { value: datos.fechaVelacion, disabled: false },
+          {value: datos.fechaVelacion, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaVelacion, disabled: false },
+          {value: datos.horaVelacion, disabled: false},
           [Validators.required],
         ],
-        calle: [{ value: datos.calle, disabled: false }, [Validators.required]],
+        calle: [{value: datos.calle, disabled: false}, [Validators.required]],
         exterior: [
-          { value: datos.exterior, disabled: false },
+          {value: datos.exterior, disabled: false},
           [Validators.required],
         ],
         interior: [
-          { value: datos.interior, disabled: false },
+          {value: datos.interior, disabled: false},
         ],
-        cp: [{ value: datos.cp, disabled: false }, [Validators.required]],
+        cp: [{value: datos.cp, disabled: false}, [Validators.required]],
         colonia: [
-          { value: datos.colonia, disabled: false },
+          {value: datos.colonia, disabled: false},
           [Validators.required],
         ],
         municipio: [
-          { value: datos.municipio, disabled: false },
+          {value: datos.municipio, disabled: false},
           [Validators.required],
         ],
         estado: [
-          { value: datos.estado, disabled: false },
+          {value: datos.estado, disabled: false},
           [Validators.required],
         ],
       }),
       lugarCremacion: this.formBuilder.group({
-        sala: [{ value: datos.idSala, disabled: false }, [Validators.required]],
+        sala: [{value: datos.idSala, disabled: false}, [Validators.required]],
         fecha: [
-          { value: datos.fechaCremacion, disabled: false },
+          {value: datos.fechaCremacion, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaCremacion, disabled: false },
+          {value: datos.horaCremacion, disabled: false},
           [Validators.required],
         ],
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          { value: null, disabled: false },
+          {value: null, disabled: false},
 
         ],
       }),
       recoger: this.formBuilder.group({
         fecha: [
-          { value: datos.fechaRecoger, disabled: false },
+          {value: datos.fechaRecoger, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaRecoger, disabled: false },
+          {value: datos.horaRecoger, disabled: false},
           [Validators.required],
         ],
       }),
       instalacionServicio: this.formBuilder.group({
         fecha: [
-          { value: datos.fechaInstalacion, disabled: false },
+          {value: datos.fechaInstalacion, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaInstalacion, disabled: false },
+          {value: datos.horaInstalacion, disabled: false},
           [Validators.required],
         ],
       }),
       cortejo: this.formBuilder.group({
         fecha: [
-          { value: datos.fechaCortejo, disabled: false },
+          {value: datos.fechaCortejo, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaCortejo, disabled: false },
+          {value: datos.horaCortejo, disabled: false},
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          { value: datos.gestionadoPorPromotor ? datos.gestionadoPorPromotor : false, disabled: false },
+          {value: datos.gestionadoPorPromotor ? datos.gestionadoPorPromotor : false, disabled: false},
           [Validators.required],
         ],
         promotor: [
-          { value: datos.promotor, disabled: false },
+          {value: datos.promotor, disabled: false},
           [Validators.required],
         ],
       }),
@@ -293,45 +284,46 @@ export class InformacionServicioSFComponent implements OnInit {
       this.cortejo.promotor.setValue(null);
     }
   }
+
   buscarCapillas(): void {
     this.loaderService.activar();
-    const parametros = { idVelatorio: this.idVelatorio };
+    const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService.buscarCapillas(parametros).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe(
-        {
-          next:(respuesta: HttpRespuesta<any>) => {
-            const datos = respuesta.datos;
-            if (respuesta.error) {
-              this.capillas = [];
-              const errorMsg: string =
-                this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
-              this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
-              return;
-            }
-            this.capillas = mapearArregloTipoDropdown(datos,'nombreCapilla','idCapilla');
-          },
-          error:(error: HttpErrorResponse) => {
-            try {
-              const errorMsg: string =this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-              this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
-            } catch (error) {
-              const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-              this.alertaService.mostrar(TipoAlerta.Info,errorMsg || 'El servicio no responde, no permite más llamadas.');
-            }
+      {
+        next: (respuesta: HttpRespuesta<any>): void => {
+          const datos = respuesta.datos;
+          if (respuesta.error) {
+            this.capillas = [];
+            const errorMsg: string =
+              this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Info, errorMsg || 'El servicio no responde, no permite más llamadas.');
+            return;
+          }
+          this.capillas = mapearArregloTipoDropdown(datos, 'nombreCapilla', 'idCapilla');
+        },
+        error: (error: HttpErrorResponse): void => {
+          try {
+            const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+            this.alertaService.mostrar(TipoAlerta.Info, errorMsg || 'El servicio no responde, no permite más llamadas.');
+          } catch (error) {
+            const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+            this.alertaService.mostrar(TipoAlerta.Info, errorMsg || 'El servicio no responde, no permite más llamadas.');
           }
         }
-      );
+      }
+    );
   }
 
   buscarSalas(): void {
     this.loaderService.activar();
-    const parametros = { idVelatorio: this.idVelatorio };
+    const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService
       .buscarCapillas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -352,7 +344,7 @@ export class InformacionServicioSFComponent implements OnInit {
             'idCapilla'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -371,7 +363,7 @@ export class InformacionServicioSFComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   buscarPromotor(): void {
@@ -380,8 +372,8 @@ export class InformacionServicioSFComponent implements OnInit {
     this.gestionarOrdenServicioService
       .buscarPromotor()
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.promotores = [];
@@ -402,7 +394,7 @@ export class InformacionServicioSFComponent implements OnInit {
             'idPromotor'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -421,13 +413,13 @@ export class InformacionServicioSFComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   abrirModalAgregarPanteon(): void {
     const ref = this.dialogService.open(ModalAgregarPanteonComponent, {
       header: 'Agregar panteón',
-      style: { maxWidth: '876px', width: '100%' },
+      style: {maxWidth: '876px', width: '100%'},
     });
     ref.onClose.subscribe((val: number) => {
       if (val) {
@@ -641,8 +633,8 @@ export class InformacionServicioSFComponent implements OnInit {
     this.gestionarOrdenServicioService
       .generarODSSF(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -663,12 +655,12 @@ export class InformacionServicioSFComponent implements OnInit {
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(respuesta.mensaje)
             );
-          if(this.altaODS.idEstatus == 2){
+          if (this.altaODS.idEstatus == 2) {
             this.alertaService.mostrar(
               TipoAlerta.Exito,
               ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
             );
-          }else{
+          } else {
             this.alertaService.mostrar(
               TipoAlerta.Exito,
               'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
@@ -676,74 +668,74 @@ export class InformacionServicioSFComponent implements OnInit {
           }
           this.router.navigate(["ordenes-de-servicio"]);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
-            this.alertaService.mostrar(TipoAlerta.Error,errorMsg );
+            this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
           } catch (error) {
             const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
-            this.alertaService.mostrar(TipoAlerta.Error,errorMsg);
+            this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
           }
         }
-      );
+      });
   }
 
-  descargarContratoServInmediatos(idOrdenServicio:number ): void{
+  descargarContratoServInmediatos(idOrdenServicio: number): void {
     this.loaderService.activar()
     let tipoOrden;
     this.altaODS.idEstatus == 1 ? tipoOrden = 0 : tipoOrden = 1
-    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    this.gestionarOrdenServicioService.generarArchivoServiciosInmediatos(idOrdenServicio,tipoOrden).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
+    this.gestionarOrdenServicioService.generarArchivoServiciosInmediatos(idOrdenServicio, tipoOrden).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
         const url = window.URL.createObjectURL(file);
-        link.setAttribute('download','documento');
+        link.setAttribute('download', 'documento');
         link.setAttribute('href', url);
         link.click();
         link.remove();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    })
   }
 
-  descargarOrdenServicio(idOrdenServicio:number, idEstatus:number): void {
+  descargarOrdenServicio(idOrdenServicio: number, idEstatus: number): void {
     this.loaderService.activar()
-    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.gestionarOrdenServicioService.generarArchivoOrdenServicio(
-      idOrdenServicio,idEstatus
+      idOrdenServicio, idEstatus
     ).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
         const url = window.URL.createObjectURL(file);
-        link.setAttribute('download','documento');
+        link.setAttribute('download', 'documento');
         link.setAttribute('href', url);
         link.click();
         link.remove();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    } )
   }
 
   desabilitarTodo(): void {
@@ -792,8 +784,8 @@ export class InformacionServicioSFComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consutaCP(this.lugarVelacion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
@@ -808,9 +800,9 @@ export class InformacionServicioSFComponent implements OnInit {
           this.lugarVelacion.municipio.patchValue(null);
           this.lugarVelacion.estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 }

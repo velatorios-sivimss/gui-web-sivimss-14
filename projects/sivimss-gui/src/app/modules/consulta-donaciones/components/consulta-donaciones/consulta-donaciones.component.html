@@ -16,7 +16,8 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegaci&oacute;n<span class="req">*:</span></label>
         <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
-                    [options]="delegacion" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()" [filter]="true" filterBy="label">
+                    [options]="delegacion" placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()"
+                    [filter]="true" filterBy="label">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="ff.delegacion?.errors?.required && (ff.delegacion?.dirty || ff.delegacion?.touched)">Este campo es obligatorio *.</span>
@@ -46,12 +47,12 @@
     <div class="row mb-3">
       <div class="col-md-3">
         <p-calendar styleClass="form-control" id="fechaDesde" formControlName="fechaDesde" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Fecha inicial" [minDate]="fechaRango"  (onSelect)="validarFechaFinal()"></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Fecha inicial" [minDate]="fechaRango"></p-calendar>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="fechaHasta"></label>
         <p-calendar styleClass="form-control" id="fechaHasta" formControlName="fechaHasta" [showIcon]="true"
-                    dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual" (onSelect)="validarFechaFinal()"></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual"></p-calendar>
       </div>
     </div>
     <div class="row mt-4">
@@ -66,19 +67,22 @@
     <div class="col-md-12 flex justify-content-end">
       <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar filtros</button>
       <button type="submit" class="btn btn-primary btn-md ml-5"
-              (click)="buscar()">Buscar</button>
+              (click)="buscar()">Buscar
+      </button>
     </div>
   </div>
 </div>
 <section class="my-6">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Ataúdes donados</h2>
-    <button *appValidaRol="['CONSULTAR_DONADOS','ALTA']" type="button" class="btn btn-primary btn-lg" (click)="abrirModarRegistrarDonacion()">
-      Registrar donaci&oacute;n</button>
+    <button *appValidaRol="['CONSULTAR_DONADOS','ALTA']" type="button" class="btn btn-primary btn-lg"
+            (click)="abrirModarRegistrarDonacion()">
+      Registrar donaci&oacute;n
+    </button>
   </div>
 </section>
 <section>
-  <p-table  styleClass="mt-5 mb-8" [value]="ataudesDonados"
+  <p-table styleClass="mt-5 mb-8" [value]="ataudesDonados"
            [paginator]="ataudesDonados.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
            [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
            (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
@@ -91,7 +95,6 @@
         <th pResizableColumn scope="col">Fecha de donación</th>
         <th pResizableColumn scope="col">Donado por</th>
         <th pResizableColumn scope="col">Nombre del donador</th>
-<!--        <th pResizableColumn scope="col" *appValidaRol="['CONSULTAR_DONADOS','IMPRIMIR']"></th>-->
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ataudesDonados>
@@ -103,11 +106,7 @@
         <td> {{ataudesDonados.fecDonacion}} </td>
         <td> {{ataudesDonados.donadoPor}} </td>
         <td> {{ataudesDonados.nomDonador}} </td>
-<!--        <td *appValidaRol="['CONSULTAR_DONADOS','IMPRIMIR']">-->
-<!--          <a  (click)="abrirPanel($event,ataudesDonados)">-->
-<!--            <img  src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">-->
-<!--          </a>-->
-<!--        </td>-->
+
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
@@ -127,8 +126,10 @@
         <div class="export-table" *appValidaRol="['CONSULTAR_DONADOS','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table"  src="assets/images/imagen-icono-pdf.svg" (click)="generarArchivo('pdf')" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" (click)="generarArchivo('xls')"  alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" (click)="generarArchivo('pdf')"
+                 alt="exportar pdf">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" (click)="generarArchivo('xls')"
+                 alt="exportar excel">
           </div>
         </div>
       </div>
@@ -138,7 +139,7 @@
 
 <p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
@@ -154,7 +155,7 @@
 
 <p-dialog [(visible)]="mostrarModalFechaMayor" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">La fecha inicial no puede ser mayor que la fecha final.</span>
@@ -167,14 +168,7 @@
   </ng-template>
 </p-dialog>
 
-<!--<p-overlayPanel #overlayPanel>-->
-<!--  <ng-template pTemplate="content">-->
-<!--    <app-overlay-panel-opciones>-->
-<!--      <app-overlay-panel-opcion titulo="Exportar a PDF" (click)="validarTipoReporte('pdf')"></app-overlay-panel-opcion>-->
-<!--      <app-overlay-panel-opcion titulo="Exportar a Excel" (click)="validarTipoReporte('xls')"></app-overlay-panel-opcion>-->
-<!--    </app-overlay-panel-opciones>-->
-<!--  </ng-template>-->
-<!--</p-overlayPanel>-->
+
 
 <p-dialog [(visible)]="filtrosNoSeleccionados" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"

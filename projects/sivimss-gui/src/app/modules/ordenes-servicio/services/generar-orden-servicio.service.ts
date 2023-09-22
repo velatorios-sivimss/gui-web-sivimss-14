@@ -69,7 +69,7 @@ export class GenerarOrdenServicioService extends BaseService<
     return mensajeSistema ? mensajeSistema.desMensaje : '';
   }
 
-  consutaCP(cp: String): Observable<HttpRespuesta<any>> {
+  consutaCP(cp: string): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       `${environment.api.servicios_externos}consultar/codigo-postal/` + cp
     );

@@ -9,7 +9,6 @@ import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcru
 import {
   ConsultaPaginado,
   GenerarReporte,
-  ServiciosFunerariosInterface
 } from "../../models/servicios-funerarios.interface"
 import {LazyLoadEvent} from "primeng/api";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
@@ -114,8 +113,8 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   paginar(event?: LazyLoadEvent): void {
 
-    if (event && event.first !== undefined && event.rows !== undefined) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1))
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1))
     } else{
       this.numPaginaActual = 0;
     }
@@ -230,15 +229,15 @@ export class ServiciosFunerariosComponent implements OnInit {
                       respuesta.datos,this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
                       { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
           this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-            finalize(() => this.loaderService.desactivar())).subscribe(
-            (repuesta) => {
+            finalize(() => this.loaderService.desactivar())).subscribe({
+            next: (repuesta): void => {
               this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
               this.mostrarModalConfirmacion = true;
             },
-            (error) => {
+            error: (error): void => {
               this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
             }
-          )
+          })
         },
         error: (error: HttpErrorResponse) => {
           this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
@@ -261,15 +260,15 @@ export class ServiciosFunerariosComponent implements OnInit {
           { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
 
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.loaderService.desactivar())).subscribe(
-          (repuesta) => {
+          finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (repuesta): void => {
             this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
             this.mostrarModalConfirmacion = true;
           },
-          (error) => {
+          error: (error): void => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
           }
-        )
+        })
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))

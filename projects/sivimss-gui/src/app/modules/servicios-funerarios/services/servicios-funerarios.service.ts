@@ -67,7 +67,7 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
     );
   }
 
-  consutaCP(cp: String): Observable<HttpRespuesta<any>> {
+  consutaCP(cp: string): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       `${environment.api.servicios_externos}consultar/codigo-postal/` + cp
     );

@@ -1,4 +1,4 @@
-import { Router, RouterModule, Routes } from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
 import { CancelarOrdenEntradaComponent } from "projects/sivimss-gui/src/app/modules/orden-entrada/components/cancelar-orden-entrada/cancelar-orden-entrada.component";
 import { OrdenEntradaComponent } from "./components/orden-entrada/orden-entrada.component";
 import { NgModule } from "@angular/core";

@@ -1,6 +1,6 @@
 <div class="grid">
-  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
-  <app-titulo-principal titulo="Realizar balance de caja" class="col"></app-titulo-principal>
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../.."></app-btn-regresar>
+  <app-titulo-principal titulo="Devolución artículo" class="col"></app-titulo-principal>
 </div>
 <app-table-panel *ngIf="detalleArticulo">
   <ng-template appCustomTemplate="left-header">
@@ -24,7 +24,7 @@
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
-          <label>Articulo:</label>
+          <label>Artículo:</label>
           <span>{{ detalleArticulo.DES_MODELO_ARTICULO }}</span>
         </div>
       </div>
@@ -36,9 +36,9 @@
   <form [formGroup]="formulario">
     <div class="row mb-3 mt-3">
       <div class="col-md-12">
-        <label class="control-label" for="modificarPago">Motivo de de la devolucion<span class="req">*</span>:</label>
+        <label class="control-label" for="modificarPago">Motivo de la devolución<span class="req">*</span>:</label>
         <textarea rows="4" class="form-control" pInputTextarea formControlName="devolucionMotivo"
-          placeholder="Ingresa el motivo de la devolución" maxlength="100"></textarea>
+          placeholder="Ingresa el motivo de la devolución" maxlength="80"></textarea>
         <span class="campo-obligatorio"
           *ngIf="f.devolucionMotivo?.errors?.required && (f.devolucionMotivo?.dirty || f.devolucionMotivo?.touched)">Este
           campo es obligatorio *.</span>
@@ -56,8 +56,23 @@
 <section>
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end align-items-center">
-      <button class="ml-4 btn btn-default btn-md" routerLink="../">Cancelar</button>
-      <button class="ml-4 btn btn-md btn-primary" (click)="devolver()">Devolver</button>
+      <button class="ml-4 btn btn-default btn-md" routerLink="../..">Cancelar</button>
+      <button class="ml-4 btn btn-md btn-primary" [disabled]="f.devolucionMotivo.value === null || f.devolucionMotivo.value === ''" (click)="mostrarModalDevolucion = true">Devolver</button>
     </div>
   </div>
 </section>
+
+<p-dialog [(visible)]="mostrarModalDevolucion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="Cerrar ODE">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">¿Estás seguro de devolver este articulo?</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <button class="btn btn-gold btn-md" (click)="mostrarModalDevolucion = false">Cancelar</button>
+      <button class="btn btn-primary btn-md ml-3" (click)="devolver()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

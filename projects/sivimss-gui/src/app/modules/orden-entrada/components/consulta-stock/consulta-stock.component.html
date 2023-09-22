@@ -24,8 +24,8 @@
       </p-autoComplete>
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="categoria">Categoria (Artículos):</label>
-      <<p-autoComplete id="categoria" class="form-control" formControlName="categoria" (keyup)="validarNombre(0)"
+      <label class="control-label" for="categoria">Categoria:</label>
+      <p-autoComplete id="categoria" class="form-control" formControlName="categoria" (keyup)="validarNombre(0)"
         (keyup.space)="sinEspacioInicial(0)" autocomplete="categoria" [suggestions]="catalogoCategorias"
         (completeMethod)="consultarCategorias($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
         [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa categoría"
@@ -52,7 +52,6 @@
           <label [for]="'donado'" class="control-label mb-0 font-normal">Donado</label>
         </div>
       </div>
-      <span class="mensaje-inferior-campo-obligatorio inline-block mt-2">*Campos obligatorios</span>
     </div>
     <div class="col-md-6 flex justify-content-end">
       <button class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
@@ -71,7 +70,7 @@
         <th pResizableColumn scope="col">Folio artículo</th>
         <th pResizableColumn scope="col">Artículo</th>
         <th pResizableColumn scope="col">Estatus</th>
-        <th></th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-stock>

@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from "@angular/forms";
+import {Component, ViewChild} from '@angular/core';
+import {FormGroup} from "@angular/forms";
 import {
   ActualizarBeneficiario,
   Beneficiario,
@@ -10,21 +10,21 @@ import {
   CatalogoDatosGenerales,
   GuardarBeneficiario
 } from '../../models/convenio.interface';
-import { Accordion } from 'primeng/accordion';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute } from '@angular/router';
-import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Accordion} from 'primeng/accordion';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {ActivatedRoute} from '@angular/router';
+import {RenovarConvenioPfService} from '../../services/renovar-convenio-pf.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
 import * as moment from 'moment';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 @Component({
   selector: 'app-renovar-convenio-beneficiarios',
   templateUrl: './renovar-convenio-beneficiarios.component.html',
   styleUrls: ['./renovar-convenio-beneficiarios.component.scss']
 })
-export class RenovarConvenioBeneficiariosComponent implements OnInit {
+export class RenovarConvenioBeneficiariosComponent {
   readonly POSICION_BENEFICIARIOS: number = 1;
   readonly POSICION_DATOS_GRALES: number = 2;
 
@@ -61,7 +61,6 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     this.datosGenerales.fecha = moment().format('DD/MM/YYYY');
   }
 
-  ngOnInit(): void { /* TODO document why this method 'ngOnInit' is empty */ }
 
   nuevo() {
     this.activeIndex = null;
@@ -148,7 +147,11 @@ export class RenovarConvenioBeneficiariosComponent implements OnInit {
     if (!beneficiario) {
       this.mode = 'listado';
     } else {
-      this.renovarConvenioPfService.cambiarEstatusBeneficiario({ idBeneficiario: this.beneficiarioSeleccionado.idBenef, estatusBenefic: !this.beneficiarioSeleccionado.estatus, idContratanteConvenio: this.busquedaListBeneficiarios.idContratanteConvenioPf }).subscribe({
+      this.renovarConvenioPfService.cambiarEstatusBeneficiario({
+        idBeneficiario: this.beneficiarioSeleccionado.idBenef,
+        estatusBenefic: !this.beneficiarioSeleccionado.estatus,
+        idContratanteConvenio: this.busquedaListBeneficiarios.idContratanteConvenioPf
+      }).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta?.datos) {
             this.alertaService.mostrar(TipoAlerta.Exito, `Modificado correctamente los Beneficiarios del Folio ${this.convenio.folio}`);

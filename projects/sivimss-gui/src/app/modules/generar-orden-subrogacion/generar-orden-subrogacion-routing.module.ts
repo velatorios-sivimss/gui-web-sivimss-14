@@ -14,14 +14,14 @@ const routes: Routes = [
     },
   },
   {
-    path: 'formato/:idOrden',
+    path: 'formato/:esModificacion',
     component: GenerarOrdenFormatoComponent,
     resolve: {
       respuesta: GenerarOrdenSubrogacionResolver
     },
   },
   {
-    path: 'detalle/:idOrden',
+    path: 'detalle',
     component: DetalleGenerarOrdenComponent,
     resolve: {
       respuesta: GenerarOrdenSubrogacionResolver

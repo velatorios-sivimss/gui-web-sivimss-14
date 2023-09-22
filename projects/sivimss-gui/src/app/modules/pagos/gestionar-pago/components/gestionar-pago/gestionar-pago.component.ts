@@ -240,7 +240,6 @@ export class GestionarPagoComponent implements OnInit {
     this.filtroGestionarPagoForm.get('elaboracionFin')?.patchValue(null);
   }
 
-
   guardarPDF(): void {
     this.cargadorService.activar();
     const solicitud = this.crearSolicituDescarga();

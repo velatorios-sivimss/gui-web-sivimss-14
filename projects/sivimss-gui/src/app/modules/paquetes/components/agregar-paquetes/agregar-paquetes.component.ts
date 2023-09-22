@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from '@angular/router';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {DialogService} from 'primeng/dynamicdialog';
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {OverlayPanel} from "primeng/overlaypanel";
@@ -215,7 +215,7 @@ export class AgregarPaquetesComponent implements OnInit {
         servicios: this.servicios,
         articulos: this.articulos,
       };
-      const detalleRef: DynamicDialogRef = this.dialogService.open(VerDetallePaquetesComponent, {
+      this.dialogService.open(VerDetallePaquetesComponent, {
         data: {paquete: nuevoPaquete, modo: Accion.Agregar},
         header: "Agregar paquete",
         width: "920px"

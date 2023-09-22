@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {DetallePagoService} from "../../services/detalle-pago.service";
@@ -13,7 +13,7 @@ import {HttpErrorResponse} from "@angular/common/http";
   templateUrl: './modal-eliminar-pago.component.html',
   styleUrls: ['./modal-eliminar-pago.component.scss']
 })
-export class ModalEliminarPagoComponent implements OnInit {
+export class ModalEliminarPagoComponent {
 
   constructor(public readonly ref: DynamicDialogRef,
               public readonly config: DynamicDialogConfig,
@@ -24,17 +24,14 @@ export class ModalEliminarPagoComponent implements OnInit {
               private loaderService: LoaderService) {
   }
 
-  ngOnInit(): void {
-  }
-
   desactivar(): void {
     this.loaderService.activar();
     this.detallePagoService.desactivarPago(Number(this.config.data.detalleRegistro.idBitacoraPago)).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
+      next: (respuesta: HttpRespuesta<any>) => {
         this.ref.close(true)
-        this.alertaService.mostrar(TipoAlerta.Exito,'Pago eliminado correctamente.')
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago eliminado correctamente.')
       },
       error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));

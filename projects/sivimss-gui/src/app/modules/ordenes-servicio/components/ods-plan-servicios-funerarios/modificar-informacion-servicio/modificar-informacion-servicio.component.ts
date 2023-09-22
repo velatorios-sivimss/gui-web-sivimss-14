@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   Component,
   EventEmitter,
   OnInit,
@@ -8,57 +7,46 @@ import {
   ChangeDetectorRef,
   Renderer2,
 } from '@angular/core';
-import { ModalAgregarPanteonComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-panteon/modal-agregar-panteon.component';
+import {
+  ModalAgregarPanteonComponent
+} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-panteon/modal-agregar-panteon.component';
 
-import { DescargaArchivosService } from '../../../../../services/descarga-archivos.service';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { SERVICIO_BREADCRUMB } from '../../../constants/breadcrumb';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'primeng/dynamicdialog';
-import { AltaODSInterface } from '../../../models/AltaODS.interface';
-import { ContratanteInterface } from '../../../models/Contratante.interface';
-import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import { FinadoInterface } from '../../../models/Finado.interface';
-import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
-import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
-import { DetallePaqueteInterface } from '../../../models/DetallePaquete.interface';
-import { ServicioDetalleTrasladotoInterface } from '../../../models/ServicioDetalleTraslado.interface';
-import { CaracteristicasDelPresupuestoInterface } from '../../../models/CaracteristicasDelPresupuesto.interface';
-import { DetallePresupuestoInterface } from '../../../models/DetallePresupuesto.interface';
-import { InformacionServicioInterface } from '../../../models/InformacionServicio.interface';
-import { InformacionServicioVelacionInterface } from '../../../models/InformacionServicioVelacion.interface';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-import { nacionalidad, sexo } from '../../../constants/catalogos-complementarios';
-import { ConfirmacionServicio } from '../../../../renovacion-extemporanea/models/convenios-prevision.interface';
-
-import { Router } from '@angular/router';
+import {DescargaArchivosService} from '../../../../../services/descarga-archivos.service';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DialogService} from 'primeng/dynamicdialog';
+import {AltaODSInterface} from '../../../models/AltaODS.interface';
+import {ContratanteInterface} from '../../../models/Contratante.interface';
+import {CodigoPostalIterface} from '../../../models/CodigoPostal.interface';
+import {FinadoInterface} from '../../../models/Finado.interface';
+import {CaracteristicasPresupuestoInterface} from '../../../models/CaracteristicasPresupuesto,interface';
+import {CaracteristicasPaqueteInterface} from '../../../models/CaracteristicasPaquete.interface';
+import {DetallePaqueteInterface} from '../../../models/DetallePaquete.interface';
+import {ServicioDetalleTrasladotoInterface} from '../../../models/ServicioDetalleTraslado.interface';
+import {CaracteristicasDelPresupuestoInterface} from '../../../models/CaracteristicasDelPresupuesto.interface';
+import {DetallePresupuestoInterface} from '../../../models/DetallePresupuesto.interface';
+import {InformacionServicioInterface} from '../../../models/InformacionServicio.interface';
+import {InformacionServicioVelacionInterface} from '../../../models/InformacionServicioVelacion.interface';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import {ConfirmacionServicio} from '../../../../renovacion-extemporanea/models/convenios-prevision.interface';
+import {Router, ActivatedRoute} from '@angular/router';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { Subscription, finalize } from 'rxjs';
-
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {finalize} from 'rxjs';
 import * as moment from 'moment';
-import {
-  PATRON_CORREO,
-  PATRON_CURP,
-  PATRON_RFC,
-} from '../../../../../utils/constantes';
-import { ActivatedRoute } from '@angular/router';
-import { ActualizarOrdenServicioService } from '../../../services/actualizar-orden-servicio.service';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { GestionarEtapasActualizacionService } from '../../../services/gestionar-etapas-actualizacion.service';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {ActualizarOrdenServicioService} from '../../../services/actualizar-orden-servicio.service';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
-import {GenerarOrdenServicioSFComponent} from "../generar-orden-servicio/generar-orden-servicio.component";
 
 @Component({
   selector: 'app-modificar-informacion-servicio-sf',
@@ -68,8 +56,7 @@ import {GenerarOrdenServicioSFComponent} from "../generar-orden-servicio/generar
 
 })
 export class ModificarInformacionServicioSFComponent
-  implements OnInit, AfterContentChecked
-{
+  implements OnInit, AfterContentChecked {
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @Output()
@@ -116,9 +103,9 @@ export class ModificarInformacionServicioSFComponent
   validaDomicilio: boolean = false;
   tipoOrden: number = 0;
   fechaActual = new Date();
-  estatusUrl:number = 0;
+  estatusUrl: number = 0;
   servicioExtremidad: boolean = false;
-  confirmarPreOrden:boolean = false;
+  confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
 
   constructor(
@@ -136,7 +123,6 @@ export class ModificarInformacionServicioSFComponent
     private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef,
     private router: Router,
-
     private descargaArchivosService: DescargaArchivosService,
     private renderer: Renderer2
   ) {
@@ -160,6 +146,7 @@ export class ModificarInformacionServicioSFComponent
       this.informacionServicioVelacion;
     this.informacionServicioVelacion.cp = this.cpVelacion;
   }
+
   ngOnInit(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.idVelatorio = +usuario.idVelatorio;
@@ -167,13 +154,11 @@ export class ModificarInformacionServicioSFComponent
     this.estatusUrl = this.rutaActiva.snapshot.queryParams.idEstatus;
 
 
-
-
     this.gestionarEtapasService.datosEtapaInformacionServicio$
       .asObservable()
       .subscribe((datosEtapaInformacionServicio) =>
         this.llenarFormulario(datosEtapaInformacionServicio)
-    );
+      );
 
     this.gestionarEtapasService.datosEtapaCaracteristicas$
       .asObservable()
@@ -186,7 +171,6 @@ export class ModificarInformacionServicioSFComponent
       .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
 
 
-
     this.buscarCapillas();
     this.buscarSalas();
     this.buscarPromotor();
@@ -196,114 +180,112 @@ export class ModificarInformacionServicioSFComponent
     this.idPanteon = datos.idPanteon;
     let fechaVelacion;
     const fechaActual = moment().format('YYYY-MM-DD');
-    const [anio,mes,dia] = fechaActual.split('-')
+    const [anio, mes, dia] = fechaActual.split('-')
     // let horaVelacion:string;
     // if(typeof datos.horaVelacion){
     //   datos.horaVelacion.inclu
     // }
 
-    if(typeof datos.horaVelacion == "string"){
-      const [horas,minutos] = datos.horaVelacion.split(':')
-      datos.horaVelacion = new Date(+anio,+mes,+dia,+horas,+minutos)
+    if (typeof datos.horaVelacion == "string") {
+      const [horas, minutos] = datos.horaVelacion.split(':')
+      datos.horaVelacion = new Date(+anio, +mes, +dia, +horas, +minutos)
     }
-    if(typeof datos.fechaVelacion == "string"){
-      const [dia,mes,anio] = datos.fechaVelacion.split('/')
+    if (typeof datos.fechaVelacion == "string") {
+      const [dia, mes, anio] = datos.fechaVelacion.split('/')
       fechaVelacion = new Date(+anio + '/' + +mes + '/' + +dia);
-    }else{
+    } else {
       fechaVelacion = datos.fechaVelacion;
     }
-
-
 
 
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [
-          { value: datos.idCapilla, disabled: false },
+          {value: datos.idCapilla, disabled: false},
           [Validators.required],
         ],
         fecha: [
-          { value: fechaVelacion , disabled: false },
+          {value: fechaVelacion, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaVelacion, disabled: false },
+          {value: datos.horaVelacion, disabled: false},
           [Validators.required],
         ],
-        calle: [{ value: datos.calle, disabled: false }, [Validators.required]],
+        calle: [{value: datos.calle, disabled: false}, [Validators.required]],
         exterior: [
-          { value: datos.exterior, disabled: false },
+          {value: datos.exterior, disabled: false},
           [Validators.required],
         ],
         interior: [
-          { value: datos.interior, disabled: false },
+          {value: datos.interior, disabled: false},
           [Validators.required],
         ],
-        cp: [{ value: datos.cp, disabled: false }, [Validators.required]],
+        cp: [{value: datos.cp, disabled: false}, [Validators.required]],
         colonia: [
-          { value: datos.colonia, disabled: false },
+          {value: datos.colonia, disabled: false},
           [Validators.required],
         ],
         municipio: [
-          { value: datos.municipio, disabled: false },
+          {value: datos.municipio, disabled: false},
           [Validators.required],
         ],
         estado: [
-          { value: datos.estado, disabled: false },
+          {value: datos.estado, disabled: false},
           [Validators.required],
         ],
       }),
       lugarCremacion: this.formBuilder.group({
-        sala: [{ value: datos.idSala, disabled: false }, [Validators.required]],
+        sala: [{value: datos.idSala, disabled: false}, [Validators.required]],
         fecha: [
-          { value: datos.fechaCremacion, disabled: false },
+          {value: datos.fechaCremacion, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaCremacion, disabled: false },
+          {value: datos.horaCremacion, disabled: false},
           [Validators.required],
         ],
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          { value: null, disabled: false }
+          {value: null, disabled: false}
         ],
       }),
       recoger: this.formBuilder.group({
         fecha: [
-          { value: datos.fechaRecoger, disabled: false },
+          {value: datos.fechaRecoger, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaRecoger, disabled: false },
+          {value: datos.horaRecoger, disabled: false},
           [Validators.required],
         ],
       }),
       instalacionServicio: this.formBuilder.group({
         fecha: [
-          { value: datos.fechaInstalacion, disabled: false },
+          {value: datos.fechaInstalacion, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaInstalacion, disabled: false },
+          {value: datos.horaInstalacion, disabled: false},
           [Validators.required],
         ],
       }),
       cortejo: this.formBuilder.group({
         fecha: [
-          { value: datos.fechaCortejo, disabled: false },
+          {value: datos.fechaCortejo, disabled: false},
           [Validators.required],
         ],
         hora: [
-          { value: datos.horaCortejo, disabled: false },
+          {value: datos.horaCortejo, disabled: false},
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          { value: datos.gestionadoPorPromotor, disabled: true },
+          {value: datos.gestionadoPorPromotor, disabled: true},
           [Validators.required],
         ],
         promotor: [
-          { value: datos.promotor, disabled: false },
+          {value: datos.promotor, disabled: false},
           [Validators.required],
         ],
       }),
@@ -329,43 +311,43 @@ export class ModificarInformacionServicioSFComponent
   inicializarForm(): void {
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
-        capilla: [{ value: null, disabled: false }, [Validators.required]],
-        fecha: [{ value: null, disabled: false }, [Validators.required]],
-        hora: [{ value: null, disabled: false }, [Validators.required]],
-        calle: [{ value: null, disabled: false }, [Validators.required]],
-        exterior: [{ value: null, disabled: false }, [Validators.required]],
-        interior: [{ value: null, disabled: false }],
-        cp: [{ value: null, disabled: false }, [Validators.required]],
-        colonia: [{ value: null, disabled: false }, [Validators.required]],
-        municipio: [{ value: null, disabled: false }, [Validators.required]],
-        estado: [{ value: null, disabled: false }, [Validators.required]],
+        capilla: [{value: null, disabled: false}, [Validators.required]],
+        fecha: [{value: null, disabled: false}, [Validators.required]],
+        hora: [{value: null, disabled: false}, [Validators.required]],
+        calle: [{value: null, disabled: false}, [Validators.required]],
+        exterior: [{value: null, disabled: false}, [Validators.required]],
+        interior: [{value: null, disabled: false}],
+        cp: [{value: null, disabled: false}, [Validators.required]],
+        colonia: [{value: null, disabled: false}, [Validators.required]],
+        municipio: [{value: null, disabled: false}, [Validators.required]],
+        estado: [{value: null, disabled: false}, [Validators.required]],
       }),
       lugarCremacion: this.formBuilder.group({
-        sala: [{ value: null, disabled: false }, [Validators.required]],
-        fecha: [{ value: null, disabled: false }, [Validators.required]],
-        hora: [{ value: null, disabled: false }, [Validators.required]],
+        sala: [{value: null, disabled: false}, [Validators.required]],
+        fecha: [{value: null, disabled: false}, [Validators.required]],
+        hora: [{value: null, disabled: false}, [Validators.required]],
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          { value: null, disabled: false },
+          {value: null, disabled: false},
         ],
       }),
       recoger: this.formBuilder.group({
-        fecha: [{ value: null, disabled: false }, [Validators.required]],
-        hora: [{ value: null, disabled: false }, [Validators.required]],
+        fecha: [{value: null, disabled: false}, [Validators.required]],
+        hora: [{value: null, disabled: false}, [Validators.required]],
       }),
       instalacionServicio: this.formBuilder.group({
-        fecha: [{ value: null, disabled: false }, [Validators.required]],
-        hora: [{ value: null, disabled: false }, [Validators.required]],
+        fecha: [{value: null, disabled: false}, [Validators.required]],
+        hora: [{value: null, disabled: false}, [Validators.required]],
       }),
       cortejo: this.formBuilder.group({
-        fecha: [{ value: null, disabled: false }, [Validators.required]],
-        hora: [{ value: null, disabled: false }, [Validators.required]],
+        fecha: [{value: null, disabled: false}, [Validators.required]],
+        hora: [{value: null, disabled: false}, [Validators.required]],
         gestionadoPorPromotor: [
-          { value: null, disabled: false },
+          {value: null, disabled: false},
           [Validators.required],
         ],
-        promotor: [{ value: null, disabled: false }, [Validators.required]],
+        promotor: [{value: null, disabled: false}, [Validators.required]],
       }),
     });
   }
@@ -374,15 +356,13 @@ export class ModificarInformacionServicioSFComponent
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
     datosPresupuesto.forEach((datos: any) => {
-      if (datos.concepto.trim() == 'Velación en capilla' ||
-        datos.concepto.trim() =='Capilla en Velatorio') {
+      if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
       }
 
-      if (datos.concepto.trim() == 'Velación en domicilio' ||
-        datos.concepto.trim() =='Renta de equipo para velación en domicilio') {
+      if (datos.concepto.trim() == 'Velación en domicilio') {
         this.validaDomicilio = true;
         this.lugarVelacion.calle.enable();
         this.lugarVelacion.exterior.enable();
@@ -395,8 +375,8 @@ export class ModificarInformacionServicioSFComponent
       }
 
       if (
-        datos.concepto.toUpperCase().trim().includes('CREMACIÓN') ||
-        datos.concepto.toUpperCase().trim().includes('CREMACION')
+        datos.grupo.toUpperCase().trim().includes('CREMACIÓN') ||
+        datos.grupo.toUpperCase().trim().includes('CREMACION')
       ) {
         this.lugarCremacion.sala.enable();
         this.lugarCremacion.fecha.enable();
@@ -407,7 +387,7 @@ export class ModificarInformacionServicioSFComponent
 
   buscarCapillas(): void {
     this.loaderService.activar();
-    const parametros = { idVelatorio: this.idVelatorio };
+    const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService
       .buscarCapillas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -457,12 +437,12 @@ export class ModificarInformacionServicioSFComponent
 
   buscarSalas(): void {
     this.loaderService.activar();
-    const parametros = { idVelatorio: this.idVelatorio };
+    const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService
       .buscarCapillas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -483,7 +463,7 @@ export class ModificarInformacionServicioSFComponent
             'idCapilla'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -502,7 +482,7 @@ export class ModificarInformacionServicioSFComponent
             );
           }
         }
-      );
+      });
   }
 
   buscarPromotor(): void {
@@ -511,8 +491,8 @@ export class ModificarInformacionServicioSFComponent
     this.gestionarOrdenServicioService
       .buscarPromotor()
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.promotores = [];
@@ -533,7 +513,7 @@ export class ModificarInformacionServicioSFComponent
             'idPromotor'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -552,7 +532,7 @@ export class ModificarInformacionServicioSFComponent
             );
           }
         }
-      );
+      });
   }
 
   desabilitarTodo(): void {
@@ -571,8 +551,6 @@ export class ModificarInformacionServicioSFComponent
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    // this.inhumacion.agregarPanteon.disable();
-    // this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();
     this.instalacionServicio.hora.disable();
@@ -617,7 +595,7 @@ export class ModificarInformacionServicioSFComponent
   abrirModalAgregarPanteon(): void {
     const ref = this.dialogService.open(ModalAgregarPanteonComponent, {
       header: 'Agregar panteón',
-      style: { maxWidth: '876px', width: '100%' },
+      style: {maxWidth: '876px', width: '100%'},
     });
     ref.onClose.subscribe((val: number) => {
       if (val) {
@@ -638,8 +616,8 @@ export class ModificarInformacionServicioSFComponent
     this.gestionarOrdenServicioService
       .consutaCP(this.lugarVelacion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
@@ -654,10 +632,10 @@ export class ModificarInformacionServicioSFComponent
           this.lugarVelacion.municipio.patchValue(null);
           this.lugarVelacion.estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   preorden(): void {
@@ -667,14 +645,14 @@ export class ModificarInformacionServicioSFComponent
     // Number(this.estatusUrl) == 1 ? this.guardarODS(0) : this.guardarODSComplementaria(0);
   }
 
-  guardarODS(consumoTablas:number): void {
+  guardarODS(consumoTablas: number): void {
     let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
     this.loaderService.activar();
     this.generarODSSF.actualizarODSSF(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         {
-          next:(respuesta: HttpRespuesta<any>) => {
+          next: (respuesta: HttpRespuesta<any>) => {
             const datos = respuesta.datos;
             if (respuesta.error) {
               this.salas = [];
@@ -689,14 +667,14 @@ export class ModificarInformacionServicioSFComponent
 
               return;
             }
-            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio,consumoTablas);
+            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
             this.descargarOrdenServicio(
               respuesta.datos.idOrdenServicio,
               respuesta.datos.idEstatus
             );
 
 
-            if(this.altaODS.idEstatus == 2){
+            if (this.altaODS.idEstatus == 2) {
               const ExitoMsg: string =
                 this.mensajesSistemaService.obtenerMensajeSistemaPorId(
                   parseInt(respuesta.mensaje)
@@ -705,7 +683,7 @@ export class ModificarInformacionServicioSFComponent
                 TipoAlerta.Exito,
                 ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
               );
-            }else{
+            } else {
               this.alertaService.mostrar(
                 TipoAlerta.Exito,
                 'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
@@ -713,32 +691,32 @@ export class ModificarInformacionServicioSFComponent
             }
 
 
-            this.router.navigate(['ordenes-de-servicio']);
+            void this.router.navigate(['ordenes-de-servicio']);
           },
-          error:(error: HttpErrorResponse) => {
+          error: (error: HttpErrorResponse) => {
             try {
               const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
-              this.alertaService.mostrar(TipoAlerta.Error,errorMsg);
+              this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
             } catch (error) {
               const errorMsg: string =
                 this.mensajesSistemaService.obtenerMensajeSistemaPorId(5);
-              this.alertaService.mostrar(TipoAlerta.Error,errorMsg);
+              this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
             }
           }
         }
       );
   }
 
-  guardarODSComplementaria(consumoTablas:number): void {
+  guardarODSComplementaria(consumoTablas: number): void {
     let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
-    if(this.altaODS.idEstatus == 1){
+    if (this.altaODS.idEstatus == 1) {
 
     }
     this.loaderService.activar();
     this.gestionarOrdenServicioService.generarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
@@ -753,7 +731,7 @@ export class ModificarInformacionServicioSFComponent
 
             return;
           }
-          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio,consumoTablas);
+          this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
           this.descargarOrdenServicio(
             respuesta.datos.idOrdenServicio,
             respuesta.datos.idEstatus
@@ -766,9 +744,9 @@ export class ModificarInformacionServicioSFComponent
             TipoAlerta.Exito,
             ExitoMsg || 'La Orden de Servicio se ha generado exitosamente.'
           );
-          this.router.navigate(['ordenes-de-servicio']);
+          void this.router.navigate(['ordenes-de-servicio']);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -787,7 +765,7 @@ export class ModificarInformacionServicioSFComponent
             );
           }
         }
-      );
+      });
   }
 
   llenarDatos(): void {
@@ -897,14 +875,14 @@ export class ModificarInformacionServicioSFComponent
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
-  descargarContratoServInmediatos(idOrdenServicio: number,consumoTablas:number): void {
+  descargarContratoServInmediatos(idOrdenServicio: number, consumoTablas: number): void {
     this.loaderService.activar();
-    const configuracionArchivo: OpcionesArchivos = { ext: 'pdf' };
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.gestionarOrdenServicioService
-      .generarArchivoServiciosInmediatos(idOrdenServicio,consumoTablas)
+      .generarArchivoServiciosInmediatos(idOrdenServicio, consumoTablas)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           let link = this.renderer.createElement('a');
 
           const file = new Blob(
@@ -928,7 +906,7 @@ export class ModificarInformacionServicioSFComponent
           link.click();
           link.remove();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           const errorMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(error.error.mensaje)
@@ -938,17 +916,17 @@ export class ModificarInformacionServicioSFComponent
             errorMsg || 'Error en la descarga del documento.Intenta nuevamente.'
           );
         }
-      );
+      });
   }
 
   descargarOrdenServicio(idOrdenServicio: number, idEstatus: number): void {
     this.loaderService.activar();
-    const configuracionArchivo: OpcionesArchivos = { ext: 'pdf' };
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.gestionarOrdenServicioService
       .generarArchivoOrdenServicio(idOrdenServicio, idEstatus)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           let link = this.renderer.createElement('a');
 
           const file = new Blob(
@@ -972,7 +950,7 @@ export class ModificarInformacionServicioSFComponent
           link.click();
           link.remove();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           const errorMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(error.error.mensaje)
@@ -982,7 +960,7 @@ export class ModificarInformacionServicioSFComponent
             errorMsg || 'Error en la descarga del documento.Intenta nuevamente.'
           );
         }
-      );
+      });
   }
 
   generada(): void {

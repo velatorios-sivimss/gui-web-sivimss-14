@@ -35,6 +35,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {TipoPaquete} from "../../models/tipo-paquete.interface";
 import * as moment from 'moment';
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
 
 @Component({
   selector: 'app-agregar-persona-convenios-prevision-funeraria',
@@ -82,6 +83,8 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   flujo!: any;
 
   fechaActual = new Date();
+
+  colonias:TipoDropdown[] = [];
 
 
   constructor(
@@ -143,7 +146,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
              otraEnferdedad: [{value: null, disabled: false}],
                        sexo: [{value:null, disabled: false}, [Validators.required]],
                    otroSexo: [{value:null, disabled: false}, [Validators.required]],
-            fechaNacimiento: [{value:null, disabled: false}, [Validators.required]],
+            fechaNacimiento: [{value:null, disabled: true}, [Validators.required]],
           entidadFederativa: [{value:null, disabled: false}, [Validators.required]]
     });
   }
@@ -216,9 +219,9 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe({
         next:(respuesta: HttpRespuesta<any>) => {
+          this.colonias = mapearArregloTipoDropdown(respuesta.datos,'colonia','colonia')
           this.fp.estado.setValue(respuesta.datos[0]?.estado);
           this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
-          this.fp.colonia.setValue(respuesta.datos[0]?.colonia);
           this.fp.pais.setValue(119);
         },
         error:(error:HttpErrorResponse) => {
@@ -231,7 +234,6 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   guardar(): void {
     let personasAgregadas: PersonaInterface = JSON.parse(localStorage.getItem('persona') as string);
     personasAgregadas = this.objectoConfirmacion
-    // personasAgregadas.push(this.objectoConfirmacion);
     localStorage.setItem('persona',JSON.stringify(personasAgregadas));
     if(this.flujo.includes('modificar')){
       this.router.navigate(['convenios-prevision-funeraria/modificar-nuevo-convenio']);
@@ -272,66 +274,80 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC("",this.fp.curp.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        // this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        // this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        // this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        if(respuesta.mensaje === ""){
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if ((respuesta.datos[0]?.curp ?? null) != null) {
+          const [anio, mes, dia] = respuesta.datos[0].fechaNacimiento.split('-')
+          this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
+          this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
+          this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
+          this.fp.rfc.setValue(respuesta.datos[0].rfc)
+          this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
+          this.fp.telefono.setValue(respuesta.datos[0].telefono)
+          this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
+          this.fp.sexo.setValue(respuesta.datos[0].sexo);
+          this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo);
+          this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
+          this.cambioTipoSexo();
+        } else if (respuesta.mensaje === "") {
+          if (respuesta.datos.curp === "" || respuesta.datos.curp == null) {
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+            return
+          }
+          const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/')
           this.fp.nombre.setValue(respuesta.datos.nomPersona);
           this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
-          // this.fp.idPersona.setValue(respuesta.datos.idPersona)
-          return
+          this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
+          this.fp.sexo.setValue(+respuesta.datos.sexo);
+          this.cambioTipoSexo();
+          this.consultarLugarNacimiento(respuesta.datos.desEstado);
         }
-        this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        // this.fp.idPersona.setValue(respuesta.datos[0].idPersona)
-        this.fp.rfc.setValue(respuesta.datos[0].rfc)
-        this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-        this.fp.telefono.setValue(respuesta.datos[0].telefono)
-
-
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
+
+  consultarLugarNacimiento(entidad:string): void {
+    const entidadEditada = this.accentsTidy(entidad);
+    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+      this.fp.lugarNacimiento.setValue(11);
+      return
+    }
+    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+      this.fp.lugarNacimiento.setValue(7);
+      return
+    }
+    this.estado.forEach((element:any) => {
+      const entidadIteracion =  this.accentsTidy(element.label);
+      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+        this.fp.entidadFederativa.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r=s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    return r;
+  };
 
   consultaRFC(): void {
     if(!this.fp.rfc.value){return}
     if (this.personaForm.controls.rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
-      return;
     }
-
-    /*
-    this.loaderService.activar();
-    this.agregarConvenioPFService.consultaCURPRFC(this.fp.rfc.value,"").pipe(
-      finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.mensaje === ""){
-          this.fp.nombre.setValue(respuesta.datos.nomPersona);
-          this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
-          this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
-          this.fp.idPersona.setValue(respuesta.datos.idPersona)
-          return
-        }
-        this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        this.fp.curp.setValue(respuesta.datos[0].curp)
-        this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-        this.fp.telefono.setValue(respuesta.datos[0].telefono)
-      },
-      (error:HttpErrorResponse) => {
-        console.log(error);
-      }
-    )
-     */
   }
 
   consultarMatricula(): void {
@@ -339,23 +355,22 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarMatriculaSiap(this.fp.matricula.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(!respuesta.datos){
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (!respuesta.datos) {
           this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(70));
         }
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
 
   limpiarDatosCurpRFC(posicion:number): void {
     this.fp.nombre.patchValue(null)
     this.fp.primerApellido.patchValue(null)
     this.fp.segundoApellido.patchValue(null)
-    // this.fp.idPersona.patchValue(null)
     if(posicion == 1)this.fp.rfc.patchValue(null)
     if(posicion == 2)this.fp.curp.patchValue(null)
     this.fp.correoElectronico.patchValue(null)

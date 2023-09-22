@@ -1,17 +1,20 @@
-<app-titulo-principal titulo="Administrar promotores"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Administrar promotores" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
         <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-          placeholder="Selecciona el nivel" [filter]="true">
+                    placeholder="Selecciona el nivel" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
-          placeholder="Selecciona la delegación" (onChange)="cargarVelatorios()" [filter]="true">
+                    placeholder="Selecciona la delegación" (onChange)="cargarVelatorios()" [filter]="true">
         </p-dropdown>
       </div>
     </div>
@@ -19,16 +22,16 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-          placeholder="Selecciona el velatorio" [filter]="true">
+                    placeholder="Selecciona el velatorio" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nombrePromotor">Promotor:</label>
         <p-autoComplete id="nombrePromotor" class="form-control" formControlName="nombrePromotor"
-          [showEmptyMessage]="true" [suggestions]="promotoresFiltrados" [style]="{'width':'100%'}"
-          (completeMethod)="filtrarPromotores()" [minLength]="3" [maxlength]="30" class="p-autocomplete"
-          placeholder="Ingresa el nombre del promotor" field="label"
-          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+                        [showEmptyMessage]="true" [suggestions]="promotoresFiltrados" [style]="{'width':'100%'}"
+                        (completeMethod)="filtrarPromotores()" [minLength]="3" [maxlength]="30" class="p-autocomplete"
+                        placeholder="Ingresa el nombre del promotor" field="label"
+                        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
         </p-autoComplete>
       </div>
     </div>
@@ -44,11 +47,12 @@
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Promotores</h2>
     <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['PROMOTORES','ALTA']"
-      (click)="abrirModalAgregarPromotor()">Agregar promotor</button>
+            (click)="abrirModalAgregarPromotor()">Agregar promotor
+    </button>
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="promotores" [paginator]="promotores.length > 0"
-    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+           [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
         <th id="idPromotor">ID</th>
@@ -102,7 +106,7 @@
     <ng-template pTemplate="emptymessage">
       <tr>
         <th colspan="12" class="p-2 text-center font-bold text-xl col-md-12" id="empty-message-mtto-vehicular"
-          *ngIf="realizoBusqueda">
+            *ngIf="realizoBusqueda">
           No se encontró información relacionada a tu búsqueda
         </th>
       </tr>
@@ -122,14 +126,14 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarPromotor()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Inhabilitar" *ngIf="promotorSeleccionado.estatus"
-        (click)="confirmarInhabilitar()"></app-overlay-panel-opcion>
+                                (click)="confirmarInhabilitar()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
 
 <p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-  [draggable]="false" [resizable]="false" header="">
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeModal}}</span>

@@ -11,7 +11,7 @@ export class VelacionDomicilioDetalleResolver implements Resolve<any> {
     constructor(private velacionDomicilioService: VelacionDomicilioService) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-        const idValeSalida = +(route.paramMap.get('idValeSalida') || 0);
+        const idValeSalida = +(route.paramMap.get('idValeSalida') ?? 0);
         const detalleValeSalida$ = this.velacionDomicilioService.obtenerDetalleValeSalida(idValeSalida);
         return forkJoin([detalleValeSalida$]);
     }

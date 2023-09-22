@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -24,6 +24,8 @@ export class CancelarOrdenEntradaComponent implements OnInit {
     private route: ActivatedRoute,
     private readonly loaderService: LoaderService,
     private alertaService: AlertaService,
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
     public ordenEntradaService: OrdenEntradaService,
     private mensajesSistemaService: MensajesSistemaService,
   ) { }
@@ -77,7 +79,8 @@ export class CancelarOrdenEntradaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.mostrarModalCancelarODE = false;
-        this.alertaService.mostrar(TipoAlerta.Exito, "Orden de entrada cancelada correctamente");
+        this.alertaService.mostrar(TipoAlerta.Exito, "Orden de entrada cancelada correctamente.");
+        void this.router.navigate(["../.."], {relativeTo: this.activatedRoute});
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);

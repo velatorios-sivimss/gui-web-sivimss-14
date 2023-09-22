@@ -2,7 +2,7 @@
   <app-titulo-principal class="col" titulo="Servicios / Generar Orden de subrogación"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (ngSubmit)="paginar($event)" (reset)="limpiar()">
+  <form [formGroup]="filtroForm" (ngSubmit)="seleccionarPaginacion($event)" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
@@ -21,16 +21,26 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span>:</label>
-        <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio ODS">
+        <p-autoComplete id="folio" class="form-control" formControlName="folio" (keyup)="validarNombre(0)"
+          (keyup.space)="sinEspacioInicial(0)" autocomplete="folio" [suggestions]="catalogoFoliosOds"
+          (completeMethod)="consultarFoliosODS($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
+          [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa el folio ODS"
+          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+        </p-autoComplete>
         <span class="campo-obligatorio"
-          *ngIf="ff.folio?.errors?.required && (ff.folio?.dirty || ff.folio?.touched)">Este
+          *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Este
           campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
-        <input id="proveedor" class="form-control" formControlName="proveedor" placeholder="Ingresa el proveedor">
+        <p-autoComplete id="proveedor" class="form-control" formControlName="proveedor" (keyup)="validarNombreProveedor(0)"
+          (keyup.space)="sinEspacioInicialProveedor(0)" autocomplete="proveedor" [suggestions]="catalogoProveedores"
+          (completeMethod)="consultarProveedor($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
+          [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa el proveedor"
+          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+        </p-autoComplete>
         <span class="campo-obligatorio"
-          *ngIf="ff.proveedor?.errors?.required && (ff.proveedor?.dirty || ff.proveedor?.touched)">Este
+          *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Este
           campo es obligatorio *.</span>
       </div>
     </div>
@@ -38,10 +48,10 @@
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="fecha">Fecha:</label>
-        <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
+        <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [minDate]="fechaRango" [maxDate]="fechaActual" [showIcon]="true" dateFormat="dd/mm/yy"
           placeholder="Ingresa fecha"></p-calendar>
         <span class="campo-obligatorio"
-          *ngIf="ff.fecha?.errors?.required && (ff.fecha?.dirty || ff.fecha?.touched)">Campo
+          *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">Campo
           obligatorio</span>
       </div>
     </div>
@@ -58,7 +68,7 @@
 <section class="mt-5">
   <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="ordenes" [paginator]="ordenes.length > 0"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+    [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
     <ng-template pTemplate="header">
       <tr>
         <th scope="col">Fecha ODS</th>
@@ -66,7 +76,7 @@
         <th scope="col">Proveedor</th>
         <th scope="col">Nombre de finado</th>
         <th scope="col">Tipo de servicio</th>
-        <th scope="col">Estatus</th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-orden>
@@ -99,14 +109,14 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
+      <div class="paginator-template" *appValidaRol="['HOJA_SUBROGACION','IMPRIMIR']">
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
             <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
-              (click)="descargarReporteTabla('pdf')">
+              (click)="generarArchivo('pdf')">
             <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
-              (click)="descargarReporteTabla('xls')">
+              (click)="generarArchivo('xls')">
           </div>
         </div>
       </div>
@@ -117,11 +127,10 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar orden de subrogación"
-        (click)="generarOrdenSubrogacion();"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Ver"
-      (click)="detalleOrdenSubrogacion();"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Generar orden de subrogación" (click)="generarOrdenSubrogacion(false);" *ngIf="ordenSeleccionada.puedeRegistrar === 'true'">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *appValidaRol="['HOJA_SUBROGACION','MODIFICACION']" titulo="Modificar" (click)="generarOrdenSubrogacion(true);"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver" (click)="detalleOrdenSubrogacion();"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

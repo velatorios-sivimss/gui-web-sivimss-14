@@ -196,8 +196,8 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'reporte-orden-servicio',
-    loadChildren: () => import('./modules/reporte-orden-servicio/reporte-orden-servicio.module').then(m => m.ReporteOrdenServicioModule),
+    path: 'reportes',
+    loadChildren: () => import('./modules/reportes/reportes.module').then(m => m.ReportesModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
@@ -218,6 +218,11 @@ const routes: Routes = [
   {
     path: 'generar-formato-de-actividades',
     loadChildren: () => import('./modules/generar-formato-actividades/generar-formato-actividades.module').then(m => m.GenerarFormatoActividadesModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'generar-hoja-de-consignacion',
+    loadChildren: () => import('./modules/generar-hoja-consignacion/generar-hoja-consignacion.module').then(m => m.GenerarHojaConsignacionModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {

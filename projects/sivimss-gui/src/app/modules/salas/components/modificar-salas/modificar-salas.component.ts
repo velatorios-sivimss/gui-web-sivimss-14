@@ -1,14 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute } from '@angular/router';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { VerDetalleSalasComponent } from '../ver-detalle-salas/ver-detalle-salas.component';
-import { Sala } from '../../models/salas.interface';
-import { Accion } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { EMAIL } from 'projects/sivimss-gui/src/app/utils/regex';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute} from '@angular/router';
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {VerDetalleSalasComponent} from '../ver-detalle-salas/ver-detalle-salas.component';
+import {Sala} from '../../models/salas.interface';
+import {Accion} from 'projects/sivimss-gui/src/app/utils/constantes';
 
 interface HttpResponse {
   respuesta: string;
@@ -91,13 +90,13 @@ export class ModificarSalasComponent implements OnInit {
 
   inicializarModificarSalaForm() {
     this.modificarSalaForm = this.formBuilder.group({
-      id: [{ value: null, disabled: true }],
-      nombreSala: [{ value: null, disabled: false }, [Validators.maxLength(50), Validators.required]],
-      tipoSala: [{ value: null, disabled: false }, Validators.required],
-      velatorio: [{ value: null, disabled: false }, Validators.required],
-      capacidad: [{ value: null, disabled: false }, [Validators.maxLength(1), Validators.required]],
-      disponibilidad: [{ value: 0, disabled: true }, Validators.required],
-      estatus: [{ value: true, disabled: false }, []],
+      id: [{value: null, disabled: true}],
+      nombreSala: [{value: null, disabled: false}, [Validators.maxLength(50), Validators.required]],
+      tipoSala: [{value: null, disabled: false}, Validators.required],
+      velatorio: [{value: null, disabled: false}, Validators.required],
+      capacidad: [{value: null, disabled: false}, [Validators.maxLength(1), Validators.required]],
+      disponibilidad: [{value: 0, disabled: true}, Validators.required],
+      estatus: [{value: true, disabled: false}, []],
     });
 
     this.modificarSalaForm.patchValue({
