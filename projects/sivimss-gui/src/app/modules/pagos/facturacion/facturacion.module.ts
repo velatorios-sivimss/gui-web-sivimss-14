@@ -24,6 +24,7 @@ import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.modul
 import { DatosContratanteComponent } from './components/datos-contratante/datos-contratante.component';
 import { DatosReceptorComponent } from './components/datos-receptor/datos-receptor.component';
 import {DialogModule} from "primeng/dialog";
+import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 
 
 @NgModule({
@@ -36,26 +37,27 @@ import {DialogModule} from "primeng/dialog";
     DatosContratanteComponent,
     DatosReceptorComponent
   ],
-  imports: [
-    CommonModule,
-    FacturacionRoutingModule,
-    TituloPrincipalModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    CalendarModule,
-    UtileriaModule,
-    ValidaRolModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    TableModule,
-    InputSwitchModule,
-    NgOptimizedImage,
-    TablePanelModule,
-    AccordionModule,
-    BtnRegresarModule,
-    DialogModule
-  ],
+    imports: [
+        CommonModule,
+        FacturacionRoutingModule,
+        TituloPrincipalModule,
+        FormsModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        CalendarModule,
+        UtileriaModule,
+        ValidaRolModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        TableModule,
+        InputSwitchModule,
+        NgOptimizedImage,
+        TablePanelModule,
+        AccordionModule,
+        BtnRegresarModule,
+        DialogModule,
+        CeldaStickyModule
+    ],
   providers: [FacturacionService]
 })
 export class FacturacionModule { }
