@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {GenerarFormatoPagareService} from "../../services/generar-formato-pagare.service";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
@@ -6,7 +6,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {finalize} from "rxjs/operators";
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {FormatoPagare} from '../../models/formato-pagare.interface';
 import {Location} from "@angular/common";
 
@@ -15,7 +15,7 @@ import {Location} from "@angular/common";
   templateUrl: './recibo-formato-pagare.component.html',
   styleUrls: ['./recibo-formato-pagare.component.scss'],
 })
-export class ReciboFormatoPagareComponent implements OnInit {
+export class ReciboFormatoPagareComponent {
 
   formatoPagare!: FormatoPagare;
   importeLetra: string = "";
@@ -37,11 +37,8 @@ export class ReciboFormatoPagareComponent implements OnInit {
     this.inicializarFiltroForm();
   }
 
-  ngOnInit(): void {
 
-  }
-
-  inicializarFiltroForm() {
+  inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       redito: [{value: this.formatoPagare.redito, disabled: false}],
     });
@@ -51,15 +48,15 @@ export class ReciboFormatoPagareComponent implements OnInit {
     this.cargadorService.activar();
     this.generarFormatoPagareService.obtenerImporteLetra(importe).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (response) => {
-        this.importeLetra = response!.datos;
-        this.formatoPagare.cantidad = response!.datos;
+    ).subscribe({
+      next: (response): void => {
+        this.importeLetra = response.datos;
+        this.formatoPagare.cantidad = response.datos;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error)
       }
-    );
+    });
   }
 
   crearNuevoPagare(): any {
@@ -74,15 +71,15 @@ export class ReciboFormatoPagareComponent implements OnInit {
   agregarPagare(): void {
     const pagare: FormatoPagare = this.crearNuevoPagare();
     const crearPagare: string = JSON.stringify(pagare);
-    this.generarFormatoPagareService.guardar(crearPagare).subscribe(
-      () => {
+    this.generarFormatoPagareService.guardar(crearPagare).subscribe({
+      next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Alta satisfactoria');
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
-    );
+    });
   }
 
   generarPdf(): void {

@@ -28,6 +28,7 @@ import { ConsultaOrdenEntradaComponent } from './components/consulta-orden-entra
 import { ConsultaStockComponent } from './components/consulta-stock/consulta-stock.component';
 import { GenerarOdeComponent } from './components/generar-ode/generar-ode.component';
 import { CancelarOrdenEntradaComponent } from './components/cancelar-orden-entrada/cancelar-orden-entrada.component';
+import { DevolverArticuloComponent } from './components/devolver-articulo/devolver-articulo.component';
 
 @NgModule({
   declarations: [
@@ -35,13 +36,13 @@ import { CancelarOrdenEntradaComponent } from './components/cancelar-orden-entra
     ConsultaOrdenEntradaComponent,
     ConsultaStockComponent,
     GenerarOdeComponent,
-    CancelarOrdenEntradaComponent
+    CancelarOrdenEntradaComponent,
+    DevolverArticuloComponent
   ],
   imports: [
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-
     AutoCompleteModule,
     CalendarModule,
     DialogModule,
@@ -50,14 +51,11 @@ import { CancelarOrdenEntradaComponent } from './components/cancelar-orden-entra
     SelectButtonModule,
     TableModule,
     TablePanelModule,
-
-
     TabViewModule,
     BtnRegresarModule,
     OverlayPanelOpcionesModule,
     TituloPrincipalModule,
     UtileriaModule,
-
     ValidaRolModule,
     OrdenEntradaRoutingModule,
     CeldaStickyModule,

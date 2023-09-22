@@ -1,15 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import { EtapaEstado } from "projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum";
-import { Etapa } from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
-import { GestionarEtapasService } from '../../../services/gestionar-etapas.service';
+import {Component, OnDestroy} from '@angular/core';
+import {EtapaEstado} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum";
+import {Etapa} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
 import {Subscription} from "rxjs";
+import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
 
 @Component({
   selector: 'app-generar-orden-servicio-sf',
   templateUrl: './generar-orden-servicio.component.html',
   styleUrls: ['./generar-orden-servicio.component.scss']
 })
-export class GenerarOrdenServicioSFComponent implements OnInit, OnDestroy {
+export class GenerarOrdenServicioSFComponent implements OnDestroy {
 
   readonly DATOS_DEL_CONTRATANTE = 0;
   readonly DATOS_DEL_FINADO = 1;
@@ -17,79 +17,15 @@ export class GenerarOrdenServicioSFComponent implements OnInit, OnDestroy {
   readonly INFORMACION_DEL_SERVICIO = 3;
 
 
-  // etapas: Etapa[] = [
-  //   {
-  //     idEtapa: 0,
-  //     estado: EtapaEstado.Activo,
-  //     textoInterior: '1',
-  //     textoExterior: 'Datos del contratante',
-  //     lineaIzquierda: {
-  //       mostrar: false,
-  //       estilo: "solid"
-  //     },
-  //     lineaDerecha: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     }
-  //   },
-  //   {
-  //     idEtapa: 1,
-  //     estado: EtapaEstado.Inactivo,
-  //     textoInterior: '2',
-  //     textoExterior: 'Datos del finado',
-  //     lineaIzquierda: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     },
-  //     lineaDerecha: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     }
-  //   },
-  //   {
-  //     idEtapa: 2,
-  //     estado: EtapaEstado.Inactivo,
-  //     textoInterior: '3',
-  //     textoExterior: 'Características del presupuesto',
-  //     lineaIzquierda: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     },
-  //     lineaDerecha: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     }
-  //   },
-  //   {
-  //     idEtapa: 3,
-  //     estado: EtapaEstado.Inactivo,
-  //     textoInterior: '4',
-  //     textoExterior: 'Información del servicio',
-  //     lineaIzquierda: {
-  //       mostrar: true,
-  //       estilo: "solid"
-  //     },
-  //     lineaDerecha: {
-  //       mostrar: false,
-  //       estilo: "solid"
-  //     }
-  //   }
-  // ];
-
   contratanteSubscription$!: Subscription;
 
   idEtapaSeleccionada: number = 0;
 
   constructor(
-    private gestionarEtapasService: GestionarEtapasService
+    private gestionarEtapasService: GestionarEtapasServiceSF
   ) {
   }
 
-  ngOnInit(): void {
-    // this.gestionarEtapasService.etapas$.next(this.etapas);
-    // this.contratanteSubscription$ = this.gestionarEtapasService.datosEtapaContratante$
-    //   .subscribe((datosPrevios) => {});
-  }
 
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {
     //Con esta etapa que se recibe ya se puede modificar su estado.
@@ -274,9 +210,6 @@ export class GenerarOrdenServicioSFComponent implements OnInit, OnDestroy {
     this.gestionarEtapasService.datosEtapaCaracteristicas$.next(datosEtapaCaracteristicas);
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datosEtapaInformacionServicio);
     this.gestionarEtapasService.etapas$.next(etapas)
-
-
-
 
 
   }

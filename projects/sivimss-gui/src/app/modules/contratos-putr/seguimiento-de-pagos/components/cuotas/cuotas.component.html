@@ -9,7 +9,7 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="opciones"
-          placeholder="Selecciona delegación">
+                    placeholder="Selecciona delegación">
         </p-dropdown>
       </div>
     </div>
@@ -17,26 +17,29 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="opciones"
-          placeholder="Selecciona velatorio">
+                    placeholder="Selecciona velatorio">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="numeroPermiso">Número de permiso:</label>
-        <input id="numeroPermiso" class="form-control" formControlName="numeroPermiso" placeholder="Ingresa número de permiso" trimmer>
+        <input id="numeroPermiso" class="form-control" formControlName="numeroPermiso"
+               placeholder="Ingresa número de permiso" trimmer>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nombrePermisionario">Nombre del permisionario:</label>
         <p-autoComplete id="nombrePermisionario" class="form-control" formControlName="nombrePermisionario"
-          [showEmptyMessage]="true" [suggestions]="cuotasServicioFiltrados" (completeMethod)="filtrarCuotas($event)"
-          [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete" placeholder="Ingresa nombre de la cuota" field="label"
-          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"
-          >
+                        [showEmptyMessage]="true" [suggestions]="cuotasServicioFiltrados"
+                        (completeMethod)="filtrarCuotas($event)"
+                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete"
+                        placeholder="Ingresa nombre de la cuota" field="label"
+                        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"
+        >
         </p-autoComplete>
       </div>
     </div>
-    <br />
+    <br/>
     <div class="row mb-2" *ngIf="filtroForm.invalid">
       <div class="col-md-12">
         <span class="listado-obligatorio-recuadro font-normal">Ingresa al menos 1 campo</span>
@@ -56,18 +59,18 @@
     <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalAgregarCuota()">Registrar cuota</button>
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="cuotas" [paginator]="cuotas.length > 0"
-    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+           [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
-        <th>No. de permiso</th>
-        <th>Giro</th>
-        <th>Nombre del permisionario</th>
-        <th>Vigencia del permiso</th>
-        <th>Cuota de recuperación</th>
-        <th>Cumplimiento de cuotas</th>
-        <th>Pena convencional</th>
-        <th><b>Historial de cuotas</b></th>
+        <th scope="col">No. de permiso</th>
+        <th scope="col">Giro</th>
+        <th scope="col">Nombre del permisionario</th>
+        <th scope="col">Vigencia del permiso</th>
+        <th scope="col">Cuota de recuperación</th>
+        <th scope="col">Cumplimiento de cuotas</th>
+        <th scope="col">Pena convencional</th>
+        <th scope="col"><b>Historial de cuotas</b></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-cuota>

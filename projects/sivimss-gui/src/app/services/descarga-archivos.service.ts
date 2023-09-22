@@ -18,8 +18,7 @@ export class DescargaArchivosService {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], {type: contentType});
-    return blob;
+    return new Blob([byteArray], {type: contentType});
   }
 
   obtenerContentType(options: OpcionesArchivos = {}): string {
@@ -39,7 +38,6 @@ export class DescargaArchivosService {
         },
       ],
     };
-
     return archivo$.pipe(
       switchMap((archivoBlob: Blob) => {
 
@@ -66,7 +64,8 @@ export class DescargaArchivosService {
         });
       }),
       catchError((error) => {
-        console.log(error);
+        if(error.toString().includes('The user aborted a request')) return of(false);
+        console.log(error.toString())
         throw 'Error al guardar el archivo.';
       })
     );

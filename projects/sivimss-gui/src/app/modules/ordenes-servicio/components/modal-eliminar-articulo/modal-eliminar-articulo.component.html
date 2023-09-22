@@ -7,9 +7,7 @@
   <div class="row mt-4">
     <div class="col-md-12">
       <label class="control-label" for="motivo">Motivo<span class="req">*</span>:</label>
-<!--      <input id="motivo" type="text" class="form-control" formControlName="motivo" placeholder="Ingresa el motivo"-->
-<!--        maxlength="50" lettersOnly (keyup.space)="noEspaciosAlPrincipio()">-->
-      <textarea rows="3" pInputTextarea style="width: 100%;" formControlName="motivo" placeholder="Ingresa el motivo de la cancelación" maxlength="50"
+      <textarea rows="3" id="motivo" pInputTextarea style="width: 100%;" formControlName="motivo" placeholder="Ingresa el motivo de la cancelación" maxlength="50"
                 (keyup.space)="noEspaciosAlPrincipio()"></textarea>
       <span class="campo-obligatorio" *ngIf="f.motivo?.errors?.required && (f.motivo?.dirty || f.motivo?.touched)">Este campo es obligatorio *.</span>
     </div>

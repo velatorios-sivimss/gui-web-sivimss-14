@@ -21,7 +21,6 @@ import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mens
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
-import { CATALOGOS_DUMMIES, CATALOGO_NIVEL } from '../../../articulos/constants/dummies';
 
 type ListadoComisiones = Required<Comisiones> & { id: string }
 
@@ -91,7 +90,7 @@ export class ComisionesComponent implements OnInit {
 
   abrirDetalleComision(comisionSeleccionado: ListadoComisiones): void {
     this.comisionSeleccionado = comisionSeleccionado;
-    this.router.navigate([`comisiones/detalle-comision/${comisionSeleccionado.idPromotor}`]).then(() => { }).catch(() => { });
+    void this.router.navigate([`comisiones/detalle-comision/${comisionSeleccionado.idPromotor}`]);
   }
 
   inicializarFiltroForm(): void {
@@ -223,7 +222,7 @@ export class ComisionesComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {
@@ -242,7 +241,7 @@ export class ComisionesComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: boolean): void => {
-        this.mostrarModalDescargaExitosa = true;
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
         console.log(respuesta)
       },
       error: (error): void => {

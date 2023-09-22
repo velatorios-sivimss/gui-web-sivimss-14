@@ -175,8 +175,10 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
                   finalize(() => this.loaderService.desactivar())
                 ).subscribe({
                   next: (respuesta: any) => {
-                    this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-                    this.modalConfirmacion();
+                    if (respuesta) {
+                      this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                      this.modalConfirmacion();
+                    }
                   },
                   error: (error: HttpErrorResponse) => {
                     this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
@@ -189,8 +191,10 @@ export class CalendarioVehiculosComponent implements OnInit, OnDestroy {
               finalize(() => this.loaderService.desactivar())
             ).subscribe({
               next: (respuesta: any) => {
-                this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-                this.modalConfirmacion();
+                if (respuesta) {
+                  this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                  this.modalConfirmacion();
+                }
               },
               error: (error: HttpErrorResponse) => {
                 this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))

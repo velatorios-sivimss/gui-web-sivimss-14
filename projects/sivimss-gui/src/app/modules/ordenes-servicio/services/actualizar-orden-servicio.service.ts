@@ -1,14 +1,14 @@
-import { BaseService } from '../../../utils/base-service';
-import { HttpRespuesta } from '../../../models/http-respuesta.interface';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { AutenticacionService } from '../../../services/autenticacion.service';
-import { environment } from '../../../../environments/environment';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { TipoDropdown } from '../../../models/tipo-dropdown';
-import { mapearArregloTipoDropdown } from '../../../utils/funciones';
-import { MensajeSistema } from '../../../models/mensaje-sistema';
-import { Panteon } from '../models/Panteon.interface';
+import {BaseService} from '../../../utils/base-service';
+import {HttpRespuesta} from '../../../models/http-respuesta.interface';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {AutenticacionService} from '../../../services/autenticacion.service';
+import {environment} from '../../../../environments/environment';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {TipoDropdown} from '../../../models/tipo-dropdown';
+import {mapearArregloTipoDropdown} from '../../../utils/funciones';
+import {MensajeSistema} from '../../../models/mensaje-sistema';
+import {Panteon} from '../models/Panteon.interface';
 
 @Injectable()
 export class ActualizarOrdenServicioService extends BaseService<
@@ -69,7 +69,7 @@ export class ActualizarOrdenServicioService extends BaseService<
     return mensajeSistema ? mensajeSistema.desMensaje : '';
   }
 
-  consutaCP(cp: String): Observable<HttpRespuesta<any>> {
+  consutaCP(cp: string): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       `${environment.api.servicios_externos}consultar/codigo-postal/` + cp
     );
@@ -78,14 +78,14 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarCURP(curp: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/buscar-filtros/orden-consultar-curp`,
-      { curp: curp }
+      {curp: curp}
     );
   }
 
   consultarRFC(rfc: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/buscar-filtros/orden-consultar-rfc`,
-      { rfc: rfc }
+      {rfc: rfc}
     );
   }
 
@@ -98,7 +98,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarPaquetes(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-paquete-consultar`,
+      `${this._funcionalidad}/buscar-filtros/orden-paquete-consultar`,
       parametros
     );
   }
@@ -106,7 +106,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   buscarCapillas(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-consultar-capillas`,
+      `${this._funcionalidad}/buscar-filtros/orden-consultar-capillas`,
       parametros
     );
   }
@@ -118,7 +118,7 @@ export class ActualizarOrdenServicioService extends BaseService<
     );
   }
 
-  actualizarODS(parametros:any): Observable<HttpRespuesta<any>> {
+  actualizarODS(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/orden-actualizar`,
       parametros
@@ -134,7 +134,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarDetallePaquete(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-paquete-consultar-caracteristicas`,
+      `${this._funcionalidad}/buscar-filtros/orden-paquete-consultar-caracteristicas`,
       parametros
     );
   }
@@ -142,7 +142,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarTipoAsignacion(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-asignacion`,
+      `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-asignacion`,
       parametros
     );
   }
@@ -157,7 +157,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarTodoslosAtaudes(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-ataudes`,
+      `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-ataudes`,
       parametros
     );
   }
@@ -165,7 +165,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarTodaslasUrnas(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-urnas`,
+      `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-urnas`,
       parametros
     );
   }
@@ -173,24 +173,15 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarEmpaques(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-empaques`,
-      parametros
-    );
-  }
-  consultarArticulosComplementarios(
-    parametros: any
-  ): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(
-      this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-articulos-complementarios-consultar`,
+      `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-empaques`,
       parametros
     );
   }
 
-  consultarTodoslosEmpaques(parametros: any): Observable<HttpRespuesta<any>> {
+  consultarArticulosComplementarios(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-articulos-funerarios-consultar-empaques`,
+      `${this._funcionalidad}/buscar-filtros/orden-articulos-complementarios-consultar`,
       parametros
     );
   }
@@ -198,7 +189,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarProveedorAtaudes(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-proveedor`,
+      `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-proveedor`,
       parametros
     );
   }
@@ -206,7 +197,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarAtaudInventario(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-inventario`,
+      `${this._funcionalidad}/buscar-filtros/orden-paquete-ataud-inventario`,
       parametros
     );
   }
@@ -214,7 +205,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarProveeedorServicio(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar-filtros/orden-servicios-proveedor-consultar`,
+      `${this._funcionalidad}/buscar-filtros/orden-servicios-proveedor-consultar`,
       parametros
     );
   }
@@ -222,7 +213,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarServiciosVigentes(): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/catalogo/orden-servicios-vigentes-consultar`
+      `${this._funcionalidad}/catalogo/orden-servicios-vigentes-consultar`
     );
   }
 
@@ -235,7 +226,7 @@ export class ActualizarOrdenServicioService extends BaseService<
   consultarDatosPanteon(nombrePanteon: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/buscar-filtros/orden-buscar-panteon`,
-      { nombrePanteon: nombrePanteon }
+      {nombrePanteon: nombrePanteon}
     );
   }
 
@@ -261,19 +252,19 @@ export class ActualizarOrdenServicioService extends BaseService<
   ): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar/reporte-orden-servicio-modificada`,
-      { idOrdenServicio: idOrdenServicio, estatus: estatus, tipoReporte: 'pdf' }
+      `${this._funcionalidad}/buscar/reporte-orden-servicio-modificada`,
+      {idOrdenServicio: idOrdenServicio, estatus: estatus, tipoReporte: 'pdf'}
     );
   }
 
   generarArchivoServiciosInmediatos(
     idOrdenServicio: number,
-    tipoOrden:number
+    tipoOrden: number
   ): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base +
-        `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-modificada`,
-      {idOrdenServicio:idOrdenServicio,generaReporte:tipoOrden,tipoReporte:'pdf'}
+      `${this._funcionalidad}/buscar/reporte-contrato-serv-inmediato-modificada`,
+      {idOrdenServicio: idOrdenServicio, generaReporte: tipoOrden, tipoReporte: 'pdf'}
     );
   }
 }

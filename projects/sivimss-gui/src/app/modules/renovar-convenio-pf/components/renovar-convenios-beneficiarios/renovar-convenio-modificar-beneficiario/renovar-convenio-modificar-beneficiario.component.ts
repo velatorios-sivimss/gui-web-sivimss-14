@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
@@ -125,10 +125,14 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
   }
 
   validarRfc() {
-    const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])[A-Z|\d]{3})$/);
-    if (!regex.test(this.mbf.rfc.value)) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
-      this.mbf.rfc.setErrors({ 'incorrect': true });
+    if (this.mbf.rfc.value && this.mbf.rfc.value !== '') {
+      const regex = new RegExp(/^([A-Z,Ñ,&]{3,4}(\d{2})(0[1-9]|1[0-2])(0[1-9]|1\d|2\d|3[0-1])[A-Z|\d]{3})$/);
+      if (!regex.test(this.mbf.rfc.value)) {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'R.F.C. no válido.');
+        this.mbf.rfc.setErrors({ 'incorrect': true });
+      } else {
+        this.mbf.rfc.setErrors(null);
+      }
     } else {
       this.mbf.rfc.setErrors(null);
     }

@@ -152,43 +152,42 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
     }
     if(this.velatorio) {
       this.reservarSalasService.consultaMes(+mes,+anio,this.posicionPestania,this.velatorio).pipe(
-      ).subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           respuesta.datos.forEach((sala: any) => {
             let bandera: boolean = false;
-            if(!this.posicionPestania){
-                this.calendarioCremacion.getApi().addEvent(
-                  {id: sala.idSala,title: sala.nombreSala,start: sala.fechaEntrada,color:sala.colorSala},
-                );
-            }else{
+            if (!this.posicionPestania) {
+              this.calendarioCremacion.getApi().addEvent(
+                {id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala},
+              );
+            } else {
               this.calendarioEmbalsamamiento.getApi().addEvent(
-                {id: sala.idSala,title: sala.nombreSala,start: sala.fechaEntrada,color:sala.colorSala},
+                {id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala},
               );
             }
-            this.tituloSalas.forEach((tituloSala : any) => {
-              if(tituloSala.id == sala.idSala){
+            this.tituloSalas.forEach((tituloSala: any) => {
+              if (tituloSala.id == sala.idSala) {
                 bandera = true;
-                return;
               }
             });
-            if(!bandera){
+            if (!bandera) {
               this.tituloSalas.push(
                 {
                   borderColor: sala.colorSala,
                   textColor: sala.colorSala,
                   title: sala.nombreSala,
-                  id:sala.idSala
+                  id: sala.idSala
                 }
               )
             }
           })
           this.tituloSalas = [...this.tituloSalas]
         },
-      (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      )
+      })
     }
   }
 
@@ -233,14 +232,14 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
 
     this.descargaArchivosService.descargarArchivo(this.reservarSalasService.generarReporte(busqueda), configuracionArchivo).pipe(
         finalize( () => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta) => {
-        this.alertaService.mostrar(TipoAlerta.Exito,"El archivo se guardó correctamente.")
+    ).subscribe({
+      next: (respuesta): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
       },
-      (error) => {
+      error: (error): void => {
         console.log(error)
       },
-    )
+    })
   }
 
   filtrosArchivos(tipoReporte: string) {
@@ -258,16 +257,15 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
     this.loaderService.activar();
     this.reservarSalasService.obtenerCatalogoVelatoriosPorDelegacion(this.delegacion).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>)=> {
-
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
       }
-    )
+    });
 
   }
 

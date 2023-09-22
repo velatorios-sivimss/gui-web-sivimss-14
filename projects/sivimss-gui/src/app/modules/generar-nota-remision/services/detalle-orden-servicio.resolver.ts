@@ -11,7 +11,7 @@ export class DetalleOrderServicioResolver implements Resolve<any> {
     constructor(private generarNotaRemisionService: GenerarNotaRemisionService) { }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-        const idOds = +(route.paramMap.get('idOds') || 0);
+        const idOds = +(route.paramMap.get('idOds') ?? 0);
         const detalleOrdenServicio$ = this.generarNotaRemisionService.obtenerDatosOrdenServicio(idOds);
         const servicios$ = this.generarNotaRemisionService.obtenerServiciosNotaRemision({ idNota: null, idOrden: idOds });
         return forkJoin([detalleOrdenServicio$, servicios$]);

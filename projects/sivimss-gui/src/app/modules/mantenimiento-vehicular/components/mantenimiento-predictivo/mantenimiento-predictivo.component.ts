@@ -37,7 +37,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
 
   vehiculos: VehiculoMantenimiento[] = []
   vehiculoSeleccionado!: VehiculoMantenimiento;
-
+  realizoBusqueda: boolean = false;
   filtroForm!: FormGroup
   verDetallePredictivo: boolean = false;
   rangoFecha: string = '';
@@ -132,6 +132,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
   }
 
   limpiar(): void {
+    this.realizoBusqueda = false;
     this.filtroForm.reset();
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
 
@@ -157,6 +158,7 @@ export class MantenimientoPredictivoComponent implements OnInit {
     const filtros: FiltrosMantenimientoPredictivo = this.generarSolicitudFiltros();
     this.mantenimientoVehicularService.buscarReporteMttoPreventivo(filtros).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
+        this.realizoBusqueda = true;
         if (respuesta.datos?.content.length > 0) {
           this.vehiculos = respuesta.datos.content;
           this.vehiculoSeleccionado = respuesta.datos.content[0];
@@ -244,22 +246,22 @@ export class MantenimientoPredictivoComponent implements OnInit {
       tipoMttoDesc = this.tipoMantenimientos.find(item => item.value === this.fmp.tipoMantenimiento.value)?.label ?? '';
       switch (tipoMttoDesc) {
         case "Aceite":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_ACEITE || 'BAJO'];
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_ACEITE ?? 'BAJO'];
           break;
         case "Agua":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_AGUA || 'BAJO'];
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_AGUA ?? 'BAJO'];
           break;
         case "Calibración Neumáticos":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_AGUA || 'BAJO'];
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_AGUA ?? 'BAJO'];
           break;
         case "Combustible":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_COMBUSTIBLE || 'BAJO'];
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_COMBUSTIBLE ?? 'BAJO'];
           break;
         case "Código de Falla":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_CODIGOFALLO || 'BAJO'];
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_CODIGOFALLO ?? 'BAJO'];
           break;
         case "Batería":
-          valor = this.niveles[this.vehiculos[0].DES_NIVEL_BATERIA || 'BAJO'];
+          valor = this.niveles[this.vehiculos[0].DES_NIVEL_BATERIA ?? 'BAJO'];
           break;
         case "Todos":
           tipoMttoDesc = null;

@@ -1,22 +1,19 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
 import {OverlayPanel} from "primeng/overlaypanel";
-import { LazyLoadEvent } from "primeng/api";
-import { USUARIOS_BREADCRUMB } from '../../../usuarios/constants/breadcrumb';
+import {LazyLoadEvent} from "primeng/api";
+import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
 import {ValeParitaria} from "../../models/vale-paritaria.interface";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import { CATALOGOS } from '../../../usuarios/constants/catalogos_dummies';
-import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
-
-const MAX_WIDTH: string = "876px";
+import {CATALOGOS} from '../../../usuarios/constants/catalogos_dummies';
+import {LoaderService} from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 
 @Component({
   selector: 'app-vales-paritaria',
   templateUrl: './vales-paritaria.component.html',
-  styleUrls: ['./vales-paritaria.component.scss']
 })
 export class ValesParitariaComponent implements OnInit {
 
@@ -46,7 +43,7 @@ export class ValesParitariaComponent implements OnInit {
     this.inicializarFiltroForm();
   }
 
-  inicializarFiltroForm():void {
+  inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
       matricula: [{value: 1234567, disabled: true}],
       delegacion: [{value: null, disabled: false}, [Validators.required]],
@@ -100,7 +97,7 @@ export class ValesParitariaComponent implements OnInit {
     this.numPaginaActual = 0;
   }
 
-  abrirPanel(event: MouseEvent, valeSeleccionado: ValeParitaria):void {
+  abrirPanel(event: MouseEvent, valeSeleccionado: ValeParitaria): void {
     this.valeSeleccionado = valeSeleccionado;
     this.overlayPanel.toggle(event);
   }

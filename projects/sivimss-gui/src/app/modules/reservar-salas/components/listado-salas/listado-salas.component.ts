@@ -1,22 +1,20 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TipoDropdown } from '../../../../models/tipo-dropdown';
-import { MENU_SALAS } from '../../constants/menu-salas';
-import { SalaVelatorio } from '../../models/sala-velatorio.interface';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { RegistrarEntradaComponent } from "../registrar-entrada/registrar-entrada.component";
-import { RegistrarSalidaComponent } from "../registrar-salida/registrar-salida.component";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ReservarSalasService } from "../../services/reservar-salas.service";
-import { Catalogo } from "../../../../models/catalogos.interface";
-import { VelatorioInterface } from "../../models/velatorio.interface";
-import { ActivatedRoute, Router } from "@angular/router";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { TabView } from "primeng/tabview";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { finalize } from "rxjs/operators";
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {TipoDropdown} from '../../../../models/tipo-dropdown';
+import {MENU_SALAS} from '../../constants/menu-salas';
+import {SalaVelatorio} from '../../models/sala-velatorio.interface';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {RegistrarEntradaComponent} from "../registrar-entrada/registrar-entrada.component";
+import {RegistrarSalidaComponent} from "../registrar-salida/registrar-salida.component";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ReservarSalasService} from "../../services/reservar-salas.service";
+import {VelatorioInterface} from "../../models/velatorio.interface";
+import {ActivatedRoute, Router} from "@angular/router";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
@@ -64,7 +62,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
     //   {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
 
     this.delegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION]!.map((delegacion: any) => (
-      { label: delegacion.label, value: delegacion.value })) || [];
+      {label: delegacion.label, value: delegacion.value})) || [];
 
     this.inicializarFiltroForm();
 
@@ -77,10 +75,10 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      delegacion: [{ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }],
-      velatorio: [{ value: null, disabled: +this.rolLocalStorage.idOficina === 3 }],
+      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2}],
+      velatorio: [{value: null, disabled: +this.rolLocalStorage.idOficina === 3}],
     });
-    if(this.f.delegacion.value != null){
+    if (this.f.delegacion.value != null) {
       this.cambiarDelegacion();
     }
   }
@@ -97,7 +95,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
     this.registrarEntradaRef = this.dialogService.open(RegistrarEntradaComponent, {
       header: 'Registrar Entrada',
       width: '920px',
-      data: { sala: sala, tipoSala: this.posicionPestania },
+      data: {sala: sala, tipoSala: this.posicionPestania},
     });
     this.registrarEntradaRef.onClose.subscribe((respuesta) => {
       if (respuesta) {
@@ -110,7 +108,7 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
     this.registrarSalidaRef = this.dialogService.open(RegistrarSalidaComponent, {
       header: 'Registrar Salida',
       width: '920px',
-      data: { sala: sala, tipoSala: this.posicionPestania },
+      data: {sala: sala, tipoSala: this.posicionPestania},
     });
     this.registrarSalidaRef.onClose.subscribe((respuesta) => {
       if (respuesta) {
@@ -125,58 +123,63 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
   }
 
 
-
   consultaSalasCremacion(): void {
-    if (this.f.velatorio.value && this.f.velatorio.value == 0) { return }
+    if (this.f.velatorio.value && this.f.velatorio.value == 0) {
+      return
+    }
     this.loaderService.activar();
     this.reservarSalasService.consultarSalas(this.f.velatorio.value, this.posicionPestania).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (this.posicionPestania == 0) {
           this.salasCremacion = respuesta.datos;
         } else {
           this.salasEmbalsamamiento = respuesta.datos;
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
-
-        this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
-    );
+    });
   }
 
   cambiarDelegacion(): void {
     this.loaderService.activar();
     this.reservarSalasService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
 
         const item = this.velatorios.find((item: TipoDropdown) => item.value === +this.rolLocalStorage.idVelatorio);
         if (item) {
           this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio);
-          this.cambiarPestania({ index: 0 });
+          this.cambiarPestania({index: 0});
         } else {
           this.filtroForm.get('velatorio')?.patchValue(null);
           this.consultaSalasCremacion();
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.log(error);
-        this.alertaService.mostrar(TipoAlerta.Error,this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
-    )
-
+    })
   }
 
   retornarColor(estatus: string): string {
-    if (estatus === "DISPONIBLE") { return "#83b727" }
-    if (estatus === "OCUPADA") { return "#9d2449" }
-    if (estatus === "MANTENIMIENTO") { return "#ffff00" }
+    if (estatus === "DISPONIBLE") {
+      return "#83b727"
+    }
+    if (estatus === "OCUPADA") {
+      return "#9d2449"
+    }
+    if (estatus === "MANTENIMIENTO") {
+      return "#ffff00"
+    }
     return "";
   }
 

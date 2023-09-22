@@ -1,24 +1,24 @@
-export interface catalogoVelatorio{
-    idVelatorio?: number;
+export interface CatalogoVelatorio {
+  idVelatorio?: number;
   DES_VELATORIO?: string;
 }
 
-export interface catalogoFolioODS{
+export interface CatalogoFolioODS {
   folioODS?: string;
   idODS?: number;
 }
 
-export interface catalogoTipoODS{
+export interface CatalogoTipoODS {
   idTipoODS?: number;
   tipoODS?: string;
 }
 
-export interface catalogoUnidadesMedicas {
-  idUnidadMedica?:number;
-  nombreUnidad?:string;
+export interface CatalogoUnidadesMedicas {
+  idUnidadMedica?: number;
+  nombreUnidad?: string;
 }
 
-export interface catalogoContratantes {
+export interface CatalogoContratantes {
   primerApellido?: string;
   numInterior?: string;
   fechaNacimiento?: string;
@@ -44,7 +44,7 @@ export interface catalogoContratantes {
   apMatContratante?: string
 }
 
-export interface catalogoFinado {
+export interface CatalogoFinado {
   idFinado?: number;
   numInterior?: string;
   fechaDefuncion?: string;

@@ -1,0 +1,54 @@
+<form [formGroup]="generarHojaConsignacionForm">
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <label class="control-label" for="folio">Folio fiscal de la factura:</label>
+      <input id="folio" class="form-control" formControlName="folio" placeholder="">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label class="control-label" for="archivoXml">Adjuntar archivo XML<span class="req">*</span>:</label>
+      <div (click)="handleClick('archivoXml', 'xml')">
+        <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml" ngf-max-size="2MB"
+          (change)="addAttachment($event)">
+        <input id="archivoXml" class="form-control" formControlName="archivoXml" readonly>
+        <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="archivoPdf">Adjuntar archivo PDF<span class="req">*</span>:</label>
+      <div (click)="handleClick('archivoPdf', 'pdf')">
+        <input class="hidden" type="file" id="upload-file-pdf" name="upload-file-pdf" accept=".pdf" ngf-max-size="2MB"
+          (change)="addAttachment($event)">
+        <input id="archivoPdf" class="form-control" formControlName="archivoPdf" readonly>
+        <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3" *ngIf="generarHojaConsignacionForm.valid">
+    <div class="col-md-6">
+      <div class='table-panel-custom'>
+        <label>Costo total en la hoja de consignación:</label>
+        <span>{{costoTotal}}</span>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class='table-panel-custom'>
+        <label>Importe de la factura:</label>
+        <span>{{importeFactura}}</span>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="row mt-6 label-margen-custom">
+  <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>
+</div>
+
+<div class="flex justify-content-end mt-6 mb-6">
+  <button class="btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
+  <button type="button" class="ml-4 btn btn-primary btn-md" [disabled]="generarHojaConsignacionForm.invalid"
+    (click)="guardar()">Guardar</button>
+</div>

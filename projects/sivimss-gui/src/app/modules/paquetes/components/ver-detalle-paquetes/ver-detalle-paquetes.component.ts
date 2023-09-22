@@ -83,12 +83,12 @@ export class VerDetallePaquetesComponent implements OnInit {
 
   paginar(event: LazyLoadEvent): void {
     setTimeout(() => {
-      this.servicios = this.paqueteSeleccionado.servicios || [];
+      this.servicios = this.paqueteSeleccionado.servicios ?? [];
       this.totalElementosServicios = this.servicios.length;
     }, 0);
 
     setTimeout(() => {
-      this.articulos = this.paqueteSeleccionado.articulos || [];
+      this.articulos = this.paqueteSeleccionado.articulos ?? [];
       this.totalElementosArticulos = this.articulos.length;
     }, 0);
   }
@@ -116,27 +116,27 @@ export class VerDetallePaquetesComponent implements OnInit {
     this.cargadorService.activar();
     this.paquetesService.guardar(nuevoPaquete)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
+      .subscribe({
+        next: (respuesta): void => {
           this.cerrarDialogo();
           this.alertaService.mostrar(TipoAlerta.Exito, this.mensajeConfirmacion);
-          this.router.navigate(['/paquetes'], {
+          void this.router.navigate(['/paquetes'], {
             relativeTo: this.activatedRoute
           });
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
         }
-      );
+      });
   }
 
   crearPaquete(): NuevoPaquete {
     return {
       articulos: [],
       costo: 0,
-      desPaquete: this.paqueteSeleccionado.descripcion || "",
+      desPaquete: this.paqueteSeleccionado.descripcion ?? "",
       isRegion: false,
-      nomPaquete: this.paqueteSeleccionado.nombrePaquete || "",
+      nomPaquete: this.paqueteSeleccionado.nombrePaquete ?? "",
       precio: 0,
       estatus: this.paqueteSeleccionado.estatus === true ? 1 : 0
     }

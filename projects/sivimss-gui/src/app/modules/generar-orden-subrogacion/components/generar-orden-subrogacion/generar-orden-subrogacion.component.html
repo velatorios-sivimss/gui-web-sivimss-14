@@ -1,0 +1,136 @@
+<div class="grid">
+  <app-titulo-principal class="col" titulo="Servicios / Generar Orden de subrogación"></app-titulo-principal>
+</div>
+<div class="border-panel">
+  <form [formGroup]="filtroForm" (ngSubmit)="seleccionarPaginacion($event)" (reset)="limpiar()">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+          placeholder="Selecciona el nivel">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio">
+        </p-dropdown>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span>:</label>
+        <p-autoComplete id="folio" class="form-control" formControlName="folio" (keyup)="validarNombre(0)"
+          (keyup.space)="sinEspacioInicial(0)" autocomplete="folio" [suggestions]="catalogoFoliosOds"
+          (completeMethod)="consultarFoliosODS($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
+          [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa el folio ODS"
+          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+        </p-autoComplete>
+        <span class="campo-obligatorio"
+          *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
+        <p-autoComplete id="proveedor" class="form-control" formControlName="proveedor" (keyup)="validarNombreProveedor(0)"
+          (keyup.space)="sinEspacioInicialProveedor(0)" autocomplete="proveedor" [suggestions]="catalogoProveedores"
+          (completeMethod)="consultarProveedor($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
+          [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa el proveedor"
+          [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+        </p-autoComplete>
+        <span class="campo-obligatorio"
+          *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="fecha">Fecha:</label>
+        <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [minDate]="fechaRango" [maxDate]="fechaActual" [showIcon]="true" dateFormat="dd/mm/yy"
+          placeholder="Ingresa fecha"></p-calendar>
+        <span class="campo-obligatorio"
+          *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<section class="mt-5">
+  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="ordenes" [paginator]="ordenes.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+    [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Fecha ODS</th>
+        <th scope="col">Folio ODS</th>
+        <th scope="col">Proveedor</th>
+        <th scope="col">Nombre de finado</th>
+        <th scope="col">Tipo de servicio</th>
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-orden>
+      <tr>
+        <td> {{orden.fechaOds}}</td>
+        <td> {{orden.folioOds}}</td>
+        <td> {{orden.proveedor}}</td>
+        <td> {{orden.nombreFinado}}</td>
+        <td> {{orden.tipoServicio}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a> </a>
+            <a (click)="abrirPanel($event, orden)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{ordenes.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template" *appValidaRol="['HOJA_SUBROGACION','IMPRIMIR']">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="generarArchivo('pdf')">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="generarArchivo('xls')">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Generar orden de subrogación" (click)="generarOrdenSubrogacion(false);" *ngIf="ordenSeleccionada.puedeRegistrar === 'true'">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *appValidaRol="['HOJA_SUBROGACION','MODIFICACION']" titulo="Modificar" (click)="generarOrdenSubrogacion(true);"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver" (click)="detalleOrdenSubrogacion();"></app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

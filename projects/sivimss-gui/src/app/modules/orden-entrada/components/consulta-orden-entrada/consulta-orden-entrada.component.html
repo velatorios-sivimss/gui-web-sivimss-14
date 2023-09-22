@@ -3,43 +3,49 @@
     <div class="col-md-6">
       <label class="control-label" for="nivel">Nivel:</label>
       <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-                  placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
+        placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="velatorio">Velatorio:</label>
       <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                  placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
+        placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
   </div>
   <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="ordenEntrada">Orden de entrada (ODE):</label>
-      <input id="ordenEntrada" type="text" class="form-control"
-             placeholder="Ingresa la orden de entrada"
-      >
+      <p-autoComplete id="ordenEntrada" class="form-control" formControlName="ordenEntrada" (keyup)="validarNombre(0)"
+        (keyup.space)="sinEspacioInicial(0)" autocomplete="ordenEntrada"
+        [suggestions]="catalogoOrdenesEntrada" (completeMethod)="consultarOrdenesEntrada($event)" [showEmptyMessage]="true"
+        [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50" class="p-autocomplete"
+        placeholder="Ingresa la orden de entrada"
+        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+      </p-autoComplete>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="proveedor">Proveedor:</label>
-      <input id="proveedor" type="text" class="form-control" formControlName="proveedor"
-             placeholder="Ingresa el proveedor"
-      >
+      <p-autoComplete id="proveedor" class="form-control" formControlName="proveedor" (keyup)="validarNombre(0)"
+        (keyup.space)="sinEspacioInicial(0)" autocomplete="proveedor"
+        [suggestions]="catalogoProveedores" (completeMethod)="consultarProveedor($event)" [showEmptyMessage]="true"
+        [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50" class="p-autocomplete"
+        placeholder="Ingresa el proveedor"
+        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+      </p-autoComplete>
     </div>
   </div>
   <div class="row mb-3">
     <div class="col-md-3">
       <label class="control-label" for="fechaInicial">Fecha Inicial<span class="req">*</span>:</label>
       <p-calendar styleClass="form-control" id="fechaInicial" formControlName="fechaInicial" [showIcon]="true"
-                  dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [minDate]="fechaRango"
-                  (onSelect)="validarFechaFinal()">
+        dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [minDate]="fechaRango" (onSelect)="validarFechaFinal()">
       </p-calendar>
     </div>
     <div class="col-md-3">
-      <label class="control-label" for="fechaFinal">Fecha Inicial:</label>
+      <label class="control-label" for="fechaFinal">Fecha Final<span class="req">*</span>:</label>
       <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
-                  dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"
-                  (onSelect)="validarFechaFinal()">
+        dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"(onSelect)="validarFechaFinal()">
       </p-calendar>
     </div>
   </div>
@@ -48,8 +54,8 @@
       <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>
     </div>
     <div class="col-md-6 flex justify-content-end">
-      <button class="btn btn-default btn-md">Limpiar</button>
-      <button class="btn btn-primary btn-md ml-5">Buscar</button>
+      <button class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+      <button class="btn btn-primary btn-md ml-5" (click)="buscar()" [disabled]="f.fechaInicial.value === null && f.fechaFinal.value === null">Buscar</button>
     </div>
   </div>
   <div class="row">
@@ -60,9 +66,9 @@
 </form>
 <section>
   <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="ordenesEntrada"
-           [paginator]="ordenesEntrada.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
-           [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
+    [paginator]="ordenesEntrada.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
+    [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+    (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn scope="col">ID ODE</th>
@@ -78,34 +84,35 @@
         <th pResizableColumn scope="col">Número de artículos</th>
         <th pResizableColumn scope="col">Fecha ODE</th>
         <th id="columna_orden_entrada_estatus">Estatus</th>
-        <th></th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-ordenesEntrada>
       <tr>
-        <td pResizableColumn> {{ordenesEntrada.idOde}} </td>
-        <td pResizableColumn> {{ordenesEntrada.folioOde}} </td>
-        <td pResizableColumn> {{ordenesEntrada.contrato}} </td>
-        <td pResizableColumn> {{ordenesEntrada.proveedor}} </td>
-        <td pResizableColumn> {{ordenesEntrada.folioProveedor}} </td>
-        <td pResizableColumn> {{ordenesEntrada.categoria}} </td>
-        <td pResizableColumn> {{ordenesEntrada.modelo}} </td>
-        <td pResizableColumn> {{ordenesEntrada.velatorio}} </td>
-        <td pResizableColumn> {{ordenesEntrada.costo}} </td>
-        <td pResizableColumn> {{ordenesEntrada.precio}} </td>
-        <td pResizableColumn> {{ordenesEntrada.numeroArticulos}} </td>
-        <td pResizableColumn> {{ordenesEntrada.fechaOde}} </td>
+        <td pResizableColumn> {{ordenesEntrada.ID_ODE}} </td>
+        <td pResizableColumn> {{ordenesEntrada.NUM_FOLIO_ODE}} </td>
+        <td pResizableColumn> {{ordenesEntrada.DES_CONTRATO}} </td>
+        <td pResizableColumn> {{ordenesEntrada.NOM_PROVEEDOR}} </td>
+        <td pResizableColumn> {{ordenesEntrada.FOLIO_PROVEEDOR}} </td>
+        <td pResizableColumn> {{ordenesEntrada.DES_CATEGORIA_ARTICULO}} </td>
+        <td pResizableColumn> {{ordenesEntrada.DES_MODELO_ARTICULO}} </td>
+        <td pResizableColumn> {{ordenesEntrada.DES_VELATORIO}} </td>
+        <td pResizableColumn> {{ordenesEntrada.MON_COSTO_UNITARIO | currency}} </td>
+        <td pResizableColumn> {{ordenesEntrada.MON_PRECIO | currency}} </td>
+        <td pResizableColumn> {{ordenesEntrada.NUM_ARTICULO}} </td>
+        <td pResizableColumn> {{ordenesEntrada.FEC_ODE}} </td>
         <td>
           <div class="contenedor-inputswitch flex mr-4">
-            <span class="activo mr-3" *ngIf="ordenesEntrada.estatus == 1">Activa</span>
-            <span class="activo mr-3" *ngIf="ordenesEntrada.estatus == 2">Cancelada</span>
-            <span class="activo mr-3" *ngIf="ordenesEntrada.estatus == 3">Cerrada</span>
+            <span class="activo mr-3" *ngIf="ordenesEntrada.ESTATUS_ORDEN_ENTRADA == 1">Activa</span>
+            <span class="activo mr-3" *ngIf="ordenesEntrada.ESTATUS_ORDEN_ENTRADA == 2">Cancelada</span>
+            <span class="activo mr-3" *ngIf="ordenesEntrada.ESTATUS_ORDEN_ENTRADA == 3">Cerrada</span>
           </div>
         </td>
-        <td>
+        <td *ngIf="ordenesEntrada.ESTATUS_ORDEN_ENTRADA == 1">
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'60px 40px'}"
-               class="contenedor-celda-iconos">
-            <a (click)="abrirPanel($event,ordenesEntrada)" onCloseOnNavigation class="pi pi-ellipsis-v inline-flex w-auto">
+            class="contenedor-celda-iconos">
+            <a (click)="abrirPanel($event,ordenesEntrada)" onCloseOnNavigation
+              class="pi pi-ellipsis-v inline-flex w-auto">
 
             </a>
           </div>
@@ -129,8 +136,8 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" (click)="generarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" (click)="generarArchivo('xls')" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
           </div>
         </div>
       </div>
@@ -140,14 +147,15 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Cancelar ODE" [routerLink]="['cancelar-orden-entrada',1]"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Cancelar ODE" [routerLink]="['cancelar-orden-entrada', ordenEntradaSeleccionada.ID_ODE]">
+      </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Cerrar ODE" (click)="abrirModalCerrarODE()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
 
 <p-dialog [(visible)]="mostrarModalFechaMayor" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="">
+  [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">La fecha inicial no puede ser mayor que la fecha final.</span>
@@ -162,16 +170,16 @@
 
 
 <p-dialog [(visible)]="mostrarModalCerrarODE" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="Cerrar ODE">
+  [draggable]="false" [resizable]="false" header="Cerrar ODE">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">¿Estas seguro de cerrar esta ODE?</span>
+      <span class="text-justify">¿Estás seguro de cerrar esta ODE?</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
     <div class="flex justify-content-end">
       <button class="btn btn-gold btn-md" (click)="mostrarModalCerrarODE = false">Cancelar</button>
-      <button class="btn btn-primary btn-md ml-3" (click)="mostrarModalCerrarODE = false">Aceptar</button>
+      <button class="btn btn-primary btn-md ml-3" (click)="cerrarOrdenEntrada()">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

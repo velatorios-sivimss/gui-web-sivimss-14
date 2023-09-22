@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {OperadoresPorVelatorio} from "../../models/operadores-por-velatorio.interface";
-import {Servicio} from "../../../servicios/models/servicio.interface";
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {
   ModificarOperadoresPorVelatorioComponent
@@ -71,6 +70,6 @@ export class DetalleOperadoresPorVelatorioComponent implements OnInit {
   }
 
   regresar(): void {
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 }

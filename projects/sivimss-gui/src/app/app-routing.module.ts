@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes, UrlSerializer} from '@angular/router';
-import {PaginaNoEncontradaComponent} from './components/pagina-no-encontrada/pagina-no-encontrada.component';
-import {BloqueaUsuarioLogueadoGuard} from 'projects/sivimss-gui/src/app/guards/bloquea-usuario-logueado.guard';
-import {PermiteUsuarioLogueadoGuard} from 'projects/sivimss-gui/src/app/guards/permite-usuario-logueado.guard';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes, UrlSerializer } from '@angular/router';
+import { PaginaNoEncontradaComponent } from './components/pagina-no-encontrada/pagina-no-encontrada.component';
+import { BloqueaUsuarioLogueadoGuard } from 'projects/sivimss-gui/src/app/guards/bloquea-usuario-logueado.guard';
+import { PermiteUsuarioLogueadoGuard } from 'projects/sivimss-gui/src/app/guards/permite-usuario-logueado.guard';
 
 const routes: Routes = [
   {
@@ -196,18 +196,33 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'reporte-orden-servicio',
-    loadChildren: () => import ('./modules/reporte-orden-servicio/reporte-orden-servicio.module').then(m => m.ReporteOrdenServicioModule),
+    path: 'reportes',
+    loadChildren: () => import('./modules/reportes/reportes.module').then(m => m.ReportesModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: 'orden-entrada',
-    loadChildren: () => import ('./modules/orden-entrada/orden-entrada.module').then(m => m.OrdenEntradaModule),
+    loadChildren: () => import('./modules/orden-entrada/orden-entrada.module').then(m => m.OrdenEntradaModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: 'balance-cajas',
     loadChildren: () => import('./modules/balance-cajas/balance-caja.module').then(m => m.BalanceCajaModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'generar-orden-de-subrogacion',
+    loadChildren: () => import('./modules/generar-orden-subrogacion/generar-orden-subrogacion.module').then(m => m.GenerarOrdenSubrogacionModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'generar-formato-de-actividades',
+    loadChildren: () => import('./modules/generar-formato-actividades/generar-formato-actividades.module').then(m => m.GenerarFormatoActividadesModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'generar-hoja-de-consignacion',
+    loadChildren: () => import('./modules/generar-hoja-consignacion/generar-hoja-consignacion.module').then(m => m.GenerarHojaConsignacionModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {

@@ -1,13 +1,8 @@
-<div class="flex">
-  <app-btn-regresar class="mr-2" style="
-      z-index: 300;
-      border: solid 2px;
-      height: 38px;
-      width: 47px;
-      padding-left: 6px;
-      border-radius: 5px;" routerLink="../"></app-btn-regresar>
-  <app-titulo-principal style="width: 100%" titulo="Servicios funerarios pago anticipado sfpa"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Servicios funerarios pago anticipado sfpa" class="col"></app-titulo-principal>
 </div>
+
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
@@ -38,7 +33,7 @@
       <div class="col-md-3">
         <label class="control-label" for="rfc">RFC:</label>
         <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC"
-        maxlength="13" alphanumericOnly>
+               maxlength="13" alphanumericOnly>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="curp">CURP:</label>
@@ -73,7 +68,7 @@
   </form>
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md" (click)="limpiar()" >Limpiar Filtros</button>
+      <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar Filtros</button>
       <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
     </div>
   </div>
@@ -82,7 +77,8 @@
 <section class="my-6">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Planes SFPA</h2>
-    <button *appValidaRol="['AGREGAR_PLAN_SFPA','ALTA']" type="button" class="btn btn-primary btn-lg" routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan
+    <button *appValidaRol="['AGREGAR_PLAN_SFPA','ALTA']" type="button" class="btn btn-primary btn-lg"
+            routerLink="registrar-nuevo-plan-sfpa">Agregar nuevo plan
       SFPA
     </button>
   </div>
@@ -118,9 +114,6 @@
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-celda-iconos">
-<!--              <a>-->
-<!--                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">-->
-<!--              </a>-->
               <a (click)="abrirPanel($event,servicioFunerario)">
                 <img
                   src="assets/images/imagen-icono-barras-horizontales.svg"
@@ -148,7 +141,7 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons" *appValidaRol="['AGREGAR_PLAN_SFPA','IMPRIMIR']">
-            <img class="icon-export-table" (click)="exportarArchivo('pdf')"  src="assets/images/imagen-icono-pdf.svg"
+            <img class="icon-export-table" (click)="exportarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg"
                  alt="exportar pdf">
             <img class="icon-export-table" (click)="exportarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
                  alt="exportar excel">
@@ -165,14 +158,15 @@
         <app-overlay-panel-opcion (click)="detallePago()" titulo="Detalle pago"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion (click)="modificarPago()" titulo="Modificar Plan"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="!servicioSeleccionado.ESTATUS_PLAN_SFPA?.includes('CANCELADO')"
-                                  (click)="mostrarModalCancelarPlan = true" titulo="Cancelar Plan"></app-overlay-panel-opcion>
+                                  (click)="mostrarModalCancelarPlan = true"
+                                  titulo="Cancelar Plan"></app-overlay-panel-opcion>
       </app-overlay-panel-opciones>
     </ng-template>
   </p-overlayPanel>
 </section>
 <p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
@@ -188,7 +182,7 @@
 
 <p-dialog [(visible)]="mostrarModalCancelarPlan" [modal]="true"
           [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" header="" >
+          [draggable]="false" [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">¿Estás seguro de cancelar este Plan de Servicios Funerarios Pago Anticipado?</span>

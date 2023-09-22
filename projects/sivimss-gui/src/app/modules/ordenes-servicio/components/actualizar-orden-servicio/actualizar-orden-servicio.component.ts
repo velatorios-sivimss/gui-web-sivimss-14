@@ -4,7 +4,6 @@ import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.i
 import { ActivatedRoute } from '@angular/router';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { GenerarOrdenServicioService } from '../../services/generar-orden-servicio.service';
 import { ActualizarOrdenServicioService } from '../../services/actualizar-orden-servicio.service';
 import { GestionarEtapasActualizacionService } from '../../services/gestionar-etapas-actualizacion.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
@@ -42,7 +41,6 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private alertaService: AlertaService
   ) {
-    // this.buscarDetalle(Number(this.rutaActiva.snapshot.paramMap.get('idODS')));
     this.buscarDetalle(Number(this.rutaActiva.snapshot.queryParams.idODS));
   }
 
@@ -124,8 +122,8 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
     this.gestionarOrdenServicioService
       .consultarDetalleODS(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
           if (this.estatusValida == 1) {
             this.caracteristicas(respuesta.datos);
             if (respuesta.datos.informacionServicio != null)
@@ -136,7 +134,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
           this.gestionarEtapasService.datosContratante$.next(respuesta.datos);
           this.gestionarEtapasService.datosConsultaODS$.next(respuesta.datos);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.log(error);
           try {
             const errorMsg: string =
@@ -156,7 +154,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
             );
           }
         }
-      );
+      });
   }
 
   caracteristicas(datos: any): void {
@@ -231,9 +229,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-        // if (element.idProveedor != null && element.idProveedor != '') {
           salidaPaquete.push(datos);
-        // }
       }
     }
 

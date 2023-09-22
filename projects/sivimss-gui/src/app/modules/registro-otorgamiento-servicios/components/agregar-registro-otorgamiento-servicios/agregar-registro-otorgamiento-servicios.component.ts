@@ -8,13 +8,11 @@ import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/me
 import { RegistroOtorgamientoServiciosService } from '../../services/registro-otorgamiento-servicios.service';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
-
 import {
   AlertaService,
   TipoAlerta,
 } from '../../../../shared/alerta/services/alerta.service';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { finalize } from 'rxjs';
 import { Dropdown } from 'primeng/dropdown';
 
 @Component({

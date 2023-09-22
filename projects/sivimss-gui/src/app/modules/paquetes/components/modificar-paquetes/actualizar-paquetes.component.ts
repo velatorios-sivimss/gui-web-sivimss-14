@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ActivatedRoute } from '@angular/router';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { DIEZ_ELEMENTOS_POR_PAGINA, Accion } from "../../../../utils/constantes";
-import { Servicio } from '../../models/servicios.interface';
-import { LazyLoadEvent } from "primeng/api";
-import { Articulo } from '../../models/articulos.interface';
-import { ListaVelatorios } from '../../models/lista-velatorios.interface';
-import { VerDetallePaquetesComponent } from '../ver-detalle-paquetes/ver-detalle-paquetes.component';
-import { Paquete } from '../../models/paquetes.interface';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ActivatedRoute} from '@angular/router';
+import {DialogService} from 'primeng/dynamicdialog';
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DIEZ_ELEMENTOS_POR_PAGINA, Accion} from "../../../../utils/constantes";
+import {Servicio} from '../../models/servicios.interface';
+import {LazyLoadEvent} from "primeng/api";
+import {Articulo} from '../../models/articulos.interface';
+import {ListaVelatorios} from '../../models/lista-velatorios.interface';
+import {VerDetallePaquetesComponent} from '../ver-detalle-paquetes/ver-detalle-paquetes.component';
+import {Paquete} from '../../models/paquetes.interface';
 
 interface HttpResponse {
   respuesta: string;
@@ -141,53 +141,53 @@ export class ActualizarPaquetesComponent implements OnInit {
 
   obtenerVelatorio() {
     this.velatorios = [
-      { descripcion: 'No. 01 Doctores' },
-      { descripcion: 'No. 03 Chihuahua' },
-      { descripcion: 'No. 05 Mérida' },
-      { descripcion: 'No. 06 Torreón' },
-      { descripcion: 'No. 07 Cd. Juárez' },
-      { descripcion: 'No. 08 Guadalajara' },
-      { descripcion: 'No. 09 Toluca' },
-      { descripcion: 'No. 10 Monterrey' },
-      { descripcion: 'No. 11 Puebla' },
-      { descripcion: 'No. 12 Veracruz' },
-      { descripcion: 'No. 13 Querétaro' },
-      { descripcion: 'No. 14 San Luis Potosí y CD Valles' },
-      { descripcion: 'No. 15 Pachuca' },
-      { descripcion: 'No. 17 Tapachula' },
-      { descripcion: 'No. 18 Tequesquináhuac' },
-      { descripcion: 'No. 20 Ecatepec' },
-      { descripcion: 'No. 21 Tampico' },
-      { descripcion: 'No. 22 Villahermosa' },
+      {descripcion: 'No. 01 Doctores'},
+      {descripcion: 'No. 03 Chihuahua'},
+      {descripcion: 'No. 05 Mérida'},
+      {descripcion: 'No. 06 Torreón'},
+      {descripcion: 'No. 07 Cd. Juárez'},
+      {descripcion: 'No. 08 Guadalajara'},
+      {descripcion: 'No. 09 Toluca'},
+      {descripcion: 'No. 10 Monterrey'},
+      {descripcion: 'No. 11 Puebla'},
+      {descripcion: 'No. 12 Veracruz'},
+      {descripcion: 'No. 13 Querétaro'},
+      {descripcion: 'No. 14 San Luis Potosí y CD Valles'},
+      {descripcion: 'No. 15 Pachuca'},
+      {descripcion: 'No. 17 Tapachula'},
+      {descripcion: 'No. 18 Tequesquináhuac'},
+      {descripcion: 'No. 20 Ecatepec'},
+      {descripcion: 'No. 21 Tampico'},
+      {descripcion: 'No. 22 Villahermosa'},
     ];
   }
 
   inicializarActualizarPaqueteForm() {
     this.actualizarPaqueteForm = this.formBuilder.group({
-      id: [{ value: null, disabled: true }, Validators.required],
-      nombrePaquete: [{ value: null, disabled: false }, [Validators.maxLength(70), Validators.required]],
-      descripcion: [{ value: null, disabled: false }, [Validators.maxLength(70), Validators.required]],
-      region: [{ value: null, disabled: false }, Validators.required],
-      clave: [{ value: null, disabled: false }, Validators.required],
-      costoInicial: [{ value: '$0.00', disabled: true }, []],
-      costoReferencia: [{ value: null, disabled: false }, [Validators.maxLength(10), Validators.required]],
-      precio: [{ value: null, disabled: false }, [Validators.maxLength(10), Validators.required]],
-      estatus: [{ value: true, disabled: false }, Validators.required],
+      id: [{value: null, disabled: true}, Validators.required],
+      nombrePaquete: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
+      descripcion: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
+      region: [{value: null, disabled: false}, Validators.required],
+      clave: [{value: null, disabled: false}, Validators.required],
+      costoInicial: [{value: '$0.00', disabled: true}, []],
+      costoReferencia: [{value: null, disabled: false}, [Validators.maxLength(10), Validators.required]],
+      precio: [{value: null, disabled: false}, [Validators.maxLength(10), Validators.required]],
+      estatus: [{value: true, disabled: false}, Validators.required],
     });
     this.f.nombrePaquete?.errors; //NOSONAR
   }
 
   inicializarAgregarServicioForm() {
     this.agregarServicioForm = this.formBuilder.group({
-      tipoServicio: [{ value: null, disabled: false }, [Validators.required]],
-      servicio: [{ value: null, disabled: false }, [Validators.required]],
+      tipoServicio: [{value: null, disabled: false}, [Validators.required]],
+      servicio: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
   inicializarAgregarArticuloForm() {
     this.agregarArticuloForm = this.formBuilder.group({
-      articulo: [{ value: null, disabled: false }, [Validators.required]],
-      tipoArticulo: [{ value: null, disabled: false }, []],
+      articulo: [{value: null, disabled: false}, [Validators.required]],
+      tipoArticulo: [{value: null, disabled: false}, []],
     });
   }
 
@@ -247,19 +247,11 @@ export class ActualizarPaquetesComponent implements OnInit {
         servicios: this.servicios,
         articulos: this.articulos,
       };
-      const detalleRef: DynamicDialogRef = this.dialogService.open(VerDetallePaquetesComponent, {
-        data: { paquete: paqueteActualizado, modo: Accion.Modificar },
+      this.dialogService.open(VerDetallePaquetesComponent, {
+        data: {paquete: paqueteActualizado, modo: Accion.Modificar},
         header: "Actualizar paquete",
         width: "920px"
       });
-
-
-      // detalleRef.onClose.subscribe((res: HttpResponse) => {
-      //   if (res && res.respuesta === 'Ok') {
-      //     utils foundIndex = this.paquetes.findIndex((item: Paquete) => item.id === paquete.id);
-      //     this.paquetes[foundIndex] = res.paquete;
-      //   }
-      // });
     }
   }
 

@@ -13,7 +13,6 @@ import { GenerarOrdenServicioResolver } from './services/generar-orden-servicio.
 import { ConsultarOrdenServicioResolver } from './services/consultar-orden-servicio.resolver';
 import { ActualizarOrdenServicioComponent } from './components/actualizar-orden-servicio/actualizar-orden-servicio.component';
 import { ActualizarOrdenServicioResolver } from './services/actualizar-orden-servicio.resolver';
-import {OrdenesServicioSFComponent} from "./components/ods-plan-servicios-funerarios/ordenes-servicio/ordenes-servicio.component";
 import {
   GenerarOrdenServicioSFComponent
 } from "./components/ods-plan-servicios-funerarios/generar-orden-servicio/generar-orden-servicio.component";
@@ -30,15 +29,15 @@ const routes: Routes = [
       respuesta: ConsultarOrdenServicioResolver,
     },
   },
+  // {
+  //   path: 'ods-plan-sf',
+  //   component: OrdenesServicioSFComponent,
+  //   resolve: {
+  //     respuesta: ConsultarOrdenServicioResolver,
+  //   },
+  // },
   {
-    path: 'ods-plan-sf',
-    component: OrdenesServicioSFComponent,
-    resolve: {
-      respuesta: ConsultarOrdenServicioResolver,
-    },
-  },
-  {
-    path: 'ods-plan-sf/generar-ods-sf',
+    path: 'generar-ods-sf',
     component: GenerarOrdenServicioSFComponent,
     resolve: {
       respuesta: GenerarOrdenServicioResolver,
@@ -59,7 +58,7 @@ const routes: Routes = [
     },
   },
   {
-    path: 'ods-plan-sf/modificar-ods-sf',
+    path: 'modificar-ods-sf',
     component: ActualizarOrdenServicioSFComponent,
     resolve: {
       respuesta: ActualizarOrdenServicioResolver,

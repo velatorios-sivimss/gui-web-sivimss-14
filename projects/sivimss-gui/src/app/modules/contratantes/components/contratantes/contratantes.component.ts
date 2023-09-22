@@ -5,7 +5,7 @@ import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/f
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { BuscarContratantes, BusquedaContratante, ConfirmarContratante, ReporteTabla, TipoCatalogo, UsuarioContratante } from "../../models/usuario-contratante.interface";
+import { BuscarContratantes, BusquedaContratante, ConfirmarContratante, ReporteTabla, UsuarioContratante } from "../../models/usuario-contratante.interface";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { ConfirmationService, LazyLoadEvent } from "primeng/api";
 import { DetalleContratantesComponent } from "../detalle-contratantes/detalle-contratantes.component";
@@ -196,8 +196,10 @@ export class ContratantesComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.modalConfirmacion();
+        if (respuesta) {
+          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+          this.modalConfirmacion();
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);

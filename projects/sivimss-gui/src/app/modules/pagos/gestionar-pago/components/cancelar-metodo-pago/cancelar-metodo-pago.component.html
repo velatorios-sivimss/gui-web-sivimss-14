@@ -1,50 +1,107 @@
-<app-table-panel>
-  <div class="row table-panel-row">
-    <div class="col-md-3" *ngIf="registroPago.numAutorizacion">
-      <div class="table-panel-column">
-        <label>Folio de autorización</label>
-        <span>{{registroPago.numAutorizacion}}</span>
+<ng-container [ngSwitch]="cancelarPago">
+  <ng-container *ngSwitchCase="CAPTURA_DE_CANCELACION">
+    <app-table-panel>
+      <div class="row table-panel-row">
+        <div class="col-md-3" *ngIf="registroPago.numAutorizacion">
+          <div class="table-panel-column">
+            <label>Folio de autorización</label>
+            <span>{{registroPago.numAutorizacion}}</span>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="registroPago.desBanco">
+          <div class="table-panel-column">
+            <label>Banco</label>
+            <span>{{registroPago.desBanco}}</span>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="registroPago.fecPago">
+          <div class="table-panel-column">
+            <label>Fecha</label>
+            <span>{{registroPago.fecPago}}</span>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="registroPago.importe">
+          <div class="table-panel-column">
+            <label>Importe</label>
+            <span>{{registroPago.importe | currency}}</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <form [formGroup]="cancelarPagoForm" (ngSubmit)="cancelarPago = RESUMEN_DE_CANCELACION">
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <label class="control-label" for="motivoCancelacion">Motivo de la cancelación<span
+            class="req">*</span>:</label>
+          <textarea rows="5" cols="30" id="motivoCancelacion" class="control-label" formControlName="motivoCancelacion"
+                    pInputTextarea [maxlength]="100" placeholder="Ingresa el motivo de la cancelación"
+                    withoutSpecialChar></textarea>
+          <span class="campo-obligatorio"
+                *ngIf="pc?.motivoCancelacion?.errors?.required && (pc?.motivoCancelacion?.dirty || pc?.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
+        </div>
+      </div>
+      <div class="row mb-4 mt-4">
+        <div class="col-md-12 control-label">
+          <span>*Campos obligatorios</span>
+        </div>
+      </div>
+      <div class="row mt-6">
+        <div class="col-md-12 flex justify-content-end">
+          <button type="button" class="btn btn-gold btn-md ml-5" (click)="ref.close()">Cancelar</button>
+          <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="cancelarPagoForm.invalid">Aceptar
+          </button>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="RESUMEN_DE_CANCELACION">
+    <app-table-panel>
+      <div class="row table-panel-row">
+        <div class="col-md-3" *ngIf="registroPago.numAutorizacion">
+          <div class="table-panel-column">
+            <label>Folio de autorización</label>
+            <span>{{registroPago.numAutorizacion}}</span>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="registroPago.desBanco">
+          <div class="table-panel-column">
+            <label>Banco</label>
+            <span>{{registroPago.desBanco}}</span>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="registroPago.fecPago">
+          <div class="table-panel-column">
+            <label>Fecha</label>
+            <span>{{registroPago.fecPago}}</span>
+          </div>
+        </div>
+        <div class="col-md-3" *ngIf="registroPago.importe">
+          <div class="table-panel-column">
+            <label>Importe</label>
+            <span>{{registroPago.importe | currency}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row">
+        <div class="col-md-12">
+          <div class="table-panel-column">
+            <label>Motivo de la cancelación</label>
+            <span>{{ cancelarPagoForm.get('motivoCancelacion')?.value }}</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <div class="mb-3 mt-3 row text-center">
+      ¿Estás seguro de cancelar el pago realizado?
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-gold btn-md ml-5" (click)="cancelarPago = CAPTURA_DE_CANCELACION">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar
+        </button>
       </div>
     </div>
-    <div class="col-md-3" *ngIf="registroPago.desBanco">
-      <div class="table-panel-column">
-        <label>Banco</label>
-        <span>{{registroPago.desBanco}}</span>
-      </div>
-    </div>
-    <div class="col-md-3" *ngIf="registroPago.fecPago">
-      <div class="table-panel-column">
-        <label>Fecha</label>
-        <span>{{registroPago.fecPago}}</span>
-      </div>
-    </div>
-    <div class="col-md-3" *ngIf="registroPago.importe">
-      <div class="table-panel-column">
-        <label>Importe</label>
-        <span>{{registroPago.importe | currency}}</span>
-      </div>
-    </div>
-  </div>
-</app-table-panel>
-<form [formGroup]="cancelarPagoForm" (ngSubmit)="guardar()">
-  <div class="row mt-4">
-    <div class="col-md-12">
-      <label class="control-label" for="motivoCancelacion">Motivo de la cancelación<span class="req">*</span>:</label>
-      <textarea rows="5" cols="30" id="motivoCancelacion" class="control-label" formControlName="motivoCancelacion"
-                pInputTextarea [maxlength]="100" placeholder="Ingresa el motivo de la cancelación" withoutSpecialChar></textarea>
-      <span class="campo-obligatorio"
-            *ngIf="pc?.motivoCancelacion?.errors?.required && (pc?.motivoCancelacion?.dirty || pc?.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
-    </div>
-  </div>
-  <div class="row mb-4 mt-4">
-    <div class="col-md-12 control-label">
-      <span>*Campos obligatorios</span>
-    </div>
-  </div>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-end">
-      <button type="button" class="btn btn-gold btn-md ml-5" (click)="ref.close()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="cancelarPagoForm.invalid">Aceptar</button>
-    </div>
-  </div>
-</form>
+  </ng-container>
+</ng-container>

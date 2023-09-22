@@ -7,10 +7,6 @@
           <span class="etiqueta-base">Tipo de contratación:</span><br/>
           <label> Por persona </label>
         </div>
-        <div class="col-md-3" *ngIf="objetoDetallePersona.rfcCurp">
-          <span class="etiqueta-base">RFC o CURP:</span><br/>
-          <label class="texto-base"> {{objetoDetallePersona.rfcCurp}} </label>
-        </div>
         <div class="col-md-3" *ngIf="descripcionPromotor[0]?.label">
           <span class="etiqueta-base">Promotor:</span><br/>
           <label class="texto-base"> {{descripcionPromotor[0].label }} </label>
@@ -47,32 +43,10 @@
         </div>
       </div>
 
-<!--      <div class="row mb-3">-->
-<!--        <div class="col-md-3">-->
-<!--          < class="etiqueta-base"span>Sexo:</span><br/>-->
-<!--          <labe class="texto-base"l> {{objetoDetallePersona.sexo == 1 ? "Mujer" : fp.sexo.value == 2 ? "Hombre" : "Otro"     }} </label>-->
-<!--        </div>-->
-
-<!--        <div class="col-md-3" *ngIf="fp.sexo.value === 3">-->
-<!--          < class="etiqueta-base"span>Otro:</span><br/>-->
-<!--          <labe class="texto-base"l> {{objetoDetallePersona.otroSexo}} </label>-->
-<!--        </div>-->
-
-<!--        <div class="col-md-3">-->
-<!--          < class="etiqueta-base"span>Fecha de nacimiento:</span><br/>-->
-<!--          <labe class="texto-base"l> {{objetoDetallePersona.fechaNacimiento | date: 'dd/MM/YYYY'}} </label>-->
-<!--        </div>-->
-
-<!--        <div class="col-md-3">-->
-<!--          < class="etiqueta-base"span>Entidad Federativa:</span><br/>-->
-<!--          <labe class="texto-base"l> {{objetoDetallePersona.detalleEntidadFederativa[0].label}} </label>-->
-<!--        </div>-->
-<!--      </div>-->
-
       <div class="row mb-3">
         <div class="col-md-3">
           <span class="etiqueta-base">Correo electrónico:</span><br/>
-          <label clas class="texto-base"s="texto-base"> {{objetoDetallePersona.persona?.correoElectronico}} </label>
+          <label class="texto-base"> {{objetoDetallePersona.persona?.correoElectronico}} </label>
         </div>
         <div class="col-md-3">
           <span class="etiqueta-base">Teléfono:</span><br/>
@@ -185,10 +159,6 @@
           <div class="col-md-3">
             <span class="etiqueta-base">Tipo de contratación:</span><br/>
             <label>Por Grupo o por Empresa</label>
-          </div>
-          <div class="col-md-3">
-            <span class="etiqueta-base">RFC o CURP:</span><br/>
-            <label class="texto-base"> {{objetoDetalleEmpresa.rfcCurp}} </label>
           </div>
           <div class="col-md-3" *ngIf="descripcionPromotor[0].label">
             <span class="etiqueta-base">Promotor:</span><br/>

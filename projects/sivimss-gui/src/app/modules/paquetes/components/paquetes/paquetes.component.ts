@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {OverlayPanel} from "primeng/overlaypanel";
@@ -17,6 +17,7 @@ import {PAQUETES_BREADCRUMB} from "../../constants/breadcrumb";
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {VALORES_DUMMIES} from "../../constants/dummies";
 import {FiltrosPaquetes} from "../../models/filtro-paquetes.interface";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 interface HttpResponse {
   respuesta: string;
@@ -109,7 +110,7 @@ export class PaquetesComponent implements OnInit {
 
   seleccionarPaginacion(event?: LazyLoadEvent): void {
     if (event) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1));
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
@@ -119,30 +120,30 @@ export class PaquetesComponent implements OnInit {
   }
 
   paginar(): void {
-    this.paquetesService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        this.paquetes = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+    this.paquetesService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.paquetes = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
-  private paginarConFiltros() {
+  private paginarConFiltros(): void {
     const filtros = this.crearSolicitudFiltros();
-    this.paquetesService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        this.paquetes = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+    this.paquetesService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.paquetes = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   crearSolicitudFiltros(): FiltrosPaquetes {
@@ -194,9 +195,8 @@ export class PaquetesComponent implements OnInit {
   }
 
   abrirModalModificarPaquete() {
-    // this.inicializarModificarPaqueteForm();
     this.mostrarModalModificarPaquete = true;
-    this.router.navigate(['modificar-paquete', this.paqueteSeleccionado.id], {relativeTo: this.activatedRoute});
+    void this.router.navigate(['modificar-paquete', this.paqueteSeleccionado.id], {relativeTo: this.activatedRoute});
   }
 
   agregarPaquete(): void {

@@ -8,7 +8,6 @@ import {Observable, of} from "rxjs";
 import {TipoDropdown} from "../../../models/tipo-dropdown";
 import {mapearArregloTipoDropdown} from "../../../utils/funciones";
 import {PaginadoInterface} from "../models/paginado.interface";
-import {OrdenServicioFiltroConsulta} from "../../ordenes-servicio/models/orden-servicio-paginado.interface";
 import {GenerarReporte} from "../models/servicios-funerarios.interface";
 
 @Injectable()

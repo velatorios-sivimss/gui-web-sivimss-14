@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {Component, OnInit} from '@angular/core';
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 
 @Component({
   selector: 'app-modal-nota-remision',
@@ -15,7 +15,8 @@ export class ModalNotaRemisionComponent implements OnInit {
     public ref: DynamicDialogRef,
     public dialogService: DialogService,
     private loaderService: LoaderService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     if (this.config?.data) {

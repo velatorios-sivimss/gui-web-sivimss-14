@@ -1,30 +1,27 @@
 import {Component, OnInit, Renderer2, ViewChild} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { LazyLoadEvent } from "primeng/api";
-import { DialogService } from "primeng/dynamicdialog";
-import { OverlayPanel } from "primeng/overlaypanel";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {LazyLoadEvent} from "primeng/api";
+import {DialogService} from "primeng/dynamicdialog";
+import {OverlayPanel} from "primeng/overlaypanel";
 import {
-  ModalGenerarTarjetaIdentificacionComponent
-} from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-generar-tarjeta-identificacion/modal-generar-tarjeta-identificacion.component";
-import { ModalVerTarjetaIdentificacionComponent } from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-tarjeta-identificacion/modal-ver-tarjeta-identificacion.component";
+  ModalVerTarjetaIdentificacionComponent
+} from "projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-tarjeta-identificacion/modal-ver-tarjeta-identificacion.component";
 import {AlertaService, TipoAlerta} from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
-import { BreadcrumbService } from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
-import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "projects/sivimss-gui/src/app/utils/constantes";
+import {BreadcrumbService} from "projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service";
+import {LoaderService} from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "projects/sivimss-gui/src/app/utils/constantes";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
-import {ActivatedRoute, ActivatedRouteSnapshot, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {ConsultarOrdenServicioService} from "../../../services/consultar-orden-servicio.service";
 import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
-import {VelatorioInterface} from "../../../../reservar-salas/models/velatorio.interface";
 import {
-  catalogoFolioODS,
-  catalogoVelatorio,
-  catalogoUnidadesMedicas,
-  catalogoTipoODS, catalogoContratantes, catalogoFinado
+  CatalogoFolioODS,
+  CatalogoVelatorio,
+  CatalogoContratantes, CatalogoFinado
 } from "../../../constants/catalogos.interface";
 import {OrdenServicioFiltroConsulta, OrdenServicioPaginado} from "../../../models/orden-servicio-paginado.interface";
 import {CancelarOrdenServicioSFComponent,} from "../cancelar-orden-servicio/cancelar-orden-servicio.component";
@@ -32,6 +29,9 @@ import {SERVICIO_BREADCRUMB} from "../../../constants/breadcrumb";
 import {OpcionesArchivos} from "../../../../../models/opciones-archivos.interface";
 import {of} from "rxjs";
 import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+import {
+  ModalGenerarTarjetaIdentificacionSFComponent
+} from "../modal-generar-tarjeta-identificacion/modal-generar-tarjeta-identificacion.component";
 
 @Component({
   selector: 'app-ordenes-servicio-sf',
@@ -55,19 +55,18 @@ export class OrdenesServicioSFComponent implements OnInit {
   totalElementos: number = 0;
 
 
-
   delegaciones!: TipoDropdown[];
   velatorios!: TipoDropdown[];
   folios!: TipoDropdown[];
-  foliosDescripcion!: catalogoFolioODS[];
+  foliosDescripcion!: CatalogoFolioODS[];
   nombreContratantes!: TipoDropdown[];
   nombreFinados!: TipoDropdown[];
   unidadesMedicas!: TipoDropdown[];
   tipoODS!: TipoDropdown[];
   estatusODS!: TipoDropdown[];
 
-  nombresContratantes!: catalogoContratantes;
-  nombresFinados!: catalogoFinado;
+  nombresContratantes!: CatalogoContratantes;
+  nombresFinados!: CatalogoFinado;
 
   filtroForm!: FormGroup;
   mensajeArchivoConfirmacion: string = "";
@@ -91,7 +90,6 @@ export class OrdenesServicioSFComponent implements OnInit {
     private route: ActivatedRoute,
     private descargaArchivosService: DescargaArchivosService,
     private renderer: Renderer2,
-
     private router: Router,
   ) {
   }
@@ -104,87 +102,89 @@ export class OrdenesServicioSFComponent implements OnInit {
     this.unidadesMedicas = respuesta[1];
 
 
-
-
     this.consultarTipoODS();
     this.consultarEstatusODS();
     this.consultarNombreContratantes();
     this.consultarNombreFinados();
     this.inicializarFiltroForm();
   }
-  consultarTipoODS(): void{
+
+  consultarTipoODS(): void {
     this.loaderService.activar()
     this.consultarOrdenServicioService.consultaTipoODS().pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.tipoODS = mapearArregloTipoDropdown(respuesta.datos, 'tipoODS', 'idTipoODS') || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error)
       }
-    )
+    })
   }
-  consultarEstatusODS(): void{
+
+  consultarEstatusODS(): void {
     this.loaderService.activar()
     this.consultarOrdenServicioService.obtenerCatalogoEstatus().pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-    this.estatusODS = mapearArregloTipoDropdown(respuesta.datos, 'estatus', 'idODS') || [];
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.estatusODS = mapearArregloTipoDropdown(respuesta.datos, 'estatus', 'idODS') || [];
 
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error)
       }
-    )
+    })
   }
-  consultarNombreContratantes(): void{
+
+  consultarNombreContratantes(): void {
     this.loaderService.activar()
     this.consultarOrdenServicioService.nombreContratante().pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-          this.nombresContratantes = respuesta.datos || [];
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.nombresContratantes = respuesta.datos || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error)
       }
-    )
+    })
   }
-  consultarNombreFinados(): void{
+
+  consultarNombreFinados(): void {
     this.loaderService.activar()
     this.consultarOrdenServicioService.nombreFinado().pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.nombresFinados = respuesta.datos || [];
 
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error)
       }
-    )
+    })
   }
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-             delegacion: [{value: null, disabled: false}],
-              velatorio: [{value: null, disabled: false}],
-            numeroFolio: [{value: null, disabled: false}],
+      delegacion: [{value: null, disabled: false}],
+      velatorio: [{value: null, disabled: false}],
+      numeroFolio: [{value: null, disabled: false}],
       nombreContratante: [{value: null, disabled: false}],
-           nombreFinado: [{value: null, disabled: false}],
-              tipoOrden: [{value: null, disabled: false}],
+      nombreFinado: [{value: null, disabled: false}],
+      tipoOrden: [{value: null, disabled: false}],
       unidadProcedencia: [{value: null, disabled: false}, [Validators.required]],
-         numeroContrato: [{value: null, disabled: false}],
-                estatus: [{value: null, disabled: false}]
+      numeroContrato: [{value: null, disabled: false}],
+      estatus: [{value: null, disabled: false}]
     });
   }
 
   paginar(event?: LazyLoadEvent): void {
-    if (event && event.first !== undefined && event.rows !== undefined) {
-      this.numPaginaActual = Math.floor((event.first || 0) / (event.rows || 1))
-    } else{
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1))
+    } else {
       this.numPaginaActual = 0;
     }
     this.paginarPorFiltros()
@@ -196,22 +196,22 @@ export class OrdenesServicioSFComponent implements OnInit {
     const filtros = this.obtenerObjetoParaFiltrado();
     delete filtros.tipoReporte
     this.loaderService.activar();
-    this.consultarOrdenServicioService.consultarODS(filtros,this.numPaginaActual,this.cantElementosPorPagina).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    this.consultarOrdenServicioService.consultarODS(filtros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.ordenesServicio = respuesta.datos.content || [];
         this.totalElementos = respuesta.datos.totalElements || 0;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
-  obtenerObjetoParaFiltrado(): OrdenServicioFiltroConsulta{
+  obtenerObjetoParaFiltrado(): OrdenServicioFiltroConsulta {
     return {
       // numeroFolio: this.formulario.numeroFolio.value ?? null,
       cveFolio: this.formulario.numeroFolio.value ?? null,
@@ -240,12 +240,12 @@ export class OrdenesServicioSFComponent implements OnInit {
   abrirPanel(event: MouseEvent, ordenServicioSeleccionada: any): void {
     this.ordenServicioSeleccionada = ordenServicioSeleccionada;
     this.ordenServicioSeleccionada.EntradaDonacion > 0 ? this.mostrarDescargaEntradas = true : this.mostrarDescargaEntradas = false
-    this.ordenServicioSeleccionada.SalidaDonacion   > 0 ? this.mostrarDescagaSalidas = true : this.mostrarDescagaSalidas = false
+    this.ordenServicioSeleccionada.SalidaDonacion > 0 ? this.mostrarDescagaSalidas = true : this.mostrarDescagaSalidas = false
     this.overlayPanel.toggle(event);
   }
 
   abrirModalGenerarTarjetaIdent() {
-    const ref = this.dialogService.open(ModalGenerarTarjetaIdentificacionComponent, {
+    const ref = this.dialogService.open(ModalGenerarTarjetaIdentificacionSFComponent, {
       header: 'Generar tarjeta de identificación',
       style: {maxWidth: '876px', width: '100%'},
       data: {
@@ -285,17 +285,17 @@ export class OrdenesServicioSFComponent implements OnInit {
       if (val) {
         this.loaderService.activar();
         this.consultarOrdenServicioService.cancelarODS(val).pipe(
-          finalize(()=>this.loaderService.desactivar())
-        ).subscribe(
-          (respuesta: HttpRespuesta<any>): void => {
+          finalize(() => this.loaderService.desactivar())
+        ).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
             this.paginar();
-            this.alertaService.mostrar(TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje)));
+            this.alertaService.mostrar(TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje)));
           },
-          (error:HttpErrorResponse) => {
+          error: (error: HttpErrorResponse) => {
             const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
             this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
           }
-        )
+        })
       }
     });
   }
@@ -303,55 +303,54 @@ export class OrdenesServicioSFComponent implements OnInit {
   consultarVelatorioPorID(): void {
     this.loaderService.activar();
     this.consultarOrdenServicioService.consultarVelatorios(+this.formulario.delegacion.value).pipe(
-      finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
-        // this.consultarUnidadMedica();
-        this.velatorios = respuesta.datos.map((velatorio: catalogoVelatorio) => (
-          { label: velatorio.DES_VELATORIO, value: velatorio.idVelatorio })) || [];
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.velatorios = respuesta.datos.map((velatorio: CatalogoVelatorio) => (
+          {label: velatorio.DES_VELATORIO, value: velatorio.idVelatorio})) || [];
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
 
   consultarFoliosODS(): void {
     this.loaderService.activar();
     this.consultarOrdenServicioService.consultarFolioODS(+this.formulario.velatorio.value).pipe(
-      finalize(()=>this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>): void => {
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         this.foliosDescripcion = respuesta.datos || [];
-        this.folios = respuesta.datos.map((folio: catalogoFolioODS) => (
-          { label: folio.folioODS, value: folio.idODS })) || [];
+        this.folios = respuesta.datos.map((folio: CatalogoFolioODS) => (
+          {label: folio.folioODS, value: folio.idODS})) || [];
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
-    )
+    })
   }
 
   filtrarContratantes(): void {
     let query = this.obtenerNombreContratantesDescripcion("contratante");
     let filtered: any[] = [];
-    if(query?.length < 3)return;
+    if (query?.length < 3) return;
     for (let i = 0; i < (this.nombresContratantes as any[]).length; i++) {
       let contratante = (this.nombresContratantes as any[])[i];
       if (contratante.nombreCompletoContratante?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
 
         filtered.push({
-            label: contratante.nombreCompletoContratante,
-            value:
-              {
-                nomContratante: contratante.nombreCompletoContratante,
-                // apPatContratante: contratante.apPatContratante,
-                // apMatContratante: contratante.apMatContratante
-              }
-          })
+          label: contratante.nombreCompletoContratante,
+          value:
+            {
+              nomContratante: contratante.nombreCompletoContratante,
+              // apPatContratante: contratante.apPatContratante,
+              // apMatContratante: contratante.apMatContratante
+            }
+        })
       }
     }
     this.nombreContratantes = filtered;
@@ -360,8 +359,8 @@ export class OrdenesServicioSFComponent implements OnInit {
   filtrarFinados(): void {
     let query = this.obtenerNombreContratantesDescripcion("finado");
     let filtered: TipoDropdown[] = [];
-    if(query?.length < 3)return;
-    for (let i = 0; i < (this.nombresFinados as catalogoFinado[]).length; i++) {
+    if (query?.length < 3) return;
+    for (let i = 0; i < (this.nombresFinados as CatalogoFinado[]).length; i++) {
       let finado = (this.nombresFinados as any[])[i];
       if (finado.nombreCompletoFinado.toLowerCase().indexOf(query.toLowerCase()) == 0) {
         filtered.push({
@@ -378,9 +377,8 @@ export class OrdenesServicioSFComponent implements OnInit {
   }
 
 
-
   obtenerNombreContratantesDescripcion(referencia: string): string {
-    if(referencia.includes('contratante')){
+    if (referencia.includes('contratante')) {
       let query = this.formulario.nombreContratante?.value || '';
       if (typeof this.formulario.nombreContratante?.value === 'object') {
         query = this.formulario.nombreContratante?.value?.label;
@@ -410,7 +408,6 @@ export class OrdenesServicioSFComponent implements OnInit {
     // )
 
 
-
   }
 
   exportarArchivo(extension: string): void {
@@ -419,179 +416,175 @@ export class OrdenesServicioSFComponent implements OnInit {
     this.loaderService.activar()
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {};
-    if(extension.includes("xls")){
+    if (extension.includes("xls")) {
       configuracionArchivo.ext = "xlsx"
     }
     filtros.tipoReporte = extension;
     this.consultarOrdenServicioService.generarArchivoPaginador(filtros).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())
-        ).subscribe(
-          (repuesta) => {
+        ).subscribe({
+          next: (repuesta) => {
             this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
             this.mostrarModalConfirmacion = true;
           },
-          (error) => {
+          error: (error) => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
           }
-        )
+        })
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    })
   }
 
-  descargarContratoServInmediatos(): void{
+  descargarContratoServInmediatos(): void {
     this.loaderService.activar()
     let tipoReporte = 0;
-    if(this.ordenServicioSeleccionada.estatus?.includes('Generada')){
+    if (this.ordenServicioSeleccionada.estatus?.includes('Generada')) {
       tipoReporte = 1;
     }
-    if(this.ordenServicioSeleccionada.estatus?.includes('Preorden')){
+    if (this.ordenServicioSeleccionada.estatus?.includes('Preorden')) {
       tipoReporte = 0;
     }
     let filtros = this.obtenerObjetoParaFiltrado();
-    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio,tipoReporte).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
+    this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio, tipoReporte).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
-          const url = window.URL.createObjectURL(file);
-          link.setAttribute('download','documento');
-          link.setAttribute('href', url);
-          link.click();
-          link.remove();
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download', 'documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    })
   }
 
   descargarOrdenServicio(): void {
     this.loaderService.activar()
     let filtros = this.obtenerObjetoParaFiltrado();
-    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
-    let estatusODS:number = 1;
-    this.ordenServicioSeleccionada.estatus?.includes("Generada") ? estatusODS = 2 : estatusODS= 1;
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
+    let estatusODS: number = 1;
+    this.ordenServicioSeleccionada.estatus?.includes("Generada") ? estatusODS = 2 : estatusODS = 1;
     this.consultarOrdenServicioService.generarArchivoOrdenServicio(
-      this.ordenServicioSeleccionada.idOrdenServicio,estatusODS
+      this.ordenServicioSeleccionada.idOrdenServicio, estatusODS
     ).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
         const url = window.URL.createObjectURL(file);
-        link.setAttribute('download','documento');
+        link.setAttribute('download', 'documento');
         link.setAttribute('href', url);
         link.click();
         link.remove();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    })
   }
 
   modificarODS(): void {
-    // let estatusODS =["Cancelado","Preorden","Generada","En transito","Pagada","Facturada","Concluida","Activa"]
-    // let od = this.ordenServicioSeleccionada;
-    // let estatusODS;
-    // this.ordenServicioSeleccionada == 1 ? estatusODS = 1 :
-    this.router.navigate(["ordenes-de-servicio/ods-plan-sf/modificar-ods-sf"],
-      {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:1 }})
+    void this.router.navigate(["ordenes-de-servicio/ods-plan-sf/modificar-ods-sf"],
+      {queryParams: {idODS: this.ordenServicioSeleccionada.idOrdenServicio, idEstatus: 1}})
   }
 
   ordenComplementaria(): void {
-    this.router.navigate(["ordenes-de-servicio/modificar-orden-de-servicio"],
-      {queryParams: { idODS:this.ordenServicioSeleccionada.idOrdenServicio, idEstatus:0 }})
+    void this.router.navigate(["ordenes-de-servicio/modificar-orden-de-servicio"],
+      {queryParams: {idODS: this.ordenServicioSeleccionada.idOrdenServicio, idEstatus: 0}})
   }
 
   descargarEntradas(): void {
     let tipoConsulta = this.ordenServicioSeleccionada.estatus == "Preorden" ? 0 : 1;
     this.loaderService.activar()
     let filtros = this.obtenerObjetoParaFiltrado();
-    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.consultarOrdenServicioService.generarArchivoEntradaDonaciones(
-      this.ordenServicioSeleccionada.idOrdenServicio,tipoConsulta
+      this.ordenServicioSeleccionada.idOrdenServicio, tipoConsulta
     ).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
         const url = window.URL.createObjectURL(file);
-        link.setAttribute('download','documento');
+        link.setAttribute('download', 'documento');
         link.setAttribute('href', url);
         link.click();
         link.remove();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    })
   }
 
   descargarSalidas(): void {
     let tipoConsulta = this.ordenServicioSeleccionada.estatus == "Preorden" ? 0 : 1;
     this.loaderService.activar()
     let filtros = this.obtenerObjetoParaFiltrado();
-    const configuracionArchivo: OpcionesArchivos = {ext:'pdf'};
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.consultarOrdenServicioService.generarArchivoSalidaDonaciones(
-      this.ordenServicioSeleccionada.idOrdenServicio,tipoConsulta
+      this.ordenServicioSeleccionada.idOrdenServicio, tipoConsulta
     ).pipe(
-      finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         let link = this.renderer.createElement('a');
 
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
         const url = window.URL.createObjectURL(file);
-        link.setAttribute('download','documento');
+        link.setAttribute('download', 'documento');
         link.setAttribute('href', url);
         link.click();
         link.remove();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
-    )
+    })
   }
 
   limpiarFiltros(): void {
@@ -599,7 +592,7 @@ export class OrdenesServicioSFComponent implements OnInit {
     this.paginar();
   }
 
-  get formulario()  {
+  get formulario() {
     return this.filtroForm.controls;
   }
 

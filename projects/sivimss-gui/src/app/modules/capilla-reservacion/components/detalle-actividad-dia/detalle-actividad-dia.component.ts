@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {DynamicDialogConfig,DynamicDialogRef,} from "primeng/dynamicdialog";
-import * as moment from 'moment';
+import {Component, OnInit} from '@angular/core';
+import {DynamicDialogConfig, DynamicDialogRef,} from "primeng/dynamicdialog";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {CapillaReservacionService} from "../../services/capilla-reservacion.service";
 import {finalize} from "rxjs/operators";
@@ -26,11 +25,10 @@ export class DetalleActividadDiaComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private capillaReservacionService: CapillaReservacionService,
     private alertaService: AlertaService,
-  )
-  { }
+  ) {
+  }
 
   ngOnInit(): void {
-    // this.fechaSeleccionada = this.config.data.fecha.replace(/-/g, "/");
     this.fechaSeleccionada = this.config.data.fecha;
     this.idCapilla = this.config.data.idCapilla;
     this.consultarDetalle();
@@ -39,20 +37,18 @@ export class DetalleActividadDiaComponent implements OnInit {
   consultarDetalle(): void {
     this.loaderService.activar();
 
-    this.capillaReservacionService.consultaDetallePorDia(this.fechaSeleccionada,this.idCapilla).pipe(
+    this.capillaReservacionService.consultaDetallePorDia(this.fechaSeleccionada, this.idCapilla).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.detalleCapillas = respuesta.datos;
         this.fechaSeleccionada = this.config.data.fecha.replace(/-/g, "/");
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    )
-
-
+    })
   }
 
   aceptar(): void {

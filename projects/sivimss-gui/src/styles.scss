@@ -96,7 +96,7 @@ body {
   display: inline-block;
   margin-left: 10px;
 
-  & > *:not(span) {
+  &>*:not(span) {
     transform: translateY(3px);
   }
 
@@ -144,12 +144,13 @@ body {
     transform: scale(1.15) translateY(2px);
     width: 100%;
   }
-  a.pi-ellipsis-v{
+
+  a.pi-ellipsis-v {
     color: #9D2449;
-    font-size:18px;
+    font-size: 18px;
   }
 
-  a + a {
+  a+a {
     margin-left: 1.75rem;
   }
 
@@ -417,9 +418,38 @@ h1.subtitulo-base-lg {
   z-index: 300;
 }
 
-// .ui-accordion .ui-accordion-header .ui-icon {
-//   margin-top: -8px;
-//   position: absolute;
-//   right: 0.5em;
-//   top: 50%;
-// }
+.olvidaste-contrasena {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 120%;
+  color: #1122CC;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+#href_renapo {
+  all: unset;
+}
+
+.header-custom-proveedor>th {
+  background: none !important;
+  border-bottom: 2px solid #DDDDDD !important;
+  color: #484848 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+.table-custom-proveedor>.p-datatable-wrapper {
+  border: none !important;
+}
+
+.ultima-celda-sticky.p-datatable .p-datatable-thead>.header-custom-proveedor>th:last-child {
+  border-left: none !important;
+}
+
+.ultima-celda-sticky.p-datatable .p-datatable-tbody>tr>td:last-child {
+  color: #484848 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}

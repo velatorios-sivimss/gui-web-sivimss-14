@@ -215,8 +215,8 @@ export class CaracteristicasPresupuestoComponent
     this.gestionarOrdenServicioService
       .consultarPaquetes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -237,7 +237,7 @@ export class CaracteristicasPresupuestoComponent
             'idPaquete'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -256,7 +256,7 @@ export class CaracteristicasPresupuestoComponent
             );
           }
         }
-      );
+      });
   }
 
   confirmarCambioPaquete(dd:Dropdown): void {
@@ -297,8 +297,8 @@ export class CaracteristicasPresupuestoComponent
     this.gestionarOrdenServicioService
       .consultarDetallePaquete(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -315,7 +315,7 @@ export class CaracteristicasPresupuestoComponent
           this.datosPaquetes = datos;
           this.costoServiciosPorPaquete = datos[0].totalPaquete;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
 
           try {
@@ -336,7 +336,7 @@ export class CaracteristicasPresupuestoComponent
             );
           }
         }
-      );
+      });
   }
 
   buscarTipoAsignacion(): void {
@@ -345,8 +345,8 @@ export class CaracteristicasPresupuestoComponent
     this.gestionarOrdenServicioService
       .consultarTipoAsignacion(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
           if (respuesta.error) {
             this.tipoAsignacion = [];
             return;
@@ -358,10 +358,10 @@ export class CaracteristicasPresupuestoComponent
           }
           this.tipoAsignacion = datos.split(',');
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   abrirPanel(
@@ -401,7 +401,8 @@ export class CaracteristicasPresupuestoComponent
       ) {
         this.mostrarProveedor = true;
       }
-      if (paqueteSeleccionado.idTipoServicio == '') {
+      if (paqueteSeleccionado.idTipoServicio == '' &&
+          paqueteSeleccionado.grupo.toUpperCase().includes('ATA')) {
         this.mostrarAtaudes = true;
       }
       if (Number(paqueteSeleccionado.idServicio) > 0) {
@@ -587,8 +588,8 @@ export class CaracteristicasPresupuestoComponent
     this.gestionarOrdenServicioService
       .consultarProveeedorServicio(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaproveedor = [];
@@ -608,7 +609,7 @@ export class CaracteristicasPresupuestoComponent
             'idProveedor'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             const errorMsg: string =
@@ -628,7 +629,7 @@ export class CaracteristicasPresupuestoComponent
             );
           }
         }
-      );
+      });
   }
 
   agregarArticulo(datos: any): void {
@@ -1029,9 +1030,6 @@ export class CaracteristicasPresupuestoComponent
         this.caracteristicasPaquete;
       this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
     }
-
-    // this.detallePresupuesto = arrayDatosPresupuesto;
-
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
@@ -1120,58 +1118,6 @@ export class CaracteristicasPresupuestoComponent
         }
       }
     }
-    // if (this.tipoOrden == 1) {
-    //   this.datosPresupuesto.forEach(function (datos) {
-    //
-    //     if(typeof datos.utilizarArticulo == "string"){
-    //       if(datos.utilizarArticulo.includes("true")){
-    //         banderaTipo = true
-    //       } else{
-    //         banderaTipo = false
-    //       }
-    //     }else{
-    //       banderaTipo = datos.utilizarArticulo;
-    //     }
-    //
-    //     if (
-    //       datos.proviene.includes('paquete') &&
-    //       banderaTipo
-    //     ) {
-    //       banderaPaquete = true;
-    //     }
-    //     if (datos.proviene.includes('presupuesto')) {
-    //       banderaPresupuesto = true;
-    //     }
-    //   });
-    //   if (banderaPaquete && this.form.valid && this.dd) {
-    //     return false;
-    //   }
-    // }
-    //
-    // if (this.tipoOrden == 2) {
-    //   this.datosPresupuesto.forEach(function (datos) {
-    //     if (
-    //       datos.proviene.includes('paquete') &&
-    //       datos.utilizarArticulo.includes('true')
-    //     ) {
-    //       banderaPaquete = true;
-    //     }
-    //   });
-    //   if (banderaPaquete && this.form.valid && this.dd) {
-    //     return false;
-    //   }
-    // }
-    //
-    // if (this.tipoOrden == 3) {
-    //   this.datosPresupuesto.forEach(function (datos) {
-    //     if (datos.proviene.includes('presupuesto')) {
-    //       banderaPresupuesto = true;
-    //     }
-    //   });
-    //   if (banderaPresupuesto && this.form.valid) {
-    //     return false;
-    //   }
-    // }
     return false;
   }
 }

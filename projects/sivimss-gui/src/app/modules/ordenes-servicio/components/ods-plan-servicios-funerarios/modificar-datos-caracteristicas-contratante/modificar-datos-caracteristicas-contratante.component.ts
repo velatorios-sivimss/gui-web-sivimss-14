@@ -7,60 +7,59 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'primeng/dynamicdialog';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { ModalAgregarAlPaqueteComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-paquete/modal-agregar-al-paquete.component';
-import { ModalAgregarAlPresupuestoComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-presupuesto/modal-agregar-al-presupuesto.component';
-import { ModalAgregarServicioComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-servicio/modal-agregar-servicio.component';
-import { ModalVerKilometrajeComponent } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-ver-kilometraje/modal-ver-kilometraje.component';
-import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { GestionarEtapasService } from '../../../services/gestionar-etapas.service';
-
-import { AltaODSInterface } from '../../../models/AltaODS.interface';
-import { ContratanteInterface } from '../../../models/Contratante.interface';
-import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import { FinadoInterface } from '../../../models/Finado.interface';
-import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
-import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
-import { CaracteristicasDelPresupuestoInterface } from '../../../models/CaracteristicasDelPresupuesto.interface';
-import { DetallePaqueteInterface } from '../../../models/DetallePaquete.interface';
-import { ServicioDetalleTrasladotoInterface } from '../../../models/ServicioDetalleTraslado.interface';
-import { DetallePresupuestoInterface } from '../../../models/DetallePresupuesto.interface';
-import { InformacionServicioVelacionInterface } from '../../../models/InformacionServicioVelacion.interface';
-import { InformacionServicioInterface } from '../../../models/InformacionServicio.interface';
-import { ContenidoPaqueteInterface } from '../../../models/ContenidoPaquete,interface';
-import { HttpErrorResponse } from '@angular/common/http';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {DialogService} from 'primeng/dynamicdialog';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {
+  ModalAgregarAlPaqueteComponent
+} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-paquete/modal-agregar-al-paquete.component';
+import {
+  ModalAgregarAlPresupuestoComponent
+} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-al-presupuesto/modal-agregar-al-presupuesto.component';
+import {
+  ModalAgregarServicioComponent
+} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-servicio/modal-agregar-servicio.component';
+import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {AltaODSInterface} from '../../../models/AltaODS.interface';
+import {ContratanteInterface} from '../../../models/Contratante.interface';
+import {CodigoPostalIterface} from '../../../models/CodigoPostal.interface';
+import {FinadoInterface} from '../../../models/Finado.interface';
+import {CaracteristicasPresupuestoInterface} from '../../../models/CaracteristicasPresupuesto,interface';
+import {CaracteristicasPaqueteInterface} from '../../../models/CaracteristicasPaquete.interface';
+import {CaracteristicasDelPresupuestoInterface} from '../../../models/CaracteristicasDelPresupuesto.interface';
+import {DetallePaqueteInterface} from '../../../models/DetallePaquete.interface';
+import {ServicioDetalleTrasladotoInterface} from '../../../models/ServicioDetalleTraslado.interface';
+import {DetallePresupuestoInterface} from '../../../models/DetallePresupuesto.interface';
+import {InformacionServicioVelacionInterface} from '../../../models/InformacionServicioVelacion.interface';
+import {InformacionServicioInterface} from '../../../models/InformacionServicio.interface';
+import {ContenidoPaqueteInterface} from '../../../models/ContenidoPaquete,interface';
+import {HttpErrorResponse} from '@angular/common/http';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {finalize} from 'rxjs/operators';
+import {LoaderService} from '../../../../../shared/loader/services/loader.service';
+import {HttpRespuesta} from '../../../../../models/http-respuesta.interface';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {Dropdown} from 'primeng/dropdown';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {ModalEliminarArticuloComponent} from '../../modal-eliminar-articulo/modal-eliminar-articulo.component';
+import {ModalDonarArticuloComponent} from '../../modal-donar-articulo/modal-donar-articulo.component';
+import {UsuarioEnSesion} from '../../../../../models/usuario-en-sesion.interface';
+import {ActivatedRoute} from '@angular/router';
+import {ActualizarOrdenServicioService} from '../../../services/actualizar-orden-servicio.service';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 
-import { finalize } from 'rxjs/operators';
-
-import { LoaderService } from '../../../../../shared/loader/services/loader.service';
-import { GenerarOrdenServicioService } from '../../../services/generar-orden-servicio.service';
-
-import { HttpRespuesta } from '../../../../../models/http-respuesta.interface';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { Dropdown } from 'primeng/dropdown';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ModalEliminarArticuloComponent } from '../../modal-eliminar-articulo/modal-eliminar-articulo.component';
-import { ModalDonarArticuloComponent } from '../../modal-donar-articulo/modal-donar-articulo.component';
-import { UsuarioEnSesion } from '../../../../../models/usuario-en-sesion.interface';
-import { ActivatedRoute } from '@angular/router';
-import { ActualizarOrdenServicioService } from '../../../services/actualizar-orden-servicio.service';
-import { GestionarEtapasActualizacionService } from '../../../services/gestionar-etapas-actualizacion.service';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 @Component({
   selector: 'app-modificar-datos-caracteristicas-contratante-sf',
   templateUrl: './modificar-datos-caracteristicas-contratante.component.html',
   styleUrls: ['./modificar-datos-caracteristicas-contratante.component.scss'],
 })
 export class ModificarDatosCaracteristicasContratanteSFComponent
-  implements OnInit, AfterContentChecked
-{
+  implements OnInit, AfterContentChecked {
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @ViewChild(OverlayPanel)
@@ -118,8 +117,8 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   mostrarTIpoOtorgamiento: boolean = false;
   selecionaTipoOtorgamiento: number | null = null;
   valoresTipoOrtogamiento: any[] = [
-    { value: 1, label: 'Estudio socioeconómico' },
-    { value: 2, label: 'EscritoLlibre' },
+    {value: 1, label: 'Estudio socioeconómico'},
+    {value: 2, label: 'EscritoLlibre'},
   ];
   mostrarQuitarPresupuesto: boolean = false;
   total: number = 0;
@@ -131,9 +130,9 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   bloquearPaquete: boolean = false;
   ocultarFolioEstatus: boolean = false;
   elementosEliminadosPresupuesto: any[] = [];
-  paqueteSeleccionadoDD!:Dropdown;
+  paqueteSeleccionadoDD!: Dropdown;
   valorPrevioDD: number = 0;
-  confCambiarPaquete:boolean = false;
+  confCambiarPaquete: boolean = false;
   costoServiciosPorPaquete!: number;
   confQuitarPresupuesto: boolean = false;
 
@@ -147,7 +146,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
-    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private breadcrumbService: BreadcrumbService,
     private changeDetector: ChangeDetectorRef
   ) {
@@ -172,8 +171,8 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.informacionServicioVelacion.cp = this.cpVelacion;
     this.buscarPaquetes();
     this.form = this.formBuilder.group({
-      observaciones: [{ value: null, disabled: false }],
-      notasServicio: [{ value: null, disabled: false }],
+      observaciones: [{value: null, disabled: false}],
+      notasServicio: [{value: null, disabled: false}],
     });
   }
 
@@ -205,9 +204,9 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     if (Number(this.altaODS.finado.idTipoOrden) == 3) {
       this.bloquearPaquete = true;
     }
-    this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
-    this.esExtremidad = Number(this.altaODS.finado.extremidad);
-    this.esObito = Number(this.altaODS.finado.esobito);
+    // this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
+    // this.esExtremidad = Number(this.altaODS.finado.extremidad);
+    // this.esObito = Number(this.altaODS.finado.esobito);
   }
 
   inicializarForm(datos: any): void {
@@ -234,12 +233,12 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     );
     this.idVelatorio = +usuario.idVelatorio;
     this.loaderService.activar();
-    const parametros = { idVelatorio: this.idVelatorio };
+    const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService
       .consultarPaquetes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -260,7 +259,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
             'idPaquete'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -279,11 +278,11 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
             );
           }
         }
-      );
+      });
   }
 
-  confirmarCambioPaquete(dd:Dropdown): void {
-    if(this.valorPrevioDD == null){
+  confirmarCambioPaquete(dd: Dropdown): void {
+    if (this.valorPrevioDD == null) {
       this.paqueteSeleccionadoDD = dd;
       this.detallePaqueteFunction();
       return
@@ -292,11 +291,11 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.paqueteSeleccionadoDD = dd.selectedOption;
   }
 
-  valorPrevio(dd:Dropdown):void {
+  valorPrevio(dd: Dropdown): void {
     this.valorPrevioDD = dd.selectedOption?.value ?? null;
   }
 
-  cancelarCambioPaquete(): void{
+  cancelarCambioPaquete(): void {
     this.confCambiarPaquete = false;
     this.paqueteSeleccionado = this.valorPrevioDD;
   }
@@ -316,12 +315,12 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.loaderService.activar();
     this.buscarTipoAsignacion();
     this.caracteristicasPaquete.idPaquete = this.paqueteSeleccionado;
-    const parametros = { idPaquete: this.paqueteSeleccionado };
+    const parametros = {idPaquete: this.paqueteSeleccionado};
     this.gestionarOrdenServicioService
       .consultarDetallePaquete(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -338,7 +337,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
           this.datosPaquetes = datos;
           this.costoServiciosPorPaquete = datos[0].totalPaquete;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
 
           try {
@@ -359,17 +358,17 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
             );
           }
         }
-      );
+      });
   }
 
   buscarTipoAsignacion(): void {
     this.loaderService.activar();
-    const parametros = { idPaquete: this.paqueteSeleccionado };
+    const parametros = {idPaquete: this.paqueteSeleccionado};
     this.gestionarOrdenServicioService
       .consultarTipoAsignacion(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.tipoAsignacion = [];
             return;
@@ -381,18 +380,18 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
           }
           this.tipoAsignacion = datos.split(',');
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   agregarArticulo(datos: any): void {
-    if(!datos.proveedor){
-      setTimeout(()=> {
+    if (!datos.proveedor) {
+      setTimeout(() => {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'Agrega un proveedor para asignar al presupuesto');
         datos.utilizarArticulo = null;
-      },100);
+      }, 100);
       return
     }
     datos.proviene = 'paquete';
@@ -441,11 +440,11 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.total = pretotal;
   }
 
-  quitarArticulo(datos: any,rowIndex: number): void {
+  quitarArticulo(datos: any, rowIndex: number): void {
     datos.fila = rowIndex + 1;
     const ref = this.dialogService.open(ModalEliminarArticuloComponent, {
       header: '',
-      style: { maxWidth: '600px', width: '100%' },
+      style: {maxWidth: '600px', width: '100%'},
       data: {},
     });
     ref.onClose.subscribe((salida: any) => {
@@ -453,7 +452,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
         datos.desmotivo = salida;
         this.elementosEliminadosPaquete.push(datos);
         this.quitarPaquete(datos);
-      }else{
+      } else {
         datos.utilizarArticulo = null;
       }
     });
@@ -527,12 +526,12 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   consultarProveeedorServicio(): void {
-    const parametros = { idServicio: this.idServicio };
+    const parametros = {idServicio: this.idServicio};
     this.gestionarOrdenServicioService
       .consultarProveeedorServicio(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaproveedor = [];
@@ -552,7 +551,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
             'idProveedor'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             const errorMsg: string =
@@ -572,14 +571,14 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
             );
           }
         }
-      );
+      });
   }
 
   abrirModalAgregarAlPrespuesto(event: MouseEvent) {
     event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarAlPresupuestoComponent, {
       header: 'Agregar a presupuesto',
-      style: { maxWidth: '876px', width: '100%' },
+      style: {maxWidth: '876px', width: '100%'},
       data: {
         idVelatorio: this.idVelatorio,
         tipoOrden: this.tipoOrden,
@@ -598,7 +597,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarServicioComponent, {
       header: 'Agregar proveedor',
-      style: { maxWidth: '876px', width: '100%' },
+      style: {maxWidth: '876px', width: '100%'},
       data: {
         proveedor: this.listaproveedor,
         traslado: false,
@@ -632,7 +631,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarServicioComponent, {
       header: 'Agregar proveedor traslado',
-      style: { maxWidth: '876px', width: '100%' },
+      style: {maxWidth: '876px', width: '100%'},
       data: {
         proveedor: this.listaproveedor,
         traslado: true,
@@ -662,15 +661,15 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
           datos.bloquearRadioButton = false;
         }
       });
-      let totalImporte =  respuesta.costoExtraKilometros + this.datosPaquetes[0].importe;
+      let totalImporte = respuesta.costoExtraKilometros + this.datosPaquetes[0].importe;
       let totalPaquete = respuesta.costoExtraKilometros + this.datosPaquetes[0].totalPaquete;
       /*Reiniciar los costos de tabla paquete*/
-      this.datosPaquetes.forEach((precio:any) => {
+      this.datosPaquetes.forEach((precio: any) => {
         precio.importe = this.costoServiciosPorPaquete;
         precio.totalPaquete = this.costoServiciosPorPaquete;
       });
       /*Ingresar nuevo costo de tabla paquete si el kilometraje excede los previstos por promotor*/
-      if(respuesta.costoExtraKilometros > 0) {
+      if (respuesta.costoExtraKilometros > 0) {
         this.datosPaquetes.forEach((datoPaquete: any) => {
           datoPaquete.importe = totalImporte;
           datoPaquete.totalPaquete = totalPaquete
@@ -683,7 +682,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     event.stopPropagation();
     const ref = this.dialogService.open(ModalAgregarAlPaqueteComponent, {
       header: 'Agregar ataúd',
-      style: { maxWidth: '876px', width: '100%' },
+      style: {maxWidth: '876px', width: '100%'},
       data: {
         tipoAsignacion: this.tipoAsignacion,
         idVelatorio: this.idVelatorio,
@@ -708,11 +707,12 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
       });
     });
   }
+
   abrirModalDonarAtaud(event: MouseEvent): void {
     event.stopPropagation();
     const ref = this.dialogService.open(ModalDonarArticuloComponent, {
       header: 'Donar ataúd',
-      style: { maxWidth: '353px', width: '100%' },
+      style: {maxWidth: '353px', width: '100%'},
       data: {
         datos: this.valorFila,
       },
@@ -811,8 +811,8 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
           banderaPaquete = true;
         }
       });
-      if(!banderaPaquete){
-        this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+      if (!banderaPaquete) {
+        this.alertaService.mostrar(TipoAlerta.Info, this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
         return false;
       }
     }
@@ -822,8 +822,8 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
           banderaPresupuesto = true;
         }
       });
-      if(!banderaPresupuesto){
-        this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+      if (!banderaPresupuesto) {
+        this.alertaService.mostrar(TipoAlerta.Info, this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
         return false;
       }
     }
@@ -837,10 +837,10 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
 
     this.selecionaTipoOtorgamiento;
     this.paqueteSeleccionadoDD?.label;
-    if(this.tipoOrden == 1 || this.tipoOrden == 2){
-      if(this.paqueteSeleccionadoDD){
-        if(this.paqueteSeleccionadoDD.label.includes("Paquete social")){
-          if(this.selecionaTipoOtorgamiento == null){
+    if (this.tipoOrden == 1 || this.tipoOrden == 2) {
+      if (this.paqueteSeleccionadoDD) {
+        if (this.paqueteSeleccionadoDD.label.includes("Paquete social")) {
+          if (this.selecionaTipoOtorgamiento == null) {
             return true;
           }
         }
@@ -850,7 +850,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   continuar() {
-    if(!this.validarSeleccionPaquete()) return;
+    if (!this.validarSeleccionPaquete()) return;
     let etapas: Etapa[] = [
       {
         idEtapa: 0,
@@ -1035,7 +1035,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
         // datos.idProveedor ?? null;
         (datos.idProveedor == '' || datos.idProveedor == null) ? null : Number(datos.idProveedor);
       detalle.idServicio =
-        (datos.idServicio == '' || datos.idServicio == null)  ? null : Number(datos.idServicio);
+        (datos.idServicio == '' || datos.idServicio == null) ? null : Number(datos.idServicio);
       detalle.idTipoServicio =
         (datos.idTipoServicio == '' || datos.idTipoServicio) ? null : Number(datos.idTipoServicio);
       detalle.servicioDetalleTraslado = null;

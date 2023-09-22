@@ -69,7 +69,7 @@ import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
     CeldaStickyModule,
     PanelModule,
     RadioButtonModule,
-    BtnRegresarModule
+    BtnRegresarModule,
   ],
   providers: [SolicitudesPagoService]
 })

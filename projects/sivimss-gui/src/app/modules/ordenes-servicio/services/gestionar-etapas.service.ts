@@ -1,25 +1,19 @@
-import { Injectable } from '@angular/core';
-import { Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
-import { EtapaEstado } from '../../../shared/etapas/models/etapa-estado.enum';
-import { Etapa } from '../../../shared/etapas/models/etapa.interface';
-import {
-  PATRON_CORREO,
-  PATRON_CURP,
-  PATRON_RFC,
-} from '../../../utils/constantes';
-import { AltaODSInterface } from '../models/AltaODS.interface';
-import { ContratanteInterface } from '../models/Contratante.interface';
-import { CodigoPostalIterface } from '../models/CodigoPostal.interface';
-import { FinadoInterface } from '../models/Finado.interface';
-import { CaracteristicasPresupuestoInterface } from '../models/CaracteristicasPresupuesto,interface';
-import { CaracteristicasPaqueteInterface } from '../models/CaracteristicasPaquete.interface';
-import { CaracteristicasDelPresupuestoInterface } from '../models/CaracteristicasDelPresupuesto.interface';
-import { DetallePaqueteInterface } from '../models/DetallePaquete.interface';
-import { ServicioDetalleTrasladotoInterface } from '../models/ServicioDetalleTraslado.interface';
-import { DetallePresupuestoInterface } from '../models/DetallePresupuesto.interface';
-import { InformacionServicioVelacionInterface } from '../models/InformacionServicioVelacion.interface';
-import { InformacionServicioInterface } from '../models/InformacionServicio.interface';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {EtapaEstado} from '../../../shared/etapas/models/etapa-estado.enum';
+import {Etapa} from '../../../shared/etapas/models/etapa.interface';
+import {AltaODSInterface} from '../models/AltaODS.interface';
+import {ContratanteInterface} from '../models/Contratante.interface';
+import {CodigoPostalIterface} from '../models/CodigoPostal.interface';
+import {FinadoInterface} from '../models/Finado.interface';
+import {CaracteristicasPresupuestoInterface} from '../models/CaracteristicasPresupuesto,interface';
+import {CaracteristicasPaqueteInterface} from '../models/CaracteristicasPaquete.interface';
+import {CaracteristicasDelPresupuestoInterface} from '../models/CaracteristicasDelPresupuesto.interface';
+import {DetallePaqueteInterface} from '../models/DetallePaquete.interface';
+import {ServicioDetalleTrasladotoInterface} from '../models/ServicioDetalleTraslado.interface';
+import {DetallePresupuestoInterface} from '../models/DetallePresupuesto.interface';
+import {InformacionServicioVelacionInterface} from '../models/InformacionServicioVelacion.interface';
+import {InformacionServicioInterface} from '../models/InformacionServicio.interface';
 
 @Injectable()
 export class GestionarEtapasService {
@@ -180,6 +174,7 @@ export class GestionarEtapasService {
       colonia: null,
       municipio: null,
       estado: null,
+      idDomicilio: null
     },
   };
 

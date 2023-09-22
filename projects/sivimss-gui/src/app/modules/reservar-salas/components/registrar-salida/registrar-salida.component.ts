@@ -91,17 +91,17 @@ export class RegistrarSalidaComponent implements OnInit {
     this.loaderService.activar();
     this.reservarSalasService.actualizar(this.datosGuardar()).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.ref.close(true);
       },
-      (error : HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
       }
-    );
+    });
 
   }
 

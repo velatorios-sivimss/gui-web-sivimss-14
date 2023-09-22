@@ -159,8 +159,8 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.velatorio = respuesta.datos!.map(
           (velatorio: any) => (
             {label: velatorio.nomVelatorio, value: velatorio.idVelatorio}
@@ -169,12 +169,12 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
         let velatorioSeleccionado = this.velatorio.filter(velatorio => {
           return velatorio.value == usuario.idVelatorio;
         })
-        this.velatorioDescripcion =  velatorioSeleccionado[0].label;
+        this.velatorioDescripcion = velatorioSeleccionado[0].label;
       },
-      (error: HttpErrorResponse)=> {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
   guardarFormularioLocalStorage(event:any): void {
     const formularioPrincipal = {
@@ -260,14 +260,14 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.consultaCURPRFC(rfc,curp).pipe(
       finalize(()=>  this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
         this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
       }
-    )
+    })
   }
 
   consultarConvenio(): void{
@@ -375,30 +375,30 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarFolioConvenioEmpresa(this.folioUnicoDelConvenio).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(respuesta.datos[0].nombreEmpresa){
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos[0].nombreEmpresa) {
           this.velatorioUsuario = respuesta.datos[0].desVelatorio
           this.existePromotor(true)
-            this.ff.tipoContratacion.setValue(2);
-          if(respuesta.datos[0].idPromotor != ""){
+          this.ff.tipoContratacion.setValue(2);
+          if (respuesta.datos[0].idPromotor != "") {
             this.ff.promotor.setValue(true);
             this.ff.listaPromotor.setValue(+respuesta.datos[0].idPromotor);
             this.existePromotor(true)
-          }else{
+          } else {
             this.existePromotor(false)
             this.ff.promotor.setValue(false);
           }
           this.consultarConvenio();
-        }else{
+        } else {
           this.ff.tipoContratacion.setValue(1);
           this.consultarConvenioPersona();
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error)
       }
-    )
+    })
   }
 
   consultarConvenioPersona(): void {
@@ -406,16 +406,16 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
     this.loaderService.activar();
     this.agregarConvenioPFService.consultarFolioPersona(this.ff.numeroConvenio.value).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.velatorioUsuario = respuesta.datos.datosContratante.nombreVelatorio
         this.ff.rfcCurp.setValue(respuesta.datos.datosContratante.curp);
         this.idPersona = respuesta.datos.datosContratante.idPersona
-        if(respuesta.datos.datosContratante.idPromotor){
+        if (respuesta.datos.datosContratante.idPromotor) {
           this.ff.promotor.setValue(true);
           this.existePromotor(true)
           this.ff.listaPromotor.setValue(+respuesta.datos.datosContratante.idPromotor);
-        }else{
+        } else {
           this.ff.promotor.setValue(false);
           this.existePromotor(false)
         }
@@ -423,10 +423,10 @@ export class ConveniosPfModificarComponent implements OnInit, AfterViewInit {
 
         this.consultarConvenio();
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
       }
-    );
+    });
   }
 
   ngAfterViewInit(): void {

@@ -149,7 +149,7 @@ export class ReporteEncargadoComponent implements OnInit {
             this.totalVehiculos = respuesta.datos.totalElements;
             this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
-            this.sumTotal = respuesta.datos.content[0].totalCosto;
+            this.sumTotal = respuesta.datos.content[0]?.totalCosto;
           },
           error: (error: HttpErrorResponse): void => {
             console.error(error);
@@ -163,7 +163,7 @@ export class ReporteEncargadoComponent implements OnInit {
             this.totalVehiculos = respuesta.datos.totalElements;
             this.totalElementos = respuesta.datos.totalElements;
             this.registrosReporte = respuesta.datos.content;
-            this.sumTotal = respuesta.datos.content[0].totalCosto;
+            this.sumTotal = respuesta.datos.content[0]?.totalCosto;
           },
           error: (error: HttpErrorResponse): void => {
             console.error(error);

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Velatorio} from "../../models/velatorio.interface";
 
 @Component({
@@ -6,13 +6,9 @@ import {Velatorio} from "../../models/velatorio.interface";
   templateUrl: './detalle-velatorio.component.html',
   styleUrls: ['./detalle-velatorio.component.scss']
 })
-export class DetalleVelatorioComponent implements OnInit {
+export class DetalleVelatorioComponent {
 
   @Input() velatorio!: Velatorio;
   @Input() estatus: boolean = false;
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

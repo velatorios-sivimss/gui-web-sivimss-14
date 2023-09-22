@@ -1,12 +1,11 @@
-import { HttpRespuesta } from '../../../models/http-respuesta.interface';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { AutenticacionService } from '../../../services/autenticacion.service';
-import { environment } from '../../../../environments/environment';
-import { BaseService } from '../../../utils/base-service';
+import {HttpRespuesta} from '../../../models/http-respuesta.interface';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {AutenticacionService} from '../../../services/autenticacion.service';
+import {environment} from '../../../../environments/environment';
+import {BaseService} from '../../../utils/base-service';
+import {Observable} from 'rxjs';
 
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { TipoDropdown } from '../../../models/tipo-dropdown';
 @Injectable()
 export class RegistroOtorgamientoServiciosService extends BaseService<
   HttpRespuesta<any>,
@@ -19,7 +18,7 @@ export class RegistroOtorgamientoServiciosService extends BaseService<
   consultarPorFolio(folio: string): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/admin-consultar-historial`,
-      { folio: folio }
+      {folio: folio}
     );
   }
 
@@ -28,7 +27,7 @@ export class RegistroOtorgamientoServiciosService extends BaseService<
   ): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/admin-consultar-tipos-servicios`,
-      { idOrdenServicio: idOrdenServicio }
+      {idOrdenServicio: idOrdenServicio}
     );
   }
 

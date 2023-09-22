@@ -10,7 +10,7 @@ import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/ale
 import {LazyLoadEvent} from 'primeng/api';
 import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
 import {BalanceCajaService} from '../../services/balance-caja.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {FiltrosBalanceCaja} from "../../models/filtros-balance-caja.interface";
 import {finalize} from "rxjs/operators";
 import {of} from "rxjs";
@@ -24,8 +24,8 @@ import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-se
 import {RealizarCierreComponent} from '../realizar-cierre/realizar-cierre.component';
 import {TIPO_CONVENIOS} from "../../constants/convenios";
 import {TIPO_PAGO} from "../../constants/tipos-pago";
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import { DatePipe } from '@angular/common';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {DatePipe} from '@angular/common';
 
 type ListadoBalanceCaja = Required<BalanceCaja> & { id: string }
 
@@ -249,29 +249,31 @@ export class BalanceCajaComponent implements OnInit {
     busqueda.tipoReporte = tipoReporte;
     this.balanceCajaService.generarReporte(busqueda).pipe(
       finalize(() => this.cargadorService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         const file = new Blob([this.descargaArchivosService.base64_2Blob(
             respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
           {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)}
         );
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.cargadorService.desactivar())
-        ).subscribe(
-          (repuesta) => {
-            this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-            this.mostrarModalConfirmacion = true;
+        ).subscribe({
+          next: (repuesta): void => {
+            if (respuesta) {
+              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+              this.mostrarModalConfirmacion = true;
+            }
           },
-          (error) => {
+          error: (error): void => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
           }
-        )
+        })
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, msg);
       }
-    )
+    })
   }
 
   abrirModalCierre(): void {

@@ -2,17 +2,22 @@
 
 <div class="border-panel mb-3">
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
+      <span>  Delegación: </span>
+      <br/>
+      <label>{{delegacionDescripcion}}</label>
+    </div>
+    <div class="col-md-3">
       <span>  Velatorio: </span>
       <br/>
       <label>{{velatorioDescripcion}}</label>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <span> Fecha:  </span>
       <br/>
       <label>{{beneficiario.fechaNacimiento | date: 'dd/MM/yyyy'}}</label>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
       <span> Edad: </span>
       <br/>
       <label>{{beneficiario.edad}}</label>
@@ -56,11 +61,6 @@
   </div>
   <hr class="hr-accordion-content">
   <div class="row">
-    <div class="col-md-4">
-      <span>  Acta de nacimiento: </span>
-      <br/>
-      <label>{{beneficiario.actaNacimiento}}</label>
-    </div>
     <div class="col-md-4">
       <span> Correo electrónico:  </span>
       <br/>

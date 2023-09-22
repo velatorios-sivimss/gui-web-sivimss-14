@@ -1,15 +1,17 @@
-import { registrarSalida } from './../../models/capilla-reservacion.interface';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import {DynamicDialogConfig,DynamicDialogRef,} from "primeng/dynamicdialog";
+import {RegistrarSalida} from './../../models/capilla-reservacion.interface';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {DynamicDialogConfig, DynamicDialogRef,} from "primeng/dynamicdialog";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {OverlayPanel} from "primeng/overlaypanel";
-import { FormBuilder } from '@angular/forms';
-import { CapillaReservacionService } from '../../services/capilla-reservacion.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import {FormBuilder} from '@angular/forms';
+import {CapillaReservacionService} from '../../services/capilla-reservacion.service';
+import {HttpErrorResponse} from '@angular/common/http';
 import * as moment from 'moment'
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-type NuevaSalida = Omit<registrarSalida, 'idSalida'>
+
+type NuevaSalida = Omit<RegistrarSalida, 'idSalida'>
+
 @Component({
   selector: 'app-registrar-salida',
   templateUrl: './registrar-salida.component.html',
@@ -18,10 +20,9 @@ type NuevaSalida = Omit<registrarSalida, 'idSalida'>
 export class RegistrarSalidaComponent implements OnInit {
 
 
-
-  @Input() registrarSalida!: registrarSalida;
+  @Input() registrarSalida!: RegistrarSalida;
   @Input() origen!: string;
-  @Output() confirmacionAceptar = new EventEmitter<registrarSalida>();
+  @Output() confirmacionAceptar = new EventEmitter<RegistrarSalida>();
 
   creacionRef!: DynamicDialogRef;
   acordionAbierto: boolean = false;
@@ -30,7 +31,7 @@ export class RegistrarSalidaComponent implements OnInit {
   overlayPanel: OverlayPanel | undefined;
   horaEntrada: any;
 
-  registroCapilla!: registrarSalida;
+  registroCapilla!: RegistrarSalida;
   idCapilla: any;
   idVelatorio!: any;
   idDisponibilidad: any;
@@ -49,8 +50,8 @@ export class RegistrarSalidaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.idCapilla =  this.registrarSalida.idCapilla;
-    this.idVelatorio =  this.registrarSalida.idVelatorio;
+    this.idCapilla = this.registrarSalida.idCapilla;
+    this.idVelatorio = this.registrarSalida.idVelatorio;
     this.fechaSalida = this.registrarSalida.fecha?.fecha;
     this.horaSalida = this.registrarSalida.fecha?.hora;
     this.obtenerDatosCapilla();
@@ -58,31 +59,30 @@ export class RegistrarSalidaComponent implements OnInit {
 
   obtenerDatosCapilla(): void {
 
-    this.capillaReservacionService.capillaOcupadaPorIdVelatorio(this.idVelatorio).subscribe(
-      (respuesta) => {
+    this.capillaReservacionService.capillaOcupadaPorIdVelatorio(this.idVelatorio).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.datos) {
-          respuesta.datos.forEach( (x:any) => {
-            if(x.idCapilla == this.idCapilla){
+          respuesta.datos.forEach((x: any) => {
+            if (x.idCapilla == this.idCapilla) {
               this.registroCapilla = x;
               this.registroCapilla.fechaEntrada = this.registroCapilla.fechaEntrada?.replace(/-/g, "/");
-              return
             }
           });
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
-  crearSalidaModificada(): registrarSalida{
+  crearSalidaModificada(): RegistrarSalida {
     return {
-      idCapilla:   this.registrarSalida.idCapilla,
-      idDisponibilidad:   this.registroCapilla.idDisponibilidad,
-      fechaSalida:  moment(this.registrarSalida.fecha?.fecha).format('DD-MM-yyyy'),
-      horaSalida:   moment(this.registrarSalida.fecha?.hora).format('HH:mm')
+      idCapilla: this.registrarSalida.idCapilla,
+      idDisponibilidad: this.registroCapilla.idDisponibilidad,
+      fechaSalida: moment(this.registrarSalida.fecha?.fecha).format('DD-MM-yyyy'),
+      horaSalida: moment(this.registrarSalida.fecha?.hora).format('HH:mm')
     }
   }
 
@@ -90,17 +90,17 @@ export class RegistrarSalidaComponent implements OnInit {
   guardar(): void {
     const registrarEntradaBo: NuevaSalida = this.crearSalidaModificada()
     const solicitudEntrada: string = JSON.stringify(registrarEntradaBo)
-    this.capillaReservacionService.registrarSalida(solicitudEntrada).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    this.capillaReservacionService.registrarSalida(solicitudEntrada).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
         const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
         this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.ref.close(true)
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       },
-    )
+    })
   }
 
   cancelar(): void {

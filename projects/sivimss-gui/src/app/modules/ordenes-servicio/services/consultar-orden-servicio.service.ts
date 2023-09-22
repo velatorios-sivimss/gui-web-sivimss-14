@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {BaseService} from "../../../utils/base-service";
-import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../services/autenticacion.service";
 import {environment} from "../../../../environments/environment";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
@@ -64,9 +64,7 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
   }
 
   nombreFinado(): Observable<HttpRespuesta<any>> {
-    // const params: HttpParams = new HttpParams()
-    //   .append("servicio", 'consultar-finado');
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-nombre-finados`,{});
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-nombre-finados`, {});
   }
 
   consultarODS(objetoPaginado: OrdenServicioFiltroConsulta, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
@@ -117,14 +115,14 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
       {idOrdenServicio: idOrdenServicio, estatus: estatus, tipoReporte: 'pdf'});
   }
 
-  generarArchivoEntradaDonaciones(idOrdenServicio: number,generaReporte:number): Observable<HttpRespuesta<any>> {
+  generarArchivoEntradaDonaciones(idOrdenServicio: number, generaReporte: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-donacion`,
-      {idOrdenServicio: idOrdenServicio, generaReporte:generaReporte, tipoReporte: 'pdf'});
+      {idOrdenServicio: idOrdenServicio, generaReporte: generaReporte, tipoReporte: 'pdf'});
   }
 
-  generarArchivoSalidaDonaciones(idOrdenServicio: number,generaReporte:number): Observable<HttpRespuesta<any>> {
+  generarArchivoSalidaDonaciones(idOrdenServicio: number, generaReporte: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-salida-donacion`,
-      {idOrdenServicio: idOrdenServicio, generaReporte:generaReporte, tipoReporte: 'pdf'});
+      {idOrdenServicio: idOrdenServicio, generaReporte: generaReporte, tipoReporte: 'pdf'});
   }
 
 

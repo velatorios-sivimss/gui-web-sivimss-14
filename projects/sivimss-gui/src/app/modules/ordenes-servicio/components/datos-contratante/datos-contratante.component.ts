@@ -97,7 +97,7 @@ export class DatosContratanteComponent implements OnInit {
   idContratante: number | null = null;
   idDomicilio: number | null = null;
   fechaActual = new Date();
-  colonias:any;
+  colonias:TipoDropdown[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -362,12 +362,12 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
-              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
-                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+              if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
+                this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
                 return
               }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
@@ -399,6 +399,7 @@ export class DatosContratanteComponent implements OnInit {
               } else {
                 this.datosContratante.nacionalidad.setValue(2);
               }
+              this.consultarLugarNacimiento(respuesta.datos.desEntidadNac);
             } else {
               let datos = respuesta.datos[0];
               let [anio, mes, dia] = datos.fechaNac.split('-');
@@ -433,10 +434,11 @@ export class DatosContratanteComponent implements OnInit {
               );
               datos.telefono.includes('null') ? this.datosContratante.telefono.patchValue(null) : this.datosContratante.telefono.setValue(datos.telefono);
               datos.correo.includes('null') ? this.datosContratante.correoElectronico.patchValue(null) : this.datosContratante.correoElectronico.setValue(datos.correo);
+              this.colonias = [{label: datos.colonia, value: datos.colonia}]
+              this.direccion.cp.setValue(datos.cp);
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.municipio.setValue(datos.municipio);
               this.direccion.estado.setValue(datos.estado);
-              this.direccion.cp.setValue(datos.cp);
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.calle.setValue(datos.calle);
               this.direccion.noInterior.setValue(datos.numInterior);
@@ -453,11 +455,44 @@ export class DatosContratanteComponent implements OnInit {
             )
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
+
+  consultarLugarNacimiento(entidad:string): void {
+    const entidadEditada = this.accentsTidy(entidad);
+    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+      this.datosContratante.lugarNacimiento.setValue(11);
+      return
+    }
+    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+      this.datosContratante.lugarNacimiento.setValue(7);
+      return
+    }
+    this.estado.forEach((element:any) => {
+      const entidadIteracion =  this.accentsTidy(element.label);
+      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+        this.datosContratante.lugarNacimiento.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r=s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    return r;
+  };
 
   consultarRFC(): void {
     if (!this.datosContratante.rfc.value) {
@@ -475,8 +510,8 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos.length > 0) {
             let datos = respuesta.datos[0];
             this.idPersona = datos.idPersona;
@@ -516,15 +551,13 @@ export class DatosContratanteComponent implements OnInit {
             this.direccion.noInterior.setValue(datos.numExterior);
             this.direccion.noExterior.setValue(datos.numInterior);
             this.idDomicilio = datos.idDomicilio;
-
-            return;
           }
           // this.limpiarConsultaDatosPersonales();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultaCP(): void {
@@ -535,10 +568,10 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            // this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -552,10 +585,10 @@ export class DatosContratanteComponent implements OnInit {
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   cambiarValidacion(): void {
@@ -774,8 +807,8 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarMatriculaSiap(this.datosContratante.matricula.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (!respuesta.datos) {
             this.alertaService.mostrar(
               TipoAlerta.Precaucion,
@@ -784,10 +817,10 @@ export class DatosContratanteComponent implements OnInit {
             this.datosContratante.matricula.setValue(null);
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      } );
   }
 
   convertirAMayusculas(posicionFormulario: number): void {

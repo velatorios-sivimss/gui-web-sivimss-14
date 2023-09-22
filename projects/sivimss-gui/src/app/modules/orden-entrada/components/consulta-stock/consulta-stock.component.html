@@ -3,28 +3,34 @@
     <div class="col-md-6">
       <label class="control-label" for="nivel">Nivel:</label>
       <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-                  placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
+        placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="velatorio">Velatorio:</label>
       <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                  placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
+        placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
       </p-dropdown>
     </div>
   </div>
   <div class="row mb-4">
     <div class="col-md-6">
       <label class="control-label" for="ordenEntrada">Orden de entrada (ODE):</label>
-      <input id="ordenEntrada" type="text" class="form-control"
-             placeholder="Ingresa la orden de entrada"
-      >
+      <p-autoComplete id="ordenEntrada" class="form-control" formControlName="ordenEntrada" (keyup)="validarNombre(0)"
+        (keyup.space)="sinEspacioInicial(0)" autocomplete="ordenEntrada" [suggestions]="catalogoOrdenesEntrada"
+        (completeMethod)="consultarOrdenesEntrada($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
+        [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa la orden de entrada"
+        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+      </p-autoComplete>
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="categoria">Categoria (Artículos):</label>
-      <input id="categoria" type="text" class="form-control"
-             placeholder="Ingresa categoría"
-      >
+      <label class="control-label" for="categoria">Categoria:</label>
+      <p-autoComplete id="categoria" class="form-control" formControlName="categoria" (keyup)="validarNombre(0)"
+        (keyup.space)="sinEspacioInicial(0)" autocomplete="categoria" [suggestions]="catalogoCategorias"
+        (completeMethod)="consultarCategorias($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
+        [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa categoría"
+        [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
+        </p-autoComplete>
     </div>
   </div>
   <div class="row mb-4">
@@ -34,49 +40,58 @@
       </div>
       <div class="flex">
         <div class="flex align-items-center mr-4">
-          <p-checkbox inputId="todos" formControlName="asignacion1" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <p-checkbox inputId="todos" formControlName="asignacion1" styleClass="mr-3" [value]="0"></p-checkbox>
           <label [for]="'todos'" class="control-label mb-0 font-normal">Todos</label>
         </div>
         <div class="flex align-items-center mr-4">
-          <p-checkbox inputId="consignado" formControlName="asignacion2" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <p-checkbox inputId="consignado" formControlName="asignacion2" styleClass="mr-3" [value]="1"></p-checkbox>
           <label [for]="'consignado'" class="control-label mb-0 font-normal">Consignado</label>
         </div>
         <div class="flex align-items-center mr-4">
-          <p-checkbox inputId="donado" formControlName="asignacion3" styleClass="mr-3" [binary]="true"></p-checkbox>
+          <p-checkbox inputId="donado" formControlName="asignacion3" styleClass="mr-3" [value]="3"></p-checkbox>
           <label [for]="'donado'" class="control-label mb-0 font-normal">Donado</label>
         </div>
       </div>
-      <span class="mensaje-inferior-campo-obligatorio inline-block mt-2">*Campos obligatorios</span>
     </div>
     <div class="col-md-6 flex justify-content-end">
-      <button class="btn btn-default btn-md">Limpiar</button>
-      <button class="btn btn-primary btn-md ml-5">Buscar</button>
+      <button class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+      <button class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
     </div>
   </div>
 </form>
 <section>
-  <p-table styleClass="mt-5 mb-8" [value]="stock"
-           [paginator]="stock.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
-           [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
+  <p-table styleClass="mt-5 mb-8" [value]="stock" [paginator]="stock.length > 0" [rows]="cantElementosPorPagina"
+    [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+    (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn scope="col">Fecha ODE</th>
         <th pResizableColumn scope="col">Folio ODE</th>
         <th pResizableColumn scope="col">Folio artículo</th>
         <th pResizableColumn scope="col">Artículo</th>
-        <th pResizableColumn scope="col"></th>
+        <th pResizableColumn scope="col">Estatus</th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-stock>
       <tr>
-        <td pResizableColumn> {{stock.fechaOde}} </td>
-        <td pResizableColumn> {{stock.folioOde}} </td>
-        <td pResizableColumn> {{stock.folioArticulo}} </td>
-        <td pResizableColumn> {{stock.articulo}} </td>
+        <td pResizableColumn> {{stock.FEC_ODE}} </td>
+        <td pResizableColumn> {{stock.NUM_FOLIO_ODE}} </td>
+        <td pResizableColumn> {{stock.FOLIO_ARTICULO}} </td>
+        <td pResizableColumn> {{stock.DES_MODELO_ARTICULO}} </td>
         <td>
-          <div class="contenedor-celda-iconos">
-            <a (click)="abrirPanel($event,stock)" onCloseOnNavigation class="pi pi-ellipsis-v inline-flex w-auto">
+          <div class="contenedor-inputswitch flex mr-4">
+            <span class="activo mr-3" *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 1">Activa</span>
+            <span class="activo mr-3" *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 2">Cancelada</span>
+            <span class="activo mr-3" *ngIf="stock.ESTATUS_ORDEN_ENTRADA == 3">Cerrada</span>
+          </div>
+        </td>
+        <td *ngIf="stock.ESTATUS_ORDEN_ENTRADA === 1">
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'60px 40px'}"
+            class="contenedor-celda-iconos">
+            <a (click)="abrirPanel($event,stock)" onCloseOnNavigation
+              class="pi pi-ellipsis-v inline-flex w-auto">
+
             </a>
           </div>
         </td>
@@ -99,8 +114,8 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" (click)="generarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+            <img class="icon-export-table" (click)="generarArchivo('xls')" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
           </div>
         </div>
       </div>
@@ -110,7 +125,8 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Devolución" [routerLink]="['/pagos/realizar-balance-caja']"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Devolución" [routerLink]="['devolucion-articulo', stockSeleccionado.FOLIO_ARTICULO]">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

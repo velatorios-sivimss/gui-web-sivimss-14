@@ -1,25 +1,26 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
-import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { ActivatedRoute } from '@angular/router';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ActualizarOrdenServicioService } from '../../../services/actualizar-orden-servicio.service';
-import { GestionarEtapasActualizacionService } from '../../../services/gestionar-etapas-actualizacion.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
+import {ChangeDetectorRef, Component, OnInit, OnDestroy} from '@angular/core';
+import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {ActivatedRoute} from '@angular/router';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {ActualizarOrdenServicioService} from '../../../services/actualizar-orden-servicio.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { Subscription, finalize } from 'rxjs';
+import {Subscription, finalize} from 'rxjs';
+import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
+import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 
 @Component({
   selector: 'app-actualizar-orden-servicio-sf',
   templateUrl: './actualizar-orden-servicio.component.html',
   styleUrls: ['./actualizar-orden-servicio.component.scss'],
 })
-export class ActualizarOrdenServicioSFComponent implements OnInit,OnDestroy {
+export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
   readonly DATOS_DEL_CONTRATANTE = 0;
   readonly DATOS_DEL_FINADO = 1;
   readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
@@ -32,28 +33,24 @@ export class ActualizarOrdenServicioSFComponent implements OnInit,OnDestroy {
 
   idEtapaSeleccionada: number = 0;
   estatusValida: number = 0;
+
   constructor(
-    private gestionarEtapasService: GestionarEtapasActualizacionService,
+    private gestionarEtapasService: GestionarEtapasActualizacionSFService,
     private rutaActiva: ActivatedRoute,
     private loaderService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
     private gestionarOrdenServicioService: ActualizarOrdenServicioService,
+    private ordenServicioSF: GenerarOrdenServicioService,
     private changeDetector: ChangeDetectorRef,
     private alertaService: AlertaService
   ) {
-    // this.buscarDetalle(Number(this.rutaActiva.snapshot.paramMap.get('idODS')));
     this.buscarDetalle(Number(this.rutaActiva.snapshot.queryParams.idODS));
   }
 
   ngOnInit(): void {
-    let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
-
-    if (Number(estatus) == 1) {
-      this.estatusValida = 1;
-      this.titulo = 'MODIFICAR ORDEN DE SERVICIO';
-    } else {
-      this.titulo = 'GENERAR ORDEN COMPLEMENTARIA';
-    }
+    let estatus = 1;
+    this.titulo = 'MODIFICAR ORDEN DE SERVICIO';
+    this.estatusValida = 1;
 
     this.etapas = [
       {
@@ -118,13 +115,11 @@ export class ActualizarOrdenServicioSFComponent implements OnInit,OnDestroy {
 
   buscarDetalle(idODS: number) {
     this.loaderService.activar();
-
-    const parametros = { idOrdenServicio: idODS };
-    this.gestionarOrdenServicioService
-      .consultarDetalleODS(parametros)
-      .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+    this.ordenServicioSF.detalleODSSF(idODS).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe(
+      {
+        next: (respuesta: HttpRespuesta<any>) => {
           if (this.estatusValida == 1) {
             this.caracteristicas(respuesta.datos);
             if (respuesta.datos.informacionServicio != null)
@@ -135,7 +130,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit,OnDestroy {
           this.gestionarEtapasService.datosContratante$.next(respuesta.datos);
           this.gestionarEtapasService.datosConsultaODS$.next(respuesta.datos);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             const errorMsg: string =
@@ -155,7 +150,9 @@ export class ActualizarOrdenServicioSFComponent implements OnInit,OnDestroy {
             );
           }
         }
-      );
+
+      }
+    );
   }
 
   caracteristicas(datos: any): void {
@@ -230,9 +227,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit,OnDestroy {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-        // if (element.idProveedor != null && element.idProveedor != '') {
-          salidaPaquete.push(datos);
-        // }
+        salidaPaquete.push(datos);
       }
     }
 
@@ -374,6 +369,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit,OnDestroy {
       datosEtapaInformacionServicio
     );
   }
+
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {
     //Con esta etapa que se recibe ya se puede modificar su estado.
     //Al modificar el estado de la etapa su estilo se actualiza.

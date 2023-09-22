@@ -62,22 +62,11 @@ export class GestionarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
-  descargarListado(): Observable<Blob> {
-    const headers = new HttpHeaders({
+  descargarListado(body: any): Observable<Blob> {
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    const body = {tipoReporte: "pdf"}
-    return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}/generarDocumento/pdf`
-      , body, {headers, responseType: 'blob' as 'json'});
-  }
-
-  descargarListadoExcel(): Observable<Blob> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    const body = {tipoReporte: "xls"}
     return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
