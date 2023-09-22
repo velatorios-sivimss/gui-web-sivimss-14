@@ -362,12 +362,12 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
-              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
-                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+              if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
+                this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
                 return
               }
               const [dia, mes, anio] = respuesta.datos.fechNac.split('/');
@@ -434,7 +434,7 @@ export class DatosContratanteComponent implements OnInit {
               );
               datos.telefono.includes('null') ? this.datosContratante.telefono.patchValue(null) : this.datosContratante.telefono.setValue(datos.telefono);
               datos.correo.includes('null') ? this.datosContratante.correoElectronico.patchValue(null) : this.datosContratante.correoElectronico.setValue(datos.correo);
-              this.colonias = [{label:datos.colonia,value: datos.colonia}]
+              this.colonias = [{label: datos.colonia, value: datos.colonia}]
               this.direccion.cp.setValue(datos.cp);
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.municipio.setValue(datos.municipio);
@@ -455,10 +455,10 @@ export class DatosContratanteComponent implements OnInit {
             )
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultarLugarNacimiento(entidad:string): void {
@@ -510,8 +510,8 @@ export class DatosContratanteComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos.length > 0) {
             let datos = respuesta.datos[0];
             this.idPersona = datos.idPersona;
@@ -554,10 +554,10 @@ export class DatosContratanteComponent implements OnInit {
           }
           // this.limpiarConsultaDatosPersonales();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultaCP(): void {

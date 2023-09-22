@@ -1,14 +1,14 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {CapillaReservacionComponent} from "./components/capilla-reservacion/capilla-reservacion.component";
-import { capillaReservacionResolver } from "./services/capilla-reservacion.resolver";
+import { CapillaReservacionResolver } from "./services/capilla-reservacion-resolver.service";
 
 const routes: Routes = [
   {
     path:'',
     component: CapillaReservacionComponent,
     resolve: {
-      respuesta: capillaReservacionResolver,
+      respuesta: CapillaReservacionResolver,
     }
   }
 ];
@@ -16,7 +16,7 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [capillaReservacionResolver]
+  providers: [CapillaReservacionResolver]
 })
 
 export class CapillaReservacionRoutingModule {
