@@ -13,7 +13,7 @@ import {
   AlertaService,
   TipoAlerta,
 } from '../../../../shared/alerta/services/alerta.service'
-import {registrarEntrada} from '../../models/capilla-reservacion.interface'
+import {RegistrarEntrada} from '../../models/capilla-reservacion.interface'
 import {OverlayPanel} from "primeng/overlaypanel";
 import {CapillaReservacionService} from '../../services/capilla-reservacion.service'
 import {HttpErrorResponse} from '@angular/common/http'
@@ -26,7 +26,7 @@ import {DescargaArchivosService} from "../../../../services/descarga-archivos.se
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
-type NuevaEntrada = Omit<registrarEntrada, 'idRol'>
+type NuevaEntrada = Omit<RegistrarEntrada, 'idRol'>
 
 @Component({
   selector: 'app-registrar-entrada',
@@ -35,9 +35,9 @@ type NuevaEntrada = Omit<registrarEntrada, 'idRol'>
   providers: [DescargaArchivosService]
 })
 export class RegistrarEntradaComponent implements OnInit {
-  @Input() entradaRegistrada!: registrarEntrada
+  @Input() entradaRegistrada!: RegistrarEntrada
   @Input() origen!: string
-  @Output() confirmacionAceptar = new EventEmitter<registrarEntrada>()
+  @Output() confirmacionAceptar = new EventEmitter<RegistrarEntrada>()
 
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
@@ -90,7 +90,7 @@ export class RegistrarEntradaComponent implements OnInit {
     this.obtenerCapillaPorIdVelatorio();
   }
 
-  inicializarRegistrarEntradaForm(datosEntrada: registrarEntrada): void {
+  inicializarRegistrarEntradaForm(datosEntrada: RegistrarEntrada): void {
     this.fechaDetalle = moment(datosEntrada.fechaEntrada).format('DD/MM/yyyy');
     this.registrarEntradaForm = this.formBuilder.group({
       capilla: [{value: null, disabled: false}, [Validators.required]],
@@ -118,7 +118,7 @@ export class RegistrarEntradaComponent implements OnInit {
     });
   }
 
-  crearEntradaModificado(): registrarEntrada {
+  crearEntradaModificado(): RegistrarEntrada {
     return {
       idCapilla: this.registrarEntradaForm.get('capilla')?.value,
       fechaEntrada: moment(this.registrarEntradaForm.get('fechaEntrada')?.value).format('DD-MM-yyyy'),

@@ -1,4 +1,4 @@
-export interface registrarEntrada {
+export interface RegistrarEntrada {
   idVelatorio?: number;
   fechaEntrada?: string;
   horaEntrada?: string;
@@ -11,7 +11,7 @@ export interface registrarEntrada {
 
 }
 
-export interface registrarSalida {
+export interface RegistrarSalida {
   idCapilla?:number;
   idOrdenServicio?:number;
   idDisponibilidad?:number;
