@@ -1,23 +1,21 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { PaginadoConsultaStock } from "../../models/paginado-consulta-stock.interface";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OrdenEntradaService } from "../../services/orden-entrada.service";
-import { LazyLoadEvent } from "primeng/api";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { ActivatedRoute } from "@angular/router";
-import { LoaderService } from "../../../../shared/loader/services/loader.service";
-import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
-import { finalize } from "rxjs/operators";
-import { of } from "rxjs";
-import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
-import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
-import { HttpErrorResponse } from "@angular/common/http";
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OrdenEntradaService} from "../../services/orden-entrada.service";
+import {LazyLoadEvent} from "primeng/api";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {ActivatedRoute} from "@angular/router";
+import {LoaderService} from "../../../../shared/loader/services/loader.service";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
+import {finalize} from "rxjs/operators";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
+import {HttpErrorResponse} from "@angular/common/http";
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 @Component({
   selector: 'app-consulta-stock',
@@ -78,7 +76,8 @@ export class ConsultaStockComponent implements OnInit {
     private readonly loaderService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.cargarVelatorios(true);
@@ -89,13 +88,13 @@ export class ConsultaStockComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.formulario = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: false }],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: false }],
-      ordenEntrada: [{ value: null, disabled: false }],
-      categoria: [{ value: null, disabled: false }],
-      asignacion1: [{ value: null, disabled: false }],
-      asignacion2: [{ value: null, disabled: false }],
-      asignacion3: [{ value: null, disabled: false }]
+      nivel: [{value: +usuario.idOficina, disabled: false}],
+      velatorio: [{value: +usuario.idVelatorio, disabled: false}],
+      ordenEntrada: [{value: null, disabled: false}],
+      categoria: [{value: null, disabled: false}],
+      asignacion1: [{value: null, disabled: false}],
+      asignacion2: [{value: null, disabled: false}],
+      asignacion3: [{value: null, disabled: false}]
     });
   }
 
@@ -204,16 +203,16 @@ export class ConsultaStockComponent implements OnInit {
     this.loaderService.activar();
     this.ordenEntradaService.buscarStockPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.stock = [];
-          this.stock = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.stock = [];
+        this.stock = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   paginarConFiltros(): void {
@@ -221,16 +220,16 @@ export class ConsultaStockComponent implements OnInit {
     this.loaderService.activar();
     this.ordenEntradaService.buscarStockPorFiltros(0, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-        next: (respuesta: HttpRespuesta<any>): void => {
-          this.stock = [];
-          this.stock = respuesta.datos.content;
-          this.totalElementos = respuesta.datos.totalElements;
-        },
-        error: (error: HttpErrorResponse): void => {
-          console.error(error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
-        }
-      });
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.stock = [];
+        this.stock = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
   abrirPanel(event: MouseEvent, stock: any): void {
@@ -289,11 +288,11 @@ export class ConsultaStockComponent implements OnInit {
         idTipoAsignacion = asignaciones.map(innerArray => innerArray[0]).join(',');
       }
     }
-    let ordenEntrada = this.catalogoOrdenesEntradaCompleto.filter( (o) => o.NUM_FOLIO === this.formulario.get("ordenEntrada")?.value); 
-    let categoria = this.catalogoCategoriasCompleto.filter( (c) => c.DES_CATEGORIA_ARTICULO === this.formulario.get("categoria")?.value);
+    let ordenEntrada = this.catalogoOrdenesEntradaCompleto.filter((o) => o.NUM_FOLIO === this.formulario.get("ordenEntrada")?.value);
+    let categoria = this.catalogoCategoriasCompleto.filter((c) => c.DES_CATEGORIA_ARTICULO === this.formulario.get("categoria")?.value);
     return {
       idVelatorio: this.formulario.get("velatorio")?.value === "" ? null : this.formulario.get("velatorio")?.value,
-      idOrdenEntrada: ordenEntrada.length > 0  ? ordenEntrada[0].ID_ODE : null,
+      idOrdenEntrada: ordenEntrada.length > 0 ? ordenEntrada[0].ID_ODE : null,
       idCategoriaArticulo: categoria.length > 0 ? categoria[0].ID_CATEGORIA_ARTICULO : null,
       idTipoAsignacionArt: idTipoAsignacion
     }

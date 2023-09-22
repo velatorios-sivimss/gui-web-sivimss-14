@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   Component,
   EventEmitter,
   OnInit,
@@ -8,46 +7,43 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 
-import { SERVICIO_BREADCRUMB } from '../../../constants/breadcrumb';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'primeng/dynamicdialog';
-import { AltaODSInterface } from '../../../models/AltaODS.interface';
-import { ContratanteInterface } from '../../../models/Contratante.interface';
-import { CodigoPostalIterface } from '../../../models/CodigoPostal.interface';
-import {FinadoInterface, FinadoSFInterface} from '../../../models/Finado.interface';
-import { CaracteristicasPresupuestoInterface } from '../../../models/CaracteristicasPresupuesto,interface';
-import { CaracteristicasPaqueteInterface } from '../../../models/CaracteristicasPaquete.interface';
-import { DetallePaqueteInterface } from '../../../models/DetallePaquete.interface';
-import { ServicioDetalleTrasladotoInterface } from '../../../models/ServicioDetalleTraslado.interface';
-import { CaracteristicasDelPresupuestoInterface } from '../../../models/CaracteristicasDelPresupuesto.interface';
-import { DetallePresupuestoInterface } from '../../../models/DetallePresupuesto.interface';
-import { InformacionServicioInterface } from '../../../models/InformacionServicio.interface';
-import { InformacionServicioVelacionInterface } from '../../../models/InformacionServicioVelacion.interface';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-import { nacionalidad, sexo } from '../../../constants/catalogos-complementarios';
-import { ConfirmacionServicio } from '../../../../renovacion-extemporanea/models/convenios-prevision.interface';
+import {SERVICIO_BREADCRUMB} from '../../../constants/breadcrumb';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DialogService} from 'primeng/dynamicdialog';
+import {ContratanteInterface} from '../../../models/Contratante.interface';
+import {CodigoPostalIterface} from '../../../models/CodigoPostal.interface';
+import {FinadoSFInterface} from '../../../models/Finado.interface';
+import {CaracteristicasPresupuestoInterface} from '../../../models/CaracteristicasPresupuesto,interface';
+import {CaracteristicasPaqueteInterface} from '../../../models/CaracteristicasPaquete.interface';
+import {DetallePaqueteInterface} from '../../../models/DetallePaquete.interface';
+import {ServicioDetalleTrasladotoInterface} from '../../../models/ServicioDetalleTraslado.interface';
+import {CaracteristicasDelPresupuestoInterface} from '../../../models/CaracteristicasDelPresupuesto.interface';
+import {DetallePresupuestoInterface} from '../../../models/DetallePresupuesto.interface';
+import {InformacionServicioInterface} from '../../../models/InformacionServicio.interface';
+import {InformacionServicioVelacionInterface} from '../../../models/InformacionServicioVelacion.interface';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import {nacionalidad, sexo} from '../../../constants/catalogos-complementarios';
+import {ConfirmacionServicio} from '../../../../renovacion-extemporanea/models/convenios-prevision.interface';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { Subscription, finalize } from 'rxjs';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {finalize} from 'rxjs';
 
-import * as moment from 'moment';
 import {
   PATRON_CORREO,
   PATRON_CURP,
   PATRON_RFC,
 } from '../../../../../utils/constantes';
-import { ActivatedRoute } from '@angular/router';
-import { ActualizarOrdenServicioService } from '../../../services/actualizar-orden-servicio.service';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { GestionarEtapasActualizacionService } from '../../../services/gestionar-etapas-actualizacion.service';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {ActivatedRoute} from '@angular/router';
+import {ActualizarOrdenServicioService} from '../../../services/actualizar-orden-servicio.service';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
@@ -58,8 +54,7 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
   styleUrls: ['./modificar-datos-contratante.component.scss'],
 })
 export class ModificarDatosContratanteSFComponent
-  implements OnInit, AfterContentChecked
-{
+  implements OnInit, AfterContentChecked {
   @Output()
   seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
   @Output()
@@ -114,7 +109,8 @@ export class ModificarDatosContratanteSFComponent
   idDomicilio: number | null = null;
   idODS: number | null = null;
   datosConsulta: any = {};
-  colonias:TipoDropdown[] = [];
+  colonias: TipoDropdown[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -149,6 +145,7 @@ export class ModificarDatosContratanteSFComponent
     this.informacionServicioVelacion.cp = this.cpVelacion;
     this.inicializarForm();
   }
+
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
     this.pais =
@@ -174,17 +171,16 @@ export class ModificarDatosContratanteSFComponent
     else this.ocultarFolioEstatus = false;
 
     this.gestionarEtapasService.datosContratante$.asObservable().subscribe(
-      (datosContratante) =>this.llenarFormmulario(
-          datosContratante,
-          Number(this.rutaActiva.snapshot.queryParams.idODS),
-          Number(this.rutaActiva.snapshot.queryParams.idEstatus)
-        )
-      );
+      (datosContratante) => this.llenarFormmulario(
+        datosContratante,
+        Number(this.rutaActiva.snapshot.queryParams.idODS),
+        Number(this.rutaActiva.snapshot.queryParams.idEstatus)
+      )
+    );
     this.gestionarEtapasService.datosConsultaODS$.asObservable().subscribe(
       (datosConsultaODS) => (this.datosConsulta = datosConsultaODS)
     );
   }
-
 
 
   ngAfterContentChecked(): void {
@@ -324,7 +320,7 @@ export class ModificarDatosContratanteSFComponent
           },
           [],
         ],
-        cp: [{ value: null, disabled: false }, [Validators.required]],
+        cp: [{value: null, disabled: false}, [Validators.required]],
         colonia: [
           {
             value: null,
@@ -351,9 +347,9 @@ export class ModificarDatosContratanteSFComponent
   }
 
   llenarFormmulario(datos: any, idODS: number, tipoODS: number): void {
-    if(datos.hasOwnProperty('contratante')){
+    if (datos.hasOwnProperty('contratante')) {
       let coloniasLista: any = [{'nombre': datos.contratante.cp.desColonia}]
-      this.colonias = mapearArregloTipoDropdown(coloniasLista,'nombre','nombre')
+      this.colonias = mapearArregloTipoDropdown(coloniasLista, 'nombre', 'nombre')
     }
     if (Object.entries(datos).length === 0) {
       return;
@@ -368,10 +364,10 @@ export class ModificarDatosContratanteSFComponent
     }
     this.idDomicilio = datos.contratante.cp.idDomicilio
 
-    let matricula:string
-    if(typeof datos.contratante.matricula == 'string'){
+    let matricula: string
+    if (typeof datos.contratante.matricula == 'string') {
       datos.contratante.matricula.includes('null') ? matricula = '' : matricula = datos.contratante.matricula
-    }else{
+    } else {
       matricula = datos.contratante.matricula;
     }
 
@@ -515,7 +511,7 @@ export class ModificarDatosContratanteSFComponent
           [],
         ],
         cp: [
-          { value: datos.contratante.cp.codigoPostal, disabled: false },
+          {value: datos.contratante.cp.codigoPostal, disabled: false},
           [Validators.required],
         ],
         colonia: [
@@ -575,8 +571,8 @@ export class ModificarDatosContratanteSFComponent
     this.gestionarOrdenServicioService
       .consultarMatriculaSiap(this.datosContratante.matricula.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (!respuesta.datos) {
             this.alertaService.mostrar(
               TipoAlerta.Precaucion,
@@ -585,10 +581,10 @@ export class ModificarDatosContratanteSFComponent
             this.datosContratante.matricula.setValue(null);
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      } );
   }
 
   consultarCURP(): void {
@@ -607,12 +603,12 @@ export class ModificarDatosContratanteSFComponent
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
-              if(respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")){
-                this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
+              if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
+                this.alertaService.mostrar(TipoAlerta.Precaucion, this.mensajesSistemaService.obtenerMensajeSistemaPorId(34));
                 return
               }
               this.idPersona = null;
@@ -675,7 +671,7 @@ export class ModificarDatosContratanteSFComponent
               );
               datos.telefono.includes('null') ? this.datosContratante.telefono.patchValue(null) : this.datosContratante.telefono.setValue(datos.telefono);
               datos.correo.includes('null') ? this.datosContratante.correoElectronico.patchValue(null) : this.datosContratante.correoElectronico.setValue(datos.correo);
-              this.colonias = [{label:datos.colonia,value: datos.colonia}]
+              this.colonias = [{label: datos.colonia, value: datos.colonia}]
               this.direccion.colonia.setValue(datos.colonia);
               this.direccion.municipio.setValue(datos.municipio);
               this.direccion.estado.setValue(datos.estado);
@@ -697,44 +693,45 @@ export class ModificarDatosContratanteSFComponent
             )
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
-  consultarLugarNacimiento(entidad:string): void {
+  consultarLugarNacimiento(entidad: string): void {
     const entidadEditada = this.accentsTidy(entidad);
-    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+    if (entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')) {
       this.datosContratante.lugarNacimiento.setValue(11);
       return
     }
-    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+    if (entidadEditada.toUpperCase().includes('DISTRITO FEDERAL') || entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')) {
       this.datosContratante.lugarNacimiento.setValue(7);
       return
     }
-    this.estado.forEach((element:any) => {
-      const entidadIteracion =  this.accentsTidy(element.label);
-      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+    this.estado.forEach((element: any) => {
+      const entidadIteracion = this.accentsTidy(element.label);
+      if (entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())) {
         this.datosContratante.lugarNacimiento.setValue(element.value);
       }
     })
   }
 
   accentsTidy(s: string): string {
-    let r=s.toLowerCase();
-    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
-    r = r.replace(new RegExp(/æ/g),"ae");
-    r = r.replace(new RegExp(/ç/g),"c");
-    r = r.replace(new RegExp(/[èéêë]/g),"e");
-    r = r.replace(new RegExp(/[ìíîï]/g),"i");
-    r = r.replace(new RegExp(/ñ/g),"n");
-    r = r.replace(new RegExp(/[òóôõö]/g),"o");
-    r = r.replace(new RegExp(/œ/g),"oe");
-    r = r.replace(new RegExp(/[ùúûü]/g),"u");
-    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    let r = s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g), "a");
+    r = r.replace(new RegExp(/æ/g), "ae");
+    r = r.replace(new RegExp(/ç/g), "c");
+    r = r.replace(new RegExp(/[èéêë]/g), "e");
+    r = r.replace(new RegExp(/[ìíîï]/g), "i");
+    r = r.replace(new RegExp(/ñ/g), "n");
+    r = r.replace(new RegExp(/[òóôõö]/g), "o");
+    r = r.replace(new RegExp(/œ/g), "oe");
+    r = r.replace(new RegExp(/[ùúûü]/g), "u");
+    r = r.replace(new RegExp(/[ýÿ]/g), "y");
     return r;
   };
+
   limpiarConsultaDatosPersonales(): void {
     this.datosContratante.nombre.patchValue(null);
     this.datosContratante.primerApellido.patchValue(null);
@@ -744,7 +741,7 @@ export class ModificarDatosContratanteSFComponent
     this.datosContratante.nacionalidad.reset();
   }
 
-  limpiarFormularioConsultaRfcCurp(origen:string): void{
+  limpiarFormularioConsultaRfcCurp(origen: string): void {
     // if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
     // if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
     this.datosContratante.nombre.patchValue(null)
@@ -783,8 +780,8 @@ export class ModificarDatosContratanteSFComponent
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos.length > 0) {
             let datos = respuesta.datos[0];
             this.idPersona = datos.idPersona;
@@ -832,10 +829,10 @@ export class ModificarDatosContratanteSFComponent
           }
           // this.limpiarConsultaDatosPersonales();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultaCP(): void {
@@ -846,10 +843,10 @@ export class ModificarDatosContratanteSFComponent
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
-            this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
             this.direccion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -863,10 +860,10 @@ export class ModificarDatosContratanteSFComponent
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   noEspaciosAlPrincipio(posicion: number) {
@@ -1024,13 +1021,13 @@ export class ModificarDatosContratanteSFComponent
     this.contratante.sexo = datos.contratante.sexo;
     this.contratante.otroSexo = datos.contratante.primerApellido;
 
-    let [dia,mes,anio]= datos.contratante.fechaNac.split('/');
-    dia = dia.substr(0,2);
-    const fecha = new Date(anio+"-"+mes+"-"+dia)
+    let [dia, mes, anio] = datos.contratante.fechaNac.split('/');
+    dia = dia.substr(0, 2);
+    const fecha = new Date(anio + "-" + mes + "-" + dia)
     // this.contratante.fechaNac = moment(datos.contratante.fechaNac).format(
     //   'yyyy-MM-DD'
     // );
-    this.contratante.fechaNac = anio+"-"+mes+"-"+dia;
+    this.contratante.fechaNac = anio + "-" + mes + "-" + dia;
     this.contratante.idPais = datos.contratante.idPais == 0 ? null : datos.contratante.idPais;
 
     this.contratante.idEstado = datos.contratante.idEstado;
@@ -1079,7 +1076,7 @@ export class ModificarDatosContratanteSFComponent
     let noInterior = finado.cp?.numInterior ?? null;
     let cp = finado.cp?.codigoPostal ?? null;
     let colonia = finado.cp?.desColonia ?? null;
-    let municipio =finado.cp?.desMunicipio ?? null;
+    let municipio = finado.cp?.desMunicipio ?? null;
     let estado = finado.cp?.desEstado ?? null;
     let idDomicilio = finado.cp?.idDomicilio ?? null;
 
@@ -1127,9 +1124,9 @@ export class ModificarDatosContratanteSFComponent
       },
       direccion: {
         calle: calle,
-        noExterior:noExterior,
-        noInterior:noInterior,
-        cp:cp,
+        noExterior: noExterior,
+        noInterior: noInterior,
+        cp: cp,
         colonia: colonia,
         municipio: municipio,
         estado: estado,
@@ -1155,12 +1152,10 @@ export class ModificarDatosContratanteSFComponent
   }
 
 
-
-
-
   get datosContratante() {
     return (this.form.controls['datosContratante'] as FormGroup).controls;
   }
+
   get direccion() {
     return (this.form.controls['direccion'] as FormGroup).controls;
   }

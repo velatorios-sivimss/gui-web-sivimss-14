@@ -138,8 +138,8 @@ export class CalendarioComponent implements OnInit, OnDestroy {
       this.capillaReservacionService
         .consultaMes(mes, anio, this.velatorio)
         .pipe()
-        .subscribe(
-          (respuesta: HttpRespuesta<any>) => {
+        .subscribe({
+          next: (respuesta: HttpRespuesta<any>) => {
             this.loaderService.desactivar();
             this.calendarApi = this.calendarioCapillas.getApi();
             respuesta.datos.forEach((capilla: any) => {
@@ -166,11 +166,11 @@ export class CalendarioComponent implements OnInit, OnDestroy {
             })
             this.tituloCapillas = [...this.tituloCapillas];
           },
-          (error: HttpErrorResponse) => {
+          error: (error: HttpErrorResponse) => {
             console.error(error);
             this.alertaService.mostrar(TipoAlerta.Error, error.message);
           },
-        )
+        })
     }
   }
 

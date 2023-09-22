@@ -51,8 +51,8 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarArticulosComplementarios(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.articulos = [];
             this.articulosCompletos = [];
@@ -87,7 +87,7 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
             'idArticulo'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           try {
             const errorMsg: string =
@@ -107,7 +107,7 @@ export class ModalAgregarArticulosComplementariosComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   selecionararticulos(dd: Dropdown): void {

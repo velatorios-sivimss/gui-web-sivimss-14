@@ -23,7 +23,6 @@ const MAX_WIDTH: string = "876px";
 @Component({
   selector: 'app-roles-permisos',
   templateUrl: './roles-permisos.component.html',
-  styleUrls: ['./roles-permisos.component.scss'],
   providers: [DialogService]
 })
 export class RolesPermisosComponent implements OnInit {

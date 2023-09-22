@@ -55,8 +55,8 @@ export class ModalAgregarUrnaComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarTodaslasUrnas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.urnas = [];
             this.urnasCompletos = [];
@@ -85,17 +85,17 @@ export class ModalAgregarUrnaComponent implements OnInit {
           }
 
           arregloUrnaTemporal = datos;
-          this.inventarioSeleccionado.forEach((elemento:any) => {
-            arregloUrnaTemporal = arregloUrnaTemporal.filter((filtro:any) => {
+          this.inventarioSeleccionado.forEach((elemento: any) => {
+            arregloUrnaTemporal = arregloUrnaTemporal.filter((filtro: any) => {
               return filtro.idInventario != elemento;
             });
           });
 
 
           this.urnasCompletos = arregloUrnaTemporal;
-          if(this.urnasCompletos.length == 0){
+          if (this.urnasCompletos.length == 0) {
             const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
-            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+            this.alertaService.mostrar(TipoAlerta.Info, stockMsg || 'Ya no hay stock de este artículo.');
           }
 
           this.urnas = mapearArregloTipoDropdown(
@@ -104,7 +104,7 @@ export class ModalAgregarUrnaComponent implements OnInit {
             'idInventario'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           try {
             const errorMsg: string =
@@ -124,7 +124,7 @@ export class ModalAgregarUrnaComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   selecionarUrna(dd: Dropdown): void {

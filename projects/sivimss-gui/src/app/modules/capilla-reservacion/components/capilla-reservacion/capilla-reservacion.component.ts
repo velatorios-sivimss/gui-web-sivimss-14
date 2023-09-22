@@ -210,19 +210,19 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
 
   obtenerCapillaPorIdVelatorio() {
     let idVelatorio = +this.f.velatorio.value;
-    this.capillaReservacionService.capillaOcupadaPorIdVelatorio(idVelatorio).subscribe(
-      (respuesta) => {
+    this.capillaReservacionService.capillaOcupadaPorIdVelatorio(idVelatorio).subscribe({
+      next: (respuesta) => {
         if (respuesta.datos) {
           this.capilla = respuesta.datos.map((capilla: any) => {
-            return { label: capilla.nomCapilla, value: capilla.idCapilla };
+            return {label: capilla.nomCapilla, value: capilla.idCapilla};
           });
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
 
@@ -230,15 +230,15 @@ export class CapillaReservacionComponent implements OnInit, OnDestroy {
     this.loaderService.activar();
     this.capillaReservacionService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
-          { label: velatorio.nomVelatorio, value: velatorio.idVelatorio })) || [];
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.log(error);
       }
-    )
+    })
   }
 
 
