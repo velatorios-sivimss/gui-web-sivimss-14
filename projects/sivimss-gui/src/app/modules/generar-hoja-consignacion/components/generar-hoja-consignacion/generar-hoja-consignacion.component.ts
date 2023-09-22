@@ -5,7 +5,7 @@ import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/al
 import { OverlayPanel } from "primeng/overlaypanel";
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { BuscarGenerarHojaConsignacion, GenerarHojaConsignacion, GenerarHojaConsignacionBusqueda } from "../../models/generar-hoja-consignacion.interface";
+import { BuscarGenerarHojaConsignacion, GenerarHojaConsignacionBusqueda } from "../../models/generar-hoja-consignacion.interface";
 import { LazyLoadEvent } from "primeng/api";
 import { ActivatedRoute, Router } from '@angular/router';
 import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
@@ -22,11 +22,6 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { finalize } from 'rxjs';
 import * as moment from 'moment';
 import { FacturaProveedorComponent } from '../factura-proveedor/factura-proveedor.component';
-
-interface HttpResponse {
-  respuesta: string;
-  promotor: GenerarHojaConsignacion;
-}
 
 @Component({
   selector: 'app-generar-hoja-consignacion',
@@ -53,11 +48,11 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   public mensajeArchivoConfirmacion: string = "";
 
   public hojasConsignacion: GenerarHojaConsignacionBusqueda[] = [
-    {
-      idHojaConsignacion: 1,
-      fecHojaConsignacion: '14/09/2023',
-      folioHojaConsignacion: '14/09/2023',
-    }
+    // {
+    //   idHojaConsignacion: 1,
+    //   fecHojaConsignacion: '14/09/2023',
+    //   folioHojaConsignacion: '14/09/2023',
+    // }
   ];
   public actividadSeleccionada!: GenerarHojaConsignacionBusqueda;
   public detalleRef!: DynamicDialogRef;
@@ -183,7 +178,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-    });
+      });
   }
 
   datosPromotoresFiltros(): BuscarGenerarHojaConsignacion {
@@ -200,11 +195,22 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   }
 
   agregarFormatoActividades(): void {
-    void this.router.navigate([`agregar-hoja`], { relativeTo: this.activatedRoute });
-  }
+    if (this.filtroForm.valid) {
 
-  modificarFormatoActividades(actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
-    void this.router.navigate([`modificar-hoja/${actividadSeleccionada.idHojaConsignacion}`], { relativeTo: this.activatedRoute });
+      this.generarHojaConsignacionService.delegacionSeleccionada =
+        this.catalogoDelegaciones.find((item: TipoDropdown) => item.value === this.ff.delegacion.value);
+
+      this.generarHojaConsignacionService.velatorioSeleccionado =
+        this.catalogoVelatorios.find((item: TipoDropdown) => item.value === this.ff.velatorio.value);
+
+      this.generarHojaConsignacionService.proveedorSeleccionado =
+        this.catalogoProveedores.find((item: TipoDropdown) => item.value === this.ff.proveedor.value);
+
+      this.generarHojaConsignacionService.fecInicio = moment(this.ff.fecInicio.value).format('DD/MM/YYYY');
+      this.generarHojaConsignacionService.fecFin = moment(this.ff.fecFin.value).format('DD/MM/YYYY');
+
+      void this.router.navigate([`agregar-hoja`], { relativeTo: this.activatedRoute });
+    }
   }
 
   detalleFormatoActividades(actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
@@ -220,7 +226,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.detalleRef = this.dialogService.open(FacturaProveedorComponent, {
       header: "Factura proveedor",
       width: "920px",
-      data: {actividad: this.actividadSeleccionada},
+      data: { actividad: this.actividadSeleccionada },
     });
   }
 
