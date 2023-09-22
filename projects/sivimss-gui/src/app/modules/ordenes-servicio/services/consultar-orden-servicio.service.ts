@@ -64,8 +64,6 @@ export class ConsultarOrdenServicioService extends BaseService<HttpRespuesta<any
   }
 
   nombreFinado(): Observable<HttpRespuesta<any>> {
-    // const params: HttpParams = new HttpParams()
-    //   .append("servicio", 'consultar-finado');
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-nombre-finados`, {});
   }
 
