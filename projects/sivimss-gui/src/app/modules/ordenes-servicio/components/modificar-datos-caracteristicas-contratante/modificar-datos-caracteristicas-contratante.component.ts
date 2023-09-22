@@ -238,44 +238,46 @@ export class ModificarDatosCaracteristicasContratanteComponent
       .consultarPaquetes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
-          if (respuesta.error) {
-            this.paquetes = [];
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(respuesta.mensaje)
+        {
+          next: (respuesta: HttpRespuesta<any>) => {
+            const datos = respuesta.datos;
+            if (respuesta.error) {
+              this.paquetes = [];
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                  parseInt(respuesta.mensaje)
+                );
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
               );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
 
-            return;
-          }
-          this.paquetes = mapearArregloTipoDropdown(
-            datos,
-            'nombrePaquete',
-            'idPaquete'
-          );
-        },
-        (error: HttpErrorResponse) => {
-          try {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
+              return;
+            }
+            this.paquetes = mapearArregloTipoDropdown(
+              datos,
+              'nombrePaquete',
+              'idPaquete'
+            );
+          },
+          error: (error: HttpErrorResponse) => {
+            try {
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                  parseInt(error.error.mensaje)
+                );
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
               );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
-          } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            } catch (error) {
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
+              );
+            }
           }
         }
       );
@@ -831,22 +833,12 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   validacionFormulario(): boolean {
-    let banderaPaquete = false;
-    let banderaPresupuesto = false;
-    let banderaTipo = false;
-
-    this.selecionaTipoOtorgamiento;
-    this.paqueteSeleccionadoDD?.label;
-    if (this.tipoOrden == 1 || this.tipoOrden == 2) {
-      if (this.paqueteSeleccionadoDD) {
-        if (this.paqueteSeleccionadoDD.label.includes("Paquete social")) {
-          if (this.selecionaTipoOtorgamiento == null) {
-            return true;
-          }
-        }
-      }
+    if(this.datosPresupuesto.length > 0){
+      return true
+    }else{
+      this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+      return false
     }
-    return false;
   }
 
   continuar() {

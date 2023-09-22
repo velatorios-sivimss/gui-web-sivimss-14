@@ -814,6 +814,7 @@ export class ModificarDatosContratanteSFComponent
             this.datosContratante.telefono.setValue(datos.telefono);
             this.datosContratante.correoElectronico.setValue(datos.correo);
             this.datosContratante.curp.setValue(datos.curp);
+            this.colonias = [{label:datos.colonia,value: datos.colonia}]
             this.direccion.colonia.setValue(datos.colonia);
             this.direccion.municipio.setValue(datos.municipio);
             this.direccion.estado.setValue(datos.estado);

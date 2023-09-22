@@ -272,11 +272,22 @@ export class ModificarDatosFinadoComponent
 
     let edad;
     let fechaNacimiento;
+
+    let diaFinado!:string;
+    let mesFinado!:string;
+    let anioFinado!:string;
+
+
+
     if (datosEtapaFinado.datosFinado.fechaNacimiento) {
-      let [dia, mes, anio] =
-        datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
+      if(datosEtapaFinado.datosFinado.fechaNacimiento.includes('/')){
+        [diaFinado, mesFinado, anioFinado] = datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
+      }else{
+        [diaFinado, mesFinado, anioFinado] = datosEtapaFinado.datosFinado.fechaNacimiento.split('-');
+      }
+
       fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
-      let a = moment(anio + '-' + mes + '-' + dia);
+        let a = moment(anio + '-' + mes + '-' + dia);
       edad = moment().diff(a, 'years');
     }
 
@@ -1184,6 +1195,7 @@ export class ModificarDatosFinadoComponent
       this.finado.idFinado = this.idFinado ?? null;
     }
 
+    debugger
     this.altaODS.finado = this.finado;
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);

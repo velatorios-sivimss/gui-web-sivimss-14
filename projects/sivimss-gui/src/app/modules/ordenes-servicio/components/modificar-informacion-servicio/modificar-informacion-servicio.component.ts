@@ -51,6 +51,7 @@ import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.int
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {GenerarOrdenServicioService} from "../../services/generar-orden-servicio.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
 @Component({
   selector: 'app-modificar-informacion-servicio',
@@ -111,7 +112,7 @@ export class ModificarInformacionServicioComponent
   servicioExtremidad: boolean = false;
   confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
-
+  colonias:TipoDropdown[] = [];
   constructor(
     private route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
@@ -301,11 +302,9 @@ export class ModificarInformacionServicioComponent
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
     if (this.altaODS.finado.extremidad) this.desabilitarTodo();
-    // if(Number(this.altaODS.finado.idTipoOrden) < 3){
-    //   this.cortejo.gestionadoPorPromotor.disable();
-    // }else{
-    //   this.cortejo.gestionadoPorPromotor.enable();
-    // }
+    if (Number(this.altaODS.finado.idTipoOrden) == 1 && !this.altaODS.finado.extremidad){
+      this.cortejo.gestionadoPorPromotor.enable()
+    }
   }
 
   ngAfterContentChecked(): void {
@@ -359,8 +358,10 @@ export class ModificarInformacionServicioComponent
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
-    this.recoger.fecha.enable()
-    this.recoger.hora.enable()
+    this.recoger.fecha.enable();
+    this.recoger.hora.enable();
+    this.cortejo.fecha.enable();
+    this.cortejo.hora.enable();
     datosPresupuesto.forEach((datos: any) => {
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
@@ -378,6 +379,8 @@ export class ModificarInformacionServicioComponent
         this.lugarVelacion.colonia.enable();
         this.lugarVelacion.municipio.disable();
         this.lugarVelacion.estado.disable();
+        this.instalacionServicio.fecha.enable();
+        this.instalacionServicio.hora.enable();
       }
 
       if (
@@ -624,6 +627,7 @@ export class ModificarInformacionServicioComponent
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
               respuesta.datos[0].municipio.nombre
