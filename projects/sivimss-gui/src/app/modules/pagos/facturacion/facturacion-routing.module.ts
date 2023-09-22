@@ -20,13 +20,13 @@ const routes: Routes = [
   },
   {
     path: 'solicitar-factura',
-    component: SolicitarFacturaComponent
+    component: SolicitarFacturaComponent,
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class FacturacionRoutingModule {
 }

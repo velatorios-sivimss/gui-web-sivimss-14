@@ -1,4 +1,4 @@
-import {registrarSalida} from './../../models/capilla-reservacion.interface';
+import {RegistrarSalida} from './../../models/capilla-reservacion.interface';
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {DynamicDialogConfig, DynamicDialogRef,} from "primeng/dynamicdialog";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
@@ -10,7 +10,7 @@ import * as moment from 'moment'
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
-type NuevaSalida = Omit<registrarSalida, 'idSalida'>
+type NuevaSalida = Omit<RegistrarSalida, 'idSalida'>
 
 @Component({
   selector: 'app-registrar-salida',
@@ -20,9 +20,9 @@ type NuevaSalida = Omit<registrarSalida, 'idSalida'>
 export class RegistrarSalidaComponent implements OnInit {
 
 
-  @Input() registrarSalida!: registrarSalida;
+  @Input() registrarSalida!: RegistrarSalida;
   @Input() origen!: string;
-  @Output() confirmacionAceptar = new EventEmitter<registrarSalida>();
+  @Output() confirmacionAceptar = new EventEmitter<RegistrarSalida>();
 
   creacionRef!: DynamicDialogRef;
   acordionAbierto: boolean = false;
@@ -31,7 +31,7 @@ export class RegistrarSalidaComponent implements OnInit {
   overlayPanel: OverlayPanel | undefined;
   horaEntrada: any;
 
-  registroCapilla!: registrarSalida;
+  registroCapilla!: RegistrarSalida;
   idCapilla: any;
   idVelatorio!: any;
   idDisponibilidad: any;
@@ -77,7 +77,7 @@ export class RegistrarSalidaComponent implements OnInit {
     });
   }
 
-  crearSalidaModificada(): registrarSalida {
+  crearSalidaModificada(): RegistrarSalida {
     return {
       idCapilla: this.registrarSalida.idCapilla,
       idDisponibilidad: this.registroCapilla.idDisponibilidad,

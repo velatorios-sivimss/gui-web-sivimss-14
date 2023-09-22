@@ -17,11 +17,6 @@ interface ConsultaVelatorio {
 export class GenerarHojaConsignacionService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _nivel: string = 'catalogo_nivelOficina';
   private readonly _delegacion: string = 'catalogo_delegaciones';
-  public delegacionSeleccionada: TipoDropdown | undefined;
-  public velatorioSeleccionado: TipoDropdown | undefined;
-  public proveedorSeleccionado: TipoDropdown | undefined;
-  public fecInicio: string = '';
-  public fecFin: string = '';
 
   constructor(_http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "generar-hoja", "actualizar",

@@ -20,6 +20,7 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
   private readonly _eliminarPago: string = 'eliminar-pagos';
   private readonly _modificarPago: string = 'actualizar-pagos';
   private readonly _imprimirPago: string = 'generar-pdf-tabla-pagos';
+  private readonly _funcionalidadAGF: number = 96;
 
   constructor(override _http: HttpClient, private authService: AutenticacionService) {
     super(_http, `${environment.api.mssivimss}`, "crear_pagos", "",
@@ -116,5 +117,18 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.post<any>(this._base + `${this._funcionalidad}/${this._imprimirPago}/generarDocumento/pdf`
       , body, {headers, responseType: 'blob' as 'json'});
   }
+
+  obtenerRamos(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidadAGF}/0?servicio=lstramos-regis-agf`);
+  }
+
+  obtenerDetalleAGF(idFinado: number): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidadAGF}/${idFinado}?servicio=detalle-regis-agf`);
+  }
+
+  obtenerIdentificaciones(): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidadAGF}/0?servicio=lstads-regis-agf`);
+  }
+  
 
 }

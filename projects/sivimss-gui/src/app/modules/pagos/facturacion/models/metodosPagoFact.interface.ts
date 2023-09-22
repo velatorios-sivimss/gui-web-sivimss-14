@@ -1,4 +1,4 @@
 export interface MetodosPagoFact {
   importe: number,
-  metodo: string
+  metodoPago: string
 }

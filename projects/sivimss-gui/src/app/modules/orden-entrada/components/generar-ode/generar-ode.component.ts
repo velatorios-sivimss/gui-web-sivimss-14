@@ -61,7 +61,7 @@ export class GenerarOdeComponent implements OnInit {
       velatorio: [{ value: null, disabled: true }],
       costo: [{ value: null, disabled: true }],
       precio: [{ value: null, disabled: true }],
-      numeroArticulos: [{ value: null, disabled: true }, [Validators.required, Validators.max(this.maxNumeroArticulos)]],
+      numeroArticulos: [{ value: null, disabled: true }, [Validators.required]],
       fecha: [{ value: this.datePipe.transform(new Date(), 'dd/MM/YYYY'), disabled: true }],
       estatus: [{ value: 1, disabled: true }],
     });

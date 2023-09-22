@@ -85,30 +85,31 @@
   </div>
   <p-table styleClass="mt-5 mb-8" [value]="registros" [paginator]="registros.length > 0" [rows]="cantElementosPorPagina"
            [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="seleccionarPaginacion($event)">
+           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th id="facturacion_velatorio">Velatorio</th>
-        <th id="facturacion_folio">Folio</th>
-        <th id="facturacion_folio_factura">Folio de factura</th>
-        <th id="facturacion_fecha_factura">Fecha de factura</th>
-        <th id="facturacion_folio_fiscal">Folio fiscal</th>
-        <th id="facturacion_rfc">RFC</th>
-        <th id="facturacion_razon_social">Razón social</th>
-        <th id="facturacion_estatus">Estatus</th>
+        <th pResizableColumn id="facturacion_velatorio">Velatorio</th>
+        <th pResizableColumn id="facturacion_folio">Folio de ODS/Folio de convenio/Número de permiso</th>
+        <th pResizableColumn id="facturacion_folio_factura">Folio de factura</th>
+        <th pResizableColumn id="facturacion_fecha_factura">Fecha de factura</th>
+        <th pResizableColumn id="facturacion_folio_fiscal">Folio fiscal</th>
+        <th pResizableColumn id="facturacion_rfc">RFC</th>
+        <th pResizableColumn id="facturacion_razon_social">Razón social</th>
+        <th pResizableColumn id="facturacion_estatus">Estatus</th>
         <th id="facturacion_btns"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-registro>
       <tr>
-        <td>{{registro.velatorio}}</td>
-        <td>{{registro.folio}}</td>
-        <td>{{registro.folioFactura}}</td>
-        <td>{{registro.fechaFactura | date}}</td>
-        <td>{{registro.folioFiscal}}</td>
-        <td>{{registro.rfc}}</td>
-        <td>{{registro.razonSocial}}</td>
-        <td>{{registro.estatusFactura}}</td>
+        <td pResizableColumn>{{registro.velatorio}}</td>
+        <td pResizableColumn>{{registro.folio}}</td>
+        <td pResizableColumn>{{registro.folioFactura}}</td>
+        <td pResizableColumn>{{registro.fechaFactura | date:'dd-MM-YYYY'}}</td>
+        <td pResizableColumn>{{registro.folioFiscal}}</td>
+        <td pResizableColumn>{{registro.rfc}}</td>
+        <td pResizableColumn>{{registro.razonSocial}}</td>
+        <td pResizableColumn>{{registro.estatusFactura}}</td>
         <td>
           <div class="contenedor-celda-iconos">
             <a (click)="abrirPanel($event,registro)">
