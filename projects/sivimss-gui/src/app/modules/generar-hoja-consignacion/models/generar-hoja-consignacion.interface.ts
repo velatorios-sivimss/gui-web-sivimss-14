@@ -1,7 +1,7 @@
 export interface ArticulosBusqueda {
   totalCosto?: number | null;
   totalArt?: number | null;
-  articulosBusquedaDetalle: ArticulosBusquedaDetalle[];
+  artResponse: ArticulosBusquedaDetalle[];
 }
 
 export interface ArticulosBusquedaDetalle {
@@ -16,7 +16,17 @@ export interface ArticulosBusquedaDetalle {
   categoria?: string | null;
   proveedor?: string | null;
   paquete?: string | null;
+}
 
+export interface HojaConsignacionDetalle {
+  totalCosto?: number;
+  totalArt?: number;
+  folio?: string;
+  velatorio?: string;
+  delegacion?: string;
+  fecElaboracion?: string;
+  hrElaboracion?: string;
+  artResponse: ArticulosBusquedaDetalle[];
 }
 export interface GenerarHoja {
   idVelatorio?: any;
@@ -60,9 +70,9 @@ export interface BuscarGenerarHojaConsignacion {
 }
 
 export interface GenerarHojaConsignacionBusqueda {
-  idHojaConsignacion?: number | null;
-  fecHojaConsignacion?: string | null;
-  folioHojaConsignacion?: string | null;
+  idHojaConsig?: number | null;
+  fecElaboracion?: string | null;
+  folio?: string | null;
   proveedor?: string | null;
 }
 

@@ -3,6 +3,7 @@ import { RouterModule, Route } from '@angular/router';
 import { GenerarHojaConsignacionComponent } from './components/generar-hoja-consignacion/generar-hoja-consignacion.component';
 import { GenerarHojaConsignacionResolver } from './services/generar-hoja-consignacion.resolver';
 import { AgregarGenerarHojaConsignacionComponent } from './components/agregar-generar-hoja-consignacion/agregar-generar-hoja-consignacion.component';
+import { GenerarHojaConsignacionDetalleResolver } from './services/generar-hoja-consignacion-detalle.resolver';
 
 const routes: Route[] = [
   {
@@ -20,10 +21,10 @@ const routes: Route[] = [
     },
   },
   {
-    path: 'detalle-de-hoja/:id',
+    path: 'detalle-de-hoja/:idHojaConsignacion',
     component: AgregarGenerarHojaConsignacionComponent,
     resolve: {
-      respuesta: GenerarHojaConsignacionResolver
+      respuesta: GenerarHojaConsignacionDetalleResolver
     },
   },
 ];
@@ -32,7 +33,8 @@ const routes: Route[] = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: [
-    GenerarHojaConsignacionResolver
+    GenerarHojaConsignacionResolver,
+    GenerarHojaConsignacionDetalleResolver
   ]
 })
 export class PromotoresRoutingModule {
