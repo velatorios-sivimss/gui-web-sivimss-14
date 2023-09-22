@@ -47,14 +47,8 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   public busquedaRealizada: boolean = false;
   public mensajeArchivoConfirmacion: string = "";
 
-  public hojasConsignacion: GenerarHojaConsignacionBusqueda[] = [
-    // {
-    //   idHojaConsignacion: 1,
-    //   fecHojaConsignacion: '14/09/2023',
-    //   folioHojaConsignacion: '14/09/2023',
-    // }
-  ];
-  public actividadSeleccionada!: GenerarHojaConsignacionBusqueda;
+  public hojasConsignacion: GenerarHojaConsignacionBusqueda[] = [];
+  public hojaSeleccionada!: GenerarHojaConsignacionBusqueda;
   public detalleRef!: DynamicDialogRef;
   public filtroForm!: FormGroup;
   public promotoresFiltrados: TipoDropdown[] = [];
@@ -170,9 +164,11 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.generarHojaConsignacionService.buscarPorFiltros(this.datosPromotoresFiltros(), this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          this.hojasConsignacion = respuesta.datos ?? [];
-          this.totalElementos = respuesta.datos?.totalElements ?? 0;
-          this.busquedaRealizada = true;
+          if (respuesta.datos) {
+            this.hojasConsignacion = respuesta.datos?.content ?? [];
+            this.totalElementos = respuesta.datos?.totalElements ?? 0;
+            this.busquedaRealizada = true;
+          }
         },
         error: (error: HttpErrorResponse) => {
           console.error(error);
@@ -195,30 +191,15 @@ export class GenerarHojaConsignacionComponent implements OnInit {
   }
 
   agregarFormatoActividades(): void {
-    if (this.filtroForm.valid) {
-
-      this.generarHojaConsignacionService.delegacionSeleccionada =
-        this.catalogoDelegaciones.find((item: TipoDropdown) => item.value === this.ff.delegacion.value);
-
-      this.generarHojaConsignacionService.velatorioSeleccionado =
-        this.catalogoVelatorios.find((item: TipoDropdown) => item.value === this.ff.velatorio.value);
-
-      this.generarHojaConsignacionService.proveedorSeleccionado =
-        this.catalogoProveedores.find((item: TipoDropdown) => item.value === this.ff.proveedor.value);
-
-      this.generarHojaConsignacionService.fecInicio = moment(this.ff.fecInicio.value).format('DD/MM/YYYY');
-      this.generarHojaConsignacionService.fecFin = moment(this.ff.fecFin.value).format('DD/MM/YYYY');
-
-      void this.router.navigate([`agregar-hoja`], { relativeTo: this.activatedRoute });
-    }
+    void this.router.navigate([`agregar-hoja`], { relativeTo: this.activatedRoute });
   }
 
   detalleFormatoActividades(actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
-    void this.router.navigate([`detalle-de-hoja/${actividadSeleccionada.idHojaConsignacion}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`detalle-de-hoja/${actividadSeleccionada.idHojaConsig}`], { relativeTo: this.activatedRoute });
   }
 
-  abrirPanel(event: MouseEvent, actividadSeleccionada: GenerarHojaConsignacionBusqueda): void {
-    this.actividadSeleccionada = actividadSeleccionada;
+  abrirPanel(event: MouseEvent, hojaSeleccionada: GenerarHojaConsignacionBusqueda): void {
+    this.hojaSeleccionada = hojaSeleccionada;
     this.overlayPanel.toggle(event);
   }
 
@@ -226,7 +207,7 @@ export class GenerarHojaConsignacionComponent implements OnInit {
     this.detalleRef = this.dialogService.open(FacturaProveedorComponent, {
       header: "Factura proveedor",
       width: "920px",
-      data: { actividad: this.actividadSeleccionada },
+      data: { hojaSeleccionada: this.hojaSeleccionada },
     });
   }
 
