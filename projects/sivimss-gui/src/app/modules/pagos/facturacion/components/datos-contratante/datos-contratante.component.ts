@@ -16,4 +16,6 @@ export class DatosContratanteComponent {
   @Input() servicios: ServiciosContratados[] = [];
   @Input() metodosPago: MetodosPagoFact[] = [];
   @Input() activeIndex: number = 0;
+  @Input() totalPagado: number = 0;
+  @Input() totalServicios: number = 0;
 }

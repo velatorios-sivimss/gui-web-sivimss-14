@@ -9,7 +9,7 @@ export const TIPO_PAGO_CATALOGOS_ODS: any[] = [
   {
     value: 2,
     label: 'Ayuda de Gastos de Funeral (AGF)',
-    deshabilitado: true
+    deshabilitado: false
   },
   {
     value: 3,

@@ -318,12 +318,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       } else if (rfc === "") {
         this.cajaValidacionDatosExistentes[0] = false;
       }
-    } else {
-      if (curp === "") {
-        this.cajaValidacionDatosExistentes[3] = false;
-      } else if (rfc === "") {
-        this.cajaValidacionDatosExistentes[2] = false;
-      }
+    } else if (curp === "") {
+      this.cajaValidacionDatosExistentes[3] = false;
+    } else if (rfc === "") {
+      this.cajaValidacionDatosExistentes[2] = false;
     }
 
     this.serviciosFunerariosService.validarAfiliado(curp, rfc, nss).pipe(
@@ -338,12 +336,10 @@ export class AltaServiciosFunerariosComponent implements OnInit {
             } else if (rfc === "") {
               this.cajaValidacionDatosExistentes[0] = true;
             }
-          } else {
-            if (curp === "") {
-              this.cajaValidacionDatosExistentes[3] = true;
-            } else if (rfc === "") {
-              this.cajaValidacionDatosExistentes[2] = true;
-            }
+          } else if (curp === "") {
+            this.cajaValidacionDatosExistentes[3] = true;
+          } else if (rfc === "") {
+            this.cajaValidacionDatosExistentes[2] = true;
           }
 
           this.existeDatoRegistrado = true;
@@ -451,16 +447,14 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         formularios[1].clearValidators();
         formularios[1].updateValueAndValidity();
       }
+    } else if (this.fdc.nacionalidad.value == 1) {
+      formularios[2].reset()
+      formularios[3].setValidators(Validators.required);
     } else {
-      if (this.fdc.nacionalidad.value == 1) {
-        formularios[2].reset()
-        formularios[3].setValidators(Validators.required);
-      } else {
-        formularios[3].reset()
-        formularios[3].patchValue(null);
-        formularios[3].clearValidators();
-        formularios[3].updateValueAndValidity();
-      }
+      formularios[3].reset()
+      formularios[3].patchValue(null);
+      formularios[3].clearValidators();
+      formularios[3].updateValueAndValidity();
     }
   }
 

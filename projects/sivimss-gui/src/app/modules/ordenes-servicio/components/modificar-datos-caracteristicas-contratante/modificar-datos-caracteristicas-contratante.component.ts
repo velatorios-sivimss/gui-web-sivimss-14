@@ -237,8 +237,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.gestionarOrdenServicioService
       .consultarPaquetes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -259,7 +259,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
             'idPaquete'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -278,7 +278,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
             );
           }
         }
-      );
+      });
   }
 
   confirmarCambioPaquete(dd: Dropdown): void {
@@ -319,8 +319,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.gestionarOrdenServicioService
       .consultarDetallePaquete(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.paquetes = [];
@@ -337,7 +337,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
           this.datosPaquetes = datos;
           this.costoServiciosPorPaquete = datos[0].totalPaquete;
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
 
           try {
@@ -358,7 +358,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
             );
           }
         }
-      );
+      });
   }
 
   buscarTipoAsignacion(): void {
@@ -367,8 +367,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.gestionarOrdenServicioService
       .consultarTipoAsignacion(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.tipoAsignacion = [];
             return;
@@ -380,10 +380,10 @@ export class ModificarDatosCaracteristicasContratanteComponent
           }
           this.tipoAsignacion = datos.split(',');
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   agregarArticulo(datos: any): void {
@@ -530,8 +530,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.gestionarOrdenServicioService
       .consultarProveeedorServicio(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.listaproveedor = [];
@@ -551,7 +551,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
             'idProveedor'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             const errorMsg: string =
@@ -571,7 +571,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
             );
           }
         }
-      );
+      });
   }
 
   abrirModalAgregarAlPrespuesto(event: MouseEvent) {
@@ -1136,9 +1136,6 @@ export class ModificarDatosCaracteristicasContratanteComponent
         this.caracteristicasPaquete;
       this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
     }
-
-    // this.detallePresupuesto = arrayDatosPresupuesto;
-
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
 
