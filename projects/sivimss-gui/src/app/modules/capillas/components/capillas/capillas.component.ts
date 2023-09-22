@@ -136,8 +136,8 @@ export class CapillasComponent implements OnInit {
     const solicitudFiltros = JSON.stringify(filtros);
     this.capillaService.buscarPorFiltros2(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta): void => {
-        this.capillas = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.capillas = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
         if (this.totalElementos == 0) {
           this.alertaService.mostrar(TipoAlerta.Error, 'No se encontró información relacionada a tu búsqueda.');
         }

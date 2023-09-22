@@ -428,8 +428,6 @@ export class DatosContratanteSFComponent implements OnInit {
             this.direccion.noInterior.setValue(datos.numExterior);
             this.direccion.noExterior.setValue(datos.numInterior);
             this.idDomicilio = datos.idDomicilio;
-
-            return;
           }
           // this.limpiarConsultaDatosPersonales();
         },
