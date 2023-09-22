@@ -24,14 +24,14 @@
       <div class="col-md-4">
         <div class="table-panel-column">
           <span>Delegación</span>
-          <label>Edo. Méx. Poniente</label>
+          <label>{{generarHojaConsignacionService.delegacionSeleccionada?.label}}</label>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="table-panel-column">
           <span>Velatorio</span>
-          <label>No. 18 Tequesquináhuac</label>
+          <label>{{generarHojaConsignacionService.velatorioSeleccionado?.label}}</label>
         </div>
       </div>
     </div>
@@ -41,15 +41,15 @@
     <div class="background-group">
       <div class="col-md-4">
         <div class="table-panel-column">
-          <span>Fecha </span>
-          <label>01-01-2021</label>
+          <span>Fecha</span>
+          <label>{{hoy | date : 'dd/MM/yyyy'}}</label>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="table-panel-column">
           <span>Hora</span>
-          <label>10:32 am</label>
+          <label>{{hoy | date: 'HH:mm'}}</label>
         </div>
       </div>
 
@@ -64,10 +64,10 @@
 </div>
 
 <div class="border-panel mt-6">
-  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8 table-custom-proveedor" [value]="proveedores"
+  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8 table-custom-proveedor" [value]="articulos"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
     [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [resizableColumns]="true" [columnResizeMode]="'expand'">
-    <ng-template pTemplate="header" class="okok">
+    <ng-template pTemplate="header">
       <tr class="header-custom-proveedor">
         <th pResizableColumn scope="col">Proveedor</th>
         <th pResizableColumn scope="col">Fecha ODS</th>
@@ -78,15 +78,15 @@
         <th pResizableColumn scope="col">Costo</th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-proveedor>
+    <ng-template pTemplate="body" let-articulo>
       <tr>
-        <td pResizableColumn> {{proveedor.proveedor}}</td>
-        <td pResizableColumn> {{proveedor.fecha}}</td>
-        <td pResizableColumn> {{proveedor.folio}}</td>
-        <td pResizableColumn> {{proveedor.categoria}}</td>
-        <td pResizableColumn> {{proveedor.folioArticulo}}</td>
-        <td pResizableColumn> {{proveedor.paquete}}</td>
-        <td pResizableColumn> {{proveedor.costo}}</td>
+        <td pResizableColumn> {{articulo.proveedor}}</td>
+        <td pResizableColumn> {{articulo.fecOds}}</td>
+        <td pResizableColumn> {{articulo.folioOds}}</td>
+        <td pResizableColumn> {{articulo.categoria}}</td>
+        <td pResizableColumn> {{articulo.folioOde}}</td>
+        <td pResizableColumn> {{articulo.paquete}}</td>
+        <td pResizableColumn> {{articulo.costoConIva}}</td>
       </tr>
     </ng-template>
   </p-table>
@@ -101,14 +101,14 @@
       <div class="col-md-2">
         <div class="table-panel-column">
           <span>Total, de artículos:</span>
-          <label>000</label>
+          <label>{{totalArticulo}}</label>
         </div>
       </div>
 
       <div class="col-md-1">
         <div class="table-panel-column">
           <span>Total, costo:</span>
-          <label>$28,000.00</label>
+          <label>${{totalCosto}}</label>
         </div>
       </div>
     </div>
@@ -117,7 +117,26 @@
 </div>
 
 <div class="flex justify-content-end mt-6 mb-6">
-  <button type="button" class="ml-4 btn btn-primary btn-md">
+  <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="!hojaGenerada"
+    [disabled]="mode !== 'create' || articulos.length === 0" (click)="guardar();">
     Guardar
   </button>
+  <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="hojaGenerada || mode !== 'detail'"
+    (click)="vistaPrevia();">
+    Vista previa
+  </button>
 </div>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

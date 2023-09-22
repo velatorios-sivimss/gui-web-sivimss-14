@@ -26,13 +26,6 @@ const routes: Route[] = [
       respuesta: GenerarHojaConsignacionResolver
     },
   },
-  {
-    path: 'modificar-hoja/:id',
-    component: AgregarGenerarHojaConsignacionComponent,
-    resolve: {
-      respuesta: GenerarHojaConsignacionResolver
-    },
-  },
 ];
 
 @NgModule({

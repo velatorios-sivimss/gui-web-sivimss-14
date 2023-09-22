@@ -19,9 +19,9 @@ import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {
-  catalogoFolioODS,
-  catalogoVelatorio,
-  catalogoContratantes, catalogoFinado
+  CatalogoFolioODS,
+  CatalogoVelatorio,
+  CatalogoContratantes, CatalogoFinado
 } from "../../../constants/catalogos.interface";
 import {OrdenServicioFiltroConsulta, OrdenServicioPaginado} from "../../../models/orden-servicio-paginado.interface";
 import {CancelarOrdenServicioSFComponent,} from "../cancelar-orden-servicio/cancelar-orden-servicio.component";
@@ -58,15 +58,15 @@ export class OrdenesServicioSFComponent implements OnInit {
   delegaciones!: TipoDropdown[];
   velatorios!: TipoDropdown[];
   folios!: TipoDropdown[];
-  foliosDescripcion!: catalogoFolioODS[];
+  foliosDescripcion!: CatalogoFolioODS[];
   nombreContratantes!: TipoDropdown[];
   nombreFinados!: TipoDropdown[];
   unidadesMedicas!: TipoDropdown[];
   tipoODS!: TipoDropdown[];
   estatusODS!: TipoDropdown[];
 
-  nombresContratantes!: catalogoContratantes;
-  nombresFinados!: catalogoFinado;
+  nombresContratantes!: CatalogoContratantes;
+  nombresFinados!: CatalogoFinado;
 
   filtroForm!: FormGroup;
   mensajeArchivoConfirmacion: string = "";
@@ -306,7 +306,7 @@ export class OrdenesServicioSFComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.velatorios = respuesta.datos.map((velatorio: catalogoVelatorio) => (
+        this.velatorios = respuesta.datos.map((velatorio: CatalogoVelatorio) => (
           {label: velatorio.DES_VELATORIO, value: velatorio.idVelatorio})) || [];
       },
       error: (error: HttpErrorResponse) => {
@@ -324,7 +324,7 @@ export class OrdenesServicioSFComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.foliosDescripcion = respuesta.datos || [];
-        this.folios = respuesta.datos.map((folio: catalogoFolioODS) => (
+        this.folios = respuesta.datos.map((folio: CatalogoFolioODS) => (
           {label: folio.folioODS, value: folio.idODS})) || [];
       },
       error: (error: HttpErrorResponse) => {
@@ -360,7 +360,7 @@ export class OrdenesServicioSFComponent implements OnInit {
     let query = this.obtenerNombreContratantesDescripcion("finado");
     let filtered: TipoDropdown[] = [];
     if (query?.length < 3) return;
-    for (let i = 0; i < (this.nombresFinados as catalogoFinado[]).length; i++) {
+    for (let i = 0; i < (this.nombresFinados as CatalogoFinado[]).length; i++) {
       let finado = (this.nombresFinados as any[])[i];
       if (finado.nombreCompletoFinado.toLowerCase().indexOf(query.toLowerCase()) == 0) {
         filtered.push({

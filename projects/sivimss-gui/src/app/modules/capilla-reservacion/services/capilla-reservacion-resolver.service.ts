@@ -7,7 +7,7 @@ import {forkJoin, Observable} from "rxjs";
 import {CapillaReservacionService} from './capilla-reservacion.service';
 
 @Injectable()
-export class capillaReservacionResolver implements Resolve<any> {
+export class CapillaReservacionResolver implements Resolve<any> {
 
   constructor(private capillaReservacionService: CapillaReservacionService) {
   }
