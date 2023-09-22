@@ -584,7 +584,7 @@ export class ModificarDatosContratanteSFComponent
         error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      } );
+      });
   }
 
   consultarCURP(): void {
@@ -824,8 +824,6 @@ export class ModificarDatosContratanteSFComponent
             this.direccion.noInterior.setValue(datos.numExterior);
             this.direccion.noExterior.setValue(datos.numInterior);
             this.idDomicilio = datos.idDomicilio;
-
-            return;
           }
           // this.limpiarConsultaDatosPersonales();
         },
