@@ -311,6 +311,7 @@ export class ModificarInformacionServicioComponent
     this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
+    if (this.altaODS.finado.extremidad) this.desabilitarTodo();
     // if(Number(this.altaODS.finado.idTipoOrden) < 3){
     //   this.cortejo.gestionadoPorPromotor.disable();
     // }else{
@@ -369,6 +370,8 @@ export class ModificarInformacionServicioComponent
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
+    this.recoger.fecha.enable()
+    this.recoger.hora.enable()
     datosPresupuesto.forEach((datos: any) => {
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
@@ -453,47 +456,49 @@ export class ModificarInformacionServicioComponent
     this.loaderService.activar();
     const parametros = { idVelatorio: this.idVelatorio };
     this.gestionarOrdenServicioService
-      .buscarCapillas(parametros)
+      .buscarSalas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
-          if (respuesta.error) {
-            this.salas = [];
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(respuesta.mensaje)
+        {
+          next: (respuesta: HttpRespuesta<any>) => {
+            const datos = respuesta.datos;
+            if (respuesta.error) {
+              this.salas = [];
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                  parseInt(respuesta.mensaje)
+                );
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
               );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
 
-            return;
-          }
-          this.salas = mapearArregloTipoDropdown(
-            datos,
-            'nombreCapilla',
-            'idCapilla'
-          );
-        },
-        (error: HttpErrorResponse) => {
-          try {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(
-                parseInt(error.error.mensaje)
+              return;
+            }
+            this.salas = mapearArregloTipoDropdown(
+              datos,
+              'nombreSala',
+              'idSala'
+            );
+          },
+          error: (error: HttpErrorResponse) => {
+            try {
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(
+                  parseInt(error.error.mensaje)
+                );
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
               );
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
-          } catch (error) {
-            const errorMsg: string =
-              this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
-            this.alertaService.mostrar(
-              TipoAlerta.Info,
-              errorMsg || 'El servicio no responde, no permite más llamadas.'
-            );
+            } catch (error) {
+              const errorMsg: string =
+                this.mensajesSistemaService.obtenerMensajeSistemaPorId(187);
+              this.alertaService.mostrar(
+                TipoAlerta.Info,
+                errorMsg || 'El servicio no responde, no permite más llamadas.'
+              );
+            }
           }
         }
       );

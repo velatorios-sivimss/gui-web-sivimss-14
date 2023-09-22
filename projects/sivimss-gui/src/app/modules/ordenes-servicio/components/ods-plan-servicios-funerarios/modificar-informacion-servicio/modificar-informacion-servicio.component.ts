@@ -373,6 +373,8 @@ export class ModificarInformacionServicioSFComponent
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
+    this.recoger.fecha.enable()
+    this.recoger.hora.enable()
     datosPresupuesto.forEach((datos: any) => {
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
@@ -457,7 +459,7 @@ export class ModificarInformacionServicioSFComponent
     this.loaderService.activar();
     const parametros = { idVelatorio: this.idVelatorio };
     this.gestionarOrdenServicioService
-      .buscarCapillas(parametros)
+      .buscarSalas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         (respuesta: HttpRespuesta<any>) => {
@@ -477,8 +479,8 @@ export class ModificarInformacionServicioSFComponent
           }
           this.salas = mapearArregloTipoDropdown(
             datos,
-            'nombreCapilla',
-            'idCapilla'
+            'nombreSala',
+            'idSala'
           );
         },
         (error: HttpErrorResponse) => {

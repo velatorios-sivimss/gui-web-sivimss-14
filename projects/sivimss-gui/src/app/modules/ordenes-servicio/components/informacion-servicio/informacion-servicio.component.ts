@@ -158,11 +158,14 @@ export class InformacionServicioComponent implements OnInit {
     this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
+    if (this.altaODS.finado.extremidad) this.desabilitarTodo();
   }
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
+    this.recoger.fecha.enable()
+    this.recoger.hora.enable()
     datosPresupuesto.forEach((datos: any) => {
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
@@ -352,7 +355,7 @@ export class InformacionServicioComponent implements OnInit {
     this.loaderService.activar();
     const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService
-      .buscarCapillas(parametros)
+      .buscarSalas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
@@ -372,8 +375,8 @@ export class InformacionServicioComponent implements OnInit {
           }
           this.salas = mapearArregloTipoDropdown(
             datos,
-            'nombreCapilla',
-            'idCapilla'
+            'nombreSala',
+            'idSala'
           );
         },
         error: (error: HttpErrorResponse): void => {
