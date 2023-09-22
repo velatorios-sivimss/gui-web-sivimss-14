@@ -1,27 +1,23 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute} from '@angular/router';
-import {LocationStrategy} from '@angular/common';
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {AlertaService} from "../../../../shared/alerta/services/alerta.service";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {
-  BuscarCatalogo,
-  GenerarHojaConsignacion,
-  GenerarHojaConsignacionBusqueda,
-  ProveedoresBusqueda
-} from '../../models/generar-hoja-consignacion.interface';
-import {UsuarioService} from '../../../usuarios/services/usuario.service';
-import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import {HttpErrorResponse} from '@angular/common/http';
-import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import {GenerarHojaConsignacionService} from '../../services/generar-hoja-consignacion.service';
-import {GENERAR_FORMATO_BREADCRUMB} from '../../constants/breadcrumb';
-import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
-import {LazyLoadEvent} from 'primeng/api';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from '@angular/router';
+import { LocationStrategy } from '@angular/common';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { OverlayPanel } from "primeng/overlaypanel";
+import { BuscarCatalogo, BuscarProveedor, GenerarHoja, ArticulosBusqueda, ArticulosBusquedaDetalle } from '../../models/generar-hoja-consignacion.interface';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { finalize } from 'rxjs';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import { GenerarHojaConsignacionService } from '../../services/generar-hoja-consignacion.service';
+import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
+import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
+import { LazyLoadEvent } from 'primeng/api';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 
 @Component({
   selector: 'app-agregar-generar-hoja-consignacion',
@@ -43,30 +39,16 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   public catalogoPromotores: TipoDropdown[] = [];
   public mensajeModal: string = "";
   public realizoBusqueda: boolean = false;
-  public clonedProducts: { [s: string]: GenerarHojaConsignacionBusqueda } = {};
-  public actividades: GenerarHojaConsignacionBusqueda[] = [];
-  public proveedores: ProveedoresBusqueda[] = [
-    {
-      proveedor: 'Soluciones industriales del Noreste S.A. de C.V.',
-      fecha: '01/01/02021',
-      folio: 'DOC-000001',
-      categoria: 'Categoría',
-      folioArticulo: 'DOC-000001',
-      paquete: 'Paquete económico familiar',
-      costo: '$14,000.00',
-    },
-    {
-      proveedor: 'Soluciones industriales del Noreste S.A. de C.V.',
-      fecha: '01/01/02021',
-      folio: 'DOC-000001',
-      categoria: 'Categoría',
-      folioArticulo: 'DOC-000001',
-      paquete: 'Paquete económico familiar',
-      costo: '$14,000.00',
-    }
-  ];
+  public articulos: ArticulosBusquedaDetalle[] = [];
+  public totalArticulo: number = 0;
+  public totalCosto: number = 0;
   public agregarGenerarHojaConsignacionForm!: FormGroup;
+  public hoy = new Date();
+  public hojaGenerada: boolean = false;
+  public idHojaConsig: number = 0;
   public mode: 'detail' | 'create' = 'create';
+  public mostrarModalConfirmacion: boolean = false;
+  public mensajeArchivoConfirmacion: string = "";
 
   constructor(
     private formBuilder: FormBuilder,
@@ -75,11 +57,12 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private url: LocationStrategy,
     public ref: DynamicDialogRef,
-    private usuarioService: UsuarioService,
     private loaderService: LoaderService,
     private alertaService: AlertaService,
+    private router: Router,
+    private descargaArchivosService: DescargaArchivosService,
     private mensajesSistemaService: MensajesSistemaService,
-    private generarHojaConsignacionService: GenerarHojaConsignacionService,
+    public generarHojaConsignacionService: GenerarHojaConsignacionService,
   ) {
   }
 
@@ -88,32 +71,17 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
       this.mode = 'detail';
     }
     this.breadcrumbService.actualizar(GENERAR_FORMATO_BREADCRUMB);
-    this.inicializarAgregarActividadesForm();
-  }
 
-  inicializarAgregarActividadesForm() {
-    this.agregarGenerarHojaConsignacionForm = this.formBuilder.group({
-      folio: new FormControl({value: null, disabled: true}, []),
-      velatorio: new FormControl({value: null, disabled: this.mode !== 'create'}, [Validators.required]),
-      fechaInicio: new FormControl({value: null, disabled: this.mode !== 'create'}, [Validators.required]),
-      fechaFinal: new FormControl({value: null, disabled: this.mode !== 'create'}, [Validators.required]),
-    });
-  }
-
-  agregarRegistro() {
-    // if (!this.agregandoRegistro) {
-    //   this.actividades.unshift({
-    //     idHojaConsignacion: null,
-    //     fecHojaConsignacion: null,
-    //   });
-
-    //   this.agregandoRegistro = true;
-
-    //   setTimeout(() => {
-    //     let elements = document.getElementById('null');
-    //     elements?.click();
-    //   }, 100);
-    // }
+    if (this.mode === 'detail') {
+      this.obtenerDetalle();
+    } else {
+      if (!this.generarHojaConsignacionService.delegacionSeleccionada ||
+        !this.generarHojaConsignacionService.velatorioSeleccionado ||
+        !this.generarHojaConsignacionService.proveedorSeleccionado) {
+        void this.router.navigate([`/generar-hoja-de-consignacion`], { relativeTo: this.activatedRoute });
+      }
+      this.buscarArticulos();
+    }
   }
 
   paginar(event?: LazyLoadEvent): void {
@@ -129,14 +97,52 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
     this.ref.close();
   }
 
-  consultarPromotores() {
-    let obj: BuscarCatalogo = {
-      idCatalogo: 1,
-      idVelatorio: this.apf.velatorio.value,
-    }
-    this.generarHojaConsignacionService.obtenerCatalogos(obj).subscribe({
+  obtenerDetalle() {
+    this.loaderService.activar();
+    this.articulos = [];
+    this.generarHojaConsignacionService.obtenerDetalleHojaConsignacion(this.idHojaConsig)
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<ArticulosBusqueda>) => {
+          if (respuesta.datos) {
+            console.log(respuesta);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
+  }
+
+  buscarArticulos(): void {
+    this.loaderService.activar();
+    this.articulos = [];
+    this.generarHojaConsignacionService.buscarArticulos(this.datosProveedor())
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+        next: (respuesta: HttpRespuesta<ArticulosBusqueda>) => {
+          if (respuesta.datos)
+            this.articulos = respuesta.datos.articulosBusquedaDetalle;
+          this.totalArticulo = respuesta.datos.totalArt ?? 0;
+          this.totalCosto = respuesta.datos.totalCosto ?? 0;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
+  }
+
+  guardar() {
+    this.loaderService.activar();
+    this.generarHojaConsignacionService.generarHoja(this.datosGuardar()).pipe(
+      finalize(() => {
+        this.loaderService.desactivar()
+      })
+    ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.catalogoPromotores = respuesta.datos;
+        if (respuesta.codigo === 200 && !respuesta.error) {
+          this.hojaGenerada = true;
+          this.idHojaConsig = respuesta.datos;
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
@@ -144,16 +150,38 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
     });
   }
 
-  datosGuardar(actividad: GenerarHojaConsignacionBusqueda): GenerarHojaConsignacion {
+  vistaPrevia(): void {
+    this.loaderService.activar();
+    this.descargaArchivosService.descargarArchivo(this.generarHojaConsignacionService.reporteHojaConsignacion({ idHojaConsig: this.idHojaConsig })).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: () => {
+        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+        this.mostrarModalConfirmacion = true;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
+
+  datosGuardar(): GenerarHoja {
     return {
-      idFormatoRegistro: this.apf.folio.value,
-      idVelatorio: this.apf.velatorio.value,
-      fecInicio: this.apf.fechaInicio.value,
-      fecFin: this.apf.fechaFinal.value,
+      idVelatorio: this.generarHojaConsignacionService.velatorioSeleccionado?.value,
+      idProveedor: this.generarHojaConsignacionService.proveedorSeleccionado?.value,
+      artConsig: this.articulos,
     }
   }
 
-  get apf() {
-    return this.agregarGenerarHojaConsignacionForm.controls;
+  datosProveedor(): BuscarProveedor {
+    return {
+      idDelegacion: this.generarHojaConsignacionService.delegacionSeleccionada?.value,
+      idVelatorio: this.generarHojaConsignacionService.velatorioSeleccionado?.value,
+      idProveedor: this.generarHojaConsignacionService.proveedorSeleccionado?.value,
+      fecInicio: this.generarHojaConsignacionService.fecInicio,
+      fecFin: this.generarHojaConsignacionService.fecFin,
+    }
   }
 }

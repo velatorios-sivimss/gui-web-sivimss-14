@@ -1,13 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
-import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {
-  GenerarHojaConsignacion,
-  GenerarHojaConsignacionBusqueda
-} from '../../models/generar-hoja-consignacion.interface';
-import {GenerarHojaConsignacionService} from '../../services/generar-hoja-consignacion.service';
-import {GENERAR_FORMATO_BREADCRUMB} from '../../constants/breadcrumb';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import { AdjuntarFactura } from '../../models/generar-hoja-consignacion.interface';
+import { GenerarHojaConsignacionService } from '../../services/generar-hoja-consignacion.service';
+import { GENERAR_FORMATO_BREADCRUMB } from '../../constants/breadcrumb';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { finalize } from 'rxjs';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-factura-proveedor',
@@ -19,14 +21,18 @@ export class FacturaProveedorComponent implements OnInit {
 
   public generarHojaConsignacionForm!: FormGroup;
   public controlName: string = '';
-  public costoTotal: string | null = '';
+  public costoTotal: string | null = null;
   public importeFactura: string | null = '';
+  public idHojaConsig: number | null = null;
+  public folioFiscal: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
     public ref: DynamicDialogRef,
+    private loaderService: LoaderService,
+    private alertaService: AlertaService,
     private generarHojaConsignacionService: GenerarHojaConsignacionService,
   ) {
   }
@@ -38,9 +44,9 @@ export class FacturaProveedorComponent implements OnInit {
 
   inicializarAgregarActividadesForm() {
     this.generarHojaConsignacionForm = this.formBuilder.group({
-      folio: new FormControl({value: null, disabled: true}, []),
-      archivoXml: new FormControl({value: null, disabled: false}, []),
-      archivoPdf: new FormControl({value: null, disabled: false}, []),
+      folio: new FormControl({ value: null, disabled: true }, []),
+      archivoXml: new FormControl({ value: null, disabled: false }, [Validators.required]),
+      archivoPdf: new FormControl({ value: null, disabled: false }, [Validators.required]),
     });
   }
 
@@ -48,16 +54,30 @@ export class FacturaProveedorComponent implements OnInit {
     this.ref.close();
   }
 
-  guardar(): void {
-    console.log("Se comenta método para que no marque error en Sonar");
+  guardar() {
+    this.loaderService.activar();
+    this.generarHojaConsignacionService.generarHoja(this.datosGuardar()).pipe(
+      finalize(() => {
+        this.loaderService.desactivar()
+      })
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.codigo === 200 && !respuesta.error) {
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
+          this.cancelar();
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+      }
+    });
   }
 
-  datosGuardar(actividad: GenerarHojaConsignacionBusqueda): GenerarHojaConsignacion {
+  datosGuardar(): AdjuntarFactura {
     return {
-      idFormatoRegistro: this.apf.folio.value,
-      idVelatorio: this.apf.velatorio.value,
-      fecInicio: this.apf.fechaInicio.value,
-      fecFin: this.apf.fechaFinal.value,
+      idHojaConsig: this.idHojaConsig,
+      folioFiscal: this.folioFiscal,
+      costoFactura: this.costoTotal ? +this.costoTotal : 0,
     }
   }
 
