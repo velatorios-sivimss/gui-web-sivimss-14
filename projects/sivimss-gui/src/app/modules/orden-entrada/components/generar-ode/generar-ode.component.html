@@ -17,7 +17,7 @@
                   placeholder="Seleccionar contrato" (onChange)="onContratoChange($event)" [filter]="true" filterBy="label">
       </p-dropdown>
       <span class="campo-obligatorio"
-            *ngIf="f.contrato?.errors?.required && (f.contrato?.dirty || f.contrato?.touched)">Campo obligatorio</span>
+            *ngIf="f.contrato?.errors?.required && (f.contrato?.dirty || f.contrato?.touched)">Este campo es obligatorio *.</span>
     </div>
     <div class="col-md-4">
       <label class="control-label" for="idOde">ID ODE:</label>
@@ -43,8 +43,7 @@
       <p-dropdown id="categoria" class="form-control" formControlName="categoria" [options]="categorias"
                   placeholder="Seleccionar la categoría" (onChange)="onCategoriaChange($event)" [filter]="true" filterBy="label">
       </p-dropdown>
-      <span class="campo-obligatorio"
-            *ngIf="f.categoria?.errors?.required && (f.categoria?.dirty || f.categoria?.touched)">Este campo es obligatorio *.</span>
+      <span class="campo-obligatorio" *ngIf="f.categoria?.errors?.required && (f.categoria?.dirty || f.categoria?.touched)">Este campo es obligatorio *.</span>
     </div>
   </div>
 
@@ -69,10 +68,8 @@
       <label class="control-label" for="numeroArticulos">Agregar el número de artículos<span
         class="req">*</span>:</label>
       <input id="numeroArticulos" class="form-control" formControlName="numeroArticulos" placeholder="Ingresa el costo" maxlength="5" [disabled]="bloquearCampoArticulos">
-      <span class="campo-obligatorio"
-            *ngIf="f.numeroArticulos?.errors?.required && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched)">Campo obligatorio</span>
-      <span class="campo-obligatorio"
-            *ngIf="f.numeroArticulos?.errors?.max && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched)">El valor debe ser igual o menor a {{ maxNumeroArticulos }}</span>
+      <span class="campo-obligatorio" *ngIf="f.numeroArticulos?.errors?.required && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched)">Este campo es obligatorio *.</span>
+      <span class="campo-obligatorio" *ngIf="f.numeroArticulos?.errors?.max && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched) && !bloquearCampoArticulos">El valor debe ser igual o menor a {{ maxNumeroArticulos }}</span>
     </div>
     <div class="col-md-4">
       <label class="control-label" for="precio">Precio:</label>

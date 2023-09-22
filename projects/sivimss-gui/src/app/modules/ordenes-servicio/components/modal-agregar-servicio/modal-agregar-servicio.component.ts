@@ -12,8 +12,6 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { LatLng } from 'leaflet';
-//import { MarkGeocodeEvent } from "leaflet-control-geocoder/dist/control";
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import 'leaflet';
 import 'leaflet-control-geocoder';
@@ -30,7 +28,6 @@ import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ContenidoPaqueteInterface } from '../../models/ContenidoPaquete,interface';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
 declare var L: any;
@@ -162,8 +159,8 @@ export class ModalAgregarServicioComponent
     this.gestionarOrdenServicioService
       .consultarServiciosVigentes()
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.servicios = [];
             this.serviciosCompletos = [];
@@ -186,7 +183,7 @@ export class ModalAgregarServicioComponent
             'idServicio'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
 
           try {
@@ -207,7 +204,7 @@ export class ModalAgregarServicioComponent
             );
           }
         }
-      );
+      });
   }
 
   seleccionaServicio(dd: Dropdown): void {
@@ -262,16 +259,16 @@ export class ModalAgregarServicioComponent
     this.loaderService.activar();
     this.gestionarOrdenServicioService.consultarKilometrajePaquete(this.paqueteSelccionado,this.f.proveedor.value).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.kilometrosPermitidos = respuesta.datos[0].numKilometraje;
         this.costoPorKilometraje = respuesta.datos[0].costoPorKilometraje;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error,errorMsg || 'El servicio no responde, no permite más llamadas.')
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.')
       }
-    )
+    })
   }
 
   consultarKilometrajeServicio(): void {
@@ -279,15 +276,15 @@ export class ModalAgregarServicioComponent
     this.loaderService.activar();
     this.gestionarOrdenServicioService.consultarKilometrajeServicio(this.idServicio,this.idProveedor).pipe(
       finalize(()=> this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         this.costoPorKilometraje = respuesta.datos[0].costoPorKilometraje;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error,errorMsg || 'El servicio no responde, no permite más llamadas.')
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.')
       }
-    )
+    })
   }
 
 
@@ -313,8 +310,8 @@ export class ModalAgregarServicioComponent
     this.gestionarOrdenServicioService
       .consultarProveeedorServicio(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.listaproveedor = [];
             this.proveedorCompletos = [];
@@ -336,7 +333,7 @@ export class ModalAgregarServicioComponent
             'idProveedor'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
           try {
             const errorMsg: string =
@@ -356,7 +353,7 @@ export class ModalAgregarServicioComponent
             );
           }
         }
-      );
+      });
   }
 
   cerrarModal(): void {

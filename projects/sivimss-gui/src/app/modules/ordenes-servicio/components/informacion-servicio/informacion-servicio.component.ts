@@ -2,14 +2,8 @@ import {Component, EventEmitter, OnInit, Output, Renderer2} from '@angular/core'
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {
-  ModalAgregarAtaudComponent
-} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-ataud/modal-agregar-ataud.component';
-import {
   ModalAgregarPanteonComponent
 } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-agregar-panteon/modal-agregar-panteon.component';
-import {
-  ModalSeleccionarBeneficiarioComponent
-} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/components/modal-seleccionar-beneficiario/modal-seleccionar-beneficiario.component';
 import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
 import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
 import {GestionarEtapasService} from '../../services/gestionar-etapas.service';
@@ -36,10 +30,8 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {finalize} from 'rxjs';
-
 import * as moment from 'moment';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-import {Panteon} from "../../models/Panteon.interface";
 import {Router} from "@angular/router";
 import {ConsultarOrdenServicioService} from "../../services/consultar-orden-servicio.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
@@ -838,6 +830,6 @@ export class InformacionServicioComponent implements OnInit {
         error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      } );
+      });
   }
 }

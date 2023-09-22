@@ -33,12 +33,14 @@
       <div class="col-md-6">
         <p-calendar styleClass="form-control" id="fechaInicio" formControlName="fechaInicio" [showIcon]="true"
           dateFormat="dd/mm/yy" placeholder="Fecha inicial" (onSelect)="validarFechas()"></p-calendar>
-          <span class="campo-obligatorio" *ngIf="apf.fechaInicio?.errors?.required && (apf.fechaInicio?.dirty || apf.fechaInicio?.touched)">Este
-            campo es obligatorio *.</span>
+        <span class="campo-obligatorio"
+          *ngIf="apf.fechaInicio?.errors?.required && (apf.fechaInicio?.dirty || apf.fechaInicio?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
-          dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual" (onSelect)="validarFechas()"></p-calendar>
+          dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual"
+          (onSelect)="validarFechas()"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="apf.fechaFinal?.errors?.required && (apf.fechaFinal?.dirty || apf.fechaFinal?.touched)">Este campo es
           obligatorio *.</span>
@@ -86,8 +88,9 @@
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-calendar styleClass="form-control" appendTo="body" id="fechaInicio" [(ngModel)]="actividad.fecActividad"
-                [showIcon]="false" dateFormat="dd/mm/yy" placeholder=""></p-calendar>
+              <p-calendar styleClass="form-control" appendTo="body" id="fechaInicio"
+                [(ngModel)]="actividad.fecActividad" [showIcon]="false" dateFormat="dd/mm/yy" placeholder=""
+                [required]="true"></p-calendar>
             </ng-template>
             <ng-template pTemplate="output">
               {{actividad.fecActividad}}
@@ -110,8 +113,8 @@
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-calendar styleClass="form-control" appendTo="body" [(ngModel)]="actividad.hrFin"
-                [required]="true" [showIcon]="false" placeholder="00:00" [timeOnly]="true"></p-calendar>
+              <p-calendar styleClass="form-control" appendTo="body" [(ngModel)]="actividad.hrFin" [required]="true"
+                [showIcon]="false" placeholder="00:00" [timeOnly]="true"></p-calendar>
             </ng-template>
             <ng-template pTemplate="output">
               {{actividad.hrFin}}
@@ -121,8 +124,9 @@
         <td>
           <p-cellEditor>
             <ng-template pTemplate="input">
-              <p-dropdown id="promotor" class="form-control" appendTo="body" [(ngModel)]="actividad.idPromotor" [required]="true"
-                [options]="catalogoPromotores" placeholder="" (onChange)="buscarPuesto(actividad)" [editable]="true">
+              <p-dropdown id="promotor" class="form-control" appendTo="body" [(ngModel)]="actividad.idPromotor"
+                [required]="true" [options]="catalogoPromotores" placeholder="" (onChange)="buscarPuesto(actividad)"
+                [editable]="true">
               </p-dropdown>
             </ng-template>
             <ng-template pTemplate="output">
@@ -212,8 +216,8 @@
         </td>
         <td *ngIf="mode !== 'detail'">
           <div class="flex align-items-center justify-content-center gap-2">
-            <a [id]='actividad.idActividad' class="btn-actions" *ngIf="!editing" pRipple pInitEditableRow
-              (click)="onRowEditInit(actividad)">
+            <a [id]='actividad.idActividad' class="btn-actions" *ngIf="!editing && !agregandoRegistro" pRipple
+              pInitEditableRow (click)="onRowEditInit(actividad)">
               <img src="assets/images/imagen-icono-pencil-modificar.svg" alt="Editar">
             </a>
             <a class="btn-actions" *ngIf="!editing" pRipple pDeleteEditableRow (click)="onRowDelete(actividad)">
@@ -222,8 +226,8 @@
             <a class="btn-actions" *ngIf="editing" pRipple (click)="onRowEditSave(actividad)">
               <img src="assets/images/imagen-icono-guardar.svg" alt="Guardar">
             </a>
-            <button id="cancel-{{actividad.idActividad}}" class="btn-actions" *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
-              icon="pi pi-times" (click)="onRowEditCancel(actividad, ri)"
+            <button id="cancel-{{actividad.idActividad}}" class="btn-actions" *ngIf="editing" pButton pRipple
+              type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(actividad)"
               class="p-button-rounded p-button-text p-button-danger">
             </button>
           </div>
@@ -232,7 +236,10 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{actividades.length}} de {{totalElementos}}</span>
+        <span class="total-elements">
+          {{actividades.length > 0 && actividades[0].idActividad ? actividades.length : actividades.length - 1 }} de
+          {{totalElementos}}
+        </span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -247,17 +254,19 @@
 
   <div class="flex justify-content-end mt-6 mb-6">
     <button class="btn btn-gold btn-md" [routerLink]="'/generar-formato-de-actividades'">Cancelar</button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="mode !== 'detail'" [disabled]='actividades.length === 0' (click)="generarReporteTabla();">
+    <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="mode !== 'detail'"
+      [disabled]='actividades.length === 0 || agregandoRegistro' (click)="generarReporteTabla();">
       Generar formato
     </button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="mode === 'detail'" [disabled]='actividades.length === 0' (click)="previsualizarReporte();">
+    <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="mode === 'detail'"
+      [disabled]='actividades.length === 0' (click)="previsualizarReporte();">
       Vista previa
     </button>
   </div>
 </section>
 
-<p-dialog [(visible)]="mostrarModal" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
-  [draggable]="false" [resizable]="false" header="">
+<p-dialog [(visible)]="mostrarModal" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}" [draggable]="false"
+  [resizable]="false" header="">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
       <span class="text-justify">{{mensajeModal}}</span>

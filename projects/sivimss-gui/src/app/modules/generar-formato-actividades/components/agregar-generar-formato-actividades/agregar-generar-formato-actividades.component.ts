@@ -154,12 +154,11 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
         evidencia: null,
       });
 
-      this.agregandoRegistro = true;
-
       setTimeout(() => {
         let elements = document.getElementById('null');
         elements?.click();
-      }, 100);
+        this.agregandoRegistro = true;
+      }, 50);
     }
   }
 
@@ -169,6 +168,10 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     } else {
       this.numPaginaActual = 0;
     }
+    if (this.actividades.length > 0) {
+      this.onRowEditCancel(this.actividades[0]);
+    }
+    this.obtenerActividades();
   }
 
   cerrarDialogo() {
@@ -332,8 +335,8 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   }
 
   onRowEditInit(actividad: GenerarFormatoActividadesBusqueda) {
-    if (!this.agregandoRegistro) {
-      this.clonedProducts['nuevo'] = { ...actividad };
+    if (actividad?.idActividad) {
+      this.agregandoRegistro = true;
     }
   }
 
@@ -347,12 +350,6 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
       if (this.validarActidadForm(actividad) && this.agregarGenerarFormatoActividadesForm.valid) {
         this.agregarActividad(actividad);
       }
-      // else {
-      //   setTimeout(() => {
-      //     let elements = document.getElementById('actividad-numPlaticas');
-      //     elements?.click();
-      //   }, 100);
-      // }
     }
   }
 
@@ -366,11 +363,11 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     }
   }
 
-  onRowEditCancel(actividad: GenerarFormatoActividadesBusqueda, index: number) {
+  onRowEditCancel(actividad: GenerarFormatoActividadesBusqueda) {
     if (!actividad.idActividad) {
       this.actividades.shift();
-      this.agregandoRegistro = false;
     }
+    this.agregandoRegistro = false;
   }
 
   validarFechas() {
@@ -383,7 +380,8 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   }
 
   validarActidadForm(actividad: GenerarFormatoActividadesBusqueda): boolean {
-    if (actividad.hrInicio &&
+    if (actividad.fecActividad &&
+      actividad.hrInicio &&
       actividad.hrFin &&
       actividad.numPlaticas &&
       actividad.unidad &&

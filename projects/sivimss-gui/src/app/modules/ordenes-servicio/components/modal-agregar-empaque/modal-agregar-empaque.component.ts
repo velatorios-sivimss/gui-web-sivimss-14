@@ -55,8 +55,8 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
     this.gestionarOrdenServicioService
       .consultarEmpaques(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.error) {
             this.empaque = [];
             this.empaqueCompletos = [];
@@ -85,16 +85,16 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
           }
           arregloEmpaqueTemporal = datos;
 
-          this.inventarioSeleccionado.forEach((elemento:any) => {
-            arregloEmpaqueTemporal = arregloEmpaqueTemporal.filter((filtro:any) => {
+          this.inventarioSeleccionado.forEach((elemento: any) => {
+            arregloEmpaqueTemporal = arregloEmpaqueTemporal.filter((filtro: any) => {
               return filtro.idInventario != elemento;
             });
           });
 
           this.empaqueCompletos = arregloEmpaqueTemporal;
-          if(this.empaqueCompletos.length == 0){
+          if (this.empaqueCompletos.length == 0) {
             const stockMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(15);
-            this.alertaService.mostrar(TipoAlerta.Info,stockMsg || 'Ya no hay stock de este artículo.');
+            this.alertaService.mostrar(TipoAlerta.Info, stockMsg || 'Ya no hay stock de este artículo.');
           }
           this.empaque = mapearArregloTipoDropdown(
             arregloEmpaqueTemporal,
@@ -102,7 +102,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
             'idInventario'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
           try {
             const errorMsg: string =
@@ -122,7 +122,7 @@ export class ModalAgregarEmpaqueComponent implements OnInit {
             );
           }
         }
-      );
+      });
   }
 
   selecionarEmpaque(dd: Dropdown): void {

@@ -1,4 +1,8 @@
-<app-titulo-principal titulo="OPERACIÓN / HOJA DE CONSIGNACIÓN"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="OPERACIÓN / HOJA DE CONSIGNACIÓN"></app-titulo-principal>
+</div>
+
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
@@ -67,7 +71,8 @@
 
   <p-table styleClass="mt-5 mb-8" [value]="hojasConsignacion" [paginator]="hojasConsignacion.length > 0"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky>
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [columnResizeMode]="'expand'"
+    appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn id="idFecha">Fecha</th>
@@ -83,14 +88,14 @@
         <td pResizableColumn>{{hojaConsignacion.proveedor}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
-          <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
-            <a (click)="detalleFormatoActividades(hojaConsignacion)">
-              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-            </a>
-            <a (click)="abrirPanel($event, hojaConsignacion)">
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-            </a>
-          </div>
+            <div class="contenedor-celda-iconos" *appValidaRol="['PROMOTORES','MODIFICAR']">
+              <a (click)="detalleFormatoActividades(hojaConsignacion)">
+                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+              </a>
+              <a (click)="abrirPanel($event, hojaConsignacion)">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+            </div>
           </div>
         </td>
       </tr>

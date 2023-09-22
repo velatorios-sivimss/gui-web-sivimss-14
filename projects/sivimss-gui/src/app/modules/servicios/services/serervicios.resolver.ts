@@ -3,14 +3,9 @@ import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/rou
 import {forkJoin, Observable} from "rxjs";
 
 @Injectable()
-export class ServiciosResolver implements Resolve<unknown>{
+export class ServiciosResolver implements Resolve<unknown> {
 
-  constructor() {
-  }
-
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<unknown>{
-
-
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<unknown> {
     return forkJoin([""]);
   }
 

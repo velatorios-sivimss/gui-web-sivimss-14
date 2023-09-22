@@ -122,8 +122,8 @@ export class PaquetesComponent implements OnInit {
   paginar(): void {
     this.paquetesService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.paquetes = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.paquetes = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -136,8 +136,8 @@ export class PaquetesComponent implements OnInit {
     const filtros = this.crearSolicitudFiltros();
     this.paquetesService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.paquetes = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.paquetes = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -195,9 +195,8 @@ export class PaquetesComponent implements OnInit {
   }
 
   abrirModalModificarPaquete() {
-    // this.inicializarModificarPaqueteForm();
     this.mostrarModalModificarPaquete = true;
-    this.router.navigate(['modificar-paquete', this.paqueteSeleccionado.id], {relativeTo: this.activatedRoute});
+    void this.router.navigate(['modificar-paquete', this.paqueteSeleccionado.id], {relativeTo: this.activatedRoute});
   }
 
   agregarPaquete(): void {

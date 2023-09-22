@@ -20,7 +20,6 @@ import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/servic
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import { finalize } from 'rxjs';
-import { AgregarGenerarHojaConsignacionComponent } from '../agregar-generar-hoja-consignacion/agregar-generar-hoja-consignacion.component';
 import * as moment from 'moment';
 import { FacturaProveedorComponent } from '../factura-proveedor/factura-proveedor.component';
 
