@@ -12,7 +12,7 @@
             *ngIf="datosFinado.tipoOrden?.errors?.required && (datosFinado.tipoOrden?.dirty || datosFinado.tipoOrden?.touched)">Este campo es obligatorio *.</span>
         </div>
         <div class="col-md-4">
-          <label class="control-label" for="noContrato">Número de contrato / convenio PF<span class="req">*</span>:</label>
+          <label class="control-label" for="noContrato">Número convenio PSF<span class="req">*</span>:</label>
           <input id="noContrato" type="text" class="form-control" formControlName="noContrato"
             placeholder="Ingresa número de contrato" maxlength="10" (blur)="consultarFolioPf($event)">
           <span class="campo-obligatorio"

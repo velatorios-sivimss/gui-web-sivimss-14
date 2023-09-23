@@ -818,16 +818,19 @@ export class ModificarDatosCaracteristicasContratanteComponent
 
     this.selecionaTipoOtorgamiento;
     this.paqueteSeleccionadoDD?.label;
-    if (this.tipoOrden == 1 || this.tipoOrden == 2) {
-      if (this.paqueteSeleccionadoDD) {
-        if (this.paqueteSeleccionadoDD.label.includes("Paquete social")) {
-          if (this.selecionaTipoOtorgamiento == null) {
+    if(this.tipoOrden == 1 || this.tipoOrden == 2){
+      if(this.paqueteSeleccionadoDD){
+        if(this.paqueteSeleccionadoDD.label.includes("Paquete social")){
+          if(this.selecionaTipoOtorgamiento == null){
             return true;
+          }else{
+            return false;
           }
         }
+        return false
       }
     }
-    return false;
+    return true;
   }
 
   continuar() {
