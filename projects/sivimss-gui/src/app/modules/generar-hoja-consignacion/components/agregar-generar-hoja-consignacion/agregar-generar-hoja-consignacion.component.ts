@@ -9,7 +9,7 @@ import { OverlayPanel } from "primeng/overlaypanel";
 import { BuscarCatalogo, BuscarProveedor, GenerarHoja, ArticulosBusqueda, ArticulosBusquedaDetalle, HojaConsignacionDetalle } from '../../models/generar-hoja-consignacion.interface';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { finalize } from 'rxjs';
+import { finalize, of } from 'rxjs';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
@@ -21,6 +21,8 @@ import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/d
 import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from 'moment';
 import { mapearArregloTipoDropdown, validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { PrevisualizacionArchivoComponent } from '../previsualizacion-archivo/previsualizacion-archivo.component';
 
 @Component({
   selector: 'app-agregar-generar-hoja-consignacion',
@@ -88,6 +90,9 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
       this.mode = 'detail';
       this.hojaGenerada = true;
       this.vistaBusqueda = false;
+      this.activatedRoute.params.subscribe(params => {
+        this.idHojaConsig = +params['idHojaConsignacion'];
+      });
       let hojaConsignacionDetalle: HojaConsignacionDetalle =
         this.route.snapshot.data["respuesta"][this.POSICION_HOJA_CONSIGNACION_DETALLE].datos;
       this.seteoDetalle(hojaConsignacionDetalle);
@@ -239,21 +244,61 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
     });
   }
 
+  // vistaPrevia(): void {
+  //   this.loaderService.activar();
+  //   this.descargaArchivosService.descargarArchivo(this.generarHojaConsignacionService.reporteHojaConsignacion({ idHojaConsig: this.idHojaConsig })).pipe(
+  //     finalize(() => this.loaderService.desactivar())
+  //   ).subscribe({
+  //     next: (res: boolean) => {
+  //       if (res) {
+  //         this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+  //         this.mostrarModalConfirmacion = true;
+  //       }
+  //     },
+  //     error: (error: HttpErrorResponse) => {
+  //       console.error("ERROR: ", error);
+  //       const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+  //       this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+  //     },
+  //   });
+  // }
+
   vistaPrevia(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Hoja de Consignación' };
     this.loaderService.activar();
-    this.descargaArchivosService.descargarArchivo(this.generarHojaConsignacionService.reporteHojaConsignacion({ idHojaConsig: this.idHojaConsig })).pipe(
+    this.generarHojaConsignacionService.reporteHojaConsignacion({ idHojaConsig: this.idHojaConsig }).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next: (res: boolean) => {
-        if (res) {
-          this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-          this.mostrarModalConfirmacion = true;
-        }
+      next: (respuesta: any) => {
+        const file = new Blob([respuesta], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(file);
+        let archivoRef: DynamicDialogRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
+          data: url,
+          header: "",
+          width: "1000px",
+        });
+        archivoRef.onClose.subscribe((response: any) => {
+          if (response) {
+            this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+              finalize(() => this.loaderService.desactivar())
+            ).subscribe({
+              next: (respuesta: any) => {
+                if (respuesta) {
+                  this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                  this.mostrarModalConfirmacion = true;
+                }
+              },
+              error: (error: HttpErrorResponse) => {
+                console.error("ERROR: ", error);
+                const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+                this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+              }
+            });
+          }
+        })
       },
       error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
-        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+        console.error(error);
       },
     });
   }

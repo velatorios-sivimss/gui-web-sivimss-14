@@ -31,12 +31,14 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { BtnRegresarModule } from '../../shared/btn-regresar/btn-regresar.module';
 import { FacturaProveedorComponent } from './components/factura-proveedor/factura-proveedor.component';
-
+import { PdfViewerModule } from "ng2-pdf-viewer";
+import { PrevisualizacionArchivoComponent } from './components/previsualizacion-archivo/previsualizacion-archivo.component';
 @NgModule({
   declarations: [
     GenerarHojaConsignacionComponent,
     AgregarGenerarHojaConsignacionComponent,
     FacturaProveedorComponent,
+    PrevisualizacionArchivoComponent,
   ],
   imports: [
     CommonModule,
@@ -65,6 +67,7 @@ import { FacturaProveedorComponent } from './components/factura-proveedor/factur
     InputNumberModule,
     ConfirmDialogModule,
     BtnRegresarModule,
+    PdfViewerModule,
   ],
   providers: [
     GenerarHojaConsignacionService,

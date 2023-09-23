@@ -31,13 +31,9 @@ export class GenerarHojaConsignacionService extends BaseService<HttpRespuesta<an
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._agregar}`, generarHoja);
   }
 
-  reporteHojaConsignacion(reporteHojaConsignacion: any): Observable<Blob> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
+  reporteHojaConsignacion(reporteHojaConsignacion: any): Observable<HttpRespuesta<any>> {
     return this._http.post<any>(this._base + `${this._funcionalidad}/reporte-hoja-consig/generarDocumento/pdf`
-      , reporteHojaConsignacion, { headers, responseType: 'blob' as 'json' });
+      , reporteHojaConsignacion, { responseType: 'blob' as 'json' });
   }
 
   obtenerCatalogos(buscarCatalogo: BuscarCatalogo): Observable<HttpRespuesta<any>> {
