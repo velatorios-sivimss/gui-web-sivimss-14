@@ -155,7 +155,6 @@ export class ModificarDatosFinadoComponent
     this.estado = respuesta[this.POSICION_ESTADO];
     this.unidadesMedicas = respuesta[this.POSICION_UNIDADES_MEDICAS];
     this.tipoPension = respuesta[this.POSICION_PENSION];
-    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     else this.ocultarFolioEstatus = false;
@@ -272,11 +271,22 @@ export class ModificarDatosFinadoComponent
 
     let edad;
     let fechaNacimiento;
+
+    let diaFinado!:string;
+    let mesFinado!:string;
+    let anioFinado!:string;
+
+
+
     if (datosEtapaFinado.datosFinado.fechaNacimiento) {
-      let [dia, mes, anio] =
-        datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
-      fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
-      let a = moment(anio + '-' + mes + '-' + dia);
+      if(datosEtapaFinado.datosFinado.fechaNacimiento.includes('/')){
+        [diaFinado, mesFinado, anioFinado] = datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
+      }else{
+        [anioFinado, mesFinado, diaFinado] = datosEtapaFinado.datosFinado.fechaNacimiento.split('-');
+      }
+
+      fechaNacimiento = new Date(+anioFinado + '-' + +mesFinado + '-' + +diaFinado)
+        let a = moment(+anioFinado + '-' + +mesFinado + '-' + +diaFinado);
       edad = moment().diff(a, 'years');
     }
 

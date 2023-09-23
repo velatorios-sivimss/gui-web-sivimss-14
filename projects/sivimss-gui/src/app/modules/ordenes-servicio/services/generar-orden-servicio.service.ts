@@ -109,6 +109,14 @@ export class GenerarOrdenServicioService extends BaseService<HttpRespuesta<any>,
     );
   }
 
+  buscarSalas(parametros: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(
+      this._base +
+      `${this._funcionalidad}/buscar-filtros/orden-consultar-salas`,
+      parametros
+    );
+  }
+
   generarODS(parametros: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(
       this._base + `${this._funcionalidad}/orden-guardar`,

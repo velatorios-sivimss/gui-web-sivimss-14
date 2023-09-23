@@ -100,12 +100,12 @@ export class Reportes implements OnInit {
       8	Concentrado de Siniestros de Previsión Funeraria
       9	Concentrado de Servicios Pago Anticipado
     */
-    this.validaciones.set(1, () => this.validacionesOrdenesServicio())
-    this.validaciones.set(5, () => this.validacionesDetalleImporteServicios())
-    this.validaciones.set(6, () => this.validacionesComisionesPromotores())
-    this.validaciones.set(7, () => this.validacionesServiciosVelatorios())
-    this.validaciones.set(8, () => this.validacionesConcentradoSiniestrosPF())
-    this.validaciones.set(9, () => this.validacionesConcentradoServicioPA())
+    this.validaciones.set(1, () => this.iniciarOrdenesServicio())
+    this.validaciones.set(5, () => this.iniciarDetalleImporteServicios())
+    this.validaciones.set(6, () => this.iniciarComisionesPromotores())
+    this.validaciones.set(7, () => this.iniciarServiciosVelatorios())
+    this.validaciones.set(8, () => this.iniciarConcentradoSiniestrosPF())
+    this.validaciones.set(9, () => this.iniciarConcentradoServicioPA())
   }
 
   fechaActual = new Date();
@@ -243,6 +243,7 @@ export class Reportes implements OnInit {
     if (filtros.tipoReporte.includes("xls")) {
       configuracionArchivo.ext = "xlsx"
     }
+    //TODO usar un map
     let tipoReporte: TipoDropdown[] = [
       {
         label: '/genera-reporte-ods',
@@ -255,8 +256,11 @@ export class Reportes implements OnInit {
       {
         label: '/reporte-serv-vel',
         value: 7
+      },
+      {
+        label: '/pago-anticipado-descargar-reporte-pa',
+        value: 9
       }
-
     ]
     let nombreReporte: string = "";
     tipoReporte.forEach(element => {
@@ -354,9 +358,16 @@ export class Reportes implements OnInit {
         // this.fechaFinalBandera = true;
         break;
       case 9:
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
-        break;
+      return{
+        id_delegacion:this.ff.delegacion.value,
+        id_velatorio:this.ff.velatorio.value,
+        fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
+        fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
+        nombreVelatorio: this.velatorioDD.selectedOption.label,
+        tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+      }
+      break;
+      default: break;
 
     }
   }
@@ -410,48 +421,6 @@ export class Reportes implements OnInit {
     this.filtroForm.updateValueAndValidity();
     this.seleccionarValidaciones();
     this.exportar = this.limpiarTiposExportacion();
-    return
-
-    // this.tipoODSBandera = false;
-    // this.numeroODSBandera = false;
-    // this.promotorBandera = false;
-    // this.anioBandera = false;
-    // this.mesBandera = false;
-    // this.fechaInicialBandera = false;
-    // this.fechaFinalBandera = false;
-    // this.banderaEstatusODS = false;
-
-    switch (this.ff.reporte.value) {
-      case 1:
-        this.reporteOrdenesServicios();
-        break;
-      case 5:
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
-        break;
-      case 6:
-        // this.numeroODSBandera = true;
-        // this.promotorBandera = true;
-        // this.anioBandera = true;
-        // this.mesBandera = true;
-        break;
-      case 7:
-        // this.numeroODSBandera = true;
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
-        break;
-      case 8:
-        // this.numeroODSBandera = true;
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
-        break;
-      case 9:
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
-        break;
-      default:
-        break;
-    }
   }
 
   cambiarTipoReporte(): void {
@@ -478,16 +447,16 @@ export class Reportes implements OnInit {
 
   }
 
-  validacionesOrdenesServicio(): void {
+  iniciarOrdenesServicio(): void {
     this.ff.idEstatusODS.setValidators(Validators.required);
     this.ff.idEstatusODS.updateValueAndValidity();
   }
 
-  validacionesDetalleImporteServicios(): void {
+  iniciarDetalleImporteServicios(): void {
     console.log('Se agrega console por SONAR')
   }
 
-  validacionesComisionesPromotores(): void {
+  iniciarComisionesPromotores(): void {
     this.loaderService.activar();
     this.reporteOrdenServicioService.consultarODSComisionPromotor(this.ff.delegacion.value,this.ff.velatorio.value).pipe(
       finalize(()=> this.loaderService.desactivar())
@@ -501,11 +470,11 @@ export class Reportes implements OnInit {
     })
   }
 
-  validacionesServiciosVelatorios(): void {
-    // this.ff.mes.setValue(Validators.required);
-    // this.ff.anio.setValue(Validators.required);
-    // this.ff.mes.updateValueAndValidity();
-    // this.ff.anio.updateValueAndValidity();
+  iniciarServiciosVelatorios(): void {
+    this.ff.mes.setValue(Validators.required);
+    this.ff.anio.setValue(Validators.required);
+    this.ff.mes.updateValueAndValidity();
+    this.ff.anio.updateValueAndValidity();
 
     this.loaderService.activar();
     this.reporteOrdenServicioService.consultarODSServiciosVelatorios(this.ff.delegacion.value,this.ff.velatorio.value).pipe(
@@ -520,11 +489,11 @@ export class Reportes implements OnInit {
     })
   }
 
-  validacionesConcentradoSiniestrosPF(): void {
+  iniciarConcentradoSiniestrosPF(): void {
     console.log('Se agrega console por SONAR')
   }
 
-  validacionesConcentradoServicioPA(): void {
+  iniciarConcentradoServicioPA(): void {
     console.log('Se agrega console por SONAR')
   }
 

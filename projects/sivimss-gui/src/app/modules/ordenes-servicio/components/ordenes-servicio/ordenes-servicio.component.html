@@ -194,11 +194,14 @@
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')
           && !ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')"
                                   (click)="modificarODS()" titulo="Modificar"></app-overlay-panel-opcion>
+
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')
           && ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')"
                                   (click)="modificarODSsf()" titulo="Modificar"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion  *ngIf="!ordenServicioSeleccionada.estatus?.includes('Cancelada')"
+        (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
       </div>
+
       <div *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
         <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation
                                   (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
