@@ -1068,73 +1068,11 @@ export class CaracteristicasPresupuestoSFComponent
   }
 
   validacionFormulario(): boolean {
-    let banderaPaquete = false;
-    let banderaPresupuesto = false;
-    let banderaTipo = false;
-
-    this.selecionaTipoOtorgamiento;
-    this.paqueteSeleccionadoDD?.label;
-    if(this.tipoOrden == 1 || this.tipoOrden == 2){
-      if(this.paqueteSeleccionadoDD){
-        if(this.paqueteSeleccionadoDD.label.includes("Paquete social")){
-          if(this.selecionaTipoOtorgamiento == null){
-            return true;
-          }
-        }
-      }
+    if(this.datosPresupuesto.length > 0){
+      return true
+    }else{
+      this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
+      return false
     }
-    // if (this.tipoOrden == 1) {
-    //   this.datosPresupuesto.forEach(function (datos) {
-    //
-    //     if(typeof datos.utilizarArticulo == "string"){
-    //       if(datos.utilizarArticulo.includes("true")){
-    //         banderaTipo = true
-    //       } else{
-    //         banderaTipo = false
-    //       }
-    //     }else{
-    //       banderaTipo = datos.utilizarArticulo;
-    //     }
-    //
-    //     if (
-    //       datos.proviene.includes('paquete') &&
-    //       banderaTipo
-    //     ) {
-    //       banderaPaquete = true;
-    //     }
-    //     if (datos.proviene.includes('presupuesto')) {
-    //       banderaPresupuesto = true;
-    //     }
-    //   });
-    //   if (banderaPaquete && this.form.valid && this.dd) {
-    //     return false;
-    //   }
-    // }
-    //
-    // if (this.tipoOrden == 2) {
-    //   this.datosPresupuesto.forEach(function (datos) {
-    //     if (
-    //       datos.proviene.includes('paquete') &&
-    //       datos.utilizarArticulo.includes('true')
-    //     ) {
-    //       banderaPaquete = true;
-    //     }
-    //   });
-    //   if (banderaPaquete && this.form.valid && this.dd) {
-    //     return false;
-    //   }
-    // }
-    //
-    // if (this.tipoOrden == 3) {
-    //   this.datosPresupuesto.forEach(function (datos) {
-    //     if (datos.proviene.includes('presupuesto')) {
-    //       banderaPresupuesto = true;
-    //     }
-    //   });
-    //   if (banderaPresupuesto && this.form.valid) {
-    //     return false;
-    //   }
-    // }
-    return false;
   }
 }

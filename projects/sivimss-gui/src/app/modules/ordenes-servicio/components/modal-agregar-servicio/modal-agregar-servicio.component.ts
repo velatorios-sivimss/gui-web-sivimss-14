@@ -363,7 +363,7 @@ export class ModalAgregarServicioComponent
   aceptarModal(origen?: string): void {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
     if(origen?.includes('traslado')){
-      this.alertaService.mostrar(TipoAlerta.Exito,'Agregado correctamente.Destino');
+      this.alertaService.mostrar(TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(800));
     }
     let salida = null;
     if (this.proviene == 'traslados' || this.proviene == 'proveedor') {

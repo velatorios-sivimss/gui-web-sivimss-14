@@ -36,6 +36,7 @@ import {Router} from "@angular/router";
 import {ConsultarOrdenServicioService} from "../../services/consultar-orden-servicio.service";
 import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
 @Component({
   selector: 'app-informacion-servicio',
@@ -86,6 +87,7 @@ export class InformacionServicioComponent implements OnInit {
   confirmarGuardado: boolean = false;
   confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
+  colonias:TipoDropdown[] = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -150,11 +152,19 @@ export class InformacionServicioComponent implements OnInit {
     this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
+    if (this.altaODS.finado.extremidad) this.desabilitarTodo();
+    if (Number(this.altaODS.finado.idTipoOrden) == 1 && !this.altaODS.finado.extremidad){
+      this.cortejo.gestionadoPorPromotor.enable()
+    }
   }
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
     this.desabilitarTodo();
+    this.recoger.fecha.enable();
+    this.recoger.hora.enable();
+    this.cortejo.fecha.enable();
+    this.cortejo.hora.enable();
     datosPresupuesto.forEach((datos: any) => {
       if (datos.concepto.trim() == 'Velación en capilla') {
         this.lugarVelacion.capilla.enable();
@@ -172,6 +182,8 @@ export class InformacionServicioComponent implements OnInit {
         this.lugarVelacion.colonia.enable();
         this.lugarVelacion.municipio.disable();
         this.lugarVelacion.estado.disable();
+        this.instalacionServicio.fecha.enable();
+        this.instalacionServicio.hora.enable();
       }
 
       if (
@@ -344,7 +356,7 @@ export class InformacionServicioComponent implements OnInit {
     this.loaderService.activar();
     const parametros = {idVelatorio: this.idVelatorio};
     this.gestionarOrdenServicioService
-      .buscarCapillas(parametros)
+      .buscarSalas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
@@ -364,8 +376,8 @@ export class InformacionServicioComponent implements OnInit {
           }
           this.salas = mapearArregloTipoDropdown(
             datos,
-            'nombreCapilla',
-            'idCapilla'
+            'nombreSala',
+            'idSala'
           );
         },
         error: (error: HttpErrorResponse): void => {
@@ -811,6 +823,7 @@ export class InformacionServicioComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.lugarVelacion.colonia.setValue(respuesta.datos[0].nombre);
             this.lugarVelacion.municipio.setValue(
               respuesta.datos[0].municipio.nombre

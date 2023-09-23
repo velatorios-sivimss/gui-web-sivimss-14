@@ -423,6 +423,7 @@ export class DatosContratanteSFComponent implements OnInit {
             this.direccion.municipio.setValue(datos.municipio);
             this.direccion.estado.setValue(datos.estado);
             this.direccion.cp.setValue(datos.cp);
+            this.colonias = [{label:datos.colonia,value: datos.colonia}]
             this.direccion.colonia.setValue(datos.colonia);
             this.direccion.calle.setValue(datos.calle);
             this.direccion.noInterior.setValue(datos.numExterior);
