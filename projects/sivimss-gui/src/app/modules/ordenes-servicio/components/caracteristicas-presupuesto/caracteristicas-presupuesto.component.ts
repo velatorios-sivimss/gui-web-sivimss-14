@@ -132,7 +132,6 @@ export class CaracteristicasPresupuestoComponent
   tablaPaqueteSeleccion!: any;
   costoServiciosPorPaquete!: number;
   confQuitarPresupuesto: boolean = false;
-  algo: any;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -213,8 +212,7 @@ export class CaracteristicasPresupuestoComponent
   buscarPaquetes(): void {
     this.loaderService.activar();
     const parametros = { idVelatorio: this.idVelatorio };
-
-    this.algo = this.gestionarOrdenServicioService
+    this.gestionarOrdenServicioService
       .consultarPaquetes(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
@@ -1097,10 +1095,13 @@ export class CaracteristicasPresupuestoComponent
         if(this.paqueteSeleccionadoDD.label.includes("Paquete social")){
           if(this.selecionaTipoOtorgamiento == null){
             return true;
+          }else{
+            return false;
           }
         }
+        return false
       }
     }
-    return false;
+    return true;
   }
 }
