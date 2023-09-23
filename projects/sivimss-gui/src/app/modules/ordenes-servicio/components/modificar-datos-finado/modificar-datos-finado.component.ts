@@ -155,7 +155,6 @@ export class ModificarDatosFinadoComponent
     this.estado = respuesta[this.POSICION_ESTADO];
     this.unidadesMedicas = respuesta[this.POSICION_UNIDADES_MEDICAS];
     this.tipoPension = respuesta[this.POSICION_PENSION];
-    // let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     let estatus = this.rutaActiva.snapshot.queryParams.idEstatus;
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;
     else this.ocultarFolioEstatus = false;
@@ -283,11 +282,11 @@ export class ModificarDatosFinadoComponent
       if(datosEtapaFinado.datosFinado.fechaNacimiento.includes('/')){
         [diaFinado, mesFinado, anioFinado] = datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
       }else{
-        [diaFinado, mesFinado, anioFinado] = datosEtapaFinado.datosFinado.fechaNacimiento.split('-');
+        [anioFinado, mesFinado, diaFinado] = datosEtapaFinado.datosFinado.fechaNacimiento.split('-');
       }
 
-      fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
-        let a = moment(anio + '-' + mes + '-' + dia);
+      fechaNacimiento = new Date(+anioFinado + '-' + +mesFinado + '-' + +diaFinado)
+        let a = moment(+anioFinado + '-' + +mesFinado + '-' + +diaFinado);
       edad = moment().diff(a, 'years');
     }
 
@@ -1195,7 +1194,6 @@ export class ModificarDatosFinadoComponent
       this.finado.idFinado = this.idFinado ?? null;
     }
 
-    debugger
     this.altaODS.finado = this.finado;
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
