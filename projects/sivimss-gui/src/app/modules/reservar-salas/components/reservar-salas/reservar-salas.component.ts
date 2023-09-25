@@ -23,7 +23,7 @@ export class ReservarSalasComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.router.navigate(["../../reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]).then(() => { }).catch(() => { });
+    void this.router.navigate(["../../reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]);
     this.actualizarBreadcrumb();
   }
 
@@ -32,7 +32,7 @@ export class ReservarSalasComponent implements OnInit {
   }
 
   redirigirOpcionSala(opcion: { value: SelectButtonOptions }): void {
-    this.router.navigate(["/reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]).then(() => { }).catch(() => { });
+    void this.router.navigate(["/reservar-salas", { outlets: { salas: [this.opcionSala.route] } }]);
   }
 
 }

@@ -212,7 +212,7 @@ export class GenerarValeSalidaComponent implements OnInit {
   }
 
   abrirDetalleValeSalida(): void {
-    this.router.navigate(['reservar-capilla/velacion-en-domicilio']).then(() => { }).catch(() => { });
+    void this.router.navigate(['reservar-capilla/velacion-en-domicilio']);
   }
 
   datosGuardar(): DatosFolioODS {

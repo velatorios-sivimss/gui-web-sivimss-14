@@ -67,7 +67,7 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   regresar() {
-    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+    void this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
   }
 
   abrirModalCancelandoNotaRemision(): void {
@@ -97,7 +97,7 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
           if (mensaje && mensaje.length > 0) {
             this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
           }
-          this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+          void this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
         },
         error: (error: HttpErrorResponse) => {
           console.error("ERROR: ", error);
@@ -114,7 +114,7 @@ export class CancelarFormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   btnAceptarDetalle() {
-    this.router.navigate(['../'], { relativeTo: this.activatedRoute }).then(() => { }).catch(() => { });
+    void this.router.navigate(['../'], { relativeTo: this.activatedRoute });
   }
 
   get f() {
