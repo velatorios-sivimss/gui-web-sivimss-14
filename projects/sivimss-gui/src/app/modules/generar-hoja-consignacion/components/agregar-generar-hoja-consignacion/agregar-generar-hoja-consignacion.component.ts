@@ -6,7 +6,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { OverlayPanel } from "primeng/overlaypanel";
-import { BuscarCatalogo, BuscarProveedor, GenerarHoja, ArticulosBusqueda, ArticulosBusquedaDetalle, HojaConsignacionDetalle } from '../../models/generar-hoja-consignacion.interface';
+import { BuscarProveedor, GenerarHoja, ArticulosBusqueda, ArticulosBusquedaDetalle, HojaConsignacionDetalle } from '../../models/generar-hoja-consignacion.interface';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { finalize, of } from 'rxjs';
@@ -243,25 +243,6 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
       }
     });
   }
-
-  // vistaPrevia(): void {
-  //   this.loaderService.activar();
-  //   this.descargaArchivosService.descargarArchivo(this.generarHojaConsignacionService.reporteHojaConsignacion({ idHojaConsig: this.idHojaConsig })).pipe(
-  //     finalize(() => this.loaderService.desactivar())
-  //   ).subscribe({
-  //     next: (res: boolean) => {
-  //       if (res) {
-  //         this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-  //         this.mostrarModalConfirmacion = true;
-  //       }
-  //     },
-  //     error: (error: HttpErrorResponse) => {
-  //       console.error("ERROR: ", error);
-  //       const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
-  //       this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-  //     },
-  //   });
-  // }
 
   vistaPrevia(): void {
     const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Hoja de Consignación' };
