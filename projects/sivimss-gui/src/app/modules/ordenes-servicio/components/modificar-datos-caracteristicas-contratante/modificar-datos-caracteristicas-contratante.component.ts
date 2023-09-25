@@ -830,6 +830,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
         return false
       }
     }
+    if(this.tipoOrden == 3) return false;
     return true;
   }
 
