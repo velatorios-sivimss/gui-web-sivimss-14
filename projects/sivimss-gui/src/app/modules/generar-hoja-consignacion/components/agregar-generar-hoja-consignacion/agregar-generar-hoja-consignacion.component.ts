@@ -6,7 +6,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
 import { OverlayPanel } from "primeng/overlaypanel";
-import { BuscarProveedor, GenerarHoja, ArticulosBusqueda, ArticulosBusquedaDetalle, HojaConsignacionDetalle } from '../../models/generar-hoja-consignacion.interface';
+import { BuscarProveedor, GenerarHoja, ArticulosBusqueda, ArticulosBusquedaDetalle, HojaConsignacionDetalle, ArticulosConsignacion } from '../../models/generar-hoja-consignacion.interface';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import { finalize, of } from 'rxjs';
@@ -225,23 +225,25 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
 
   guardar() {
     this.loaderService.activar();
-    this.generarHojaConsignacionService.generarHoja(this.datosGuardar()).pipe(
-      finalize(() => {
-        this.loaderService.desactivar()
-      })
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.codigo === 200 && !respuesta.error) {
-          this.hojaGenerada = true;
-          this.idHojaConsig = respuesta.datos;
-          this.obtenerDetalle();
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
-        }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-      }
-    });
+    console.log(this.datosGuardar());
+
+    // this.generarHojaConsignacionService.generarHoja(this.datosGuardar()).pipe(
+    //   finalize(() => {
+    //     this.loaderService.desactivar()
+    //   })
+    // ).subscribe({
+    //   next: (respuesta: HttpRespuesta<any>) => {
+    //     if (respuesta.codigo === 200 && !respuesta.error) {
+    //       this.hojaGenerada = true;
+    //       this.idHojaConsig = respuesta.datos;
+    //       this.obtenerDetalle();
+    //       this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
+    //     }
+    //   },
+    //   error: (error: HttpErrorResponse) => {
+    //     console.error(error);
+    //   }
+    // });
   }
 
   vistaPrevia(): void {
@@ -285,10 +287,17 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   }
 
   datosGuardar(): GenerarHoja {
+    let artConsig: ArticulosConsignacion[] = [];
+    this.articulos?.forEach((item: ArticulosBusquedaDetalle) => {
+      artConsig.push({
+        ...item,
+        costoConIva: item.costoConIva ? Number(item.costoConIva.replace(/[^\d.]*/g, '')) : null,
+      })
+    });
     return {
       idVelatorio: this.ff.velatorio.getRawValue(),
       idProveedor: this.ff.proveedor.getRawValue(),
-      artConsig: this.articulos,
+      artConsig,
     }
   }
 
