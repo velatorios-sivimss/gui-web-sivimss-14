@@ -73,14 +73,18 @@ export class ConsultaConveniosComponent implements OnInit {
   estatusConvenio: TipoDropdown[] = [
     {
       value: 1,
-      label: 'Vigente'
+      label: 'Generado'
     },
     {
       value: 2,
-      label: 'Renovación'
+      label: 'Vigente'
     },
     {
       value: 3,
+      label: 'Inactivo'
+    },
+    {
+      value: 4,
       label: 'Cerrado'
     },
   ]
