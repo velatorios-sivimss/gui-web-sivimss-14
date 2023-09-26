@@ -222,9 +222,8 @@ export class PanteonesComponent implements OnInit {
     // TO DO En una aplicación real, realice una solicitud a una URL remota con la consulta y devuelva los resultados filtrados
     let filtrado: any[] = [];
     let query = event.query;
-    for (let i = 0; i < this.panteonesServicio.length; i++) {
-      let panteon = this.panteonesServicio[i];
-      if (panteon.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+    for (let panteon of this.panteonesServicio) {
+      if (panteon.label.toLowerCase().indexOf(query.toLowerCase()) === 0) {
         filtrado.push(panteon);
       }
     }

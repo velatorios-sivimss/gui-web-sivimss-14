@@ -85,7 +85,6 @@ export class DetalleComisionComponent implements OnInit {
       this.importeTotalConveniosPf();
     } else {
       window.scrollTo(0, 0);
-      console.log(this.detalleForm);
 
       this.detallePromotor = this.detalleForm;
     }

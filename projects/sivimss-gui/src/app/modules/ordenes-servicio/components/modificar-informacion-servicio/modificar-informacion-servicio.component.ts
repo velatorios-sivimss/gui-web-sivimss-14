@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   Component,
   EventEmitter,
   OnInit,
@@ -400,8 +399,8 @@ export class ModificarInformacionServicioComponent
     this.gestionarOrdenServicioService
       .buscarCapillas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.capillas = [];
@@ -422,7 +421,7 @@ export class ModificarInformacionServicioComponent
             'idCapilla'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -441,7 +440,7 @@ export class ModificarInformacionServicioComponent
             );
           }
         }
-      );
+      });
   }
 
   buscarSalas(): void {
