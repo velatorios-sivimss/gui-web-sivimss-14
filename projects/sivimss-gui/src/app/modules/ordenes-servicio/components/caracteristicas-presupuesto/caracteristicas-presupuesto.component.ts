@@ -1102,6 +1102,7 @@ export class CaracteristicasPresupuestoComponent
         return false
       }
     }
+    if(this.tipoOrden == 3) return false;
     return true;
   }
 }

@@ -132,7 +132,7 @@ export class VelacionDomicilioComponent implements OnInit {
   }
 
   abrirDetalleValeSalida(vale: VelacionDomicilioInterface): void {
-    this.router.navigate([`reservar-capilla/velacion-en-domicilio/ver-detalle/${vale.idValeSalida}`]).then(() => { }).catch(() => { });
+    void this.router.navigate([`reservar-capilla/velacion-en-domicilio/ver-detalle/${vale.idValeSalida}`]);
   }
 
   abrirModalRegistroEntradaEquipo(): void {

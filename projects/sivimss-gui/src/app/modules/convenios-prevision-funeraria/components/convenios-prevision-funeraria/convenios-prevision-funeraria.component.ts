@@ -73,14 +73,18 @@ export class ConsultaConveniosComponent implements OnInit {
   estatusConvenio: TipoDropdown[] = [
     {
       value: 1,
-      label: 'Vigente'
+      label: 'Generado'
     },
     {
       value: 2,
-      label: 'Renovación'
+      label: 'Vigente'
     },
     {
       value: 3,
+      label: 'Inactivo'
+    },
+    {
+      value: 4,
       label: 'Cerrado'
     },
   ]
@@ -299,7 +303,7 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   cancelar(): void {
-    this.router.navigate(["/"]).then(() => { }).catch(() => { });
+    void this.router.navigate(["/"]);
   }
 
   limpiar(): void {
@@ -553,11 +557,11 @@ export class ConsultaConveniosComponent implements OnInit {
 
 
   renovarConvenio(): void {
-    this.router.navigate(['/convenios-prevision-funeraria/renovar-convenio-pf'], { relativeTo: this.activatedRoute });
+    void this.router.navigate(['/convenios-prevision-funeraria/renovar-convenio-pf'], { relativeTo: this.activatedRoute });
   }
 
   modificarConvenio(): void {
-    this.router.navigate(['./modificar-nuevo-convenio'], {
+    void this.router.navigate(['./modificar-nuevo-convenio'], {
       queryParams: {
         folio: this.convenioSeleccionado.folioConvenio,
         fecha: this.convenioSeleccionado.fechaContratacion

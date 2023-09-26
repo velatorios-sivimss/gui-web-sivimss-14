@@ -51,7 +51,7 @@
               <span>Correo electrónico</span>
             </div>
             <div class="col-md" *ngIf="detalleServicio?.correo">
-              <span class="font-bold">{{detalleServicio.correo}}</span>
+              <span class="font-bold">{{detalleServicio.correo === 'null' ? null : detalleServicio.correo }}</span>
             </div>
           </div>
         </div>
@@ -120,7 +120,7 @@
             </span>
             <ng-template #sinRestante>
               <span class="font-bold">
-                {{detalleServicio.total | currency:"USD":"symbol"}}
+                {{detalleServicio.total | currency:"USD":"symbol" }}
               </span>
             </ng-template>
           </span>
@@ -140,6 +140,19 @@
             <div class="col-md-4" *ngIf="detalleServicio?.total">
               <label>Total a pagar</label><br/>
               <span>{{detalleServicio.total | currency:"USD":"symbol"}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-content-end">
+        <div class="paginator-template">
+          <div class="export-table">
+            <span class="export-table-text">Exportar tabla</span>
+            <div class="export-table-icons">
+              <img class="icon-export-table" (click)="exportarArchivo('pdf')" src="assets/images/imagen-icono-pdf.svg"
+                   alt="exportar pdf">
+              <img class="icon-export-table" (click)="exportarArchivo('xls')" src="assets/images/imagen-icono-excel.svg"
+                   alt="exportar excel">
             </div>
           </div>
         </div>
@@ -174,3 +187,19 @@
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

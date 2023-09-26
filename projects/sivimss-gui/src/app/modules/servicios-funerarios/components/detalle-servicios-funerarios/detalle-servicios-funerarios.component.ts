@@ -22,13 +22,16 @@ import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/aler
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {DetalleServicios, PagosRealizados} from "../../models/detalle-servicios.interface";
 import {ModalModificarPagosComponent} from "../modal-modificar-pagos/modal-modificar-pagos.component";
+import {of} from "rxjs";
+import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
+import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
 
 @Component({
   selector: 'app-detalle-servicios-funerarios',
   templateUrl: './detalle-servicios-funerarios.component.html',
   styleUrls: ['./detalle-servicios-funerarios.component.scss'],
   providers: [
-    DialogService
+    DialogService,DescargaArchivosService
   ]
 })
 export class DetalleServiciosFunerariosComponent implements OnInit {
@@ -57,6 +60,10 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   detalleServicio!: DetalleServicios;
   pagosRealizados!: PagosRealizados[];
 
+  usuario = JSON.parse(localStorage.getItem('usuario') as string);
+  mensajeArchivoConfirmacion: string = "";
+  mostrarModalConfirmacion: boolean = false;
+
   constructor(
     private alertaService: AlertaService,
     private detallePagoService: DetallePagoService,
@@ -64,6 +71,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private loaderService: LoaderService,
     private route: ActivatedRoute,
+    private descargaArchivosService: DescargaArchivosService,
   ) {
   }
 
@@ -174,6 +182,53 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
       }
     });
+  }
+
+  exportarArchivo(extension: string) : void {
+    this.loaderService.activar();
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (extension == "xls") {
+      configuracionArchivo.ext = "xlsx"
+    }
+    const objetoReporte = this.generarObjetoReporte(extension);
+    this.detallePagoService.generarReporte(objetoReporte).pipe(
+      finalize(()=> this.loaderService.desactivar())
+    ).subscribe({
+      next:(respuesta: any) =>{
+        this.usuario;
+        const file: Blob = new Blob([respuesta], {type: 'application/pdf'});
+        const url: string = window.URL.createObjectURL(file);
+        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+          finalize(() => this.loaderService.desactivar())
+        ).subscribe(
+          {
+            next:(repuesta) => {
+              if (respuesta) {
+                this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                this.mostrarModalConfirmacion = true;
+              }
+            },
+            error:(error) => {
+              this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+            }
+          }
+        )
+      },
+      error: (error:HttpErrorResponse) => {
+        console.error('Error al descargar reporte: ', error.message);
+      }
+    });
+  }
+
+  generarObjetoReporte(tipoReporte:string): any {
+    return {
+      idVelatorio: this.usuario.idVelatorio,
+      folioPlan: this.detalleServicio.numFolio,
+      fechaInicio: null,
+      fechaFin: null,
+      nombreContratante: this.detalleServicio.contratanteSubstituto,
+      tipoReporte:tipoReporte
+    }
   }
 
   abrirModalModificarPago(): void {

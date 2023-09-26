@@ -12,7 +12,7 @@ export interface ArticulosBusquedaDetalle {
   fecOds?: string | null;
   folioOde?: string | null;
   costoUnitario?: number | null;
-  costoConIva?: number | null;
+  costoConIva?: string;
   categoria?: string | null;
   proveedor?: string | null;
   paquete?: string | null;

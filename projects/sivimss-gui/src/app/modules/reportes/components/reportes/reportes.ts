@@ -169,15 +169,6 @@ export class Reportes implements OnInit {
     this.validaciones.get(tipoSolicitud)();
   }
 
-  validarFechaFinal(): void {
-    if (!this.ff.fechaIni?.value || !this.ff.fechaFin?.value) {
-      return
-    }
-    if (this.ff.fechaIni.value > this.ff.fechaFin.value) {
-      this.mostrarModalFechaMayor = true;
-    }
-  }
-
   cambiarDelegacion(configuracionInicial: boolean = false): void {
     if (!configuracionInicial) this.filtroForm.get('velatorio')?.patchValue(null);
     const delegacion = this.filtroForm.get('delegacion')?.value;
@@ -237,6 +228,10 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     if (!this.validarFiltros()) return;
+    if (this.ff.fechaIni.value > this.ff.fechaFin.value){
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+      return;
+    }
     this.loaderService.activar();
     const filtros = this.consultarFiltros(this.ff.reporte.value);
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: NOMBRE_REPORTES[this.ff.reporte.value - 1]};
@@ -260,6 +255,10 @@ export class Reportes implements OnInit {
       {
         label: '/pago-anticipado-descargar-reporte-pa',
         value: 9
+      },
+      {
+        label: '/reporte-pago-prov',
+        value: 3
       }
     ]
     let nombreReporte: string = "";
@@ -317,6 +316,19 @@ export class Reportes implements OnInit {
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls',
         }
         break;
+      case 2:
+        // this.fechaInicialBandera = true;
+        // this.fechaFinalBandera = true;
+        break;
+      case 3:
+        return {
+          id_delegacion:this.ff.velatorio.value,
+          id_velatorio:this.ff.delegacion.value,
+          fecha_inicial:this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
+          tipoReporte:this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+        }
+        break;
       case 5:
         // this.fechaInicialBandera = true;
         // this.fechaFinalBandera = true;
@@ -368,8 +380,10 @@ export class Reportes implements OnInit {
     let query = this.obtenerNombreContratantesDescripcion();
     let filtered: any[] = [];
     if (query?.length < 3) return;
-    for (let registro  of this.foliosODS as any[]) {
-      if (registro.folio?.toLowerCase().indexOf(query.toLowerCase()) === 0) {
+    for (let i = 0; i < (this.foliosODS as any[]).length; i++) {
+      let registro = (this.foliosODS as any[])[i];
+      if (registro.folio?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+
         filtered.push({label: registro.folio, value: registro.folio});
       }
     }
@@ -380,8 +394,10 @@ export class Reportes implements OnInit {
     let query = this.obtenerFolioODS();
     let filtered: any[] = [];
     if (query?.length < 3) return;
-    for (let registro of this.foliosServicioVelatorioODS as any[]) {
-      if (registro.folio_ods?.toLowerCase().indexOf(query.toLowerCase()) === 0) {
+    for (let i = 0; i < (this.foliosServicioVelatorioODS as any[]).length; i++) {
+      let registro = (this.foliosServicioVelatorioODS as any[])[i];
+      if (registro.folio_ods?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+
         filtered.push({label: registro.folio_ods, value: registro.id_ods});
       }
     }
