@@ -1,25 +1,25 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
-import { EtapaEstado } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
-import { Etapa } from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
-import { ActivatedRoute } from '@angular/router';
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { ActualizarOrdenServicioService } from '../../services/actualizar-orden-servicio.service';
-import { GestionarEtapasActualizacionService } from '../../services/gestionar-etapas-actualizacion.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { HttpErrorResponse } from '@angular/common/http';
+import {ChangeDetectorRef, Component, OnInit, OnDestroy} from '@angular/core';
+import {EtapaEstado} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa-estado.enum';
+import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface';
+import {ActivatedRoute} from '@angular/router';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {ActualizarOrdenServicioService} from '../../services/actualizar-orden-servicio.service';
+import {GestionarEtapasActualizacionService} from '../../services/gestionar-etapas-actualizacion.service';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
 import {
   AlertaService,
   TipoAlerta,
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { Subscription, finalize } from 'rxjs';
+import {Subscription, finalize} from 'rxjs';
 
 @Component({
   selector: 'app-actualizar-orden-servicio',
   templateUrl: './actualizar-orden-servicio.component.html',
   styleUrls: ['./actualizar-orden-servicio.component.scss'],
 })
-export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
+export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
   readonly DATOS_DEL_CONTRATANTE = 0;
   readonly DATOS_DEL_FINADO = 1;
   readonly CARACTERISTICAS_DEL_PRESUPUESTO = 2;
@@ -32,6 +32,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
 
   idEtapaSeleccionada: number = 0;
   estatusValida: number = 0;
+
   constructor(
     private gestionarEtapasService: GestionarEtapasActualizacionService,
     private rutaActiva: ActivatedRoute,
@@ -118,7 +119,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
   buscarDetalle(idODS: number) {
     this.loaderService.activar();
 
-    const parametros = { idOrdenServicio: idODS };
+    const parametros = {idOrdenServicio: idODS};
     this.gestionarOrdenServicioService
       .consultarDetalleODS(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
@@ -179,8 +180,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
       if (otorgamiento > 0) {
         mostrarOtorgamiento = true;
       }
-      for (let i = 0; i < paquete.length; i++) {
-        let element = paquete[i];
+      for (let element of paquete) {
         let coordOrigen = null;
         let coordDestino = null;
         let destino = null;
@@ -229,7 +229,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
           proviene: null,
           totalKilometros: totalKilometros,
         };
-          salidaPaquete.push(datos);
+        salidaPaquete.push(datos);
       }
     }
 
@@ -241,8 +241,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
       observaciones = presupuesto.observaciones;
       notasServicio = presupuesto.notasServicio;
 
-      for (let i = 0; i < detallePresupuesto.length; i++) {
-        const element = detallePresupuesto[i];
+      for (let element of detallePresupuesto) {
         total += Number(element.importeMonto * element.cantidad);
         let utilizarArticulo = false;
         if (element.servicioDetalleTraslado == 'paquete') {
@@ -371,6 +370,7 @@ export class ActualizarOrdenServicioComponent implements OnInit,OnDestroy {
       datosEtapaInformacionServicio
     );
   }
+
   obtenerIdEtapaSeleccionada(idEtapaSeleccionada: number) {
     //Con esta etapa que se recibe ya se puede modificar su estado.
     //Al modificar el estado de la etapa su estilo se actualiza.
