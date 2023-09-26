@@ -317,14 +317,6 @@ export class Reportes implements OnInit {
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls',
         }
         break;
-      case 2:
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
-        break;
-      case 3:
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
-        break;
       case 5:
         // this.fechaInicialBandera = true;
         // this.fechaFinalBandera = true;
