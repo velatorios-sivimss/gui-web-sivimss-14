@@ -1,4 +1,4 @@
-<app-titulo-principal titulo="Administración de comisiones de promotores"></app-titulo-principal>
+<app-titulo-principal titulo="Administración de comisiones"></app-titulo-principal>
 <div class="border-panel">
   <form [formGroup]="filtroFormComisiones" (ngSubmit)="buscar()">
     <div class="row mb-3">
@@ -97,7 +97,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="5" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
+        <th colspan="7" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
           No se encontró información relacionada a tu búsqueda.
         </th>
       </tr>

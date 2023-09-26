@@ -14,12 +14,12 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FiltrosComisiones} from "../../models/filtros-comisiones.interface";
 import {finalize} from "rxjs/operators";
 import {HttpErrorResponse} from "@angular/common/http";
-import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 import * as moment from "moment/moment";
 
 type ListadoComisiones = Required<Comisiones> & { id: string }
@@ -207,6 +207,7 @@ export class ComisionesComponent implements OnInit {
     this.calculoComisionesService.obtenerPromotores().subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.promotores = mapearArregloTipoDropdown(respuesta.datos, "nomPromotor", "numEmpleado");
+        this.promotores = [...this.promotores, {value: null, label: 'Todos'}];
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
