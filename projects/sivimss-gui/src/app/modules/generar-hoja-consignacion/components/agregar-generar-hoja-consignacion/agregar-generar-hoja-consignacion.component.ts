@@ -225,25 +225,23 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
 
   guardar() {
     this.loaderService.activar();
-    console.log(this.datosGuardar());
-
-    // this.generarHojaConsignacionService.generarHoja(this.datosGuardar()).pipe(
-    //   finalize(() => {
-    //     this.loaderService.desactivar()
-    //   })
-    // ).subscribe({
-    //   next: (respuesta: HttpRespuesta<any>) => {
-    //     if (respuesta.codigo === 200 && !respuesta.error) {
-    //       this.hojaGenerada = true;
-    //       this.idHojaConsig = respuesta.datos;
-    //       this.obtenerDetalle();
-    //       this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
-    //     }
-    //   },
-    //   error: (error: HttpErrorResponse) => {
-    //     console.error(error);
-    //   }
-    // });
+    this.generarHojaConsignacionService.generarHoja(this.datosGuardar()).pipe(
+      finalize(() => {
+        this.loaderService.desactivar()
+      })
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.codigo === 200 && !respuesta.error) {
+          this.hojaGenerada = true;
+          this.idHojaConsig = respuesta.datos;
+          this.obtenerDetalle();
+          this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+      }
+    });
   }
 
   vistaPrevia(): void {
