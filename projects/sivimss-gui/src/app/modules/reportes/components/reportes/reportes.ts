@@ -419,10 +419,8 @@ export class Reportes implements OnInit {
     let query = this.obtenerNombreContratantesDescripcion();
     let filtered: any[] = [];
     if (query?.length < 3) return;
-    for (let i = 0; i < (this.foliosODS as any[]).length; i++) {
-      let registro = (this.foliosODS as any[])[i];
+    for (let registro of this.foliosODS as any[]) {
       if (registro.folio?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-
         filtered.push({label: registro.folio, value: registro.folio});
       }
     }
@@ -433,10 +431,8 @@ export class Reportes implements OnInit {
     let query = this.obtenerFolioODS();
     let filtered: any[] = [];
     if (query?.length < 3) return;
-    for (let i = 0; i < (this.foliosServicioVelatorioODS as any[]).length; i++) {
-      let registro = (this.foliosServicioVelatorioODS as any[])[i];
+    for (let registro of this.foliosServicioVelatorioODS as any[]) {
       if (registro.folio_ods?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-
         filtered.push({label: registro.folio_ods, value: registro.id_ods});
       }
     }

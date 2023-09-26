@@ -96,7 +96,7 @@ body {
   display: inline-block;
   margin-left: 10px;
 
-  &>*:not(span) {
+  & > *:not(span) {
     transform: translateY(3px);
   }
 
@@ -150,7 +150,7 @@ body {
     font-size: 18px;
   }
 
-  a+a {
+  a + a {
     margin-left: 1.75rem;
   }
 
@@ -209,7 +209,7 @@ body {
 }
 
 .table-panel-column-title {
-  padding: 1.5rem 1.75rem 0rem 1.75rem;
+  padding: 1.5rem 1.75rem 0 1.75rem;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -262,7 +262,7 @@ body {
 
 .custom-table .p-datatable-wrapper {
   border: none;
-  border-radius: 0px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -309,15 +309,7 @@ h1.subtitulo-base-lg {
   background-color: #F3F3F3;
 }
 
-.sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
-  background-color: #F3F3F3;
-}
-
 .sivimss-accordionColor.p-accordion .p-accordion-header:hover(.p-disabled).p-highlight .p-accordion-header-link {
-  background-color: #F3F3F3;
-}
-
-.sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
   background-color: #F3F3F3;
 }
 
@@ -349,7 +341,7 @@ h1.subtitulo-base-lg {
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  width: 100%,
+  width: 100%;
 }
 
 .input-autocomplete-error {
@@ -432,7 +424,7 @@ h1.subtitulo-base-lg {
   all: unset;
 }
 
-.header-custom-proveedor>th {
+.header-custom-proveedor > th {
   background: none !important;
   border-bottom: 2px solid #DDDDDD !important;
   color: #484848 !important;
@@ -440,15 +432,15 @@ h1.subtitulo-base-lg {
   font-weight: 600 !important;
 }
 
-.table-custom-proveedor>.p-datatable-wrapper {
+.table-custom-proveedor > .p-datatable-wrapper {
   border: none !important;
 }
 
-.ultima-celda-sticky.p-datatable .p-datatable-thead>.header-custom-proveedor>th:last-child {
+.ultima-celda-sticky.p-datatable .p-datatable-thead > .header-custom-proveedor > th:last-child {
   border-left: none !important;
 }
 
-.ultima-celda-sticky.p-datatable .p-datatable-tbody>tr>td:last-child {
+.ultima-celda-sticky.p-datatable .p-datatable-tbody > tr > td:last-child {
   color: #484848 !important;
   font-size: 16px !important;
   font-weight: 600 !important;
