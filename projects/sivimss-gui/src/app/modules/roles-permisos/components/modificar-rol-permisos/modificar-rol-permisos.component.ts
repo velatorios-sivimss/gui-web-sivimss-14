@@ -167,7 +167,6 @@ export class ModificarRolPermisosComponent implements OnInit {
       this.indice++;
       this.rolPermisosModificado = this.crearRolPermisosModificado();
       this.modificarRolPermisos();
-      return;
     }
   }
 
