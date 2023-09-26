@@ -114,9 +114,9 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
-    // this.ff.nivel.setValue(+this.rolLocalStorage.idOficina),
-    // this.ff.delegacion.setValue(+this.rolLocalStorage.idDelegacion ),
-    // this.ff.velatorio.setValue(+this.rolLocalStorage.idVelatorio ?? null),
+    this.ff.nivel.setValue(+this.rolLocalStorage.idOficina),
+    this.ff.delegacion.setValue(+this.rolLocalStorage.idDelegacion ),
+    this.ff.velatorio.setValue(+this.rolLocalStorage.idVelatorio ?? null),
     this.paginar();
   }
 

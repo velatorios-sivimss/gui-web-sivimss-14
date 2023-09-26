@@ -58,6 +58,21 @@
         <span class="campo-obligatorio"
               *ngIf="ff.idTipoODS?.errors?.required && (ff.idTipoODS?.dirty || ff.idTipoODS?.touched)">Este campo es obligatorio *.</span>
       </div>
+      <div class="col-md-6" *ngIf="[4].includes(idReporte)">
+        <label class="control-label" for="folioOdsDetallePago">Folio de la Orden de Servicio:</label>
+        <p-autoComplete id="folioOdsDetallePago" class="form-control" formControlName="folioOdsDetallePago"
+                        [showEmptyMessage]="true" [suggestions]="filtroODSDetPago" (completeMethod)="filtrarODSDetPago()"
+                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete"
+                        placeholder="Ingresa el número de ODS" field="label"
+                        [inputStyleClass]="'input-autocomplete'"
+        >
+          <ng-template let-ods pTemplate="item">
+            <div class="autocomplete-item">
+              <div>{{ods.label}}</div>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
 
       <div class="col-md-6" *ngIf="[7].includes(idReporte)">
         <label class="control-label" for="folioOds">Folio de la Orden de Servicio:</label>
@@ -90,6 +105,21 @@
           </ng-template>
         </p-autoComplete>
       </div>
+      <div class="col-md-6" *ngIf="[8].includes(idReporte)">
+        <label class="control-label" for="numeroOdsSiniestros">Número de ODS:</label>
+        <p-autoComplete id="numeroOdsSiniestros" class="form-control" formControlName="numeroOdsSiniestros"
+                        [showEmptyMessage]="true" [suggestions]="filtroODSSiniestro" (completeMethod)="filtrarODSSiniestro()"
+                        [style]="{'width':'100%'}" [minLength]="3" class="p-autocomplete"
+                        placeholder="Ingresa el número de ODS" field="label"
+                        [inputStyleClass]="'input-autocomplete'"
+        >
+          <ng-template let-ods pTemplate="item">
+            <div class="autocomplete-item">
+              <div>{{ods.label}}</div>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
       <div class="col-md-6" *ngIf="[6].includes(idReporte)">
         <label class="control-label" for="nivel">Promotor:</label>
         <p-dropdown appendTo="body" id="promotor" class="form-control" formControlName="promotor" [options]="promotores"
@@ -97,25 +127,25 @@
         </p-dropdown>
       </div>
       <div class="col-md-6" *ngIf="[6].includes(idReporte)">
-        <label class="control-label" for="anio">Año<span class="req">*:</span> </label>
+        <label class="control-label" for="anio">Año<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="anio" class="form-control" formControlName="anio"
                     [options]="anio" placeholder="Selecciona el año" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
 
       <div class="col-md-6" *ngIf="[6].includes(idReporte)">
-        <label class="control-label" for="mes">Mes<span class="req">*:</span></label>
+        <label class="control-label" for="mes">Mes<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="mes" class="form-control" formControlName="mes"
                     [options]="mes" placeholder="Selecciona el mes" [filter]="true" filterBy="label">
         </p-dropdown>
       </div>
-      <div class="col-md-6" *ngIf="[1, 2, 3, 4, 7, 9].includes(idReporte)">
-        <label class="control-label" for="fechaIni">Fecha Inicial:</label>
+      <div class="col-md-6" *ngIf="[1, 2, 3, 4, 5, 7, 8, 9].includes(idReporte)">
+        <label class="control-label" for="fechaIni">Fecha Inicial<span class="req" *ngIf="[5, 8].includes(idReporte)">*</span>:</label>
         <p-calendar styleClass="form-control" id="fechaIni" formControlName="fechaIni" [showIcon]="true"
                     dateFormat="dd-mm-yy" placeholder="Fecha Inicial" [minDate]="fechaRango"></p-calendar>
       </div>
-      <div class="col-md-6" *ngIf="[1, 2, 3, 4, 7, 9].includes(idReporte)">
-        <label class="control-label" for="fechaFin">Fecha Final:</label>
+      <div class="col-md-6" *ngIf="[1, 2, 3, 4, 5, 7, 8, 9].includes(idReporte)">
+        <label class="control-label" for="fechaFin">Fecha Final<span class="req" *ngIf="[5, 8].includes(idReporte)">*</span>:</label>
         <p-calendar styleClass="form-control" id="fechaFin" formControlName="fechaFin" [showIcon]="true"
                     dateFormat="dd-mm-yy" placeholder="Fecha Final" [maxDate]="fechaActual"></p-calendar>
       </div>
@@ -166,7 +196,7 @@
   <div class="row mb-3">
     <div class="col-md-12 flex justify-content-end">
       <button type="submit" class="btn btn-default btn-md" (click)="limpiarFiltros()" [disabled]="filtroForm.pristine">
-        Limpiar filtros
+        Limpiar
       </button>
       <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="consultarValidaciones()"
               (click)="exportarReporte()">Exportar
