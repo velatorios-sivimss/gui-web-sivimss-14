@@ -62,6 +62,9 @@ export class ServiciosFunerariosComponent implements OnInit {
   mensajeArchivoConfirmacion: string = "";
   mostrarModalCancelarPlan: boolean = false;
 
+  mensajeCriterioBusqueda: string = "";
+  aceptarCriteriosBusqueda: boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private alertaService: AlertaService,
@@ -78,6 +81,7 @@ export class ServiciosFunerariosComponent implements OnInit {
     this.actualizarBreadcrumb();
     this.inicializarCatalogos();
     this.inicializarFiltroForm();
+    if(this.ff.delegacion.value)this.consultarVelatorios();
   }
 
   actualizarBreadcrumb(): void {
@@ -87,8 +91,8 @@ export class ServiciosFunerariosComponent implements OnInit {
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
               nivel: [{value: +this.rolLocalStorage.idOficina, disabled:true}],
-         delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled:+this.rolLocalStorage.idOficina >= 2 }],
-          velatorio: [{value: null, disabled:+this.rolLocalStorage.idOficina === 3 }],
+         delegacion: [{value: +this.rolLocalStorage.idDelegacion ?? null, disabled:+this.rolLocalStorage.idOficina >= 2 }],
+          velatorio: [{value: +this.rolLocalStorage.idVelatorio ?? null, disabled:+this.rolLocalStorage.idOficina === 3 }],
       folioPlanSFPA: [{value: null, disabled:false}],
                 rfc: [{value: null, disabled:false}],
                curp: [{value: null, disabled:false}],
@@ -103,11 +107,16 @@ export class ServiciosFunerariosComponent implements OnInit {
     const respuesta = this.route.snapshot.data['respuesta'];
     this.nivel = respuesta[this.POSICION_NIVELES];
     this.delegacion = respuesta[this.POSICION_DELEGACIONES];
-    this.estatus = respuesta[this.POSICION_ESTATUS];
+    this.estatus = respuesta[this.POSICION_ESTATUS].filter((elemento:any) => {
+      return elemento.label != 'CON ADEUDO'
+    })
   }
 
   limpiar(): void {
     this.filtroForm.reset();
+    // this.ff.nivel.setValue(+this.rolLocalStorage.idOficina),
+    // this.ff.delegacion.setValue(+this.rolLocalStorage.idDelegacion ),
+    // this.ff.velatorio.setValue(+this.rolLocalStorage.idVelatorio ?? null),
     this.paginar();
   }
 
@@ -122,6 +131,12 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
   buscar(): void {
+    if(this.ff.rangoInicio.value && this.ff.rangoFin.value){
+      if(this.ff.rangoInicio.value > this.ff.rangoFin.value){
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+        return;
+      }
+    }
     if(this.ff.velatorio.value == null &&
       (this.ff.folioPlanSFPA.value == null || this.ff.folioPlanSFPA.value == "") &&
       (this.ff.rfc.value == null || this.ff.rfc.value == "")  &&
@@ -131,8 +146,10 @@ export class ServiciosFunerariosComponent implements OnInit {
       (this.ff.rangoInicio.value == null || this.ff.rangoInicio.value == "") &&
       (this.ff.rangoFin.value == null || this.ff.rangoFin.value == "")
     ){
-      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(22
-        || 'El servicio no responde, no permite más llamadas.'));
+      this.mensajeCriterioBusqueda = this.mensajesSistemaService.obtenerMensajeSistemaPorId(22);
+      this.aceptarCriteriosBusqueda = true;
+      // this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(22
+      //   || 'El servicio no responde, no permite más llamadas.'));
       return
     }
     this.paginar();
@@ -263,7 +280,7 @@ export class ServiciosFunerariosComponent implements OnInit {
           finalize(() => this.loaderService.desactivar())).subscribe({
           next: (repuesta): void => {
             this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-            this.mostrarModalConfirmacion = true;
+            // this.mostrarModalConfirmacion = true;
           },
           error: (error): void => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))

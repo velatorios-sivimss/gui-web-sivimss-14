@@ -169,15 +169,6 @@ export class Reportes implements OnInit {
     this.validaciones.get(tipoSolicitud)();
   }
 
-  validarFechaFinal(): void {
-    if (!this.ff.fechaIni?.value || !this.ff.fechaFin?.value) {
-      return
-    }
-    if (this.ff.fechaIni.value > this.ff.fechaFin.value) {
-      this.mostrarModalFechaMayor = true;
-    }
-  }
-
   cambiarDelegacion(configuracionInicial: boolean = false): void {
     if (!configuracionInicial) this.filtroForm.get('velatorio')?.patchValue(null);
     const delegacion = this.filtroForm.get('delegacion')?.value;
@@ -237,6 +228,10 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     if (!this.validarFiltros()) return;
+    if (this.ff.fechaIni.value > this.ff.fechaFin.value){
+      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+      return;
+    }
     this.loaderService.activar();
     const filtros = this.consultarFiltros(this.ff.reporte.value);
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: NOMBRE_REPORTES[this.ff.reporte.value - 1]};
@@ -260,6 +255,10 @@ export class Reportes implements OnInit {
       {
         label: '/pago-anticipado-descargar-reporte-pa',
         value: 9
+      },
+      {
+        label: '/reporte-pago-prov',
+        value: 3
       }
     ]
     let nombreReporte: string = "";
@@ -322,8 +321,13 @@ export class Reportes implements OnInit {
         // this.fechaFinalBandera = true;
         break;
       case 3:
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
+        return {
+          id_delegacion:this.ff.velatorio.value,
+          id_velatorio:this.ff.delegacion.value,
+          fecha_inicial:this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
+          tipoReporte:this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+        }
         break;
       case 5:
         // this.fechaInicialBandera = true;
