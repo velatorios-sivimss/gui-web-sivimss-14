@@ -129,7 +129,7 @@
         </div>
         <div class="row mx-6 mb-3">
           <p-table styleClass="mb-8" [value]="detalleODS" [paginator]="detalleODS.length > 0"
-                   [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementosODS" [pageLinks]="3"
+                   [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
                    [(first)]="numPaginaActual">
 
             <ng-template pTemplate="header">
@@ -182,7 +182,7 @@
         </div>
         <div class="row mx-6 mb-3">
           <p-table styleClass="mb-8" [value]="detalleConveniosPF" [paginator]="detalleConveniosPF.length > 0"
-                   [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementosConvenios" [pageLinks]="3"
+                   [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
                    [(first)]="numPaginaActual">
 
             <ng-template pTemplate="header">
