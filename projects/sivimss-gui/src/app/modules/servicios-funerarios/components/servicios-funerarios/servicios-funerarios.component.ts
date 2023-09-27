@@ -247,9 +247,11 @@ export class ServiciosFunerariosComponent implements OnInit {
                       { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
           this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
             finalize(() => this.loaderService.desactivar())).subscribe({
-            next: (repuesta): void => {
-              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-              this.mostrarModalConfirmacion = true;
+            next: (respuestaArchivo): void => {
+              if(respuestaArchivo){
+                this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                this.mostrarModalConfirmacion = true;
+              }
             },
             error: (error): void => {
               this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
@@ -278,9 +280,11 @@ export class ServiciosFunerariosComponent implements OnInit {
 
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())).subscribe({
-          next: (repuesta): void => {
-            this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-            // this.mostrarModalConfirmacion = true;
+          next: (respuestaArchivo): void => {
+            if(respuestaArchivo){
+              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+              this.mostrarModalConfirmacion = true;
+            }
           },
           error: (error): void => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
