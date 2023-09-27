@@ -107,6 +107,7 @@
 .p-dialog .p-dialog-footer {
   padding: 1.5rem 3rem 3rem 3rem;
   font-size: 1.6rem;
+  border-top: none;
 }
 
 .p-dialog .p-dialog-content + .p-dialog-footer {
@@ -114,14 +115,10 @@
   font-size: 1.6rem;
 }
 
-.p-dialog .p-dialog-footer {
-  border-top: none;
-}
-
-
 .form-control.p-calendar {
   padding: 0;
   border: none;
+  position: relative;
 
   input {
     height: 40px;
@@ -139,10 +136,6 @@
     box-shadow: none;
     transition: none;
   }
-}
-
-.form-control.p-calendar {
-  position: relative;
 
   .p-datepicker table td > span.p-highlight {
     background: #9d2449;
@@ -195,7 +188,7 @@
 
   .p-inputtext:enabled:focus {
     border-color: #66afe9;
-    border-right-color: none;
+    border-right-color: unset;
     outline: 0;
     box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(102 175 233 / 60%);
   }
