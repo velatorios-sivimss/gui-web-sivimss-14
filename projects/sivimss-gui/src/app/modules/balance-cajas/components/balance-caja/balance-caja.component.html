@@ -1,6 +1,6 @@
 <div class="grid">
     <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
-    <app-titulo-principal titulo="Realizar balance de caja" class="col"></app-titulo-principal>
+    <app-titulo-principal titulo="Pagos / Realizar balance de caja." class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
     <form [formGroup]="filtroFormBalanceCaja" (ngSubmit)="buscar()" (reset)="limpiar()">
@@ -72,7 +72,7 @@
         <ng-template pTemplate="header">
             <tr>
                 <th id="columna_balance_caja_fecha">Fecha</th>
-                <th id="columna_balance_caja_delegacion">Delegacion</th>
+                <th id="columna_balance_caja_delegacion">Delegación</th>
                 <th id="columna_balance_caja_velatorio">Velatorio</th>
                 <th id="columna_balance_caja_folio">Folio</th>
                 <th id="columna_balance_caja_tipo_ingreso">Tipo de ingreso</th>

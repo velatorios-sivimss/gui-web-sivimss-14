@@ -47,16 +47,16 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   fechaActual = new Date();
 
-  nivel:TipoDropdown[] = [];
-  delegacion:TipoDropdown[] = [];
-  estatus:TipoDropdown[] = [];
-  velatorio:TipoDropdown[] = [];
+  nivel: TipoDropdown[] = [];
+  delegacion: TipoDropdown[] = [];
+  estatus: TipoDropdown[] = [];
+  velatorio: TipoDropdown[] = [];
 
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
 
-  servicioFunerario:ConsultaPaginado[] = [];
+  servicioFunerario: ConsultaPaginado[] = [];
   servicioSeleccionado!: ConsultaPaginado;
   mostrarModalConfirmacion: boolean = false;
   mensajeArchivoConfirmacion: string = "";
@@ -75,13 +75,14 @@ export class ServiciosFunerariosComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private serviciosFunerariosService: ServiciosFunerariosConsultaService,
     private readonly loaderService: LoaderService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
     this.inicializarCatalogos();
     this.inicializarFiltroForm();
-    if(this.ff.delegacion.value)this.consultarVelatorios();
+    if (this.ff.delegacion.value) this.consultarVelatorios();
   }
 
   actualizarBreadcrumb(): void {
@@ -90,16 +91,16 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-              nivel: [{value: +this.rolLocalStorage.idOficina, disabled:true}],
-         delegacion: [{value: +this.rolLocalStorage.idDelegacion ?? null, disabled:+this.rolLocalStorage.idOficina >= 2 }],
-          velatorio: [{value: +this.rolLocalStorage.idVelatorio ?? null, disabled:+this.rolLocalStorage.idOficina === 3 }],
-      folioPlanSFPA: [{value: null, disabled:false}],
-                rfc: [{value: null, disabled:false}],
-               curp: [{value: null, disabled:false}],
-            estatus: [{value: null, disabled:false}],
-           afiliado: [{value: null, disabled:false}],
-        rangoInicio: [{value: null, disabled:false}],
-           rangoFin: [{value: null, disabled:false}]
+      nivel: [{value: +this.rolLocalStorage.idOficina, disabled: true}],
+      delegacion: [{value: +this.rolLocalStorage.idDelegacion ?? null, disabled: +this.rolLocalStorage.idOficina >= 2}],
+      velatorio: [{value: +this.rolLocalStorage.idVelatorio ?? null, disabled: +this.rolLocalStorage.idOficina === 3}],
+      folioPlanSFPA: [{value: null, disabled: false}],
+      rfc: [{value: null, disabled: false}],
+      curp: [{value: null, disabled: false}],
+      estatus: [{value: null, disabled: false}],
+      afiliado: [{value: null, disabled: false}],
+      rangoInicio: [{value: null, disabled: false}],
+      rangoFin: [{value: null, disabled: false}]
     });
   }
 
@@ -107,16 +108,16 @@ export class ServiciosFunerariosComponent implements OnInit {
     const respuesta = this.route.snapshot.data['respuesta'];
     this.nivel = respuesta[this.POSICION_NIVELES];
     this.delegacion = respuesta[this.POSICION_DELEGACIONES];
-    this.estatus = respuesta[this.POSICION_ESTATUS].filter((elemento:any) => {
+    this.estatus = respuesta[this.POSICION_ESTATUS].filter((elemento: any) => {
       return elemento.label != 'CON ADEUDO'
     })
   }
 
   limpiar(): void {
     this.filtroForm.reset();
-    this.ff.nivel.setValue(+this.rolLocalStorage.idOficina),
-    this.ff.delegacion.setValue(+this.rolLocalStorage.idDelegacion ),
-    this.ff.velatorio.setValue(+this.rolLocalStorage.idVelatorio ?? null),
+    this.ff.nivel.setValue(+this.rolLocalStorage.idOficina);
+    this.ff.delegacion.setValue(+this.rolLocalStorage.idDelegacion);
+    this.ff.velatorio.setValue(+this.rolLocalStorage.idVelatorio ?? null);
     this.paginar();
   }
 
@@ -124,28 +125,28 @@ export class ServiciosFunerariosComponent implements OnInit {
 
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1))
-    } else{
+    } else {
       this.numPaginaActual = 0;
     }
     this.paginarPorFiltros()
   }
 
   buscar(): void {
-    if(this.ff.rangoInicio.value && this.ff.rangoFin.value){
-      if(this.ff.rangoInicio.value > this.ff.rangoFin.value){
+    if (this.ff.rangoInicio.value && this.ff.rangoFin.value) {
+      if (this.ff.rangoInicio.value > this.ff.rangoFin.value) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
         return;
       }
     }
-    if(this.ff.velatorio.value == null &&
+    if (this.ff.velatorio.value == null &&
       (this.ff.folioPlanSFPA.value == null || this.ff.folioPlanSFPA.value == "") &&
-      (this.ff.rfc.value == null || this.ff.rfc.value == "")  &&
+      (this.ff.rfc.value == null || this.ff.rfc.value == "") &&
       (this.ff.curp.value == null || this.ff.curp.value == "") &&
       this.ff.estatus.value == null &&
       (this.ff.afiliado.value == null || this.ff.afiliado.value == "") &&
       (this.ff.rangoInicio.value == null || this.ff.rangoInicio.value == "") &&
       (this.ff.rangoFin.value == null || this.ff.rangoFin.value == "")
-    ){
+    ) {
       this.mensajeCriterioBusqueda = this.mensajesSistemaService.obtenerMensajeSistemaPorId(22);
       this.aceptarCriteriosBusqueda = true;
       // this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(22
@@ -159,7 +160,7 @@ export class ServiciosFunerariosComponent implements OnInit {
     this.servicioFunerario = [];
     const filtros = this.obtenerObjetoParaFiltrado();
     this.loaderService.activar()
-    this.serviciosFunerariosService.paginar(this.numPaginaActual,this.cantElementosPorPagina,filtros).pipe(
+    this.serviciosFunerariosService.paginar(this.numPaginaActual, this.cantElementosPorPagina, filtros).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
@@ -175,32 +176,32 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   obtenerObjetoParaFiltrado(): PaginadoInterface {
     return {
-            idVelatorio: this.ff.velatorio.value ?? null,
-       numFolioPlanSfpa: this.ff.folioPlanSFPA.value ?? null,
-                    rfc: this.ff.rfc.value ?? null,
-                   curp: this.ff.curp.value ?? null,
-         nombreAfiliado: this.ff.afiliado.value ?? null,
+      idVelatorio: this.ff.velatorio.value ?? null,
+      numFolioPlanSfpa: this.ff.folioPlanSFPA.value ?? null,
+      rfc: this.ff.rfc.value ?? null,
+      curp: this.ff.curp.value ?? null,
+      nombreAfiliado: this.ff.afiliado.value ?? null,
       idEstatusPlanSfpa: this.ff.estatus.value ?? null,
-            fechaInicio: this.ff.rangoInicio.value ?
-              moment(this.ff.rangoInicio.value).format('YYYY-MM-DD') : null,
-               fechaFin: this.ff.rangoFin.value ?
-                 moment(this.ff.rangoFin.value).format('YYYY-MM-DD') : null,
+      fechaInicio: this.ff.rangoInicio.value ?
+        moment(this.ff.rangoInicio.value).format('YYYY-MM-DD') : null,
+      fechaFin: this.ff.rangoFin.value ?
+        moment(this.ff.rangoFin.value).format('YYYY-MM-DD') : null,
     }
   }
 
   obtenerObjetoParaReporte(tipoReporte: string): GenerarReporte {
     return {
-            idVelatorio: this.ff.velatorio.value ?? null,
-       numFolioPlanSfpa: this.ff.folioPlanSFPA.value ?? null,
-                    rfc: this.ff.rfc.value ?? null,
-                   curp: this.ff.curp.value ?? null,
-         nombreAfiliado: this.ff.afiliado.value ?? null,
+      idVelatorio: this.ff.velatorio.value ?? null,
+      numFolioPlanSfpa: this.ff.folioPlanSFPA.value ?? null,
+      rfc: this.ff.rfc.value ?? null,
+      curp: this.ff.curp.value ?? null,
+      nombreAfiliado: this.ff.afiliado.value ?? null,
       idEstatusPlanSfpa: this.ff.estatus.value ?? null,
-            fechaInicio: this.ff.rangoInicio.value ?
-                         moment(this.ff.rangoInicio.value).format('YYYY-MM-DD') : null,
-               fechaFin: this.ff.rangoFin.value ?
-                         moment(this.ff.rangoFin.value).format('YYYY-MM-DD') : null,
-            tipoReporte: tipoReporte
+      fechaInicio: this.ff.rangoInicio.value ?
+        moment(this.ff.rangoInicio.value).format('YYYY-MM-DD') : null,
+      fechaFin: this.ff.rangoFin.value ?
+        moment(this.ff.rangoFin.value).format('YYYY-MM-DD') : null,
+      tipoReporte: tipoReporte
     }
   }
 
@@ -218,12 +219,12 @@ export class ServiciosFunerariosComponent implements OnInit {
   consultarVelatorios(): void {
     this.loaderService.activar();
     this.serviciosFunerariosService.obtenerCatalogoVelatoriosPorDelegacion(this.ff.delegacion.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
-        this.velatorio = mapearArregloTipoDropdown(respuesta.datos,"nomVelatorio","idVelatorio");
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.velatorio = mapearArregloTipoDropdown(respuesta.datos, "nomVelatorio", "idVelatorio");
       },
-      error:(error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error,
           this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
@@ -234,17 +235,17 @@ export class ServiciosFunerariosComponent implements OnInit {
     this.loaderService.activar()
     let filtros = this.obtenerObjetoParaReporte(extension);
     const configuracionArchivo: OpcionesArchivos = {};
-    if(extension.includes("xls")){
+    if (extension.includes("xls")) {
       configuracionArchivo.ext = "xlsx"
     }
     filtros.tipoReporte = extension;
     this.serviciosFunerariosService.generarArchivoPaginador(filtros).pipe(
-      finalize(()=> this.loaderService.desactivar())).subscribe(
+      finalize(() => this.loaderService.desactivar())).subscribe(
       {
         next: (respuesta: HttpRespuesta<any>) => {
           const file = new Blob([this.descargaArchivosService.base64_2Blob(
-                      respuesta.datos,this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-                      { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+              respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+            {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
           this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
             finalize(() => this.loaderService.desactivar())).subscribe({
             next: (respuestaArchivo): void => {
@@ -270,13 +271,13 @@ export class ServiciosFunerariosComponent implements OnInit {
     this.loaderService.activar();
     const configuracionArchivo: OpcionesArchivos = {};
     this.serviciosFunerariosService.consultarContrato(this.servicioSeleccionado.ID_PLAN_SFPA).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
+      next: (respuesta: HttpRespuesta<any>) => {
 
         const file = new Blob([this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+            respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
 
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())).subscribe({
@@ -304,16 +305,17 @@ export class ServiciosFunerariosComponent implements OnInit {
 
 
   detallePago(): void {
-    this.router.navigate(["servicios-funerarios/detalle-pago"],{
-      queryParams:{idPlanSfpa:this.servicioSeleccionado.ID_PLAN_SFPA}})
+    this.router.navigate(["servicios-funerarios/detalle-pago"], {
+      queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA}
+    })
   }
 
   cancelarPago(): void {
     this.loaderService.activar();
     this.serviciosFunerariosService.cancelarPlanSfpa(this.servicioSeleccionado.ID_PLAN_SFPA).pipe(
-      finalize(()=> this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
+      next: (respuesta: HttpRespuesta<any>) => {
         this.mostrarModalCancelarPlan = false;
         this.paginar();
       },
@@ -325,13 +327,13 @@ export class ServiciosFunerariosComponent implements OnInit {
   }
 
 
-
   modificarPago(): void {
-    this.router.navigate(["servicios-funerarios/modificar-pago"],{
-      queryParams:{idPlanSfpa:this.servicioSeleccionado.ID_PLAN_SFPA}})
+    this.router.navigate(["servicios-funerarios/modificar-pago"], {
+      queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA}
+    })
   }
 
-  get ff(){
+  get ff() {
     return this.filtroForm.controls;
   }
 

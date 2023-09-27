@@ -100,6 +100,7 @@ export class BalanceCajaComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    this.catatalogoDelegaciones = [{value: null, label: 'Todos'}, ...this.catatalogoDelegaciones];
     this.obtenerVelatorios();
   }
 
@@ -232,6 +233,7 @@ export class BalanceCajaComponent implements OnInit {
     this.balanceCajaService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+        this.catalogoVelatorios = [{value: null, label: 'Todos'}, ...this.catalogoVelatorios];
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
