@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Etapa } from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Etapa} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
 import {GestionarEtapasServiceSF} from "../../../../modules/ordenes-servicio/services/gestionar-etapas.service-sf";
 
 @Component({

@@ -412,7 +412,7 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.velatorio = respuesta.datos!.map(
+        this.velatorio = respuesta.datos.map(
           (velatorio: any) => (
             {label: velatorio.nomVelatorio, value: velatorio.idVelatorio}
           )

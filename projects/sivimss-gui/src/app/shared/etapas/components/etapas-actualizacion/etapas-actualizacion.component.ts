@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { GestionarEtapasActualizacionService } from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/services/gestionar-etapas-actualizacion.service';
-import { Etapa } from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {
+  GestionarEtapasActualizacionService
+} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/services/gestionar-etapas-actualizacion.service';
+import {Etapa} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
 
 @Component({
   selector: 'app-etapas-actualizacion',

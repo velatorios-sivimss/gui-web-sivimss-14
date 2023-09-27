@@ -19,7 +19,7 @@ export class WithoutSpecialCharDirective {
   @HostListener('input', ['$event']) onInputChange(event: any): void {
     const initalValue = this._el.nativeElement.value;
     let newValue = initalValue.replace(/^ +/g, '');
-    newValue = newValue.replace(/[^a-zA-Z0-9\s]/gi, '');
+    newValue = newValue.replace(/[^A-Z0-9\s]/gi, '');
     newValue = newValue.normalize("NFD").replace(/[\u0300-\u036f]/g, '');
     newValue = newValue.replace(/\s+/g, ' ');
     if (newValue === '' && this.ngControl?.control) {
