@@ -16,7 +16,10 @@ import {
 const routes: Routes = [
   {
     path: '',
-    component: ConsultaConveniosComponent
+    component: ConsultaConveniosComponent,
+    resolve: {
+      respuesta: ConsultaConveniosResolver
+    }
   },
   {
     path: 'ingresar-nuevo-convenio',

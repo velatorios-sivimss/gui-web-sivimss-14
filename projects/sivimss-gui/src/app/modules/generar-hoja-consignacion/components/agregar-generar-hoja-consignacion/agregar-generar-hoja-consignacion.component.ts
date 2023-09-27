@@ -49,7 +49,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   public realizoBusqueda: boolean = false;
   public articulos: ArticulosBusquedaDetalle[] = [];
   public totalArticulo: number = 0;
-  public totalCosto: number = 0;
+  public totalCosto: any;
   public agregarGenerarHojaConsignacionForm!: FormGroup;
   public fechaActual: string = '';
   public horaActual: string = '';
@@ -190,7 +190,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
   seteoDetalle(hojaConsignacionDetalle: HojaConsignacionDetalle) {
     this.articulos = hojaConsignacionDetalle.artResponse;
     this.totalArticulo = hojaConsignacionDetalle.totalArt ?? 0;
-    this.totalCosto = hojaConsignacionDetalle.totalCosto ?? 0;
+    this.totalCosto = hojaConsignacionDetalle.totalCosto ?? '';
     this.folio = hojaConsignacionDetalle.folio ?? '';
     this.delegacionSeleccionada = hojaConsignacionDetalle.delegacion ?? '';
     this.velatorioSeleccionado = hojaConsignacionDetalle.velatorio ?? '';
@@ -214,7 +214,7 @@ export class AgregarGenerarHojaConsignacionComponent implements OnInit {
             this.horaActual = moment().format('HH:mm');
             this.articulos = respuesta.datos.artResponse ?? [];
             this.totalArticulo = respuesta.datos.totalArt ?? 0;
-            this.totalCosto = respuesta.datos.totalCosto ?? 0;
+            this.totalCosto = respuesta.datos.totalCosto ?? '';
           }
         },
         error: (error: HttpErrorResponse) => {
