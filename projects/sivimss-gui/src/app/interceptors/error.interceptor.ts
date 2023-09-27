@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpHandler, HttpInterceptor, HttpRequest } from "@a
 import { Injectable } from "@angular/core";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
+import { AlertaService } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
 
 @Injectable()

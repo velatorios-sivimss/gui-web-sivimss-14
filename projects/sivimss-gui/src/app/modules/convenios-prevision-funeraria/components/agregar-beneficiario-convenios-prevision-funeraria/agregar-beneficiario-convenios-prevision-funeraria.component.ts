@@ -100,7 +100,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.velatorio = respuesta.datos!.map(
+        this.velatorio = respuesta.datos.map(
           (velatorio: any) => (
             {label: velatorio.nomVelatorio, value: velatorio.idVelatorio}
           )
