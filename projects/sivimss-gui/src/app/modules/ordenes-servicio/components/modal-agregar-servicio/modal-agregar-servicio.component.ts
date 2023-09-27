@@ -30,7 +30,7 @@ import {
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 
-declare var L: any;
+declare let L: any;
 
 @Component({
   selector: 'app-modal-agregar-servicio',
