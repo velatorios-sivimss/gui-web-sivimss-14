@@ -45,7 +45,9 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   paginacionConFiltrado: boolean = false;
 
   catalogoFoliosOds: string[] = [];
+  catalogoFoliosOdsCompleto: any[] = [];
   catalogoProveedores: string[] = [];
+  catalogoProveedoresCompleto: any[] = [];
   catalogoProveedoresConId: any[] = [];
   ordenes: any[] = [];
   ordenSeleccionada!: any;
@@ -170,6 +172,8 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos.length > 0) {
           this.catalogoFoliosOds = [];
+          this.catalogoFoliosOdsCompleto = [];
+          this.catalogoFoliosOdsCompleto = respuesta.datos;
           respuesta.datos.forEach((orden: any) => {
             this.catalogoFoliosOds.push(orden.folioOrdenServicio);
           });
@@ -316,10 +320,11 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   mapearFiltrosBusqueda(): any {
+    let folio = this.catalogoFoliosOdsCompleto.filter((o) => o.folioOrdenServicio === this.filtroForm.get("folio")?.value);
     let proveedor: any = this.catalogoProveedoresConId.filter((p) => p.nombreProveedor === this.filtroForm.get("proveedor")?.value);
     return {
       idVelatorio: this.filtroForm.get("velatorio")?.value === "" ? null : this.filtroForm.get("velatorio")?.value,
-      folio: this.filtroForm.get("folio")?.value,
+      folio: folio.length > 0 ? folio[0].idOrdenServicio : null,
       idProveedor: proveedor.length > 0 ? proveedor[0].folioProveedor : null,
       fecha: this.filtroForm.get("fecha")?.value ? this.datePipe.transform(this.filtroForm.get("fecha")?.value, 'YYYY-MM-dd') : null,
     }

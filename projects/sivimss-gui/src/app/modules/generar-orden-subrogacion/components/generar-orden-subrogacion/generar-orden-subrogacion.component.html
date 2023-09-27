@@ -20,28 +20,22 @@
 
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="folio">Folio de la ODS<span class="req">*</span>:</label>
+        <label class="control-label" for="folio">Folio de la ODS:</label>
         <p-autoComplete id="folio" class="form-control" formControlName="folio" (keyup)="validarNombre(0)"
           (keyup.space)="sinEspacioInicial(0)" autocomplete="folio" [suggestions]="catalogoFoliosOds"
           (completeMethod)="consultarFoliosODS($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
           [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa el folio ODS"
           [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
         </p-autoComplete>
-        <span class="campo-obligatorio"
-          *ngIf="f.folio?.errors?.required && (f.folio?.dirty || f.folio?.touched)">Este
-          campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
+        <label class="control-label" for="proveedor">Proveedor:</label>
         <p-autoComplete id="proveedor" class="form-control" formControlName="proveedor" (keyup)="validarNombreProveedor(0)"
           (keyup.space)="sinEspacioInicialProveedor(0)" autocomplete="proveedor" [suggestions]="catalogoProveedores"
           (completeMethod)="consultarProveedor($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
           [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa el proveedor"
           [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
         </p-autoComplete>
-        <span class="campo-obligatorio"
-          *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Este
-          campo es obligatorio *.</span>
       </div>
     </div>
 
@@ -50,16 +44,13 @@
         <label class="control-label" for="fecha">Fecha:</label>
         <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [minDate]="fechaRango" [maxDate]="fechaActual" [showIcon]="true" dateFormat="dd/mm/yy"
           placeholder="Ingresa fecha"></p-calendar>
-        <span class="campo-obligatorio"
-          *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">Campo
-          obligatorio</span>
       </div>
     </div>
 
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar</button>
+        <button type="reset" class="btn btn-default btn-md">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
       </div>
     </div>
   </form>
