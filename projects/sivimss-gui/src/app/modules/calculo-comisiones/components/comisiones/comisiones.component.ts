@@ -207,7 +207,7 @@ export class ComisionesComponent implements OnInit {
     this.calculoComisionesService.obtenerPromotores().subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.promotores = mapearArregloTipoDropdown(respuesta.datos, "nomPromotor", "numEmpleado");
-        this.promotores = [...this.promotores, {value: null, label: 'Todos'}];
+        this.promotores = [{value: null, label: 'Todos'}, ...this.promotores];
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
