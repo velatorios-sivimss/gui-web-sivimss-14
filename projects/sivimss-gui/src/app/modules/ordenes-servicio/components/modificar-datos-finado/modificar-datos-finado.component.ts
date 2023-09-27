@@ -972,7 +972,8 @@ export class ModificarDatosFinadoComponent
 
   async agregarValidaciones() {
     await Object.keys(this.datosFinado).forEach((key) => {
-      if (key.includes('esObito') || key.includes('esParaExtremidad')) return;
+      if (key.includes('esObito') || key.includes('esParaExtremidad') ||
+        key.includes('clinicaAdscripcion') || key.includes('tipoPension')) return;
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();

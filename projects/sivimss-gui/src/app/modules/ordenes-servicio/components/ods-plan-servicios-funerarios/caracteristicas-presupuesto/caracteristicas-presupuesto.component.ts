@@ -1040,39 +1040,22 @@ export class CaracteristicasPresupuestoSFComponent
   }
 
   validarSeleccionPaquete(): boolean {
-    let banderaPresupuesto = false;
-    let banderaPaquete = false;
-      if (this.tipoOrden == 1 || this.tipoOrden == 2) {
-        this.datosPresupuesto.forEach(function (datos) {
-          if (datos.proviene.includes('paquete')) {
-            banderaPaquete = true;
-          }
-        });
-        if(!banderaPaquete){
-          this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
-          return false;
-        }
-      }
-      if (this.tipoOrden == 3) {
-        this.datosPresupuesto.forEach(function (datos) {
-          if (datos.proviene.includes('presupuesto')) {
-            banderaPresupuesto = true;
-          }
-        });
-        if(!banderaPresupuesto){
-          this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
-          return false;
-        }
-      }
-      return true;
-  }
-
-  validacionFormulario(): boolean {
     if(this.datosPresupuesto.length > 0){
       return true
     }else{
       this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
       return false
     }
+  }
+
+  validacionFormulario(): boolean {
+    if (this.dd) {
+      const drop:any = this.dd;
+      if(drop == 3){
+        return this.selecionaTipoOtorgamiento != null ? false: true;
+      }
+      return false;
+    }
+    return true;
   }
 }

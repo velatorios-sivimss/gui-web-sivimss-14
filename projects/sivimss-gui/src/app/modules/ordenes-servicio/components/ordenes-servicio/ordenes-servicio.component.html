@@ -198,7 +198,8 @@
         <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Preorden')
           && ordenServicioSeleccionada.tipoOrden?.includes('Convenio de Plan de Servicios Funerarios')"
                                   (click)="modificarODSsf()" titulo="Modificar"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion  *ngIf="!ordenServicioSeleccionada.estatus?.includes('Cancelada')"
+        <app-overlay-panel-opcion  *ngIf="!ordenServicioSeleccionada.estatus?.includes('Cancelada') &&
+                                          !ordenServicioSeleccionada.estatus?.includes('Concluida')"
         (click)="abrirModalCancelarODS()" titulo="Cancelar ODS"></app-overlay-panel-opcion>
       </div>
 

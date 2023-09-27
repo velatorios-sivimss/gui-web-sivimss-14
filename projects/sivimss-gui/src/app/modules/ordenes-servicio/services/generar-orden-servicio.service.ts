@@ -302,4 +302,13 @@ export class GenerarOrdenServicioService extends BaseService<HttpRespuesta<any>,
       {folio: folio});
   }
 
+  generarArchivoEntradaDonaciones(idOrdenServicio: number, generaReporte: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-donacion`,
+      {idOrdenServicio: idOrdenServicio, generaReporte: generaReporte, tipoReporte: 'pdf'});
+  }
+
+  generarArchivoSalidaDonaciones(idOrdenServicio: number, generaReporte: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/reporte-salida-donacion`,
+      {idOrdenServicio: idOrdenServicio, generaReporte: generaReporte, tipoReporte: 'pdf'});
+  }
 }

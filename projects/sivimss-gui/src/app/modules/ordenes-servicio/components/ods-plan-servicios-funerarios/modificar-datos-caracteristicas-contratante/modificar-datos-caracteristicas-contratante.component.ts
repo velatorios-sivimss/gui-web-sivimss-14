@@ -812,22 +812,14 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   validacionFormulario(): boolean {
-    let banderaPaquete = false;
-    let banderaPresupuesto = false;
-    let banderaTipo = false;
-
-    this.selecionaTipoOtorgamiento;
-    this.paqueteSeleccionadoDD?.label;
-    if (this.tipoOrden == 1 || this.tipoOrden == 2) {
-      if (this.paqueteSeleccionadoDD) {
-        if (this.paqueteSeleccionadoDD.label.includes("Paquete social")) {
-          if (this.selecionaTipoOtorgamiento == null) {
-            return true;
-          }
-        }
+    if (this.dd) {
+      const drop:any = this.dd;
+      if(drop == 3){
+        return this.selecionaTipoOtorgamiento != null ? false: true;
       }
+      return false;
     }
-    return false;
+    return true;
   }
 
   continuar() {
