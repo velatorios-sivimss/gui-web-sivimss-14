@@ -19,7 +19,7 @@ export interface ArticulosBusquedaDetalle {
 }
 
 export interface HojaConsignacionDetalle {
-  totalCosto?: number;
+  totalCosto?: string;
   totalArt?: number;
   folio?: string;
   velatorio?: string;
