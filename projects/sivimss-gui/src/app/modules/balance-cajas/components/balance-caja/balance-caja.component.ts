@@ -72,6 +72,8 @@ export class BalanceCajaComponent implements OnInit {
   mostrarModalConfirmacion: boolean = false;
   esModificacion: boolean = true;
   rol: any;
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   constructor(
     private route: ActivatedRoute,
@@ -261,10 +263,7 @@ export class BalanceCajaComponent implements OnInit {
           finalize(() => this.cargadorService.desactivar())
         ).subscribe({
           next: (repuesta): void => {
-            if (respuesta) {
-              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-              this.mostrarModalConfirmacion = true;
-            }
+            if (respuesta) this.mostrarModalDescargaExitosa = true;
           },
           error: (error): void => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
