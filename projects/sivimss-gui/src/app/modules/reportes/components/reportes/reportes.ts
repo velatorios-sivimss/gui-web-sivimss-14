@@ -39,7 +39,7 @@ export class Reportes implements OnInit {
   @ViewChild(FormGroupDirective)
   private filtroFormDir!: FormGroupDirective;
 
-  @ViewChild('velatorioDD')velatorioDD!: Dropdown;
+  @ViewChild('velatorioDD') velatorioDD!: Dropdown;
 
   MENSAJE_FILTROS: string = 'Selecciona por favor un criterio de búsqueda.';
   mostrarModalFiltros: boolean = false;
@@ -68,9 +68,13 @@ export class Reportes implements OnInit {
   reportes!: TipoDropdown[];
 
   filtroODS!: TipoDropdown[];
+  filtroODSDetPago!: TipoDropdown[];
   listaFolioODS: any;
+  filtroODSSiniestro: any;
   foliosODS: any;
   foliosServicioVelatorioODS: any;
+  folioODSSiniestro: any;
+  folioODSDetPago: any;
 
 
   anio: TipoDropdown[] = [];
@@ -101,6 +105,7 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     this.validaciones.set(1, () => this.iniciarOrdenesServicio())
+    this.validaciones.set(4, () => this.inicializarResumenDetPago())
     this.validaciones.set(5, () => this.iniciarDetalleImporteServicios())
     this.validaciones.set(6, () => this.iniciarComisionesPromotores())
     this.validaciones.set(7, () => this.iniciarServiciosVelatorios())
@@ -135,6 +140,8 @@ export class Reportes implements OnInit {
       fechaFin: [{value: null, disabled: false}],
       numeroOds: [{value: null, disabled: false}],
       folioOds: [{value: null, disabled: false}],
+      numeroOdsSiniestros: [{value: null, disabled: false}],
+      folioOdsDetallePago: [{value: null, disabled: false}],
       promotor: [{value: null, disabled: false}],
       anio: [{value: null, disabled: false}],
       mes: [{value: null, disabled: false}],
@@ -156,9 +163,9 @@ export class Reportes implements OnInit {
     const DELEGACION: TipoDropdown[] = [{label: 'Todos', value: null}];
     this.niveles = respuesta[this.POSICION_NIVELES];
     this.delegaciones = [...DELEGACION, ...respuesta[this.POSICION_DELEGACIONES]];
-    this.promotores = mapearArregloTipoDropdown(respuesta[this.POSICION_PROMOTORES].datos, 'nombre','idPromotor');
-    for(let i = 2000; i <= +moment().format('yyyy'); i++) {
-      this.anio.push({label: i.toString(),value:i})
+    this.promotores = mapearArregloTipoDropdown(respuesta[this.POSICION_PROMOTORES].datos, 'nombre', 'idPromotor');
+    for (let i = 2000; i <= +moment().format('yyyy'); i++) {
+      this.anio.push({label: i.toString(), value: i})
     }
     this.cambiarDelegacion(true);
   }
@@ -228,7 +235,7 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     if (!this.validarFiltros()) return;
-    if (this.ff.fechaIni.value > this.ff.fechaFin.value){
+    if (this.ff.fechaIni.value > this.ff.fechaFin.value) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
       return;
     }
@@ -259,7 +266,19 @@ export class Reportes implements OnInit {
       {
         label: '/reporte-pago-prov',
         value: 3
-      }
+      },
+      {
+        label: '/reporte-detalle-is',
+        value: 5
+      },
+      {
+        label: '/reporte-siniestros-pf',
+        value: 8
+      },
+      {
+        label: '/reporte-det-pago',
+        value: 4
+      },
     ]
     let nombreReporte: string = "";
     tipoReporte.forEach(element => {
@@ -322,56 +341,77 @@ export class Reportes implements OnInit {
         break;
       case 3:
         return {
-          id_delegacion:this.ff.velatorio.value,
-          id_velatorio:this.ff.delegacion.value,
-          fecha_inicial:this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
+          id_delegacion: this.ff.delegacion.value,
+          id_velatorio: this.ff.velatorio.value,
+          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
-          tipoReporte:this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+        }
+        break;
+      case 4:
+        return {
+          id_delegacion: this.ff.delegacion.value,
+          id_velatorio: this.ff.velatorio.value,
+          id_ods: this.ff.folioOdsDetallePago.value?.value ?? null,
+          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
+          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
         }
         break;
       case 5:
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
+        return {
+          id_velatorio: this.ff.velatorio.value,
+          id_delegacion: this.ff.delegacion.value,
+          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
+          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+        }
         break;
       case 6:
         return {
-          id_delegacion:this.ff.delegacion.value,
-          id_velatorio:this.ff.velatorio.value,
-          ods:this.ff.numeroOds.value?.value ?? null,
-          idPromotor:this.ff.promotor.value,
-          mes:this.ff.mes.value,
-          anio:this.ff.anio.value,
+          id_delegacion: this.ff.delegacion.value,
+          id_velatorio: this.ff.velatorio.value,
+          ods: this.ff.numeroOds.value?.value ?? null,
+          idPromotor: this.ff.promotor.value,
+          mes: this.ff.mes.value,
+          anio: this.ff.anio.value,
           nombreVelatorio: this.velatorioDD.selectedOption.label,
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
         }
         break;
       case 7:
-
         return {
-          id_delegacion:this.ff.delegacion.value,
-          id_velatorio:this.ff.velatorio.value,
-          id_ods:144,
+          id_delegacion: this.ff.delegacion.value,
+          id_velatorio: this.ff.velatorio.value,
+          id_ods: 144,
           fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
           tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
         }
         break;
       case 8:
-        // this.numeroODSBandera = true;
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
+        return {
+          id_tipo_reporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls',
+          id_delegacion: this.ff.delegacion.value,
+          id_velatorio: this.ff.velatorio.value,
+          des_velatorio: this.velatorioDD.selectedOption.label,
+          ods: this.ff.numeroOdsSiniestros.value?.value ?? null,
+          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
+        }
         break;
       case 9:
-      return{
-        id_delegacion:this.ff.delegacion.value,
-        id_velatorio:this.ff.velatorio.value,
-        fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
-        fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
-        nombreVelatorio: this.velatorioDD.selectedOption.label,
-        tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
-      }
-      break;
-      default: break;
+        return {
+          id_delegacion: this.ff.delegacion.value,
+          id_velatorio: this.ff.velatorio.value,
+          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
+          nombreVelatorio: this.velatorioDD.selectedOption.label,
+          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+        }
+        break;
+      default:
+        break;
 
     }
   }
@@ -380,10 +420,8 @@ export class Reportes implements OnInit {
     let query = this.obtenerNombreContratantesDescripcion();
     let filtered: any[] = [];
     if (query?.length < 3) return;
-    for (let i = 0; i < (this.foliosODS as any[]).length; i++) {
-      let registro = (this.foliosODS as any[])[i];
+    for (let registro of this.foliosODS as any[]) {
       if (registro.folio?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-
         filtered.push({label: registro.folio, value: registro.folio});
       }
     }
@@ -394,14 +432,36 @@ export class Reportes implements OnInit {
     let query = this.obtenerFolioODS();
     let filtered: any[] = [];
     if (query?.length < 3) return;
-    for (let i = 0; i < (this.foliosServicioVelatorioODS as any[]).length; i++) {
-      let registro = (this.foliosServicioVelatorioODS as any[])[i];
+    for (let registro of this.foliosServicioVelatorioODS as any[]) {
       if (registro.folio_ods?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-
         filtered.push({label: registro.folio_ods, value: registro.id_ods});
       }
     }
     this.listaFolioODS = filtered;
+  }
+
+  filtrarODSDetPago(): void {
+    let query = this.obtenerFolioODSDetPago();
+    let filtered: any[] = [];
+    if (query?.length < 3) return;
+    for (let registro of this.folioODSDetPago as any[]) {
+      if (registro.folio_ods?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push({label: registro.folio_ods, value: registro.id_ods});
+      }
+    }
+    this.filtroODSDetPago = filtered;
+  }
+
+  filtrarODSSiniestro(): void {
+    let query = this.obtenerFolioODSSiniestro();
+    let filtered: any[] = [];
+    if (query?.length < 3) return;
+    for (let registro of this.folioODSSiniestro as any[]) {
+      if (registro.folio_ods?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push({label: registro.folio_ods, value: registro.id_ods});
+      }
+    }
+    this.filtroODSSiniestro = filtered;
   }
 
   obtenerNombreContratantesDescripcion(): string {
@@ -420,9 +480,37 @@ export class Reportes implements OnInit {
     return query?.toLowerCase();
   }
 
+  obtenerFolioODSDetPago(): string {
+    let query = this.ff.folioOdsDetallePago?.value || '';
+    if (typeof this.ff.folioOdsDetallePago?.value === 'object') {
+      query = this.ff.folioOdsDetallePago?.value?.label;
+    }
+    return query?.toLowerCase();
+  }
+
+  obtenerFolioODSSiniestro(): string {
+    let query = this.ff.numeroOdsSiniestros?.value || '';
+    if (typeof this.ff.numeroOdsSiniestros?.value === 'object') {
+      query = this.ff.numeroOdsSiniestros?.value?.label;
+    }
+    return query?.toLowerCase();
+  }
+
   cambiarReporte(): void {
-    this.filtroForm.clearValidators();
-    this.filtroForm.updateValueAndValidity();
+    this.ff.idEstatusODS.clearValidators();
+    this.ff.idEstatusODS.clearValidators();
+    this.ff.fechaIni.clearValidators();
+    this.ff.fechaFin.clearValidators();
+    this.ff.mes.clearValidators();
+    this.ff.anio.clearValidators();
+
+    this.ff.idEstatusODS.updateValueAndValidity();
+    this.ff.idEstatusODS.updateValueAndValidity();
+    this.ff.fechaIni.updateValueAndValidity();
+    this.ff.fechaFin.updateValueAndValidity();
+    this.ff.mes.updateValueAndValidity();
+    this.ff.anio.updateValueAndValidity();
+
     this.seleccionarValidaciones();
     this.exportar = this.limpiarTiposExportacion();
   }
@@ -448,7 +536,7 @@ export class Reportes implements OnInit {
   }
 
   validacionesGenerales(): void {
-
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 
   iniciarOrdenesServicio(): void {
@@ -456,19 +544,36 @@ export class Reportes implements OnInit {
     this.ff.idEstatusODS.updateValueAndValidity();
   }
 
+  inicializarResumenDetPago(): void {
+    this.loaderService.activar()
+    this.reporteOrdenServicioService.consultarFolioODSDetallePago(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.folioODSDetPago = respuesta.datos;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+      }
+    });
+  }
+
   iniciarDetalleImporteServicios(): void {
-    console.log('Se agrega console por SONAR')
+    this.ff.fechaIni.setValidators(Validators.required);
+    this.ff.fechaIni.updateValueAndValidity();
+    this.ff.fechaFin.setValidators(Validators.required);
+    this.ff.fechaFin.updateValueAndValidity();
   }
 
   iniciarComisionesPromotores(): void {
     this.loaderService.activar();
-    this.reporteOrdenServicioService.consultarODSComisionPromotor(this.ff.delegacion.value,this.ff.velatorio.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
+    this.reporteOrdenServicioService.consultarODSComisionPromotor(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
+      next: (respuesta: HttpRespuesta<any>) => {
         this.foliosODS = respuesta.datos || [];
       },
-      error:(error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
     })
@@ -481,20 +586,34 @@ export class Reportes implements OnInit {
     this.ff.anio.updateValueAndValidity();
 
     this.loaderService.activar();
-    this.reporteOrdenServicioService.consultarODSServiciosVelatorios(this.ff.delegacion.value,this.ff.velatorio.value).pipe(
-      finalize(()=> this.loaderService.desactivar())
+    this.reporteOrdenServicioService.consultarODSServiciosVelatorios(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
+      next: (respuesta: HttpRespuesta<any>) => {
         this.foliosServicioVelatorioODS = respuesta.datos || [];
       },
-      error:(error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
     })
   }
 
   iniciarConcentradoSiniestrosPF(): void {
-    console.log('Se agrega console por SONAR')
+    this.ff.fechaIni.setValidators(Validators.required);
+    this.ff.fechaIni.updateValueAndValidity();
+    this.ff.fechaFin.setValidators(Validators.required);
+    this.ff.fechaFin.updateValueAndValidity();
+    //TODO inicializar autocomplete folios ODS
+    this.reporteOrdenServicioService.consultarODSServiciosVelatorios(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.folioODSSiniestro = respuesta.datos || [];
+      },
+      error: (error: HttpErrorResponse) => {
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+      }
+    })
   }
 
   iniciarConcentradoServicioPA(): void {

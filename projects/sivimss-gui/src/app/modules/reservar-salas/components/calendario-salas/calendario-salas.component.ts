@@ -25,9 +25,9 @@ import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
   selector: 'app-calendario-salas',
   templateUrl: './calendario-salas.component.html',
   styleUrls: ['./calendario-salas.component.scss'],
-  providers: [DialogService,DescargaArchivosService]
+  providers: [DialogService, DescargaArchivosService]
 })
-export class CalendarioSalasComponent implements OnInit, OnDestroy{
+export class CalendarioSalasComponent implements OnInit, OnDestroy {
 
   @ViewChild('calendarioCremacion') calendarioCremacion!: FullCalendarComponent;
   @ViewChild('calendarioEmbalsamamiento') calendarioEmbalsamamiento!: FullCalendarComponent;
@@ -35,7 +35,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
   readonly POSICION_CATALOGO_DELEGACION = 0;
 
   fechaCalendario!: Moment;
-  calendarApi:any;
+  calendarApi: any;
   calendarEmbalsamamientoApi!: any;
 
   calendarOptions!: CalendarOptions;
@@ -45,10 +45,10 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
   menu: string[] = MENU_SALAS;
 
   posicionPestania: number = 0;
-  velatorio!: number ;
+  velatorio!: number;
   delegacion!: number;
 
-  base64:any;
+  base64: any;
 
   fechaSeleccionada: string = "";
   actividadRef!: DynamicDialogRef;
@@ -62,7 +62,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
     public dialogService: DialogService,
     private readonly loaderService: LoaderService,
     private route: ActivatedRoute,
-    private reservarSalasService:ReservarSalasService,
+    private reservarSalasService: ReservarSalasService,
     private descargaArchivosService: DescargaArchivosService
   ) {
   }
@@ -73,66 +73,70 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
     //   {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
 
     this.delegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION]!.map((delegacion: any) => (
-      {label: delegacion.label, value: delegacion.value} )) || [];
+      {label: delegacion.label, value: delegacion.value})) || [];
 
     this.inicializarCalendario();
     this.inicializarCalendarioEmbalsamamiento();
   }
 
   inicializarCalendario(): void {
-      this.calendarOptions = {
-        headerToolbar: { end: "next", center: "title", start: "prev" },
-        initialView: 'dayGridMonth',
-        plugins: [dayGridPlugin,interactionPlugin],
-        initialEvents: "",
-        defaultAllDay: true,
-        editable:false,
-        locale: 'es-MX',
-        selectable: false,
-        dayHeaders:false,
-        eventClick: this.mostrarEvento.bind(this),
-        eventsSet: this.handleEvents.bind(this),
-        dayMaxEventRows:3,
-        titleFormat: { year: 'numeric', month: 'long' },
-        datesSet: event => {
-          let mesInicio = +moment(event.start).format("MM");
-          let mesFinal =  +moment(event.end).format("MM");
-          if(mesFinal - mesInicio == 2){
-            this.fechaCalendario = moment(event.start).add(1,'month');
-          }else{
-            this.fechaCalendario = moment(event.start);
-          }
-          this.calendarioCremacion.getApi().removeAllEvents();
-          if(this.velatorio) {this.cambiarMes()}
-        },
-      };
-    }
+    this.calendarOptions = {
+      headerToolbar: {end: "next", center: "title", start: "prev"},
+      initialView: 'dayGridMonth',
+      plugins: [dayGridPlugin, interactionPlugin],
+      initialEvents: "",
+      defaultAllDay: true,
+      editable: false,
+      locale: 'es-MX',
+      selectable: false,
+      dayHeaders: false,
+      eventClick: this.mostrarEvento.bind(this),
+      eventsSet: this.handleEvents.bind(this),
+      dayMaxEventRows: 3,
+      titleFormat: {year: 'numeric', month: 'long'},
+      datesSet: event => {
+        let mesInicio = +moment(event.start).format("MM");
+        let mesFinal = +moment(event.end).format("MM");
+        if (mesFinal - mesInicio == 2) {
+          this.fechaCalendario = moment(event.start).add(1, 'month');
+        } else {
+          this.fechaCalendario = moment(event.start);
+        }
+        this.calendarioCremacion.getApi().removeAllEvents();
+        if (this.velatorio) {
+          this.cambiarMes()
+        }
+      },
+    };
+  }
 
   inicializarCalendarioEmbalsamamiento(): void {
     this.calendarEmbalsamamientoOptions = {
-      headerToolbar: { end: "next", center: "title", start: "prev" },
+      headerToolbar: {end: "next", center: "title", start: "prev"},
       initialView: 'dayGridMonth',
-      plugins: [dayGridPlugin,interactionPlugin],
+      plugins: [dayGridPlugin, interactionPlugin],
       initialEvents: "",
       defaultAllDay: true,
-      editable:false,
+      editable: false,
       locale: 'es-MX',
       selectable: false,
-      dayHeaders:false,
+      dayHeaders: false,
       eventClick: this.mostrarEvento.bind(this),
       eventsSet: this.handleEvents.bind(this),
-      dayMaxEventRows:3,
-      titleFormat: { year: 'numeric', month: 'long' },
+      dayMaxEventRows: 3,
+      titleFormat: {year: 'numeric', month: 'long'},
       datesSet: event => {
         let mesInicio = +moment(event.start).format("MM");
-        let mesFinal =  +moment(event.end).format("MM");
-        if(mesFinal - mesInicio == 2){
-          this.fechaCalendario = moment(event.start).add(1,'month');
-        }else{
+        let mesFinal = +moment(event.end).format("MM");
+        if (mesFinal - mesInicio == 2) {
+          this.fechaCalendario = moment(event.start).add(1, 'month');
+        } else {
           this.fechaCalendario = moment(event.start);
         }
         this.calendarioEmbalsamamiento?.getApi().removeAllEvents();
-        if(this.velatorio) {this.cambiarMes()}
+        if (this.velatorio) {
+          this.cambiarMes()
+        }
       },
     };
   }
@@ -142,62 +146,61 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
     this.tituloSalas = [];
     let anio = moment(this.fechaCalendario).format('YYYY').toString();
     let mes = moment(this.fechaCalendario).format('MM').toString();
-    if(!this.posicionPestania){
+    if (!this.posicionPestania) {
       this.calendarApi = this.calendarioCremacion.getApi()
       this.calendarApi.removeAllEvents();
     }
-    if(this.posicionPestania){
+    if (this.posicionPestania) {
       this.calendarEmbalsamamientoApi = this.calendarioEmbalsamamiento.getApi();
       this.calendarEmbalsamamientoApi.removeAllEvents();
     }
-    if(this.velatorio) {
-      this.reservarSalasService.consultaMes(+mes,+anio,this.posicionPestania,this.velatorio).pipe(
-      ).subscribe({
-        next: (respuesta: HttpRespuesta<any>) => {
-          respuesta.datos.forEach((sala: any) => {
-            let bandera: boolean = false;
-            if (!this.posicionPestania) {
-              this.calendarioCremacion.getApi().addEvent(
-                {id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala},
-              );
-            } else {
-              this.calendarioEmbalsamamiento.getApi().addEvent(
-                {id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala},
-              );
+    if (!this.velatorio) return;
+    this.reservarSalasService.consultaMes(+mes, +anio, this.posicionPestania, this.velatorio).pipe(
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        respuesta.datos.forEach((sala: any) => {
+          let bandera: boolean = false;
+          if (!this.posicionPestania) {
+            this.calendarioCremacion.getApi().addEvent(
+              {id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala},
+            );
+          } else {
+            this.calendarioEmbalsamamiento.getApi().addEvent(
+              {id: sala.idSala, title: sala.nombreSala, start: sala.fechaEntrada, color: sala.colorSala},
+            );
+          }
+          this.tituloSalas.forEach((tituloSala: any) => {
+            if (tituloSala.id == sala.idSala) {
+              bandera = true;
             }
-            this.tituloSalas.forEach((tituloSala: any) => {
-              if (tituloSala.id == sala.idSala) {
-                bandera = true;
+          });
+          if (!bandera) {
+            this.tituloSalas.push(
+              {
+                borderColor: sala.colorSala,
+                textColor: sala.colorSala,
+                title: sala.nombreSala,
+                id: sala.idSala
               }
-            });
-            if (!bandera) {
-              this.tituloSalas.push(
-                {
-                  borderColor: sala.colorSala,
-                  textColor: sala.colorSala,
-                  title: sala.nombreSala,
-                  id: sala.idSala
-                }
-              )
-            }
-          })
-          this.tituloSalas = [...this.tituloSalas]
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(error);
-          this.alertaService.mostrar(TipoAlerta.Error, error.message);
-        }
-      })
-    }
+            )
+          }
+        })
+        this.tituloSalas = [...this.tituloSalas]
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    })
   }
 
   mostrarEvento(clickInfo: EventClickArg): void {
     const idSala: number = +clickInfo.event._def.publicId;
-    this.fechaSeleccionada =  moment(clickInfo.event._instance?.range.end).format('yyyy-MM-DD');
-    this.actividadRef = this.dialogService.open(VerActividadSalasComponent,{
+    this.fechaSeleccionada = moment(clickInfo.event._instance?.range.end).format('yyyy-MM-DD');
+    this.actividadRef = this.dialogService.open(VerActividadSalasComponent, {
       header: 'Ver actividad del día',
       width: "920px",
-      data: {fecha:this.fechaSeleccionada, idSala: idSala}
+      data: {fecha: this.fechaSeleccionada, idSala: idSala}
     })
   }
 
@@ -215,23 +218,29 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
       this.calendarioCremacion?.getApi().gotoDate(new Date());
       this.calendarioEmbalsamamiento?.getApi().removeAllEvents();
       this.calendarioEmbalsamamiento?.getApi().gotoDate(new Date())
-      if(this.velatorio){this.cambiarMes()}
-    },300)
+      if (this.velatorio) {
+        this.cambiarMes()
+      }
+    }, 300)
   }
 
   generarArchivo(tipoReporte: string): void {
     const configuracionArchivo: OpcionesArchivos = {};
-    if(tipoReporte == "xls"){
+    if (tipoReporte == "xls") {
       configuracionArchivo.ext = "xlsx"
     }
-    if(!this.velatorio){return}
-    if(!this.tituloSalas.length) {return}
+    if (!this.velatorio) {
+      return
+    }
+    if (!this.tituloSalas.length) {
+      return
+    }
 
     this.loaderService.activar();
     const busqueda = this.filtrosArchivos(tipoReporte);
 
     this.descargaArchivosService.descargarArchivo(this.reservarSalasService.generarReporte(busqueda), configuracionArchivo).pipe(
-        finalize( () => this.loaderService.desactivar())
+      finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, "El archivo se guardó correctamente.")
@@ -245,7 +254,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
   filtrosArchivos(tipoReporte: string) {
     return {
       idVelatorio: this.velatorio,
-      indTipoSala:this.posicionPestania,
+      indTipoSala: this.posicionPestania,
       mes: moment(this.fechaCalendario).format('MM').toString(),
       anio: moment(this.fechaCalendario).format('YYYY').toString(),
       rutaNombreReporte: "reportes/generales/ReporteVerificarDisponibilidadSalas.jrxml",
@@ -270,7 +279,7 @@ export class CalendarioSalasComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    if(this.actividadRef){
+    if (this.actividadRef) {
       this.actividadRef.destroy();
     }
   }

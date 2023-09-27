@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {AutenticacionService} from "./autenticacion.service";
 import {Observable} from "rxjs";
 import {HttpRespuesta} from "../models/http-respuesta.interface";
@@ -15,12 +15,12 @@ export class NotificacionesService {
     "Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente",
     "Tienes 10 vehículos, sin registrar la verificación al inicio de la jornada, recordamos que debes registrar diariamente"];
 
-  constructor(private _http: HttpClient,private authService: AutenticacionService) {
+  constructor(private _http: HttpClient, private authService: AutenticacionService) {
   }
 
   consultaNotificacion(): Observable<HttpRespuesta<any>> {
     /*
-    * TODO se ingresa el 'idFuncionalidad 1' ya que el servicio se ejecuta de el inicio de sesión
+    * se ingresa el 'idFuncionalidad 1' ya que el servicio se ejecuta de el inicio de sesión
     *  y no desde que se ingresa a un módulo en específico, verificar comportamiento con otros aplicativos*/
     return this._http.get<HttpRespuesta<any>>(`${environment.api.notificaciones}`)
   }
@@ -30,8 +30,8 @@ export class NotificacionesService {
   // return this._http.post<HttpRespuesta<any>>(`${environment.api.mssivimss}9/buscar-filtros/veri-alertas`, {},{headers});
   // }
 
-  renovarNotificacion(idRegistro:any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(`${environment.api.mssivimss}9/veri-renovar-hora`,{idRegistro:idRegistro})
+  renovarNotificacion(idRegistro: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${environment.api.mssivimss}9/veri-renovar-hora`, {idRegistro: idRegistro})
   }
 
   existenNotificaciones(): boolean {

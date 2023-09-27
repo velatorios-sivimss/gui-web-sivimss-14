@@ -4,7 +4,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import 'leaflet';
 import 'leaflet-control-geocoder';
 
-declare var L: any;
+declare let L: any;
 
 @Component({
   selector: 'app-modal-ver-kilometraje',

@@ -87,8 +87,8 @@ export class RolesPermisosComponent implements OnInit {
   paginar(): void {
     this.rolPermisosService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta): void => {
-        this.roles = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.roles = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -125,8 +125,8 @@ export class RolesPermisosComponent implements OnInit {
     const solicitudFiltros = JSON.stringify(this.rolPermisos);
     this.rolPermisosService.buscarPorFiltros(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe({
       next: (respuesta): void => {
-        this.roles = respuesta!.datos;
-        this.totalElementos = respuesta!.datos.totalElements;
+        this.roles = respuesta.datos;
+        this.totalElementos = respuesta.datos.totalElements;
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
@@ -201,7 +201,7 @@ export class RolesPermisosComponent implements OnInit {
   catalogoRoles(): void {
     this.rolPermisosService.obtenerCatRoles().subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.catRol = respuesta!.datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
+        this.catRol = respuesta.datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);

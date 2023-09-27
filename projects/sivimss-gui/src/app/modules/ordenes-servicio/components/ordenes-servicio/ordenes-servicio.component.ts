@@ -347,8 +347,7 @@ export class OrdenesServicioComponent implements OnInit {
     let query = this.obtenerNombreContratantesDescripcion("contratante");
     let filtered: any[] = [];
     if (query?.length < 3) return;
-    for (let i = 0; i < (this.nombresContratantes as any[]).length; i++) {
-      let contratante = (this.nombresContratantes as any[])[i];
+    for (let contratante of this.nombresContratantes as any[]) {
       if (contratante.nombreCompletoContratante?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
 
         filtered.push({

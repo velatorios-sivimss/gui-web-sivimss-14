@@ -106,7 +106,7 @@ export class RegistrarEntradaComponent implements OnInit {
     this.capillaReservacionService.buscarPorIdVelatorio(+this.entradaRegistrada.idVelatorio!).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         if (respuesta.datos.length > 0) {
-          this.registros2 = respuesta!.datos.map((capilla: any) => {
+          this.registros2 = respuesta.datos.map((capilla: any) => {
             return {label: capilla.nomCapilla, value: capilla.idCapilla};
           });
         }

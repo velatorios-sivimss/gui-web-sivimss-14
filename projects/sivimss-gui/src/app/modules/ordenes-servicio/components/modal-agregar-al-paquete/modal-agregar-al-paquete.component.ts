@@ -13,6 +13,7 @@ import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
 import { ActivatedRoute } from '@angular/router';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Dropdown } from 'primeng/dropdown';
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 @Component({
   selector: 'app-modal-agregar-al-paquete',
   templateUrl: './modal-agregar-al-paquete.component.html',
@@ -38,7 +39,8 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
     private loaderService: LoaderService,
     private alertaService: AlertaService,
     private gestionarOrdenServicioService: GenerarOrdenServicioService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {}
 
   ngOnInit(): void {
@@ -93,14 +95,10 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
           }
         },
         error: (error: HttpErrorResponse) => {
-          console.log(error);
           try {
-            this.alertaService.mostrar(
-              TipoAlerta.Error,
-              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
-                Number(error.error.datos)
-              )
-            );
+            this.alertaService.mostrar(TipoAlerta.Error,
+              // this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+              this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(52));
           } catch (error) {
             this.alertaService.mostrar(
               TipoAlerta.Error,

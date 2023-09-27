@@ -398,8 +398,8 @@ export class ModificarInformacionServicioSFComponent
     this.gestionarOrdenServicioService
       .buscarCapillas(parametros)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
           if (respuesta.error) {
             this.capillas = [];
@@ -420,7 +420,7 @@ export class ModificarInformacionServicioSFComponent
             'idCapilla'
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           try {
             const errorMsg: string =
               this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -439,7 +439,7 @@ export class ModificarInformacionServicioSFComponent
             );
           }
         }
-      );
+      });
   }
 
   buscarSalas(): void {
@@ -675,7 +675,8 @@ export class ModificarInformacionServicioSFComponent
 
               return;
             }
-            this.descargarContratoServInmediatos(respuesta.datos.idOrdenServicio, consumoTablas);
+            this.descargarEntradaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
             this.descargarOrdenServicio(
               respuesta.datos.idOrdenServicio,
               respuesta.datos.idEstatus
@@ -969,6 +970,54 @@ export class ModificarInformacionServicioSFComponent
           );
         }
       });
+  }
+
+  descargarEntradaDonaciones(idODS: number, idEstatus: number): void {
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
+    this.gestionarOrdenServicioService.generarArchivoEntradaDonaciones(idODS,idEstatus).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download', 'documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      error:(error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    });
+
+  }
+  descargarControlSalidaDonaciones(idODS: number, idEstatus: number): void {
+    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
+    this.gestionarOrdenServicioService.generarArchivoSalidaDonaciones(idODS,idEstatus).subscribe({
+      next:(respuesta: HttpRespuesta<any>) => {
+        let link = this.renderer.createElement('a');
+
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
+        const url = window.URL.createObjectURL(file);
+        link.setAttribute('download', 'documento');
+        link.setAttribute('href', url);
+        link.click();
+        link.remove();
+      },
+      error:(error: HttpErrorResponse) => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    });
   }
 
   generada(): void {

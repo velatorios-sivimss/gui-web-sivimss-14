@@ -1,33 +1,31 @@
-.separador{
+.separador {
   margin-top: 20px;
 }
 
-.indicaciones{
+.indicaciones {
   font-size: 14px;
-    text-align: left;
-    margin-left: -9px;
-    margin-top: -5px;
+  text-align: left;
+  margin-left: -9px;
+  margin-top: -5px;
 }
 
-.sub{
+.sub {
   font-size: 21px;
 }
 
-.icono{
+.icono {
   margin-top: -6px;
-    width: 10px;
-    margin-left: -12px;
+  width: 10px;
+  margin-left: -12px;
 }
 
-.alinear{
-margin-left: 1px;
+.alinear {
+  margin-left: 1px;
 }
 
-.laterales{
-  padding: 0px 41px 20px 0px;
+.laterales {
+  padding: 0 41px 20px 0;
 }
-
-
 
 
 h1 {
@@ -98,14 +96,14 @@ h1 {
     display: flex;
     align-items: center;
 
-    span{
+    span {
       font-weight: 400;
       font-size: 14px;
       line-height: 17px;
       color: #272829;
     }
 
-    b{
+    b {
       font-weight: 600;
       font-size: 14px;
       line-height: 17px;
@@ -116,11 +114,13 @@ h1 {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      margin-right:3rem;
+      margin-right: 3rem;
     }
-    a{
-      cursor:pointer;
+
+    a {
+      cursor: pointer;
       text-decoration: none;
+
       .fs-barras-horizontales {
         color: #9D2449;
       }
@@ -134,9 +134,9 @@ h1 {
   font-size: 14px;
 }
 
-.hr-accordion-content{
-  margin:.5rem 0 1rem 0;
-  border-top:1px solid #7D7E7E;
+.hr-accordion-content {
+  margin: .5rem 0 1rem 0;
+  border-top: 1px solid #7D7E7E;
 }
 
 :host ::ng-deep p-accordiontab:last-child .p-accordion-tab {
@@ -144,46 +144,3 @@ h1 {
 }
 
 
-.estatusAcordion {
-  margin-right: 3rem;
-  font-size: 14px;
-}
-
-.hr-accordion-content{
-  margin:.5rem 0 1rem 0;
-  border-top:1px solid #7D7E7E;
-}
-
-:host ::ng-deep p-accordiontab:last-child .p-accordion-tab {
-  margin-bottom: 0;
-}
-
-.separador{
-  margin-top: 20px;
-}
-
-.indicaciones{
-  font-size: 14px;
-    text-align: left;
-    margin-left: -9px;
-    margin-top: -5px;
-}
-
-.sub{
-  font-size: 21px;
-}
-
-.icono{
-  margin-top: -6px;
-    width: 10px;
-    margin-left: -12px;
-}
-
-.alinear{
-margin-left: 1px;
-}
-
-
-.laterales{
-  padding: 0px 41px 20px 0px;
-}

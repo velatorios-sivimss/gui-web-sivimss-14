@@ -572,8 +572,8 @@ export class ModificarDatosContratanteComponent
     this.gestionarOrdenServicioService
       .consultarMatriculaSiap(this.datosContratante.matricula.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (!respuesta.datos) {
             this.alertaService.mostrar(
               TipoAlerta.Precaucion,
@@ -582,10 +582,10 @@ export class ModificarDatosContratanteComponent
             this.datosContratante.matricula.setValue(null);
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultarCURP(): void {
@@ -604,8 +604,8 @@ export class ModificarDatosContratanteComponent
     this.gestionarOrdenServicioService
       .consultarCURP(this.datosContratante.curp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos) {
             if (respuesta.mensaje.includes('Externo')) {
               if (respuesta.datos.message.includes("LA CURP NO SE ENCUENTRA EN LA BASE DE DATOS")) {
@@ -693,10 +693,10 @@ export class ModificarDatosContratanteComponent
             )
           );
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultarLugarNacimiento(entidad: string): void {
@@ -780,8 +780,8 @@ export class ModificarDatosContratanteComponent
     this.gestionarOrdenServicioService
       .consultarRFC(this.datosContratante.rfc.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta.datos.length > 0) {
             let datos = respuesta.datos[0];
             this.idPersona = datos.idPersona;
@@ -818,7 +818,7 @@ export class ModificarDatosContratanteComponent
             this.direccion.municipio.setValue(datos.municipio);
             this.direccion.estado.setValue(datos.estado);
             this.direccion.cp.setValue(datos.cp);
-            this.colonias = [{label:datos.colonia,value: datos.colonia}]
+            this.colonias = [{label: datos.colonia, value: datos.colonia}]
             this.direccion.colonia.setValue(datos.colonia);
             this.direccion.calle.setValue(datos.calle);
 
@@ -828,10 +828,10 @@ export class ModificarDatosContratanteComponent
           }
           // this.limpiarConsultaDatosPersonales();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   consultaCP(): void {
@@ -842,8 +842,8 @@ export class ModificarDatosContratanteComponent
     this.gestionarOrdenServicioService
       .consutaCP(this.direccion.cp.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
             this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
             this.direccion.colonia.setValue(respuesta.datos[0].nombre);
@@ -859,10 +859,10 @@ export class ModificarDatosContratanteComponent
           this.direccion.municipio.patchValue(null);
           this.direccion.estado.patchValue(null);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
   noEspaciosAlPrincipio(posicion: number) {

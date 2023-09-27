@@ -1,15 +1,15 @@
-<app-titulo-principal titulo="Administración de comisiones de promotores"></app-titulo-principal>
+<app-titulo-principal titulo="Administración / Administración de comisiones"></app-titulo-principal>
 <div class="border-panel">
   <form [formGroup]="filtroFormComisiones" (ngSubmit)="buscar()">
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nivel">Nivel:</label>
+        <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
         <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
                     placeholder="Selecciona el nivel">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="delegacion">Delegación*:</label>
+        <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones"
                     placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
         </p-dropdown>
@@ -17,13 +17,13 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio*:</label>
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
                     placeholder="Selecciona el velatorio" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="promotores">Promotores*:</label>
+        <label class="control-label" for="promotores">Promotores:</label>
         <p-dropdown id="promotores" class="form-control" formControlName="promotores" [options]="promotores"
                     placeholder="Selecciona el promotor" [filter]="true">
         </p-dropdown>
@@ -97,7 +97,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="5" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
+        <th colspan="7" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
           No se encontró información relacionada a tu búsqueda.
         </th>
       </tr>

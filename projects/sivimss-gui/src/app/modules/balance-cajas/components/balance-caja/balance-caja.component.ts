@@ -72,6 +72,8 @@ export class BalanceCajaComponent implements OnInit {
   mostrarModalConfirmacion: boolean = false;
   esModificacion: boolean = true;
   rol: any;
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
   constructor(
     private route: ActivatedRoute,
@@ -100,6 +102,7 @@ export class BalanceCajaComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
+    this.catatalogoDelegaciones = [{value: null, label: 'Todos'}, ...this.catatalogoDelegaciones];
     this.obtenerVelatorios();
   }
 
@@ -232,6 +235,7 @@ export class BalanceCajaComponent implements OnInit {
     this.balanceCajaService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+        this.catalogoVelatorios = [{value: null, label: 'Todos'}, ...this.catalogoVelatorios];
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -259,10 +263,7 @@ export class BalanceCajaComponent implements OnInit {
           finalize(() => this.cargadorService.desactivar())
         ).subscribe({
           next: (repuesta): void => {
-            if (respuesta) {
-              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-              this.mostrarModalConfirmacion = true;
-            }
+            if (respuesta) this.mostrarModalDescargaExitosa = true;
           },
           error: (error): void => {
             this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))

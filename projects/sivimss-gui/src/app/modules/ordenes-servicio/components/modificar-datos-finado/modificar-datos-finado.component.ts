@@ -188,8 +188,8 @@ export class ModificarDatosFinadoComponent
     this.gestionarOrdenServicioService
       .consultarNSS(this.datosFinado.nss.value)
       .pipe(finalize(() => this.loaderService.desactivar()))
-      .subscribe(
-        (respuesta: HttpRespuesta<any>) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           this.loaderService.desactivar();
           if (respuesta) {
             const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/')
@@ -212,10 +212,10 @@ export class ModificarDatosFinadoComponent
           this.cambiarTipoSexo();
           this.cambiarNacionalidad();
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log(error);
         }
-      );
+      });
   }
 
 
@@ -972,7 +972,8 @@ export class ModificarDatosFinadoComponent
 
   async agregarValidaciones() {
     await Object.keys(this.datosFinado).forEach((key) => {
-      if (key.includes('esObito') || key.includes('esParaExtremidad')) return;
+      if (key.includes('esObito') || key.includes('esParaExtremidad') ||
+        key.includes('clinicaAdscripcion') || key.includes('tipoPension')) return;
       const form = this.form.controls['datosFinado'] as FormGroup;
       form.controls[key].setValidators([Validators.required]);
       form.controls[key].updateValueAndValidity();

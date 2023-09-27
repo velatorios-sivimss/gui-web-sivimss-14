@@ -177,8 +177,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
       if (otorgamiento > 0) {
         mostrarOtorgamiento = true;
       }
-      for (let i = 0; i < paquete.length; i++) {
-        let element = paquete[i];
+      for (let element of paquete) {
         let coordOrigen = null;
         let coordDestino = null;
         let destino = null;
@@ -239,8 +238,7 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
       observaciones = presupuesto.observaciones;
       notasServicio = presupuesto.notasServicio;
 
-      for (let i = 0; i < detallePresupuesto.length; i++) {
-        const element = detallePresupuesto[i];
+      for (let element of detallePresupuesto) {
         total += Number(element.importeMonto * element.cantidad);
         let utilizarArticulo = false;
         if (element.servicioDetalleTraslado == 'paquete') {
