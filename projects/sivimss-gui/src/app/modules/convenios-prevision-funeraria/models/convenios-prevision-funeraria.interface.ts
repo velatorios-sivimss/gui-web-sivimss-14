@@ -40,3 +40,8 @@ export interface ConveniosPrevisionFunerariaInterface {
   beneficiario?: BeneficiarioInterface[],
   cantidadBeneficiarios?: number;
 }
+
+export interface ObtenerCatalogo {
+  idCatalogo?: number;
+  idConvenio?: number | null;
+}

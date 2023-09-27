@@ -24,7 +24,7 @@ import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/me
 import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 import { DetalleConvenioPrevisionFunerariaComponent } from "../detalle-convenio-prevision-funeraria/detalle-convenio-prevision-funeraria.component";
 import { ActivatedRoute, Router } from '@angular/router';
-import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { mapearArregloTipoDropdown, validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {
   EstatusConvenioPrevisionFunerariaComponent
@@ -40,6 +40,7 @@ import { ReporteAnexoDiez, ReporteConvenioPlanAnterior, ReporteConvenioPlanNuevo
   providers: [DialogService]
 })
 export class ConsultaConveniosComponent implements OnInit {
+  readonly POSICION_CATALOGO_ESTATUS_CONVENIO = 0;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -70,24 +71,7 @@ export class ConsultaConveniosComponent implements OnInit {
   };
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
 
-  estatusConvenio: TipoDropdown[] = [
-    {
-      value: 1,
-      label: 'Generado'
-    },
-    {
-      value: 2,
-      label: 'Vigente'
-    },
-    {
-      value: 3,
-      label: 'Inactivo'
-    },
-    {
-      value: 4,
-      label: 'Cerrado'
-    },
-  ]
+  estatusConvenio: TipoDropdown[] = []
 
   convenioPrevision: ConveniosPrevisionFunerariaInterface[] = [];
   selectedConvenioPrevision: any;
@@ -118,6 +102,8 @@ export class ConsultaConveniosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    this.estatusConvenio = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_ESTATUS_CONVENIO].datos, "estatus", "id");
     this.actualizarBreadcrumb();
     this.inicializarFiltroForm();
   }
