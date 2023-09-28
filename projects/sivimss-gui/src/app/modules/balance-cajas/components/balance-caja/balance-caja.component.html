@@ -77,37 +77,39 @@
 
   <p-table styleClass="mt-5 mb-8" [value]="balanceCaja" [paginator]="balanceCaja.length > 0"
            [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-           [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)">
+           [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true"
+           [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
 
     <ng-template pTemplate="header">
       <tr>
-        <th id="columna_balance_caja_fecha">Fecha</th>
-        <th id="columna_balance_caja_delegacion">Delegación</th>
-        <th id="columna_balance_caja_velatorio">Velatorio</th>
-        <th id="columna_balance_caja_folio">Folio</th>
-        <th id="columna_balance_caja_tipo_ingreso">Tipo de ingreso</th>
-        <th id="columna_balance_caja_estatus_pago">Estatus de pago</th>
-        <th id="columna_balance_caja_metodo_pago">Método de pago</th>
-        <th id="columna_balance_caja_importe">Importe</th>
-        <th id="columna_balance_caja_ingreso_neto">Ingreso neto</th>
-        <th id="columna_balance_caja_estatus_caja">Estatus caja</th>
-        <th id="columna_balance_caja_fecha_cierre">Fecha y hora de cierre</th>
+        <th pResizableColumn id="columna_balance_caja_fecha">Fecha</th>
+        <th pResizableColumn id="columna_balance_caja_delegacion">Delegación</th>
+        <th pResizableColumn id="columna_balance_caja_velatorio">Velatorio</th>
+        <th pResizableColumn id="columna_balance_caja_folio">Folio</th>
+        <th pResizableColumn id="columna_balance_caja_tipo_ingreso">Tipo de ingreso</th>
+        <th pResizableColumn id="columna_balance_caja_estatus_pago">Estatus de pago</th>
+        <th pResizableColumn id="columna_balance_caja_metodo_pago">Método de pago</th>
+        <th pResizableColumn id="columna_balance_caja_importe">Importe</th>
+        <th pResizableColumn id="columna_balance_caja_ingreso_neto">Ingreso neto</th>
+        <th pResizableColumn id="columna_balance_caja_estatus_caja">Estatus caja</th>
+        <th pResizableColumn id="columna_balance_caja_fecha_cierre">Fecha y hora de cierre</th>
         <th id="columna_balance_caja_estatus" *appValidaRol="['BALANCE_CAJA','MODIFICAR']"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-balance>
       <tr>
-        <td>{{balance.fecha}}</td>
-        <td>{{balance.delegacion}} </td>
-        <td>{{balance.velatorio}} </td>
-        <td>{{balance.folio}}</td>
-        <td>{{balance.tipoIngreso}}</td>
-        <td>{{balance.estatusPago}}</td>
-        <td>{{balance.metodoPago}}</td>
-        <td>{{balance.importe | currency }}</td>
-        <td>{{balance.ingresoNeto | currency }}</td>
-        <td>{{balance.estatusCaja}}</td>
-        <td>{{balance.fecHoraCierre}}</td>
+        <td pResizableColumn>{{balance.fecha}}</td>
+        <td pResizableColumn>{{balance.delegacion}} </td>
+        <td pResizableColumn>{{balance.velatorio}} </td>
+        <td pResizableColumn>{{balance.folio}}</td>
+        <td pResizableColumn>{{balance.tipoIngreso}}</td>
+        <td pResizableColumn>{{balance.estatusPago}}</td>
+        <td pResizableColumn>{{balance.metodoPago}}</td>
+        <td pResizableColumn>{{balance.importe | currency }}</td>
+        <td pResizableColumn>{{balance.ingresoNeto | currency }}</td>
+        <td pResizableColumn>{{balance.estatusCaja}}</td>
+        <td pResizableColumn>{{balance.fecHoraCierre}}</td>
         <td *appValidaRol="['BALANCE_CAJA','MODIFICAR']">
           <div class="contenedor-celda-iconos">
             <a (click)="abrirPanel($event,balance)">
@@ -168,7 +170,7 @@
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
-    <app-overlay-panel-opciones >
+    <app-overlay-panel-opciones>
       <app-overlay-panel-opcion *ngIf="esModificacion" titulo="Modificar pago"
                                 routerLink="modificar-pago"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>

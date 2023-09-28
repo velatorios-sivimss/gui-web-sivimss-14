@@ -24,6 +24,7 @@ import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
 import { ModificarPagoComponent } from './components/modificar-pago/modificar-pago.component';
 import { RealizarCierreComponent } from './components/realizar-cierre/realizar-cierre.component';
 import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
+import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
         AccordionModule,
         AutoCompleteModule,
         ValidaRolModule,
-        BtnRegresarModule
+        BtnRegresarModule,
+        CeldaStickyModule
     ],
   providers: [BalanceCajaService]
 })
