@@ -17,7 +17,11 @@ import {of} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import {mapearArregloTipoDropdown, validarUsuarioLogueado} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {
+  mapearArregloTipoDropdown, obtenerDelegacionUsuarioLogueado,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado,
+  validarUsuarioLogueado
+} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
@@ -75,6 +79,8 @@ export class BalanceCajaComponent implements OnInit {
   mostrarModalDescargaExitosa: boolean = false;
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
+  central!: boolean;
+
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -131,10 +137,17 @@ export class BalanceCajaComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
     this.filtroFormBalanceCaja = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: true}],
-      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina > 1}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
+      nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
+      delegacion: [{
+        value: this.central ? null : obtenerDelegacionUsuarioLogueado(usuario),
+        disabled: +usuario.idOficina > 1
+      }],
+      velatorio: [{
+        value: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario),
+        disabled: obtenerNivelUsuarioLogueado(usuario) === 3
+      }],
       folioODS: [{value: null, disabled: false}],
       folioNuevo: [{value: null, disabled: false}],
       folioRenovacion: [{value: null, disabled: false}],
@@ -220,8 +233,8 @@ export class BalanceCajaComponent implements OnInit {
     if (this.filtroFormBalanceCaja) {
       const formularioDefault = {
         nivel: +usuario?.idOficina,
-        delegacion: +usuario?.idDelegacion,
-        velatorio: +usuario?.idVelatorio
+        delegacion: this.central ? null : obtenerDelegacionUsuarioLogueado(usuario),
+        velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)
       }
       this.filtroFormDir.resetForm(formularioDefault);
     }
@@ -230,9 +243,9 @@ export class BalanceCajaComponent implements OnInit {
   }
 
   obtenerVelatorios(): void {
-    const idDelegacion = this.filtroFormBalanceCaja.get('delegacion')?.value;
-    if (!idDelegacion) return;
-    this.balanceCajaService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null
+    this.balanceCajaService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
         this.catalogoVelatorios = [{value: null, label: 'Todos'}, ...this.catalogoVelatorios];
