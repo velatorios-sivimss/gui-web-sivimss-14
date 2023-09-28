@@ -1,4 +1,7 @@
-<app-titulo-principal titulo="Administración / Administración de comisiones"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Administración / Administración de comisiones" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroFormComisiones" (ngSubmit)="buscar()">
     <div class="row mb-3">

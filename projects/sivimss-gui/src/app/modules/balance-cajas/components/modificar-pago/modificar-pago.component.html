@@ -2,9 +2,8 @@
   <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../"></app-btn-regresar>
   <app-titulo-principal titulo="Realizar balance de caja" class="col"></app-titulo-principal>
 </div>
-<div class="mt-2 mb-2 font-bold">
-  Modificar pago
-</div>
+<div class="mt-2 mb-2 font-bold" *ngIf="esModificacion">Modificar pago </div>
+<div class="mt-2 mb-2 font-bold" *ngIf="!esModificacion">Motivo de modificación</div>
 <app-table-panel>
   <ng-template appCustomTemplate="left-header">
     <div class="table-panel-header-column">
@@ -110,7 +109,7 @@
     <div class="row mb-3 mt-3">
       <div class="col-md-12">
         <label class="control-label" for="modificarPago">Motivo de modificación<span class="req">*</span>:</label>
-        <textarea rows="4" class="form-control" pInputTextarea formControlName="modificarPago"
+        <textarea rows="4" class="form-control" pInputTextarea formControlName="modificarPago" id="modificarPago"
                   placeholder="Ingresa el motivo de la modificación" maxlength="100"></textarea>
         <span class="campo-obligatorio"
               *ngIf="ref.modificarPago?.errors?.required && (ref.modificarPago?.dirty || ref.modificarPago?.touched)">Este
