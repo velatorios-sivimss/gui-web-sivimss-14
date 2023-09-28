@@ -1049,7 +1049,7 @@ export class CaracteristicasPresupuestoSFComponent
   }
 
   validacionFormulario(): boolean {
-    if (this.dd) {
+    if (this.dd || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
       const drop:any = this.dd;
       if(drop == 3){
         return this.selecionaTipoOtorgamiento != null ? false: true;
