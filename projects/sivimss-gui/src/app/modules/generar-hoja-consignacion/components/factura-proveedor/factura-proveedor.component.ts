@@ -22,8 +22,9 @@ export class FacturaProveedorComponent implements OnInit {
 
   public generarHojaConsignacionForm!: FormGroup;
   public controlName: string = '';
-  public costoTotal: number | null = null;
+  public costoTotal: string | null = null;
   public importeFactura: number | null = null;
+  public importeFacturaFormat: string = '';
   public folioFiscal: string | null = '';
   public hojaSeleccionada!: GenerarHojaConsignacionBusqueda;
 
@@ -131,6 +132,13 @@ export class FacturaProveedorComponent implements OnInit {
           let complemento = xmlDoc.getElementsByTagName('cfdi:Complemento')[0];
           this.folioFiscal = complemento.getElementsByTagName('tfd:TimbreFiscalDigital')[0].getAttribute('UUID');
           this.generarHojaConsignacionForm.get('folio')?.setValue(this.folioFiscal);
+
+          const formatter = new Intl.NumberFormat("en-US", {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+          });
+          this.importeFacturaFormat = formatter.format(this.importeFactura);
         }
       }
       if (fileReaded) reader.readAsText(fileReaded);

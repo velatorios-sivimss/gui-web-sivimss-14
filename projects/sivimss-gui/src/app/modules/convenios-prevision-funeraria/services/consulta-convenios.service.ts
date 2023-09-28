@@ -6,6 +6,7 @@ import { environment } from 'projects/sivimss-gui/src/environments/environment';
 import { Observable } from 'rxjs';
 import { AutenticacionService } from "../../../services/autenticacion.service";
 import { FiltrosConvenio } from "../models/filtros-convenio.interface";
+import { ObtenerCatalogo } from "../models/convenios-prevision-funeraria.interface";
 
 interface PeticionDescarga {
   tipoReporte: "pdf" | "xls"
@@ -65,6 +66,10 @@ export class ConsultaConveniosService extends BaseService<HttpRespuesta<any>, an
       .append("pagina", pagina)
       .append("tamanio", tamanio);
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/consultar-facturas`, filtros, { params });
+  }
+
+  obtenerCatalogo(catalogo: ObtenerCatalogo): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `29/buscar/buscar-catalogos`, catalogo);
   }
 
   descargarPDF<T>(body: T): Observable<Blob> {
