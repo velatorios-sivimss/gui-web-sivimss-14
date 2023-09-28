@@ -23,7 +23,8 @@ import { CalculoComisionesService } from './services/calculo-comisiones.service'
 import { CalculoComisionesoRoutingModule } from './calculo-comisiones.routing.module';
 import { UtileriaModule } from '../../shared/utileria/utileria.module';
 import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
-import { ModalComisionComponent } from "./components/modal-comision/modal-comision.component";  
+import { ModalComisionComponent } from "./components/modal-comision/modal-comision.component";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -31,27 +32,28 @@ import { ModalComisionComponent } from "./components/modal-comision/modal-comisi
     DetalleComisionComponent,
     ModalComisionComponent
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    CalculoComisionesoRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    AutoCompleteModule,
-    ValidaRolModule,
-    UtileriaModule,
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        CalculoComisionesoRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        AutoCompleteModule,
+        ValidaRolModule,
+        UtileriaModule,
+        BtnRegresarModule,
+    ],
   providers: [CalculoComisionesService]
 })
 export class CalculoComisionesModule {

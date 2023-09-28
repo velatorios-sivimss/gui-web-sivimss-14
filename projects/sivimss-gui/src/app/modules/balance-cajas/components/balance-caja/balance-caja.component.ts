@@ -233,8 +233,8 @@ export class BalanceCajaComponent implements OnInit {
     if (this.filtroFormBalanceCaja) {
       const formularioDefault = {
         nivel: +usuario?.idOficina,
-        delegacion: +usuario?.idDelegacion,
-        velatorio: +usuario?.idVelatorio
+        delegacion: this.central ? null : obtenerDelegacionUsuarioLogueado(usuario),
+        velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)
       }
       this.filtroFormDir.resetForm(formularioDefault);
     }
