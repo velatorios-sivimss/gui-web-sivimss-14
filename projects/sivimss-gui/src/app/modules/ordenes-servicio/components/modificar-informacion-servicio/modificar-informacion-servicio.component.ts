@@ -362,13 +362,13 @@ export class ModificarInformacionServicioComponent
     this.cortejo.fecha.enable();
     this.cortejo.hora.enable();
     datosPresupuesto.forEach((datos: any) => {
-      if (datos.concepto.trim() == 'Velación en capilla') {
+      if (+datos.idTipoServicio == 1) {
         this.lugarVelacion.capilla.enable();
         this.lugarVelacion.fecha.enable();
         this.lugarVelacion.hora.enable();
       }
 
-      if (datos.concepto.trim() == 'Velación en domicilio') {
+      if (+datos.idTipoServicio == 2) {
         this.validaDomicilio = true;
         this.lugarVelacion.calle.enable();
         this.lugarVelacion.exterior.enable();
@@ -382,10 +382,7 @@ export class ModificarInformacionServicioComponent
         this.instalacionServicio.hora.enable();
       }
 
-      if (
-        datos.grupo.toUpperCase().trim().includes('CREMACIÓN') ||
-        datos.grupo.toUpperCase().trim().includes('CREMACION')
-      ) {
+      if (+datos.idTipoServicio == 3) {
         this.lugarCremacion.sala.enable();
         this.lugarCremacion.fecha.enable();
         this.lugarCremacion.hora.enable();

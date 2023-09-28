@@ -21,7 +21,14 @@
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Total a cubrir</span>
-      <span class="texto-base">{{this.config.data.detallePago.restante | currency:"USD":"symbol"}}</span>
+      <span class="texto-base" *ngIf="config.data.detallePago.restante; else sinRestante">
+        {{config.data.detallePago.restante | currency:"USD":"symbol"}}
+      </span>
+      <ng-template #sinRestante>
+              <span class="font-bold">
+                {{config.data.detallePago.total | currency:"USD":"symbol"}}
+              </span>
+      </ng-template>
     </div>
     <div class="col-md-4 flex flex-column">
       <span class="etiqueta-base">Monto mensual a cubrir</span>
