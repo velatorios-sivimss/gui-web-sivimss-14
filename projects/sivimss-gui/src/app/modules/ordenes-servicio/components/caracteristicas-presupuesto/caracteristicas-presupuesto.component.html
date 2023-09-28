@@ -1,6 +1,10 @@
 <div class="row mb-4">
   <div class="col-md-4">
     <h2 class="subtitulo-base">Características del presupuesto</h2>
+  </div>
+</div>
+<div class="row mb-4">
+  <div class="col-md-4">
     <label class="control-label" for="paquete">Paquete<span class="req">*</span>:</label>
     <p-dropdown #dd id="paquete" class="form-control" [(ngModel)]="paqueteSeleccionado" [disabled]="bloquearPaquete"
                 placeholder="Selecciona el paquete" [options]="paquetes" (onClick)="valorPrevio(dd)"
@@ -96,11 +100,12 @@
             <th scope="col">Cantidad</th>
             <th scope="col">Importe/Monto</th>
             <th scope="col">Proveedor</th>
-            <th scope="col">Total del paquete</th>
+            <th scope="col">Total</th>
             <th scope="col"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-paquete let-rowIndex="rowIndex">
+          <tr *ngIf="paquete.proviene!='paquete'">
           <tr>
             <td>{{rowIndex + 1}}</td>
             <td>{{paquete.grupo}}</td>

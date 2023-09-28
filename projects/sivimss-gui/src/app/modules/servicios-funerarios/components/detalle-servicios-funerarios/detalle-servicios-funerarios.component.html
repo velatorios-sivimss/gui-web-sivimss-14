@@ -6,8 +6,8 @@
         <span class="font-bold">Folio plan SFPA {{detalleServicio.numFolio}}</span>
       </div>
     </ng-template>
-    <ng-template appCustomTemplate="right-header">
-      <div class="table-panel-header-column">
+    <ng-template appCustomTemplate="right-header" >
+      <div class="table-panel-header-column" *ngIf="pagosRealizados.length < totalPagos">
         <div class="flex flex-column">
           <span>Estatus pago</span>
           <div class="contenedor-inputswitch" *ngIf="detalleServicio?.estatusPlan">
@@ -94,7 +94,7 @@
             <td>{{pagosRealizados.noReciboPago}}</td>
             <td>{{pagosRealizados.estatusPago}}</td>
             <td>
-              <div class="contenedor-celda-iconos">
+              <div class="contenedor-celda-iconos" *ngIf="!pagosRealizados.estatusPago?.includes('CANCELADO')">
                 <a (click)="abrirPanelBody($event,pagosRealizados)">
                   <img
                     src="assets/images/imagen-icono-barras-horizontales.svg"
@@ -144,7 +144,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-6 flex justify-content-end">
+      <div class="mt-6 flex justify-content-end" *ngIf="pagosRealizados.length > 0">
         <div class="paginator-template">
           <div class="export-table">
             <span class="export-table-text">Exportar tabla</span>
@@ -172,7 +172,7 @@
 <p-overlayPanel #overlayPanelBody>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Modificar método"
+      <app-overlay-panel-opcion onCloseOnNavigation  titulo="Modificar método"
                                 (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion onCloseOnNavigation titulo="Eliminar método"
                                 (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
