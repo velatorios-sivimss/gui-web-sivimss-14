@@ -812,15 +812,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   validacionFormulario(): boolean {
-    let banderaPaquete = false;
-    let banderaPresupuesto = false;
-    let banderaTipo = false;
-
     this.selecionaTipoOtorgamiento;
     this.paqueteSeleccionadoDD?.label;
     if(this.tipoOrden == 1 || this.tipoOrden == 2){
-      if(this.paqueteSeleccionadoDD){
-        if(this.paqueteSeleccionadoDD.label.includes("Paquete social")){
+      if(this.paqueteSeleccionadoDD || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete ){
+        if(this.paqueteSeleccionadoDD?.label.includes("Paquete social")){
           if(this.selecionaTipoOtorgamiento == null){
             return true;
           }else{

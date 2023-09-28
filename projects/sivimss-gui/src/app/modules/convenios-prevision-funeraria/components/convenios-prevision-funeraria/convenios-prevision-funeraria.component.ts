@@ -141,6 +141,7 @@ export class ConsultaConveniosComponent implements OnInit {
     let param = {
       folioConvenio: folioConvenioSeleccionado
     };
+
     this.consultaConvenioService.buscarPorFiltros(param, 0, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
@@ -153,6 +154,8 @@ export class ConsultaConveniosComponent implements OnInit {
             this.beneficiario = respuesta.datos.beneficiarios.datos.content;
             this.siniestro = respuesta.datos.siniestros.datos.content;
             this.mostrarAcordiones = true;
+          } else {
+            this.mostrarAcordiones = false;
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -263,19 +266,31 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   buscarPorFiltros(): void {
-    this.consultaConvenioService.consultarConvenios(this.obtenerObjetoParaFiltrado(), this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.mensaje === "Exito" && respuesta.datos) {
-          this.convenioPrevision = respuesta.datos.content;
-          this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
-          this.busquedaRealizada = true;
+    this.cargadorService.activar();
+    this.consultaConvenioService.consultarConvenios(this.obtenerObjetoParaFiltrado(), this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina)
+      .pipe(
+        finalize(() => {
+          this.cargadorService.desactivar();
+          this.datosAfiliado = [];
+          this.vigenciaConvenio = [];
+          this.facturaConvenio = [];
+          this.beneficiario = [];
+          this.siniestro = [];
+          this.mostrarAcordiones = false;
+        })
+      ).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          if (respuesta.mensaje === "Exito" && respuesta.datos) {
+            this.convenioPrevision = respuesta.datos.content;
+            this.totalElementos.tablaConvenios = respuesta.datos.totalElements;
+            this.busquedaRealizada = true;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+          this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    });
+      });
   }
 
   obtenerObjetoParaFiltrado(): any {

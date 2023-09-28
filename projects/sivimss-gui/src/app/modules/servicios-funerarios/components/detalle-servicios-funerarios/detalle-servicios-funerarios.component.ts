@@ -63,6 +63,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   usuario = JSON.parse(localStorage.getItem('usuario') as string);
   mensajeArchivoConfirmacion: string = "";
   mostrarModalConfirmacion: boolean = false;
+  totalPagos: number = 0;
 
   constructor(
     private alertaService: AlertaService,
@@ -104,6 +105,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
             Number(respuesta.datos.detallePlan.total) - Number(respuesta.datos.detallePlan.restante) :
             0
         }
+        this.totalPagos = Number(this.detalleServicio.desNumeroPagos);
         this.pagosRealizados = respuesta.datos.pagos || [];
         this.pagosRealizados.length < Number(this.detalleServicio.desNumeroPagos) ?
           this.opcionRealizarPagos = true :
