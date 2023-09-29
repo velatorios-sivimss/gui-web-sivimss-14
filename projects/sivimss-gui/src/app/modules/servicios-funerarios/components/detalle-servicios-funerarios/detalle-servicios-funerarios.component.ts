@@ -224,10 +224,10 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
 
   generarObjetoReporte(tipoReporte:string): any {
     return {
-      idVelatorio: this.usuario.idVelatorio,
-      folioPlan: this.detalleServicio.numFolio,
-      fechaInicio: null,
-      fechaFin: null,
+      idPlan: +this.route.snapshot.queryParams.idPlanSfpa,
+      correoElectronico: this.detalleServicio.correo,
+      paquete: this.detalleServicio.nombrePaquete,
+      estado: this.detalleServicio.estado,
       nombreContratante: this.detalleServicio.contratanteSubstituto,
       tipoReporte:tipoReporte
     }
