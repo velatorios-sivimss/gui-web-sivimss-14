@@ -218,6 +218,7 @@ export class ModificarDatosCaracteristicasContratanteComponent
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
+    this.selecionaTipoOtorgamiento = datos.selecionaTipoOtorgamiento;
     this.selecionaTipoOtorgamiento =
       datos.selecionaTipoOtorgamiento == null
         ? null

@@ -143,13 +143,14 @@ export class PorEmpresaComponent implements OnInit, OnChanges, AfterViewInit {
     }
     this.validarFormularioVacio();
     this.loaderService.activar();
-    this.agregarConvenioPFService.consutaCP(+this.fe.cp.value).pipe(
+    this.agregarConvenioPFService.consutaCP(this.fe.cp.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'colonia', 'colonia')
-        this.fe.estado.setValue(respuesta.datos[0]?.estado);
-        this.fe.municipio.setValue(respuesta.datos[0]?.municipio);
+        this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre');
+        this.fe.colonia.setValue(respuesta.datos[0].nombre);
+        this.fe.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
+        this.fe.municipio.setValue(respuesta.datos[0].municipio.nombre);
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);

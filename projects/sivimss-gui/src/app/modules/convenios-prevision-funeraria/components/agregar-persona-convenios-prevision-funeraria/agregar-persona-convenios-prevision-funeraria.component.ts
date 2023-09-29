@@ -215,13 +215,14 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   consultarCP(): void {
     if(!this.fp.cp.value){return}
     this.loaderService.activar();
-    this.agregarConvenioPFService.consutaCP(+this.fp.cp.value).pipe(
+    this.agregarConvenioPFService.consutaCP(this.fp.cp.value).pipe(
       finalize(()=>  this.loaderService.desactivar())
     ).subscribe({
         next:(respuesta: HttpRespuesta<any>) => {
-          this.colonias = mapearArregloTipoDropdown(respuesta.datos,'colonia','colonia')
-          this.fp.estado.setValue(respuesta.datos[0]?.estado);
-          this.fp.municipio.setValue(respuesta.datos[0]?.municipio);
+          this.colonias = mapearArregloTipoDropdown(respuesta.datos,'nombre','nombre')
+          this.fp.colonia.setValue(respuesta.datos[0].nombre);
+          this.fp.estado.setValue(respuesta.datos[0].municipio.entidadFederativa.nombre);
+          this.fp.municipio.setValue(respuesta.datos[0].municipio.nombre);
           this.fp.pais.setValue(119);
         },
         error:(error:HttpErrorResponse) => {

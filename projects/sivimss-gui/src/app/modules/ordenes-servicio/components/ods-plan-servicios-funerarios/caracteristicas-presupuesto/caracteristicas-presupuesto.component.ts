@@ -184,6 +184,7 @@ export class CaracteristicasPresupuestoSFComponent
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
+    this.selecionaTipoOtorgamiento = datos.selecionaTipoOtorgamiento;
     this.total = datos.total;
     this.form = this.formBuilder.group({
       observaciones: [{ value: datos.observaciones, disabled: false }],
@@ -1049,7 +1050,7 @@ export class CaracteristicasPresupuestoSFComponent
   }
 
   validacionFormulario(): boolean {
-    if (this.dd) {
+    if (this.dd || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
       const drop:any = this.dd;
       if(drop == 3){
         return this.selecionaTipoOtorgamiento != null ? false: true;

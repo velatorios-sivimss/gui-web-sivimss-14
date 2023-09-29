@@ -218,6 +218,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
+    this.selecionaTipoOtorgamiento = datos.selecionaTipoOtorgamiento;
     this.selecionaTipoOtorgamiento =
       datos.selecionaTipoOtorgamiento == null
         ? null
@@ -812,7 +813,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   validacionFormulario(): boolean {
-    if (this.dd) {
+    if (this.dd || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
       const drop:any = this.dd;
       if(drop == 3){
         return this.selecionaTipoOtorgamiento != null ? false: true;
