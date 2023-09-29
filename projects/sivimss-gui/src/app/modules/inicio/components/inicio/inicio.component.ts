@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
 
 @Component({
   selector: 'app-inicio',
@@ -7,11 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InicioComponent implements OnInit {
 
-  constructor() {
+  @ViewChild('breadcrumb')
+  private Breadcrumb!: ElementRef;
+
+  anuncio: { image: string }[] = [];
+
+  constructor(private breadcrumbService: BreadcrumbService) {
   }
 
-  ngOnInit() {
-
+  ngOnInit(): void {
+    this.breadcrumbService.limpiar();
+    this.anuncio = [
+      {image: "slide1.jpg"},
+      {image: "slide2.jpg"}
+    ];
   }
 
 

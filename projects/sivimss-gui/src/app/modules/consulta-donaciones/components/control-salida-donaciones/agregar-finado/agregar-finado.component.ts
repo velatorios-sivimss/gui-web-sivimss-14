@@ -28,8 +28,14 @@ export class AgregarFinadoComponent implements OnInit {
       nombre: [{value: null, disabled: false}, [Validators.required]],
       primerApellido: [{value: null, disabled: false}, [Validators.required]],
       segundoApellido: [{value: null, disabled: false}, [Validators.required]],
-
     });
+  }
+
+  noEspaciosAlPrincipio(posicion:number): void {
+    let formularioSeleccionado = [this.f.nombre,this.f.primerApellido,this.f.segundoApellido];
+    formularioSeleccionado[posicion].setValue(
+      formularioSeleccionado[posicion].value.trimStart()
+    );
   }
 
   confirmacion(): void {

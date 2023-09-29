@@ -1,32 +1,43 @@
 <form [formGroup]="agregarPromotorForm">
   <div class="row mb-3">
     <div class="col-md-6">
-      <label class="control-label" for="id">ID<span class="req">*</span>:</label>
+      <label class="control-label" for="id">ID:</label>
       <input id="id" class="form-control" formControlName="id" placeholder="">
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="numEmpleado">No. de empleado<span class="req">*</span>:</label>
+      <label class="control-label" for="numEmpleado">Número de empleado<span class="req">*</span>:</label>
       <input id="numEmpleado" class="form-control" formControlName="numEmpleado" maxlength="10"
-             placeholder="Ingresa el no. de empleado" alphanumericOnly trimmer>
-      <span class="campo-obligatorio" *ngIf="f.numEmpleado?.errors?.required && (f.numEmpleado?.dirty || f.numEmpleado?.touched)">Campo 
-        obligatorio</span>
+        placeholder="Ingresa el no. de empleado" alphanumericOnly trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.numEmpleado?.errors?.required && (apf.numEmpleado?.dirty || apf.numEmpleado?.touched)">Este campo es
+        obligatorio *.</span>
     </div>
   </div>
 
   <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-      <input id="curp" class="form-control" formControlName="curp" maxlength="18"
-             placeholder="Ingresa el CURP" alphanumericOnly trimmer>
-      <span class="campo-obligatorio" *ngIf="f.curp?.errors?.required && (f.curp?.dirty || f.curp?.touched)">Campo 
-        obligatorio</span>
+      <input id="curp" class="form-control" formControlName="curp" maxlength="18" placeholder="Ingresa el CURP"
+        alphanumericOnly trimmer (blur)="validarCurpRenapo();" oninput="this.value = this.value.toUpperCase()">
+      <span class="campo-obligatorio" *ngIf="apf.curp?.errors?.required && (apf.curp?.dirty || apf.curp?.touched)">Este
+        campo es obligatorio *.</span>
+      <span class="campo-obligatorio"
+        *ngIf="apf?.curp?.errors?.pattern && (apf?.curp?.dirty || apf?.curp?.touched)">CURP no válido.</span>
+      <div class="form-group mb-0 mt-1">
+        <div class="flex justify-content-between align-items-end">
+          <a id="href_renapo" [href]='HREF_RENAPO' target="_blank">
+            <span class="olvidaste-contrasena">No recuerdas tu CURP, da click aquí.</span>
+          </a>
+        </div>
+      </div>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="nombre">Nombre(s)<span class="req">*</span>:</label>
-      <input id="nombre" class="form-control" formControlName="nombre" maxlength="30"
-             placeholder="Ingresa el nombre(s)" (blur)="consultarRenapo();" alphanumericOnly trimmer>
-      <span class="campo-obligatorio" *ngIf="f.nombre?.errors?.required && (f.nombre?.dirty || f.nombre?.touched)">Campo 
-        obligatorio</span>
+      <input id="nombre" class="form-control" formControlName="nombre" maxlength="30" placeholder="Ingresa el nombre(s)"
+        alphanumericOnly trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.nombre?.errors?.required && (apf.nombre?.dirty || apf.nombre?.touched)">Este campo es obligatorio
+        *.</span>
     </div>
   </div>
 
@@ -34,106 +45,130 @@
     <div class="col-md-6">
       <label class="control-label" for="primerApellido">Primer apellido<span class="req">*</span>:</label>
       <input id="primerApellido" class="form-control" formControlName="primerApellido" maxlength="20"
-             placeholder="Ingresa el primer apellido" (blur)="consultarRenapo();" alphanumericOnly trimmer>
-      <span class="campo-obligatorio" *ngIf="f.primerApellido?.errors?.required && (f.primerApellido?.dirty || f.primerApellido?.touched)">Campo 
-        obligatorio</span>
+        placeholder="Ingresa el primer apellido" alphanumericOnly trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.primerApellido?.errors?.required && (apf.primerApellido?.dirty || apf.primerApellido?.touched)">Este
+        campo es obligatorio *.</span>
     </div>
     <div class="col-md-6">
       <label class="control-label" for="segundoApellido">Segundo apellido<span class="req">*</span>:</label>
       <input id="segundoApellido" class="form-control" formControlName="segundoApellido" maxlength="20"
-             placeholder="Ingresa el segundo apellido" (blur)="consultarRenapo();" alphanumericOnly trimmer>
-      <span class="campo-obligatorio" *ngIf="f.segundoApellido?.errors?.required && (f.segundoApellido?.dirty || f.segundoApellido?.touched)">Campo 
-        obligatorio</span>
+        placeholder="Ingresa el segundo apellido" alphanumericOnly trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.segundoApellido?.errors?.required && (apf.segundoApellido?.dirty || apf.segundoApellido?.touched)">Este
+        campo es obligatorio *.</span>
     </div>
   </div>
 
   <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="fechaNacimiento">Fecha de nacimiento<span class="req">*</span>:</label>
-      <p-calendar id="fechaNacimiento" formControlName="fechaNacimiento" styleClass="form-control"
-          [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy" (onSelect)="consultarRenapo();">
+      <p-calendar id="fechaNacimiento" formControlName="fechaNacimiento" styleClass="form-control" [showIcon]="true"
+        placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
       </p-calendar>
-      <span class="campo-obligatorio" *ngIf="f.fechaNacimiento?.errors?.required && (f.fechaNacimiento?.dirty || f.fechaNacimiento?.touched)">Campo 
-        obligatorio</span>
+      <span class="campo-obligatorio"
+        *ngIf="apf.fechaNacimiento?.errors?.required && (apf.fechaNacimiento?.dirty || apf.fechaNacimiento?.touched)">Este
+        campo es obligatorio *.</span>
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="fechaIngreso">Fecha de ingreso<span class="req">*</span>:</label>
-      <p-calendar id="fechaIngreso" formControlName="fechaIngreso" styleClass="form-control" (onSelect)="handleFechaIngreso();"
-          [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
-      </p-calendar>
-      <span class="campo-obligatorio" *ngIf="f.fechaIngreso?.errors?.required && (f.fechaIngreso?.dirty || f.fechaIngreso?.touched)">Campo 
-        obligatorio</span>
+      <label class="control-label" for="entidadFederativa">Entidad Federativa<span class="req">*</span>:</label>
+      <p-dropdown id="entidadFederativa" class="form-control" formControlName="entidadFederativa"
+        placeholder="Selecciona la entidad federativa" [options]="entidadFederativa" [filter]="true"
+        filterBy="label"></p-dropdown>
+      <span class="campo-obligatorio"
+        *ngIf="apf.entidadFederativa?.errors?.required && (apf.entidadFederativa?.dirty || apf.entidadFederativa?.touched)">Este
+        campo es obligatorio *.</span>
     </div>
   </div>
 
   <div class="row mb-3">
-    <div class="col-md-6">      
-      <label class="control-label" for="fechaBaja">Fecha de baja:</label>
-      <p-calendar id="fechaBaja" formControlName="fechaBaja" styleClass="form-control"
-          [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
+    <div class="col-md-6">
+      <label class="control-label" for="fechaIngreso">Fecha ingreso<span class="req">*</span>:</label>
+      <p-calendar id="fechaIngreso" formControlName="fechaIngreso" styleClass="form-control"
+        (onSelect)="handleFechaIngreso();" [showIcon]="true" placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
       </p-calendar>
-      <span class="campo-obligatorio" *ngIf="f.fechaBaja?.errors?.required && (f.fechaBaja?.dirty || f.fechaBaja?.touched)">Campo 
-        obligatorio</span>
+      <span class="campo-obligatorio"
+        *ngIf="apf.fechaIngreso?.errors?.required && (apf.fechaIngreso?.dirty || apf.fechaIngreso?.touched)">Este campo
+        es obligatorio *.</span>
     </div>
+    <div class="col-md-6">
+      <label class="control-label" for="fechaBaja">Fecha de baja:</label>
+      <p-calendar id="fechaBaja" formControlName="fechaBaja" styleClass="form-control" [showIcon]="true"
+        placeholder="Selecciona la fecha" dateFormat="dd/mm/yy">
+      </p-calendar>
+      <span class="campo-obligatorio"
+        *ngIf="apf.fechaBaja?.errors?.required && (apf.fechaBaja?.dirty || apf.fechaBaja?.touched)">Este campo es
+        obligatorio *.</span>
+    </div>
+  </div>
+
+  <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="sueldoBase">Sueldo base<span class="req">*</span>:</label>
       <input id="sueldoBase" class="form-control" formControlName="sueldoBase" maxlength="10"
-             placeholder="Ingresa el sueldo base" numbersOnly trimmer>
-      <span class="campo-obligatorio" *ngIf="f.sueldoBase?.errors?.required && (f.sueldoBase?.dirty || f.sueldoBase?.touched)">Campo 
-        obligatorio</span>
+        placeholder="Ingresa el sueldo base" numbersOnly trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.sueldoBase?.errors?.required && (apf.sueldoBase?.dirty || apf.sueldoBase?.touched)">Este campo es
+        obligatorio *.</span>
     </div>
   </div>
 
   <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
-      <p-dropdown id="clave" class="form-control" formControlName="velatorio" [options]="opciones"
-                placeholder="Selecciona el velatorio">
+      <p-dropdown id="clave" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+        placeholder="Selecciona el velatorio">
       </p-dropdown>
-      <span class="campo-obligatorio" *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo 
-        obligatorio</span>
+      <span class="campo-obligatorio"
+        *ngIf="apf.velatorio?.errors?.required && (apf.velatorio?.dirty || apf.velatorio?.touched)">Este campo es
+        obligatorio *.</span>
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="categoria">Categoría<span class="req">*</span>:</label>
+      <label class="control-label" for="categoria">Categoría:</label>
       <input id="categoria" class="form-control" formControlName="categoria" maxlength="20"
-             placeholder="Ingresa la categoría" alphanumericOnly trimmer>
-      <span class="campo-obligatorio" *ngIf="f.categoria?.errors?.required && (f.categoria?.dirty || f.categoria?.touched)">Campo 
-        obligatorio</span>
+        placeholder="Ingresa la categoría" lettersOnly trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.categoria?.errors?.required && (apf.categoria?.dirty || apf.categoria?.touched)">Este campo es
+        obligatorio *.</span>
     </div>
   </div>
 
   <div class="row mb-3">
     <div class="col-md-6">
-      <label class="control-label" for="antiguedad">Antigüedad<span class="req">*</span>:</label>
+      <label class="control-label" for="antiguedad">Antigüedad:</label>
       <input id="antiguedad" class="form-control" formControlName="antiguedad" maxlength="50"
-             placeholder="Ingresa la antigüedad" trimmer>
-      <span class="campo-obligatorio" *ngIf="f.antiguedad?.errors?.required && (f.antiguedad?.dirty || f.antiguedad?.touched)">Campo 
-        obligatorio</span>
+        placeholder="Ingresa la antigüedad" alphanumericOnly trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.antiguedad?.errors?.required && (apf.antiguedad?.dirty || apf.antiguedad?.touched)">Este campo es
+        obligatorio *.</span>
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="correo">Correo electrónico<span class="req">*</span>:</label>
-      <input id="correo" class="form-control" formControlName="correo" maxlength="30"
-             placeholder="Ingresa el correo" trimmer>
-      <span class="campo-obligatorio" *ngIf="f.correo?.errors?.required && (f.correo?.dirty || f.correo?.touched)">Campo 
-        obligatorio</span>
+      <label class="control-label" for="correo">Correo electrónico:</label>
+      <input id="correo" class="form-control" formControlName="correo" maxlength="30" placeholder="Ingresa el correo"
+        trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.correo?.errors?.required && (apf.correo?.dirty || apf.correo?.touched)">Este campo es obligatorio
+        *.</span>
     </div>
   </div>
 
   <div class="row mb-3">
     <div class="col-md-6">
       <label class="control-label" for="puesto">Puesto<span class="req">*</span>:</label>
-      <input id="puesto" class="form-control" formControlName="puesto" maxlength="20"
-             placeholder="Ingresa el puesto" alphanumericOnly trimmer>
-      <span class="campo-obligatorio" *ngIf="f.puesto?.errors?.required && (f.puesto?.dirty || f.puesto?.touched)">Campo 
-        obligatorio</span>
+      <input id="puesto" class="form-control" formControlName="puesto" maxlength="20" placeholder="Ingresa el puesto"
+        lettersOnly trimmer>
+      <span class="campo-obligatorio"
+        *ngIf="apf.puesto?.errors?.required && (apf.puesto?.dirty || apf.puesto?.touched)">Este campo es obligatorio
+        *.</span>
     </div>
     <div class="col-md-6">
-      <label class="control-label" for="diasDescanso">Días de descanso<span class="req">*</span>:</label>
-      <p-calendar id="diasDescanso" formControlName="diasDescanso" styleClass="form-control"
-          [showIcon]="true" placeholder="Selecciona un día de descanso" dateFormat="dd/mm/yy">
+      <label class="control-label" for="diasDescanso">Días de descanso:</label>
+      <p-calendar id="diasDescanso" formControlName="diasDescanso" styleClass="form-control" [showIcon]="true"
+        placeholder="Selecciona un día de descanso" dateFormat="dd/mm/yy" selectionMode="multiple">
       </p-calendar>
-      <span class="campo-obligatorio" *ngIf="f.diasDescanso?.errors?.required && (f.diasDescanso?.dirty || f.diasDescanso?.touched)">Campo 
-        obligatorio</span>
+      <span class="campo-obligatorio"
+        *ngIf="apf.diasDescanso?.errors?.required && (apf.diasDescanso?.dirty || apf.diasDescanso?.touched)">Este campo
+        es obligatorio *.</span>
     </div>
   </div>
 
@@ -141,8 +176,8 @@
     <label class="control-label">Estatus<span class="req"><span class="req">*</span>:</span></label>
     <div class="contenedor-inputswitch">
       <p-inputSwitch formControlName="estatus"></p-inputSwitch>
-      <span class="activo" *ngIf="f.estatus?.value">Activo</span>
-      <span class="inactivo" *ngIf="!f.estatus?.value">Inactivo</span>
+      <span class="activo" *ngIf="apf.estatus?.value">Activo</span>
+      <span class="inactivo" *ngIf="!apf.estatus?.value">Inactivo</span>
     </div>
   </div>
 
@@ -151,11 +186,40 @@
       <span>*Campos obligatorios</span>
     </div>
   </div>
-  
+
   <div class="flex justify-content-end mb-6">
-    <button class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
-    <button class="ml-4 btn btn-primary btn-md" (click)="verDetalleGuardarPromotor()">
-      Aceptar
+    <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
+    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarGuardar()">
+      Guardar
     </button>
   </div>
 </form>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeModal}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Cancelar</button>
+      <button class="btn btn-primary btn-md" (click)="guardarPromotor()">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarModalPromotorDuplicado" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeModal}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalPromotorDuplicado = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

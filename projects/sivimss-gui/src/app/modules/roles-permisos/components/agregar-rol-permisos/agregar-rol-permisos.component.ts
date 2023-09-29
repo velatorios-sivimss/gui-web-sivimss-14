@@ -12,6 +12,7 @@ import {RolPermisosService} from '../../services/rol-permisos.service';
 import {Rol} from "../../models/rol.interface";
 import {Catalogo} from 'projects/sivimss-gui/src/app/models/catalogos.interface';
 import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 type NuevoRol = Omit<Rol, "idRol" >;
 
@@ -72,30 +73,30 @@ export class AgregarRolPermisosComponent implements OnInit {
   }
 
   agregarRolPermisos(): void {
-     this.funcionalidades.forEach(funcionalidad => {
+     this.funcionalidades.forEach((funcionalidad: Funcionalidad) => {
       this.permisos="";
-       this.permisos = funcionalidad.alta==true? this.permisos="1,":  this.permisos;
-       this.permisos = funcionalidad.baja==true? this.permisos+="2,":  this.permisos;
-       this.permisos = funcionalidad.consulta==true? this.permisos+="3,":  this.permisos;
-       this.permisos = funcionalidad.modificar==true? this.permisos+="4,":  this.permisos;
-       this.permisos = funcionalidad.aprobacion==true? this.permisos+="5,":  this.permisos;
-       this.permisos = funcionalidad.imprimir==true? this.permisos+="6":  this.permisos;
+       this.permisos = funcionalidad.alta ? "1," : this.permisos;
+       this.permisos += funcionalidad.baja ? "2," : this.permisos;
+       this.permisos += funcionalidad.consulta ? "3," : this.permisos;
+       this.permisos += funcionalidad.modificar ? "4," : this.permisos;
+       this.permisos += funcionalidad.aprobacion ? "5," : this.permisos;
+       this.permisos += funcionalidad.imprimir ? "6" : this.permisos;
       this.rolPermisos = {
           idRol: this.agregarRolForm.get("rol")?.value,
           idFuncionalidad:  funcionalidad.id,
           permisos: this.permisos
         }
        const solicitudRolPermisos = JSON.stringify(this.rolPermisos);
-        this.rolPermisosService.guardar( solicitudRolPermisos).subscribe(
-          () => {
+        this.rolPermisosService.guardar( solicitudRolPermisos).subscribe({
+          next: () => {
             this.alertaService.mostrar(TipoAlerta.Exito, 'Alta satisfactoria');
             this.router.navigate(["../"], { relativeTo: this.route });
           },
-          (error: HttpErrorResponse) => {
+          error: (error: HttpErrorResponse) => {
             this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
-            console.error("ERROR: ", error.message)
+            console.error("ERROR: ", error)
           }
-        );
+        });
       })
   }
 
@@ -200,15 +201,15 @@ export class AgregarRolPermisosComponent implements OnInit {
   }
 
   catalogoRoles(): void {
-    this.rolPermisosService.obtenerCatRoles().subscribe(
-      (respuesta) => {
-        this.catRol = respuesta!.datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
+    this.rolPermisosService.obtenerCatRoles().subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catRol = respuesta.datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   catalogoFuncionalidad(e: Event): void {
@@ -216,15 +217,15 @@ export class AgregarRolPermisosComponent implements OnInit {
       idRol: this.agregarRolForm.get("rol")?.value
     }
     const solicitudRolFuncionalidad = JSON.stringify(this.rolSeleccionado);
-    this.rolPermisosService.obtenerCatFuncionalidad(solicitudRolFuncionalidad).subscribe(
-      (respuesta) => {
-        this.catFuncionalidad = respuesta!.datos.map((funcionalidad: Catalogo) => ({label: funcionalidad.nombre, value: funcionalidad.id})) || [];
+    this.rolPermisosService.obtenerCatFuncionalidad(solicitudRolFuncionalidad).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catFuncionalidad = respuesta.datos.map((funcionalidad: Catalogo) => ({label: funcionalidad.nombre, value: funcionalidad.id})) || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   get f() {

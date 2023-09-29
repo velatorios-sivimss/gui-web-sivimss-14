@@ -141,7 +141,7 @@ export class SeguimientoNuevoConvenioComponent implements OnInit {
   }
 
   abrirCambioEstatus(servicio:SeguimientoNuevoConvenio){
-    this.router.navigate(['desactivar-convenio'], { relativeTo: this.activatedRoute });
+    void this.router.navigate(['desactivar-convenio'], { relativeTo: this.activatedRoute });
     /*Preguntar si se puede usar 'let'*/
       // let header:string = "" ;
       // servicio.estatus?header="Activar artículo":header="Desactivar artículo";

@@ -1,0 +1,150 @@
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../../"></app-btn-regresar>
+  <app-titulo-principal titulo="Facturación" class="col"></app-titulo-principal>
+</div>
+<div class="border-panel">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Velatorios:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
+                    placeholder="Seleccionar el velatorio">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="ods">Folio de ODS:</label>
+        <input id="ods" class="form-control" formControlName="ods"
+               placeholder="Ingresa el folio ODS" (blur)="limpiarFolios(1)">
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="folioConvenio">Folio de convenio:</label>
+        <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
+               placeholder="Ingresa el folio del convenio" (blur)="limpiarFolios(2)">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="numeroPermiso">Número de permiso:</label>
+        <input id="numeroPermiso" class="form-control" formControlName="numeroPermiso"
+               placeholder="Ingresa el número de permiso">
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="folioFactura">Folio de factura (SIVIMSS):</label>
+        <input id="folioFactura" class="form-control" formControlName="folioFactura"
+               placeholder="Ingresa el folio de la factura" numbersOnly>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="folioFiscal">Folio fiscal (SAT):</label>
+        <input id="folioFiscal" class="form-control" formControlName="folioFiscal"
+               placeholder="Ingresa el folio fiscal" [maxlength]="36">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="rfc">RFC:</label>
+        <input id="rfc" class="form-control" formControlName="rfc"
+               placeholder="Ingresa el RFC" [maxlength]="13">
+      </div>
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-6">
+            <label class="control-label" for="periodoInicio">Fecha inicio:</label>
+            <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
+                        (onSelect)="validarMismaFechaInicioFin()"
+                        [maxDate]="filtroForm.get('periodoFin')?.value || fechaAnterior">
+            </p-calendar>
+          </div>
+          <div class="col-md-6">
+            <label class="control-label" for="periodoFin">Fecha fin:</label>
+            <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
+                        placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
+                        (onSelect)="validarMismaFechaInicioFin()"
+                        [minDate]="filtroForm.get('elaboracionInicio')?.value" [maxDate]="fechaActual">
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">
+          Limpiar Filtros
+        </button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5">
+  <div class="flex justify-content-between align-items-center">
+    <h2 class="subtitulo">Registros</h2>
+    <button type="button" class="btn btn-primary btn-lg" [routerLink]="'./solicitar-factura'">Solicitar factura
+    </button>
+  </div>
+  <p-table styleClass="mt-5 mb-8" [value]="registros" [paginator]="registros.length > 0" [rows]="cantElementosPorPagina"
+           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn id="facturacion_velatorio">Velatorio</th>
+        <th pResizableColumn id="facturacion_folio">Folio de ODS/Folio de convenio/Número de permiso</th>
+        <th pResizableColumn id="facturacion_folio_factura">Folio de factura</th>
+        <th pResizableColumn id="facturacion_fecha_factura">Fecha de factura</th>
+        <th pResizableColumn id="facturacion_folio_fiscal">Folio fiscal</th>
+        <th pResizableColumn id="facturacion_rfc">RFC</th>
+        <th pResizableColumn id="facturacion_razon_social">Razón social</th>
+        <th pResizableColumn id="facturacion_estatus">Estatus</th>
+        <th id="facturacion_btns"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-registro>
+      <tr>
+        <td pResizableColumn>{{registro.velatorio}}</td>
+        <td pResizableColumn>{{registro.folio}}</td>
+        <td pResizableColumn>{{registro.folioFactura}}</td>
+        <td pResizableColumn>{{registro.fechaFactura | date:'dd-MM-YYYY'}}</td>
+        <td pResizableColumn>{{registro.folioFiscal}}</td>
+        <td pResizableColumn>{{registro.rfc}}</td>
+        <td pResizableColumn>{{registro.razonSocial}}</td>
+        <td pResizableColumn>{{registro.estatusFactura}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirPanel($event,registro)">
+              <img ngSrc="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales"
+                   height="19" width="22">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="9" class="p-2 text-center font-bold text-xl" id="facturacion_empty_message">
+          No se encontro información relacionada a tu búsqueda
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{registros.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+    </ng-template>
+  </p-table>
+</section>
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Ver factura" class="text-center" onCloseOnNavigation
+                                (click)="abrirModalDetalleFacturacion()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" [routerLink]="'./cancelar-factura'">
+      </app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>

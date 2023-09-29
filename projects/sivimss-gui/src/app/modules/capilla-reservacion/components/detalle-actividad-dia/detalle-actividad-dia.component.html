@@ -1,19 +1,23 @@
-<div class="flex justify-content-end mb-3">
+<div class="flex justify-content-between mb-3">
+  <div class="col-md-4">
+    <h2 class="subtitulo" style = "color:#E18F2D">{{detalleCapillas[0].nomCapilla}}</h2>
+  </div>
   <div class="col-md-3">
     <p class="text-right"> <span class="font-bold"> {{fechaSeleccionada}} </span></p>
   </div>
 </div>
+<ng-container *ngFor="let capilla of detalleCapillas">
   <p-accordion styleClass="sivimss-accordion">
     <p-accordionTab>
       <ng-template pTemplate="header">
         <div class="flex justify-content-end" style="width: 100%">
           <div class="col-md-2">
-            <span class="etiqueta-base">Entrada </span>
-            <b class="texto-base">10:30</b>
+            <span class="etiqueta-base">Entrada</span>
+            <b class="texto-base">{{capilla.registroEntrada}}</b>
           </div>
           <div class="col-md-2">
             <span class="etiqueta-base">Salida </span>
-            <b class="texto-base">14:23</b>
+            <b class="texto-base">{{capilla?.registroSalida}}</b>
           </div>
         </div>
       </ng-template>
@@ -23,21 +27,21 @@
             <div class="col-md-4">
               <div class="table-panel-column">
                 <label>Folio de la ODS</label>
-                <span>1234567890</span>
+                <span>{{capilla.folioOds}}</span>
               </div>
             </div>
 
             <div class="col-md-4">
               <div class="table-panel-column">
                 <label>Nombre del contratante</label>
-                <span>Alejandra Nuñez Juárez</span>
+                <span>{{capilla.nombreContratante}}</span>
               </div>
             </div>
 
             <div class="col-md-4">
               <div class="table-panel-column">
                 <label>Nombre del finado(a)</label>
-                <span>Ricardo Nuñez Perez</span>
+                <span>{{capilla.finado}}</span>
               </div>
             </div>
           </div>
@@ -45,13 +49,13 @@
             <div class="col-md-4">
               <div class="table-panel-column">
                 <label>Registro de entrada</label>
-                <span>10:30 </span>
+                <span>{{capilla.registroEntrada}}</span>
               </div>
             </div>
             <div class="col-md-4">
               <div class="table-panel-column">
                 <label>Registro de salida</label>
-                <span>14:23</span>
+                <span>{{capilla?.registroSalida}}</span>
               </div>
             </div>
           </div>
@@ -60,6 +64,9 @@
       </ng-template>
     </p-accordionTab>
   </p-accordion>
+
+</ng-container>
+
 
 <div class="flex justify-content-end">
   <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">

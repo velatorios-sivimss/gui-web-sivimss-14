@@ -8,7 +8,10 @@ export interface ConveniosPrevisionFunerariaInterface {
   factura?: string;
   importeConvenio?: number;
   estatus?: number;
-
+  estatusConvenio?: string;
+  estatusRenovacion?: number;
+  idConvenio?: number;
+  tipoPlan?: number;
   numeroConvenioAnterior?: number;
   nombre?: string;
   razonSocial?: string;
@@ -26,8 +29,6 @@ export interface ConveniosPrevisionFunerariaInterface {
   nExterior?: string;
   telefono?: number;
   correoElectronico?: string;
-
-
   promotor?: number;
   matricula?: string;
   primerApellido?: string;
@@ -38,4 +39,9 @@ export interface ConveniosPrevisionFunerariaInterface {
   descTipoPaquete?: string;
   beneficiario?: BeneficiarioInterface[],
   cantidadBeneficiarios?: number;
+}
+
+export interface ObtenerCatalogo {
+  idCatalogo?: number;
+  idConvenio?: number | null;
 }

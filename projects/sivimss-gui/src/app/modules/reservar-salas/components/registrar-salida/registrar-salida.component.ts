@@ -12,6 +12,7 @@ import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {SalidaSala} from "../../models/registro-sala.interface";
 import {ReservarSalasService} from "../../services/reservar-salas.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-registrar-salida',
@@ -30,19 +31,26 @@ export class RegistrarSalidaComponent implements OnInit {
 
   salaSeleccionada: SalaVelatorio = {};
 
+  fechaActual = new Date();
+
   constructor(
     private alertaService: AlertaService,
     private formBuilder: FormBuilder,
     private readonly loaderService: LoaderService,
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
-    private reservarSalasService:ReservarSalasService
+    private reservarSalasService:ReservarSalasService,
+    private mensajesSistemaService: MensajesSistemaService
   ) { }
 
   ngOnInit(): void {
     this.salaSeleccionada = this.config.data.sala;
     this.estadoSala = this.config.data.sala.estadoSala;
-    this.tipoSala = this.config.data.tipoSala;
+    if(this.config.data.sala.tipoSala){
+      this.tipoSala = this.config.data.sala.tipoSala;
+    }else{
+      this.tipoSala = this.config.data.tipoSala;
+    }
     this.inicializarFormRegistroSalida();
     this.confFormTipoSala(this.tipoSala);
   }
@@ -50,8 +58,8 @@ export class RegistrarSalidaComponent implements OnInit {
   inicializarFormRegistroSalida(): void {
     this.registroSalidaForm = this.formBuilder.group({
       nivelGas: [{value: null, disabled: false}, [Validators.required]],
-      fecha: [{value: null, disabled: false}, [Validators.required]],
-      hora: [{value: null, disabled: false}, [Validators.required]],
+      fecha: [{value: this.fechaActual, disabled: false}, [Validators.required]],
+      hora: [{value: this.fechaActual, disabled: false}, [Validators.required]],
     })
   }
 
@@ -83,22 +91,17 @@ export class RegistrarSalidaComponent implements OnInit {
     this.loaderService.activar();
     this.reservarSalasService.actualizar(this.datosGuardar()).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.ref.close(true);
       },
-      (error : HttpErrorResponse) => {
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        console.error("ERROR: ", error.message);
+      error: (error: HttpErrorResponse): void => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
       }
-    );
+    });
 
   }
 

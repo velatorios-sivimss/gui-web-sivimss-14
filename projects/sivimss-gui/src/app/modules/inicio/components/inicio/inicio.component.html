@@ -1,2 +1,13 @@
-<app-titulo-principal titulo="inicio"></app-titulo-principal>
-
+<div class="card">
+  <p-carousel [value]="anuncio" [numVisible]="1" [numScroll]="3" [circular]="true">
+    <ng-template let-anuncio pTemplate="item">
+      <div class="anuncio-item">
+        <div class="anuncio-item-content">
+          <div class="mb-3">
+            <img src="../../../assets/images/{{anuncio.image}}" class="w-7 shadow-2" alt="Slide de Anuncios"/>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>

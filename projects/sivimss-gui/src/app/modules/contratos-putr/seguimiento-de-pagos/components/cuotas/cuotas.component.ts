@@ -196,9 +196,8 @@ export class CuotasComponent implements OnInit {
     // TO DO En una aplicación real, realice una solicitud a una URL remota con la consulta y devuelva los resultados filtrados
     let filtrado: any[] = [];
     let query = event.query;
-    for (let i = 0; i < this.cuotasServicio.length; i++) {
-      let cuota = this.cuotasServicio[i];
-      if (cuota.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+    for (let cuota of  this.cuotasServicio) {
+      if (cuota.label.toLowerCase().indexOf(query.toLowerCase()) === 0) {
         filtrado.push(cuota);
       }
     }

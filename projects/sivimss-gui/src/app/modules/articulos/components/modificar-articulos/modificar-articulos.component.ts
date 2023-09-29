@@ -8,6 +8,7 @@ import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/a
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { Articulo, ConfirmacionServicio } from '../../models/articulos.interface';
 import { ArticulosService } from '../../services/articulos.service';
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 @Component({
   selector: 'app-modificar-articulos',
@@ -101,7 +102,7 @@ export class ModificarArticulosComponent implements OnInit {
       idCategoriaArticulo: this.fma.categoria.value,
       categoriaArticulo: this.catalogoCategorias.find((e: TipoDropdown) => e.value === this.fma.categoria.value)?.label,
       idTipoArticulo: this.fma.tipoArticulo.value,
-      tipoArticulo: this.catalogoTiposArticulos.find((e: TipoDropdown) => e.value === this.fma.tipoArticulo.value)?.label || '',
+      tipoArticulo: this.catalogoTiposArticulos.find((e: TipoDropdown) => e.value === this.fma.tipoArticulo.value)?.label ?? '',
       idTipoMaterial: this.fma.tipoMaterial.value,
       tipoMaterial: this.catalogoTiposMateriales.find((e: TipoDropdown) => e.value === this.fma.tipoMaterial.value)?.label,
       idTamanio: this.fma.tamanio.value,
@@ -115,11 +116,11 @@ export class ModificarArticulosComponent implements OnInit {
       alto: this.fma.alto.value,
       estatus: true,
       idPartPresupuestal: this.fma.partidaPresupuestal.value,
-      partPresupuestal: this.catalogoPartidasPresupuestales.find((e: TipoDropdown) => e.value === this.fma.partidaPresupuestal.value)?.label || '',
+      partPresupuestal: this.catalogoPartidasPresupuestales.find((e: TipoDropdown) => e.value === this.fma.partidaPresupuestal.value)?.label ?? '',
       idCuentaPartPresupuestal: this.fma.cuentaContable.value,
-      numCuentaPartPresupuestal: this.catalogoCuentasContables.find((e: TipoDropdown) => e.value === this.fma.cuentaContable.value)?.label || '',
+      numCuentaPartPresupuestal: this.catalogoCuentasContables.find((e: TipoDropdown) => e.value === this.fma.cuentaContable.value)?.label ?? '',
       idProductosServicios: this.fma.productoServicios.value,
-      productoServicios: this.catalogoClavesSat.find((e: TipoDropdown) => e.value === this.fma.productoServicios.value)?.label || '',
+      productoServicios: this.catalogoClavesSat.find((e: TipoDropdown) => e.value === this.fma.productoServicios.value)?.label ?? '',
     }
   }
 
@@ -144,17 +145,17 @@ export class ModificarArticulosComponent implements OnInit {
   }
 
   modificarArticulo() {
-    this.articulosService.actualizar(this.obtenerArticuloModificar()).subscribe(
-      (respuesta) => {
+    this.articulosService.actualizar(this.obtenerArticuloModificar()).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta) {
           this.ref.close(true);
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.error?.mensaje);
       }
-    );
+    });
   }
 
   obtenerArticuloModificar() {

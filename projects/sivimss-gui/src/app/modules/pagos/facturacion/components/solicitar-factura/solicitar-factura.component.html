@@ -1,0 +1,146 @@
+<app-titulo-principal titulo="Solicitar factura"></app-titulo-principal>
+<ng-container>
+  <form [formGroup]="solicitudForm" (reset)="limpiar()" (ngSubmit)="buscarDatosContratante()" #solicitudDirForm>
+    <div class="row mb-3 mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="tipoFactura">Tipo de factura<span class="req">*</span>:</label>
+        <p-dropdown id="tipoFactura" class="form-control" formControlName="tipoFactura" [options]="tiposFactura"
+                    placeholder="Selecciona el tipo de factura" (onChange)="obtenerFolios()">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pf?.tipoFactura?.errors?.required && (pf?.tipoFactura?.dirty || pf?.tipoFactura?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6" *ngIf="pf?.tipoFactura?.value">
+        <label class="control-label" for="folio">{{folio}}<span class="req">*</span>:</label>
+        <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="folios"
+                    placeholder="Selecciona el folio">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pf?.folio?.errors?.required && (pf?.folio?.dirty || pf?.folio?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="row" *ngIf="pf?.tipoFactura?.value">
+      <div class="col-md-12 flex justify-content-end mb-4">
+        <button type="reset" class="ml-4 btn btn-default btn-md" [disabled]="solicitudForm.pristine">Limpiar
+        </button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="solicitudForm.pristine">Buscar
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-container>
+<ng-container *ngIf="registroContratante">
+  <app-datos-contratante [nombreContratante]="registroContratante.nomContratante"
+                         [tipoFecha]="tipoSolicitud" [fecha]="registroContratante.fecOds"
+                         [fechaPago]="registroContratante.fecPago"
+                         [concepto]="registroContratante.concPago" [servicios]="registroContratante.servicios"
+                         [metodosPago]="registroContratante.metodosPago"
+                         [totalPagado]="registroContratante.totalPagado"
+                         [totalServicios]="registroContratante.totalServicios"></app-datos-contratante>
+  <div class="panel-busqueda mb-1">
+    <div class="row mb-3 mt-3 mr-3 ml-3">
+      <form [formGroup]="datosContratanteForm" #datosContratanteDirForm>
+        <div class="col-md-6">
+          <div class="grid">
+            <div class="col-9">
+              <label class="control-label" for="rfc">RFC del contratante<span
+                class="req">*</span>:</label>
+              <input id="rfc" class="form-control" formControlName="rfc"
+                     placeholder="Inserta el rfc">
+              <span class="campo-obligatorio"
+                    *ngIf="pr?.rfc?.errors?.required && (pr?.rfc?.dirty || pr?.rfc?.touched)">Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-3 mt-3">
+              <button type="submit" class="ml-4 btn btn-primary btn-md mt-5" (click)="buscarRFC()"
+                      [disabled]="!datosContratanteForm.get('rfc')?.value">Buscar
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="correoElectronico">Correo electrónico<span
+            class="req">*</span>:</label>
+          <input id="correoElectronico" class="form-control" formControlName="correoElectronico"
+                 placeholder="Inserta el correo">
+          <span class="campo-obligatorio"
+                *ngIf="pr?.correoElectronico?.errors?.required && (pr?.correoElectronico?.dirty || pr?.correoElectronico?.touched)">Este campo es obligatorio *.</span>
+        </div>
+      </form>
+    </div>
+    <div class="row mb-4 ml-3">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
+      </div>
+    </div>
+  </div>
+  <app-datos-receptor *ngIf="registroRFC"
+                      [nombreReceptor]="registroRFC.razonSocial"
+                      [tipoPersona]="registroRFC.tipoPersona"
+                      [regimenFiscal]="registroRFC.regimenFiscal"
+                      [domicilioFiscal]="'C.P. ' + registroRFC.domicilioFiscal.cp + ' ' + registroRFC.domicilioFiscal.calle
++ ' ' + registroRFC.domicilioFiscal.nexterior + ', ' + registroRFC.domicilioFiscal.dcolonia + ', ' + registroRFC.domicilioFiscal.dentFed">
+  </app-datos-receptor>
+</ng-container>
+<ng-container *ngIf="registroRFC">
+  <form [formGroup]="datosCFDIForm" #CFDIDirForm>
+    <div class="row mb-3 mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="cfdi">Uso del CFDI<span class="req">*</span>:</label>
+        <p-dropdown id="cfdi" class="form-control" formControlName="cfdi" [options]="cfdi"
+                    placeholder="Selecciona el uso del CFDI">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.cfdi?.errors?.required && (pcf?.cfdi?.dirty || pcf?.cfdi?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="metodoPago">Método de pago<span class="req">*</span>:</label>
+        <p-dropdown id="metodoPago" class="form-control" formControlName="metodoPago" [options]="metodosPago"
+                    placeholder="Ingresa el método de pago">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.metodoPago?.errors?.required && (pcf?.metodoPago?.dirty || pcf?.metodoPago?.touched)">Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-3">
+        <label class="control-label" for="formaPago">Forma de pago<span class="req">*</span>:</label>
+        <p-dropdown id="formaPago" class="form-control" formControlName="formaPago" [options]="formasPago"
+                    placeholder="Ingresa la forma de pago">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.formaPago?.errors?.required && (pcf?.formaPago?.dirty || pcf?.formaPago?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3 mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="observaciones1">Observaciones (automático)<span class="req">*</span>:</label>
+        <input id="observaciones1" class="form-control" formControlName="observaciones1"
+               placeholder="Observaciones">
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="observaciones2">Observaciones<span class="req">*</span>:</label>
+        <input id="observaciones2" class="form-control" formControlName="observaciones2"
+               placeholder="Ingresa las observaciones">
+        <span class="campo-obligatorio"
+              *ngIf="pcf?.observaciones2?.errors?.required && (pcf?.observaciones2?.dirty || pcf?.observaciones2?.touched)">Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 flex justify-content-end mb-4">
+        <button type="reset" class="ml-4 btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="datosCFDIForm.invalid" (click)="generarSolicitudFactura()">Generar
+          factura
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-container>
+<div class="mt-5"></div>

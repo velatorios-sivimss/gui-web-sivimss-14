@@ -1,27 +1,72 @@
 export interface Promotor {
-  id?: number;
-  numEmpleado?: string;
-  curp?: string;
   nombre?: string;
   primerApellido?: string;
   segundoApellido?: string;
-  fechaNacimiento?: string;
-  fechaIngreso?: string;
-  sueldoBase?: string;
   velatorio?: string;
-  categoria?: string;
   antiguedad?: string;
-  correo?: string;
-  puesto?: string;
   diasDescanso?: string;
   nombrePromotor?: string;
   descripcion?: string;
+  curp?: string;
+  nomPromotor?: string;
+  aPaterno?: string;
+  aMaterno?: string;
+  fecNac?: string;
+  idLugarNac?: number;
+  correo?: string;
+  numEmpleado?: string;
+  puesto?: string;
+  categoria?: string;
+  fecIngreso?: string;
+  fecBaja?: string;
+  sueldoBase?: number;
+  idVelatorio?: number;
+  idPromotor?: number;
   estatus?: boolean;
-  // costoInicial?: string;
-  // costoReferencia?: string;
-  // precio?: string;
-  // region?: string;
-  // clave?: string;
-  // servicios?: Servicio[];
-  // articulos?: Articulo[];
+  fecPromotorDiasDescanso?: string[];
+  promotorDiasDescanso?: DiasDescanso[];
+}
+
+export interface PromotoresBusqueda {
+  numEmpleado?: string;
+  primerApellido?: string;
+  velatorio?: string;
+  fecNac?: string;
+  categoria?: string;
+  segundoApellido?: string;
+  nombre?: string;
+  puesto?: string;
+  estatus: true,
+  diasDescanso?: number;
+  correo?: string;
+  fecIngreso?: string;
+  sueldoBase?: number;
+  fecBaja?: string;
+  idPromotor?: number;
+  curp?: string;
+  antiguedad?: string;
+}
+
+export interface BuscarPromotores {
+  idDelegacion?: number | null;
+  idVelatorio?: number | null;
+  nomPromotor?: string | null;
+}
+
+export interface CambiarEstatus {
+  idPromotor?: number;
+  estatus?: number;
+}
+
+export interface BuscarCatalogo {
+  idDelegacion?: number | null;
+  idVelatorio?: number | null;
+  nomPromotor?: string | null;
+  catalogo?: number | null;
+}
+
+export interface DiasDescanso {
+  id?: number | null;
+  fecDescanso?: string;
+  estatus?: number | null;
 }

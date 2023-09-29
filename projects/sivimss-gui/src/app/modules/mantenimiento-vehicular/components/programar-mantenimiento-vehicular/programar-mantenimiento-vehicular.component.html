@@ -1,121 +1,123 @@
-<app-titulo-principal titulo="Administración de artículos"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Programar Mantenimiento Vehicular" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm">
+  <form [formGroup]="filtroFormProgramarMantenimiento" (submit)="buscar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
-        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="niveles"
-                    placeholder="Seleccionar el nivel">
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+          placeholder="Seleccionar el nivel" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
-        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="velatorios"
-                    placeholder="Seleccionar delegación">
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+          placeholder="Seleccionar delegación" (onChange)="cargarVelatorios(); obtenerPlacas();" [filter]="true">
         </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
-                    placeholder="Seleccionar el velatorio">
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Seleccionar el velatorio" [filter]="true" (onChange)="obtenerPlacas();">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="placa">Placa:</label>
-        <input id="placa" class="form-control" formControlName="placa"
-               placeholder="Ingresa el articulo" (keyup)="consultaServicioEspecifico()">
+        <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
+          placeholder="Seleccionar vehículo" [filter]="true">
+        </p-dropdown>
       </div>
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" (click)="limpiar()" >Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5"
-        [disabled]="filtroForm.invalid">Buscar</button>
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar
+        </button>
       </div>
     </div>
   </form>
 </div>
 
-<section class="mt-5">
-  <div class="flex justify-content-between align-items-center">
-    <h2 class="subtitulo">Lista de artículos</h2>
+<section class="mt-5" *ngIf="vehiculos">
+  <div class="flex justify-content-between align-items-center" *appValidaRol="['MANTENIMIENTO_VEHICULAR','APROBACION']">
+    <h2 class="subtitulo">Vehículos</h2>
     <div>
-      <button type="button" class="btn btn-primary btn-lg btn-md" (click)="abrirMantenimientoPredictivo()">Mantenimiento predictivo</button>
-      <button type="button" class="btn btn-primary btn-lg btn-md ml-5" (click)="abrirReporteEncargado()">Reporte del encargado</button>
+      <button type="button" class="btn btn-primary btn-lg btn-md" [routerLink]="'./mantenimiento-predictivo'">
+        Mantenimiento predictivo
+      </button>
+      <button type="button" class="btn btn-primary btn-lg btn-md ml-5" [routerLink]="'./reporte-encargado'">
+        Reporte del encargado
+      </button>
     </div>
-
-
   </div>
 
-  <p-table styleClass="mt-5 mb-8" [value]="vehiculos" [paginator]="vehiculos.length > 0"
-           [rows]="cantElementosPorPagina"
-           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="paginar($event)">
-
+  <p-table styleClass="mt-5 mb-8" [value]="vehiculos" [paginator]="vehiculos.length > 0" [rows]="cantElementosPorPagina"
+    [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+    (onLazyLoad)="seleccionarPaginacion($event)" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky>
     <ng-template pTemplate="header">
       <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Vehiculo</th>
-        <th scope="col">Placas</th>
-        <th scope="col">Kilometraje</th>
-        <th scope="col">Tipo de mantenimiento</th>
-        <th scope="col">Modlidad</th>
-        <!-- <th scope="col">Fecha de mantenimiento</th> -->
-        <!-- <th scope="col">Modelo de artículo</th> -->
-        <th scope="col">Estatus</th>
-        <th scope="col"></th>
+        <th pResizableColumn id="columna_programar_mtto_id">ID</th>
+        <th pResizableColumn id="columna_programar_mtto_vehiculo">Vehículo</th>
+        <th pResizableColumn id="columna_programar_mtto_placas">Placas</th>
+        <th pResizableColumn id="columna_programar_mtto_kilometraje">Kilometraje</th>
+        <th pResizableColumn id="columna_programar_mtto_tipo">Tipo de Mantenimiento</th>
+        <th pResizableColumn id="columna_programar_mtto_modalidad">Modalidad</th>
+        <th pResizableColumn id="columna_programar_mtto_fecha">Fecha de Mantenimiento</th>
+        <th pResizableColumn id="columna_programar_mtto_costo">Costo de Mantenimiento</th>
+        <th id="columna_programar_mtto_estado">Estado de Mantenimiento</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-vehiculo>
       <tr>
-        <td> {{vehiculo.id}} </td>
-        <td> {{vehiculo.vehiculo}} </td>
-        <td> {{vehiculo.placas}} </td>
-        <td> {{vehiculo.kilometraje}} </td>
-        <td> {{vehiculo.tipoMantenimiento}} </td>
-        <td> {{vehiculo.fechaMantenimiento}} </td>
-        <!-- <td> {{vehiculo.estatusText}} </td> -->
-        <!-- <td> {{vehiculo.observaciones}} </td> -->
+        <td pResizableColumn> {{vehiculo.ID_MTTOVEHICULAR}} </td>
+        <td pResizableColumn> {{vehiculo.DES_MARCA}} {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</td>
+        <td pResizableColumn> {{vehiculo.DES_PLACAS}} </td>
+        <td pResizableColumn> {{vehiculo.NUM_KILOMETRAJE_REG}} </td>
+        <td pResizableColumn> {{vehiculo.DES_MTTO_TIPO}} </td>
+        <td pResizableColumn> {{vehiculo.DES_MODALIDAD}} </td>
+        <td pResizableColumn> {{vehiculo.FEC_REGISTRO_REG}} </td>
+        <td pResizableColumn> {{vehiculo.MON_COSTO_MTTO}} </td>
         <td>
-          <!-- <div class="contenedor-inputswitch"> -->
-            <span class="enTiempo" *ngIf="vehiculo.estatusNumber==1">{{vehiculo.estatusText}}</span>
-            <span class="cercano" *ngIf="vehiculo.estatusNumber==2">{{vehiculo.estatusText}}</span>
-            <span class="finalizado" *ngIf="vehiculo.estatusNumber==3">{{vehiculo.estatusText}}</span>
-            <span class="venceHoy" *ngIf="vehiculo.estatusNumber==4">{{vehiculo.estatusText}}</span>
-            <span class="activo" *ngIf="vehiculo.estatusNumber==5">{{vehiculo.estatusText}}</span>
-          <!-- </div> -->
-        </td>
-
-        <td>
-          <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetalleArticulo(vehiculo)">
-              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-            </a>
-            <a (click)="abrirPanel($event,vehiculo)">
-              <img
-                src="assets/images/imagen-icono-barras-horizontales.svg"
-                alt="icono barras horizontales">
-            </a>
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
+            <span [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</span>
+            <div class="contenedor-celda-iconos">
+              <a (click)="irADetalle(vehiculo)" *ngIf="vehiculo.ID_MTTOVEHICULAR">
+                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
+              </a>
+              <a *ngIf="!vehiculo.ID_MTTOVEHICULAR"></a>
+              <a (click)="abrirPanel($event,vehiculo)" *appValidaRol="['MANTENIMIENTO_VEHICULAR','ALTA']">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
+            </div>
           </div>
         </td>
       </tr>
     </ng-template>
-
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan=9 class="p-2 text-center font-bold text-xl" id="empty-message-mtto-vehicular" *ngIf="realizoBusqueda">
+          No se encontró información relacionada a tu búsqueda en programa mantenimiento vehicular
+        </th>
+      </tr>
+    </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
         <span class="total-elements"> {{vehiculos.length}} de {{totalElementos}} </span>
       </div>
     </ng-template>
-
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table">
+        <div class="export-table" *appValidaRol="['MANTENIMIENTO_VEHICULAR','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+              (click)="generarReporteTabla('pdf');">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+              (click)="generarReporteTabla('xls');">
           </div>
         </div>
       </div>
@@ -126,12 +128,88 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Verificar al inicio" (click)="abrirModalnuevaVerificacion()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Solicitud de mantenimiento,," (click)="abrirModalSolicitudMantenimiento()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificar()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Exportar PDF" (click)="abrirModalExportarPDF()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Exportar Excel" (click)="abrirModalExportarExcel()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Verificar al Inicio" (click)="abrirModalnuevaVerificacion()"
+      *ngIf="!vehiculoSeleccionado.ID_MTTOVERIFINICIO || cicloCompleto" onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Solicitud de mantenimiento" (click)="abrirModalSolicitudMantenimiento()"
+        *ngIf="!vehiculoSeleccionado.ID_MTTO_SOLICITUD || cicloCompleto" onCloseOnNavigation></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Registro de mantenimiento" (click)="abrirModalRegistroMantenimiento()"
+        *ngIf="!vehiculoSeleccionado.ID_MTTO_REGISTRO || cicloCompleto" onCloseOnNavigation></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-dialog header="Modificar" [(visible)]="modificarModal" *ngIf="vehiculoSeleccionado">
+  <div class="border-panel mb-4 w-440 bg-g">
+    <div class="row flex justify-content-center">
+      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
+      {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
+    </div>
+  </div>
+  <div class=" border-panel w-440">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia !== 'false'">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarVerificacion()">
+        Modificar verificación al inicio
+      </button>
+    </div>
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTO_SOLICITUD">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarSolicitud()">
+        Modificar solicitud de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTO_REGISTRO">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="abrirModalModificarRegistro()">
+        Modificar registro de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center"
+      *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
+      No existen solicitudes registradas previamente.
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Ver Detalle" [(visible)]="detalleModal" *ngIf="vehiculoSeleccionado">
+  <div class="border-panel mb-4 w-440 bg-g">
+    <div class="row flex justify-content-center">
+      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
+      {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
+    </div>
+  </div>
+  <div class=" border-panel w-440">
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.verificacionDia !== 'false'">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('verificacion')">
+        Ver detalle verificación al inicio
+      </button>
+    </div>
+    <div class="row flex justify-content-center mb-4" *ngIf="vehiculoSeleccionado.ID_MTTO_SOLICITUD">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('mtto')">
+        Ver detalle solicitud de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center" *ngIf="vehiculoSeleccionado.ID_MTTO_REGISTRO">
+      <button type="button" class="btn btn-primary btn-lg btn-md w-400" (click)="seleccionarDetalle('registroMtto')">
+        Ver detalle registro de mantenimiento
+      </button>
+    </div>
+    <div class="row flex justify-content-center"
+      *ngIf="vehiculoSeleccionado.verificacionDia === 'false' && !vehiculoSeleccionado.ID_MTTO_SOLICITUD && !vehiculoSeleccionado.ID_MTTO_REGISTRO ">
+      No existen solicitudes registradas previamente.
+    </div>
+  </div>
+</p-dialog>
+
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="" >
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -10,13 +10,15 @@ import { ActualizarContraseniaComponent } from 'projects/sivimss-gui/src/app/mod
 import { DialogModule } from "primeng/dialog";
 import { UtileriaModule } from "projects/sivimss-gui/src/app/shared/utileria/utileria.module";
 import { ModalRestablecerContraseniaComponent } from './components/modal-restablecer-contrasenia/modal-restablecer-contrasenia.component';
+import { RestablecerContraseniaComponent } from './components/restablecer-contrasenia/restablecer-contrasenia.component';
 
 @NgModule({
   declarations: [
     InicioSesionComponent,
     InicioAutenticacionComponent,
     ActualizarContraseniaComponent,
-    ModalRestablecerContraseniaComponent
+    ModalRestablecerContraseniaComponent,
+    RestablecerContraseniaComponent
   ],
   imports: [
     CommonModule,

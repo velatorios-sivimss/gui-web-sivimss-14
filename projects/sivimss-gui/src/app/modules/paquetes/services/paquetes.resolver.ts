@@ -3,7 +3,7 @@ import {
   ActivatedRouteSnapshot, Resolve,
   RouterStateSnapshot
 } from '@angular/router';
-import {forkJoin, Observable, of} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {PaquetesService} from './paquetes.service';
 
 @Injectable()

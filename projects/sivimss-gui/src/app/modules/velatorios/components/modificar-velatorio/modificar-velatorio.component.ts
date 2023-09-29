@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Velatorio} from "../../models/velatorio.interface";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -22,7 +22,7 @@ type VelatorioModificado =
   templateUrl: './modificar-velatorio.component.html',
   styleUrls: ['./modificar-velatorio.component.scss']
 })
-export class ModificarVelatorioComponent implements OnInit {
+export class ModificarVelatorioComponent {
 
   indice: number = 0;
   delegacion: number = 0;
@@ -43,9 +43,6 @@ export class ModificarVelatorioComponent implements OnInit {
               private cargadorService: LoaderService) {
     this.velatorioSeleccionado = this.config.data;
     this.inicializarFormVelatorio(this.velatorioSeleccionado)
-  }
-
-  ngOnInit(): void {
   }
 
   inicializarFormVelatorio(velatorio: Velatorio): void {
@@ -85,8 +82,8 @@ export class ModificarVelatorioComponent implements OnInit {
     this.cargadorService.activar();
     this.velatorioService.obtenerCP(cp)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
+      .subscribe({
+        next: (respuesta): void => {
           const {datos} = respuesta;
           if (carga) {
             this.colonias = datos.map((d: ValorCP) => ({value: d.idCodigoPostal, label: d.colonia}));
@@ -102,11 +99,11 @@ export class ModificarVelatorioComponent implements OnInit {
           this.velatorioForm.get("desColonia")?.patchValue("");
           this.velatorioForm.get("desColonia")?.enable()
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
           console.error("ERROR: ", error);
         }
-      );
+      });
   }
 
   limpiarCP(): void {
@@ -129,21 +126,21 @@ export class ModificarVelatorioComponent implements OnInit {
   modificarVelatorio(): void {
     const respuesta: RespuestaModalUsuario = {mensaje: "Actualización satisfactoria", actualizar: true};
     const velatorioModificado = this.crearVelatorioModificado();
-    this.velatorioService.actualizar(velatorioModificado).subscribe(
-      () => {
+    this.velatorioService.actualizar(velatorioModificado).subscribe({
+      next: () => {
         this.ref.close(respuesta);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
         console.error("ERROR: ", error)
       }
-    );
+    });
 
   }
 
   crearVelatorio(): Velatorio {
     const cpId = this.velatorioForm.get("desColonia")?.value;
-    const colonia: string = this.colonias.find(c => c.value === cpId)?.label || "";
+    const colonia: string = this.colonias.find(c => c.value === cpId)?.label ?? "";
     return {
       administrador: "",
       capillas: 0,

@@ -1,12 +1,12 @@
-import { AfterContentInit, Component, ContentChildren, OnInit, QueryList, TemplateRef } from '@angular/core';
-import { CustomTemplateDirective } from "../../../custom-template/directives/custom-template.directive";
+import {AfterContentInit, Component, ContentChildren, QueryList, TemplateRef} from '@angular/core';
+import {CustomTemplateDirective} from "../../../custom-template/directives/custom-template.directive";
 
 @Component({
   selector: 'app-table-panel',
   templateUrl: './table-panel.component.html',
   styleUrls: ['./table-panel.component.scss']
 })
-export class TablePanelComponent implements OnInit, AfterContentInit {
+export class TablePanelComponent implements AfterContentInit {
 
   @ContentChildren(CustomTemplateDirective) templates!: QueryList<any>;
 
@@ -16,11 +16,6 @@ export class TablePanelComponent implements OnInit, AfterContentInit {
 
   contentTemplate!: TemplateRef<any>;
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 
   ngAfterContentInit() {
     this.templates?.forEach((item) => {

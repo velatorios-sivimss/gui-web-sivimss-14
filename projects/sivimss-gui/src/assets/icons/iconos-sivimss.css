@@ -12,7 +12,7 @@
 
 .fs {
   /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'font-sivimss' !important;
+  font-family: 'font-sivimss', serif !important;
   speak: never;
   font-style: normal;
   font-weight: normal;

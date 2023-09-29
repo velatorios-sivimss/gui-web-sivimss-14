@@ -1,12 +1,9 @@
-// TODO: Regresar catalogos
-
 import { Injectable } from '@angular/core';
 import {
     ActivatedRouteSnapshot, Resolve,
     RouterStateSnapshot
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-// import { ArticulosService } from './articulos.service';
 import { SeguimientoNuevoConvenioService } from './seguimiento-nuevo-convenio.service';
 
 @Injectable()

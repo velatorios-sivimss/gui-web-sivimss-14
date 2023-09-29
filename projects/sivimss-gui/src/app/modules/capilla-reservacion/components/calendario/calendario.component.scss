@@ -1,9 +1,3 @@
-.circle{
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
 .calendar-label {
   color: #34c1ad;
   font-size: 0.75em;
@@ -13,13 +7,13 @@
 
 .tipoLetra {
   font-style: normal;
-  font-family: "Montserrat";
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
   font-weight: normal;
 }
 
 .tipoLetraN {
   font-style: normal;
-  font-family: "Montserrat";
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
   padding-right: 10px;
 }
 
@@ -35,4 +29,9 @@
 
 tr {
   max-width: 150px;
+}
+
+.col-absolute {
+  position: absolute;
+  left: 50%;
 }

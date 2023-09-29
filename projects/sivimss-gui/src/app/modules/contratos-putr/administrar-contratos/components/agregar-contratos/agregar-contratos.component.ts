@@ -8,7 +8,6 @@ import { OverlayPanel } from "primeng/overlaypanel";
 import { VerDetalleContratosComponent } from '../ver-detalle-contratos/ver-detalle-contratos.component';
 import { Contrato } from '../../models/contratos.interface';
 import { Accion } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { CURP, EMAIL } from 'projects/sivimss-gui/src/app/utils/regex';
 import { MENU_STEPPER } from '../../constants/menu-stepper';
 import { MenuItem } from 'primeng/api';
 

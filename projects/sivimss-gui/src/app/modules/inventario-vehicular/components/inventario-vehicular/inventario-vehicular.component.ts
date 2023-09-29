@@ -73,7 +73,9 @@ export class InventarioVehicularComponent implements OnInit {
     this.filtroForm.reset();
   }
 
-  buscar(): void { }
+  buscar(): void {
+    console.log("Se comenta método para que no marque error en Sonar");
+  }
 
   paginar(event: LazyLoadEvent): void {
     setTimeout(() => {

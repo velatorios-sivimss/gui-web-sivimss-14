@@ -1,0 +1,286 @@
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../../"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="ORDEN DE SUBROGACIÓN DE SERVICIOS"></app-titulo-principal>
+</div>
+
+<div class="col">
+  <span class="texto-base">Fideicomiso de Beneficios Sociales 46006</span>
+</div>
+
+<div class="col">
+  <span class="texto-base">C. Versalles #15, Juárez, Cuauhtémoc, 06600 Ciudad de México, CDMX</span>
+</div>
+
+<form [formGroup]="editForm">
+  <div class="border-panel mb-5">
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label class="control-label" for="version">Versión del documento<span class="req">*</span>:</label>
+        <input id="version" class="form-control" formControlName="version" placeholder="Ingresa la versión">
+        <span class="campo-obligatorio"
+          *ngIf="ef.version?.errors?.required && (ef.version?.dirty || ef.version?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="fecha">Fecha:</label>
+        <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
+          placeholder="Ingresa fecha"></p-calendar>
+        <span class="campo-obligatorio"
+          *ngIf="ef.fecha?.errors?.required && (ef.fecha?.dirty || ef.fecha?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="hora">Hora:</label>
+        <p-calendar id="hora" styleClass="form-control" formControlName="hora" placeholder="00:00" [timeOnly]="true">
+        </p-calendar>
+        <span class="campo-obligatorio" *ngIf="ef.hora?.errors?.required && (ef.hora?.dirty || ef.hora?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-panel mb-5">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label" for="delegacion">Delegación:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+          placeholder="Selecciona la delegación">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio">
+        </p-dropdown>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label" for="razonSocial">Nombre o razón social del subrogado (proveedor)<span
+            class="req">*</span>:</label>
+        <input id="razonSocial" class="form-control" formControlName="razonSocial"
+          placeholder="Ingresa nombre o razón social">
+        <span class="campo-obligatorio"
+          *ngIf="ef.razonSocial?.errors?.required && (ef.razonSocial?.dirty || ef.razonSocial?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="numOrden">No. Orden de servicio<span class="req">*</span>:</label>
+        <input id="numOrden" class="form-control" formControlName="numOrden"
+          placeholder="Ingresa nombre o razón social">
+        <span class="campo-obligatorio"
+          *ngIf="ef.numOrden?.errors?.required && (ef.numOrden?.dirty || ef.numOrden?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label" for="fechaOrden">Fecha:</label>
+        <input id="fechaOrden" class="form-control" formControlName="fechaOrden" placeholder="Ingresa la fecha">
+        <span class="campo-obligatorio"
+          *ngIf="ef.fechaOrden?.errors?.required && (ef.fechaOrden?.dirty || ef.fechaOrden?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-panel mb-5">
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <label class="control-label" for="nombreFinado">Nombre del finado<span class="req">*</span>:</label>
+        <input id="nombreFinado" class="form-control" formControlName="nombreFinado" placeholder="Ingresa la versión">
+        <span class="campo-obligatorio"
+          *ngIf="ef.nombreFinado?.errors?.required && (ef.nombreFinado?.dirty || ef.nombreFinado?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label class="control-label">Tipo de traslado<span class="req">*</span>:</label>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton id="tipoTrasladoOficial" name="tipoTraslado" value="true" formControlName="tipoTraslado"
+                inputId="oficial"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'tipoTraslado'">Oficial</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton id="tipoTrasladoParticular" name="tipoTraslado" value="false"
+                formControlName="tipoTraslado" inputId="particular"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'tipoTraslado'">Particular</label>
+            </div>
+          </div>
+          <span class="campo-obligatorio"
+            *ngIf="ef.tipoTraslado?.errors?.required && (ef.tipoTraslado?.dirty || ef.tipoTraslado?.touched)">Este
+            campo es obligatorio *.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-panel mb-5">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <h5>Servicios</h5>
+      </div>
+      <div class="col-md-6">
+        <h5>Especificaciones</h5>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <p-dropdown id="servicios" class="form-control" formControlName="servicios" [options]="catalogoServicios"
+          placeholder="Selecciona un servicio" *ngIf="!esModificacion">
+        </p-dropdown>
+        <input id="servicios" class="form-control" formControlName="servicios"
+          placeholder="Ingresa especificación" *ngIf="esModificacion">
+      </div>
+      <div class="col-md-6">
+        <input id="especificaciones" class="form-control" formControlName="especificaciones"
+          placeholder="Ingresa especificación">
+        <span class="campo-obligatorio"
+          *ngIf="ef.especificaciones?.errors?.required && (ef.especificaciones?.dirty || ef.especificaciones?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-panel mb-5">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label" for="lugarOrigen">Lugar origen<span class="req">*</span>:</label>
+        <input id="lugarOrigen" class="form-control" formControlName="lugarOrigen" placeholder="Ingresa lugar origen">
+        <span class="campo-obligatorio"
+          *ngIf="ef.lugarOrigen?.errors?.required && (ef.lugarOrigen?.dirty || ef.lugarOrigen?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="lugarDestino">Lugar destino<span class="req">*</span>:</label>
+        <input id="lugarDestino" class="form-control" formControlName="lugarDestino"
+          placeholder="Ingresa lugar destino">
+        <span class="campo-obligatorio"
+          *ngIf="ef.lugarDestino?.errors?.required && (ef.lugarDestino?.dirty || ef.lugarDestino?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label" for="distancia">Distancia (km)<span class="req">*</span>:</label>
+        <input id="distancia" class="form-control" formControlName="distancia" placeholder="Ingresa distancia">
+        <span class="campo-obligatorio"
+          *ngIf="ef.distancia?.errors?.required && (ef.distancia?.dirty || ef.distancia?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-panel mb-5">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label" for="nombreOperador">Nombre del operador que recibe la orden<span
+            class="req">*</span>:</label>
+        <input id="nombreOperador" class="form-control" formControlName="nombreOperador"
+          placeholder="Ingresa nombre del operador">
+        <span class="campo-obligatorio"
+          *ngIf="ef.nombreOperador?.errors?.required && (ef.nombreOperador?.dirty || ef.nombreOperador?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="version">Nombre del acompañante<span class="req">*</span>:</label>
+        <input id="nombreAcompanante" class="form-control" formControlName="nombreAcompanante"
+          placeholder="Ingresa nombre del acompañante">
+        <span class="campo-obligatorio"
+          *ngIf="ef.nombreAcompanante?.errors?.required && (ef.nombreAcompanante?.dirty || ef.nombreAcompanante?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label" for="numCarroza">No. de carroza<span class="req">*</span>:</label>
+        <input id="numCarroza" class="form-control" formControlName="numCarroza" placeholder="Ingresa número carroza">
+        <span class="campo-obligatorio"
+          *ngIf="ef.numCarroza?.errors?.required && (ef.numCarroza?.dirty || ef.numCarroza?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="numPlacas">No. de placas<span class="req">*</span>:</label>
+        <input id="numPlacas" class="form-control" formControlName="numPlacas" placeholder="Ingresa placas">
+        <span class="campo-obligatorio"
+          *ngIf="ef.numPlacas?.errors?.required && (ef.numPlacas?.dirty || ef.numPlacas?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label class="control-label" for="horaPartida">Hora de partida:</label>
+        <p-calendar id="horaPartida" styleClass="form-control" formControlName="horaPartida" placeholder="00:00"
+         [timeOnly]="true"></p-calendar>
+        <span class="campo-obligatorio"
+          *ngIf="ef.horaPartida?.errors?.required && (ef.horaPartida?.dirty || ef.horaPartida?.touched)">Campo
+          obligatorio</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="diaPartida">Día de partida:</label>
+        <p-calendar id="diaPartida" styleClass="form-control" formControlName="diaPartida" [showIcon]="true"
+          dateFormat="dd/mm/yy" placeholder="Ingresa fecha"></p-calendar>
+        <span class="campo-obligatorio"
+          *ngIf="ef.diaPartida?.errors?.required && (ef.diaPartida?.dirty || ef.diaPartida?.touched)">Campo
+          obligatorio</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-panel mb-5">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <h5>Firmas</h5>
+        <span class="etiqueta-base">Recibí de conformidad</span>
+      </div>
+    </div>
+
+    <div class="row mb-4 mc-8">
+      <div class="col-md-6">
+        <hr class="linea-firma mt-2">
+        <p class="mt-5 subtitulo-firma">Nombre</p>
+      </div>
+      <div class="col-md-6">
+        <hr class="linea-firma mt-2">
+        <p class="mt-5 subtitulo-firma">Firma</p>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <hr class="section-divider mt-2">
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <span class="etiqueta-base">Autorizo al administrador</span>
+      </div>
+    </div>
+
+    <div class="row mb-4 mc-8">
+      <div class="col-md-6">
+        <hr class="linea-firma mt-2">
+        <p class="mt-5 subtitulo-firma">Nombre</p>
+      </div>
+      <div class="col-md-6">
+        <hr class="linea-firma mt-2">
+        <p class="mt-5 subtitulo-firma">Firma</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-6 mb-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="reset" class="btn btn-gold btn-md" routerLink="../..">Cancelar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardarOrden()">Guardar</button>
+    </div>
+  </div>
+
+</form>

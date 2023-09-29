@@ -134,19 +134,19 @@ export class CapillasComponent implements OnInit {
   paginarPorFiltros(): void {
     const filtros = this.obtenerObjetoParaFiltrado();
     const solicitudFiltros = JSON.stringify(filtros);
-    this.capillaService.buscarPorFiltros2(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        this.capillas = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+    this.capillaService.buscarPorFiltros2(solicitudFiltros, this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta): void => {
+        this.capillas = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
         if (this.totalElementos == 0) {
           this.alertaService.mostrar(TipoAlerta.Error, 'No se encontró información relacionada a tu búsqueda.');
         }
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   abrirModalModificarCapilla(): void {
@@ -177,7 +177,6 @@ export class CapillasComponent implements OnInit {
     this.creacionRef.onClose.subscribe((estatus: boolean) => {
       if (estatus) {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Capilla agregada correctamente');
-        // this.paginar();
       }
     })
   }

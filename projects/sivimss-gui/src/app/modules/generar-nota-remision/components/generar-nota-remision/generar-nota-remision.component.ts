@@ -1,47 +1,61 @@
-
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { LazyLoadEvent } from 'primeng/api';
-import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
-import { mapearArregloTipoDropdown, validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { ClavesEstatus, NotaRemision } from '../../models/nota-remision.interface';
-import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpErrorResponse} from '@angular/common/http';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {LazyLoadEvent} from 'primeng/api';
+import {SERVICIO_BREADCRUMB} from '../../constants/breadcrumb';
+import {
+  mapearArregloTipoDropdown,
+  obtenerDelegacionUsuarioLogueado,
+  obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
+} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {BusquedaFiltro, ClavesEstatus, GenerarReporte, NotaRemision} from '../../models/nota-remision.interface';
+import {GenerarNotaRemisionService} from '../../services/generar-nota-remision.service';
 import * as moment from "moment/moment";
+import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {finalize} from 'rxjs';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
 @Component({
   selector: 'app-generar-nota-remision',
   templateUrl: './generar-nota-remision.component.html',
   styleUrls: ['./generar-nota-remision.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class GenerarNotaRemisionComponent implements OnInit {
   readonly POSICION_NIVELES: number = 0;
   readonly POSICION_DELEGACIONES: number = 1;
-  readonly POSICION_VELATORIOS: number = 2;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
+  @ViewChild(FormGroupDirective)
+  private filtroFormDir!: FormGroupDirective;
+
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  paginacionConFiltrado: boolean = false;
 
   notasRemision: NotaRemision[] = [];
-  notaRemisionSeleccionada: NotaRemision = {};
+  notaRemisionSeleccionada!: NotaRemision;
   filtroForm!: FormGroup;
   creacionRef!: DynamicDialogRef;
   detalleRef!: DynamicDialogRef;
   modificacionRef!: DynamicDialogRef;
   hayCamposObligatorios: boolean = false;
-
+  fechaActual: Date = new Date();
   catalogoNiveles: TipoDropdown[] = [];
   catalogoDelegaciones: TipoDropdown[] = [];
   catalogoVelatorios: TipoDropdown[] = [];
@@ -52,6 +66,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
     3: 'Cancelada',
   };
 
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
+  mostrarModalDescargaExitosa: boolean = false;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
+
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -61,13 +80,15 @@ export class GenerarNotaRemisionComponent implements OnInit {
     private generarNotaRemisionService: GenerarNotaRemisionService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-  ) { }
-
+    private descargaArchivosService: DescargaArchivosService,
+    private readonly cargadorService: LoaderService,
+    private mensajesSistemaService: MensajesSistemaService
+  ) {
+  }
 
   ngOnInit(): void {
     this.actualizarBreadcrumb();
     this.inicializarFiltroForm();
-    this.obtenerFoliosGenerados();
     this.cargarCatalogos();
   }
 
@@ -75,184 +96,196 @@ export class GenerarNotaRemisionComponent implements OnInit {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
+    const delegacion = this.filtroForm.get('delegacion')?.value;
+    if (delegacion) this.obtenerVelatorios();
+    this.obtenerFoliosGenerados();
   }
 
   actualizarBreadcrumb(): void {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
   }
 
-  inicializarFiltroForm() {
+  inicializarFiltroForm(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: 1, disabled: true }],
-      delegacion: [{ value: null, disabled: false }],
-      velatorio: [{ value: null, disabled: false }],
-      folio: [{ value: null, disabled: false }],
-      nombreContratante: [{ value: null, disabled: false }],
-      fechaInicial: [{ value: null, disabled: false }],
-      fechaFinal: [{ value: null, disabled: false }],
+      nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
+      delegacion: [{value: obtenerDelegacionUsuarioLogueado(usuario), disabled: +this.rolLocalStorage.idOficina >= 2}],
+      velatorio: [{value: obtenerVelatorioUsuarioLogueado(usuario), disabled: +this.rolLocalStorage.idOficina === 3}],
+      folio: [{value: null, disabled: false}],
+      fechaInicial: [{value: null, disabled: false}],
+      fechaFinal: [{value: null, disabled: false}],
     });
   }
 
   generarNotaRemision(): void {
-    this.router.navigate([`formato/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
   }
 
   verDetalleNotaRemision(): void {
-    this.router.navigate([`detalle-formato/1/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`detalle-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
   }
 
   cancelarNotaRemision(): void {
-    this.router.navigate([`cancelar-formato/1/${this.notaRemisionSeleccionada.id}`], { relativeTo: this.activatedRoute });
+    void this.router.navigate([`cancelar-formato/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
   }
 
   abrirPanel(event: MouseEvent, notaRemisionSeleccionada: NotaRemision): void {
+    console.log(notaRemisionSeleccionada)
     this.notaRemisionSeleccionada = notaRemisionSeleccionada;
     this.overlayPanel.toggle(event);
   }
 
-  paginar(event?: LazyLoadEvent): void {
-    if (event && event.first !== undefined && event.rows !== undefined) {
-      this.numPaginaActual = Math.floor(event.first / event.rows);
-    } else {
-      this.numPaginaActual = 0;
+  seleccionarPaginacion(event?: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     }
-    this.generarNotaRemisionService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        this.notasRemision = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
-      },
-      (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    );
+    if (this.paginacionConFiltrado) {
+      this.paginarConFiltros();
+    } else {
+      this.paginar();
+    }
   }
 
-  buscarFoliosNotaRemision() {
-    let camposObligatorios = {
-      folio: this.f.folio.value,
-      fechaInicial: this.f.fechaInicial.value,
-      fechaFinal: this.f.fechaFinal.value,
+  paginar(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const filtros = {
+      nivel: obtenerNivelUsuarioLogueado(usuario),
+      velatorio: obtenerVelatorioUsuarioLogueado(usuario),
+      delegacion: obtenerDelegacionUsuarioLogueado(usuario)
     };
-    this.hayCamposObligatorios = false;
-    if (validarAlMenosUnCampoConValor(camposObligatorios) && this.filtroForm.valid) {
-      this.numPaginaActual = 0;
-      this.buscarPorFiltros();
-    } else {
-      this.f.folio.setValidators(Validators.required);
-      this.f.folio.updateValueAndValidity();
-      this.f.fechaInicial.setValidators(Validators.required);
-      this.f.fechaInicial.updateValueAndValidity();
-      this.f.fechaFinal.setValidators(Validators.required);
-      this.f.fechaFinal.updateValueAndValidity();
-      this.filtroForm.markAllAsTouched();
-      this.hayCamposObligatorios = true;
-    }
-  }
-
-  buscarPorFiltros(): void {
-    this.generarNotaRemisionService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        if (respuesta!.datos.content.length === 0) {
-          this.notasRemision = [];
-          this.totalElementos = 0;
-          this.alertaService.mostrar(TipoAlerta.Precaucion, 'No se encontró información relacionada a tu búsqueda.');
-        } else {
-          this.notasRemision = respuesta!.datos.content;
-          this.totalElementos = respuesta!.datos.totalElements;
-        }
+    this.generarNotaRemisionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.notasRemision = respuesta.datos?.content ?? [];
+        this.totalElementos = respuesta.datos?.totalElements ?? 0;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        this.mensajesSistemaService.mostrarMensajeError(error);
       }
-    );
+    });
   }
 
-  obtenerObjetoParaFiltrado(): object {
+  buscar(): void {
+    this.numPaginaActual = 0;
+    this.paginacionConFiltrado = true;
+    this.paginarConFiltros();
+  }
+
+  paginarConFiltros(): void {
+    this.cargadorService.activar();
+    const filtros: BusquedaFiltro = this.obtenerObjetoParaFiltrado()
+    this.generarNotaRemisionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.notasRemision = respuesta.datos?.content ?? [];
+        this.totalElementos = respuesta.datos?.totalElements ?? 0;
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
+
+  obtenerObjetoParaFiltrado(): BusquedaFiltro {
+    let fechaInicial = this.filtroForm.get('fechaInicial')?.value;
+    if (fechaInicial) fechaInicial = moment(this.f.fechaInicial.value).format('DD/MM/YYYY');
+    let fechaFinal = this.filtroForm.get('fechaFinal')?.value;
+    if (fechaFinal) fechaFinal = moment(this.f.fechaFinal.value).format('DD/MM/YYYY');
     return {
-      idNivel: +this.f.nivel.value,
-      idDelegacion: +this.f.delegacion.value,
-      idVelatorio: +this.f.velatorio.value,
-      folioODS: +this.f.folio.value?.label,
-      fecIniODS: this.f.fechaInicial.value ? moment(this.f.fechaInicial.value).format('DD/MM/YYYY') : null,
-      fecFinODS: this.f.fechaFinal.value ? moment(this.f.fechaFinal.value).format('DD/MM/YYYY') : null,
+      idNivel: this.filtroForm.get('nivel')?.value,
+      idDelegacion: this.filtroForm.get('delegacion')?.value,
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      folioODS: this.filtroForm.get('folio')?.value,
+      fecIniODS: fechaInicial,
+      fecFinODS: fechaFinal,
     }
   }
-
 
   limpiar(): void {
-    this.alertaService.limpiar();
-    this.filtroForm.reset();
-    this.f.nivel.setValue(1);
+    this.paginacionConFiltrado = false;
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
+    this.catalogoVelatorios = [];
+    this.foliosGenerados = [];
+    this.filtroFormDir.resetForm({
+      nivel: obtenerNivelUsuarioLogueado(usuario),
+      velatorio: obtenerVelatorioUsuarioLogueado(usuario),
+      delegacion
+    });
+    this.numPaginaActual = 0;
+    this.seleccionarDelegacion();
     this.paginar();
   }
 
-  fechasOpcionales() {
-    this.f.fechaInicial.clearValidators();
-    this.f.fechaInicial.updateValueAndValidity();
-    this.f.fechaFinal.clearValidators();
-    this.f.fechaFinal.updateValueAndValidity();
-    this.hayCamposObligatorios = false;
+  obtenerFoliosGenerados(): void {
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    const idVelatorio = this.filtroForm.get('velatorio')?.value;
+    this.generarNotaRemisionService.buscarTodasOdsGeneradas(idDelegacion, idVelatorio).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.foliosGenerados = mapearArregloTipoDropdown(respuesta.datos, "nombre", "nombre");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
   }
 
-  folioOpcional() {
-    if (this.f.fechaInicial.value && this.f.fechaFinal.value) {
-      this.f.folio.clearValidators();
-      this.f.folio.updateValueAndValidity();
-      this.hayCamposObligatorios = false;
+  obtenerVelatorios(): void {
+    this.foliosGenerados = [];
+    const delegacion = this.filtroForm.get('delegacion')?.value;
+    this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error("ERROR: ", error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
+
+  seleccionarDelegacion(): void {
+    this.obtenerVelatorios();
+    this.obtenerFoliosGenerados();
+  }
+
+  generarReporteNotaRemision(tipoReporte: string): void {
+    const configuracionArchivo: OpcionesArchivos = {};
+    if (tipoReporte == "xls") {
+      configuracionArchivo.ext = "xlsx"
     }
 
-    if (!this.f.fechaInicial.value || !this.f.fechaFinal.value) {
-      this.f.fechaInicial.setValidators(Validators.required);
-      this.f.fechaInicial.updateValueAndValidity();
-      this.f.fechaFinal.setValidators(Validators.required);
-      this.f.fechaFinal.updateValueAndValidity();
-      this.filtroForm.markAllAsTouched();
-      this.hayCamposObligatorios = true;
+    this.cargadorService.activar();
+    const busqueda: GenerarReporte = this.filtrosArchivos(tipoReporte);
+    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any): void => {
+        console.log(respuesta);
+        this.mostrarModalDescargaExitosa = true;
+      },
+      error: (error: HttpErrorResponse): void => {
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
+
+  filtrosArchivos(tipoReporte: string): GenerarReporte {
+    return {
+      idNota: this.notaRemisionSeleccionada.idNota,
+      idOrden: this.notaRemisionSeleccionada.id,
+      tipoReporte,
     }
-  }
-
-  obtenerFoliosGenerados() {
-    this.generarNotaRemisionService.buscarTodasOdsGeneradas().subscribe(
-      (respuesta) => {
-        let filtrado: TipoDropdown[] = [];
-        if (respuesta!.datos.length > 0) {
-          respuesta!.datos.forEach((e: any) => {
-            filtrado.push({
-              label: e.nombre,
-              value: e.id,
-            });
-          });
-          this.foliosGenerados = filtrado;
-        } else {
-          this.foliosGenerados = [];
-        }
-      },
-      (error: HttpErrorResponse) => {
-        console.error(error);
-      }
-    );
-  }
-
-  obtenerVelatorios() {
-    this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe(
-      (respuesta) => {
-        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta!.datos, "desc", "id");
-      },
-      (error: HttpErrorResponse) => {
-        console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
-      }
-    );
-  }
-
-  descargarDocumento(tipoDocumento: string) {
-
   }
 
   get f() {
     return this.filtroForm?.controls;
   }
+
 
 }

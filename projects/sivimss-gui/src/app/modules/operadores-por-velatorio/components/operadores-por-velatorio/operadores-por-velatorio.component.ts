@@ -10,7 +10,6 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {CATALOGOS_DUMMIES} from "../../../servicios/constants/dummies";
 import {OperadoresPorVelatorio} from "../../models/operadores-por-velatorio.interface";
 import {LazyLoadEvent} from "primeng/api";
-import {Rol} from "../../../roles/models/rol.interface";
 import {
   AgregarOperadoresPorVelatorioComponent
 } from "../agregar-operadores-por-velatorio/agregar-operadores-por-velatorio.component";
@@ -229,7 +228,7 @@ export class OperadoresPorVelatorioComponent implements OnInit {
 
   devolverAntiguedad(meses:number): string {
     let descripcionMeses: string = "";
-    let descripcionAnios: String = "";
+    let descripcionAnios: string = "";
     let numAnio:number;
     if(meses < 12){
         meses>1?descripcionMeses="meses":descripcionMeses="mes";

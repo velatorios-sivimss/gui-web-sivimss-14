@@ -22,6 +22,7 @@ export class AlertaService {
  * @param fijo Si este valor es true la alerta no desaparecera hasta que presiones la X.
  */
   mostrar(tipo: TipoAlerta, mensaje: string, fijo?: boolean) {
+    this.limpiar();
     let severity = '';
     switch (tipo) {
       case TipoAlerta.Exito: severity = 'success'; break;
@@ -38,6 +39,19 @@ export class AlertaService {
    */
   limpiar() {
     this.messageService.clear();
+  }
+
+
+  mostrarMultiple(tipo: TipoAlerta, mensaje: string, fijo?: boolean) {
+    let severity: string = '';
+    switch (tipo) {
+      case TipoAlerta.Exito: severity = 'success'; break;
+      case TipoAlerta.Info: severity = 'info'; break;
+      case TipoAlerta.Precaucion: severity = 'warn'; break;
+      case TipoAlerta.Error: severity = 'error'; break;
+      default: severity = 'info'; break;
+    }
+    this.messageService.add({ severity, detail: mensaje, sticky: !!fijo });
   }
 
 }

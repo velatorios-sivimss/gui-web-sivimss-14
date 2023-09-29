@@ -1,0 +1,197 @@
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" (click)="regresar();"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="HOJA DE CONSIGNACIÓN"></app-titulo-principal>
+</div>
+
+
+<div class="border-panel" *ngIf="vistaBusqueda">
+  <form [formGroup]="filtroForm">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+          placeholder="Selecciona el nivel" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
+        <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+          placeholder="Selecciona la delegación" (onChange)="cargarVelatorios()" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio" [filter]="true" (onChange)="cargarProveedores()">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="proveedor">Proveedor<span class="req">*</span>:</label>
+        <p-dropdown id="proveedor" class="form-control" formControlName="proveedor" [options]="catalogoProveedores"
+          placeholder="Selecciona el proveedor" [filter]="true">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="fecInicio">Fecha inicial<span class="req">*</span>:</label>
+        <p-calendar styleClass="form-control" id="fecInicio" formControlName="fecInicio" [showIcon]="true"
+          dateFormat="dd/mm/yy" placeholder="Fecha inicial"></p-calendar>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="fecFin">Fecha final<span class="req">*</span>:</label>
+        <p-calendar styleClass="form-control" id="fecFin" formControlName="fecFin" [showIcon]="true"
+          dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="hoy"></p-calendar>
+      </div>
+    </div>
+
+    <div class="row mt-6" *appValidaRol="['GENERAR_HOJA_CONSIGNACION','CONSULTA']">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar();">Limpiar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar();">Buscar</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="!vistaBusqueda">
+  <div class="col text-center">
+    <span class="texto-base">Fideicomiso de Beneficios Sociales 46006</span>
+  </div>
+
+  <div class="col text-center">
+    <span class="texto-base">C. Versalles #15, Juárez, Cuauhtémoc, 06600 Ciudad de México, CDMX</span>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="background-group">
+        <div class="col-md-3">
+          <div class="table-panel-column">
+            <span>Folio</span>
+            <label>{{folio === '' ? 'Por asignar' : folio}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-5">
+          <div class="table-panel-column">
+            <span>Delegación</span>
+            <label>{{delegacionSeleccionada}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <span>Velatorio</span>
+            <label>{{velatorioSeleccionado}}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="background-group">
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <span>Fecha</span>
+            <label>{{fechaActual}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <span>Hora</span>
+            <label>{{horaActual}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <span>Versión</span>
+            <label>1.0.0</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-panel mt-6">
+    <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8 table-custom-proveedor" [value]="articulos"
+      [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+      [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [resizableColumns]="true"
+      [columnResizeMode]="'expand'">
+      <ng-template pTemplate="header">
+        <tr class="header-custom-proveedor">
+          <th pResizableColumn scope="col">Proveedor</th>
+          <th pResizableColumn scope="col">Fecha ODS</th>
+          <th pResizableColumn scope="col">Folio ODS</th>
+          <th pResizableColumn scope="col">Categoría</th>
+          <th pResizableColumn scope="col">Folio único del artículo</th>
+          <th pResizableColumn scope="col">Paquete</th>
+          <th pResizableColumn scope="col">Costo</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-articulo>
+        <tr>
+          <td pResizableColumn> {{articulo.proveedor}}</td>
+          <td pResizableColumn> {{articulo.fecOds}}</td>
+          <td pResizableColumn> {{articulo.folioOds}}</td>
+          <td pResizableColumn> {{articulo.categoria}}</td>
+          <td pResizableColumn> {{articulo.folioOde}}</td>
+          <td pResizableColumn> {{articulo.paquete}}</td>
+          <td pResizableColumn> {{articulo.costoConIva}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div class="totales">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="table-panel-column">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="table-panel-column">
+            <span class="flex justify-content-end">Total, de artículos:</span>
+            <label class="flex justify-content-end">{{totalArticulo}}</label>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="table-panel-column">
+            <span class="flex justify-content-end">Total, costo:</span>
+            <label class="flex justify-content-end">{{totalCosto}}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="flex justify-content-end mt-6 mb-6">
+    <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="!hojaGenerada"
+      [disabled]="mode !== 'create' || articulos.length === 0" (click)="guardar();">
+      Guardar
+    </button>
+    <button type="button" class="ml-4 btn btn-primary btn-md" *ngIf="hojaGenerada || mode === 'detail'"
+      (click)="vistaPrevia();">
+      Vista previa
+    </button>
+  </div>
+
+</div>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

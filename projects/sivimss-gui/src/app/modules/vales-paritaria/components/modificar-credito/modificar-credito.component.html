@@ -1,0 +1,142 @@
+<app-titulo-principal titulo="Actualizar credito"></app-titulo-principal>
+<div class="border-panel mb-8">
+    <form [formGroup]="actualizarCreditoForm">
+        <h2 class="subtitulo-base">Datos generales del trabajador</h2>
+        <div class="row mb-2">
+            <div class="col-md-4">
+            <label class="control-label" for="matricula">Matrícula</label>
+            <input id="matricula" type="text" class="form-control" formControlName="matricula"
+                    placeholder="Ingresa matrícula">
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="nombre">Nombre trabajador</label>
+                <input id="nombre" type="text" class="form-control" formControlName="nombre">
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="delegacion">Delegación</label>
+                <input id="delegacion" type="text" class="form-control" formControlName="delegacion">
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <label class="control-label" for="capacidad">Capacidad crédito:</label>
+                <input id="capacidad" class="form-control" formControlName="capacidad" placeholder="Ingresa capacidad de credito">
+            <span class="campo-obligatorio" *ngIf="f.capacidad?.errors?.required && (f.capacidad?.dirty || f.capacidad?.touched)">Campo
+            obligatorio</span>
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="importe">Importe autorizado:</label>
+                <input id="importe" class="form-control" formControlName="importe" numbersOnly maxlength="10">
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="formaRecuperacion">Forma recuperación:</label>
+                <p-dropdown id="formaRecuperacion" class="form-control" formControlName="formaRecuperacion" [options]="formaRecuperacion"
+                placeholder="Selecciona forma de recuperación">
+            </p-dropdown>
+            </div>
+            <div class="col-md-3">
+                <label class="control-label" for="quincenaMes">Qna./ Mes de recuperación:</label>
+                <input id="quincenaMes" class="form-control" formControlName="quincenaMes"
+                    placeholder="Ingresa quicena o mes de recuperación">
+                    <span class="campo-obligatorio" *ngIf="f.quincenaMes?.errors?.required && (f.quincenaMes?.dirty || f.quincenaMes?.touched)">Campo
+                            obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label class="control-label" for="importeDesc">Importe Descuent</label>
+                <input id="importeDesc" type="text" class="form-control" formControlName="importeDesc"
+                    placeholder="Ingresa importe de descuento">
+                <span class="campo-obligatorio"
+                    *ngIf="f.importeDesc?.errors?.required && (f.importeDesc?.dirty || f.importeDesc?.touched)">Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="numCredito">Número crédito</label>
+                <input id="numCredito" type="text" class="form-control" formControlName="numCredito" placeholder="Ingresa numCredito">
+                <span class="campo-obligatorio"
+                        *ngIf="f.numCredito?.errors?.required && (f.numCredito?.dirty || f.numCredito?.touched)">Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="numFolio">Número folio</label>
+                <input id="numFolio" type="text" class="form-control" formControlName="numFolio" placeholder="Ingresa numFolio">
+                <span class="campo-obligatorio"
+                        *ngIf="f.numFolio?.errors?.required && (f.numFolio?.dirty || f.numFolio?.touched)">Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label class="control-label" for="estatusCredi">Estatus crédito</label>
+                <input id="estatusCredi" type="text" class="form-control" formControlName="estatusCredi">
+                <span class="campo-obligatorio"
+                    *ngIf="f.estatusCredi?.errors?.required && (f.estatusCredi?.dirty || f.estatusCredi?.touched)">Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="fcertificacion">fecha certificación</label>
+                    <p-calendar id="fcertificacion" formControlName="fcertificacion" styleClass="form-control"
+                        [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+                    </p-calendar>
+                    <span class="campo-obligatorio"
+                        *ngIf="f?.fcertificacion?.errors?.required && (f?.fcertificacion?.dirty || f?.fcertificacion?.touched)">Campo
+                        obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="proveedor">Proveedor</label>
+                <input id="proveedor" type="text" class="form-control" formControlName="proveedor">
+                <span class="campo-obligatorio"
+                    *ngIf="f.proveedor?.errors?.required && (f.proveedor?.dirty || f.proveedor?.touched)">Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label class="control-label" for="velatoriosFibeso">Velatorio fibeso<span class="req">*</span>:</label>
+                <input id="velatoriosFibeso" type="text" class="form-control" formControlName="velatoriosFibeso">
+                <span class="campo-obligatorio"
+                    *ngIf="f.velatoriosFibeso?.errors?.required && (f.velatoriosFibeso?.dirty || f.velatoriosFibeso?.touched)">Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="importeEjerc">Importe ejercido<span class="req">*</span>:</label>
+                <input id="importeEjerc" type="text" class="form-control" formControlName="importeEjerc">
+                <span class="campo-obligatorio"
+                    *ngIf="f.importeEjerc?.errors?.required && (f.importeEjerc?.dirty || f.importeEjerc?.touched)">Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="importeLetra">Importe Letra<span class="req">*</span>:</label>
+                <input id="importeLetra" type="text" class="form-control" formControlName="importeLetra">
+                <span class="campo-obligatorio"
+                    *ngIf="f.importeLetra?.errors?.required && (f.importeLetra?.dirty || f.importeLetra?.touched)">Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label class="control-label" for="respUnidad">Responsable unidad<span class="req">*</span>:</label>
+                <input id="respUnidad" type="text" class="form-control" formControlName="respUnidad">
+                <span class="campo-obligatorio"
+                    *ngIf="f.respUnidad?.errors?.required && (f.respUnidad?.dirty || f.respUnidad?.touched)">Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
+                <input id="velatorio" type="text" class="form-control" formControlName="velatorio">
+                <span class="campo-obligatorio"
+                    *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo obligatorio</span>
+            </div>
+            <div class="col-md-4">
+                <label class="control-label" for="servicio">Servicio<span class="req">*</span>:</label>
+                <input id="servicio" type="text" class="form-control" formControlName="servicio">
+                <span class="campo-obligatorio"
+                    *ngIf="f.servicio?.errors?.required && (f.servicio?.dirty || f.servicio?.touched)">Campo obligatorio</span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-12">
+            <span>*Campos obligatorios</span>
+            </div>
+        </div>
+        <div class="flex justify-content-end mb-6">
+            <button class="btn btn-default btn-md" routerLink="../">Regresar</button>
+            <button class="ml-4 btn btn-gold btn-md" routerLink="../">Cancelar</button>
+            <button class="ml-4 btn btn-primary btn-md" [disabled]="actualizarCreditoForm.invalid" (click)="actualizarCredito()">
+        Aceptar
+        </button>
+        </div>
+    </form>
+</div>

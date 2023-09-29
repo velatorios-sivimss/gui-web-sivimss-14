@@ -8,7 +8,6 @@ import { OverlayPanel } from "primeng/overlaypanel";
 import { VerDetallePanteonesComponent } from '../ver-detalle-panteones/ver-detalle-panteones.component';
 import { Panteon } from '../../models/panteones.interface';
 import { Accion } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { EMAIL } from 'projects/sivimss-gui/src/app/utils/regex';
 
 interface HttpResponse {
   respuesta: string;

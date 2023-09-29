@@ -34,10 +34,10 @@
         <p-table *ngIf="funcionalidades.length > 0" styleClass="mt-5 mb-4" [value]="funcionalidades">
             <ng-template pTemplate="header">
                 <tr>
-                    <th>ID funcionalidad</th>
-                    <th>Nombre</th>
-                    <th>Permisos</th>
-                    <th></th>
+                    <th id="id-funcionalidad">ID funcionalidad</th>
+                    <th id="nombre">Nombre</th>
+                    <th id="permisos">Permisos</th>
+                    <th id="contenedor"></th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-funcionalidad>

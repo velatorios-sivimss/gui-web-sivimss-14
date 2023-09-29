@@ -12,11 +12,11 @@
     <div class="col-md-12 border-external">
       <div class="body">
         <section class="logos">
-          <div class="logo-imss float-left">
-            <span class="texto-imss">IMSS</span>
-          </div>
-          <div class="logo-fibeso float-right ">
+          <div class="logo-fibeso float-left">
             <span class="texto-fibeso">FIBESO</span>
+          </div>
+          <div class="logo-imss float-right ">
+            <span class="texto-imss">IMSS</span>
           </div>
         </section>
 
@@ -26,231 +26,179 @@
           </p>
         </section>
 
-        <form [formGroup]="notaRemisionForm">
-          <section class="flex justify-content-between info-gral-remision mt-7">
-            <div class="mb-6">
-              <div class="float-left">
-                <label class="control-label" for="versionDocumento">Versión del documento<span
-                    class="req">*</span>:</label>
-                <input id="versionDocumento" class="form-control" formControlName="versionDocumento"
-                  placeholder="Ingresa la versión">
-              </div>
-              <div class="float-right ">
-                <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
-                <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
-                  placeholder="Fecha inicial" dateFormat="dd/mm/yy">
-                </p-calendar>
-              </div>
+
+        <section class="flex justify-content-between info-gral-remision mt-7">
+          <div class="mb-6">
+            <div class="float-left table-panel-column">
+              <label class="control-label">Versión del documento:</label>
+              <span>{{datos.versionDocumento}}</span>
             </div>
-          </section>
-
-          <section class="flex content-body">
-            <div class="col-md-12 sub-content">
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
-                  <input id="velatorio" class="form-control" formControlName="velatorio"
-                    placeholder="Ingresa el velatorio">
-                </div>
-                <div class="col-md-6">
-                  <label class="control-label" for="remisionServicios">Remisión de servicios:</label>
-                  <input id="remisionServicios" class="form-control" formControlName="remisionServicios"
-                    placeholder="Ingresa la remisión de servicios">
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <label class="control-label" for="direccion">Dirección<span class="req">*</span>:</label>
-                  <input id="direccion" class="form-control" formControlName="direccion"
-                    placeholder="Ingresa el velatorio">
-                </div>
-              </div>
+            <div class="float-right table-panel-column">
+              <label class="control-label">Fecha:</label>
+              <span>{{datos.fechaNota}}</span>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section class="flex content-body">
-            <div class="col-md-12 sub-content">
-              <span class="titulo-content">Datos del solicitante del servicio</span>
-              <div class="row mt-7 mb-3">
-                <div class="col-md-3 subtitulo">
-                  <label class="control-label" for="nombreSolicitante">Nombre</label>
-                </div>
-                <div class="col-md-9">
-                  <label class="control-label" for="nombreSolicitante">Nombre<span class="req">*</span>:</label>
-                  <input id="nombreSolicitante" class="form-control" formControlName="nombreSolicitante"
-                    placeholder="Ingresa el nombre">
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <div class="col-md-3 subtitulo">
-                  <label class="control-label" for="direccionSolicitante">Dirección</label>
-                </div>
-                <div class="col-md-9">
-                  <label class="control-label" for="direccionSolicitante">Dirección<span class="req">*</span>:</label>
-                  <input id="direccionSolicitante" class="form-control" formControlName="direccionSolicitante"
-                    placeholder="Ingresa la dirección">
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <div class="col-md-3 subtitulo">
-                  <label class="control-label" for="curpSolicitante">CURP</label>
-                </div>
-                <div class="col-md-9">
-                  <label class="control-label" for="curpSolicitante">CURP<span class="req">*</span>:</label>
-                  <input id="curpSolicitante" class="form-control" formControlName="curpSolicitante"
-                    placeholder="Ingresa la CURP">
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <div class="col-md-3 subtitulo">
-                  <label class="control-label" for="velatorioSolicitante">Velatorio origen del convenio</label>
-                </div>
-                <div class="col-md-9">
-                  <label class="control-label" for="velatorioSolicitante">Velatorio origen:</label>
-                  <input id="velatorioSolicitante" class="form-control" formControlName="velatorioSolicitante"
-                    placeholder="Ingresa el velatorio origen">
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="flex content-body">
-            <div class="col-md-12 sub-content">
-              <span class="titulo-content">Servicios</span>
-              <div class="row mb-3">
-                <div class="col-md-6 subtitulo">
-                  <label class="control-label">Artículos / Servicios</label>
-                </div>
-                <div class="col-md-6 subtitulo">
-                  <label class="control-label">Cantidad</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Embalsamamiento" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Cremación" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Velación" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Traslado" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Ataúd" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">1</label>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <input id="" class="form-control" placeholder="Urna" disabled>
-                </div>
-                <div class="col-md-6 subtitulo-derecho">
-                  <label class="control-label">2</label>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-7">
+        <section class="flex content-body">
+          <div class="col-md-12 sub-content">
             <div class="row mb-3">
-              <div class="col-md-4">
-                <label class="control-label" for="finado">Finado<span class="req">*</span>:</label>
-                <input id="finado" class="form-control" formControlName="finado" placeholder="Ingresa el folio">
+              <div class="col-md-6 table-panel-column">
+                <label class="control-label">Velatorio:</label>
+                <span>{{datos.nomVelatorio}}</span>
               </div>
-
-              <div class="col-md-4">
-                <label class="control-label" for="parentesco">Parentesco:</label>
-                <input id="parentesco" class="form-control" formControlName="parentesco" placeholder="Ingresa el folio">
-              </div>
-
-              <div class="col-md-4">
-                <label class="control-label" for="folioOds">Folio ODS<span class="req">*</span>:</label>
-                <input id="folioOds" class="form-control" formControlName="folioOds" placeholder="Ingresa el folio">
+              <div class="col-md-6 table-panel-column">
+                <label class="control-label">Remisión de servicios:</label>
+                <span>{{datos.folioNota}}</span>
               </div>
             </div>
 
-            <span class="etiqueta-form">Orden de servicio DOC-000001-01/01/2022 Proporcionada por reembolso de previsión
-              funeraria
-            </span>
-          </section>
-
-          <span class="etiqueta-conformidad">Estoy conforme con los servicios otorgados, los cuales fueron de acuerdo al
-            contrato de previsión funeraria No. 04936 celebrado con fecha 18/02/2021 a favor del finado en su calidad de
-            (beneficiario/titular) del servicio</span>
-
-          <section class="flex mt-7">
-            <div class="parte-nombre">
-              <span class="etiqueta-firma">Nombre y firma de conformidad</span>
-              <div class="row mt-3 mb-3">
-                <div class="col-md-12">
-                  <label class="control-label" for="nombreConformidad">Nombre:</label>
-                  <input id="nombreConformidad" class="form-control" formControlName="nombreConformidad"
-                    placeholder="Ingresa el nombre">
-                </div>
+            <div class="row mb-3">
+              <div class="col-md-6 table-panel-column">
+                <label class="control-label">Dirección:</label>
+                <span>{{datos.dirVelatorio}}</span>
               </div>
             </div>
-            <div class="parte-firma">
-              <div class="card border">
-                <div class="container-card">
-                  <hr class="linea-firma mt-2">
-                  <p class="mt-5 etiqueta-firma">Firma</p>
-                </div>
-              </div>
-            </div>
-          </section>
+          </div>
+        </section>
 
-          <hr class="dashed">
+        <section class="flex content-body">
+          <div class="col-md-12 sub-content">
+            <span class="titulo-content">Datos del solicitante del servicio</span>
+            <div class="row mt-7 mb-3">
+              <div class="col-md-3 subtitulo">
+                <label class="control-label">Nombre:</label>
+              </div>
+              <div class="col-md-9 subtitulo">
+                <span class="table-panel-column-span">{{datos.nomSolicitante}}</span>
+              </div>
+            </div>
 
-          <section class="flex mb-7">
-            <div class="parte-nombre">
-              <span class="etiqueta-firma">Nombre y firma del representante de velatorio</span>
-              <div class="row mt-3 mb-3">
-                <div class="col-md-12">
-                  <label class="control-label" for="nombreRepresentante">Nombre:</label>
-                  <input id="nombreRepresentante" class="form-control" formControlName="nombreRepresentante"
-                    placeholder="Ingresa el nombre">
-                </div>
+            <div class="row mb-3">
+              <div class="col-md-3 subtitulo">
+                <label class="control-label">Dirección:</label>
+              </div>
+              <div class="col-md-9 subtitulo">
+                <span class="table-panel-column-span">{{datos.dirSolicitante}}</span>
               </div>
             </div>
-            <div class="parte-firma">
-              <div class="card border">
-                <div class="container-card">
-                  <hr class="linea-firma mt-2">
-                  <p class="mt-5 etiqueta-firma">Firma</p>
-                </div>
+
+            <div class="row mb-3">
+              <div class="col-md-3 subtitulo">
+                <label class="control-label">CURP:</label>
+              </div>
+              <div class="col-md-9 subtitulo">
+                <span class="table-panel-column-span">{{datos.curpSolicitante}}</span>
               </div>
             </div>
-          </section>
-        </form>
+
+            <div class="row mb-3">
+              <div class="col-md-3 subtitulo">
+                <label class="control-label">Velatorio origen del convenio:</label>
+              </div>
+              <div class="col-md-9 subtitulo">
+                <span class="table-panel-column-span">{{datos.velatorioOrigen}}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="flex content-body">
+          <div class="col-md-12 sub-content">
+            <span class="titulo-content">Servicios</span>
+            <div class="row mb-3">
+              <div class="col-md-6 subtitulo">
+                <label class="control-label">Artículos / Servicios</label>
+              </div>
+              <div class="col-md-6 subtitulo">
+                <label class="control-label">Cantidad</label>
+              </div>
+            </div>
+            <div class="row mb-3" *ngFor="let servicio of servicios">
+              <div class="col-md-6">
+                <label class="control-label">{{servicio.nomServicio}}</label>
+              </div>
+              <div class="col-md-6 subtitulo-derecho">
+                <label class="control-label">{{servicio.cantidad}}</label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mb-7">
+          <div class="row mb-3">
+            <div class="col-md-4 table-panel-column">
+              <label class="control-label">Folio de la ODS:</label>
+              <span>{{datos.nomFinado}}</span>
+            </div>
+
+            <div class="col-md-4 table-panel-column">
+              <label class="control-label">Parentesco:</label>
+              <span>{{datos.parFinado}}</span>
+            </div>
+
+            <div class="col-md-4 table-panel-column">
+              <label class="control-label">Folio ODS:</label>
+              <span>{{datos.folioODS}}</span>
+            </div>
+          </div>
+
+          <span class="etiqueta-form">Orden de servicio {{datos.folioODS}} Proporcionada por reembolso de previsión
+            funeraria
+          </span>
+        </section>
+
+        <span class="etiqueta-conformidad">Estoy conforme con los servicios otorgados, los cuales fueron de acuerdo al
+          contrato de previsión funeraria No. {{datos.folioConvenio}} celebrado con fecha {{datos.fechaConvenio}} a favor del finado en su calidad de
+          (beneficiario/titular) del servicio</span>
+
+        <section class="flex mt-7">
+          <div class="parte-nombre">
+            <span class="etiqueta-firma">Nombre y firma de conformidad</span>
+            <div class="row mt-3 mb-3">
+              <div class="col-md-12">
+                <span>{{datos.nombreConformidad}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="parte-firma">
+            <div class="card border">
+              <div class="container-card">
+                <hr class="linea-firma mt-2">
+                <p class="mt-5 etiqueta-firma">Firma</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <hr class="dashed">
+
+        <section class="flex mb-7">
+          <div class="parte-nombre">
+            <span class="etiqueta-firma">Nombre y firma del representante de velatorio</span>
+            <div class="row mt-3 mb-3">
+              <div class="col-md-12 table-panel-column">
+                <span>{{datos.nombreRepresentante}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="parte-firma">
+            <div class="card border">
+              <div class="container-card">
+                <hr class="linea-firma mt-2">
+                <p class="mt-5 etiqueta-firma">Firma</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="mb-7" *ngIf="datos.motivo">
+          <div class="row mb-3">
+            <div class="col-md-4 table-panel-column">
+              <label class="control-label">Motivo de cancelacion:</label>
+              <span>{{datos.motivo}}</span>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
 
@@ -270,7 +218,9 @@
   <div class="row flex justify-content-end mb-4" *ngIf="generarNotaRemision">
     <button type="button" class="btn btn-default btn-md" (click)="btnRegresar()">Regresar</button>
     <button type="button" class="ml-4 btn btn-danger btn-md" (click)="btnRegresar()">Cancelar</button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="btnAceptar()">Aceptar</button>
+    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="btnAceptar()"
+            *appValidaRol="['GENERAR_NOTA_REMISION','ALTA']">Aceptar
+    </button>
   </div>
 
   <div class="row flex justify-content-end mb-4" *ngIf="!generarNotaRemision">

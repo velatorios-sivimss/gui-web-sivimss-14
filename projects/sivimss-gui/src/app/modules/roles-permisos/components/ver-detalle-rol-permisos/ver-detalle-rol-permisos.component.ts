@@ -32,15 +32,15 @@ export class VerDetalleRolPermisosComponent implements OnInit {
   cambiarEstatus(id: number): void {
     const idUsuario: SolicitudEstatus = {id}
     const solicitudId = JSON.stringify(idUsuario);
-    this.rolPermisosService.cambiarEstatus(solicitudId).subscribe(
-      () => {
+    this.rolPermisosService.cambiarEstatus(solicitudId).subscribe({
+      next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Cambio de estatus realizado');
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   aceptar(): void {
@@ -49,7 +49,7 @@ export class VerDetalleRolPermisosComponent implements OnInit {
   }
 
   abrirModalModificarUsuario(): void {
-    const respuesta: RespuestaModalRol = { modificar: true };
+    const respuesta: RespuestaModalRol = {modificar: true};
     this.ref.close(respuesta);
   }
 

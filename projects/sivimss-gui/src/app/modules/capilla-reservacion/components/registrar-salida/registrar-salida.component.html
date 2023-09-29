@@ -1,13 +1,13 @@
-<app-table-panel >
+<app-table-panel *ngIf="registroCapilla" >
   <ng-template appCustomTemplate="left-header">
     <div class="table-panel-header-column">
-      <span>ID<span class="font-bold"> 1</span></span>
+      <span>ID<span class="font-bold"> {{registroCapilla.idCapilla}}</span></span>
     </div>
   </ng-template>
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <span>Capilla Jesús de la inmaculada y la nueva Luz</span>
+        <span>{{registroCapilla.nomCapilla}}</span>
       </div>
     </div>
   </div>
@@ -15,26 +15,26 @@
     <div class="col-md-4">
       <div class="table-panel-column">
         <label>Registro de entrada</label>
-        <span>01/01/2022 - 10:32 am</span>
+        <span>{{registroCapilla.fechaEntrada }} - {{registroCapilla.horaEntrada}} </span>
       </div>
     </div>
     <div class="col-md-4">
       <div class="table-panel-column">
         <label>Registro de salida</label>
-        <span>08/01/2022 - 12:00 am</span>
+        <span>{{fechaSalida | date: 'dd/MM/yyyy'}} - {{horaSalida | date: 'HH:mm'}}</span>
       </div>
     </div>
   </div>
 </app-table-panel>
 
 <div class="flex mt-3 justify-content-center">
-  <div class="col-md-6">
-    <p class="text-center">¿Estás seguro de registrar esta salida?</p>
+  <div class="col-md-12">
+    <p class="text-center">¿Estás seguro de registrar la salida en esta capilla?</p>
   </div>
 </div>
 <div class="row mb-3">
   <div class="col-md-12 flex justify-content-end">
     <button type="button" class="btn btn-danger btn-md ml-5" (click)="cancelar()">Cancelar</button>
-    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="confirmarEntrada(true)">Registrar</button>
+    <button type="submit" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar</button>
   </div>
 </div>

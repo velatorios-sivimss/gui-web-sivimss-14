@@ -17,8 +17,6 @@ export class LoaderService {
 
   loader$: Observable<boolean> = this.loaderSubject.asObservable();
 
-  constructor() {
-  }
 
   mostrarLoaderHastaCompletar<T>(obs$: Observable<T>): Observable<T> {
     return of(null)

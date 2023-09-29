@@ -50,8 +50,8 @@
                         (onLazyLoad)="paginar($event)">
                     <ng-template pTemplate="header">
                         <tr class="custom-header">
-                            <th>Servicio</th>
-                            <th>Precio</th>
+                            <th scope="col">Servicio</th>
+                            <th scope="col">Precio</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-servicio>
@@ -75,8 +75,8 @@
                     (onLazyLoad)="paginar($event)">
                     <ng-template pTemplate="header">
                         <tr class="custom-header">
-                            <th>Artículo</th>
-                            <th>Tipo artículo</th>
+                            <th scope="col">Artículo</th>
+                            <th scope="col">Tipo artículo</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-articulo>

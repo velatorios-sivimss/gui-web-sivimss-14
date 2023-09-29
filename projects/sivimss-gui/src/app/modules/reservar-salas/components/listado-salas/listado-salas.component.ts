@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TipoDropdown} from '../../../../models/tipo-dropdown';
 import {MENU_SALAS} from '../../constants/menu-salas';
 import {SalaVelatorio} from '../../models/sala-velatorio.interface';
@@ -9,13 +9,13 @@ import {RegistrarSalidaComponent} from "../registrar-salida/registrar-salida.com
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ReservarSalasService} from "../../services/reservar-salas.service";
-import {Catalogo} from "../../../../models/catalogos.interface";
 import {VelatorioInterface} from "../../models/velatorio.interface";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {TabView} from "primeng/tabview";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {finalize} from "rxjs/operators";
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-listado-salas',
@@ -25,8 +25,7 @@ import {finalize} from "rxjs/operators";
 })
 export class ListadoSalasComponent implements OnInit, OnDestroy {
 
-  readonly POSICION_CATALOGO_VELATORIOS = 0;
-  readonly POSICION_CATALOGO_DELEGACION = 1;
+  readonly POSICION_CATALOGO_DELEGACION = 0;
 
   velatorios: TipoDropdown[] = [];
   delegaciones: TipoDropdown[] = [];
@@ -36,8 +35,6 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
   numPaginaActual: number = 0;
   posicionPestania: number = 0;
   totalElementos: number = 0;
-  velatorio: number = 0 ;
-  delegacion: number = 0;
 
   salasCremacion: SalaVelatorio[] = [];
   salasEmbalsamamiento: SalaVelatorio[] = [];
@@ -45,23 +42,46 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
   registrarEntradaRef!: DynamicDialogRef;
   registrarSalidaRef!: DynamicDialogRef;
 
+  filtroForm!: FormGroup;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private alertaService: AlertaService,
+    private formBuilder: FormBuilder,
     public dialogService: DialogService,
     private readonly loaderService: LoaderService,
-    private reservarSalasService:ReservarSalasService) {
+    private reservarSalasService: ReservarSalasService,
+    private mensajesSistemaService: MensajesSistemaService) {
   }
 
   ngOnInit(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
-    this.velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS]!.datos.map((velatorio: VelatorioInterface) => (
-      {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
+    // this.velatorios = respuesta[this.POSICION_CATALOGO_VELATORIOS]!.datos.map((velatorio: VelatorioInterface) => (
+    //   {label: velatorio.nomVelatorio, value: velatorio.idVelatorio} )) || [];
 
     this.delegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION]!.map((delegacion: any) => (
-      {label: delegacion.label, value: delegacion.value} )) || [];
+      {label: delegacion.label, value: delegacion.value})) || [];
+
+    this.inicializarFiltroForm();
+
+    let tipoSala = JSON.parse(localStorage.getItem('reserva-sala') as string);
+    localStorage.removeItem('reserva-sala');
+    if (tipoSala) {
+      this.registrarSalida(tipoSala);
     }
+  }
+
+  inicializarFiltroForm() {
+    this.filtroForm = this.formBuilder.group({
+      delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2}],
+      velatorio: [{value: null, disabled: +this.rolLocalStorage.idOficina === 3}],
+    });
+    if (this.f.delegacion.value != null) {
+      this.cambiarDelegacion();
+    }
+  }
 
   registrarActividad(sala: SalaVelatorio): void {
     if (sala.estadoSala != "DISPONIBLE") {
@@ -75,23 +95,23 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
     this.registrarEntradaRef = this.dialogService.open(RegistrarEntradaComponent, {
       header: 'Registrar Entrada',
       width: '920px',
-      data: {sala:sala, tipoSala: this.posicionPestania},
+      data: {sala: sala, tipoSala: this.posicionPestania},
     });
     this.registrarEntradaRef.onClose.subscribe((respuesta) => {
-      if(respuesta){
+      if (respuesta) {
         this.consultaSalasCremacion();
       }
     });
   }
 
-  private registrarSalida(sala:SalaVelatorio): void {
-    this.registrarSalidaRef =this.dialogService.open(RegistrarSalidaComponent, {
+  private registrarSalida(sala: SalaVelatorio): void {
+    this.registrarSalidaRef = this.dialogService.open(RegistrarSalidaComponent, {
       header: 'Registrar Salida',
       width: '920px',
-      data: {sala:sala, tipoSala: this.posicionPestania},
+      data: {sala: sala, tipoSala: this.posicionPestania},
     });
     this.registrarSalidaRef.onClose.subscribe((respuesta) => {
-      if(respuesta){
+      if (respuesta) {
         this.consultaSalasCremacion();
       }
     });
@@ -103,39 +123,76 @@ export class ListadoSalasComponent implements OnInit, OnDestroy {
   }
 
 
-
   consultaSalasCremacion(): void {
+    if (this.f.velatorio.value && this.f.velatorio.value == 0) {
+      return
+    }
     this.loaderService.activar();
-    this.reservarSalasService.consultarSalas(this.velatorio,this.posicionPestania).pipe(
+    this.reservarSalasService.consultarSalas(this.f.velatorio.value, this.posicionPestania).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
-        if(this.posicionPestania == 0){
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (this.posicionPestania == 0) {
           this.salasCremacion = respuesta.datos;
-        }else{
+        } else {
           this.salasEmbalsamamiento = respuesta.datos;
         }
       },
-      (error:HttpErrorResponse) => {
+      error: (error: HttpErrorResponse): void => {
         console.error(error);
-        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
       }
-    );
+    });
   }
 
-  retornarColor(estatus:string): string {
-    if(estatus === "DISPONIBLE"){return "#83b727"}
-    if(estatus === "OCUPADA"){return "#9d2449"}
-    if(estatus === "MANTENIMIENTO"){return "#ffff00"}
+  cambiarDelegacion(): void {
+    this.loaderService.activar();
+    this.reservarSalasService.obtenerCatalogoVelatoriosPorDelegacion(this.f.delegacion.value).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.velatorios = respuesta.datos.map((velatorio: VelatorioInterface) => (
+          {label: velatorio.nomVelatorio, value: velatorio.idVelatorio})) || [];
+
+        const item = this.velatorios.find((item: TipoDropdown) => item.value === +this.rolLocalStorage.idVelatorio);
+        if (item) {
+          this.filtroForm.get('velatorio')?.patchValue(+this.rolLocalStorage.idVelatorio);
+          this.cambiarPestania({index: 0});
+        } else {
+          this.filtroForm.get('velatorio')?.patchValue(null);
+          this.consultaSalasCremacion();
+        }
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(+error.error.mensaje));
+      }
+    })
+  }
+
+  retornarColor(estatus: string): string {
+    if (estatus === "DISPONIBLE") {
+      return "#83b727"
+    }
+    if (estatus === "OCUPADA") {
+      return "#9d2449"
+    }
+    if (estatus === "MANTENIMIENTO") {
+      return "#ffff00"
+    }
     return "";
   }
 
   ngOnDestroy(): void {
-    if(this.registrarEntradaRef){
+    if (this.registrarEntradaRef) {
       this.registrarEntradaRef.destroy()
     }
-    if(this.registrarSalidaRef){
+    if (this.registrarSalidaRef) {
       this.registrarSalidaRef.destroy()
     }
+  }
+
+  get f() {
+    return this.filtroForm?.controls;
   }
 }

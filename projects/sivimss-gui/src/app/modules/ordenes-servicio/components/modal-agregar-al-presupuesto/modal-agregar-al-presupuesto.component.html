@@ -1,11 +1,13 @@
 <div class="p-4">
   <div class="row">
     <div class="col-md-12 flex justify-content-center align-items-center flex-wrap">
-      <button class="btn btn-primary btn-extra-grande mb-5">Ataúd</button>
-      <button class="btn btn-primary btn-extra-grande mb-5">Servicio</button>
-      <button class="btn btn-primary btn-extra-grande mb-5">Uma</button>
-      <button class="btn btn-primary btn-extra-grande mb-5">Empaque</button>
-      <button class="btn btn-primary btn-extra-grande mb-5">Artículos <br>complementarios</button>
+      <button class="btn btn-primary btn-extra-grande mb-5" (click)="abrirModalAgregarAtaud($event)">Ataúd</button>
+      <button class="btn btn-primary btn-extra-grande mb-5" (click)="abrirModalAgregarServicio($event)"
+        *ngIf="muestraServicio">Servicio</button>
+      <button class="btn btn-primary btn-extra-grande mb-5" (click)="abrirModalAgregarUrna($event)">Urna</button>
+      <button class="btn btn-primary btn-extra-grande mb-5" (click)="abrirModalAgregarEmpaque($event)">Empaque</button>
+      <button class="btn btn-primary btn-extra-grande mb-5"
+        (click)="abrirModalAgregarArticulosComplementarios($event)">Artículos <br>complementarios</button>
     </div>
   </div>
 </div>

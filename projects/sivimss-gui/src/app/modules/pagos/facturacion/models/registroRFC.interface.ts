@@ -1,0 +1,40 @@
+export interface RegistroRFC {
+  razonSocial: string,
+  regimenFiscal: string,
+  tipoPersona: string,
+  domicilioFiscal: DatoFiscal
+}
+
+export interface DatoFiscal {
+  calle: string,
+  email: string,
+  paisResidencia: string,
+  telefono1: string,
+  telefono2: string,
+  calr: string,
+  ccrh: string,
+  cp: string,
+  dalr: string,
+  dcrh: string,
+  caractDomicilio: string,
+  ccolonia: string,
+  centFed: string,
+  clocalidad: string,
+  cmunicipio: string,
+  dcolonia: string,
+  dentFed: string,
+  dentreCalle1: string,
+  dentreCalle2: string,
+  dinmueble: string,
+  dlocalidad: string,
+  dmunicipio: string,
+  dreferencia: string,
+  dvialidad: string,
+  faltaDom: string,
+  nexterior: string,
+  ninterior: string,
+  tinmueble: string,
+  ttel1: string,
+  ttel2: string,
+  tvialidad: string
+}

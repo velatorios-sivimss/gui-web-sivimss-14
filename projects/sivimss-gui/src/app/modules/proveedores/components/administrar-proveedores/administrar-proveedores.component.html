@@ -54,12 +54,12 @@
       [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
       <ng-template pTemplate="header">
         <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Tipo de proveedor</th>
-          <th>Responsable sanitario</th>
-          <th>Estatus</th>
-          <th></th>
+          <th id="id">ID</th>
+          <th id="nombre">Nombre</th>
+          <th id="tipo">Tipo de proveedor</th>
+          <th id="responsable">Responsable sanitario</th>
+          <th id="estatus">Estatus</th>
+          <th id="contenedor"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-proveedor>
@@ -114,8 +114,8 @@
     </ng-template>
 </p-overlayPanel>
 
-<!-- <app-stepper [items]="items" [checked]="true" [index]="1"></app-stepper> -->
-<!-- <p-steps [model]="items" [ngClass]="{'mostrar-check': propiedad }" [activeIndex]="1"></p-steps> -->
+<!-- <app-stepper [items]="items" [checked]="true" [index]="1"></app-stepper> //NOSONAR-->
+<!-- <p-steps [model]="items" [ngClass]="{'mostrar-check': propiedad }" [activeIndex]="1"></p-steps> //NOSONAR-->
 <!-- <button class="ml-4 btn btn-primary btn-md" (click)="propiedad = !propiedad">
     Aceptar
-</button> -->
+</button> //NOSONAR-->

@@ -1,0 +1,238 @@
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="../../"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="CONSULTA DE ORDEN DE SUBROGACIÓN"></app-titulo-principal>
+</div>
+
+<div class="container-gral">
+  <div class="row mb-4">
+    <div class="col-md-12 border-external">
+      <div class="body">
+        <div class="row mb-4">
+          <div class="col-md-3 logos">
+            <div class="logo-imss">
+              <span class="texto-imss">IMSS</span>
+            </div>
+          </div>
+          <div class="col-md-4 title-head">
+            <p>Fideicomiso de Beneficios Sociales 4600-6</p>
+            <p>Heriberto Frías No. 241 Col. Narvarte</p>
+            <p>Deleg. Benito Juárez México, D.F.</p>
+            <p>C.P. 03020</p>
+          </div>
+          <div class="col-md-3 logos">
+            <div class="logo-fibeso col-md-4">
+              <span class="texto-fibeso">FIBESO</span>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <p class="title-head" style="text-align: justify;">VEL-T-05</p>
+            <p class="general-font">FECHA {{ ordenSeleccionada.fechaOds | date:'dd/MM/YYYY'}}</p>
+            <p class="general-font">HORA {{ horaActual }}</p>
+            <p class="general-font">Versión 1.0.0</p>
+          </div>
+        </div>
+
+        <section class="titulo-body">
+          <p class="title-center">
+            ORDEN DE SUBROGACION DE SERVICIOS
+          </p>
+        </section>
+
+        <section class="flex justify-content-between info-gral-remision mt-7">
+          <div class="float-left table-panel-column">
+            <span>DELEGACION: {{ delegacionDescripcion }}</span>
+          </div>
+          <div class="float-right table-panel-column">
+            <span>VELATORIO: {{ velatorioDescripcion }}</span>
+          </div>
+        </section>
+
+        <section class="flex content-body">
+          <div class="col-md-12 sub-content">
+            <div class="row mb-3">
+              <div class="col-md-5 table-panel-column">
+                <label class="control-label">NOMBRE O RAZÓN SOCIAL DEL SUBROGADO:</label>
+              </div>
+              <div class="col-md-4 table-panel-column">
+                <label class="control-label">{{ ordenSeleccionada.proveedor }}</label>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4 table-panel-column">
+                <label class="control-label">NÚM. DE ORDEN DE SERVICIO:</label>
+              </div>
+
+              <div class="col-md-2 table-panel-column">
+                <label class="control-label">{{ ordenSeleccionada.idOds }}</label>
+              </div>
+
+              <div class="col-md-2 table-panel-column">
+                <label class="control-label">FECHA:</label>
+              </div>
+
+              <div class="col-md-4 table-panel-column">
+                <label class="control-label">{{ ordenSeleccionada.fechaOds }}</label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="flex content-body">
+          <div class="col-md-12 sub-content">
+            <div class="row mb-3">
+              <div class="col-md-6 table-panel-column">
+                <label class="control-label">TIPO DE TRASLADO:</label>
+              </div>
+              <div class="col-md-3 table-panel-column">
+                <label class="control-label">OFICIAL({{ ordenSeleccionada.tipoTranslado === 'Oficial' ? 'X' : '' }})</label>
+              </div>
+              <div class="col-md-3 table-panel-column">
+                <label class="control-label">PARTICULAR({{ ordenSeleccionada.tipoTranslado === 'Oficial' ? '' : 'X' }})</label>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-3 table-panel-column">
+                <label class="control-label">NOMBRE DEL FINADO:</label>
+              </div>
+              <div class="col-md-9 table-panel-column">
+                <label class="control-label">{{ ordenSeleccionada.nombreFinado }}</label>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-3 table-panel-column">
+                <label class="control-label">LUGAR DE ORIGEN:</label>
+              </div>
+              <div class="col-md-9 table-panel-column">
+                <label class="control-label">{{ ordenSeleccionada.origen }}</label>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-3 table-panel-column">
+                <label class="control-label">LUGAR DE DESTINO:</label>
+              </div>
+              <div class="col-md-9 table-panel-column">
+                <label class="control-label">{{ ordenSeleccionada.destino }}</label>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-3 table-panel-column">
+                <label class="control-label">DISTANCIA A RECORRER:</label>
+              </div>
+              <div class="col-md-9 table-panel-column">
+                <label class="control-label">{{ ordenSeleccionada.totalKilometros }} KM</label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="flex content-body">
+          <div class="col-md-12 sub-content">
+            <div class="row mb-3">
+              <div class="col-md-6 subtitulo">
+                <label class="control-label">SERVICIOS:</label>
+              </div>
+              <div class="col-md-6 subtitulo">
+                <label class="control-label">ESPECIFICACIONES:</label>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="control-label">{{ ordenSeleccionada.tipoServicio }}</label>
+              </div>
+              <div class="col-md-6 subtitulo-derecho">
+                <label class="control-label">{{ ordenSeleccionada.especificaciones }}</label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="flex content-body">
+          <div class="col-md-12 sub-content">
+            <div class="row mb-3">
+              <div class="col-md-6 table-panel-column">
+                <label class="control-label">NOMBRE DEL OPERADOR QUE RECIBE LA ORDEN:</label>
+              </div>
+              <div class="col-md-6 table-panel-column linea-firma-valor">{{ ordenSeleccionada.nombreOperador }}</div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-2 table-panel-column">
+                <label class="control-label">CARROZA NÚM:</label>
+              </div>
+              <div class="col-md-4 table-panel-column linea-firma-valor">{{ ordenSeleccionada.numCarroza }}</div>
+              <div class="col-md-2 table-panel-column">
+                <label class="control-label">NÚM. DE PLACAS:</label>
+              </div>
+              <div class="col-md-4 table-panel-column linea-firma-valor">{{ ordenSeleccionada.numPlacas }}</div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-3 table-panel-column">
+                <label class="control-label">DIA Y HORA DE PARTIDA:</label>
+              </div>
+              <div class="col-md-9 table-panel-column linea-firma-valor">{{ ordenSeleccionada.diaPartida | date:'dd/MM/YYYY' }} {{ horaPartidaConFormato }}</div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4 table-panel-column">
+                <label class="control-label">NOMBRE DEL ACOMPAÑANTE:</label>
+              </div>
+              <div class="col-md-8 table-panel-column linea-firma-valor">{{ ordenSeleccionada.nombreAcompaniante }}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="flex content-body">
+          <div class="col-md-12 sub-content">
+            <div class="row mb-3">
+              <div class="col-md-6 table-panel-column">
+                <p class="control-label">RECIBÍ DE CONFORMIDAD</p>
+              </div>
+              <div class="col-md-6 table-panel-column">
+                <p class="control-label">AUTORIZÓ EL ADMINISTRADOR</p>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <hr class="linea-firma mt-2">
+                <p class="control-label text-center">NOMBRE</p>
+              </div>
+              <div class="col-md-6">
+                <hr class="linea-firma mt-2">
+                <p class="control-label text-center">NOMBRE</p>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-4">
+                <hr class="linea-firma mt-2">
+                <p class="control-label text-center">FIRMA</p>
+              </div>
+              <div class="col-md-4">
+                <hr class="linea-firma mt-2">
+                <p class="control-label text-center">MATRICULA</p>
+              </div>
+              <div class="col-md-4">
+                <hr class="linea-firma mt-2">
+                <p class="control-label text-center">FIRMA</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="row mt-6 mb-6">
+          <div class="col-md-12 flex justify-content-end">
+            <button type="reset" class="btn btn-gold btn-md" (click)="modificar(true);">Modificar</button>
+            <button type="submit" class="btn btn-primary btn-md ml-5" (click)="imprimir()">Imprimir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

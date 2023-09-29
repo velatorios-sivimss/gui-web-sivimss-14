@@ -1,0 +1,116 @@
+<p-accordion styleClass="sivimss-accordion sivimss-accordionColor" [activeIndex]="activeIndex">
+  <p-accordionTab>
+    <ng-template pTemplate="header">
+      <div class="sivimss-acoordion-header">
+        {{nombreContratante | titlecase}}
+      </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+      <ng-container>
+        <app-table-panel>
+          <div class="row table-panel-row">
+            <div [ngClass]="{ 'col-8': tipoFecha !== 2, 'col-9': tipoFecha === 2 }">
+              <div class="grid">
+                <div class="pl-3" *ngIf="tipoFecha !== 3"
+                     [ngClass]="{ 'col-6': tipoFecha === 2, 'col': tipoFecha !== 2 }">
+                  <div class="table-panel-column">
+                    <label *ngIf="tipoFecha === 1">Fecha de ODS</label>
+                    <label *ngIf="tipoFecha === 2">Fecha de contratación / renovación</label>
+                    <label *ngIf="tipoFecha === 4">Fecha de contratación</label>
+                    <span>{{fecha | date:'dd-MM-YYYY'}}</span>
+                  </div>
+                </div>
+                <div class="col" [ngClass]="{ 'pl-3': tipoFecha === 3 }">
+                  <div class="table-panel-column">
+                    <label>Fecha de pago</label>
+                    <span>{{fechaPago| date:'dd-MM-YYYY'}}</span>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="table-panel-column">
+                    <label>Concepto de pago</label>
+                    <span>{{concepto}}</span>
+                  </div>
+                </div>
+                <div class="col" *ngIf="tipoFecha === 3"></div>
+              </div>
+            </div>
+          </div>
+        </app-table-panel>
+      </ng-container>
+      <ng-container>
+        <div class="flex justify-content-between align-items-center mt-3">
+          <h2 class="subtitulo mt-2 mb-3">Método de pago</h2>
+        </div>
+        <app-table-panel *ngFor="let metodoPago of metodosPago">
+          <ng-template appCustomTemplate="left-header">
+            <div class="table-panel-header-column">
+              <span class="font-14">{{metodoPago.metodoPago}}</span>
+            </div>
+          </ng-template>
+          <ng-template appCustomTemplate="right-header">
+            <div class="table-panel-header-column">
+              <div class="flex flex-column">
+                <span class="font-14">Importe</span>
+                <div class="contenedor-inputswitch">
+                  <span class="font-bold font-14">{{ metodoPago.importe | currency }}</span>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </app-table-panel>
+        <div class="row mb-3 mt-6">
+          <div class="col-md-8"></div>
+          <div class="col-md-4 pr-6">
+            <div class="row grid">
+              <div class="col">
+                <span
+                  class="flex flex-column texto-base align-items-end font-bold active mt-4">Se pagó el monto total</span>
+              </div>
+              <div class="col ">
+                <span class="flex flex-column etiqueta-base align-items-end">Total pagado</span>
+                <span
+                  class="flex flex-column texto-base align-items-end font-bold active">{{ totalPagado | currency}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container>
+        <div class="flex justify-content-between align-items-center">
+          <h2 class="subtitulo mt-3">Servicios ODS</h2>
+        </div>
+        <p-table styleClass="mt-5 mb-6" [value]="servicios" [resizableColumns]="true" [columnResizeMode]="'expand'">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pResizableColumn id="servicios_ods_consecutivo">Consecutivo</th>
+              <th pResizableColumn id="servicios_ods_grupo">Grupo</th>
+              <th pResizableColumn id="servicios_ods_concepto">Concepto</th>
+              <th pResizableColumn id="servicios_ods_cantidad">Cantidad</th>
+              <th pResizableColumn id="servicios_ods_sat">Clave SAT</th>
+              <th pResizableColumn id="servicios_ods_importe">Importe /Monto</th>
+              <th pResizableColumn id="servicios_ods_total">Total</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-servicio let-noConsecutivo="rowIndex">
+            <tr>
+              <td pResizableColumn>{{noConsecutivo + 1}}</td>
+              <td pResizableColumn>{{servicio.grupo}}</td>
+              <td pResizableColumn>{{servicio.concepto}}</td>
+              <td pResizableColumn>{{servicio.cantidad}}</td>
+              <td pResizableColumn>{{servicio.claveSat}}</td>
+              <td pResizableColumn>{{servicio.importe | currency}}</td>
+              <td pResizableColumn>{{servicio.total | currency}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <div class="row mb-3 mr-4">
+          <span class="flex flex-column etiqueta-base align-items-end">Total servicios</span>
+          <span
+            class="flex flex-column texto-base align-items-end font-bold active">{{ totalServicios | currency}}</span>
+        </div>
+      </ng-container>
+    </ng-template>
+  </p-accordionTab>
+</p-accordion>
+

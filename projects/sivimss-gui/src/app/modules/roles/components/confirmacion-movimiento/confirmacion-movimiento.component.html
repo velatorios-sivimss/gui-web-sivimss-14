@@ -1,0 +1,107 @@
+<ng-container *ngIf="origen == 1; else confirmacionEstatus">
+
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+            <span class="font-bold">
+                ID <span [ngClass]="datosRolModificar.estatusRol ? 'activo' : 'inactivo'">{{datosRol.idRol}}</span>
+            </span>
+      </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <span>Estatus</span>
+          <div>
+            <span class="activo" *ngIf="datosRolModificar.estatusRol">Activo</span>
+            <span class="inactivo" *ngIf="!datosRolModificar.estatusRol">Inactivo</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nombre del rol</label>
+          <span> {{datosRolModificar.desRol}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nivel</label>
+          <span>{{datosRolModificar.nivelOficina}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Fecha creación</label>
+          <span> {{datosRolModificar.fCreacion}} </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+
+  <div class="flex mt-4 justify-content-center">
+    <div class="col-md-8 text-center">
+      ¿Estás seguro de modificar el rol?
+    </div>
+  </div>
+</ng-container>
+
+
+<ng-template #confirmacionEstatus>
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+              <span class="font-bold">
+                  ID <span [ngClass]="datosRol.estatus ? 'inactivo' : 'activo'">{{datosRol.idRol}}</span>
+              </span>
+      </div>
+    </ng-template>
+    <ng-template appCustomTemplate="right-header">
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <span>Estatus</span>
+          <div>
+            <span class="activo" *ngIf="!datosRol.estatusRol">Activo</span>
+            <span class="inactivo" *ngIf="datosRol.estatusRol">Inactivo</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nombre del rol</label>
+          <span> {{datosRol.desRol}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Nivel</label>
+          <span>{{datosRol.desNivelOficina}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Fecha creación</label>
+          <span> {{datosRol.fCreacion}} </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <div class="flex mt-4 justify-content-center">
+    <div class="col-md-8 text-center">
+      ¿Estás seguro de {{datosRol.estatusRol ? 'activar' : 'desactivar'}} el registro seleccionado?
+    </div>
+  </div>
+</ng-template>
+
+<div class="flex justify-content-end mt-6 mb-6">
+  <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cancelar()">Cancelar</button>
+  <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmar()"> Aceptar</button>
+</div>

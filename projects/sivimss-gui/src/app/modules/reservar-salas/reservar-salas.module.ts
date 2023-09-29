@@ -23,6 +23,7 @@ import {ReservarSalasService} from "./services/reservar-salas.service";
 import {UtileriaModule} from "../../shared/utileria/utileria.module";
 import {InputNumberModule} from "primeng/inputnumber";
 import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
     AccordionModule,
     UtileriaModule,
     InputNumberModule,
-    ValidaRolModule
+    ValidaRolModule,
+    BtnRegresarModule
   ],
   providers: [
     ReservarSalasService

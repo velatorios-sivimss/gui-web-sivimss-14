@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Velatorio} from "../../models/velatorio.interface";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {VelatorioService} from "../../services/velatorio.service";
@@ -18,7 +18,7 @@ interface SolicitudEstatus {
   templateUrl: './cambio-estatus-velatorio.component.html',
   styleUrls: ['./cambio-estatus-velatorio.component.scss']
 })
-export class CambioEstatusVelatorioComponent implements OnInit {
+export class CambioEstatusVelatorioComponent {
 
   velatorioSeleccionado!: Velatorio;
   title!: string;
@@ -33,9 +33,6 @@ export class CambioEstatusVelatorioComponent implements OnInit {
     this.title = this.velatorioSeleccionado.estatus ? 'Desactivar' : 'Activar';
   }
 
-  ngOnInit(): void {
-  }
-
   cancelar(): void {
     this.ref.close()
   }
@@ -46,15 +43,15 @@ export class CambioEstatusVelatorioComponent implements OnInit {
     this.cargadorService.activar();
     this.velatorioService.cambiarEstatus(estatus)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        () => {
+      .subscribe({
+        next: (): void => {
           this.ref.close(respuesta);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse): void => {
           console.error(error);
           this.alertaService.mostrar(TipoAlerta.Error, error.message);
         }
-      );
+      });
   }
 
   obtenerSolicitudEstatus(): SolicitudEstatus {

@@ -1,21 +1,37 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DIEZ_ELEMENTOS_POR_PAGINA, Accion } from "../../../../utils/constantes";
-import { Promotor } from "../../models/promotores.interface";
-import { LazyLoadEvent } from "primeng/api";
-import { ActivatedRoute, Router } from '@angular/router';
-import { VerDetallePromotoresComponent } from '../ver-detalle-promotores/ver-detalle-promotores.component';
-import { AgregarPromotoresComponent } from '../agregar-promotores/agregar-promotores.component';
-import { ModificarPromotoresComponent } from '../modificar-promotores/modificar-promotores.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {
+  BuscarCatalogo,
+  BuscarPromotores,
+  CambiarEstatus,
+  Promotor,
+  PromotoresBusqueda
+} from "../../models/promotores.interface";
+import {LazyLoadEvent} from "primeng/api";
+import {ActivatedRoute, Router} from '@angular/router';
+import {AgregarPromotoresComponent} from '../agregar-promotores/agregar-promotores.component';
+import {ModificarPromotoresComponent} from '../modificar-promotores/modificar-promotores.component';
+import {PROMOTORES_BREADCRUMB} from '../../constants/breadcrumb';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {HttpErrorResponse} from '@angular/common/http';
+import {PromotoresService} from '../../services/promotores.service';
+import {TipoDropdown} from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {finalize} from 'rxjs';
 
 interface HttpResponse {
   respuesta: string;
   promotor: Promotor;
 }
+
 @Component({
   selector: 'app-promotores',
   templateUrl: './promotores.component.html',
@@ -23,28 +39,22 @@ interface HttpResponse {
   providers: [DialogService]
 })
 export class PromotoresComponent implements OnInit {
+  readonly POSICION_CATALOGOS_NIVELES: number = 0;
+  readonly POSICION_CATALOGOS_DELEGACIONES: number = 1;
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
-  numPaginaActual: number = 0;
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
-  totalElementos: number = 0;
-
-  opciones: any[] = [
-    {
-      label: 'Opción 1',
-      value: 0,
-    },
-    {
-      label: 'Opción 2',
-      value: 1,
-    },
-    {
-      label: 'Opción 3',
-      value: 2,
-    }
-  ];
+  public numPaginaActual: number = 0;
+  public cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
+  public totalElementos: number = 0;
+  public catalogoNiveles: TipoDropdown[] = [];
+  public catalogoDelegaciones: TipoDropdown[] = [];
+  public catalogoVelatorios: TipoDropdown[] = [];
+  public catalogoPlacas: TipoDropdown[] = [];
+  public mostrarModalConfirmacion: boolean = false;
+  public mensajeModal: string = "";
+  public realizoBusqueda: boolean = false;
 
   promotoresServicio: any[] = [
     {
@@ -61,128 +71,125 @@ export class PromotoresComponent implements OnInit {
     }
   ];
 
-  promotores: Promotor[] = [];
+  promotores: PromotoresBusqueda[] = [];
   promotorSeleccionado!: Promotor;
   detalleRef!: DynamicDialogRef;
   filtroForm!: FormGroup;
-  agregarPromotorForm!: FormGroup;
-  modificarPromotorForm!: FormGroup;
-  promotoresServicioFiltrados: any[] = [];
+  promotoresFiltrados: TipoDropdown[] = [];
 
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     public dialogService: DialogService,
     private alertaService: AlertaService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private promotoresService: PromotoresService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private loaderService: LoaderService,
   ) {
   }
 
   ngOnInit(): void {
-    this.breadcrumbService.actualizar([
-      {
-        icono: 'imagen-icono-operacion-sivimss.svg',
-        titulo: 'Administración de catálogos'
-      },
-      {
-        icono: '',
-        titulo: 'Promotores'
-      }
-    ]);
+    this.breadcrumbService.actualizar(PROMOTORES_BREADCRUMB);
     this.inicializarFiltroForm();
-  }
-
-
-  paginar(event: LazyLoadEvent): void {
-    setTimeout(() => {
-      this.promotores = [
-        {
-          id: 1,
-          numEmpleado: '11',
-          curp: 'ALBI05041980',
-          nombre: 'Alberto',
-          primerApellido: 'Lima',
-          segundoApellido: 'Dorantes',
-          fechaNacimiento: '05/04/1980',
-          fechaIngreso: '01/30/2000',
-          sueldoBase: '$10,000.00',
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          categoria: '$3,000',
-          antiguedad: '22 años',
-          correo: 'jimetez@imss.gob.mx',
-          puesto: 'Promotor',
-          diasDescanso: '13/03/2023',
-          nombrePromotor: 'Promotor siniestro de previsión funeraria con cremación',
-          descripcion: 'Promotor todo incluido con cremación servicios completos',
-          estatus: true,
-        },
-        {
-          id: 2,
-          numEmpleado: '11',
-          curp: 'ALBI05041980',
-          nombre: 'Alberto',
-          primerApellido: 'Lima',
-          segundoApellido: 'Dorantes',
-          fechaNacimiento: '05/04/1980',
-          fechaIngreso: '01/30/2000',
-          sueldoBase: '$10,000.00',
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          categoria: '$3,000',
-          antiguedad: '22 años',
-          correo: 'jimetez@imss.gob.mx',
-          puesto: 'Promotor',
-          diasDescanso: '13/03/2023',
-          nombrePromotor: 'Promotor siniestro de previsión funeraria con cremación',
-          descripcion: 'Promotor todo incluido con cremación servicios completos',
-          estatus: true,
-        },
-        {
-          id: 3,
-          numEmpleado: '11',
-          curp: 'ALBI05041980',
-          nombre: 'Alberto',
-          primerApellido: 'Lima',
-          segundoApellido: 'Dorantes',
-          fechaNacimiento: '05/04/1980',
-          fechaIngreso: '01/30/2000',
-          sueldoBase: '$10,000.00',
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          categoria: '$3,000',
-          antiguedad: '22 años',
-          correo: 'jimetez@imss.gob.mx',
-          puesto: 'Promotor',
-          diasDescanso: '13/03/2023',
-          nombrePromotor: 'Promotor siniestro de previsión funeraria con cremación',
-          descripcion: 'Promotor todo incluido con cremación servicios completos',
-          estatus: true,
-        }
-      ];
-      this.totalElementos = this.promotores.length;
-    }, 0);
+    this.cargarCatalogos();
+    this.cargarVelatorios(true);
   }
 
   inicializarFiltroForm() {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: null, disabled: false }],
-      delegacion: [{ value: null, disabled: false }],
-      velatorio: [{ value: null, disabled: false }],
-      nombrePromotor: [{ value: null, disabled: false }],
+      nivel: [{value: +usuario.idOficina, disabled: true}],
+      delegacion: [{value: +usuario.idDelegacion, disabled: +usuario.idOficina >= 2}, []],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, []],
+      nombrePromotor: [{value: null, disabled: false}],
     });
+  }
+
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];
+  }
+
+  cargarVelatorios(cargaInicial: boolean = false): void {
+    if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.filtroForm.get('velatorio')?.patchValue("");
+    }
+    const idDelegacion = this.filtroForm.get('delegacion')?.value;
+    if (!idDelegacion) return;
+    this.promotoresService.velatoriosPorDelegacion(idDelegacion).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.log(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    });
+  }
+
+  paginar(event?: LazyLoadEvent): void {
+    if (event?.first !== undefined && event.rows !== undefined) {
+      this.numPaginaActual = Math.floor(event.first / event.rows);
+    } else {
+      this.numPaginaActual = 0;
+    }
+    this.buscarPorFiltros(false);
+  }
+
+  paginarPorFiltros(): void {
+    this.numPaginaActual = 0;
+    this.buscarPorFiltros(true);
+  }
+
+  buscarPorFiltros(esFiltro: boolean): void {
+    this.loaderService.activar();
+    this.promotoresService.buscarPorFiltros(this.datosPromotoresFiltros(esFiltro), this.numPaginaActual, this.cantElementosPorPagina)
+      .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        if (respuesta.datos) {
+          this.promotores = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+          this.realizoBusqueda = true;
+        } else {
+          this.promotores = [];
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      }
+    });
+  }
+
+  datosPromotoresFiltros(esFiltro: boolean): BuscarPromotores {
+    let nomPromotor: string | null = null;
+    if (esFiltro) {
+      if (typeof this.ff.nombrePromotor?.value === 'object') {
+        nomPromotor = this.ff.nombrePromotor?.value?.label;
+      } else {
+        nomPromotor = this.ff.nombrePromotor.getRawValue() === '' ? null : this.ff.nombrePromotor.getRawValue();
+      }
+    }
+    return {
+      idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
+      idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+      nomPromotor,
+    }
   }
 
   abrirModalAgregarPromotor(): void {
     this.detalleRef = this.dialogService.open(AgregarPromotoresComponent, {
-      header: "Agregar promotor",
+      header: "Registro nuevo promotor",
       width: "920px"
     });
-  }
 
-  abrirModalDetallePromotor(promotor: Promotor) {
-    this.detalleRef = this.dialogService.open(VerDetallePromotoresComponent, {
-      data: { promotor, modo: Accion.Detalle },
-      header: "Ver detalle",
-      width: "920px"
+    this.detalleRef.onClose.subscribe(() => {
+      this.paginar();
     });
   }
 
@@ -193,9 +200,13 @@ export class PromotoresComponent implements OnInit {
 
   abrirModalModificarPromotor() {
     this.detalleRef = this.dialogService.open(ModificarPromotoresComponent, {
-      data: { promotor: this.promotorSeleccionado },
+      data: {promotor: this.promotorSeleccionado},
       header: "Modificar promotor",
       width: "920px"
+    });
+
+    this.detalleRef.onClose.subscribe(() => {
+      this.paginar();
     });
   }
 
@@ -203,16 +214,24 @@ export class PromotoresComponent implements OnInit {
     this.alertaService.mostrar(TipoAlerta.Exito, 'Usuario guardado');
   }
 
-  limpiarFormBusqueda() {
+  limpiar(): void {
+    this.realizoBusqueda = false;
     this.filtroForm.reset();
-  }
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
 
-  buscarPromotor() {
-    // De acuerdo a CU al menos un campo con información a buscar
-    if (this.validarAlMenosUnCampoConValor(this.filtroForm)) {
-      // TO DO llamada a servicio para realizar búsqueda
-      console.log('Datos a buscar', this.filtroForm.value);
+    if (+usuario.idOficina >= 2) {
+      this.filtroForm.get('delegacion')?.patchValue(+usuario.idDelegacion);
     }
+
+    if (+usuario.idOficina === 3) {
+      this.filtroForm.get('velatorio')?.patchValue(+usuario.idVelatorio);
+    } else {
+      this.catalogoVelatorios = [];
+    }
+    this.cargarVelatorios(true);
+    this.promotores = [];
+    this.totalElementos = 0;
   }
 
   validarAlMenosUnCampoConValor(group: FormGroup) {
@@ -222,45 +241,76 @@ export class PromotoresComponent implements OnInit {
     return true;
   }
 
-  cambiarEstatus(promotor: Promotor) {
-    const modo = promotor.estatus ? Accion.Desactivar : Accion.Activar;
-    this.detalleRef = this.dialogService.open(VerDetallePromotoresComponent, {
-      data: { promotor, modo },
-      header: "Ver detalle",
-      width: "920px"
-    });
-    this.detalleRef.onClose.subscribe((res: HttpResponse) => {
-      if (res && res.respuesta === 'Ok' && res.promotor) {
-        const foundIndex = this.promotores.findIndex((item: Promotor) => item.id === promotor.id);
-        this.promotores[foundIndex] = res.promotor;
+  confirmarInhabilitar() {
+    this.mostrarModalConfirmacion = true;
+    this.mensajeModal = '¿Está seguro de desactivar el registro seleccionado del Promotor?';
+  }
+
+  inhabilitarPromotor() {
+    this.loaderService.activar();
+    this.promotoresService.cambiarEstatus(this.datosCambiarEstatus()).pipe(
+      finalize(() => {
+        this.mostrarModalConfirmacion = false;
+        this.loaderService.desactivar();
+      })
+    ).subscribe({
+      next: () => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Inhabilitado correctamente Promotor.');
+        this.paginar();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error, 'Error al guardar la información. Intenta nuevamente.');
       }
     });
   }
 
-  filtrarPromotores(event: any) {
-    // TO DO En una aplicación real, realice una solicitud a una URL remota con la consulta y devuelva los resultados filtrados
-    let filtrado: any[] = [];
-    let query = event.query;
-    for (let i = 0; i < this.promotoresServicio.length; i++) {
-      let promotor = this.promotoresServicio[i];
-      if (promotor.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtrado.push(promotor);
-      }
+  datosCambiarEstatus(): CambiarEstatus {
+    return {
+      idPromotor: this.promotorSeleccionado.idPromotor,
+      estatus: 0,
     }
-
-    this.promotoresServicioFiltrados = filtrado;
   }
 
-  get f() {
+  obtenerNombrePromotor(): string {
+    let query = this.ff.nombrePromotor?.value || '';
+    if (typeof this.ff.nombrePromotor?.value === 'object') {
+      query = this.ff.nombrePromotor?.value?.label;
+    }
+    return query;
+  }
+
+  filtrarPromotores() {
+    let nomPromotor = this.obtenerNombrePromotor();
+    if (nomPromotor?.length >= 3) {
+      const obj: BuscarCatalogo = {
+        idDelegacion: this.ff.delegacion.getRawValue() === '' ? null : this.ff.delegacion.getRawValue(),
+        idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+        nomPromotor,
+        catalogo: 1,
+      }
+      this.promotoresService.obtenerCatalogos(obj).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          let filtrado: TipoDropdown[] = [];
+          if (respuesta.datos && respuesta.datos.length > 0) {
+            respuesta.datos.forEach((e: any) => {
+              filtrado.push({
+                label: e.nomPromotor,
+                value: e.idPromotor,
+              });
+            });
+            this.promotoresFiltrados = filtrado;
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error(error);
+        }
+      });
+    }
+  }
+
+  get ff() {
     return this.filtroForm.controls;
-  }
-
-  get fac() {
-    return this.agregarPromotorForm.controls;
-  }
-
-  get fmc() {
-    return this.modificarPromotorForm.controls;
   }
 
 }

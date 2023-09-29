@@ -6,6 +6,7 @@ import {
 } from "./components/detalle-velacion-domicilio/detalle-velacion-domicilio.component";
 import { GenerarValeSalidaComponent } from "./components/generar-vale-salida/generar-vale-salida.component";
 import { VelacionDomicilioResolver } from "./services/velacion-domicilio.resolver";
+import { VelacionDomicilioDetalleResolver } from "./services/velacion-domicilio-detalle.resolver";
 
 const routes: Routes = [
   {
@@ -23,8 +24,11 @@ const routes: Routes = [
     }
   },
   {
-    path: 'ver-detalle/:id',
-    component: DetalleVelacionDomicilioComponent
+    path: 'ver-detalle/:idValeSalida',
+    component: DetalleVelacionDomicilioComponent,
+    resolve: {
+      respuesta: VelacionDomicilioDetalleResolver
+    }
   }
 ]
 
@@ -33,6 +37,7 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [
     VelacionDomicilioResolver,
+    VelacionDomicilioDetalleResolver,
   ]
 })
 

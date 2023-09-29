@@ -11,6 +11,7 @@ se debe agregar el selector en [custom-grafica-base.scss].
 se debe agregar en [styles.scss].
 */
 
+@import "assets/scss/custom-leaflet";
 @import "assets/scss/custom-prime";
 @import "assets/scss/custom-grafica-base";
 
@@ -144,6 +145,11 @@ body {
     width: 100%;
   }
 
+  a.pi-ellipsis-v {
+    color: #9D2449;
+    font-size: 18px;
+  }
+
   a + a {
     margin-left: 1.75rem;
   }
@@ -177,6 +183,7 @@ body {
 
 .table-panel-row {
   border-bottom: 1px solid #DEE2E6;
+  width: 100%;
 }
 
 .table-panel-column {
@@ -197,11 +204,12 @@ body {
     font-weight: 500;
     font-size: 14px;
     color: #000000;
+    overflow-wrap: break-word;
   }
 }
 
 .table-panel-column-title {
-  padding: 1.5rem 1.75rem 0rem 1.75rem;
+  padding: 1.5rem 1.75rem 0 1.75rem;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -254,7 +262,7 @@ body {
 
 .custom-table .p-datatable-wrapper {
   border: none;
-  border-radius: 0px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -293,31 +301,26 @@ h1.subtitulo-base-lg {
   margin-top: 2.5rem !important;
 }
 
-
 .sivimss-accordionColor.p-accordion .p-accordion-header .p-accordion-header-link {
- background-color: #F3F3F3;
+  background-color: #F3F3F3;
 }
 
 .sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
   background-color: #F3F3F3;
 }
 
-.sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
-  background-color: #F3F3F3;
-}
 .sivimss-accordionColor.p-accordion .p-accordion-header:hover(.p-disabled).p-highlight .p-accordion-header-link {
   background-color: #F3F3F3;
 }
 
-.sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
-  background-color: #F3F3F3;
-}
 .sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
   background-color: #F3F3F3;
 }
+
 .sivimss-accordionColor.p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link {
   background-color: #F3F3F3;
 }
+
 .p-autocomplete {
   height: 40px;
   width: 100%;
@@ -335,17 +338,17 @@ h1.subtitulo-base-lg {
 }
 
 .input-autocomplete {
-  font-size : 14px;
-  font-style : normal;
-  font-weight : 400;
-  width : 100%,
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  width: 100%;
 }
 
 .input-autocomplete-error {
   border: 1px solid #E10000;
 }
 
-.circle{
+.circle {
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -376,3 +379,69 @@ h1.subtitulo-base-lg {
   border-radius: 50%;
 }
 
+.table-panel {
+  .table-panel-header {
+    .table-panel-header-content {
+      width: 100%;
+    }
+  }
+}
+
+.p-confirm-dialog-message {
+  text-align: center;
+  width: 100%;
+}
+
+.accordion-custom-pf.p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+  position: absolute;
+  right: 0.5em;
+}
+
+.check-beneficiario .p-checkbox .p-checkbox-box {
+  border-color: #ced4da;
+}
+
+.border-return-button {
+  border: solid 2px;
+  height: 38px;
+  width: 47px;
+  padding-left: 6px;
+  border-radius: 5px;
+  z-index: 300;
+}
+
+.olvidaste-contrasena {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 120%;
+  color: #1122CC;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+#href_renapo {
+  all: unset;
+}
+
+.header-custom-proveedor > th {
+  background: none !important;
+  border-bottom: 2px solid #DDDDDD !important;
+  color: #484848 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+.table-custom-proveedor > .p-datatable-wrapper {
+  border: none !important;
+}
+
+.ultima-celda-sticky.p-datatable .p-datatable-thead > .header-custom-proveedor > th:last-child {
+  border-left: none !important;
+}
+
+.ultima-celda-sticky.p-datatable .p-datatable-tbody > tr > td:last-child {
+  color: #484848 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}

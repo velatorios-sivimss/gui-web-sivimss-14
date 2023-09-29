@@ -5,59 +5,109 @@
       <label class="control-label" for="usuario">Usuario<span class="req">*</span>:</label>
       <div class="form-icon">
         <input class="form-control" id="usuario" formControlName="usuario"
-               placeholder="Nueva contraseña" type="text">
+               placeholder="Introduce usuario" type="text" (blur)="usuarioIncorrecto = false">
       </div>
       <span class="campo-obligatorio"
-            *ngIf="f.usuario?.errors?.required && (f.usuario?.dirty || f.usuario?.touched)">Campo obligatorio</span>
+            *ngIf="f.usuario?.errors?.required && (f.usuario?.dirty || f.usuario?.touched)">Debes capturar tu usuario.</span>
+      <span class="campo-obligatorio"
+            *ngIf="usuarioIncorrecto">El usuario ingresado no es válido.</span>
     </div>
     <div class="form-group mb-3">
       <label class="control-label" for="contraseniaAnterior">Contraseña anterior<span class="req">*</span>:</label>
       <div class="form-icon">
         <input #contraseniaAnterior class="form-control" id="contraseniaAnterior" formControlName="contraseniaAnterior"
-               placeholder="Nueva contraseña" type="password">
+               placeholder="Introduce contraseña anterior" type="password" (blur)="contraseniaIncorrecta = false">
         <i class="cursor-pointer icon pi pi-eye"
            (click)="contraseniaAnterior.type = contraseniaAnterior.type==='password'?'text':'password'"></i>
       </div>
       <span class="campo-obligatorio"
-            *ngIf="f.contraseniaAnterior?.errors?.required && (f.contraseniaAnterior?.dirty || f.contraseniaAnterior?.touched)">Campo obligatorio</span>
+            *ngIf="f.contraseniaAnterior?.errors?.required && (f.contraseniaAnterior?.dirty || f.contraseniaAnterior?.touched)">Debes capturar tu contraseña.</span>
+      <span class="campo-obligatorio"
+            *ngIf="contraseniaIncorrecta">La contraseña ingresada no es válida.</span>
     </div>
     <div class="form-group mb-3">
       <label class="control-label" for="contraseniaNueva">Nueva contraseña<span class="req">*</span>:</label>
       <div class="form-icon">
         <input #contraseniaNueva class="form-control" id="contraseniaNueva" formControlName="contraseniaNueva"
-               placeholder="Nueva contraseña" type="password">
+               placeholder="Introduce nueva contraseña" type="password" [minlength]="8" (blur)="validarContrasenia()">
         <i class="cursor-pointer icon pi pi-eye"
            (click)="contraseniaNueva.type = contraseniaNueva.type==='password'?'text':'password'"></i>
       </div>
       <span class="campo-obligatorio"
-            *ngIf="f.contraseniaNueva?.errors?.required && (f.contraseniaNueva?.dirty || f.contraseniaNueva?.touched)">Campo obligatorio</span>
+            *ngIf="f.contraseniaNueva?.errors?.required && (f.contraseniaNueva?.dirty || f.contraseniaNueva?.touched)">Este campo es obligatorio *</span>
     </div>
     <div class="form-group mb-3">
-      <label class="control-label" for="contraseniaConfirmacion">Confirmar contraseña<span class="req">*</span>:</label>
+      <label class="control-label" for="contraseniaConfirmacion">Confirmar nueva contraseña<span
+        class="req">*</span>:</label>
       <div class="form-icon">
         <input #contraseniaConfirmacion class="form-control" id="contraseniaConfirmacion"
                formControlName="contraseniaConfirmacion"
-               placeholder="Confirmar contraseña" type="password">
+               placeholder="Confirmar nueva contraseña" type="password">
         <i class="cursor-pointer icon pi pi-eye"
            (click)="contraseniaConfirmacion.type = contraseniaConfirmacion.type==='password'?'text':'password'"></i>
       </div>
       <span class="campo-obligatorio"
-            *ngIf="f.contraseniaConfirmacion?.errors?.required && (f.contraseniaConfirmacion?.dirty || f.contraseniaConfirmacion?.touched)">Campo obligatorio</span>
+            *ngIf="f.contraseniaConfirmacion?.errors?.required && (f.contraseniaConfirmacion?.dirty || f.contraseniaConfirmacion?.touched)">Este campo es obligatorio *</span>
     </div>
     <div class="mt-3">
       <span class="req">*Campos obligatorios</span>
     </div>
     <div class="my-4" *ngIf="form.errors">
-      <span class="validacion-contrasenias" *ngIf="form.errors?.contraseniasIguales">
+      <span class="validacion-contrasenias campo-obligatorio" *ngIf="form.errors?.contraseniasIguales">
         La contraseña anterior no puede ser igual a la contraseña nueva.
       </span>
-      <span class="validacion-contrasenias" *ngIf="form.errors?.contraseniasDiferentes">
-        La contraseña nueva no coincide con la confirmación de la contraseña.
+      <span class="validacion-contrasenias campo-obligatorio" *ngIf="form.errors?.contraseniasDiferentes">
+        Las contraseñas ingresadas no coinciden.
       </span>
     </div>
     <div class="flex justify-content-end align-items-center mt-3 mb-4 flex-wrap">
-      <button class="btn btn-default btn-lg" routerLink="../">Regresar</button>
-      <button class="btn btn-primary btn-lg ml-5" [disabled]="form.invalid">Guardar</button>
+      <button class="btn btn-primary btn-lg ml-5" [disabled]="form.invalid">Cambiar Contraseña</button>
     </div>
   </form>
 </div>
+
+<p-dialog [(visible)]="mostrarModalFormatoContrasenia" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" [showHeader]="false">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">La contraseña ingresada no es válida, debe cumplir la siguiente norma:</span>
+      <ul>
+        <li>Mínimo 8 caracteres.</li>
+        <li>Mínimo una mayúscula.</li>
+        <li>Mínimo una letra minúscula.</li>
+        <li>Mínimo un dígito numérico.</li>
+        <li>Mínimo, un carácter especial.</li>
+        <li>No debe de tener dos dígitos iguales juntos.</li>
+      </ul>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="restablecerCampos()">Entendido</button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="mostrarModalIntentosFallidos" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%', minHeight:'275px'}" [closable]="true"
+          [draggable]="false" [resizable]="false" header="Intentos agotados">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="block text-center">Excediste el número de intentos para ingresar al sistema</span>
+      <span class="block text-center mt-3">Tu cuenta quedará inactiva por 5 minutos</span>
+    </div>
+    <div class="mt-8 contenedor-intentos flex justify-content-center align-items-center"
+         *ngIf="minutosTemporizadorIntentos && segundosTemporizadorIntentos">
+      <div class="flex flex-column align-items-center justify-content-center">
+        <span class="numero">{{minutosTemporizadorIntentos}}</span>
+        <span>minutos</span>
+      </div>
+      <span>:</span>
+      <div class="flex flex-column align-items-center justify-content-center">
+        <span class="numero">{{segundosTemporizadorIntentos}}</span>
+        <span>segundos</span>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

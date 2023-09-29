@@ -1,0 +1,22 @@
+.table-panel-custom {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-margen-custom {
+    margin-top: 3rem !important;
+    margin-left: 0.2rem !important;
+}
+
+.ms {
+    cursor: pointer;
+    position: absolute;
+    top: 26px;
+    right: 16px;
+}
+
+.hidden {
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+}

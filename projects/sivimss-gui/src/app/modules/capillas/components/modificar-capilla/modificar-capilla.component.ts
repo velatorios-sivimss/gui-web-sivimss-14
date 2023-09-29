@@ -132,15 +132,15 @@ export class ModificarCapillaComponent implements OnInit {
     const respuesta: RespuestaModalcapilla = {mensaje: "Actualización satisfactoria", actualizar: true}
     const solicitudCapilla = JSON.stringify(this.crearCapillaModificada());
     console.log('capilla para modificar__:' + solicitudCapilla)
-    this.capillaService.actualizar2(solicitudCapilla).subscribe(
-      () => {
+    this.capillaService.actualizar2(solicitudCapilla).subscribe({
+      next: () => {
         this.ref.close(respuesta)
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
         console.error("ERROR: ", error)
       }
-    );
+    });
   }
 
   cerrar() {

@@ -1,5 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Etapa } from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {
+  GestionarEtapasService
+} from 'projects/sivimss-gui/src/app/modules/ordenes-servicio/services/gestionar-etapas.service';
+import {Etapa} from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.interface";
 
 @Component({
   selector: 'app-etapas',
@@ -8,20 +11,27 @@ import { Etapa } from "projects/sivimss-gui/src/app/shared/etapas/models/etapa.i
 })
 export class EtapasComponent implements OnInit {
 
-  @Input()
+  // @Input()
   etapas!: Etapa[];
 
   @Output()
-  seleccionarEtapa: EventEmitter<Etapa> = new EventEmitter<Etapa>();
+  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor() {
+  constructor(
+    private gestionarEtapasService: GestionarEtapasService
+  ) {
+
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.gestionarEtapasService.etapas$.asObservable().subscribe(
+      (etapas) => this.etapas = etapas
+    );
   }
 
   seleccionEtapa(idEtapaSeleccionada: number) {
     const etapaSeleccionada = this.etapas.find((e: Etapa) => e.idEtapa === idEtapaSeleccionada);
-    this.seleccionarEtapa.emit(etapaSeleccionada);
+    this.seleccionarEtapa.emit(etapaSeleccionada?.idEtapa);
   }
+
 }

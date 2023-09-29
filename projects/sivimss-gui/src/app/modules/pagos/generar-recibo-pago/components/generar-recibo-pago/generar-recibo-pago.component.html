@@ -1,6 +1,9 @@
-<app-titulo-principal titulo="Generar recibo de pago"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Generar recibo de pago" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (ngSubmit)="buscar()">
+  <form [formGroup]="filtroFormReciboPago" (ngSubmit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel:</label>
@@ -11,20 +14,22 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones"
-                    placeholder="Selecciona la delegación">
+                    placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
         </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="opciones"
-                    placeholder="Selecciona el velatorio">
+        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+                    placeholder="Selecciona el velatorio" [filter]="true" (onChange)="obtenerFolios()">
         </p-dropdown>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folio">Folio de la ODS:</label>
-        <input id="folio" class="form-control" formControlName="folio" placeholder="Ingresa el folio">
+        <p-dropdown id="folio" class="form-control" formControlName="folio" [options]="catalogoFolios"
+                    placeholder="Selecciona el folio" [filter]="true">
+        </p-dropdown>
       </div>
     </div>
     <div class="row mb-3">
@@ -36,20 +41,28 @@
       <div class="col-md-3">
         <label class="control-label" for="fechaInicial">Fecha inicial:</label>
         <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true"
-                    placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="filtroForm.get('fechaFinal')?.value">
+                    placeholder="Fecha inicial" dateFormat="dd/mm/yy"
+                    (onSelect)="validarMismaFechaInicioFin()"
+                    [maxDate]="filtroFormReciboPago.get('fechaFinal')?.value || fechaAnterior">
         </p-calendar>
       </div>
       <div class="col-md-3">
         <label class="control-label" for="fechaInicial">Fecha final:</label>
         <p-calendar id="fechaFinal" formControlName="fechaFinal" styleClass="form-control" [showIcon]="true"
-                    placeholder="Fecha final" dateFormat="dd/mm/yy" [minDate]="filtroForm.get('fechaInicial')?.value">
+                    placeholder="Fecha final" dateFormat="dd/mm/yy"
+                    (onSelect)="validarMismaFechaInicioFin()"
+                    [minDate]="filtroFormReciboPago.get('fechaInicial')?.value"
+                    [maxDate]="fechaActual">
         </p-calendar>
       </div>
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroFormReciboPago.pristine">
+          Limpiar
+        </button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroFormReciboPago.pristine">Buscar
+        </button>
       </div>
     </div>
   </form>
@@ -66,19 +79,19 @@
 
     <ng-template pTemplate="header">
       <tr>
-        <th scope="col">Fecha</th>
-        <th scope="col">Folio ODS</th>
-        <th scope="col">Estatus de la ODS</th>
-        <th scope="col">Estatus del pago</th>
-        <th scope="col"></th>
+        <th id="columna_generar_recibo_fecha">Fecha</th>
+        <th id="columna_generar_recibo_folio">Folio ODS</th>
+        <th id="columna_generar_recibo_estatus_ods">Estatus ODS</th>
+        <th id="columna_generar_recibo_estatus_pago">Estatus pago</th>
+        <th id="columna_generar_recibo_botones"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-reciboPago>
       <tr>
-        <td> {{reciboPago.fOds}} </td>
+        <td> {{reciboPago.fOds | date:'dd/MM/YYYY'}} </td>
         <td> {{reciboPago.claveFolio}} </td>
         <td>Generada</td>
-        <td>Generado</td>
+        <td>{{reciboPago.claveEstatusPago}}</td>
         <td>
           <div class="contenedor-celda-iconos">
             <a (click)="abrirPanel($event,reciboPago)">
@@ -90,8 +103,8 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="5" class="p-2 text-center font-bold text-xl">
-          No se encontro información relacionada a tu búsqueda
+        <th colspan="5" class="p-2 text-center font-bold text-xl" id="generar_recibo_pago_sin_resultados">
+          No se encontró información relacionada a tu búsqueda
         </th>
       </tr>
     </ng-template>
@@ -101,15 +114,6 @@
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
-        <div class="export-table">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf" (click)="guardarPDF()">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
-          </div>
-        </div>
-      </div>
     </ng-template>
   </p-table>
 </section>
@@ -117,8 +121,16 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Generar recibo de pago de trámites "
-                                (click)="abrirModalReciboPagoTramites()"></app-overlay-panel-opcion>
+      <ng-container *appValidaRol="['GENERAR_RECIBO_PAGO','ALTA']">
+        <app-overlay-panel-opcion titulo="Generar recibo de pago" *ngIf="!reciboPagoSeleccionado.idReciboPago"
+                                  [routerLink]="['./generar-recibo-pago-tramites', reciboPagoSeleccionado.idPagoBitacora]"
+                                  routerLinkActive>
+        </app-overlay-panel-opcion>
+      </ng-container>
+      <app-overlay-panel-opcion titulo="Ver" *ngIf="reciboPagoSeleccionado.idReciboPago"
+                                [routerLink]="['./detalle-recibo-pago-tramites', reciboPagoSeleccionado.idReciboPago]"
+                                routerLinkActive>
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

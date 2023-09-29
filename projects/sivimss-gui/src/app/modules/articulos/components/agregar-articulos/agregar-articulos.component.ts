@@ -97,7 +97,7 @@ export class AgregarArticulosComponent implements OnInit {
       idCategoriaArticulo: this.faa.categoria.value,
       categoriaArticulo: this.catalogoCategorias.find((e: TipoDropdown) => e.value === this.faa.categoria.value)?.label,
       idTipoArticulo: this.faa.tipoArticulo.value,
-      tipoArticulo: this.catalogoTiposArticulos.find((e: TipoDropdown) => e.value === this.faa.tipoArticulo.value)?.label || '',
+      tipoArticulo: this.catalogoTiposArticulos.find((e: TipoDropdown) => e.value === this.faa.tipoArticulo.value)?.label ?? '',
       idTipoMaterial: this.faa.tipoMaterial.value,
       tipoMaterial: this.catalogoTiposMateriales.find((e: TipoDropdown) => e.value === this.faa.tipoMaterial.value)?.label,
       idTamanio: this.faa.tamanio.value,
@@ -111,11 +111,11 @@ export class AgregarArticulosComponent implements OnInit {
       alto: this.faa.alto.value,
       estatus: true,
       idPartPresupuestal: this.faa.partidaPresupuestal.value,
-      partPresupuestal: this.catalogoPartidasPresupuestales.find((e: TipoDropdown) => e.value === this.faa.partidaPresupuestal.value)?.label || '',
+      partPresupuestal: this.catalogoPartidasPresupuestales.find((e: TipoDropdown) => e.value === this.faa.partidaPresupuestal.value)?.label ?? '',
       idCuentaPartPresupuestal: this.faa.cuentaContable.value,
-      numCuentaPartPresupuestal: this.catalogoCuentasContables.find((e: TipoDropdown) => e.value === this.faa.cuentaContable.value)?.label || '',
+      numCuentaPartPresupuestal: this.catalogoCuentasContables.find((e: TipoDropdown) => e.value === this.faa.cuentaContable.value)?.label ?? '',
       idProductosServicios: this.faa.productoServicios.value,
-      productoServicios: this.catalogoClavesSat.find((e: TipoDropdown) => e.value === this.faa.productoServicios.value)?.label || '',
+      productoServicios: this.catalogoClavesSat.find((e: TipoDropdown) => e.value === this.faa.productoServicios.value)?.label ?? '',
     }
   }
 
@@ -140,20 +140,20 @@ export class AgregarArticulosComponent implements OnInit {
   }
 
   agregarArticulo() {
-    this.articulosService.guardar(this.obtenerArticuloAgregar()).subscribe(
-      (respuesta) => {
+    this.articulosService.guardar(this.obtenerArticuloAgregar()).subscribe({
+      next: (respuesta) => {
         if (respuesta) {
           this.ref.close(true);
         }
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         if (err.error.mensaje === "Registro repetido") {
           this.alertaService.mostrar(TipoAlerta.Error, this.MSG017);
         } else {
           this.alertaService.mostrar(TipoAlerta.Error, err.error.mensaje);
         }
       }
-    );
+  });
   }
 
   obtenerArticuloAgregar() {

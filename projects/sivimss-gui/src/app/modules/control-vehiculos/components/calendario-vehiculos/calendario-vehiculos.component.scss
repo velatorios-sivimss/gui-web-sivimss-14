@@ -1,0 +1,40 @@
+.calendar-label {
+  color: #34c1ad;
+  font-size: 0.75em;
+  font-weight: bold;
+}
+
+
+.tipoLetra {
+  font-style: normal;
+  font-weight: normal;
+}
+
+.tipoLetraN {
+  font-style: normal;
+  padding-right: 10px;
+}
+
+:host::ng-deep .fc .fc-daygrid-day-events {
+  margin-top: 10px;
+}
+
+:host::ng-deep .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events {
+  min-height: 2em;
+  position: relative;
+  font-size: 1em;
+}
+
+tr {
+  max-width: 150px;
+}
+
+.col-absolute {
+  position: absolute;
+  left: 50%;
+}
+
+
+.fc-h-event .fc-event-title-container {
+  font-size: 15px;
+}

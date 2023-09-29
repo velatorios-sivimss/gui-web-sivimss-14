@@ -43,7 +43,9 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "moment"
+              "moment",
+              "pdfjs-dist",
+              "leaflet"
             ],
             "outputPath": "dist/sivimss-gui",
             "index": "projects/sivimss-gui/src/index.html",
@@ -60,6 +62,9 @@
               "node_modules/primeng/resources/primeng.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeflex/primeflex.css",
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css",
+              "projects/sivimss-gui/src/assets/scss/custom-leaflet.scss",
               "projects/sivimss-gui/src/assets/icons/iconos-sivimss.css",
               "projects/sivimss-gui/src/assets/icons/iconos-transportes.css",
               "projects/sivimss-gui/src/styles.scss"

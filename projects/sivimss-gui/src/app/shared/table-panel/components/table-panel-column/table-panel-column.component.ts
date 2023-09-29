@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-table-panel-column',
   templateUrl: './table-panel-column.component.html',
   styleUrls: ['./table-panel-column.component.scss']
 })
-export class TablePanelColumnComponent implements OnInit {
+export class TablePanelColumnComponent {
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

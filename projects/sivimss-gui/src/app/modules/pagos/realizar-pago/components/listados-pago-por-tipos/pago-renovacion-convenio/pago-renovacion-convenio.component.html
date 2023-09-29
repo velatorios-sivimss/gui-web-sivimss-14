@@ -1,0 +1,90 @@
+<app-titulo-principal titulo="Pago de Renovación de Convenios de Previsión Funeraria"></app-titulo-principal>
+<p-table styleClass="mt-5 mb-6" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
+         [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+         (onLazyLoad)="seleccionarPaginacion($event)">
+  <ng-template pTemplate="header">
+    <tr>
+      <th id="columna_pagos_renovacion_convenio_fecha_pago">Fecha de pago</th>
+      <th id="columna_pagos_renovacion_convenio_folio">Folio PRCPF</th>
+      <th id="columna_pagos_renovacion_convenio_tipo_pago">Tipo de pago</th>
+      <th id="columna_pagos_renovacion_convenio_total_pagar">Total a pagar</th>
+      <th id="columna_pagos_renovacion_convenio_total_pagado">Total pagado</th>
+      <th id="columna_pagos_renovacion_convenio_diferencias_totales">Diferencias Totales</th>
+      <th id="columna_pagos_renovacion_convenio_botones"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-pago>
+    <tr>
+      <td>{{pago.fechaPago  | date:'dd/MM/YYYY'}}</td>
+      <td>{{pago.folio}}</td>
+      <td>{{pago.tipoPago}}</td>
+      <td class="font-bold">{{pago.total | currency}}</td>
+      <td class="font-bold">{{pago.totalPagado | currency}}</td>
+      <td class="font-bold">{{pago.diferenciasTotales | currency}}</td>
+      <td>
+        <div class="contenedor-celda-iconos">
+          <a (click)="abrirPanel($event,pago)">
+            <img src="../../../../../../../assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+          </a>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <th colspan="7" class="p-2 text-center font-bold text-xl" id="pagos_renovar_convenio_sin_resultados">
+        No se encontro información relacionada a tu búsqueda
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="paginatorleft">
+    <div class="paginator-template">
+      <span class="total-elements">{{pagos.length}} de {{totalElementos}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="paginatorright">
+  </ng-template>
+</p-table>
+<div class="flex mt-4 mb-4 justify-content-end">
+  <button class="ml-6 mt-3 btn btn-primary btn-md" [routerLink]="'./..'">
+    Regresar
+  </button>
+</div>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"></app-overlay-panel-opcion>
+      <ng-container *ngIf="rol === 13">
+        <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago"
+                                  [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
+        </app-overlay-panel-opcion>
+      </ng-container>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
+
+<p-dialog header="Pagar renovacion convenio" [(visible)]="pagoConvenioModal" [style]="{width: '50vw'}">
+  <div class="row mb-3" [formGroup]="pagoForm">
+    <div class="col-md-12">
+      <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span></label>
+      <p-dropdown appendTo="body" id="tipoPago" class="form-control" formControlName="tipoPago"
+                  [options]="tipoPago" placeholder="Seleccionar tipo">
+      </p-dropdown>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-md-12 control-label">
+      <span>*Campos obligatorios</span>
+    </div>
+  </div>
+  <div class="row mt-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="submit" class="btn btn-default btn-md" (click)="pagoConvenioModal = !pagoConvenioModal">Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="abrirModalPago()"
+              [disabled]="pagoForm.invalid">Aceptar
+      </button>
+    </div>
+  </div>
+</p-dialog>

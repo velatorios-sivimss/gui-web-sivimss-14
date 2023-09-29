@@ -5,9 +5,18 @@
 export const environment = {
   production: false,
   api: {
-    mssivimss: 'http://localhost:8082/mssivimss-ctrol-permisos/sivimss/service/',
-    login: 'http://localhost:8080/mssivimss-oauth/acceder'
-  }
+    mssivimss: 'mssivimss-ctrol-permisos/v1/sivimss/service/',
+    login: 'mssivimss-oauth/v1',
+    servicios_externos: 'mssivimss-ser-externos/v1/catalogos/externos/',
+    servicios_externos_reportes: 'mssivimss-ser-externos/v1/reportes/',
+    notificaciones: 'mssivimss-notificaciones/v1/notificaciones/avisos',
+
+    // mssivimss: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ctrol-permisos/v1/sivimss/service/',
+    // login: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-oauth/v1',
+    // servicios_externos: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/catalogos/externos/',
+    // servicios_externos_reportes: 'http://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-ser-externos/v1/reportes/',
+    // notificaciones: 'https://sivimss-ds.apps.ocp.imss.gob.mx/mssivimss-notificaciones/v1/notificaciones/avisos',
+  },
 };
 
 /*

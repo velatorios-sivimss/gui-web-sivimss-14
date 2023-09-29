@@ -231,9 +231,8 @@ export class ContratosComponent implements OnInit {
     // TO DO En una aplicación real, realice una solicitud a una URL remota con la consulta y devuelva los resultados filtrados
     let filtrado: any[] = [];
     let query = event.query;
-    for (let i = 0; i < this.contratosServicio.length; i++) {
-      let contrato = this.contratosServicio[i];
-      if (contrato.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+    for (let contrato of this.contratosServicio) {
+      if (contrato.label.toLowerCase().indexOf(query.toLowerCase()) === 0) {
         filtrado.push(contrato);
       }
     }

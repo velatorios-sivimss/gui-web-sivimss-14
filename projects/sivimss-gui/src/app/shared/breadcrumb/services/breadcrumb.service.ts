@@ -8,9 +8,6 @@ import {ElementoBreadcrumb} from "../models/elemento-breadcrumb.interface";
 export class BreadcrumbService {
   private breadcrumbSubject = new BehaviorSubject<ElementoBreadcrumb[]>([]);
 
-  constructor() {
-  }
-
   obtenerObservable(): Observable<ElementoBreadcrumb[]> {
     return this.breadcrumbSubject.asObservable();
   }

@@ -5,10 +5,7 @@
   <div class="row mb-3">
       <div class="col-md-2"></div>
       <div class="col-md-8">
-        <img class="datoPersona" src="../../../../../assets/images/beneficiarios.PNG">
-          <!-- <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps> -->
-          <!-- <img src="../../../../../assets/images/proveedor.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 0">
-          <img src="../../../../../assets/images/direccion.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 1"> -->
+        <img class="datoPersona" src="../../../../../assets/images/beneficiarios.PNG" alt="Persona beneficiaria">
       </div>
       <div class="col-md-2"></div>
   </div>
@@ -144,8 +141,8 @@
               *ngIf="mpf.tipoPaquete?.errors?.required && (mpf.tipoPaquete?.dirty || mpf.tipoPaquete?.touched)">Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="enfermedadPrexistente">enfermedad prexistente<span class="req">*</span>:</label>
-        <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente" placeholder="No"
+        <label class="control-label" for="enfermedadPrexistente">Enfermedad preexistente<span class="req">*</span>:</label>
+        <p-dropdown id="enfermedadPrexistente" class="form-control" formControlName="enfermedadPrexistente" placeholder="Selecciona nfermedad preexistente"
                     [options]="[{label:'Opción 1', value:0},{label:'Opción 2', value:1}]"></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="mpf.enfermedadPrexistente?.errors?.required && (mpf.enfermedadPrexistente?.dirty || mpf.enfermedadPrexistente?.touched)">Campo obligatorio</span>

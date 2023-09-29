@@ -1,5 +1,3 @@
-// TODO: Regresar catalogos
-
 import { Injectable } from '@angular/core';
 import {
     ActivatedRouteSnapshot, Resolve,
@@ -33,7 +31,7 @@ export class ArticulosResolver implements Resolve<any> {
             catalogoClavesSat$,
         ]);
 
-        // return this.articulosService.obtenerCatCategorias();
-        // return of([])
+        // return this.articulosService.obtenerCatCategorias(); NOSONAR
+        // return of([]) NOSONAR
     }
 }

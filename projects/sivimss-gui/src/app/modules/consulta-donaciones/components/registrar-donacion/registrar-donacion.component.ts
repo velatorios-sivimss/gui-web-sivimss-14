@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 import {DynamicDialogRef} from "primeng/dynamicdialog";
 import {Router} from "@angular/router";
 
@@ -7,24 +7,23 @@ import {Router} from "@angular/router";
   templateUrl: './registrar-donacion.component.html',
   styleUrls: ['./registrar-donacion.component.scss']
 })
-export class RegistrarDonacionComponent implements OnInit {
+export class RegistrarDonacionComponent {
 
   constructor(
     private router: Router,
     private readonly ref: DynamicDialogRef,
-  ) { }
-
-  ngOnInit(): void {
+  ) {
   }
+
 
   aceptacionDonacion(): void {
     this.ref.close();
-    this.router.navigate(["consulta-donaciones/aceptacion-donacion"]);
+    void this.router.navigate(["consulta-donaciones/aceptacion-donacion"]);
   }
 
   controlSalidaDonaciones(): void {
     this.ref.close();
-    this.router.navigate(["consulta-donaciones/control-salida-donaciones"]);
+    void this.router.navigate(["consulta-donaciones/control-salida-donaciones"]);
   }
 
   cancelar(): void {

@@ -23,8 +23,7 @@ const routes: Routes = [
   {
     path: 'inicio-sesion',
     loadChildren: () => import('./modules/autenticacion/autenticacion.module').then((m) => m.AutenticacionModule),
-    canActivate: [BloqueaUsuarioLogueadoGuard],
-    canActivateChild: [BloqueaUsuarioLogueadoGuard]
+    canActivate: [BloqueaUsuarioLogueadoGuard]
   },
   {
     path: 'roles',
@@ -117,7 +116,7 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'renovar-convenio-pf',
+    path: 'convenios-prevision-funeraria/renovar-convenio-pf',
     loadChildren: () => import('./modules/renovar-convenio-pf/renovar-convenio-pf.module').then(m => m.RenovarConvenioPfModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
@@ -127,7 +126,7 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'renovacion-extemporanea',
+    path: 'convenios-prevision-funeraria/renovacion-extemporanea',
     loadChildren: () => import('./modules/renovacion-extemporanea/renovacion-extemporanea.module').then(m => m.RenovacionExtemporaneaModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
@@ -162,8 +161,8 @@ const routes: Routes = [
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-    path: 'pagos/generar-recibo-pago',
-    loadChildren: () => import('./modules/pagos/generar-recibo-pago/generar-recibo-pago.module').then(m => m.GenerarReciboModule),
+    path: 'pagos',
+    loadChildren: () => import('./modules/pagos/pagos.module').then(m => m.PagosModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
@@ -173,17 +172,63 @@ const routes: Routes = [
   },
   {
     path: 'generar-nota-remision',
-    loadChildren: () => import('./modules/generar-nota-remision/generar-nota-remision.module').then(m => m.GenerarNotaRemisionModule)
+    loadChildren: () => import('./modules/generar-nota-remision/generar-nota-remision.module').then(m => m.GenerarNotaRemisionModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
-  path: 'programar-mantenimiento-vehicular',
-  loadChildren: () => import('./modules/mantenimiento-vehicular/mantenimiento-vehicular.module').then(m => m.MantenimientoVehicularModule),
+    path: 'programar-mantenimiento-vehicular',
+    loadChildren: () => import('./modules/mantenimiento-vehicular/mantenimiento-vehicular.module').then(m => m.MantenimientoVehicularModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'control-de-vehiculos',
+    loadChildren: () => import('./modules/control-vehiculos/control-vehiculos.module').then(m => m.ControlVehiculosModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'comisiones',
+    loadChildren: () => import('./modules/calculo-comisiones/calculo-comisiones.module').then(m => m.CalculoComisionesModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'solicitudes-pago',
+    loadChildren: () => import('./modules/solicitudes-pago/solicitudes-pago.module').then(m => m.SolicitudesPagoModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'reportes',
+    loadChildren: () => import('./modules/reportes/reportes.module').then(m => m.ReportesModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'orden-entrada',
+    loadChildren: () => import('./modules/orden-entrada/orden-entrada.module').then(m => m.OrdenEntradaModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'balance-cajas',
+    loadChildren: () => import('./modules/balance-cajas/balance-caja.module').then(m => m.BalanceCajaModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'generar-orden-de-subrogacion',
+    loadChildren: () => import('./modules/generar-orden-subrogacion/generar-orden-subrogacion.module').then(m => m.GenerarOrdenSubrogacionModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'generar-formato-de-actividades',
+    loadChildren: () => import('./modules/generar-formato-actividades/generar-formato-actividades.module').then(m => m.GenerarFormatoActividadesModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
+  },
+  {
+    path: 'generar-hoja-de-consignacion',
+    loadChildren: () => import('./modules/generar-hoja-consignacion/generar-hoja-consignacion.module').then(m => m.GenerarHojaConsignacionModule),
+    canActivate: [PermiteUsuarioLogueadoGuard]
   },
   {
     path: '**',
     component: PaginaNoEncontradaComponent,
   },
-
 ];
 
 @NgModule({

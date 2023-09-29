@@ -1,86 +1,176 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { ModalNotaRemisionComponent } from '../modal/modal-nota-remision/modal-nota-remision.component';
-import { GenerarNotaRemisionService } from '../../services/generar-nota-remision.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {ModalNotaRemisionComponent} from '../modal/modal-nota-remision/modal-nota-remision.component';
+import {GenerarNotaRemisionService} from '../../services/generar-nota-remision.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ArticulosServicios, DetalleNotaRemision, GenerarDatosReporte} from '../../models/nota-remision.interface';
+import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import {mensajes} from '../../../reservar-salas/constants/mensajes';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
 @Component({
   selector: 'app-formato-generar-nota-remision',
   templateUrl: './formato-generar-nota-remision.component.html',
   styleUrls: ['./formato-generar-nota-remision.component.scss'],
-  providers: [DynamicDialogConfig, DialogService],
+  providers: [DynamicDialogConfig, DialogService, DescargaArchivosService],
 })
 export class FormatoGenerarNotaRemisionComponent implements OnInit {
+  readonly POSICION_DETALLE: number = 0;
+  readonly POSICION_SERVICIOS: number = 1;
+
   @ViewChild(OverlayPanel)
   overlayPanel: OverlayPanel | undefined;
 
   notaRemisionForm!: FormGroup;
   formatoGenerar: boolean = true;
   creacionRef!: DynamicDialogRef;
+  idOds: number = 0;
+  servicios: ArticulosServicios[] = [];
+  notaRemisionReporte: GenerarDatosReporte = {};
+
+  alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
   constructor(
     public dialogService: DialogService,
     private formBuilder: FormBuilder,
     private alertaService: AlertaService,
     private router: Router,
+    private route: ActivatedRoute,
     private activatedRoute: ActivatedRoute,
     private generarNotaRemisionService: GenerarNotaRemisionService,
-  ) { }
-
-  ngOnInit(): void {
-    this.inicializarNotaRemisionForm();
+    private descargaArchivosService: DescargaArchivosService,
+    private readonly loaderService: LoaderService,
+  ) {
   }
 
-  inicializarNotaRemisionForm() {
+  ngOnInit(): void {
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.idOds = +this.route.snapshot.params?.idOds;
+
+    if (!this.idOds) {
+      this.cancelar();
+    }
+
+    this.notaRemisionReporte = respuesta[this.POSICION_DETALLE]?.datos[0];
+    const detalleOrdenServicio = respuesta[this.POSICION_DETALLE]?.datos[0];
+    this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
+    this.inicializarNotaRemisionForm(detalleOrdenServicio);
+  }
+
+  inicializarNotaRemisionForm(detalle: DetalleNotaRemision) {
     this.notaRemisionForm = this.formBuilder.group({
-      versionDocumento: [{ value: "1.2", disabled: true }],
-      fecha: [{ value: new Date(), disabled: true }],
-      velatorio: [{ value: 'No. 22 Villahermosa', disabled: true }],
-      remisionServicios: [{ value: 'DOC-000001', disabled: true }],
-      direccion: [{ value: 'Prolongación Av. México No. 1203, Col. Sabina, C.P. 86153, Villahermosa, San Luis Potosí.', disabled: true }],
-      nombreSolicitante: [{ value: 'Miranda Fernendez Guisa', disabled: true }],
-      direccionSolicitante: [{ value: 'Av. Congreso de la Unión, Iztacalco, CP 201, CDMX', disabled: true }],
-      curpSolicitante: [{ value: 'FEGM560117MDFMPRO7', disabled: true }],
-      velatorioSolicitante: [{ value: 'No. 22 Villahermosa', disabled: true }],
-      finado: [{ value: 'Pedro Lomas Morales', disabled: true }],
-      parentesco: [{ value: 'Abuelo', disabled: true }],
-      folioOds: [{ value: 'DOC-000001', disabled: true }],
-      nombreConformidad: [{ value: null, disabled: true }],
-      nombreRepresentante: [{ value: null, disabled: true }],
+      versionDocumento: [{value: null, disabled: true}],
+      fechaNota: [{value: new Date(), disabled: true}],
+      velatorioOrigen: [{value: null, disabled: true}],
+      folioNota: [{value: null, disabled: true}],
+      dirVelatorio: [{value: null, disabled: true}],
+      nomSolicitante: [{value: null, disabled: true}],
+      dirSolicitante: [{value: null, disabled: true}],
+      curpSolicitante: [{value: null, disabled: true}],
+      nomVelatorio: [{value: null, disabled: true}],
+      nomFinado: [{value: null, disabled: true}],
+      parFinado: [{value: null, disabled: true}],
+      folioODS: [{value: null, disabled: true}],
+      nombreConformidad: [{value: null, disabled: true}],
+      nombreRepresentante: [{value: null, disabled: true}],
     });
+
+    this.notaRemisionForm.patchValue({
+      ...detalle,
+      versionDocumento: "1.2",
+    })
   }
 
   abrirModalGenerandoNotaRemision(): void {
     this.creacionRef = this.dialogService.open(ModalNotaRemisionComponent, {
       header: "Aviso",
       width: "920px",
-      data: { mensaje: 'Generando nota de remisión' },
+      data: {mensaje: 'Generando nota de remisión'},
     });
   }
 
   regresar() {
     this.formatoGenerar = true;
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
+
+  cancelar() {
+    this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute}).then(() => {
+    }).catch(() => {
+    });
   }
 
   generarNotaRemision() {
     this.abrirModalGenerandoNotaRemision();
-    this.generarNotaRemisionService.guardar({ idOrden: 1 }).subscribe(
-      (respuesta) => {
-        if (respuesta && respuesta.codigo === 200) {
-          this.creacionRef.close();
-          this.alertaService.mostrar(TipoAlerta.Exito, 'Nota de remisión generada correctamente');
-          this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+    this.generarNotaRemisionService.guardar({idOrden: this.idOds}).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.creacionRef.close();
+        const mensaje = this.alertas?.filter((msj: any) => {
+          return msj.idMensaje == respuesta.mensaje;
+        });
+        if (mensaje && mensaje.length > 0) {
+          this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
         }
+        this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute}).then(() => {
+        }).catch(() => {
+        });
       },
-      (error: HttpErrorResponse) => {
-        console.error(error);
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
+        const mensaje = this.alertas.filter((msj: any) => {
+          return msj.idMensaje == error?.error?.mensaje;
+        })
+        if (mensaje && mensaje.length > 0) {
+          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+        }
         this.creacionRef.close();
       }
-    );
+    });
+  }
+
+  generarReporteOrdenServicio() {
+    const busqueda: GenerarDatosReporte = this.datosReporte();
+    this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe({
+      next: (response: any) => {
+        const file = new Blob([response], {type: 'application/pdf'});
+        const url = window.URL.createObjectURL(file);
+        window.open(url);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al descargar reporte: ', error.message);
+      }
+    });
+  }
+
+  datosReporte(): GenerarDatosReporte {
+    return {
+      idNota: 0,
+      idOrden: this.idOds,
+      fechaNota: this.notaRemisionReporte.fechaNota,
+      velatorioOrigen: this.notaRemisionReporte.velatorioOrigen,
+      folioNota: this.notaRemisionReporte.folioNota,
+      dirVelatorio: this.notaRemisionReporte.dirVelatorio,
+      nomSolicitante: this.notaRemisionReporte.nomSolicitante,
+      dirSolicitante: this.notaRemisionReporte.dirSolicitante,
+      curpSolicitante: this.notaRemisionReporte.curpSolicitante,
+      nomVelatorio: this.notaRemisionReporte.nomVelatorio,
+      nomFinado: this.notaRemisionReporte.nomFinado,
+      parFinado: this.notaRemisionReporte.parFinado,
+      folioODS: this.notaRemisionReporte.folioODS,
+      folioConvenio: this.notaRemisionReporte.folioConvenio,
+      fechaConvenio: this.notaRemisionReporte.fechaConvenio,
+      tipoReporte: "pdf"
+    }
+  }
+
+  get f() {
+    return this.notaRemisionForm.controls;
   }
 
 }

@@ -1,0 +1,4 @@
+<app-etapa (seleccionEtapa)="seleccionEtapa($event)" [idEtapa]="etapa.idEtapa" [lineaIzquierda]="etapa.lineaIzquierda"
+           [lineaDerecha]="etapa.lineaDerecha" [estado]="etapa.estado"
+           [textoInterior]="etapa.textoInterior"
+           [textoExterior]="etapa.textoExterior" *ngFor="let etapa of etapas;index as i;"></app-etapa>

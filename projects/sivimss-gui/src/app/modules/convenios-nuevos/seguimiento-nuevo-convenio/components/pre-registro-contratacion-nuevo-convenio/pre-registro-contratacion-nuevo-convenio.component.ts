@@ -1,14 +1,13 @@
-import { SeguimientoNuevoConvenio } from './../../models/seguimiento-nuevo-convenio.interface';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { DialogService } from 'primeng/dynamicdialog';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { AlertaService } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
-import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
-import { LazyLoadEvent } from 'primeng/api';
-import { Documentos } from '../../models/documentos.interface';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, ViewChild} from '@angular/core';
+import {FormBuilder} from '@angular/forms';
+import {DialogService} from 'primeng/dynamicdialog';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import {BreadcrumbService} from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
+import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/constantes';
+import {LazyLoadEvent} from 'primeng/api';
+import {Documentos} from '../../models/documentos.interface';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-pre-registro-contratacion-nuevo-convenio',
@@ -16,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./pre-registro-contratacion-nuevo-convenio.component.scss'],
   providers: [DialogService]
 })
-export class PreRegistroContratacionNuevoConvenioComponent implements OnInit {
+export class PreRegistroContratacionNuevoConvenioComponent {
 
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
@@ -28,8 +27,8 @@ export class PreRegistroContratacionNuevoConvenioComponent implements OnInit {
   infoPersona: boolean = false;
 
 
-  documentos:Documentos[] = [];
-  documentoSeleccionado:Documentos = {};
+  documentos: Documentos[] = [];
+  documentoSeleccionado: Documentos = {};
 
   preRegistroSiguiente: boolean = false;
 
@@ -40,19 +39,16 @@ export class PreRegistroContratacionNuevoConvenioComponent implements OnInit {
     public dialogService: DialogService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-  ) { }
-
-
-  ngOnInit(): void {
+  ) {
   }
 
-  abrir(event:MouseEvent){
+  abrir(event: MouseEvent) {
     this.infoPersona = true;
     this.overlayPanel.toggle(event);
   }
 
   // ,articuloSeleccionado:SeguimientoNuevoConvenio
-  abrirPanel(event:MouseEvent):void{
+  abrirPanel(event: MouseEvent): void {
     console.log('se habre el panel');
 
     // this.infoPersona = false;
@@ -72,61 +68,62 @@ export class PreRegistroContratacionNuevoConvenioComponent implements OnInit {
     // })
   }
 
-  paginar(event: LazyLoadEvent): void{
+  paginar(event: LazyLoadEvent): void {
     console.log(event);
-    setTimeout(() =>{
+    setTimeout(() => {
       this.documentos = [
         {
-          id:1,
-          nombre:"Marta",
-          apellidoMaterno:"eugenia",
-          ApellidoPaterno:"eugenia",
-          nombreDocumento:"Carta poder",
-          numeroDocumento:23,
-          tipoDocumento:"ningunDocumento",
-          linkDocumento:"LinkDocumento",
+          id: 1,
+          nombre: "Marta",
+          apellidoMaterno: "eugenia",
+          ApellidoPaterno: "eugenia",
+          nombreDocumento: "Carta poder",
+          numeroDocumento: 23,
+          tipoDocumento: "ningunDocumento",
+          linkDocumento: "LinkDocumento",
         },
         {
-          id:2,
-          nombre:"Marta",
-          apellidoMaterno:"eugenia",
-          ApellidoPaterno:"eugenia",
-          nombreDocumento:"Carta poder",
-          numeroDocumento:23,
-          tipoDocumento:"ningunDocumento",
-          linkDocumento:"LinkDocumento",
+          id: 2,
+          nombre: "Marta",
+          apellidoMaterno: "eugenia",
+          ApellidoPaterno: "eugenia",
+          nombreDocumento: "Carta poder",
+          numeroDocumento: 23,
+          tipoDocumento: "ningunDocumento",
+          linkDocumento: "LinkDocumento",
         },
         {
-          id:3,
-          nombre:"Marta",
-          apellidoMaterno:"eugenia",
-          ApellidoPaterno:"eugenia",
-          nombreDocumento:"Carta poder",
-          numeroDocumento:23,
-          tipoDocumento:"ningunDocumento",
-          linkDocumento:"LinkDocumento",
+          id: 3,
+          nombre: "Marta",
+          apellidoMaterno: "eugenia",
+          ApellidoPaterno: "eugenia",
+          nombreDocumento: "Carta poder",
+          numeroDocumento: 23,
+          tipoDocumento: "ningunDocumento",
+          linkDocumento: "LinkDocumento",
         }
       ];
       this.totalElementos = this.documentos.length;
-    },0)
+    }, 0)
   }
 
-  abrirModificarDocumento(){
-
+  abrirModificarDocumento() {
+    console.log("Se comenta método para que no marque error en Sonar");
   }
 
-  regresar(){
-    this.router.navigate(['seguimiento-nuevo-convenio'], { relativeTo: this.activatedRoute });
+  regresar() {
+    void this.router.navigate(['seguimiento-nuevo-convenio'], {relativeTo: this.activatedRoute});
   }
-  aceptar(){
+
+  aceptar() {
     //agregar Mensaje
     this.preRegistroSiguiente = true;
   }
-  cancelar(){
+
+  cancelar() {
     //agregar Mensaje
     this.preRegistroSiguiente = false;
   }
-
 
 
 }

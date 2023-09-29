@@ -4,6 +4,9 @@ export enum MensajesRespuestaAutenticacion {
   CredencialesIncorrectas = 'CREDENCIALES_INCORRECTAS',
   CantidadMaximaIntentosFallidos = 'CANTIDAD_MAX_INTENTOS_FALLIDOS',
   FechaContraseniaVencida = 'FECHA_CONTRASENIA_VENCIDA',
+  UsuarioNoExiste = 'NO_EXISTE_USUARIO',
   UsuarioPreactivo = 'USUARIO_PREACTIVO',
+  SIAPSinConexion = 'SIAP_SIN_CONEXION',
+  SIAPDesactivado = 'SIAP_DESACTIVADO',
   CuentaBloqueada = 'CUENTA_BLOQUEADA'
 }

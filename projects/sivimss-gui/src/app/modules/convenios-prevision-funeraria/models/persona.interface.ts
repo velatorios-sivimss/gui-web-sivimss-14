@@ -7,21 +7,38 @@ export interface PersonaInterface {
   nombre?: string;
   primerApellido?: string;
   segundoApellido?: string;
-  fechaNacimiento?: string;
-  sexo?: number;
-  nacionalidad?: number;
-  lugarNacimiento?: string;
   correoElectronico?: string;
-  telefono?: number;
+  telefono?: string;
   calle?: string;
-  noExterior?: string;
-  noInterior?: string;
-  cp?: number;
+  numeroExterior?: string;
+  numeroInterior?: string;
+  pais?: string;
+  cp?: string;
   colonia?: string;
   municipio?: string;
-  estado?: number;
-  tipoPaquete?: number;
-  enfermedadPrexistente?: number;
-  descEnfermedadPrexistente?: string;
-  beneficiario?: BeneficiarioInterface[];
+  estado?: string;
+  paquete?: string;
+  enfermedadPreexistente?: string;
+  ineAfiliado?: boolean,
+  copiaCURP?: boolean,
+  copiaRFC?: boolean,
+  beneficiarios?: BeneficiarioInterface[];
+  documentacion:{
+    validaIneContratante?:boolean,
+    validaCurp?:boolean,
+    validaRfc?:boolean,
+    validaActaNacimientoBeneficiario?: boolean,
+    validaIneBeneficiario?: boolean,
+  },
+  entidadFederativa?: string,
+  nss?: string,
+  numIne?: string,
+  sexo?: number | string,
+  otroSexo?: string,
+  fechaNacimiento?: string,
+  tipoPersona?: number | string,
+  otraEnfermedad?: string,
+
+
+
 }

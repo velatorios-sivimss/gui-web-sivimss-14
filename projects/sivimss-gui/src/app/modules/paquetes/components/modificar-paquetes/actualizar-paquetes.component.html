@@ -58,10 +58,10 @@
              (onLazyLoad)="paginar($event)">
       <ng-template pTemplate="header">
         <tr>
-          <th>Servicio</th>
-          <th>Costo</th>
-          <th>Precio</th>
-          <th></th>
+          <th id="servicio">Servicio</th>
+          <th id="costo">Costo</th>
+          <th id="precio">Precio</th>
+          <th id="contenedor"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-servicio>
@@ -113,9 +113,9 @@
              (onLazyLoad)="paginar($event)">
       <ng-template pTemplate="header">
         <tr>
-          <th>Artículo</th>
-          <th>Tipo artículo</th>
-          <th></th>
+          <th id="articulo">Artículo</th>
+          <th id="tipo-articulo">Tipo artículo</th>
+          <th id="contenedor"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-articulo>
@@ -207,9 +207,9 @@
 
   <div class="flex justify-content-end mb-6">
     <button class="ml-4 btn btn-gold btn-md" routerLink="../">Cancelar</button>
-    <!-- <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarPaqueteForm.invalid" (click)="verDetalleGuardarPaquete()">
+    <button class="ml-4 btn btn-primary btn-md" (click)="verDetalleGuardarPaquete()">
       Aceptar
-    </button> -->
+    </button>
     <button class="ml-4 btn btn-primary btn-md" (click)="verDetalleGuardarPaquete()">
       Aceptar
     </button>

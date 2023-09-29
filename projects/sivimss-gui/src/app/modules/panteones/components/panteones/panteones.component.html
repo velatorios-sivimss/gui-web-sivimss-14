@@ -36,19 +36,19 @@
     [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Calle</th>
-        <th>No. exterior</th>
-        <th>No. interior</th>
-        <th>C.P.</th>
-        <th>Colonia</th>
-        <th>Municipio</th>
-        <th>Estado</th>
-        <th>Contacto</th>
-        <th>Teléfono</th>
-        <th>Estatus</th>
-        <th></th>
+        <th scope="col">ID</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Calle</th>
+        <th scope="col">No. exterior</th>
+        <th scope="col">No. interior</th>
+        <th scope="col">C.P.</th>
+        <th scope="col">Colonia</th>
+        <th scope="col">Municipio</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Contacto</th>
+        <th scope="col">Teléfono</th>
+        <th scope="col">Estatus</th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-panteon>

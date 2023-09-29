@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from "@angular/forms";
-import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import {Component} from '@angular/core';
+import {FormBuilder} from "@angular/forms";
+import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 
 @Component({
   selector: 'app-modal-seleccionar-beneficiario',
   templateUrl: './modal-seleccionar-beneficiario.component.html',
   styleUrls: ['./modal-seleccionar-beneficiario.component.scss']
 })
-export class ModalSeleccionarBeneficiarioComponent implements OnInit {
+export class ModalSeleccionarBeneficiarioComponent {
 
   beneficiarios: any[] = [
     {
@@ -33,8 +33,5 @@ export class ModalSeleccionarBeneficiarioComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-
-  }
 
 }
