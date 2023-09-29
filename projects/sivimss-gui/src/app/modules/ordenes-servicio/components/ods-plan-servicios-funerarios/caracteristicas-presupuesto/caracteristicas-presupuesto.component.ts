@@ -184,6 +184,7 @@ export class CaracteristicasPresupuestoSFComponent
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
+    this.selecionaTipoOtorgamiento = datos.selecionaTipoOtorgamiento;
     this.total = datos.total;
     this.form = this.formBuilder.group({
       observaciones: [{ value: datos.observaciones, disabled: false }],

@@ -829,6 +829,15 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.esParaExtremidad.disable();
       this.datosFinado.esObito.disable();
     }
+    this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.detallePresupuesto = [];
+    delete this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.idPaquete;
+    delete this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.notasServicio;
+    delete this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.observaciones;
+    delete this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.totalPresupuesto;
+
+    this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete? this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete.detallePaquete = [] : [];
+    delete this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete;
+    delete this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.otorgamiento;
   }
 
 
