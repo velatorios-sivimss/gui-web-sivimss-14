@@ -48,8 +48,10 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
   paginacionConFiltrado: boolean = false;
 
   folioCatalogosODE!: CatalogoFolioODE[];
+  catalogoOrdenesEntradaConId: any[] = [];
   catalogoOrdenesEntrada: string[] = [];
   catalogoProveedores: string[] = [];
+  catalogoProveedoresConId: any[] = [];
 
   ordenesEntrada: any[] = [];
   ordenEntradaSeleccionada!: any;
@@ -151,6 +153,7 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos.length > 0) {
           this.catalogoOrdenesEntrada = [];
+          this.catalogoOrdenesEntradaConId = respuesta.datos;
           respuesta.datos.forEach((ordenEntrada: any) => {
             this.catalogoOrdenesEntrada.push(ordenEntrada.NUM_FOLIO);
           });
@@ -170,6 +173,7 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos.length > 0) {
           this.catalogoProveedores = [];
+          this.catalogoProveedoresConId = respuesta.datos;
           respuesta.datos.forEach((proveedor: any) => {
             this.catalogoProveedores.push(proveedor.NOM_PROVEEDOR);
           });

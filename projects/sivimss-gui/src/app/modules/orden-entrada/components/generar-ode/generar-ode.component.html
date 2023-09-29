@@ -39,7 +39,7 @@
              placeholder="Ingresar folio proveedor">
     </div>
     <div class="col-md-4">
-      <label class="control-label" for="categoria">Cateogoría<span class="req">*</span>:</label>
+      <label class="control-label" for="categoria">Categoría<span class="req">*</span>:</label>
       <p-dropdown id="categoria" class="form-control" formControlName="categoria" [options]="categorias"
                   placeholder="Seleccionar la categoría" (onChange)="onCategoriaChange($event)" [filter]="true" filterBy="label">
       </p-dropdown>
@@ -103,7 +103,7 @@
   [draggable]="false" [resizable]="false" header="Cerrar ODE">
   <ng-template pTemplate="content">
     <div class="flex flex-column align-items-center justify-content-center">
-      <span class="text-justify">¿Estás seguro de agregar este nuevo registro?</span>
+      <span class="text-justify">¿Estás seguro de agregar estos nuevos Artículos?</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">

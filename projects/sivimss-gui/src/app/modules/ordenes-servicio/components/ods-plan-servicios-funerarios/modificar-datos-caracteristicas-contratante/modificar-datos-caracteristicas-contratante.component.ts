@@ -218,6 +218,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.datosPaquetes = datos.datosPaquetes;
     this.datosPresupuesto = datos.datosPresupuesto;
     this.elementosEliminadosPaquete = datos.elementosEliminadosPaquete;
+    this.selecionaTipoOtorgamiento = datos.selecionaTipoOtorgamiento;
     this.selecionaTipoOtorgamiento =
       datos.selecionaTipoOtorgamiento == null
         ? null
@@ -295,6 +296,35 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
     this.valorPrevioDD = dd.selectedOption?.value ?? null;
   }
 
+  limpiarODS(): void {
+    const datosEtapaInformacionServicio = {
+      fechaCortejo: null,
+      fechaCremacion: null,
+      fechaRecoger: null,
+      horaRecoger: null,
+      horaCortejo: null,
+      horaCremacion: null,
+      idPanteon: null,
+      idPromotor: null,
+      idSala: null,
+      cp: null,
+      fechaInstalacion: null,
+      fechaVelacion: null,
+      horaInstalacion: null,
+      horaVelacion: null,
+      idCapilla: null,
+      calle: null,
+      interior: null,
+      exterior: null,
+      colonia: null,
+      municipio: null,
+      estado: null,
+      gestionadoPorPromotor: null,
+      promotor: null,
+    };
+    this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datosEtapaInformacionServicio);
+  }
+
   cancelarCambioPaquete(): void {
     this.confCambiarPaquete = false;
     this.paqueteSeleccionado = this.valorPrevioDD;
@@ -302,6 +332,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
 
   detallePaqueteFunction(): void {
     let nombrePaquete = this.paqueteSeleccionadoDD.label;
+    this.limpiarODS();
     this.confCambiarPaquete = false
     this.dd = this.paqueteSeleccionadoDD.value;
     this.mostrarTIpoOtorgamiento = false;
@@ -812,7 +843,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   validacionFormulario(): boolean {
-    if (this.dd) {
+    if (this.dd || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
       const drop:any = this.dd;
       if(drop == 3){
         return this.selecionaTipoOtorgamiento != null ? false: true;

@@ -39,8 +39,14 @@ export class AgregarConvenioPFService extends BaseService<HttpRespuesta<any>,any
     return this._http.get<HttpRespuesta<any>>(`${environment.api.servicios_externos}consultar/siap/${matricula}`);
   }
 
-  consutaCP(cp:number): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-consultar-cp`, {cp:cp} )
+  // consutaCP(cp:number): Observable<HttpRespuesta<any>> {
+  //   return this._http.post<HttpRespuesta<any>>(this._base+`${this._funcionalidad}/buscar-filtros/convenio-pf-consultar-cp`, {cp:cp} )
+  // }
+
+  consutaCP(cp: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      `${environment.api.servicios_externos}consultar/codigo-postal/` + cp
+    );
   }
 
   obtenerCatalogoParentesco(): Observable<TipoDropdown[]> {
