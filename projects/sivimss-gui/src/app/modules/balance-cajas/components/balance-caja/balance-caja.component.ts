@@ -71,7 +71,7 @@ export class BalanceCajaComponent implements OnInit {
 
   readonly POSICION_CATALOGO_NIVELES: number = 0;
   readonly POSICION_CATALOGO_DELEGACIONES: number = 1;
-  convenioSeleccionado: number = 1;
+  convenioSeleccionado: number | null = null;
   mensajeArchivoConfirmacion: string = "";
   mostrarModalConfirmacion: boolean = false;
   esModificacion: boolean = true;

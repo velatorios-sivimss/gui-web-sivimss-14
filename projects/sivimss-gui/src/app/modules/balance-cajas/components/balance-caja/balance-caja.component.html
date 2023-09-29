@@ -31,15 +31,15 @@
                     placeholder="Selecciona tipo de convenio" [filter]="true" [ngModelOptions]="{ standalone: true }">
         </p-dropdown>
       </div>
-      <div class="col-4" *ngIf="[1,2].includes(convenioSeleccionado)">
+      <div class="col-4" *ngIf="[null,1].includes(convenioSeleccionado)">
         <label class="control-label pb-3" for="folioODS">Folio de la orden de Servicio (ODS):</label>
         <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa folio"/>
       </div>
-      <div class="col-4" *ngIf="[1,3].includes(convenioSeleccionado)">
+      <div class="col-4" *ngIf="[null,2].includes(convenioSeleccionado)">
         <label class="control-label" for="folioNuevo">Folio del Nuevo convenio de previsión funeraria (PNCPF): </label>
         <input id="folioNuevo" class="form-control" formControlName="folioNuevo" placeholder="Ingresa folio"/>
       </div>
-      <div class="col-4" *ngIf="[1,4].includes(convenioSeleccionado)">
+      <div class="col-4" *ngIf="[null,3].includes(convenioSeleccionado)">
         <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria
           (PRCPF):</label>
         <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion" placeholder="Ingresa folio"/>
