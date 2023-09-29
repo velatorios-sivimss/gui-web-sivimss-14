@@ -6,6 +6,7 @@ export interface BalanceCaja {
   tipoIngreso: string;
   metodo: string;
   estatus: string;
+  modifPago?: string;
 }
 
 export interface ModificarPagoInterface {
