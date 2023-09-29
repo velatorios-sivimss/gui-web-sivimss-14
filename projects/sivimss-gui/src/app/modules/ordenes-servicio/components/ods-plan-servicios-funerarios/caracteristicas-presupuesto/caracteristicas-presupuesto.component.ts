@@ -233,6 +233,35 @@ export class CaracteristicasPresupuestoSFComponent
     this.paqueteSeleccionadoDD = dd.selectedOption;
   }
 
+  limpiarODS(): void {
+    const datosEtapaInformacionServicio = {
+      fechaCortejo: null,
+      fechaCremacion: null,
+      fechaRecoger: null,
+      horaRecoger: null,
+      horaCortejo: null,
+      horaCremacion: null,
+      idPanteon: null,
+      idPromotor: null,
+      idSala: null,
+      cp: null,
+      fechaInstalacion: null,
+      fechaVelacion: null,
+      horaInstalacion: null,
+      horaVelacion: null,
+      idCapilla: null,
+      calle: null,
+      interior: null,
+      exterior: null,
+      colonia: null,
+      municipio: null,
+      estado: null,
+      gestionadoPorPromotor: null,
+      promotor: null,
+    };
+    this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datosEtapaInformacionServicio);
+  }
+
   valorPrevio(dd:Dropdown):void {
     this.valorPrevioDD = dd.selectedOption?.value ?? null;
   }
@@ -245,6 +274,7 @@ export class CaracteristicasPresupuestoSFComponent
 
   detallePaqueteFunction(): void {
     let nombrePaquete = this.paqueteSeleccionadoDD.label;
+    this.limpiarODS();
     this.confCambiarPaquete = false;
     this.dd = this.paqueteSeleccionadoDD.value;
     this.mostrarTIpoOtorgamiento = false;
