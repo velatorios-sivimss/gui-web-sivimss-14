@@ -26,32 +26,32 @@
     </div>
     <div class="grid mb-3">
       <div class="col-4">
-        <label class="control-label" for="tipoConvenio">Tipo de convenios:</label>
+        <label class="control-label pb-3" for="tipoConvenio">Tipo de convenios:</label>
         <p-dropdown id="tipoConvenio" class="form-control" [(ngModel)]="convenioSeleccionado" [options]="tipoConvenio"
                     placeholder="Selecciona tipo de convenio" [filter]="true" [ngModelOptions]="{ standalone: true }">
         </p-dropdown>
       </div>
-      <div class="col-4" *ngIf="[1,2].includes(convenioSeleccionado)">
-        <label class="control-label" for="folioODS">Folio de la orden de Servicio (ODS):</label>
+      <div class="col-4" *ngIf="[null,1].includes(convenioSeleccionado)">
+        <label class="control-label pb-3" for="folioODS">Folio de la orden de Servicio (ODS):</label>
         <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa folio"/>
       </div>
-      <div class="col-4" *ngIf="[1,3].includes(convenioSeleccionado)">
+      <div class="col-4" *ngIf="[null,2].includes(convenioSeleccionado)">
         <label class="control-label" for="folioNuevo">Folio del Nuevo convenio de previsión funeraria (PNCPF): </label>
         <input id="folioNuevo" class="form-control" formControlName="folioNuevo" placeholder="Ingresa folio"/>
       </div>
-      <div class="col-4" *ngIf="[1,4].includes(convenioSeleccionado)">
+      <div class="col-4" *ngIf="[null,3].includes(convenioSeleccionado)">
         <label class="control-label" for="folioRenovacion">Folio renovación de convenios prevision funeraria
           (PRCPF):</label>
         <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion" placeholder="Ingresa folio"/>
       </div>
       <div class="col-4">
-        <label class="control-label" for="metodo">Método de pago:</label>
+        <label class="control-label pb-3" for="metodo">Método de pago:</label>
         <p-dropdown id="metodo" class="form-control" formControlName="metodo" [options]="opciones"
                     placeholder="Ingresa método de pago" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-4">
-        <label class="control-label" for="fecha">Fecha:</label>
+        <label class="control-label pb-3" for="fecha">Fecha:</label>
         <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
                     placeholder="Selecciona la fecha" dateFormat="dd/mm/yy" [maxDate]="fechaActual">
         </p-calendar>
@@ -70,8 +70,8 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center" *appValidaRol="['BALANCE_CAJA','MODIFICAR']">
     <h2 class="subtitulo">Campos de Reporte</h2>
-    <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 13" (click)="abrirModalCierre()">Realizar
-      cierre
+    <button type="button" class="btn btn-primary btn-lg" *ngIf="rol === 13" (click)="abrirModalCierre()">
+      Realizar cierre
     </button>
   </div>
 
@@ -87,6 +87,7 @@
         <th pResizableColumn id="columna_balance_caja_delegacion">Delegación</th>
         <th pResizableColumn id="columna_balance_caja_velatorio">Velatorio</th>
         <th pResizableColumn id="columna_balance_caja_folio">Folio</th>
+        <th pResizableColumn id="columna_balance_caja_estatus">Estatus</th>
         <th pResizableColumn id="columna_balance_caja_tipo_ingreso">Tipo de ingreso</th>
         <th pResizableColumn id="columna_balance_caja_estatus_pago">Estatus de pago</th>
         <th pResizableColumn id="columna_balance_caja_metodo_pago">Método de pago</th>
@@ -94,7 +95,7 @@
         <th pResizableColumn id="columna_balance_caja_ingreso_neto">Ingreso neto</th>
         <th pResizableColumn id="columna_balance_caja_estatus_caja">Estatus caja</th>
         <th pResizableColumn id="columna_balance_caja_fecha_cierre">Fecha y hora de cierre</th>
-        <th id="columna_balance_caja_estatus" *appValidaRol="['BALANCE_CAJA','MODIFICAR']"></th>
+        <th id="columna_balance_caja_btns" *appValidaRol="['BALANCE_CAJA','MODIFICAR']"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-balance>
@@ -103,6 +104,7 @@
         <td pResizableColumn>{{balance.delegacion}} </td>
         <td pResizableColumn>{{balance.velatorio}} </td>
         <td pResizableColumn>{{balance.folio}}</td>
+        <td pResizableColumn>{{balance.estatus}}</td>
         <td pResizableColumn>{{balance.tipoIngreso}}</td>
         <td pResizableColumn>{{balance.estatusPago}}</td>
         <td pResizableColumn>{{balance.metodoPago}}</td>
@@ -171,11 +173,11 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion *ngIf="esModificacion" titulo="Modificar pago"
+      <app-overlay-panel-opcion *ngIf="!balanceCajaSeleccionado.modifPago" titulo="Modificar pago"
                                 routerLink="modificar-pago"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion *ngIf="!esModificacion" titulo="Motivo de modificación"
+      <app-overlay-panel-opcion *ngIf="balanceCajaSeleccionado.modifPago" titulo="Motivo de modificación"
                                 routerLink="modificar-pago"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
