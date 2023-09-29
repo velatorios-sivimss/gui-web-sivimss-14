@@ -109,7 +109,7 @@ export class BalanceCajaComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
     this.catatalogoDelegaciones = [{value: null, label: 'Todos'}, ...this.catatalogoDelegaciones];
-    this.obtenerVelatorios();
+    this.obtenerVelatorios(true);
   }
 
   abrirPanel(event: MouseEvent, balanceCajaSeleccionado: BalanceCaja): void {
@@ -238,14 +238,17 @@ export class BalanceCajaComponent implements OnInit {
       }
       this.filtroFormDir.resetForm(formularioDefault);
     }
-    this.obtenerVelatorios();
+    this.obtenerVelatorios(true);
     this.paginar();
   }
 
-  obtenerVelatorios(): void {
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null
-    this.balanceCajaService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
+  obtenerVelatorios(cargaInicial: boolean = false): void {
+      if (!cargaInicial) {
+      this.catalogoVelatorios = [];
+      this.filtroFormBalanceCaja.get('velatorio')?.patchValue("");
+    }
+    const idDelegacion = this.filtroFormBalanceCaja.get('delegacion')?.value;
+    this.balanceCajaService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
         this.catalogoVelatorios = [{value: null, label: 'Todos'}, ...this.catalogoVelatorios];
