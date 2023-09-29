@@ -1,0 +1,32 @@
+<ng-container>
+  <app-table-panel>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nombre del receptor (Razón social)</label>
+          <span>{{nombreReceptor | titlecase}}</span>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="table-panel-column">
+          <label>Tipo de persona</label>
+          <span>{{tipoPersona}}</span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Régimen fiscal</label>
+          <span>{{regimenFiscal}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <div class="table-panel-column">
+          <label>Domicilio fiscal</label>
+          <span>{{domicilioFiscal | titlecase}}</span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+</ng-container>

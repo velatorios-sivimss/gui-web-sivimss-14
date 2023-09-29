@@ -2,91 +2,108 @@
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="niveles"
-          placeholder="Selecciona el velatorio">
+      <div class="col-md-4">
+        <label class="control-label" for="nivel">Nivel:</label>
+        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+          placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
         </p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Campo obligatorio</span>
       </div>
-      <div class="col-md-6">
-        <label class="control-label" for="numeroConvenio">Número de convenio:</label>
-        <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio"
-          placeholder="Ingresa el número de convenio" (keyup)="consultaServicioEspecifico()">
-        <span class="campo-obligatorio"
-          *ngIf="f.numeroConvenio?.errors?.required && (f.numeroConvenio?.dirty || f.numeroConvenio?.touched)">Campo
-          obligatorio</span>
+      <div class="col-md-4">
+        <label class="control-label" for="idDelegacion">Delegación:</label>
+        <p-dropdown id="idDelegacion" class="form-control" formControlName="idDelegacion" [options]="catalogoDelegaciones"
+          placeholder="Seleccionar la delegación" [filter]="true" filterBy="label" (onChange)='obtenerVelatorios();'>
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="idVelatorio">Velatorio:</label>
+        <p-dropdown id="idVelatorio" class="form-control" formControlName="idVelatorio" [options]="catalogoVelatorios"
+          placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
+        </p-dropdown>
       </div>
     </div>
+
     <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="folioConvenio">Folio de convenio:</label>
-        <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
-          placeholder="Ingresa el folio del convenio" (keyup)="consultaServicioEspecifico()">
+      <div class="col-md-4">
+        <label class="control-label" for="numConvenio">Número de Convenio:</label>
+        <input id="numConvenio" class="form-control" formControlName="numConvenio" alphanumericOnly trimmer
+          placeholder="Ingresa el número de convenio">
         <span class="campo-obligatorio"
-          *ngIf="f.folioConvenio?.errors?.required && (f.folioConvenio?.dirty || f.folioConvenio?.touched)">Campo
-          obligatorio</span>
+          *ngIf="ff.numConvenio?.errors?.required && (ff.numConvenio?.dirty || ff.numConvenio?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
-      <div class="col-md-6">
-        <label class="control-label" for="rfcAfiliado">RFC afiliado:</label>
-        <input id="rfcAfiliado" class="form-control" formControlName="rfcAfiliado" placeholder="Ingresa el articulo"
-          (keyup)="consultaServicioEspecifico()">
+      <div class="col-md-4">
+        <label class="control-label" for="folio">Folio de Convenio:</label>
+        <input id="folio" class="form-control" formControlName="folio" folioOdsAlphanumeric trimmer
+          placeholder="Ingresa el folio del convenio">
         <span class="campo-obligatorio"
-          *ngIf="f.rfcAfiliado?.errors?.required && (f.rfcAfiliado?.dirty || f.rfcAfiliado?.touched)">Campo
-          obligatorio</span>
+          *ngIf="ff.folio?.errors?.required && (ff.folio?.dirty || ff.folio?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="rfc">RFC del afiliado:</label>
+        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC"
+          alphanumericOnly trimmer maxlength="13">
+        <span class="campo-obligatorio"
+          *ngIf="ff.rfc?.errors?.required && (ff.rfc?.dirty || ff.rfc?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
     </div>
-    <div class="row mt-6">
+    <div class="row mt-6" *appValidaRol="['RENOVACION_EXTEMPORANEA','CONSULTA']">
       <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
-          (click)="mostrarModalTitularFallecido()">Buscar</button>
+        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
+          (click)="buscar()">Buscar</button>
       </div>
     </div>
   </form>
 </div>
 <section class="mt-5">
-  <div class="flex justify-content-between align-items-center">
-    <h2 class="subtitulo">Convenios de previsión funeraria</h2>
-  </div>
-  <p-table styleClass="mt-5 mb-8" [value]="conveniosPrevicion"
-    [paginator]="conveniosPrevicion.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
-    [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+  <p-table styleClass="mt-5 mb-8" [value]="conveniosPrevicion" [paginator]="conveniosPrevicion.length > 0"
+    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
     <ng-template pTemplate="header">
       <tr>
         <th scope="col">Velatorio origen</th>
-        <th scope="col">Número/Folio de convenio</th>
+        <th scope="col">Número/Folio de Convenio</th>
         <th scope="col">RFC</th>
         <th scope="col">Nombre</th>
-        <th scope="col">Primer apellido</th>
-        <th scope="col">Segundo apellido</th>
-        <th scope="col">Estatus</th>
+        <th scope="col">Primer Apellido</th>
+        <th scope="col">Segundo Apellido</th>
+        <th scope="col">Tipo de Prevención Funeraria</th>
+        <th scope="col">Tipo de Paquete</th>
+        <th scope="col">Cuota de Recuperación</th>
+        <th scope="col">Fecha Inicio de Vigencia</th>
+        <th scope="col">Fecha Fin de Vigencia</th>
         <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-convenioPrevision>
       <tr>
-        <td> {{convenioPrevision.velatorioOrigen}} </td>
-        <td> {{convenioPrevision.folioConvenio}} </td>
+        <td> {{convenioPrevision.velatorio}} </td>
+        <td> {{convenioPrevision.folio}} </td>
         <td> {{convenioPrevision.rfc}} </td>
         <td> {{convenioPrevision.nombre}} </td>
         <td> {{convenioPrevision.primerApellido}} </td>
         <td> {{convenioPrevision.segundoApellido}} </td>
+        <td> {{convenioPrevision.tipoPrevision === 1 ? 'Previsión funeraria plan nuevo' : 'Previsión funeraria plan anterior'}} </td>
+        <td> {{convenioPrevision.tipopaquete}} </td>
+        <td> {{convenioPrevision.cuotaRecuperacion}} </td>
+        <td> {{convenioPrevision.fecInicio}} </td>
+        <td> {{convenioPrevision.fecVigencia}} </td>
         <td>
-          <span class="activo" *ngIf="convenioPrevision.estatus">Abierto</span>
-          <span class="inactivo" *ngIf="!convenioPrevision.estatus">Cerrado</span>
-        </td>
-        <td>
-          <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetalleRenovacion(convenioPrevision)">
-              <img src="../../../../../assets/images/imagen-icono-ver.svg" alt="icono ver">
-            </a>
-            <a (click)="abrirPanel($event,convenioPrevision)">
-              <img src="../../../../../assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+          <div class="contenedor-celda-iconos" *appValidaRol="['RENOVACION_EXTEMPORANEA','MODIFICAR']">
+            <a (click)="abrirPanel($event, convenioPrevision)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
         </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr *ngIf="busquedaRealizada">
+        <th colspan="13" class="p-2 text-center font-bold text-xl" id="stock_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="paginatorleft">
@@ -97,11 +114,6 @@
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
         <div class="export-table">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="../../../../../assets/images/imagen-icono-excel.svg" alt="exportar excel">
-          </div>
         </div>
       </div>
     </ng-template>
@@ -111,29 +123,22 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Habilitar renovación"
-        (click)="abrirModalHabilitarRenovacion()"></app-overlay-panel-opcion>
+        (click)="obtenerDetalleConvenio()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-<p-dialog [style]="{maxWidth:'776px',width: '100%'}" header="Titular del convenio fallecido"
-  [(visible)]="mostrarModaltitularFallecido" [modal]="true" [draggable]="false" [resizable]="false">
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="" >
   <ng-template pTemplate="content">
-    <div class="row" style="text-align: center;">
-      <div class="col-md-2">
-      </div>
-      <div class="col-md-8">
-        <span>Titular del convenio fallecido</span>
-        <p>
-          <span>El beneficiario NO PUEDE RENOVAR el convenio</span>
-        </p>
-      </div>
-      <div class="col-md-2">
-      </div>
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeConfirmacion}}</span>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">
-    <div class="flex justify-content-end">
-      <button class="btn btn-default btn-md" (click)="mostrarModaltitularFallecido = false">Aceptar</button>
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>

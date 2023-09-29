@@ -19,14 +19,15 @@ import { AccordionModule } from 'primeng/accordion';
 import { RenovacionExtemporaneaRoutingModule } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/renovacion-extemporanea-routing.module';
 import { RenovacionExtemporaneaService } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/services/renovacion-extemporanea.service';
 import { RenovacionExtemporaneaComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/renovacion-extemporanea/renovacion-extemporanea.component';
-import { DetalleRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/detalle-renovacion/detalle-renovacion.component';
 import { HabilitarRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/habilitar-renovacion/habilitar-renovacion.component';
+import { UtileriaModule } from '../../shared/utileria/utileria.module';
+import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 //as
 @NgModule({
   declarations: [
     RenovacionExtemporaneaComponent,
-    DetalleRenovacionComponent,
     HabilitarRenovacionComponent,
   ],
   imports: [
@@ -45,7 +46,10 @@ import { HabilitarRenovacionComponent } from 'projects/sivimss-gui/src/app/modul
     TablePanelModule,
     TituloPrincipalModule,
     StepsModule,
-    AccordionModule
+    AccordionModule,
+    UtileriaModule,
+    ValidaRolModule,
+    ConfirmDialogModule,
   ],
   providers: [RenovacionExtemporaneaService]
 })

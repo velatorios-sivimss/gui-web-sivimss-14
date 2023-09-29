@@ -1,0 +1,23 @@
+<full-calendar #calendarioVehiculos [options]="calendarOptions"></full-calendar>
+<div class=" mt-3 row" *appValidaRol="['DISPONIBILIDAD_VEHICULOS','IMPRIMIR']">
+  <div class="flex justify-content-end align-content-end">
+    <span class="export-table-text" style="font-size: 9px">Exportar tabla</span><br/>
+  </div>
+  <div class="flex justify-content-end">
+    <img class="icon-export-table" (click)="generarReporteCalendar('pdf')" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+    <img class="icon-export-table" (click)="generarReporteCalendar('xls')" src="assets/images/imagen-icono-excel.svg"
+         alt="exportar excel">
+  </div>
+</div>
+
+<p-confirmDialog #cd [style]="{width: '30vw'}">
+  <ng-template pTemplate="header"><h5></h5></ng-template>
+  <ng-template pTemplate="footer">
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="cd.accept()">Aceptar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>

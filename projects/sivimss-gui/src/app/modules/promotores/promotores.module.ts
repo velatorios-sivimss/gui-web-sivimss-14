@@ -21,6 +21,9 @@ import { DialogModule } from "primeng/dialog";
 import { OverlayPanelModule } from "primeng/overlaypanel";
 import { CheckboxModule } from 'primeng/checkbox';
 import {CalendarModule} from 'primeng/calendar';
+import { UsuarioService } from '../usuarios/services/usuario.service';
+import { ValidaRolModule } from '../../shared/valida-rol/valida-rol.module';
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 @NgModule({
   declarations: [
@@ -29,26 +32,29 @@ import {CalendarModule} from 'primeng/calendar';
     VerDetallePromotoresComponent,
     ModificarPromotoresComponent,
   ],
-  imports: [
-    CommonModule,
-    PromotoresRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    TituloPrincipalModule,
-    TableModule,
-    InputSwitchModule,
-    DialogModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    TablePanelModule,
-    CheckboxModule,
-    UtileriaModule,
-    AutoCompleteModule,
-    CalendarModule,
-  ],
+    imports: [
+        CommonModule,
+        PromotoresRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        TituloPrincipalModule,
+        TableModule,
+        InputSwitchModule,
+        DialogModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        TablePanelModule,
+        CheckboxModule,
+        UtileriaModule,
+        AutoCompleteModule,
+        CalendarModule,
+        ValidaRolModule,
+        BtnRegresarModule,
+    ],
   providers: [
-    PromotoresService
+    PromotoresService,
+    UsuarioService
   ]
 })
 export class PromotoresModule {

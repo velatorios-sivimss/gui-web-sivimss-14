@@ -1,15 +1,18 @@
 <div class="row mb-3">
-  <div class="col-md-6">
-    <label class="control-label" for="velatorio">Delegación:</label>
-    <p-dropdown id="delegacion" [(ngModel)]="delegacion" class="form-control" [options]="delegaciones" placeholder="Selecciona la delegación">
-    </p-dropdown>
-  </div>
-  <div class="col-md-6">
-    <label class="control-label" for="velatorio">Velatorios:</label>
-    <p-dropdown id="velatorio" [(ngModel)]="velatorio" class="form-control" [options]="velatorios" placeholder="Selecciona velatorio"
-    (onChange)="consultaSalasCremacion()">
-    </p-dropdown>
-  </div>
+  <form [formGroup]="filtroForm">
+    <div class="col-md-6">
+      <label class="control-label" for="velatorio">Delegación:</label>
+      <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="delegaciones"
+       placeholder="Selecciona la delegación" (onChange)="cambiarDelegacion()">
+      </p-dropdown>
+    </div>
+    <div class="col-md-6">
+      <label class="control-label" for="velatorio">Velatorios:</label>
+      <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
+      placeholder="Selecciona velatorio" (onChange)="consultaSalasCremacion()">
+      </p-dropdown>
+    </div>
+  </form>
 </div>
 <div class="row mb-3">
   <div class="col-md-12">
@@ -23,7 +26,7 @@
               <ng-template pTemplate="header">
                 <tr>
                   <th scope="col">ID</th>
-                  <th scope="col">Nombre</th>
+                  <th scope="col">Nombre de la sala</th>
                   <th scope="col">Estado</th>
                   <th scope="col"></th>
                 </tr>
@@ -37,8 +40,8 @@
                     {{salasCremacion.estadoSala}}
                   </td>
                   <td>
-<!--                    <button type="button" *appValidaRol="['SALAS_RESERVACION','ALTA']" class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)">-->
-                    <button type="button"  class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)">
+                    <button type="button" *appValidaRol="['SALAS_RESERVACION','ALTA']" class="btn btn-primary btn-md" (click)="registrarActividad(salasCremacion)"
+                            onCloseOnNavigation>
                       Registrar {{ salasCremacion.estadoSala != 'DISPONIBLE' ? 'salida' : 'entrada'}}
                     </button>
                   </td>
@@ -46,7 +49,7 @@
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <th colspan="5" class="p-2 text-center font-bold text-xl">
+                  <th scope="col" colspan="5" class="p-2 text-center font-bold text-xl">
                     No hay elementos que coincidan con los parámetros seleccionados
                   </th>
                 </tr>
@@ -62,7 +65,7 @@
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">ID</th>
-              <th scope="col">Nombre</th>
+              <th scope="col">Nombre de la sala</th>
               <th scope="col">Estado</th>
               <th scope="col"></th>
             </tr>
@@ -76,8 +79,8 @@
                 {{sala.estadoSala}}
               </td>
               <td>
-<!--                <button type="button" *appValidaRol="['SALAS_RESERVACION','MODIFICAR']" class="btn btn-primary btn-md" (click)="registrarActividad(sala)">-->
-                <button type="button" class="btn btn-primary btn-md" (click)="registrarActividad(sala)">
+                <button type="button" *appValidaRol="['SALAS_RESERVACION','MODIFICAR']" class="btn btn-primary btn-md" (click)="registrarActividad(sala)"
+                        onCloseOnNavigation>
                   Registrar {{ sala.estadoSala != 'DISPONIBLE' ? 'salida' : 'entrada'}}
                 </button>
               </td>
@@ -85,7 +88,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <th colspan="5" class="p-2 text-center font-bold text-xl">
+              <th scope="col" colspan="5" class="p-2 text-center font-bold text-xl">
                 No hay elementos que coincidan con los parámetros seleccionados
               </th>
             </tr>

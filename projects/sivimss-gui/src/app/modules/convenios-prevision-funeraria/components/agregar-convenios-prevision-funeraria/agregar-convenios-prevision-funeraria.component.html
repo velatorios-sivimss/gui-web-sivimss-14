@@ -1,418 +1,156 @@
-<ng-container *ngIf="!agregarPersona">
-  <app-titulo-principal titulo="Ingresar nuevos convenios PF"></app-titulo-principal>
-  <div class="row mb-3 flex justify-content-center">
-    <div class="col-md-6">
-      <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps>
-    </div>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Registro de Convenio Nuevo" class="col"></app-titulo-principal>
+</div>
+<div class="row mb-3 flex justify-content-center" *ngIf="ff.tipoContratacion.value== 1">
+  <div class="col-md-6">
+    <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps>
   </div>
-  <ng-container *ngIf="indice == 0">
-    <div class="border-panel">
-      <form [formGroup]="filtroForm">
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="control-label" for="numeroConvenio">No. de convenio anterior</label>
-            <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio" placeholder="Ingresa el no. de convenio">
-            <span class="campo-obligatorio"
-                  *ngIf="ff.numeroConvenio?.errors?.required && (ff.numeroConvenio?.dirty || ff.numeroConvenio?.touched)">
-                            Campo obligatorio</span>
-          </div>
-          <div class="col-md-6">
-            <label class="control-label" for="tipoContratacion">Tipo de contratación <span class="req">*</span></label>
-            <p-dropdown id="tipoContratacion" class="form-control" formControlName="tipoContratacion" [options]="tipoContratacion"
-                        (onChange)="cambioTipoContratacion()" placeholder="Selecciona el tipo de contratación">
-            </p-dropdown>
-            <span class="campo-obligatorio"
-                  *ngIf="ff.tipoContratacion?.errors?.required && (ff.tipoContratacion?.dirty || ff.tipoContratacion?.touched)">
+</div>
+<ng-container *ngIf="indice == 0">
+  <div class="border-panel mb-3">
+    <form [formGroup]="filtroForm">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="control-label" for="tipoContratacion">Tipo de contratación opciones <span class="req">*</span>:</label>
+          <p-dropdown id="tipoContratacion" class="form-control" formControlName="tipoContratacion"
+                      [options]="tipoContratacion"
+                      placeholder="Selecciona el tipo de contratación" [filter]="true" filterBy="label"
+                      (onChange)="validarTipoContratacion()">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="ff.tipoContratacion?.errors?.required && (ff.tipoContratacion?.dirty || ff.tipoContratacion?.touched)">
                       Campo obligatorio</span>
+        </div>
+        <div class="col-md-4">
+          <label class="control-label" for="numeroConvenio">Número de convenio anterior</label>
+          <input id="numeroConvenio" class="form-control" formControlName="numeroConvenio"
+                 placeholder="Ingresa el número de convenio"
+                 maxlength="10" (change)="consultarConvenio()">
+        </div>
+        <div class="col-md-4">
+          <label class="control-label">¿El servicio fue gestionado por un promotor? <span class="req">*</span></label>
+          <div class="flex">
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'promotorSi'" name="promotor" [value]="true"
+                             formControlName="promotor" (onClick)="existePromotor(true)"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'promotorSi'">Sí</label>
+            </div>
+            <div class="flex align-items-center mx-2">
+              <p-radioButton [inputId]="'promotorNo'" name="promotor" [value]="false"
+                             formControlName="promotor" (onClick)="existePromotor(false)"></p-radioButton>
+              <label class="control-label m-0 mx-3" [for]="'promotorNo'">No</label>
+            </div>
           </div>
         </div>
-      </form>
-      <section>
-        <p-accordion styleClass="sivimss-accordion">
-          <p-accordionTab>
-            <ng-template pTemplate="header">Empresa</ng-template>
-            <ng-template pTemplate="content"></ng-template>
-          </p-accordionTab>
-        </p-accordion>
-        <form [formGroup]="empresaForm">
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <label class="control-label" for="nombre">Nombre <span class="req">*</span>:</label>
-              <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.nombre?.errors?.required && (fe.nombre?.dirty || fe.nombre?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-4">
-              <label class="control-label" for="rfc">RFC <span class="req">*</span>:</label>
-              <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa rfc">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.rfc?.errors?.required && (fe.rfc?.dirty || fe.rfc?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-4">
-              <label class="control-label" for="razonSocial">Razón social <span class="req">*</span>:</label>
-              <input id="razonSocial" class="form-control" formControlName="razonSocial" placeholder="Ingresa razón social">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.razonSocial?.errors?.required && (fe.razonSocial?.dirty || fe.razonSocial?.touched)">Campo obligatorio</span>
-            </div>
-          </div>
-          <h2 class="subtitulo">Dirección</h2>
-          <div class="row mt-3 mb-3">
-            <div class="col-md-6">
-              <label class="control-label" for="calle">Calle <span class="req">*</span>:</label>
-              <input id="calle" class="form-control" formControlName="calle" placeholder="Ingresa calle">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.calle?.errors?.required && (fe.calle?.dirty || fe.calle?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-3">
-              <label class="control-label" for="numeroExterior">No. exterior <span class="req">*</span>:</label>
-              <input id="numeroExterior" class="form-control" formControlName="numeroExterior" placeholder="Ingresa no. exterior">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.numeroExterior?.errors?.required && (fe.numeroExterior?.dirty || fe.numeroExterior?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-3">
-              <label class="control-label" for="numeroInterior">No. interior:</label>
-              <input id="numeroInterior" class="form-control" formControlName="numeroInterior" placeholder="Ingresa no. interior">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.numeroInterior?.errors?.required && (fe.numeroInterior?.dirty || fe.numeroInterior?.touched)">Campo obligatorio</span>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-2">
-              <label class="control-label" for="cp">CP <span class="req">*</span>:</label>
-              <input id="cp" class="form-control" formControlName="cp" placeholder="Ingresa cp">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.cp?.errors?.required && (fe.cp?.dirty || fe.cp?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-2">
-              <label class="control-label" for="colonia">Asentamiento / Colonia <span class="req">*</span>:</label>
-              <input id="colonia" class="form-control" formControlName="colonia" placeholder="Ingresa colonia">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.colonia?.errors?.required && (fe.colonia?.dirty || fe.colonia?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-4">
-              <label class="control-label" for="municipio">Municipio <span class="req">*</span>:</label>
-              <input id="municipio" class="form-control" formControlName="municipio" placeholder="Ingresa municipio">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.municipio?.errors?.required && (fe.municipio?.dirty || fe.municipio?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-2">
-              <label class="control-label" for="estado">Estado <span class="req">*</span>:</label>
-              <p-dropdown id="estado" class="form-control" formControlName="estado" [options]="estado"
-                          placeholder="Selecciona estado">
-              </p-dropdown>
-              <span class="campo-obligatorio"
-                    *ngIf="fe.estado?.errors?.required && (fe.estado?.dirty || fe.estado?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-2">
-              <label class="control-label" for="numeroInterior">País <span class="req">*</span>:</label>
-              <p-dropdown id="pais" class="form-control" formControlName="pais" [options]="pais"
-                          placeholder="Selecciona país">
-              </p-dropdown>
-              <span class="campo-obligatorio"
-                    *ngIf="fe.pais?.errors?.required && (fe.pais?.dirty || fe.pais?.touched)">Campo obligatorio</span>
-            </div>
-          </div>
-          <h2 class="subtitulo">Contacto</h2>
-          <div class="row mt-3 mb-3">
-            <div class="col-md-6">
-              <label class="control-label" for="numeroInterior">Correo electrónico <span class="req">*</span>:</label>
-              <input id="correoElectronico" class="form-control" formControlName="correoElectronico" placeholder="Ingresa correo electrónico">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.correoElectronico?.errors?.required && (fe.correoElectronico?.dirty || fe.correoElectronico?.touched)">Campo obligatorio</span>
-            </div>
-            <div class="col-md-6">
-              <label class="control-label" for="numeroInterior">Teléfono <span class="req">*</span>:</label>
-              <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa teléfono">
-              <span class="campo-obligatorio"
-                    *ngIf="fe.telefono?.errors?.required && (fe.telefono?.dirty || fe.telefono?.touched)">Campo obligatorio</span>
-            </div>
-          </div>
-          <section class="mt-6">
-            <div class="flex justify-content-between align-items-center">
-              <h2 class="subtitulo">Persona de esta empresa</h2>
-              <button class="ml-4 btn btn-primary btn-lg" (click)="abrirAgregarPersona()">
-                Agregar persona
-              </button>
-            </div>
-            <ng-container *ngIf="personasConvenio.length < 1">
-              <div class="px-4">
-                <div class="px-4 py-6 mt-5 border-panel flex justify-content-center">
-                  <span class="mensaje-agregar-funcionalidad">Agrega personas a esta empresa</span>
-                </div>
-              </div>
-            </ng-container>
-            <ng-container class="my-4" *ngIf="personasConvenio.length > 0">
-              <app-table-panel>
-                <ng-template appCustomTemplate="left-header">
-                  <div class="table-panel-header-column">
-                    <span class="font-bold">Nombre</span>
-                  </div>
-                </ng-template>
-                <div *ngFor="let personaElement of personasConvenio"  class="row py-2 px-4 table-panel-row">
-                  <div class="col-md-10">
-                    <span> {{personaElement.nombre}} {{personaElement.primerApellido}} {{personaElement.segundoApellido}} </span>
-                  </div>
-                  <div class="col-md-2">
-                    <div class="flex justify-content-end contenedor-celda-iconos">
-                      <a (click)="abrirModalDetallePersona(personaElement)">
-                        <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </app-table-panel>
-            </ng-container>
-          </section>
-          <div class="row mt-7 mb-3">
-            <div class="col-md-12">
-              <label class="control-label">¿El servicio fue gestionado por un promotor?</label>
-              <div class="flex">
-                <div class="flex align-items-center mx-2">
-                  <p-radioButton [inputId]="'Sí'" name="esObito" [value]="true" formControlName="esObito"></p-radioButton>
-                  <label class="control-label m-0 mx-3" [for]="'Sí'">Sí</label>
-                </div>
-                <div class="flex align-items-center mx-2">
-                  <p-radioButton [inputId]="'No'" name="esObito" [value]="false" formControlName="esObito"></p-radioButton>
-                  <label class="control-label m-0 mx-3" [for]="'No'">No</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-      </section>
-      <div class="row">
-        <div class="col-md-12">
-      <span class="etiqueta-base">
-        *Campos obligatorios
-      </span>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-4" *ngIf="agregarPromotor">
+          <label class="control-label" for="listaPromotor">Promotor<span class="req">*</span>:</label>
+          <p-dropdown id="listaPromotor" class="form-control" formControlName="listaPromotor" [options]="promotores"
+                      placeholder="Selecciona el promotor" [filter]="true" filterBy="label"
+                      (onChange)="validarListadoPormotores()">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="ff.listaPromotor?.errors?.required && (ff.listaPromotor?.dirty || ff.listaPromotor?.touched)">
+                      Campo obligatorio</span>
         </div>
       </div>
-      <div class="row my-3">
-        <div class="col-md-12 flex justify-content-end">
-          <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
-          <button type="submit" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="indice == 1">
-
-    <form [formGroup]="documentacionForm">
-      <app-table-panel>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="ineAfiliado" formControlName="ineAfiliado" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'ineAfiliado'" class="control-label"><strong>INE del afiliado *</strong></label>
-            </div>
-          </div>
-        </div>
-
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaCURP" formControlName="copiaCURP" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaCURP'" class="control-label"><strong>Copia CURP *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaRFC" formControlName="copiaRFC" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaRFC'" class="control-label"><strong>Copia RFC *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="convenioAnterior" formControlName="convenioAnterior" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'convenioAnterior'" class="control-label"><strong>Convenio Anterior *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaActaNacimiento" formControlName="copiaActaNacimiento" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaActaNacimiento'" class="control-label">
-                <strong>Copia acta de nacimiento del beneficiario si es menor de edad *</strong>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="copiaINE" formControlName="copiaINE" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'copiaINE'" class="control-label"><strong>Copias del INE del beneficiario si es mayor de edad *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="comprobanteEstudios" formControlName="comprobanteEstudios" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'comprobanteEstudios'" class="control-label">
-                <strong>Comprobante de estudios del beneficiario si es mayor de 18 años y estudia *</strong>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="actaMatrimonio" formControlName="actaMatrimonio" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'actaMatrimonio'" class="control-label"><strong>Acta de matrimonio *</strong></label>
-            </div>
-          </div>
-        </div>
-        <div class="row p-3 table-panel-row">
-          <div class="col-md-12">
-            <div class="flex">
-              <p-checkbox inputId="declaracionConcubinato" formControlName="declaracionConcubinato" styleClass="mr-3" [binary]="true"></p-checkbox>
-              <label [for]="'declaracionConcubinato'" class="control-label"><strong>Declaración de concubinato *</strong></label>
-            </div>
-          </div>
-        </div>
-      </app-table-panel>
+      <ng-container *ngIf="ff.tipoContratacion.value== 1">
+        <app-por-persona [folioConvenio]="folioConvenioPersona"
+                         [confirmacionGuardado]="confirmarGuardadoPersona"
+                         [consultarFormularioValido]="consultarFormularioValido"
+                         [escenario]="'agregar'"
+                         (formularioValido)="validarFormularioPersona($event)"
+                         (formularioPersona)="datosFormularioPersona($event)"
+        ></app-por-persona>
+      </ng-container>
+      <ng-container *ngIf="ff.tipoContratacion.value== 2">
+        <app-por-empresa [folioEmpresa]="folioEmpresa"
+                         [confirmacionGuardado]="confirmacionGuardadoEmpresa"
+                         [consultarFormularioValido]="consultarFormularioValido"
+                         [escenario]="'agregar'"
+                         [existePersona]="existePersona"
+                         (guardarFormularioPrincipal)="guardarFormularioLocalStorage($event)"
+                         (formularioValido)="validarFormularioEmpresa($event)"
+                         (formularioEmpresa)="datosFormularioEmpresa($event)">
+        </app-por-empresa>
+      </ng-container>
     </form>
-
     <div class="row">
       <div class="col-md-12">
-      <span class="etiqueta-base">
-        *Campos obligatorios
-      </span>
+          <span class="etiqueta-base">
+            *Campos obligatorios
+          </span>
       </div>
     </div>
-    <div class="row my-3">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
-      </div>
-    </div>
+  </div>
 </ng-container>
-  <ng-container *ngIf="indice == menuStep.length">
+<ng-container *ngIf="indice == 1">
+  <form [formGroup]="documentacionForm">
     <app-table-panel>
-      <ng-template appCustomTemplate="left-header">
-        <div class="table-panel-header-column">
-          <span class="font-bold">No. de convenio</span>
-        </div>
-      </ng-template>
-      <ng-template appCustomTemplate="right-header">
-        <div class="table-panel-header-column">
-          <div class="flex flex-column">
-            <span>Estatus</span>
-            <div class="contenedor-inputswitch">
-              <span class="activo" >Vigente</span>
-<!--              <span class="inactivo" >Inactivo</span>-->
-            </div>
+      <div class="row p-3 table-panel-row">
+        <div class="col-md-12">
+          <div class="flex">
+            <p-checkbox inputId="ineAfiliado" formControlName="ineAfiliado" styleClass="mr-3" [binary]="true"
+                        (click)="mofificarModeloPersona()"></p-checkbox>
+            <label [for]="'ineAfiliado'" class="control-label"><strong>INE del afiliado </strong></label>
           </div>
         </div>
-      </ng-template>
+      </div>
+      <div class="row p-3 table-panel-row">
+        <div class="col-md-12">
+          <div class="flex">
+            <p-checkbox inputId="copiaCURP" formControlName="copiaCURP" styleClass="mr-3" [binary]="true"
+                        (click)="mofificarModeloPersona()"></p-checkbox>
+            <label [for]="'copiaCURP'" class="control-label"><strong>Copia CURP</strong></label>
+          </div>
+        </div>
+      </div>
+      <div class="row p-3 table-panel-row">
+        <div class="col-md-12">
+          <div class="flex">
+            <p-checkbox inputId="copiaRFC" formControlName="copiaRFC" styleClass="mr-3" [binary]="true"
+                        (click)="mofificarModeloPersona()"></p-checkbox>
+            <label [for]="'copiaRFC'" class="control-label"><strong>Copia RFC </strong></label>
+          </div>
+        </div>
+      </div>
     </app-table-panel>
-    <p-accordion styleClass="sivimss-accordion">
-      <p-accordionTab>
-        <ng-template pTemplate="header">Datos la contratación</ng-template>
-        <ng-template pTemplate="content">
-
-
-          <div class="row">
-            <div class="col-md-4">
-              <label>No. del convenio:</label> <br/>
-              <label> {{ff.numeroConvenio.value}}  </label>
-            </div>
-            <div class="col-md-4">
-              <span>Tipo de contratación:</span> <br/>
-              <label> {{ff.tipoContratacion.value}}  </label>
-            </div>
-          </div>
-          <hr class="hr-accordion-content">
-          <h2 class="subtitulo">Empresa</h2>
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <span>Matrícula*:</span> <br/>
-<!--              TODO validar de donde se sacará la matrícula-->
-            </div>
-            <div class="col-md-4">
-              <span>RFC:</span> <br/>
-              <label> {{fe.rfc.value}}  </label>
-            </div>
-            <div class="col-md-4">
-              <span>CURP:</span> <br/>
-              <label> {{fe.curp.value}}  </label>
-            </div>
-          </div>
-          <h2 class="subtitulo">Dirección</h2>
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <span>Calle:</span> <br/>
-              <label> {{fe.calle.value}}  </label>
-            </div>
-            <div class="col-md-4">
-              <span>No. exterior*:</span> <br/>
-              <label> {{fe.numeroExterior.value}}  </label>
-            </div>
-            <div class="col-md-4">
-              <span>No. interior:</span> <br/>
-              <label> {{fe.numeroInterior.value}}  </label>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <span>CP:</span> <br/>
-              <label> {{fe.cp.value}}  </label>
-            </div>
-            <div class="col-md-4">
-              <span>Colonia:</span> <br/>
-              <label> {{fe.colonia.value}}  </label>
-            </div>
-            <div class="col-md-4">
-              <span>Municipio:</span> <br/>
-              <label> {{fe.municipio.value}}  </label>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <span>Estado:</span> <br/>
-              <label> {{fe.estado.value}}  </label>
-            </div>
-            <div class="col-md-4">
-              <span>País:</span> <br/>
-              <label> {{fe.pais.value}}  </label>
-            </div>
-          </div>
-        </ng-template>
-      </p-accordionTab>
-
-      <p-accordionTab>
-        <ng-template pTemplate="header">Documentación</ng-template>
-        <ng-template pTemplate="content">
-
-        </ng-template>
-      </p-accordionTab>
-    </p-accordion>
-    <div class="flex justify-content-center">
-      <div class="mt-4 col-md-12">
-        <p class="text-center">¿Estás seguro que desea contratar este nuevo convenio?</p>
-
-      </div>
-    </div>
-    <div class="row my-3">
-      <div class="col-md-12 flex justify-content-end">
-        <button class="btn btn-md btn-default" >Regresar</button>
-        <button type="button" class="btn btn-danger btn-md ml-5" routerLink="../">Cancelar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
-      </div>
-    </div>
-  </ng-container>
-
-
+  </form>
 </ng-container>
-
-<ng-container *ngIf="agregarPersona">
-  <app-agregar-persona-convenios-prevision-funeraria (personaConvenio) = "mostrarPersonas($event) ">
-
-  </app-agregar-persona-convenios-prevision-funeraria>
+<ng-container *ngIf="indice == 2">
+  <app-detalle-guarda-convenio [objetoDetalleEmpresa]="modeloGuardarEmpresa"
+                               [objetoDetallePersona]="modeloGuardarPersona"
+                               [confirmarGuardarPersona]="banderaGuardarPersona"
+                               [confirmarGuardarEmpresa]="banderaGuardarEmpresa"
+                               [escenario]="'agregar'"
+  ></app-detalle-guarda-convenio>
+  <div class="flex mt-4 justify-content-center">
+    <div class="col-md-12">
+      <p class="text-center">¿Estás seguro de agregar este nuevo registro?</p>
+    </div>
+  </div>
 </ng-container>
+<div class="row my-3">
+  <div class="col-md-12 flex justify-content-end">
+    <button type="button" class="btn btn-default btn-md ml-5" routerLink="../">Cancelar</button>
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarPersona"
+            (click)="siguiente()" *ngIf="indice < menuStep.length && ff.tipoContratacion.value== 1">Siguiente
+    </button>
+    <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="deshabilitarBtnGuardarEmpresa"
+            (click)="confirmarGuardarEmpresa()" *ngIf="ff.tipoContratacion.value== 2  && indice < 2">Guardar
+    </button>
+
+    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 2"
+            (click)="guardar('empresa')">Aceptar
+    </button>
+
+    <button type="button" class="btn btn-primary btn-md ml-5" *ngIf="indice == 2 && ff.tipoContratacion.value == 1"
+            (click)="guardar('persona')">Aceptar
+    </button>
+
+
+  </div>
+</div>
+

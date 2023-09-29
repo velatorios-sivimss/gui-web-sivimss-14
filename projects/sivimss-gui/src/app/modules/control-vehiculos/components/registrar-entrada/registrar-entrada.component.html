@@ -1,0 +1,165 @@
+<app-table-panel>
+  <ng-template appCustomTemplate="left-header">
+    <div class="table-panel-header-column">
+      <span class="font-bold">
+        {{datosVehiculo.placas}} - {{datosVehiculo.marca}} {{datosVehiculo.modelo}}
+      </span>
+    </div>
+  </ng-template>
+  <ng-template appCustomTemplate="right-header">
+    <div class="table-panel-header-column">
+      <div class="flex flex-column">
+        <span>Disponibilidad</span>
+        <div>
+          <span class="disponible-entrada activo" *ngIf="datosVehiculo.disponible === 1">Disponible</span>
+          <span class="ocupada-entrada inactivo" *ngIf="datosVehiculo.disponible !== 1">Ocupada</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Marca</label>
+        <span>{{datosVehiculo.marca}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Modelo</label>
+        <span>{{datosVehiculo.modelo}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Placas</label>
+        <span>{{datosVehiculo.placas}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Número de tarjeta de circulación</label>
+        <span>{{datosVehiculo.tarjetaCirculacion}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row">
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Folio de la ODS</label>
+        <span>{{datosVehiculo.folioODS}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nombre contratante</label>
+        <span>{{datosVehiculo.nombreContratante}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nombre finado</label>
+        <span>{{datosVehiculo.nombreFinado}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nombre del destino</label>
+        <span>{{datosVehiculo.nombreDestino}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row table-panel-row" *ngIf="indice === 1">
+    <div class="">
+      <div class="col-md-12">
+        Registro de entrada
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Nivel de gasolina final</label>
+        <span>{{f.nivelGasolina.value}}</span>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="table-panel-column">
+        <label>Kilometraje final (km)</label>
+        <span>{{f.kilometrajeFinal.value}}</span>
+      </div>
+    </div>
+  </div>
+</app-table-panel>
+
+<ng-container *ngIf="indice === 0">
+  <form [formGroup]="formRegistrarEntrada">
+    <div class="row mb-3">
+      <div class="col-md-12 font-bold mt-3">
+        Registro de entrada
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
+        <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true" placeholder="Fecha"
+          dateFormat="dd/mm/yy">
+        </p-calendar>
+        <span class="campo-obligatorio" *ngIf="f.fecha?.errors?.required && (f.fecha?.dirty || f.fecha?.touched)">
+          Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="hora">Hora<span class="req">*</span>:</label>
+        <p-calendar id="hora" styleClass="form-control" formControlName="hora" placeholder="00:00"
+          [timeOnly]="true"></p-calendar>
+        <span class="campo-obligatorio" *ngIf="f.hora?.errors?.required && (f.hora?.dirty || f.hora?.touched)">
+          Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <label class="control-label" for="nivelGasolina">Nivel de gasolina final<span class="req">*</span>:</label>
+        <input id="nivelGasolina" class="form-control" formControlName="nivelGasolina" trimmer lettersOnly>
+        <span class="campo-obligatorio"
+          *ngIf="f.nivelGasolina?.errors?.required && (f.nivelGasolina?.dirty || f.nivelGasolina?.touched)">
+          Este campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="kilometrajeFinal">Kilometraje final (km)<span class="req">*</span>:</label>
+        <p-inputNumber id="kilometrajeFinal" class="form-control" formControlName="kilometrajeFinal" mode="decimal"
+          [minFractionDigits]="2" [maxFractionDigits]="2" suffix=" km" placeholder="Ingresa el kilometraje"
+          [maxlength]="13" currency="USD" locale="en-US"></p-inputNumber>
+        <span class="campo-obligatorio"
+          *ngIf="f.kilometrajeFinal?.errors?.required && (f.kilometrajeFinal?.dirty || f.kilometrajeFinal?.touched)">
+          Este campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <span>*Campos obligatorios</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="formRegistrarEntrada.invalid"
+          (click)="guardar()">Registrar entrada
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+
+<ng-container *ngIf="indice === 1">
+  <div class="row mb-5 mt-5">
+    <div class="col-md-12 text-center">
+      ¿Estás seguro de registrar la entrada del vehículo?
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar()">Aceptar
+      </button>
+    </div>
+  </div>
+</ng-container>

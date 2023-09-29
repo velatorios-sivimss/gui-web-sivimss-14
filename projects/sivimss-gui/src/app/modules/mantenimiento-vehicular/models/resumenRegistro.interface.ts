@@ -1,0 +1,15 @@
+export interface ResumenRegistro {
+  tipoMantenimiento: string,
+  fechaMantenimiento: string,
+  notas: string,
+  nombreProveedor: string,
+  numeroContrato: string,
+  taller: string,
+  costo: string,
+  kilometraje: string,
+  modalidad: string,
+  nombreProveedorTexto: string,
+  idContrato?: number,
+  mantenimientoPreventivo: string,
+  mantenimientoPreventivoDetalle: string,
+}

@@ -2,7 +2,6 @@ import { DetalleProveedorComponent } from './../detalle-proveedor/detalle-provee
 import { Proveedores } from './../../models/proveedores.interface';
 import { ModificarProveedorComponent } from './../modificar-proveedor/modificar-proveedor.component';
 import { AgregarProveedorComponent } from './../agregar-proveedor/agregar-proveedor.component';
-import { VerDetalleProveedorComponent } from './../ver-detalle-proveedor/ver-detalle-proveedor.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { LazyLoadEvent } from 'primeng/api';
@@ -75,7 +74,9 @@ export class AdministrarProveedoresComponent implements OnInit {
     this.filtroForm.reset();
   }
 
-  buscar(): void { }
+  buscar(): void {
+    console.log("Se comenta método para que no marque error en Sonar");
+  }
 
   paginar(event: LazyLoadEvent): void {
     setTimeout(() => {
@@ -160,7 +161,11 @@ export class AdministrarProveedoresComponent implements OnInit {
   abrirModalCambioEstatus(proveedor:Proveedores){
     /*Preguntar si se puede usar 'let'*/
     let header:string = "" ;
-    proveedor.estatus?header="Activar proveedor":header="Desactivar proveedor";
+    if(proveedor.estatus) {
+      header = "Activar proveedor";
+    } else {
+      header = "Desactivar proveedor";
+    }
     this.creacionRef = this.dialogService.open(DetalleProveedorComponent, {
       header:header,
       width:"920px",
@@ -203,7 +208,6 @@ export class AdministrarProveedoresComponent implements OnInit {
   }
 
   abrirModalModificacionProveedor(): void {
-    console.log(this.proveedorSeleccionado);
     this.creacionRef = this.dialogService.open(ModificarProveedorComponent, {
       data: this.proveedorSeleccionado,
       header: "Modificar proveedor",

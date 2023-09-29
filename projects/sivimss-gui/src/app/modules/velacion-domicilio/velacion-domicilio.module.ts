@@ -20,6 +20,11 @@ import {AccordionModule} from "primeng/accordion";
 import { RegistrarEntradaEquipoComponent } from './components/registrar-entrada-equipo/registrar-entrada-equipo.component';
 import { DetalleVelacionDomicilioComponent } from './components/detalle-velacion-domicilio/detalle-velacion-domicilio.component';
 import { GenerarValeSalidaComponent } from './components/generar-vale-salida/generar-vale-salida.component';
+import { UtileriaModule } from "../../shared/utileria/utileria.module";
+import { EliminarArticuloComponent } from "./components/eliminar-articulo/eliminar-articulo.component";
+import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -27,7 +32,8 @@ import { GenerarValeSalidaComponent } from './components/generar-vale-salida/gen
     VelacionDomicilioComponent,
     RegistrarEntradaEquipoComponent,
     DetalleVelacionDomicilioComponent,
-    GenerarValeSalidaComponent
+    GenerarValeSalidaComponent,
+    EliminarArticuloComponent
   ],
   imports: [
     VelacionDomicilioRoutingModule,
@@ -46,7 +52,11 @@ import { GenerarValeSalidaComponent } from './components/generar-vale-salida/gen
     TablePanelModule,
     CeldaStickyModule,
     CalendarModule,
-    AccordionModule
+    AccordionModule,
+    ValidaRolModule,
+    UtileriaModule,
+    ConfirmDialogModule,
+    BtnRegresarModule,
   ],
   providers:[
     VelacionDomicilioService,

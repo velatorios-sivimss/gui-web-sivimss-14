@@ -1,0 +1,22 @@
+<div class="border-panel mb-8">
+  <h3>GENERAR ORDEN DE SERVICIO</h3>
+  <div class="mt-4 flex justify-content-center align-items-center">
+    <app-etapas-convenio-sfpa></app-etapas-convenio-sfpa>
+  </div>
+  <ng-container [ngSwitch]="idEtapaSeleccionada">
+    <ng-container *ngSwitchCase="DATOS_DEL_CONTRATANTE">
+      <app-datos-contratante-sf (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-datos-contratante-sf>
+    </ng-container>
+    <ng-container *ngSwitchCase="DATOS_DEL_FINADO">
+      <app-datos-finado-sf (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-datos-finado-sf>
+    </ng-container>
+    <ng-container *ngSwitchCase="CARACTERISTICAS_DEL_PRESUPUESTO">
+      <app-caracteristicas-presupuesto-sf
+        (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-caracteristicas-presupuesto-sf>
+    </ng-container>
+    <ng-container *ngSwitchCase="INFORMACION_DEL_SERVICIO">
+      <app-informacion-servicio-sf (seleccionarEtapa)="obtenerIdEtapaSeleccionada($event)"></app-informacion-servicio-sf>
+    </ng-container>
+  </ng-container>
+
+</div>

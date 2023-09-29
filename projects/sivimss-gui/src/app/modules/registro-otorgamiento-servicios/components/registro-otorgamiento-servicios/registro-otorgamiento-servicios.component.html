@@ -1,98 +1,99 @@
-<app-titulo-principal titulo="Registro de otorgamiento de servicios"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Registro de otorgamiento de servicios" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-12">
         <label class="control-label" for="folioODS">Folio de ODS<span class="req">*</span></label>
-        <input id="folioODS" class="form-control" formControlName="folioODS"
-               placeholder="Inserta el folio de ODS">
+        <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Inserta el folio de ODS">
         <span class="campo-obligatorio"
-              *ngIf="f.folioODS?.errors?.required && (f.folioODS?.dirty || f.folioODS?.touched)">Campo obligatorio</span>
+          *ngIf="f.folioODS?.errors?.required && (f.folioODS?.dirty || f.folioODS?.touched)">Campo obligatorio</span>
       </div>
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="submit" class="btn btn-default btn-md" (click)="limpiar()" >Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid" (click)="consultaOtorgamientoServicios()">Buscar</button>
+        <button type="submit" class="btn btn-default btn-md" [disabled]="filtroForm.pristine" (click)="limpiar()">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine"
+          (click)="consultaOtorgamientoServicios(true)">Buscar</button>
       </div>
     </div>
   </form>
 </div>
 
 <ng-container *ngIf="mostrarRegistros">
-<app-table-panel>
-  <div class="row table-panel-row">
-    <div class="col-md-6">
-      <div class="table-panel-column">
-        <div class="col-md-5">
-          <label>Folio de la ODS</label>
-          <span style="float:right">DOC-00001</span>
+  <app-table-panel>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <div class="col-md-5">
+            <label>Folio de la ODS:</label>
+            <span style="float:right"> {{folioODS}}</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row table-panel-row">
-    <div class="col-md-4">
-      <div class="table-panel-column">
-        <label>Nombre del contratante</label>
-        <span>Alberto Camarón Barcenas</span>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="table-panel-column">
-        <label>Nombre del finado</label>
-        <span>Luz Marta Motesinos Camarón</span>
-      </div>
-    </div>
-  </div>
-  <div class="row table-panel-row">
-    <div class="col-md-12">
-      <section class="mt-5">
-        <div class=" pl-5 pr-5 flex justify-content-between align-items-center">
-          <h2 class="subtitulo">Histórico de servicios</h2>
-          <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalSituarServicios()">Situar servicios</button>
+    <div class="row table-panel-row">
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nombre del contratante:</label>
+          <span>{{nombreContratante}}</span>
         </div>
-      </section>
-
-      <p-table styleClass="mt-5 mb-8 mr-5 ml-5" [value]="registroOtorgamientoServicios"
-               [rows]="cantElementosPorPagina"
-               [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-               (onLazyLoad)="paginar($event)">
-
-        <ng-template pTemplate="header">
-          <tr>
-            <th scope="col">Servicio</th>
-            <th scope="col">Fecha y hora</th>
-            <th scope="col">Notas del servicio</th>
-            <th scope="col"></th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-registroOtorgamientoServicios>
-          <tr>
-            <td>{{registroOtorgamientoServicios.descTipoServicio}}</td>
-            <td>{{registroOtorgamientoServicios.fecha}} {{registroOtorgamientoServicios.hora}} </td>
-            <td>{{registroOtorgamientoServicios.notasServicio}}</td>
-            <td>
-              <div class="contenedor-celda-iconos">
-                <a (click)="abrirPanel($event,registroOtorgamientoServicios)">
-                  <img
-                    src="assets/images/imagen-icono-barras-horizontales.svg"
-                    alt="icono barras horizontales">
-                </a>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+      </div>
+      <div class="col-md-4">
+        <div class="table-panel-column">
+          <label>Nombre del finado:</label>
+          <span>{{nombreFinado}}</span>
+        </div>
+      </div>
     </div>
-  </div>
-</app-table-panel>
+    <div class="row table-panel-row">
+      <div class="col-md-12">
+        <section class="mt-5">
+          <div class=" pl-5 pr-5 flex justify-content-between align-items-center">
+            <h2 class="subtitulo">Histórico de servicios</h2>
+            <button type="button" class="btn btn-primary btn-lg" (click)="abrirModalSituarServicios()">Situar
+              servicios</button>
+          </div>
+        </section>
+
+        <p-table styleClass="mt-5 mb-8 mr-5 ml-5" [value]="arrayHistorial" [rows]="cantElementosPorPagina" [lazy]="true"
+          [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Servicio</th>
+              <th scope="col">Fecha y hora</th>
+              <th scope="col">Notas del servicio</th>
+              <th scope="col"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-registroOtorgamientoServicios>
+            <tr>
+              <td>{{registroOtorgamientoServicios.nombreServicio}}</td>
+              <td>{{registroOtorgamientoServicios.fechaSolicitud}} </td>
+              <td>{{registroOtorgamientoServicios.desNotas}}</td>
+              <td>
+                <div class="contenedor-celda-iconos">
+                  <a (click)="abrirPanel($event,registroOtorgamientoServicios)">
+                    <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </app-table-panel>
 </ng-container>
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Quitar servicio" (click)="abrirModalQuitarServicio()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Quitar servicio"
+        (click)="abrirModalQuitarServicio()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>

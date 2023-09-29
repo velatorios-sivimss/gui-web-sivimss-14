@@ -1,7 +1,6 @@
 import { HabilitarRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/habilitar-renovacion/habilitar-renovacion.component'
-import { DetalleRenovacionComponent } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/components/detalle-renovacion/detalle-renovacion.component'
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { LazyLoadEvent } from 'primeng/api'
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog'
 import { OverlayPanel } from 'primeng/overlaypanel'
@@ -12,8 +11,17 @@ import {
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service'
 import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service'
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes'
-import { CATALOGOS_DUMMIES } from 'projects/sivimss-gui/src/app/modules/proveedores/constants/dummies'
-import { ConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/models/convenios-prevision.interface'
+import { BusquedaConveniosPrevision, FiltrosConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovacion-extemporanea/models/convenios-prevision.interface'
+import { RenovacionExtemporaneaService } from '../../services/renovacion-extemporanea.service'
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface'
+import { mapearArregloTipoDropdown, validarUsuarioLogueado } from 'projects/sivimss-gui/src/app/utils/funciones'
+import { HttpErrorResponse } from '@angular/common/http'
+import { ActivatedRoute } from '@angular/router'
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service'
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface'
+import { finalize } from 'rxjs'
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service'
+import { RENOVACION_EXTEMPORANEA_BREADCRUMB } from '../../constants/breadcrumb'
 
 @Component({
   selector: 'app-renovacion-extemporanea',
@@ -22,6 +30,9 @@ import { ConveniosPrevision } from 'projects/sivimss-gui/src/app/modules/renovac
   providers: [DialogService],
 })
 export class RenovacionExtemporaneaComponent implements OnInit {
+  readonly POSICION_CATALOGO_NIVELES = 0;
+  readonly POSICION_CATALOGO_DELEGACION = 1;
+
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
 
@@ -29,154 +40,197 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   filtroForm!: FormGroup;
-  conveniosPrevicion: ConveniosPrevision[] = [];
-  convenioSeleccionado: ConveniosPrevision = {};
+  catalogoNiveles: TipoDropdown[] = [];
+  catalogoDelegaciones: TipoDropdown[] = [];
+  catalogoVelatorios: TipoDropdown[] = [];
+  conveniosPrevicion: BusquedaConveniosPrevision[] = [];
+  convenioSeleccionado: BusquedaConveniosPrevision = {};
   creacionRef!: DynamicDialogRef;
-  habilitarRenovacionConvenio!: ConveniosPrevision;
+  habilitarRenovacionConvenio!: BusquedaConveniosPrevision;
   mostrarModaltitularFallecido: boolean = false;
+  busquedaRealizada: boolean = false;
+  mostrarModalConfirmacion: boolean = false;
+  mensajeConfirmacion: string = "";
 
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
-  tipoServicio: TipoDropdown[] = CATALOGOS_DUMMIES;
-  partidaPresupuestal: TipoDropdown[] = CATALOGOS_DUMMIES;
-  cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES;
-  niveles: TipoDropdown[] = CATALOGOS_DUMMIES;
-  velatorios: TipoDropdown[] = CATALOGOS_DUMMIES;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     private alertaService: AlertaService,
     public dialogService: DialogService,
-  ) {}
+    private readonly loaderService: LoaderService,
+    private renovacionExtemporaneaService: RenovacionExtemporaneaService,
+    private mensajesSistemaService: MensajesSistemaService,
+  ) { }
 
   ngOnInit(): void {
+    this.breadcrumbService.actualizar(RENOVACION_EXTEMPORANEA_BREADCRUMB);
+    const respuesta = this.route.snapshot.data["respuesta"];
+    this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
+    this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACION];
     this.inicializarFiltroForm();
   }
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      velatorio: [{ value: null, disabled: false }, [Validators.required]],
-      numeroConvenio: [{ value: null, disabled: false }, [Validators.required]],
-      folioConvenio: [{ value: null, disabled: false }, [Validators.required]],
-      rfcAfiliado: [{ value: null, disabled: false }, [Validators.required]],
+      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, []),
+      idDelegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
+      idVelatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
+      numConvenio: new FormControl({ value: null, disabled: false }, []),
+      folio: new FormControl({ value: null, disabled: false }, []),
+      rfc: new FormControl({ value: null, disabled: false }, [Validators.maxLength(13)]),
     });
+    this.obtenerVelatorios();
   }
 
-  paginar(event: LazyLoadEvent): void {
-    setTimeout(() => {
-      this.conveniosPrevicion = [
-        {
-          id: 1,
-          folioConvenio: 'DOC-000001',
-          rfc: 'Convenio de prueba ',
-          nombre: 'Tamara',
-          primerApellido: 'Sanchez',
-          segundoApellido: 'Prado',
-          velatorioOrigen: 'No. 18 Tequesquináhuac',
-          tipoPrevencionFuneraria: 'Previsión funeraria plan anterior',
-          tipoPaquete: 'Paquete básico ',
-          fechaInicioVigencia: '01/01/2021 ',
-          fechaFinVigencia: '01/01/2021 ',
-          numeroINE: '1029384756 ',
-          beneficiarios: 'Mercedes Zavaleta Beluga',
-          telefonoContacto: '55 1423 7089  ',
-          correoElectronico: 'tamara10298@gmail.com ',
-          cuotaRecuperacion: '$ 54,000.00 ',
-          estatus: true,
-        },
-        {
-          id: 2,
-          folioConvenio: 'DOC-000001',
-          rfc: 'TASASL12107034Y',
-          nombre: 'Tamara',
-          primerApellido: 'Sanchez',
-          segundoApellido: 'Prado',
-          velatorioOrigen: 'No. 18 Tequesquináhuac',
-          tipoPrevencionFuneraria: 'Previsión funeraria plan anterior',
-          tipoPaquete: 'Paquete básico ',
-          fechaInicioVigencia: '01/01/2021 ',
-          fechaFinVigencia: '01/01/2021 ',
-          numeroINE: '1029384756 ',
-          beneficiarios: 'Mercedes Zavaleta Beluga',
-          telefonoContacto: '55 1423 7089  ',
-          correoElectronico: 'tamara10298@gmail.com ',
-          cuotaRecuperacion: '$ 54,000.00 ',
-          estatus: true,
-        },
-        {
-          id: 3,
-          folioConvenio: 'Convenio de prueba ',
-          rfc: 'Convenio de prueba ',
-          nombre: 'Convenio de prueba ',
-          primerApellido: 'Convenio de prueba ',
-          segundoApellido: 'Convenio de prueba ',
-          velatorioOrigen: 'Convenio de prueba ',
-          tipoPrevencionFuneraria: 'Convenio de prueba ',
-          tipoPaquete: 'Convenio de prueba ',
-          fechaInicioVigencia: 'Convenio de prueba ',
-          fechaFinVigencia: 'Convenio de prueba ',
-          numeroINE: 'Convenio de prueba ',
-          beneficiarios: 'Convenio de prueba ',
-          telefonoContacto: 'Convenio de prueba ',
-          correoElectronico: 'Convenio de prueba ',
-          cuotaRecuperacion: 'Convenio de prueba ',
-          estatus: false,
-        },
-      ]
-      this.totalElementos = this.conveniosPrevicion.length
-    }, 0);
-  }
-
-  abrirModalDetalleRenovacion(servicio: ConveniosPrevision) {
-    this.creacionRef = this.dialogService.open(DetalleRenovacionComponent, {
-      header: 'Detalle',
-      width: '920px',
-      data: { servicio: servicio, origen: 'detalle' },
-    });
-  }
-
-  enviarConvenioSeleccionado(convenio: ConveniosPrevision) {
-    convenio = this.habilitarRenovacionConvenio;
-  }
-
-  abrirModalHabilitarRenovacion(): void {
-    this.creacionRef = this.dialogService.open(HabilitarRenovacionComponent, {
-      header: 'Convenio de previsión funeraria',
-      width: '920px',
-      data: { servicio: this.convenioSeleccionado, origen: 'agregar' },
-    });
-
-    this.creacionRef.onClose.subscribe((estatus: boolean) => {
-      if (estatus) {
-        this.alertaService.mostrar(
-          TipoAlerta.Exito,
-          'Renovacion habilitada correctamente',
-        );
+  obtenerVelatorios() {
+    this.renovacionExtemporaneaService.obtenerVelatoriosPorDelegacion(this.ff.idDelegacion.value).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+        this.conveniosPrevicion = [];
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error("ERROR: ", error);
       }
     });
   }
 
-  abrirPanel(
-    event: MouseEvent,
-    articuloSeleccionado: ConveniosPrevision,
-  ): void {
-    this.convenioSeleccionado = articuloSeleccionado;
+  buscar(): void {
+    this.numPaginaActual = 0;
+    this.paginarConFiltros();
+  }
+
+  paginar(event: LazyLoadEvent): void {
+    if (validarUsuarioLogueado()) return;
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+    }
+  }
+
+  paginarConFiltros(): void {
+    const filtros: FiltrosConveniosPrevision = this.crearSolicitudFiltrosPorNivel();
+    if (filtros) {
+      if (!Object.values(filtros).some(v => (v))) {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(22);
+        this.mostrarModalConfirmacion = true;
+        this.mensajeConfirmacion = msg;
+        return;
+      }
+      this.loaderService.activar();
+      this.renovacionExtemporaneaService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            this.conveniosPrevicion = [];
+            this.totalElementos = 0;
+            if (respuesta?.datos?.content?.length > 0) {
+              this.conveniosPrevicion = respuesta.datos.content;
+              this.totalElementos = respuesta.datos.totalElements;
+            } else {
+              this.busquedaRealizada = true;
+            }
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+          }
+        });
+    }
+  }
+
+  crearSolicitudFiltrosPorNivel(): FiltrosConveniosPrevision {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    switch (+usuario.idOficina) {
+      case 1:
+        return {
+          idDelegacion: !this.ff.idDelegacion.value || this.ff.idDelegacion.getRawValue() === '' ? null : this.ff.idDelegacion.getRawValue(),
+          idVelatorio: !this.ff.idVelatorio.value || this.ff.idVelatorio.getRawValue() === '' ? null : this.ff.idVelatorio.getRawValue(),
+          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : +this.ff.numConvenio.getRawValue(),
+          folio: !this.ff.folio.value || this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
+          rfc: !this.ff.rfc.value || this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+        }
+      case 2:
+        return {
+          idVelatorio: !this.ff.idVelatorio.value || this.ff.idVelatorio.getRawValue() === '' ? null : this.ff.idVelatorio.getRawValue(),
+          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : +this.ff.numConvenio.getRawValue(),
+          folio: !this.ff.folio.value || this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
+          rfc: !this.ff.rfc.value || this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+        }
+      default:
+        return {
+          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : +this.ff.numConvenio.getRawValue(),
+          folio: !this.ff.folio.value || this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
+          rfc: !this.ff.rfc.value || this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+        }
+    }
+  }
+
+  abrirPanel(event: MouseEvent, convenioPrevisionSeleccionado: BusquedaConveniosPrevision): void {
+    this.convenioSeleccionado = convenioPrevisionSeleccionado;
     this.overlayPanel.toggle(event);
+  }
+
+  abrirModalHabilitarRenovacion(): void {
+    this.creacionRef = this.dialogService.open(HabilitarRenovacionComponent, {
+      header: 'Convenio de Previsión Funeraria',
+      width: '920px',
+      data: { convenio: this.convenioSeleccionado, origen: 'agregar' },
+    });
+
+    this.creacionRef.onClose.subscribe((estatus: boolean) => {
+      if (estatus) {
+        this.paginarConFiltros();
+      }
+    });
+  }
+
+  obtenerDetalleConvenio() {
+    if (this.convenioSeleccionado.idConvenio) {
+      this.loaderService.activar();
+      this.renovacionExtemporaneaService.obtenerDetalleConvenio(this.convenioSeleccionado.idConvenio)
+        .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
+          next: (respuesta: HttpRespuesta<any>): void => {
+            if (respuesta?.datos) {
+              this.convenioSeleccionado = respuesta?.datos;
+              this.abrirModalHabilitarRenovacion();
+            } else if (respuesta.mensaje === '39') {
+              const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+              this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
+            }
+          },
+          error: (error: HttpErrorResponse): void => {
+            console.error(error);
+          }
+        });
+    }
   }
 
   mostrarModalTitularFallecido(): void {
     this.mostrarModaltitularFallecido = true;
   }
 
-  consultaServicioEspecifico(): string {
-    return '';
-  }
-
   limpiar(): void {
+    this.busquedaRealizada = false;
     this.filtroForm.reset();
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.filtroForm.get('nivel')?.patchValue(+usuario.idOficina);
+
+    if (+usuario.idOficina >= 2) {
+      this.filtroForm.get('idDelegacion')?.patchValue(+usuario.idDelegacion);
+    }
+
+    if (+usuario.idOficina === 3) {
+      this.filtroForm.get('idVelatorio')?.patchValue(+usuario.idVelatorio);
+    } else {
+      this.catalogoVelatorios = [];
+    }
+
+    this.conveniosPrevicion = [];
+    this.totalElementos = 0;
+    this.numPaginaActual = 0;
   }
 
-  get f() {
+  get ff() {
     return this.filtroForm?.controls;
   }
 }

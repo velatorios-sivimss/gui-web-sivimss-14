@@ -1,0 +1,11 @@
+<div class="flex">
+  <app-titulo-principal style="width: 100%" titulo="Consulta orden de entrada"></app-titulo-principal>
+</div>
+<p-tabView>
+  <p-tabPanel [header]="menu[0]">
+    <app-consulta-orden-entrada></app-consulta-orden-entrada>
+  </p-tabPanel>
+  <p-tabPanel [header]="menu[1]">
+    <app-consulta-stock></app-consulta-stock>
+  </p-tabPanel>
+</p-tabView>

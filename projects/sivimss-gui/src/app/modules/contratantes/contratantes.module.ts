@@ -24,6 +24,11 @@ import {CeldaStickyModule} from "../../shared/celda-sticky/celda-sticky.module";
 import {ContratantesService} from "./services/contratantes.service";
 import { DetalleContratantesComponent } from './components/detalle-contratantes/detalle-contratantes.component';
 import { ModificarContratantesComponent } from './components/modificar-contratantes/modificar-contratantes.component';
+import { BtnRegresarModule } from "../../shared/btn-regresar/btn-regresar.module";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { UtileriaModule } from "../../shared/utileria/utileria.module";
+import { AutoCompleteModule } from "primeng/autocomplete";
+import { ValidaRolModule } from "../../shared/valida-rol/valida-rol.module";
 
 @NgModule({
   declarations: [
@@ -48,7 +53,11 @@ import { ModificarContratantesComponent } from './components/modificar-contratan
     CeldaStickyModule,
     StepsModule,
     CalendarModule,
-
+    BtnRegresarModule,
+    ConfirmDialogModule,
+    UtileriaModule,
+    AutoCompleteModule,
+    ValidaRolModule
   ],
   providers:[
     ContratantesService

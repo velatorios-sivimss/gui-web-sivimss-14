@@ -16,6 +16,7 @@ import { SERVICIO_BREADCRUMB } from '../../constants/breadcrumb';
 import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { ArticulosService } from '../../services/articulos.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 @Component({
   selector: 'app-administrar-articulos',
@@ -150,8 +151,8 @@ export class AdministrarArticulosComponent implements OnInit {
   }
 
   paginar(event?: LazyLoadEvent): void {
-    if (event && event.first !== undefined && event.rows !== undefined) {
-      this.numPaginaActual = Math.floor(event.first / event.rows);
+    if (event) {
+      this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
     } else {
       this.numPaginaActual = 0;
     }
@@ -159,16 +160,16 @@ export class AdministrarArticulosComponent implements OnInit {
   }
 
   buscarPorFiltros(): void {
-    this.articulosService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual, this.cantElementosPorPagina).subscribe(
-      (respuesta) => {
-        this.articulos = respuesta!.datos.content;
-        this.totalElementos = respuesta!.datos.totalElements;
+    this.articulosService.buscarPorFiltros(this.obtenerObjetoParaFiltrado(), this.numPaginaActual, this.cantElementosPorPagina).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.articulos = respuesta.datos.content;
+        this.totalElementos = respuesta.datos.totalElements;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   buscarArticulo() {
@@ -219,11 +220,11 @@ export class AdministrarArticulosComponent implements OnInit {
   filtrarArticulos() {
     let query = this.obtenerNombreArticuloDescripcion();
     if (query?.length >= 3) {
-      this.articulosService.buscarTodosPorFiltros(this.obtenerObjetoParaFiltrado()).subscribe(
-        (respuesta) => {
+      this.articulosService.buscarTodosPorFiltros(this.obtenerObjetoParaFiltrado()).subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           let filtrado: TipoDropdown[] = [];
-          if (respuesta!.datos.length > 0) {
-            respuesta!.datos.forEach((e: any) => {
+          if (respuesta.datos.length > 0) {
+            respuesta.datos.forEach((e: any) => {
               filtrado.push({
                 label: e.desArticulo,
                 value: e.idArticulo,
@@ -232,10 +233,10 @@ export class AdministrarArticulosComponent implements OnInit {
             this.articuloServicioFiltrados = filtrado;
           }
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.error(error);
         }
-      );
+      });
     }
   }
 

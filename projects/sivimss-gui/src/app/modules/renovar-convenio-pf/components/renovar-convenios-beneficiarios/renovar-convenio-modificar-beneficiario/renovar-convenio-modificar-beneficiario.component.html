@@ -1,0 +1,158 @@
+<div class="mt-7">
+  <p-accordion styleClass="sivimss-accordion accordion-custom-pf" [activeIndex]="0">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <span>Beneficiario {{numBeneficiario}}</span>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <form class="mt-5" [formGroup]="modificarBeneficiarioForm">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="nombre">Nombre:</label>
+              <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre"
+                maxlength="50" lettersOnly trimmer>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.nombre?.errors?.required && (mbf.nombre?.dirty || mbf.nombre?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="primerApellido">Primer apellido:</label>
+              <input id="primerApellido" class="form-control" formControlName="primerApellido" lettersOnly trimmer
+                maxlength="50" placeholder="Ingresa el primer apellido">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.primerApellido?.errors?.required && (mbf.primerApellido?.dirty || mbf.primerApellido?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="segundoApellido">Segundo apellido:</label>
+              <input id="segundoApellido" class="form-control" formControlName="segundoApellido" lettersOnly trimmer
+                maxlength="50" placeholder="Ingresa el primer apellido">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.segundoApellido?.errors?.required && (mbf.segundoApellido?.dirty || mbf.segundoApellido?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="edad">Edad:</label>
+              <input id="edad" class="form-control" formControlName="edad" placeholder="Ingresa la edad" maxlength="3"
+                numbersOnly trimmer>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.edad?.errors?.required && (mbf.edad?.dirty || mbf.edad?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="parentesco">Parentesco:</label>
+              <p-dropdown id="parentesco" class="form-control" formControlName="parentesco"
+                placeholder="Selecciona parentesco" [options]="catParentesco"></p-dropdown>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.parentesco?.errors?.required && (mbf.parentesco?.dirty || mbf.parentesco?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+              <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa la curp" maxlength="18"
+                alphanumericOnly trimmer (blur)="validarCurpRenapo();">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.curp?.errors?.required && (mbf.curp?.dirty || mbf.curp?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label class="control-label" for="rfc">RFC:</label>
+              <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el rfc" trimmer
+                folioOdsAlphanumeric maxlength="13" (blur)="validarRfc()">
+              <span class="campo-obligatorio" *ngIf="mbf.rfc?.errors?.required && (mbf.rfc?.dirty || mbf.rfc?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="email">Correo electrónico:</label>
+              <input id="email" class="form-control" formControlName="email" placeholder="Ingresa el correo"
+                maxlength="45" (blur)="validarEmail()" trimmer>
+              <span class="campo-obligatorio"
+                *ngIf="mbf.email?.errors?.required && (mbf.email?.dirty || mbf.email?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+            <div class="col-md-4">
+              <label class="control-label" for="telefono">Teléfono:</label>
+              <input id="telefono" class="form-control" formControlName="telefono" placeholder="Ingresa el teléfono"
+                numbersOnly trimmer maxlength="10">
+              <span class="campo-obligatorio"
+                *ngIf="mbf.telefono?.errors?.required && (mbf.telefono?.dirty || mbf.telefono?.touched)">
+                Este campo es obligatorio *.</span>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="actaNacimiento" formControlName="actaNacimiento" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'actaNacimiento'" class="control-label"><strong>Copia acta de nacimiento del beneficiario
+                    si es
+                    menor de edad</strong></label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="ineBeneficiario" formControlName="ineBeneficiario" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'ineBeneficiario'" class="control-label"><strong>Copia del INE del beneficiario si es
+                    mayor de
+                    edad</strong></label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="comprobanteEstudios" formControlName="comprobanteEstudios" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'comprobanteEstudios'" class="control-label"><strong>Comprobante de estudios del
+                    beneficiario si es
+                    mayor de 18 años y estudia</strong></label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="actaMatrimonio" formControlName="actaMatrimonio" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'actaMatrimonio'" class="control-label"><strong>Acta de matrimonio (Beneficiario
+                    Espos@)</strong></label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <div class="flex">
+                <p-checkbox inputId="declaracionConcubinato" formControlName="declaracionConcubinato" styleClass="mr-3"
+                  [binary]="true"></p-checkbox>
+                <label [for]="'declaracionConcubinato'" class="control-label"><strong>Declaración de
+                    concubinato</strong></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-12">
+              <span>*Campos obligatorios</span>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+    </p-accordionTab>
+  </p-accordion>
+  <div class="row my-6">
+    <div class="col-md-12 flex justify-content-end">
+      <button type="button" class="btn btn-gold btn-md ml-5" (click)="cancelar();">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-md ml-5" (click)="guardar();">Guardar</button>
+    </div>
+  </div>
+</div>

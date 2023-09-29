@@ -1,0 +1,19 @@
+export interface RegistroReporteEncargado {
+  DES_NIVEL_ACEITE: string
+  DES_NIVEL_AGUA: string
+  DES_NIVEL_BATERIA: string
+  DES_NIVEL_CODIGOFALLO: string
+  DES_NIVEL_COMBUSTIBLE: string
+  DES_NIVEL_LIMPIEZAEXTERIOR: string
+  DES_NIVEL_LIMPIEZAINTERIOR: string
+  DES_NIVEL_NEUMADELA: string
+  DES_NIVEL_NEUMATRASE: string
+  DES_PLACAS: string
+  FEC_REGISTRO: string
+  ID_DELEGACION: number
+  ID_MTTOVEHICULAR: number
+  ID_MTTOVERIFINICIO: number
+  ID_VEHICULO: number
+  TOTAL_VEHICULOS: number
+  DES_MTTO_TIPO: string
+}

@@ -1,0 +1,314 @@
+<ng-container *ngIf="!ventanaConfirmacion">
+  <form [formGroup]="solicitudMantenimientoForm">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="placas">Placas<span class="req">*</span>:</label>
+        <input id="placas" class="form-control" formControlName="placas" placeholder="Ingresa el placas">
+        <span class="campo-obligatorio"
+          *ngIf="smf.placas?.errors?.required && (smf.placas?.dirty || smf.placas?.touched)">Este campo es obligatorio
+          *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="marca">Marca<span class="req">*</span>:</label>
+        <input id="marca" class="form-control" formControlName="marca" placeholder="Ingresa el marca">
+        <span class="campo-obligatorio"
+          *ngIf="smf.marca?.errors?.required && (smf.marca?.dirty || smf.marca?.touched)">Este campo es obligatorio
+          *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="anio">Año<span class="req">*</span>:</label>
+        <input id="anio" class="form-control" formControlName="anio" placeholder="Ingresa el anio">
+        <span class="campo-obligatorio"
+          *ngIf="smf.anio?.errors?.required && (smf.anio?.dirty || smf.anio?.touched)">Este campo es obligatorio
+          *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="kilometraje">Kilometraje<span class="req">*</span>:</label>
+        <input id="kilometraje" class="form-control" formControlName="kilometraje" placeholder="Ingresa el kilometraje"
+          maxlength="6" numbersOnly>
+        <span class="campo-obligatorio"
+          *ngIf="smf.kilometraje?.errors?.required && (smf.kilometraje?.dirty || smf.kilometraje?.touched)">Este campo
+          es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="tipoMantenimiento">Tipo de mantenimiento<span class="req">*</span>:</label>
+        <p-dropdown appendTo="body" id="tipoMantenimiento" class="form-control" formControlName="tipoMantenimiento"
+          [options]="tiposMantenimiento" placeholder="Selecciona el tamaño" (onChange)="gestionarCampos()">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="smf.tipoMantenimiento?.errors?.required && (smf.tipoMantenimiento?.dirty || smf.tipoMantenimiento?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="fechaMantenimiento">Fecha de mantenimiento<span class="req">*:</span></label>
+        <p-calendar id="fechaMantenimiento" formControlName="fechaMantenimiento" styleClass="form-control"
+          [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+        </p-calendar>
+        <span class="campo-obligatorio"
+          *ngIf="smf.fechaMantenimiento?.errors?.required && (smf.fechaMantenimiento?.dirty || smf.fechaMantenimiento?.touched)">Este
+          campo es obligatorio *.
+        </span>
+      </div>
+    </div>
+    <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '1'">
+      <div class="col-md-6">
+        <label class="control-label">Modalidad<span class="req">*:</span></label>
+        <div class="flex">
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadSemestral" name="modalidad" value="1" formControlName="modalidad"
+              inputId="semestral"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Semestral</label>
+          </div>
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadAnual" name="modalidad" value="2" formControlName="modalidad"
+              inputId="anual"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Anual</label>
+          </div>
+          <div class="flex align-items-center mx-2">
+            <p-radioButton id="modalidadFrecuente" name="modalidad" value="3" formControlName="modalidad"
+              inputId="frecuente"></p-radioButton>
+            <label class="control-label m-0 mx-3" [for]="'modalidad'">Frecuente</label>
+          </div>
+        </div>
+        <span class="campo-obligatorio"
+          *ngIf="smf.modalidad?.errors?.required && (smf.modalidad?.dirty || smf.modalidad?.touched)">Este
+          campo es obligatorio *.
+        </span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="matPreventivo">Mantenimiento<span class="req">*:</span></label>
+        <p-dropdown appendTo="body" id="matPreventivo" class="form-control" formControlName="matPreventivo"
+          [options]="mantenimientosPrev" placeholder="Selecciona el tamaño">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="smf.matPreventivo?.errors?.required && (smf.matPreventivo?.dirty || smf.matPreventivo?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6" *ngIf="smf.modalidad.value == 1 && smf.tipoMantenimiento.value == 1">
+        <label class="control-label" for="opcionesSemestrales">Mantenimiento preventivo detalle<span class="req">*:</span></label>
+        <p-dropdown appendTo="body" id="opcionesSemestrales" class="form-control" formControlName="opcionesSemestrales"
+          [options]="opcionesSemestrales" placeholder="Selecciona una opción">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="smf.opcionesSemestrales?.errors?.required && (smf.opcionesSemestrales?.dirty || smf.opcionesSemestrales?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value">
+      <div class="col-md-12">
+        <label class="control-label" for="notas">Notas<span class="req">*:</span></label>
+        <input id="notas" class="form-control" formControlName="notas" placeholder="Ingresa las notas" maxlength="350">
+        <span class="campo-obligatorio"
+          *ngIf="smf.notas?.errors?.required && (smf.notas?.dirty || smf.notas?.touched)">Este campo es obligatorio
+          *.</span>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '1'">
+        <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
+        <p-dropdown appendTo="body" id="nombreProveedor" class="form-control" formControlName="nombreProveedor"
+          [options]="catalogoProveedores" placeholder="Ingresa el nombre del proveedor" (onChange)="asignarContrato()">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="smf.nombreProveedor?.errors?.required && (smf.nombreProveedor?.dirty || smf.nombreProveedor?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '2'">
+        <label class="control-label" for="nombreProveedor">Nombre del proveedor<span class="req">*</span>:</label>
+        <input id="nombreProveedor" class="form-control" formControlName="nombreProveedor"
+          placeholder="Ingresa el proovedor" maxlength="100">
+        <span class="campo-obligatorio"
+          *ngIf="smf.nombreProveedor?.errors?.required && (smf.nombreProveedor?.dirty || smf.nombreProveedor?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '1'">
+        <label class="control-label" for="noContrato">Número de contrato<span class="req">*</span>:</label>
+        <p-dropdown appendTo="body" id="noContrato" class="form-control" formControlName="noContrato"
+          [options]="contratos" placeholder="Ingresa el número de contrato">
+        </p-dropdown>
+        <span class="campo-obligatorio"
+          *ngIf="smf.noContrato?.errors?.required && (smf.noContrato?.dirty || smf.noContrato?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+      <div class="col-md-6" *ngIf="smf.tipoMantenimiento.value === '2'">
+        <label class="control-label" for="noContrato">Número de contrato:</label>
+        <input id="noContrato" class="form-control" formControlName="noContrato"
+          placeholder="Ingresa el número de contrato" maxlength="20">
+      </div>
+    </div>
+    <div class="row mb-3" *ngIf="smf?.tipoMantenimiento?.value === '2'">
+      <div class="col-md-6">
+        <label class="control-label" for="taller">Taller<span class="req">*</span>:</label>
+        <input id="taller" class="form-control" formControlName="taller" placeholder="Ingresa el taller">
+        <span class="campo-obligatorio"
+          *ngIf="smf.taller?.errors?.required && (smf.taller?.dirty || smf.taller?.touched)">Este campo es obligatorio
+          *.</span>
+      </div>
+      <div class="col-md-6">
+        <label class="control-label" for="costoMantenimiento">Costo de mantenimiento(IVA incluido)<span
+            class="req">*</span>:</label>
+        <p-inputNumber id="costoMantenimiento" class="form-control" formControlName="costoMantenimiento" mode="decimal"
+          [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="Ingresa el costo de mantenimiento"
+          [maxlength]="9" currency="USD" locale="en-US"></p-inputNumber>
+        <span class="campo-obligatorio"
+          *ngIf="smf.costoMantenimiento?.errors?.required && (smf.costoMantenimiento?.dirty || smf.costoMantenimiento?.touched)">Este
+          campo es obligatorio *.</span>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <span class="control-label">*Campos obligatorios</span>
+      </div>
+    </div>
+  </form>
+  <div class="flex justify-content-end">
+    <button class="btn btn-default btn-md" (click)="cerrar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="agregar()" [disabled]="solicitudMantenimientoForm.invalid">
+      Agregar
+    </button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="ventanaConfirmacion">
+  <app-table-panel>
+    <ng-template appCustomTemplate="left-header">
+      <div class="table-panel-header-column">
+        <span class="font-bold">ID {{vehiculoSeleccionado.ID_VEHICULO}}</span>
+      </div>
+    </ng-template>
+    <ng-template>
+    </ng-template>
+    <ng-template>
+      <div class="table-panel-header-column">
+        <div class="flex flex-column">
+          <div class="contenedor-inputswitch">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Placas</label>
+          <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Marca</label>
+          <span> {{vehiculoSeleccionado.DES_MARCA}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Kilometraje</label>
+          <span> {{resumenRegistro.kilometraje}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Año</label>
+          <span> {{vehiculoSeleccionado.DES_MODELO}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Tipo de mantenimiento</label>
+          <span> {{resumenRegistro.tipoMantenimiento}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Fecha de mantenimiento</label>
+          <span> {{resumenRegistro.fechaMantenimiento | date:'dd/MM/YYYY'}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="resumenRegistro.tipoMantenimiento === 'Preventivo'">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Modalidad</label>
+          <span> {{resumenRegistro.modalidad}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Mantenimiento</label>
+          <span> {{resumenRegistro.mantenimientoPreventivo}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Notas</label>
+          <span> {{resumenRegistro.notas}} </span>
+        </div>
+      </div>
+      <div class="col-md-6" *ngIf="resumenRegistro.tipoMantenimiento === 'Preventivo' && resumenRegistro.modalidad == 'Semestral'">
+        <div class="table-panel-column">
+          <label>Mantenimiento preventivo detalle</label>
+          <span> {{resumenRegistro.mantenimientoPreventivoDetalle}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row">
+      <div class="col-md-6" *ngIf="resumenRegistro.tipoMantenimiento === 'Preventivo'">
+        <div class="table-panel-column">
+          <label>Nombre de proveedor</label>
+          <span> {{resumenRegistro.nombreProveedor}} </span>
+        </div>
+      </div>
+      <div class="col-md-6" *ngIf="resumenRegistro.tipoMantenimiento === 'Correctivo'">
+        <div class="table-panel-column">
+          <label>Nombre de proveedor</label>
+          <span> {{resumenRegistro.nombreProveedorTexto}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Número de contrato</label>
+          <span> {{resumenRegistro.numeroContrato}} </span>
+        </div>
+      </div>
+    </div>
+    <div class="row table-panel-row" *ngIf="resumenRegistro.tipoMantenimiento === 'Correctivo'">
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Taller</label>
+          <span> {{resumenRegistro.taller}} </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="table-panel-column">
+          <label>Costo de mantenimiento(IVA incluido)</label>
+          <span> {{resumenRegistro.costo}} </span>
+        </div>
+      </div>
+    </div>
+  </app-table-panel>
+  <ng-container>
+    <div class="mt-4 mb-4 col-12 text-center" *ngIf="mode !== 'update'">
+      ¿Estás seguro de agregar este nuevo registro?
+    </div>
+    <div class="mt-4 mb-4 col-12 text-center" *ngIf="mode === 'update'">
+      ¿Estás seguro de modificar el registro {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}}
+      {{vehiculoSeleccionado.DES_MODELO}}?
+    </div>
+  </ng-container>
+  <div class="flex justify-content-end">
+    <button class="ml-4  btn btn-default btn-md" (click)="regresar()">Cancelar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="aceptarSolicitud()">Aceptar
+    </button>
+  </div>
+</ng-container>

@@ -1,21 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DIEZ_ELEMENTOS_POR_PAGINA, Accion } from "../../../../utils/constantes";
-import { Sala } from "../../models/salas.interface";
-import { LazyLoadEvent } from "primeng/api";
-import { ActivatedRoute, Router } from '@angular/router';
-import { VerDetalleSalasComponent } from '../ver-detalle-salas/ver-detalle-salas.component';
-import { AgregarSalasComponent } from '../agregar-salas/agregar-salas.component';
-import { ModificarSalasComponent } from '../modificar-salas/modificar-salas.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {DIEZ_ELEMENTOS_POR_PAGINA, Accion} from "../../../../utils/constantes";
+import {Sala} from "../../models/salas.interface";
+import {LazyLoadEvent} from "primeng/api";
+import {ActivatedRoute, Router} from '@angular/router';
+import {VerDetalleSalasComponent} from '../ver-detalle-salas/ver-detalle-salas.component';
+import {AgregarSalasComponent} from '../agregar-salas/agregar-salas.component';
+import {ModificarSalasComponent} from '../modificar-salas/modificar-salas.component';
 
 interface HttpResponse {
   respuesta: string;
   sala: Sala;
 }
+
 @Component({
   selector: 'app-salas',
   templateUrl: './salas.component.html',
@@ -131,10 +132,10 @@ export class SalasComponent implements OnInit {
 
   inicializarFiltroForm() {
     this.filtroForm = this.formBuilder.group({
-      id: [{ value: null, disabled: false }],
-      velatorio: [{ value: null, disabled: false }],
-      tipoSala: [{ value: null, disabled: false }],
-      nombreSala: [{ value: null, disabled: false }],
+      id: [{value: null, disabled: false}],
+      velatorio: [{value: null, disabled: false}],
+      tipoSala: [{value: null, disabled: false}],
+      nombreSala: [{value: null, disabled: false}],
     });
   }
 
@@ -147,7 +148,7 @@ export class SalasComponent implements OnInit {
 
   abrirModalDetalleSala(sala: Sala) {
     this.detalleRef = this.dialogService.open(VerDetalleSalasComponent, {
-      data: { sala, modo: Accion.Detalle },
+      data: {sala, modo: Accion.Detalle},
       header: "Ver detalle",
       width: "920px"
     });
@@ -160,7 +161,7 @@ export class SalasComponent implements OnInit {
 
   abrirModalModificarSala() {
     this.detalleRef = this.dialogService.open(ModificarSalasComponent, {
-      data: { sala: this.salaSeleccionado },
+      data: {sala: this.salaSeleccionado},
       header: "Modificar sala",
       width: "920px"
     });
@@ -192,7 +193,7 @@ export class SalasComponent implements OnInit {
   cambiarEstatus(sala: Sala) {
     const modo = sala.estatus ? Accion.Desactivar : Accion.Activar;
     this.detalleRef = this.dialogService.open(VerDetalleSalasComponent, {
-      data: { sala, modo },
+      data: {sala, modo},
       header: "Ver detalle",
       width: "920px"
     });
@@ -208,8 +209,7 @@ export class SalasComponent implements OnInit {
     // TO DO En una aplicación real, realice una solicitud a una URL remota con la consulta y devuelva los resultados filtrados
     let filtrado: any[] = [];
     let query = event.query;
-    for (let i = 0; i < this.salasServicio.length; i++) {
-      let sala = this.salasServicio[i];
+    for (let sala of this.salasServicio) {
       if (sala.label.toLowerCase().indexOf(query.toLowerCase()) == 0) {
         filtrado.push(sala);
       }

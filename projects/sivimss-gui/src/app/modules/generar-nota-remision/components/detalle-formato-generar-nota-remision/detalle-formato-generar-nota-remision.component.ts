@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ArticulosServicios, DetalleNotaRemision } from '../../models/nota-remision.interface';
 
 @Component({
   selector: 'app-detalle-formato-generar-nota-remision',
@@ -13,6 +14,10 @@ export class DetalleFormatoGenerarNotaRemisionComponent implements OnInit {
 
   @Input() generarNotaRemision: boolean = false;
 
+  @Input() datos!: DetalleNotaRemision;
+
+  @Input() servicios: ArticulosServicios[] = [];
+
   @Output() regresar = new EventEmitter();
 
   @Output() aceptar = new EventEmitter();
@@ -23,7 +28,6 @@ export class DetalleFormatoGenerarNotaRemisionComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
   ) { }
@@ -33,40 +37,16 @@ export class DetalleFormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   cargarCatalogos(): void {
-    if (!this.generarNotaRemision) {
-      const respuesta = this.route.snapshot.data['respuesta'];
-      this.idNota = +this.route.snapshot.params?.idNota;
-      this.idOds = +this.route.snapshot.params?.idOds;
+    const respuesta = this.route.snapshot.data['respuesta'];
+    this.idNota = +this.route.snapshot.params?.idNota;
+    this.idOds = +this.route.snapshot.params?.idOds;
 
-      if (!this.idNota || !this.idOds) {
-        this.btnAceptarDetalle();
-      }
-
-      const detalleNotaRemision = respuesta[this.POSICION_DETALLE].datos;
-      const serviciosNotaRemision = respuesta[this.POSICION_SERVICIOS].datos;
-      this.inicializarNotaRemisionForm(detalleNotaRemision, serviciosNotaRemision);
-    } else {
-      this.inicializarNotaRemisionForm();
+    if ((!this.idNota || !this.idOds) && !this.generarNotaRemision) {
+      this.btnAceptarDetalle();
     }
-  }
 
-  inicializarNotaRemisionForm(detalle?: any, servicios?: any) {
-    this.notaRemisionForm = this.formBuilder.group({
-      versionDocumento: [{ value: "1.2", disabled: true }],
-      fecha: [{ value: new Date(), disabled: true }],
-      velatorio: [{ value: 'No. 22 Villahermosa', disabled: true }],
-      remisionServicios: [{ value: 'DOC-000001', disabled: true }],
-      direccion: [{ value: 'Prolongación Av. México No. 1203, Col. Sabina, C.P. 86153, Villahermosa, San Luis Potosí.', disabled: true }],
-      nombreSolicitante: [{ value: 'Miranda Fernendez Guisa', disabled: true }],
-      direccionSolicitante: [{ value: 'Av. Congreso de la Unión, Iztacalco, CP 201, CDMX', disabled: true }],
-      curpSolicitante: [{ value: 'FEGM560117MDFMPRO7', disabled: true }],
-      velatorioSolicitante: [{ value: 'No. 22 Villahermosa', disabled: true }],
-      finado: [{ value: 'Pedro Lomas Morales', disabled: true }],
-      parentesco: [{ value: 'Abuelo', disabled: true }],
-      folioOds: [{ value: 'DOC-000001', disabled: true }],
-      nombreConformidad: [{ value: null, disabled: true }],
-      nombreRepresentante: [{ value: null, disabled: true }],
-    });
+    this.datos = respuesta[this.POSICION_DETALLE]?.datos[0];
+    this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
   }
 
   btnRegresar() {
@@ -77,7 +57,7 @@ export class DetalleFormatoGenerarNotaRemisionComponent implements OnInit {
     this.aceptar.emit();
   }
 
-  btnAceptarDetalle() {
-    this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
+  btnAceptarDetalle(): void {
+    void this.router.navigate(['/generar-nota-remision'], { relativeTo: this.activatedRoute });
   }
 }

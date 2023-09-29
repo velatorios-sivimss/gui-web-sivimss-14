@@ -4,60 +4,76 @@
     <form [formGroup]="filtroForm">
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="tipoReporte">Tipo de reporte*:</label>
-          <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
-                      placeholder="Selecciona el tipo">
+          <label class="control-label" for="nivel">Nivel:</label>
+          <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+            placeholder="Seleccionar el nivel" [filter]="true">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fmp.tipoReporte?.errors?.required && (fmp.tipoReporte?.dirty || fmp.tipoReporte?.touched)">
-            Campo obligatorio</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="placa">Placa*:</label>
-          <input id="placa" class="form-control" formControlName="placa" placeholder="Ingresa placa"
-                 (keyup)="consultaServicioEspecifico()">
-          <span class="campo-obligatorio"
-                *ngIf="fmp.placa?.errors?.required && (fmp.placa?.dirty || fmp.placa?.touched)">
-            Campo obligatorio</span>
+          <label class="control-label" for="delegacion">Delegación:</label>
+          <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+            placeholder="Seleccionar delegación" (onChange)="cargarVelatorios(); obtenerPlacas();" [filter]="true">
+          </p-dropdown>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
+          <label class="control-label" for="velatorio">Velatorio:</label>
+          <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+            placeholder="Seleccionar el velatorio" [filter]="true" (onChange)="obtenerPlacas();">
+          </p-dropdown>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="tipoReporte">Tipo de reporte<span class="req">*</span>:</label>
+          <p-dropdown id="tipoReporte" class="form-control" formControlName="tipoReporte" [options]="tipoReportes"
+            placeholder="Selecciona el tipo" [filter]="true">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+            *ngIf="fmp?.tipoReporte?.errors?.required && (fmp?.tipoReporte?.dirty || fmp?.tipoReporte?.touched)">Este
+            campo es obligatorio *.</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="placa">Placa:</label>
+          <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
+            placeholder="Seleccionar vehículo" [filter]="true">
+          </p-dropdown>
+        </div>
+        <div class="col-md-6">
           <div class="row">
-            <div class="col-md-12">
-              <label class="control-label">
-                Fecha vigencia:
-                <span class="req">*</span>:</label>
-            </div>
             <div class="col-md-6">
+              <label class="control-label">Fecha inicial<span class="req">*</span>:</label>
               <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde" styleClass="form-control"
-                          [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy">
+                [showIcon]="true" placeholder="Fecha inicial" dateFormat="dd/mm/yy" (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"
-                    *ngIf="fmp.fechaVigenciaDesde?.errors?.required && (fmp.fechaVigenciaDesde?.dirty || fmp.fechaVigenciaDesde?.touched)">
-                Campo obligatorio</span>
+                *ngIf="fmp?.fechaVigenciaDesde?.errors?.required && (fmp?.fechaVigenciaDesde?.dirty || fmp?.fechaVigenciaDesde?.touched)">Este
+                campo es obligatorio *.</span>
             </div>
             <div class="col-md-6">
+              <label class="control-label">Fecha final<span class="req">*</span>:</label>
               <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta" styleClass="form-control"
-                          [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy" appendTo="body">
+                [showIcon]="true" placeholder="Fecha final" dateFormat="dd/mm/yy" appendTo="body"
+                [maxDate]="fechaActual" (onSelect)="validarFechas()">
               </p-calendar>
               <span class="campo-obligatorio"
-                    *ngIf="fmp.fecahVigenciaHasta?.errors?.required && (fmp.fecahVigenciaHasta?.dirty || fmp.fecahVigenciaHasta?.touched)">
-                Campo obligatorio</span>
+                *ngIf="fmp?.fecahVigenciaHasta?.errors?.required && (fmp?.fecahVigenciaHasta?.dirty || fmp?.fecahVigenciaHasta?.touched)">Este
+                campo es obligatorio *.</span>
             </div>
           </div>
         </div>
       </div>
       <div class="row mb-4">
         <div class="col-md-12">
-          <span>*Campos obligatorios</span>
+          <span class="control-label">*Campos obligatorios</span>
         </div>
       </div>
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-          <button type="submit" class="btn btn-primary btn-md ml-5" (click)="buscar()"
-                  [disabled]="filtroForm.invalid">Buscar
+          <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+          <button type="button" class="btn btn-primary btn-md ml-5" (click)="buscar()"
+            [disabled]="filtroForm.invalid || !fechaValida">Buscar
           </button>
         </div>
       </div>
@@ -65,7 +81,6 @@
   </div>
   <ng-container>
     <div class="separador">
-      <h1></h1>
     </div>
   </ng-container>
   <ng-container *ngIf="mostrarTabla">
@@ -76,85 +91,157 @@
             <div class="col-md-6 colum-tam">
               <div class="table-panel-column">
                 <label>Velatorio</label>
-                <span>No. 18 Tequesquináhuac</span>
+                <span>{{velatorio}}</span>
               </div>
             </div>
             <div class="col-md-6 colum-tam">
               <div class="table-panel-column">
-                <label>total de vehiculos</label>
-                <span> 1</span>
+                <label>Total de vehiculos</label>
+                <span>{{totalVehiculos}}</span>
               </div>
             </div>
             <div class="col-md-6 colum-tam">
               <div class="table-panel-column">
                 <label>Rango de fechas</label>
-                <span> 01/01/2021 a 01/01/2022</span>
+                <span>{{rangoFecha}}</span>
+              </div>
+            </div>
+            <div class="col-md-6 colum-tam" *ngIf="fmp?.tipoReporte?.value === 1">
+              <div class="table-panel-column">
+                <label>Total</label>
+                <span>{{sumTotal | currency }}</span>
               </div>
             </div>
           </div>
         </ng-template>
 
-        <div class="row table-panel-row">
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>Velatorio</label>
-              <span>No. 18 Tequesquináhuac </span>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>total de vehiculos</label>
-              <span> 1</span>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>Periodo</label>
-              <span> 01/01/2021 a 01/01/2022</span>
-            </div>
-          </div>
-        </div>
-        <div class="row table-panel-row">
-          <div class="col-md-12">
-            <div class="table-panel-column">
-              <p-table [value]="data">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>Fecha</th>
-                    <th>Placa</th>
-                    <th>Aceite</th>
-                    <th>Agua</th>
-                    <th>Calibración neumáticos</th>
-                    <th>Combustible</th>
-                    <th>Código falla</th>
-                    <th>Beteria</th>
-                    <th></th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-item>
-                  <tr>
-                    <td>{{ item.dia }}</td>
-                    <td>{{ item.valor }}</td>
-                    <td>{{ item.valor }}</td>
-                    <td>{{ item.valor }}</td>
-                    <td>{{ item.valor }}</td>
-                    <td>{{ item.valor }}</td>
-                    <td>{{ item.valor }}</td>
-                    <td>{{ item.valor }}</td>
-                    <td>
-                      <div class="contenedor-celda-iconos">
-                        <a (click)="abrirDetallereporteEncargado(item)">
-                          <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-                        </a>
+        <p-table [value]="registrosReporte" [paginator]="registrosReporte.length > 0" *ngIf="tipoBusqueda == 1"
+          [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+          [(first)]="numPaginaActual" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky
+          (onLazyLoad)="paginar($event)">
+          <ng-template pTemplate="header">
+            <tr>
+              <th id="reporte-encargado-placas">Placas</th>
+              <th id="reporte-encargado-marca">Marca</th>
+              <th id="reporte-encargado-anio">Año</th>
+              <th id="reporte-encargado-kilometraje">Kilometraje</th>
+              <th id="reporte-encargado-tipo-mtto">Tipo de mantenimiento</th>
+              <th id="reporte-encargado-mantenimiento">Mantenimiento</th>
+              <th id="reporte-encargado-modalidad">Modalidad</th>
+              <th id="reporte-encargado-estado-mtto">Estado de mantenimiento</th>
+              <th id="reporte-encargado-notas">Notas</th>
+              <th id="reporte-encargado-numero-contrato">Número de contrato</th>
+              <th id="reporte-encargado-taller">Taller</th>
+              <th id="reporte-encargado-fecha-mtto">Fecha de mantenimiento</th>
+              <th id="reporte-encargado-nombre-proveedor">Nombre del proveedor</th>
+              <th id="reporte-encargado-costo">Costo de mantenimiento (IVA incluido)</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.DES_PLACAS }}</td>
+              <td>{{ item.DES_MARCA }}</td>
+              <td>{{ item.DES_MODELO }}</td>
+              <td>{{ item.NUM_KILOMETRAJE_SOL }}</td>
+              <td>{{ item.DES_MTTO_TIPO }}</td>
+              <td>{{ item.DES_MTTO_MODALIDAD_DET }}</td>
+              <td>{{ item.DES_MODALIDAD }}</td>
+              <td>{{ item.DES_MTTOESTADO }}</td>
+              <td>{{ item.DES_NOTAS_SOL }}</td>
+              <td>{{ item.DES_NUMCONTRATO }}</td>
+              <td>{{ item.DES_NOMBRE_TALLER }}</td>
+              <td>{{ item.FEC_MTTO_SOL }}</td>
+              <td>{{ item.NOM_PROVEEDOR }}</td>
+              <td>{{ item.MON_COSTO_MTTO }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <th colspan=9 class="col-md-12 p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+                No se encontró información relacionada a tu búsqueda en reporte del encargado
+              </th>
+            </tr>
+          </ng-template>
 
-                      </div>
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table>
+          <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+              <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
             </div>
-          </div>
-        </div>
+          </ng-template>
+
+          <ng-template pTemplate="paginatorright">
+            <div class="paginator-template" *ngIf="registrosReporte.length > 0">
+              <div class="export-table" style="float: right;" *appValidaRol="['MANTENIMIENTO_VEHICULAR','IMPRIMIR']">
+                <span class="export-table-text">Exportar tabla</span>
+                <div class="export-table-icons">
+                  <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                    (click)="generarReporteTabla('pdf');">
+                  <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                    (click)="generarReporteTabla('xls');">
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-table>
+
+        <p-table [value]="registrosReporte" [paginator]="registrosReporte.length > 0" *ngIf="tipoBusqueda == 2"
+          [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+          [(first)]="numPaginaActual" [columnResizeMode]="'expand'" appActivarUltimaCeldaSticky
+          (onLazyLoad)="paginar($event)">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <th id="reporte-encargado-fecha">Fecha</th>
+              <th id="reporte-encargado-placa">Placa</th>
+              <th id="reporte-encargado-aceite">Aceite</th>
+              <th id="reporte-encargado-agua">Agua</th>
+              <th id="reporte-encargado-calibracion">Calibración neumáticos</th>
+              <th id="reporte-encargado-combustible">Combustible</th>
+              <th id="reporte-encargado-codigo">Código falla</th>
+              <th id="reporte-encargado-bateria">Bateria</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.FEC_REGISTRO }}</td>
+              <td>{{ item.DES_PLACAS }}</td>
+              <td>{{ item.DES_NIVEL_ACEITE }}</td>
+              <td>{{ item.DES_NIVEL_AGUA }}</td>
+              <td>{{ item.DES_NIVEL_NEUMADELA }}</td>
+              <td>{{ item.DES_NIVEL_COMBUSTIBLE }}</td>
+              <td>{{ item.DES_NIVEL_CODIGOFALLO }}</td>
+              <td>{{ item.DES_NIVEL_BATERIA }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <th colspan=9 class="col-md-12 p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+                No se encontró información relacionada a tu búsqueda en reporte del encargado
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+              <span class="total-elements"> {{registrosReporte.length}} de {{totalElementos}} </span>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="paginatorright">
+            <div class="paginator-template" *ngIf="registrosReporte.length > 0">
+              <div class="export-table" style="float: right;">
+                <span class="export-table-text">Exportar tabla</span>
+                <div class="export-table-icons">
+                  <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                    (click)="generarReporteTabla('pdf');">
+                  <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                    (click)="generarReporteTabla('xls');">
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-table>
+
       </app-table-panel>
     </p-accordion>
   </ng-container>
@@ -171,50 +258,41 @@
     </div>
     <div class="row table-panel-row">
       <div class="col-md-4">
-
         <div class="table-panel-column">
           <label>Velatorio</label>
-          <span> categoria 1 33</span>
+          <span>{{velatorio}}</span>
         </div>
-
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Total de vehiculos</label>
-          <span> 22</span>
+          <span>{{totalVehiculos}}</span>
         </div>
       </div>
       <div class="col-md-4">
         <div class="table-panel-column">
           <label>Rango de fecha</label>
-          <span> 01/21/2022 a 01/21/2022</span>
+          <span>{{rangoFecha}}</span>
         </div>
       </div>
     </div>
-
     <div class="row table-panel-row">
       <div class="col-md-12">
         <div class="table-panel-column">
           <h6>Verificación diaria</h6>
-
           <div class="table-panel-column">
-
-
             <div class="row table-panel-row borderSolidTable">
               <div class="col-md-4">
-
                 <div class="table-panel-column">
                   <label>Placa</label>
-                  <span> categoria 1 33</span>
+                  <span>{{registroSeleccionado.DES_PLACAS}}</span>
                 </div>
-
               </div>
               <div class="col-md-4">
                 <div class="table-panel-column">
                   <label>Fecha</label>
-                  <span> 01/21/2022</span>
+                  <span>{{registroSeleccionado.FEC_REGISTRO}}</span>
                 </div>
-
               </div>
             </div>
             <div class="row table-panel-row borderSolidTableSub">
@@ -222,42 +300,43 @@
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
                     <label>Nivel de aceite</label>
-                    <span> Medio</span>
+                    <span>{{registroSeleccionado.DES_NIVEL_ACEITE}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-                    <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                    <img class="icono" src="../../../../../../assets/images/nivelCombus.svg" alt="Nivel combustible">
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="table-panel-column col-md-6">
                     <label>Nivel de agua</label>
-                    <span> Correcto </span>
+                    <span>{{registroSeleccionado.DES_NIVEL_AGUA}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-                    <img class="icono" src="../../../../../../assets/images/nivelAgua.svg">
+                    <img class="icono" src="../../../../../../assets/images/nivelAgua.svg" alt="Nivel agua">
                   </div>
                 </div>
               </div>
             </div>
-
             <div class="row table-panel-row borderSolidTableSub">
               <div class="col-md-4">
                 <div class="col-md-12">
                   <div class="table-panel-column col-md-6">
-                    <label>Calibrtación de neumáticos traseros</label>
-                    <span> Bajo </span>
+                    <label>Calibración de neumáticos traseros</label>
+                    <span>{{registroSeleccionado.DES_NIVEL_NEUMATRASE}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-                    <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg">
+                    <img class="icono-velocimetro" src="../../../../../../assets/images/velocimetroBajo.svg"
+                      Alt="Calibracion neumaticos traseros">
                   </div>
                 </div>
                 <div class="col-md-12">
                   <div class="table-panel-column col-md-6">
                     <label>Calibración de numáticos delanteros</label>
-                    <span> Correcto</span>
+                    <span>{{registroSeleccionado.DES_NIVEL_NEUMADELA}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-                    <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg">
+                    <img class="icono-velocimetro" src="../../../../../../assets/images/belocimetroAlto.svg"
+                      alt="Calibración neumaticos delanteros">
                   </div>
                 </div>
               </div>
@@ -268,14 +347,14 @@
                     <p-table [value]="dataDetalle">
                       <ng-template pTemplate="header">
                         <tr>
-                          <th>Rin</th>
-                          <th>Precisión</th>
+                          <th id="reporte-encargado-rin">Rin</th>
+                          <th id="reporte-encargado-precision">Precisión</th>
                         </tr>
                       </ng-template>
                       <ng-template pTemplate="body" let-item>
                         <tr>
                           <td>{{ item.rin }}</td>
-                          <td>{{ item.presicion }}</td>
+                          <td>{{ item.precision }}</td>
                         </tr>
                       </ng-template>
                     </p-table>
@@ -290,44 +369,53 @@
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
                     <label>Nivel de Combustible</label>
-                    <span> Medio </span>
+                    <span>{{registroSeleccionado.DES_NIVEL_COMBUSTIBLE}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-                    <img class="icono" src="../../../../../../assets/images/nivelCombus.svg">
+                    <img class="icono" src="../../../../../../assets/images/nivelCombus.svg" alt="Nivel de combustible">
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
                     <label>Nivel de Bateria </label>
-                    <span> Medio </span>
+                    <span>{{registroSeleccionado.DES_NIVEL_BATERIA}}</span>
                   </div>
                   <div class="table-panel-column col-md-6">
-                    <img class="icono-bateria" src="../../../../../../assets/images/loading.svg">
+                    <img class="icono-bateria" src="../../../../../../assets/images/loading.svg" alt="Nivel bateria">
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="table-panel-column col-md-6">
                     <label>Código de falla</label>
-                    <span> Correcto </span>
+                    <span>{{registroSeleccionado.DES_NIVEL_CODIGOFALLO}}</span>
                   </div>
-
                 </div>
               </div>
             </div>
-
           </div>
-
-
         </div>
       </div>
     </div>
   </app-table-panel>
 </ng-container>
 
-
 <ng-container>
   <div class="col-mb-12 row flex justify-content-end"
-       style="margin-top: 30px; margin-bottom: 30px;  padding-right: 14px;">
-    <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../">Cerrar</button>
+    style="margin-top: 30px; margin-bottom: 30px;  padding-right: 14px;">
+    <button type="button" class="btn btn-primary btn-md ml-5" (click)="cerrar()">Cerrar</button>
   </div>
 </ng-container>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

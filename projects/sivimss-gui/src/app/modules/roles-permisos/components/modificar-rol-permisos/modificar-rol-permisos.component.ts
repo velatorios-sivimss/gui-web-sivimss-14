@@ -10,6 +10,7 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {RespuestaModalRol} from "projects/sivimss-gui/src/app/modules/roles-permisos/models/respuesta-modal.interface";
 import {Catalogo} from 'projects/sivimss-gui/src/app/models/catalogos.interface';
 import {ActivatedRoute} from '@angular/router';
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 type RolPermisosModificado = Omit<Funcionalidad, "password">
 
@@ -23,15 +24,15 @@ export class ModificarRolPermisosComponent implements OnInit {
   formFuncionalidad!: FormGroup;
   modificarRolPermisoForm!: FormGroup;
   rolPermisosModificado!: RolPermisosModificado;
- readonly POSICION_CATALOGO_ROL = 0;
- readonly POSICION_CATALOGO_FUNCIONALIDAD = 1;
- listaPermisos:any;
- permisos:any;
- rolPermisos: any="";
- rolSeleccionado: any="";
+  readonly POSICION_CATALOGO_ROL = 0;
+  readonly POSICION_CATALOGO_FUNCIONALIDAD = 1;
+  listaPermisos: any;
+  permisos: any;
+  rolPermisos: any = "";
+  rolSeleccionado: any = "";
 
- catRol: TipoDropdown[] = [];
- catFuncionalidad: TipoDropdown[] = [];
+  catRol: TipoDropdown[] = [];
+  catFuncionalidad: TipoDropdown[] = [];
   indice: number = 0;
 
   constructor(
@@ -55,14 +56,26 @@ export class ModificarRolPermisosComponent implements OnInit {
       idRol: [{value: rolPermisos.idRol, disabled: true}, [Validators.required]],
       idFuncionalidad: [{value: rolPermisos.idFuncionalidad, disabled: true}, [Validators.required]],
       nombreFun: [{value: rolPermisos.funcionalidad, disabled: true}, [Validators.required]],
-      alta: [{value: rolPermisos.permisos.includes('ALTA')? true: false, disabled: false}, [Validators.required]],
-      baja: [{value: rolPermisos.permisos.includes('BAJA')? true: false, disabled: false}, [Validators.required]],
-      aprobacion: [{value: rolPermisos.permisos.includes('APROBACIÓN')? true: false, disabled: false}, [Validators.required]],
-      consulta: [{value: rolPermisos.permisos.includes('CONSULTA')? true: false, disabled: false}, [Validators.required]],
-      modificar: [{value: rolPermisos.permisos.includes('MODIFICAR')? true: false, disabled: false}, [Validators.required]],
-      imprimir: [{value: rolPermisos.permisos.includes('IMPRIMIR')? true: false, disabled: false}, [Validators.required]]
+      alta: [{value: rolPermisos.permisos.includes('ALTA'), disabled: false}, [Validators.required]],
+      baja: [{value: rolPermisos.permisos.includes('BAJA'), disabled: false}, [Validators.required]],
+      aprobacion: [{
+        value: rolPermisos.permisos.includes('APROBACIÓN'),
+        disabled: false
+      }, [Validators.required]],
+      consulta: [{
+        value: rolPermisos.permisos.includes('CONSULTA'),
+        disabled: false
+      }, [Validators.required]],
+      modificar: [{
+        value: rolPermisos.permisos.includes('MODIFICAR'),
+        disabled: false
+      }, [Validators.required]],
+      imprimir: [{
+        value: rolPermisos.permisos.includes('IMPRIMIR'),
+        disabled: false
+      }, [Validators.required]]
     });
-    this.listaPermisos= rolPermisos.permisos;
+    this.listaPermisos = rolPermisos.permisos;
 
   }
 
@@ -81,40 +94,40 @@ export class ModificarRolPermisosComponent implements OnInit {
 
   modificarRolPermisos(): void {
     const respuesta: RespuestaModalRol = {mensaje: "Actualización satisfactoria", actualizar: true}
-    this.permisos="";
-    this.permisos = this.rolPermisosModificado.alta==true? this.permisos="1,":  this.permisos;
-    this.permisos = this.rolPermisosModificado.baja==true? this.permisos+="2,":  this.permisos;
-    this.permisos = this.rolPermisosModificado.consulta==true? this.permisos+="3,":  this.permisos;
-    this.permisos = this.rolPermisosModificado.modificar==true? this.permisos+="4,":  this.permisos;
-    this.permisos = this.rolPermisosModificado.aprobacion==true? this.permisos+="5,":  this.permisos;
-    this.permisos = this.rolPermisosModificado.imprimir==true? this.permisos+="6":  this.permisos;
+    this.permisos = "";
+    this.permisos = this.rolPermisosModificado.alta ? this.permisos + "1," : this.permisos;
+    this.permisos = this.rolPermisosModificado.baja ? this.permisos + "2," : this.permisos;
+    this.permisos = this.rolPermisosModificado.consulta ? this.permisos + "3," : this.permisos;
+    this.permisos = this.rolPermisosModificado.modificar ? this.permisos + "4," : this.permisos;
+    this.permisos = this.rolPermisosModificado.aprobacion ? this.permisos + "5," : this.permisos;
+    this.permisos = this.rolPermisosModificado.imprimir ? this.permisos + "6" : this.permisos;
     this.rolPermisos = {
-       idRol: this.rolPermisosModificado.idRol,
-       idFuncionalidad: this.rolPermisosModificado.idFuncionalidad,
-       permisos: this.permisos
-     }
-     const solicitudRolPermisos = JSON.stringify(this.rolPermisos);
-    this.rolPermisosService.actualizar(solicitudRolPermisos).subscribe(
-      () => {
+      idRol: this.rolPermisosModificado.idRol,
+      idFuncionalidad: this.rolPermisosModificado.idFuncionalidad,
+      permisos: this.permisos
+    }
+    const solicitudRolPermisos = JSON.stringify(this.rolPermisos);
+    this.rolPermisosService.actualizar(solicitudRolPermisos).subscribe({
+      next: () => {
         this.ref.close(respuesta);
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, 'Actualización incorrecta');
         console.error("ERROR: ", error)
       }
-    );
+    });
   }
 
   catalogoRoles(): void {
-    this.rolPermisosService.obtenerCatRoles().subscribe(
-      (respuesta) => {
-        this.catRol = respuesta!.datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
+    this.rolPermisosService.obtenerCatRoles().subscribe({
+      next: (respuesta) => {
+        this.catRol = respuesta.datos.map((rol: Catalogo) => ({label: rol.des_rol, value: rol.id})) || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   catalogoFuncionalidad(rolPermisos: Rol): void {
@@ -122,15 +135,18 @@ export class ModificarRolPermisosComponent implements OnInit {
       idRol: rolPermisos.idRol,
     }
     const solicitudRolFuncionalidad = JSON.stringify(this.rolSeleccionado);
-    this.rolPermisosService.obtenerCatFuncionalidad(solicitudRolFuncionalidad).subscribe(
-      (respuesta) => {
-        this.catFuncionalidad = respuesta!.datos.map((funcionalidad: Catalogo) => ({label: funcionalidad.nombre, value: funcionalidad.id})) || [];
+    this.rolPermisosService.obtenerCatFuncionalidad(solicitudRolFuncionalidad).subscribe({
+      next: (respuesta: HttpRespuesta<any>) => {
+        this.catFuncionalidad = respuesta.datos.map((funcionalidad: Catalogo) => ({
+          label: funcionalidad.nombre,
+          value: funcionalidad.id
+        })) || [];
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    );
+    });
   }
 
   get fmu() {
@@ -151,7 +167,6 @@ export class ModificarRolPermisosComponent implements OnInit {
       this.indice++;
       this.rolPermisosModificado = this.crearRolPermisosModificado();
       this.modificarRolPermisos();
-      return;
     }
   }
 

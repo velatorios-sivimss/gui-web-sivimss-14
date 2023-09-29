@@ -1,59 +1,59 @@
-<app-titulo-principal titulo="Consultar los convenios nuevos y de renovación de previsión funeraria">
-</app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Consultar los convenios nuevos y de renovación de previsión funeraria"
+                        class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroForm">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="folioConvenio">Folio convenio:</label>
-        <input id="folioConvenio" class="form-control" formControlName="folioConvenio" placeholder="Ingresa el no. de folio">
+        <input id="folioConvenio" class="form-control" formControlName="folioConvenio"
+               placeholder="Ingresa el no. de folio" maxlength="12" trimmer folioOdsAlphanumeric>
         <span class="campo-obligatorio"
               *ngIf="ff.folioConvenio?.errors?.required && (ff.folioConvenio?.dirty || ff.folioConvenio?.touched)">
-                    Campo obligatorio</span>
+          Campo obligatorio</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="rfc">RFC:</label>
-        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC">
-        <span class="campo-obligatorio"
-              *ngIf="ff.rfc?.errors?.required && (ff.rfc?.dirty || ff.rfc?.touched)">
-                    Campo obligatorio</span>
+        <input id="rfc" class="form-control" formControlName="rfc" placeholder="Ingresa el RFC" maxlength="13" trimmer
+               alphanumericOnly>
+        <span class="campo-obligatorio" *ngIf="ff.rfc?.errors?.required && (ff.rfc?.dirty || ff.rfc?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nombre">Nombre:</label>
-        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre del convenio">
-        <span class="campo-obligatorio"
-              *ngIf="ff.nombre?.errors?.required && (ff.nombre?.dirty || ff.nombre?.touched)">
-                    Campo obligatorio</span>
+        <input id="nombre" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre" maxlength="75"
+               trimmer alphanumericOnly>
+        <span class="campo-obligatorio" *ngIf="ff.nombre?.errors?.required && (ff.nombre?.dirty || ff.nombre?.touched)">
+          Campo obligatorio</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
-        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP">
-        <span class="campo-obligatorio"
-              *ngIf="ff.curp?.errors?.required && (ff.curp?.dirty || ff.curp?.touched)">
-                    Campo obligatorio</span>
+        <label class="control-label" for="curp">CURP:</label>
+        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa el CURP" maxlength="18"
+               trimmer alphanumericOnly>
+        <span class="campo-obligatorio" *ngIf="ff.curp?.errors?.required && (ff.curp?.dirty || ff.curp?.touched)">
+          Campo obligatorio</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="estatusConvenio">Estatus del convenio:</label>
-        <p-dropdown id="estatusConvenio" class="form-control" formControlName="estatusConvenio" [options]="estatusConvenio"
-                    placeholder="Selecciona la Entidad Federativa de nacimiento">
+        <p-dropdown id="estatusConvenio" class="form-control" formControlName="estatusConvenio"
+                    [options]="estatusConvenio" placeholder="Selecciona el estatus del convenio" [filter]="true"
+                    filterBy="label">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="ff.estatusConvenio?.errors?.required && (ff.estatusConvenio?.dirty || ff.estatusConvenio?.touched)">
-                    Campo obligatorio</span>
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <span>*Campos obligatorios</span>
+          Campo obligatorio</span>
       </div>
     </div>
   </form>
   <div class="flex justify-content-end">
-    <button class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-    <button class="ml-4 btn btn-primary btn-md"  (click)="buscar()">
+    <button class="ml-4 btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+    <button class="ml-4 btn btn-primary btn-md" (click)="buscar()">
       Buscar
     </button>
   </div>
@@ -61,74 +61,63 @@
 <section class="mt-5">
   <div class="flex justify-content-between align-items-center">
     <h2 class="subtitulo">Convenios</h2>
-    <button type="button" class="btn btn-primary btn-lg" routerLink="./ingresar-nuevo-convenio" (click)="agregarConvenio()">Agregar convenio</button>
+    <button type="button" class="btn btn-primary btn-lg" routerLink="./ingresar-nuevo-convenio">Agregar
+      convenio
+    </button>
   </div>
-  <p-table #tablaConvenio appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="convenioPrevision"
-           [paginator]="convenioPrevision.length > 0"
-           [rows]="cantElementosPorPagina"
-           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="paginar($event)"
-          [globalFilterFields]="['folioConvenio']">
-    <ng-template pTemplate="caption">
-      <div class="row flex justify-content-end">
-        <div class="col-md-10"></div>
-        <div class="col-md-2">
-          <label>Folio convenio</label>
-          <br/>
-			    <span class="p-input-icon-left p-ml-auto">
-            <i class="pi pi-search"></i>
-            <input pInputText type="text" maxlength="12" (input)="tablaConvenio.filterGlobal($event.target, 'contains')"/>
-          </span>
-        </div>
-      </div>
-    </ng-template>
+
+  <p-table #tablaConvenio appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [(selection)]="selectedConvenioPrevision"
+           (onRowSelect)="onRowSelect($event)" [value]="convenioPrevision" [paginator]="convenioPrevision.length > 0"
+           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos.tablaConvenios" [pageLinks]="3"
+           [(first)]="numPaginaActual.tablaConvenios" (onLazyLoad)="paginar($event)"
+           [globalFilterFields]="['folioConvenio']">
     <ng-template pTemplate="header">
       <tr>
+        <th id="radio" style="width: 4rem"></th>
         <th scope="col">Folio de convenio</th>
         <th scope="col">Fecha contratación</th>
         <th scope="col">Fecha vigencia inicio</th>
         <th scope="col">Fecha vigencia fin</th>
         <th scope="col">Beneficiarios</th>
-        <th scope="col">Situación</th>
-        <th scope="col">Factura</th>
         <th scope="col">Importe convenio</th>
-        <th scope="col">Estatus</th>
+        <th scope="col">Estatus del convenio</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-convenioPrevision>
       <tr>
-        <td>{{convenioPrevision.folioConvenio}}</td>
-        <td>{{convenioPrevision.fechaContratacion}}</td>
-        <td>{{convenioPrevision.fechaVigenciaInicio}}</td>
-        <td>{{convenioPrevision.fechaVigenciaFin}}</td>
-        <td>{{convenioPrevision.cantidadBeneficiarios}}</td>
-        <td>{{convenioPrevision.situacion}}</td>
-        <td>{{convenioPrevision.factura}}</td>
-        <td>{{convenioPrevision.importeConvenio}}</td>
+        <td>
+          <p-tableRadioButton [value]="convenioPrevision"></p-tableRadioButton>
+        </td>
+        <td>{{convenioPrevision?.folioConvenio}}</td>
+        <td>{{convenioPrevision?.fechaContratacion}}</td>
+        <td>{{convenioPrevision?.fechaVigenciaInicio}}</td>
+        <td>{{convenioPrevision?.fechaVigenciaFin}}</td>
+        <td>{{convenioPrevision?.cantidadBeneficiarios}}</td>
+        <td>{{convenioPrevision?.importeConvenio}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
             <div class="contenedor-inputswitch">
-              <span class="activo" *ngIf="convenioPrevision.estatus == 0">Activa</span>
-              <span class="activo" *ngIf="convenioPrevision.estatus == 1">Cerrada</span>
-              <span class="activo" *ngIf="convenioPrevision.estatus == 2">Cancelada</span>
+              {{convenioPrevision?.estatusConvenio}}
             </div>
             <div class="contenedor-celda-iconos">
-              <a (click)="abrirModalDetalleConvenio(convenioPrevision)">
-                <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-              </a>
               <a (click)="abrirPanel($event,convenioPrevision)">
-                <img
-                  src="assets/images/imagen-icono-barras-horizontales.svg"
-                  alt="icono barras horizontales">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
             </div>
           </div>
         </td>
       </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr *ngIf="busquedaRealizada">
+        <th colspan="12" class="p-2 text-center font-bold text-xl" id="reporte_convenio_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
+      </tr>
+    </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{convenioPrevision.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{convenioPrevision.length}} de {{totalElementos.tablaConvenios}}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
@@ -136,8 +125,9 @@
         <div class="export-table">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg"
+            <img class="icon-export-table" (click)="descargarPDF()" src="assets/images/imagen-icono-pdf.svg"
+                 alt="exportar pdf">
+            <img class="icon-export-table" (click)="descargarExcel()" src="assets/images/imagen-icono-excel.svg"
                  alt="exportar excel">
           </div>
         </div>
@@ -148,80 +138,59 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Renovar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Activar"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Convenio PF anterior"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Hoja de afiliación"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Renovar" (click)="renovarConvenio()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarConvenio()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="convenioSeleccionado.estatusConvenio?.includes('Vigente') || convenioSeleccionado.estatusConvenio?.includes('Generado')"
+                                (click)="cambiarEstatusConvenio()" titulo="Desactivar"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver Convenio PF nuevo" (click)="generarReporteConvenioNuevo()"
+                                *ngIf="convenioSeleccionado.tipoPlan === 1 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver Convenio PF anterior" (click)="generarReporteConvenioAnterior()"
+                                *ngIf="convenioSeleccionado.tipoPlan === 2 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ver Hoja de afiliación" (click)="generarReporteAnexo()"
+                                *ngIf="convenioSeleccionado.tipoPlan === 2 && convenioSeleccionado.estatusRenovacion === 2"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
-<section>
+<section *ngIf="mostrarAcordiones">
   <p-accordion styleClass="sivimss-accordion">
     <p-accordionTab>
       <ng-template pTemplate="header">Datos del afiliado</ng-template>
       <ng-template pTemplate="content">
-        <p-table #tablaAfiliado [value]="datosAfiliado" [rows] = "cantElementosPorPagina"
-                  [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-                  [(first)] = "numPaginaActual"
-                  [globalFilterFields]="['rfc']">
-
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>RFC</label>
-                <br/>
-                <span class="p-input-icon-left p-ml-auto">
-            <i class="pi pi-search"></i>
-            <input pInputText type="text" maxlength="13" (input)="tablaAfiliado.filterGlobal($event.target, 'contains')"/>
-          </span>
-              </div>
-            </div>
+        <p-table #tablaAfiliado [value]="datosAfiliado" [rows]="cantElementosPorPagina" [lazy]="true"
+                 [totalRecords]="totalElementos.tablaAfiliados" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaAfiliados"
+                 [globalFilterFields]="['rfc']">
+          <ng-template pTemplate="header">
+            <tr>
+              <th scope="col">Velatorio</th>
+              <th scope="col">Afiliado</th>
+              <th scope="col">RFC titular</th>
+              <th scope="col">Fecha de nacimiento</th>
+              <th scope="col">Edad</th>
+              <th scope="col">Género</th>
+              <th scope="col">Correo electrónico</th>
+            </tr>
           </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th scope="col">Velatorio</th>
-            <th scope="col">Afiliado</th>
-            <th scope="col">RFC titular</th>
-            <th scope="col">Fecha de nacimiento</th>
-            <th scope="col">Edad</th>
-            <th scope="col">Genero</th>
-            <th scope="col">Correo electrónico</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-datosAfiliado>
-          <tr>
-            <td> {{datosAfiliado.descVelatorio}} </td>
-            <td> {{datosAfiliado.afiliado}} </td>
-            <td> {{datosAfiliado.rfcTitular}} </td>
-            <td> {{datosAfiliado.fechaNacimiento}} </td>
-            <td> {{datosAfiliado.edad}} </td>
-            <td> {{datosAfiliado.genero}} </td>
-            <td> {{datosAfiliado.correoElectronico}} </td>
-          </tr>
-        </ng-template>
-      </p-table>
+          <ng-template pTemplate="body" let-datosAfiliado>
+            <tr>
+              <td> {{datosAfiliado?.nombreVelatorio}} </td>
+              <td> {{datosAfiliado?.nombreAfiliado}} </td>
+              <td> {{datosAfiliado?.rfcTitular}} </td>
+              <td> {{datosAfiliado?.fechaNacimiento}} </td>
+              <td> {{datosAfiliado?.edad}} </td>
+              <td> {{obtenerDescGenero(datosAfiliado?.genero)}} </td>
+              <td> {{datosAfiliado?.correo}} </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </ng-template>
     </p-accordionTab>
     <p-accordionTab>
       <ng-template pTemplate="header">Vigencia del convenio</ng-template>
       <ng-template pTemplate="content">
-        <p-table #tablaVigencia [value]="vigenciaConvenio" [rows] = "cantElementosPorPagina"
-                 [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-                 [(first)] = "numPaginaActual"
-                 [globalFilterFields]="['folioConvenio']">
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>Folio convenio</label>
-                <br/>
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText type="text" maxlength="12" (input)="tablaVigencia.filterGlobal($event.target, 'contains')"/>
-                </span>
-              </div>
-            </div>
-          </ng-template>
+        <p-table #tablaVigencia [value]="vigenciaConvenio" [rows]="cantElementosPorPagina" [lazy]="true"
+                 [totalRecords]="totalElementos.tablaVigenciaConvenio" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaVigenciaConvenio" [globalFilterFields]="['folioConvenio']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Convenio</th>
@@ -232,10 +201,10 @@
           </ng-template>
           <ng-template pTemplate="body" let-vigenciaConvenio>
             <tr>
-              <td> {{vigenciaConvenio.convenio}} </td>
-              <td> {{vigenciaConvenio.fechaInicio}} </td>
-              <td> {{vigenciaConvenio.fechaFin}} </td>
-              <td> {{vigenciaConvenio.fechaRenovacion}} </td>
+              <td> {{vigenciaConvenio?.folioConvenio}} </td>
+              <td> {{vigenciaConvenio?.fechaInicio}} </td>
+              <td> {{vigenciaConvenio?.fechaFin}} </td>
+              <td> {{vigenciaConvenio?.fechaRenovacion}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -244,22 +213,9 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Factura del convenio</ng-template>
       <ng-template pTemplate="content">
-        <p-table #tablaFactura [value]="facturaConvenio" [rows] = "cantElementosPorPagina"
-                 [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-                 [(first)] = "numPaginaActual"
-                 [globalFilterFields]="['factura']">
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>Número de factura</label>
-                <br/>
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText maxlength="12" type="text" (input)="tablaFactura.filterGlobal($event.target, 'contains')"/>
-                </span>
-              </div>
-            </div>
-          </ng-template>
+        <p-table #tablaFactura [value]="facturaConvenio" [rows]="cantElementosPorPagina" [lazy]="true"
+                 [totalRecords]="totalElementos.tablaFacturaConvenio" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaFacturaConvenio" [globalFilterFields]="['factura']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Factura</th>
@@ -273,12 +229,12 @@
           </ng-template>
           <ng-template pTemplate="body" let-facturaConvenio>
             <tr>
-              <td> {{facturaConvenio.factura}} </td>
-              <td> {{facturaConvenio.uuid}} </td>
-              <td> {{facturaConvenio.fecha}} </td>
-              <td> {{facturaConvenio.rfc}} </td>
-              <td> {{facturaConvenio.cliente}} </td>
-              <td> {{facturaConvenio.total}} </td>
+              <td> {{facturaConvenio?.factura}} </td>
+              <td> {{facturaConvenio?.uuid}} </td>
+              <td> {{facturaConvenio?.fecha}} </td>
+              <td> {{facturaConvenio?.rfc}} </td>
+              <td> {{facturaConvenio?.cliente}} </td>
+              <td> {{facturaConvenio?.total}} </td>
               <td>
                 <div class="contenedor-inputswitch">
                   <span class="activo" *ngIf="facturaConvenio.estatus">Activo</span>
@@ -293,22 +249,9 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Beneficiarios</ng-template>
       <ng-template pTemplate="content">
-        <p-table #tablaBeneficiario [value]="beneficiario" [rows] = "cantElementosPorPagina"
-                 [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-                 [(first)] = "numPaginaActual"
-                 [globalFilterFields]="['nombre']">
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>Nombre beneficiario</label>
-                <br/>
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText maxlength="75" type="text" (input)="tablaBeneficiario.filterGlobal($event.target, 'contains')"/>
-                </span>
-              </div>
-            </div>
-          </ng-template>
+        <p-table #tablaBeneficiario [value]="beneficiario" [rows]="cantElementosPorPagina" [lazy]="true"
+                 [totalRecords]="totalElementos.tablaBeneficiario" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaBeneficiario" [globalFilterFields]="['nombre']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Beneficiario</th>
@@ -319,10 +262,10 @@
           </ng-template>
           <ng-template pTemplate="body" let-beneficiario>
             <tr>
-              <td> {{beneficiario.nombre}} {{beneficiario.primerApellido}} </td>
-              <td> {{beneficiario.fecha}} </td>
-              <td> {{beneficiario.edad}} </td>
-              <td> {{beneficiario.descParentesco}} </td>
+              <td> {{beneficiario?.nombreBeneficiario}} {{beneficiario?.primerApellido}} </td>
+              <td> {{beneficiario?.fechaNacimiento}} </td>
+              <td> {{beneficiario?.edad}} </td>
+              <td> {{beneficiario?.descripcionParentesco}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -331,21 +274,10 @@
     <p-accordionTab>
       <ng-template pTemplate="header">Siniestros</ng-template>
       <ng-template pTemplate="content">
-        <p-table #tablaSiniestro [value]="siniestro" [rows] = "cantElementosPorPagina"
-                 [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-                 [(first)] = "numPaginaActual" [globalFilterFields]="['folioSinisestro']">
-          <ng-template pTemplate="caption">
-            <div class="row flex justify-content-end">
-              <div class="col-md-2">
-                <label>Folio siniestro</label>
-                <br/>
-                <span class="p-input-icon-left p-ml-auto">
-                  <i class="pi pi-search"></i>
-                  <input pInputText maxlength="12" type="text" (input)="tablaSiniestro.filterGlobal($event.target, 'contains')"/>
-                </span>
-              </div>
-            </div>
-          </ng-template>
+        <p-table #tablaSiniestro [value]="siniestro" [rows]="cantElementosPorPagina" [lazy]="true"
+                 [totalRecords]="totalElementos.tablaSiniestros" [pageLinks]="3"
+                 [(first)]="numPaginaActual.tablaSiniestros"
+                 [globalFilterFields]="['folioSinisestro']">
           <ng-template pTemplate="header">
             <tr>
               <th scope="col">Velatorio</th>
@@ -360,14 +292,14 @@
           </ng-template>
           <ng-template pTemplate="body" let-siniestro>
             <tr>
-              <td> {{siniestro.descVelatorio}} </td>
-              <td> {{siniestro.fechaSiniestro}} </td>
-              <td> {{siniestro.folio}} </td>
-              <td> {{siniestro.nota}} </td>
-              <td> {{siniestro.finado}} </td>
-              <td> {{siniestro.descParentesco}} </td>
-              <td> {{siniestro.descVelatorioOrigen}} </td>
-              <td> {{siniestro.importe}} </td>
+              <td> {{siniestro?.velatorioOrigen}} </td>
+              <td> {{siniestro?.fechaSiniestro}} </td>
+              <td> {{siniestro?.folioSiniestro}} </td>
+              <td> {{siniestro?.nota}} </td>
+              <td> {{siniestro?.nombreFinado}} </td>
+              <td> {{siniestro?.descripcionParentesco}} </td>
+              <td> {{siniestro?.velatorioOrigen}} </td>
+              <td> {{siniestro?.importe}} </td>
             </tr>
           </ng-template>
         </p-table>
@@ -375,3 +307,17 @@
     </p-accordionTab>
   </p-accordion>
 </section>
+
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

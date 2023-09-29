@@ -1,0 +1,22 @@
+.mt-grid {
+  margin-top: 1.1rem;
+}
+
+:host ::ng-deep {
+  .p-datatable-wrapper {
+    border: none;
+  }
+
+  .p-datatable .p-datatable-tfoot > tr > td {
+    border-bottom: none;
+    padding-top: 3rem;
+  }
+
+  .table-footer {
+    border: 1px solid #DDDDDD;
+    padding: 16px 40px 16px 40px;
+  }
+
+}
+
+

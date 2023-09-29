@@ -1,189 +1,58 @@
 <div class="border-panel mb-8">
   <h1>CANCELAR ORDEN DE SERVICIO</h1>
-  <div class="sivimss-acoordion-header">
-    <div class="accordion-header-left">
-      <span>Folio </span>
-      <b>DOC-000001</b>
-    </div>
-    <div class="accordion-header-right">
-      <div class="estatus">
-        <span>Estatus</span>
-        <b>Pre-orden</b>
+  <ng-container *ngIf="!confirmacion">
+    <div class="row">
+      <div class="col-md-12 text-center mb-3">
+        <span class="text-center">{{mensajeCancelacion}}</span>
       </div>
-      <a (click)="overlayPanel.toggle($event)">
-        <i class="fs fs-barras-horizontales"></i>
-      </a>
     </div>
-  </div>
-  <p-accordion styleClass="sivimss-accordion">
-    <p-accordionTab>
-      <ng-template pTemplate="header">Datos del contratante</ng-template>
-      <ng-template pTemplate="content">
+    <div class="row">
+      <div class="col-md-12 flex justify-content-end align-items-center">
+        <button type="button" class="btn btn-md btn-gold" (click)="cancelar()">Cancelar</button>
+        <button type="button" class="ml-6 btn btn-md btn-primary" (click)="confirmacion = true">Aceptar</button>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="confirmacion">
+    <div class="border-panel">
+      <form [formGroup]="form">
         <div class="row">
-          <div class="col-md-4 flex flex-column">
-            <span class="etiqueta-base">Matrícula*:</span>
-            <span class="texto-base">1029384756</span>
-          </div>
-          <div class="col-md-4 flex flex-column">
-            <span class="etiqueta-base">RFC*:</span>
-            <span class="texto-base">LAHJ07087067L</span>
-          </div>
-          <div class="col-md-4 flex flex-column">
-            <span class="etiqueta-base">CURP*:</span>
-            <span class="texto-base">LAHJ07087067LCDNNHDF</span>
+          <div class="col-md-12">
+            <label for="motivoCancelacion" class="control-label">Motivo de la cancelación <span
+              class="req">*</span>:</label>
+            <textarea id="motivoCancelacion" lettersOnly (keyup.space)="quitarEspacioInicio()"
+                      formControlName="motivoCancelacion" class="form-control" rows="4"
+                      placeholder="Inserta el motivo de la cancelación" maxlength="100"></textarea>
+            <span class="campo-obligatorio"
+                  *ngIf="f.motivoCancelacion?.errors?.required && (f.motivoCancelacion?.dirty || f.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
           </div>
         </div>
-        <hr class="hr-accordion-content">
+        <div class="row mt-3">
+          <div class="col-md-12 flex justify-content-end align-items-center">
+            <span class="texto-monto-cancelacion">Monto de la cancelación:</span><b
+            class="cantidad-monto-cancelacion">${{precioCancelacionODS}}</b>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <p class="texto-monto-cancelacion text-right">La cancelación de esta orden de servicio tiene un costo de $
+              {{precioCancelacionODS}}, más el
+              valor de los servicios ya realizados</p>
+          </div>
+        </div>
+        <hr class="mt-0 mb-6">
         <div class="row">
-          <div class="col-md-4 flex flex-column">
-            <span class="etiqueta-base">Nombre (s)*:</span>
-            <span class="texto-base">José</span>
-          </div>
-          <div class="col-md-4 flex flex-column">
-            <span class="etiqueta-base">Primer apellido*:</span>
-            <span class="texto-base">Lara</span>
-          </div>
-          <div class="col-md-4 flex flex-column">
-            <span class="etiqueta-base">Segundo apellido*:</span>
-            <span class="texto-base">Hernández</span>
+          <div class="col-md-12 flex justify-content-end align-items-center">
+            <button type="button" class="btn btn-md btn-gold" (click)="cancelar()">Cancelar</button>
+            <button type="button" class="ml-6 btn btn-md btn-primary" [disabled]="form.invalid" (click)="guardar()">
+              Guardar
+            </button>
           </div>
         </div>
-        <hr class="hr-accordion-content">
-        <div class="flex justify-content-between">
-          <div class="flex flex-column">
-            <span class="etiqueta-base">Fecha de nacimiento*:</span>
-            <span class="texto-base">07/08/1970</span>
-          </div>
-          <div class="flex flex-column">
-            <span class="etiqueta-base">Sexo*:</span>
-            <span class="texto-base">Otro</span>
-          </div>
-          <div class="flex flex-column">
-            <span class="etiqueta-base">Cual es el sexo*:</span>
-            <span class="texto-base">LGBTT</span>
-          </div>
-          <div class="flex flex-column">
-            <span class="etiqueta-base">Nacionalidad*:</span>
-            <span class="texto-base">Mexicana</span>
-          </div>
-          <div class="flex flex-column">
-            <span class="etiqueta-base">Lugar de nacimiento*:</span>
-            <span class="texto-base">CDMX</span>
-          </div>
-        </div>
-        <hr class="hr-accordion-content">
-        <div class="row">
-          <div class="col-md-3 flex flex-column">
-            <span class="etiqueta-base">Teléfono*:</span>
-            <span class="texto-base">55 8796 5667</span>
-          </div>
-          <div class="col-md-6 flex flex-column">
-            <span class="etiqueta-base">Correo electrónico*:</span>
-            <span class="texto-base">larajohe3452@gmail.com</span>
-          </div>
-          <div class="col-md-3 flex flex-column">
-            <span class="etiqueta-base">Parentesco*:</span>
-            <span class="texto-base">Abuelo paterno</span>
-          </div>
-        </div>
-        <hr class="hr-accordion-content">
-        <h2 class="subtitulo-base">Dirección</h2>
-        <div class="row">
-          <div class="col-md-6 flex flex-column">
-            <span class="etiqueta-base">Calle*:</span>
-            <span class="texto-base">Niños Héroes</span>
-          </div>
-          <div class="col-md-3 flex flex-column">
-            <span class="etiqueta-base">No. exterior*:</span>
-            <span class="texto-base">65</span>
-          </div>
-          <div class="col-md-3 flex flex-column">
-            <span class="etiqueta-base">No. interior*:</span>
-            <span class="texto-base"></span>
-          </div>
-        </div>
-        <hr class="hr-accordion-content">
-        <div class="row">
-          <div class="col-md-3 flex flex-column">
-            <span class="etiqueta-base">CP*:</span>
-            <span class="texto-base">00666</span>
-          </div>
-          <div class="col-md-3 flex flex-column">
-            <span class="etiqueta-base">Colonia*:</span>
-            <span class="texto-base">Flores Magón</span>
-          </div>
-          <div class="col-md-3 flex flex-column">
-            <span class="etiqueta-base">Municipio*:</span>
-            <span class="texto-base">Santiago de Querétaro</span>
-          </div>
-          <div class="col-md-3 flex flex-column">
-            <span class="etiqueta-base">Estado*:</span>
-            <span class="texto-base">Querétaro</span>
-          </div>
-        </div>
+      </form>
+    </div>
 
-      </ng-template>
-    </p-accordionTab>
-    <p-accordionTab>
-      <ng-template pTemplate="header">Datos del finado</ng-template>
-      <ng-template pTemplate="content">Body Content</ng-template>
-    </p-accordionTab>
-    <p-accordionTab>
-      <ng-template pTemplate="header">
-        <div class="flex justify-content-between align-items-center flex-1">
-          <span>Presupuesto</span>
-          <div>
-            <span class="texto-base">Total orden de servicio:</span>
-            <b class="cantidad-base">$50,000.00</b>
-          </div>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="content">Body Content</ng-template>
-    </p-accordionTab>
-    <p-accordionTab>
-      <ng-template pTemplate="header">Información de los servicios</ng-template>
-      <ng-template pTemplate="content">Body Content</ng-template>
-    </p-accordionTab>
-  </p-accordion>
-  <div class="border-panel">
-    <form [formGroup]="form" (ngSubmit)="guardar()">
-      <div class="row">
-        <div class="col-md-12">
-          <label for="motivoCancelacion" class="control-label">Motivo de la cancelación <span
-            class="req">*</span>:</label>
-          <textarea id="motivoCancelacion" formControlName="motivoCancelacion" class="form-control" rows="4"
-                    placeholder="Inserta el motivo de la cancelación"></textarea>
-          <span class="campo-obligatorio"
-                *ngIf="f.motivoCancelacion?.errors?.required && (f.motivoCancelacion?.dirty || f.motivoCancelacion?.touched)">Campo obligatorio</span>
-        </div>
-      </div>
-      <div class="row mt-3">
-        <div class="col-md-12 flex justify-content-end align-items-center">
-          <span class="texto-monto-cancelacion">Monto de la cancelación:</span><b
-          class="cantidad-monto-cancelacion">$380.00</b>
-        </div>
-      </div>
-      <div class="row mt-2">
-        <div class="col-md-12">
-          <p class="texto-monto-cancelacion text-right">La cancelación de esta orden de servicio tiene un costo de $
-            380.00, más el
-            valor de los servicios ya realizados</p>
-        </div>
-      </div>
-      <hr class="mt-0 mb-6">
-      <div class="row mt-4">
-        <div class="col-md-12">
-          <p class="mensaje-cancelacion-orden">¿Estás seguro que deseas cancelar esta orden de servicio?</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12 flex justify-content-end align-items-center">
-          <button type="button" class="btn btn-md btn-gold" routerLink="../">Salir sin cancelar</button>
-          <button class="ml-6 btn btn-md btn-primary" [disabled]="form.invalid">Aceptar</button>
-        </div>
-      </div>
-    </form>
-  </div>
+  </ng-container>
 </div>
 
 <p-overlayPanel #overlayPanel>

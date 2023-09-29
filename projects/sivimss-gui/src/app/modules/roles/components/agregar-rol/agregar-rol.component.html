@@ -1,45 +1,71 @@
-<app-titulo-principal titulo="Agregar rol"></app-titulo-principal>
-<form [formGroup]="agregarRolForm">
-    <section>
+<app-titulo-principal titulo="Nuevo rol"></app-titulo-principal>
+<ng-container [ngSwitch]="pasoAgregarRol">
+  <ng-container *ngSwitchCase="CAPTURA_DE_ROL">
+    <form [formGroup]="agregarRolForm">
+      <section>
         <h2 class="subtitulo">Datos generales</h2>
         <div class="px-4 mt-3">
-            <div class="row mb-2">
-                <div class="col-md-9">
-                    <label class="control-label" for="nombre">Nombre del rol<span class="req">*</span></label>
-                    <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre">
-                    <span class="campo-obligatorio" *ngIf="f?.nombre?.errors?.required && (f?.nombre?.dirty || f?.nombre?.touched)">Campo obligatorio</span>
-                </div>
-                <div class="col-md-3">
-                <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
-                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="opciones" placeholder="Seleccionar el nivel">
-                </p-dropdown>
-                <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Campo obligatorio</span>
+          <div class="row mb-2">
+            <div class="col-md-9">
+              <label class="control-label" for="nombre">Nombre del rol<span class="req">*</span></label>
+              <input id="nombre" class="form-control" formControlName="nombre" placeholder="Inserta el nombre"
+                     alphanumericOnly (keyup.space)="noEspaciosAlPrincipio()" maxlength="100">
+              <span class="campo-obligatorio"
+                    *ngIf="f?.nombre?.errors?.required && (f?.nombre?.dirty || f?.nombre?.touched)">Este campo es obligatorio *.</span>
             </div>
+            <div class="col-md-3">
+              <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
+              <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogo_nivelOficina"
+                          placeholder="Seleccionar el nivel">
+              </p-dropdown>
+              <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Este campo es obligatorio *.</span>
             </div>
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <span class="campos-obligatorios-texto">*Campos obligatorios</span>
-                </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-md-12">
+              <span class="control-label">*Campos obligatorios</span>
             </div>
+          </div>
         </div>
-    </section>
-   
-     
-   
-      
-      
-      
-      
-      
-      
-      
-      
-
-    <div class="flex justify-content-end mb-6">
-        <button class="btn btn-default btn-md" routerLink="../">Regresar</button>
+      </section>
+      <div class="flex justify-content-end mb-6">
         <button class="ml-4 btn btn-gold btn-md" routerLink="../">Cancelar</button>
-        <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarRolForm.invalid" (click)="agregarRol()">
-      Aceptar
-    </button>
+        <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarRolForm.invalid"
+                (click)="pasoAgregarRol = RESUMEN_DE_ROL">
+          Agregar
+        </button>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="RESUMEN_DE_ROL">
+    <app-table-panel>
+      <div class="row table-panel-row">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Nombre del rol</label>
+            <span> {{f.nombre.value}} </span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Nivel</label>
+            <span> {{f.nivel.value == 1 ? "CENTRAL" : ""}}</span>
+            <span> {{f.nivel.value == 2 ? "DELEGACIONAL" : ""}}</span>
+            <span> {{f.nivel.value == 3 ? "VELATORIOS" : ""}}</span>
+          </div>
+        </div>
+      </div>
+    </app-table-panel>
+    <div class="flex justify-content-center">
+      <div class="mt-4 col-md-7">
+        <p class="text-center">¿Estás seguro de agregar este nuevo rol?</p>
+      </div>
     </div>
-</form>
+    <div class="flex justify-content-end mt-2 mb-6">
+      <button class="ml-4 btn btn-gold btn-md" routerLink="../">Cancelar</button>
+      <button class="ml-4 btn btn-primary btn-md" [disabled]="agregarRolForm.invalid" (click)="agregarRol()">
+        Confirmar
+      </button>
+    </div>
+  </ng-container>
+</ng-container>

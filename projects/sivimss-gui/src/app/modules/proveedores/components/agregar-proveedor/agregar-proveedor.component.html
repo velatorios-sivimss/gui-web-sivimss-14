@@ -4,7 +4,7 @@
       <div class="col-md-8">
           <p-steps [model]="menuStep" [activeIndex]="indice"></p-steps>
           <!-- <img src="../../../../../assets/images/proveedor.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 0">
-          <img src="../../../../../assets/images/direccion.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 1"> -->
+          <img src="../../../../../assets/images/direccion.PNG" style="height: 71px; margin-left: 130px;" *ngIf="indice === 1"> //NOSONAR-->
       </div>
       <div class="col-md-2"></div>
   </div>
@@ -100,7 +100,6 @@
               obligatorio</span>
             </div>
             <div class="col-md-6">
-              <!-- <label class="control-label" for="vigencia"><span class="req"></span></label> -->
               <p-calendar id="vigenciaHasta" formControlName="vigenciaHasta" styleClass="form-control"
                 [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
               </p-calendar>
@@ -368,7 +367,7 @@
   <div class="row mb-3">
       <div class="col-md-12">
           <!-- <app-detalle-proveedor [proveedorSeleccionado]="this.proveedor[origen]="'agregar'" (confirmacionAceptar)="cerrar($event)"
-          </app-detalle-proveedor> -->
+          </app-detalle-proveedor> //NOSONAR-->
           <app-detalle-proveedor [proveedorSeleccionado]="this.proveedor" [origen]="'agregar'" (confirmacionAceptar)="cerrar($event)"  ></app-detalle-proveedor>
 
       </div>

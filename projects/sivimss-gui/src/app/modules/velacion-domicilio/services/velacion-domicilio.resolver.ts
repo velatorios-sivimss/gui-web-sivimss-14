@@ -13,7 +13,6 @@ export class VelacionDomicilioResolver implements Resolve<any> {
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
         const niveles$ = this.velacionDomicilioService.obtenerCatalogoNiveles();
         const delegaciones$ = this.velacionDomicilioService.obtenerCatalogoDelegaciones();
-        const velatorios$ = this.velacionDomicilioService.obtenerCatalogoDelegaciones();
-        return forkJoin([niveles$, delegaciones$, velatorios$]);
+        return forkJoin([niveles$, delegaciones$]);
     }
 }

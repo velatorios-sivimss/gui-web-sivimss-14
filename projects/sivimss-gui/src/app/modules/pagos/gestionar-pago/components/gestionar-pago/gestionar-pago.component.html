@@ -1,0 +1,167 @@
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Gestionar pago" class="col"></app-titulo-principal>
+</div>
+<div class="border-panel">
+  <form [formGroup]="filtroGestionarPagoForm" (submit)="buscar()" (reset)="limpiar()">
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <label class="control-label" for="velatorio">Velatorio:</label>
+        <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
+                    [options]="catalogoVelatorios" placeholder="Seleccionar el velatorio">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <span class="control-label font-bold block">Folio: </span>
+        <label class="control-label" for="folioODS">Folio de la Orden de Servicio (ODS): </label>
+        <p-dropdown appendTo="body" id="folioODS" class="form-control" formControlName="folioODS"
+                    [options]="foliosODS" placeholder="Ingresa el folio" (onChange)="limpiarFolios(1)">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label mb-3" for="folioPNCPF">Folio del Nuevo convenio de previsión funeraria
+          (PNCPF):</label>
+        <p-dropdown appendTo="body" id="folioPNCPF" class="form-control" formControlName="folioPNCPF"
+                    [options]="foliosPNCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(2)">
+        </p-dropdown>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label mb-3" for="folioPRCPF">Folio de la Renovación de convenios de previsión
+          funeraria (PRCPF):</label>
+        <p-dropdown appendTo="body" id="folioPRCPF" class="form-control" formControlName="folioPRCPF"
+                    [options]="foliosPRCPF" placeholder="Ingresa el folio" (onChange)="limpiarFolios(3)">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="control-label" for="elaboracionInicio">Fecha inicio:</label>
+        <p-calendar id="elaboracionInicio" formControlName="elaboracionInicio" styleClass="form-control"
+                    [showIcon]="true"
+                    placeholder="Fecha inicio" dateFormat="dd/mm/yy" appendTo="body"
+                    (onSelect)="validarMismaFechaInicioFin()"
+                    [maxDate]="filtroGestionarPagoForm.get('elaboracionFin')?.value || fechaAnterior">
+        </p-calendar>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="elaboracionFin">Fecha fin:</label>
+        <p-calendar id="elaboracionFin" formControlName="elaboracionFin" styleClass="form-control" [showIcon]="true"
+                    placeholder="Fecha fin" dateFormat="dd/mm/yy" appendTo="body"
+                    (onSelect)="validarMismaFechaInicioFin()"
+                    [minDate]="filtroGestionarPagoForm.get('elaboracionInicio')?.value" [maxDate]="fechaActual">
+        </p-calendar>
+      </div>
+      <div class="col-md-4">
+        <label class="control-label" for="nombreContratante">Nombre del contratante:</label>
+        <input id="nombreContratante" class="form-control" formControlName="nombreContratante"
+               placeholder="Ingresa nombre">
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroGestionarPagoForm.pristine">
+          Limpiar filtros
+        </button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroGestionarPagoForm.pristine">Buscar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<section class="mt-5 mb-3">
+  <p-table styleClass="mt-5 mb-8" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
+           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+           (onLazyLoad)="seleccionarPaginacion($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+           appActivarUltimaCeldaSticky>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn id="columna_gestionar_pago_fecha">Fecha</th>
+        <th pResizableColumn id="columna_gestionar_pago_folio">Folio</th>
+        <th pResizableColumn id="columna_gestionar_pago_contratante">Nombre contratante</th>
+        <th pResizableColumn id="columna_gestionar_pago_tipo_pago">Tipo de pago</th>
+        <th pResizableColumn id="columna_gestionar_pago_total">Total</th>
+        <th pResizableColumn id="columna_gestionar_pago_estatus">Estatus ODS</th>
+        <th pResizableColumn id="columna_gestionar_pago_estatus_pago">Estatus de pago</th>
+        <th pResizableColumn id="columna_gestionar_pago_datos_pago">Datos de pago</th>
+        <th id="columna_gestionar_pago_datos_botones"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pago>
+      <tr>
+        <td>{{pago.fecha}}</td>
+        <td>{{pago.folio}}</td>
+        <td>{{pago.nomContratante}}</td>
+        <td>{{pago.desFlujo}}</td>
+        <td>{{pago.total | currency}}</td>
+        <td>{{pago.desEstatus}}</td>
+        <td>{{pago.desEstatusPago}}</td>
+        <td>{{pago.metodosPago | titlecase}}</td>
+        <td>
+          <div class="contenedor-celda-iconos">
+            <a (click)="abrirPanel($event,pago)">
+              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            </a>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="9" class="p-2 text-center font-bold text-xl" id="gestionar_pago_sin_resultados">
+          No se encontró información relacionada a tu búsqueda
+        </th>
+        <hr>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <div class="paginator-template">
+        <span class="total-elements">{{pagos.length}} de {{totalElementos}}</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <div class="paginator-template">
+        <div class="export-table">
+          <span class="export-table-text">Exportar tabla</span>
+          <div class="export-table-icons">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                 (click)="guardarPDF()">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                 (click)="guardarExcel()">
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-table>
+</section>
+
+<p-overlayPanel #overlayPanel>
+  <ng-template pTemplate="content">
+    <app-overlay-panel-opciones>
+      <app-overlay-panel-opcion titulo="Gestionar Pago"
+                                *ngIf="['Pagado','Facturado'].includes(pagoSeleccionado.desEstatusPago)"
+                                [routerLink]="['./modificar-de-pago', pagoSeleccionado.id, pagoSeleccionado.idFlujo]">
+      </app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Ir a Pago"
+                                *ngIf="!['Pagado','Facturado'].includes(pagoSeleccionado.desEstatusPago)"
+                                [routerLink]="['./detalle-de-pago', pagoSeleccionado.id, pagoSeleccionado.idFlujo]">
+      </app-overlay-panel-opcion>
+    </app-overlay-panel-opciones>
+  </ng-template>
+</p-overlayPanel>
+
+<p-dialog [(visible)]="mostrarModalDescargaExitosa" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalDescargaExitosa = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

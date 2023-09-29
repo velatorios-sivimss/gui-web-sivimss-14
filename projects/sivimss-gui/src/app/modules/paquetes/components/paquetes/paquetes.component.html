@@ -50,11 +50,11 @@
     [(first)]="numPaginaActual" (onLazyLoad)="seleccionarPaginacion()">
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
-        <th>Paquete</th>
-        <th>Descripción del paquete</th>
-        <th>Estatus</th>
-        <th></th>
+        <th scope="col">ID</th>
+        <th scope="col">Paquete</th>
+        <th scope="col">Descripción del paquete</th>
+        <th scope="col">Estatus</th>
+        <th scope="col"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-paquete>
@@ -86,7 +86,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="5" class="p-2 text-center font-bold text-xl">
+        <th colspan="5" class="p-2 text-center font-bold text-xl" id="empty_message_paquetes">
           No se encontro información relacionada a tu búsqueda
         </th>
       </tr>

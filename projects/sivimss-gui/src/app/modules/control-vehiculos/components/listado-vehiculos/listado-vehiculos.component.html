@@ -1,0 +1,34 @@
+<section class="mt-5">
+  <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="controlVehiculos" [rows]="cantElementosPorPagina"
+    [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Descripción del vehículo</th>
+        <th scope="col">Disponibilidad</th>
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-controlVehiculo>
+      <tr>
+        <td>{{controlVehiculo.idVehiculo}}</td>
+        <td>{{controlVehiculo.descripcion}}</td>
+        <td [ngStyle]="{'color': retornarColor(controlVehiculo.disponible)}">
+          {{controlVehiculo.disponible === 1 ? 'Disponible' : 'Ocupada'}}
+        </td>
+        <td>
+          <button type="button" class="btn btn-primary btn-md" *appValidaRol="['DISPONIBILIDAD_VEHICULOS','ALTA']"
+            (click)="registrarActividad(controlVehiculo)"> Registrar {{ controlVehiculo.disponible === 1 ? 'salida' : 'entrada'}}
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th id="emptymessage" colspan="12" class="p-2 text-center font-bold text-xl">
+          No hay elementos que coincidan con los parámetros seleccionados
+        </th>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>

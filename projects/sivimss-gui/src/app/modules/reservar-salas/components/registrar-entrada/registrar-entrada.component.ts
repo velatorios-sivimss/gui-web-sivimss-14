@@ -15,6 +15,7 @@ import {TipoDropdown} from "../../../../models/tipo-dropdown";
 import {SalaVelatorio} from "../../models/sala-velatorio.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {EntradaSala} from "../../models/registro-sala.interface";
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-registrar-entrada',
@@ -26,9 +27,11 @@ export class RegistrarEntradaComponent implements OnInit {
   registroEntradaForm!: FormGroup;
   salaSeleccionada: SalaVelatorio = {};
 
+  fechaActual = new Date();
+
   indice: number = 0;
-  idOds!:any;
-  tipoSala:number = 0;
+  idOds!: any;
+  tipoSala: number = 0;
   folioValido: boolean = false;
   opcionesInicio: TipoDropdown[] = [{label: 'Mantenimiento', value: '1'}, {label: 'Servicio de ODS', value: '2'}];
   alertas = JSON.parse(localStorage.getItem('mensajes') as string);
@@ -40,7 +43,8 @@ export class RegistrarEntradaComponent implements OnInit {
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
     private readonly loaderService: LoaderService,
-    private reservarSalasService:ReservarSalasService
+    private reservarSalasService: ReservarSalasService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
     this.iniciarFormRegistroEntrada();
   }
@@ -50,12 +54,12 @@ export class RegistrarEntradaComponent implements OnInit {
       inicioDe: [{value: null, disabled: false}, [Validators.required]],
       descripcionMantenimiento: [{value: null, disabled: false}],
       folioODS: [{value: null, disabled: false}, [Validators.required]],
-      nombreContratante: [{value: null, disabled: true}, [Validators.required]],
-      nombreFinado: [{value: null, disabled: true}, [Validators.required]],
+      nombreContratante: [{value: null, disabled: true}, []],
+      nombreFinado: [{value: null, disabled: true}, []],
       nombreResponsable: [{value: null, disabled: false}, [Validators.required]],
       nivelGas: [{value: null, disabled: false}, [Validators.required]],
-      fecha: [{value: null, disabled: false}, [Validators.required]],
-      hora: [{value: null, disabled: false}, [Validators.required]],
+      fecha: [{value: this.fechaActual, disabled: false}, [Validators.required]],
+      hora: [{value: this.fechaActual, disabled: false}, [Validators.required]],
     });
   }
 
@@ -67,21 +71,21 @@ export class RegistrarEntradaComponent implements OnInit {
 
   consultaODS(): void {
     this.loaderService.activar();
-    const folioODS = +this.entradaF.folioODS.value;
-    if(!folioODS){
+    const folioODS = this.entradaF.folioODS.value;
+    if (!folioODS) {
       this.loaderService.desactivar();
       return;
     }
     this.reservarSalasService.consultarODS(folioODS).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-    (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos){
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        if (respuesta.datos) {
           this.folioValido = true;
           this.idOds = respuesta.datos[0]?.idODS;
           this.entradaF.nombreContratante.setValue(respuesta.datos[0]?.nombreContratante);
           this.entradaF.nombreFinado.setValue(respuesta.datos[0]?.nombreFinado);
-        }else{
+        } else {
           this.folioValido = false;
           this.entradaF.nombreContratante.patchValue(null);
           this.entradaF.nombreFinado.patchValue(null);
@@ -89,15 +93,15 @@ export class RegistrarEntradaComponent implements OnInit {
             "Verifica tu información.\n")
         }
       },
-    (error:HttpErrorResponse) => {
-      console.error(error);
-      this.alertaService.mostrar(TipoAlerta.Error, error.message);
+      error: (error: HttpErrorResponse): void => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg);
       }
-    );
+    });
   }
 
-  cambioInicioDe(event:any): void {
-    if(event.value == 2){
+  cambioInicioDe(event: any): void {
+    if (event.value == 2) {
       this.entradaF.descripcionMantenimiento.disabled;
       this.entradaF.descripcionMantenimiento.clearValidators();
       this.entradaF.descripcionMantenimiento.setValue("");
@@ -105,13 +109,11 @@ export class RegistrarEntradaComponent implements OnInit {
       this.entradaF.folioODS.enabled;
       this.entradaF.folioODS.setValidators([Validators.required]);
       this.entradaF.nombreContratante.enabled;
-      this.entradaF.nombreContratante.setValidators([Validators.required]);
       this.entradaF.nombreFinado.enabled;
-      this.entradaF.nombreFinado.setValidators([Validators.required]);
       this.entradaF.nivelGas.enabled;
       this.entradaF.nivelGas.setValidators([Validators.required]);
       this.folioValido = false;
-    }else{
+    } else {
       this.entradaF.descripcionMantenimiento.enabled;
       this.entradaF.descripcionMantenimiento.setValidators([Validators.required]);
 
@@ -120,11 +122,9 @@ export class RegistrarEntradaComponent implements OnInit {
       this.entradaF.folioODS.setValue("");
 
       this.entradaF.nombreContratante.disabled;
-      this.entradaF.nombreContratante.clearValidators();
       this.entradaF.nombreContratante.setValue("");
 
       this.entradaF.nombreFinado.disabled;
-      this.entradaF.nombreFinado.clearValidators();
       this.entradaF.nombreFinado.setValue("");
 
       this.entradaF.nivelGas.disabled;
@@ -143,23 +143,17 @@ export class RegistrarEntradaComponent implements OnInit {
     this.loaderService.activar();
     this.reservarSalasService.guardar(this.datosGuardar()).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe(
-      (respuesta: HttpRespuesta<any>) => {
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(respuesta.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Exito, msg);
         this.ref.close(true);
-        const alertas = JSON.parse(localStorage.getItem('mensajes') as string);
-        const mensaje = alertas.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
       },
-      (error : HttpErrorResponse) => {
-        console.error("ERROR: ", error.message);
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error.error.mensaje;
-        })
-        this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
+      error: (error: HttpErrorResponse): void => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error al guardar la información. Intenta nuevamente.');
       }
-    );
+    });
   }
 
   datosGuardar(): EntradaSala {
@@ -175,12 +169,12 @@ export class RegistrarEntradaComponent implements OnInit {
     }
   }
 
-  quitarEspacios(cadena: string){
+  quitarEspacios(cadena: string) {
     return cadena.replace(/\s{2,}/g, ' ').trim();
   }
 
   confFormTipoSala(sala: number): void {
-    if(sala){
+    if (sala) {
       this.entradaF.nivelGas.disabled;
       this.entradaF.nivelGas.clearValidators();
       this.entradaF.nivelGas.setValue("");

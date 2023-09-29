@@ -1,34 +1,49 @@
-<app-titulo-principal titulo="Administración usuarios contratantes"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal class="col" titulo="Administrar usuarios contratantes"></app-titulo-principal>
+</div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm">
+  <form [formGroup]="filtroForm" (ngSubmit)="paginarPorFiltros()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="curp">CURP:</label>
-        <input id="curp" maxlength="18" class="form-control" formControlName="curp" placeholder="Ingresa CURP">
+        <input id="curp" class="form-control" formControlName="curp" placeholder="Ingresa CURP" maxlength="18" trimmer
+               alphanumericOnly>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="nss">NSS:</label>
-        <input id="nss" maxlength="11" class="form-control" formControlName="nss" placeholder="Ingresa NSS">
+        <input id="nss" class="form-control" formControlName="nss" placeholder="Ingresa NSS" maxlength="11" trimmer
+               numbersOnly>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
-        <label class="control-label" for="nombre">Nombre:</label>
-        <input id="nombre" maxlength="30" class="form-control" formControlName="nombre" placeholder="Ingresa el nombre">
+        <label class="control-label" for="nombreContratante">Nombre:</label>
+        <p-autoComplete id="nombreContratante" formControlName="nombre" [showEmptyMessage]="true"
+                        [suggestions]="contratantesFiltrados" (completeMethod)="filtrarContratantes()"
+                        [minLength]="3" [maxlength]="30" class="p-autocomplete"
+                        placeholder="Ingresa el nombre" field="label"
+                        [inputStyleClass]="filtroForm.valid ? 'input-autocomplete' : 'input-autocomplete input-autocomplete-error'">
+          <ng-template let-articulo pTemplate="item">
+            <div class="autocomplete-item">
+              <div>{{articulo.label}}</div>
+            </div>
+          </ng-template>
+        </p-autoComplete>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="estatus">Estatus:</label>
-        <p-dropdown id="estatus" class="form-control" formControlName="estatus"
-                    placeholder="Selecciona estatus" [options]="estatus"></p-dropdown>
+        <p-dropdown id="estatus" class="form-control" formControlName="estatus" placeholder="Selecciona estatus"
+                    [options]="estatus"></p-dropdown>
+      </div>
+    </div>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-end">
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">Limpiar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar</button>
       </div>
     </div>
   </form>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-end">
-      <button type="submit" class="btn btn-default btn-md" (click)="limpiar()" >Limpiar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
-    </div>
-  </div>
 </div>
 
 <section class="mt-5">
@@ -36,64 +51,70 @@
     <h2 class="subtitulo">Contratantes</h2>
   </div>
 
-  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="contratante"
-           [paginator]="contratante.length > 0"
-           [rows]="cantElementosPorPagina"
-           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="paginar($event)">
+  <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="contratantes"
+           [paginator]="contratantes.length > 0" [rows]="cantElementosPorPagina" [lazy]="true"
+           [totalRecords]="totalElementos"
+           [pageLinks]="3" [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [resizableColumns]="true"
+           [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
-        <th scope="col">CURP</th>
-        <th scope="col">NSS</th>
-        <th scope="col">Nombre completo</th>
-        <th scope="col">RFC</th>
-        <th scope="col">Fecha de nacimiento</th>
-        <th scope="col">Teléfono</th>
+        <th pResizableColumn scope="col">CURP</th>
+        <th pResizableColumn scope="col">NSS</th>
+        <th pResizableColumn scope="col">Nombre completo</th>
+        <th pResizableColumn scope="col">R.F.C</th>
+        <th pResizableColumn scope="col">Fecha de nacimiento</th>
+        <th pResizableColumn scope="col">Teléfono</th>
         <th scope="col">Estatus</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-contratante>
       <tr>
-        <td> {{contratante.curp}}</td>
-        <td> {{contratante.nss}}</td>
-        <td> {{contratante.nombre}} {{contratante.primerApellido}} {{contratante.segundoApellido}}</td>
-        <td> {{contratante.rfc}}</td>
-        <td> {{contratante.fechaNacimiento}}</td>
-        <td> {{contratante.telefono}}</td>
+        <td pResizableColumn> {{contratante.curp}}</td>
+        <td pResizableColumn> {{contratante.nss}}</td>
+        <td pResizableColumn> {{contratante.nomContratante}}</td>
+        <td pResizableColumn> {{contratante.rfc}}</td>
+        <td pResizableColumn> {{contratante.fecNacimiento}}</td>
+        <td pResizableColumn> {{contratante.tel}}</td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'120px 80px'}">
-            <div class="contenedor-inputswitch">
-              <p-inputSwitch (onChange)="abrirModalCambiarEstatus(contratante)" [(ngModel)]="contratante.estatus"></p-inputSwitch>
+            <div class="contenedor-inputswitch" *appValidaRol="['CONTRATANTES','MODIFICAR']">
+              <p-inputSwitch [(ngModel)]="contratante.estatus"
+                             (click)="contratante.estatus = !contratante.estatus; abrirModalCambiarEstatus(contratante)">
+              </p-inputSwitch>
               <span class="activo" *ngIf="contratante.estatus">Activo</span>
               <span class="inactivo" *ngIf="!contratante.estatus">Inactivo</span>
             </div>
+
             <div class="contenedor-celda-iconos">
-              <a (click)="abrirModalDetalleContratante(contratante)">
+              <a (click)="abrirModalDetalleContratante(contratante)" *appValidaRol="['CONTRATANTES','CONSULTA']">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-              </a>
-              <a (click)="abrirPanel($event,contratante)">
-                <img
-                  src="assets/images/imagen-icono-barras-horizontales.svg"
-                  alt="icono barras horizontales">
               </a>
             </div>
           </div>
         </td>
       </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th colspan="9" class="p-2 text-center font-bold text-xl" id="reporte_encargado_sin_resultados">
+          No se encontró información relacionada a tu búsqueda.
+        </th>
+      </tr>
+    </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{contratante.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{contratantes.length}} de {{totalElementos}}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table">
+        <div class="export-table" *appValidaRol="['CONTRATANTES','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg"
-                 alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                 (click)="descargarReporteTabla('pdf')">
+            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+                 (click)="descargarReporteTabla('xls')">
           </div>
         </div>
       </div>
@@ -101,11 +122,16 @@
   </p-table>
 </section>
 
-<p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Modificar" (click)="abrirModalModificarContratante()"></app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
+<p-confirmDialog #cd [style]="{width: '30vw'}">
+  <ng-template pTemplate="header">
+    <h5></h5>
   </ng-template>
-</p-overlayPanel>
-
+  <ng-template pTemplate="footer">
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="cd.accept()">Aceptar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>

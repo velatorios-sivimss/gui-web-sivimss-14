@@ -1,79 +1,90 @@
-<app-titulo-principal titulo="Movimientos de equipos de velación"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+  <app-titulo-principal titulo="Movimientos de equipos de velación" class="col"></app-titulo-principal>
+</div>
 <div class="border-panel">
   <form [formGroup]="filtroForm" (ngSubmit)="buscar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivel">Nivel<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-          placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
+                    placeholder="Selecciona el nivel" [filter]="true" filterBy="label">
         </p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="ff.nivel?.errors?.required && (ff.nivel?.dirty || ff.nivel?.touched)">Campo obligatorio</span>
+        <span class="campo-obligatorio" *ngIf="f.nivel?.errors?.required && (f.nivel?.dirty || f.nivel?.touched)">Este
+          campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="delegacion" class="form-control" formControlName="delegacion"
-          [options]="catalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true" filterBy="label">
+                    [options]="catalogoDelegaciones" placeholder="Selecciona la delegación" [filter]="true"
+                    filterBy="label"
+                    (onChange)='obtenerVelatorios();'>
         </p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="ff.delegacion?.errors?.required && (ff.delegacion?.dirty || ff.delegacion?.touched)">Campo
-          obligatorio</span>
+              *ngIf="f.delegacion?.errors?.required && (f.delegacion?.dirty || f.delegacion?.touched)">Este campo es
+          obligatorio *.</span>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
         <p-dropdown appendTo="body" id="velatorio" class="form-control" formControlName="velatorio"
-          [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true" filterBy="label">
+                    [options]="catalogoVelatorios" placeholder="Selecciona el velatorio" [filter]="true"
+                    filterBy="label"
+                    (onChange)="obtenerFoliosGenerados();">
         </p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="ff.velatorio?.errors?.required && (ff.velatorio?.dirty || ff.velatorio?.touched)">Campo
-          obligatorio</span>
+              *ngIf="f.velatorio?.errors?.required && (f.velatorio?.dirty || f.velatorio?.touched)">Este campo es
+          obligatorio *.</span>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="folioODS">Folio de la ODS<span class="req">*</span>:</label>
-        <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados"
-          optionLabel="label" placeholder="Ingresa el folio de la ODS" [filter]="true" filterBy="label">
-        </p-dropdown>
-        <span class="campo-obligatorio"
-          *ngIf="ff.folioODS?.errors?.required && (ff.folioODS?.dirty || ff.folioODS?.touched)">Campo obligatorio</span>
+        <label class="control-label" for="folioODS">Folio de la ODS:</label>
+        <input id="folioODS" class="form-control" formControlName="folioODS" optionLabel="label"
+               placeholder="Ingresa el folio de la ODS" folioOdsAlphanumeric trimmer maxlength="11">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="control-label" for="fechaInicio">Rango de fechas de prestación:</label>
       </div>
     </div>
     <div class="row mb-3">
       <div class="col-md-3">
-        <label class="control-label" for="fechaInicio">Rango de fechas de prestación<span class="req">*</span>:</label>
         <p-calendar styleClass="form-control" id="fechaInicio" formControlName="fechaInicio" [showIcon]="true"
-          dateFormat="dd/mm/yy" placeholder="Fecha inicial" [maxDate]="ff!.fechaFinal!.value"></p-calendar>
+                    dateFormat="dd/mm/yy" placeholder="Fecha inicial"></p-calendar>
       </div>
-      <div class="col-md-3 pt-5">
-        <div class="row mt-2">
-          <div class="col-md-12">
-            <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
-              dateFormat="dd/mm/yy" placeholder="Fecha final" [minDate]="ff!.fechaInicio!.value"></p-calendar>
-          </div>
+      <div class="col-md-3">
+        <div class="col-md-12">
+          <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
+                      dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual"></p-calendar>
         </div>
       </div>
     </div>
 
     <div class="row mt-6">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+      <div class="col-md-6">
+        <span class="mensaje-inferior-campo-obligatorio">*Campos obligatorios</span>
+      </div>
+      <div class="col-md-6 flex justify-content-end">
+        <button type="button" class="ml-4 btn btn-gold btn-md" (click)="regresar()">Regresar</button>
+        <button type="button" class="btn btn-default btn-md ml-5" (click)="limpiar()">Limpiar</button>
         <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
       </div>
     </div>
-
   </form>
+
 </div>
 <section class="my-3">
   <div class="flex justify-content-between align-items-center mb-3">
-    <h2 class="subtitulo">Vales de salida</h2>
-    <button type="button" class="btn btn-primary btn-lg" routerLink="generar-vale-salida">Generar Vale de
-      salida</button>
+    <h2 class="subtitulo"></h2>
+    <button type="button" class="btn btn-primary btn-lg" *appValidaRol="['VALE_SALIDA','ALTA']"
+            routerLink="generar-vale-salida">Generar vale de salida
+    </button>
   </div>
 
   <p-table appActivarUltimaCeldaSticky styleClass="mt-5 mb-8" [value]="vale" [paginator]="vale.length > 0"
-    [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+           [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
+           [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
 
     <ng-template pTemplate="header">
       <tr>
@@ -89,12 +100,12 @@
     </ng-template>
     <ng-template pTemplate="body" let-vale>
       <tr>
-        <td> {{vale.velatorio}} </td>
-        <td> {{vale.folioODS}} </td>
+        <td> {{vale.nombreVelatorio}} </td>
+        <td> {{vale.folioOds}} </td>
         <td> {{vale.nombreContratante}} </td>
         <td> {{vale.fechaSalida}} </td>
         <td> {{vale.fechaEntrada}} </td>
-        <td> {{vale.responsableInstalacion}} </td>
+        <td> {{vale.nombreResponsableInstalacion}} </td>
         <td> {{vale.totalArticulos}} </td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'40px 80px'}">
@@ -121,24 +132,47 @@
 
     <ng-template pTemplate="paginatorright">
       <div class="paginator-template">
-        <div class="export-table">
+        <div class="export-table" *appValidaRol="['VALE_SALIDA','IMPRIMIR']">
           <span class="export-table-text">Exportar tabla</span>
           <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+                 (click)="descargarRegistrosTabla('pdf')">
           </div>
         </div>
       </div>
     </ng-template>
 
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <th id="emptymessage" colspan="12" class="p-2 text-center font-bold text-xl">
+          No hay elementos que coincidan con los parámetros seleccionadoss
+        </th>
+      </tr>
+    </ng-template>
   </p-table>
 </section>
 
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar entrada de equipo"
-        (click)="abrirModalRegistroEntradaEquipo()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Registrar entrada de equipo" *ngIf="valeSeleccionado.validacionDias === 1"
+                                (click)="abrirModalRegistroEntradaEquipo()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Descargar control de movimiento de equipo de velación"
+                                (click)="descargarControlMovimiento()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+<p-confirmDialog #cd [style]="{width: '30vw'}">
+  <ng-template pTemplate="header">
+    <h5></h5>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="row mb-3">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="button" class="btn btn-primary btn-md ml-5" (click)="cd.accept()">Aceptar
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>

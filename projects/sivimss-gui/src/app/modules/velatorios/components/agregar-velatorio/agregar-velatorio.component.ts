@@ -11,6 +11,7 @@ import {ValorCP} from "../../models/valorCp.interface";
 import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {CATALOGO_ASIGNACIONES} from "../../constants/catalogos";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 type NuevoVelatorio = Omit<Velatorio, "desMunicipio" | "desEstado" | "idVelatorio" | "salasEmbalsamamiento" |
   "salasCremacion" | "capillas" | "administrador" | "desColonia" | "estatus" | "desDelegacion" | "cveCp" | "idCp">
@@ -68,8 +69,8 @@ export class AgregarVelatorioComponent implements OnInit {
     this.cargadorService.activar();
     this.velatorioService.obtenerCP(cp)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        (respuesta) => {
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
           const {datos} = respuesta;
           if (datos.length === 0 || !datos) {
             this.limpiarCP();
@@ -82,11 +83,11 @@ export class AgregarVelatorioComponent implements OnInit {
           this.velatorioForm.get("desColonia")?.patchValue("");
           this.velatorioForm.get("desColonia")?.enable()
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
           console.error("ERROR: ", error);
         }
-      );
+      });
   }
 
   limpiarCP(): void {
@@ -108,20 +109,20 @@ export class AgregarVelatorioComponent implements OnInit {
     this.cargadorService.activar();
     this.velatorioService.guardar(velatorio)
       .pipe(finalize(() => this.cargadorService.desactivar()))
-      .subscribe(
-        () => {
+      .subscribe({
+        next: () => {
           this.ref.close(respuesta);
         },
-        (error: HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           this.alertaService.mostrar(TipoAlerta.Error, 'Alta incorrecta');
           console.error("ERROR: ", error);
         }
-      );
+      });
   }
 
   crearVelatorio(): Velatorio {
     const cpId = this.velatorioForm.get("desColonia")?.value;
-    const colonia: string = this.colonias.find(c => c.value === cpId)?.label || "";
+    const colonia: string = this.colonias.find(c => c.value === cpId)?.label ?? "";
     return {
       administrador: "",
       capillas: 0,

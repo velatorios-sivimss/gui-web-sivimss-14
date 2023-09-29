@@ -29,6 +29,10 @@ import {AgregarAtaudDonadoComponent } from './components/agregar-ataud-donado/ag
 import {ControlSalidaDonacionesComponent } from './components/control-salida-donaciones/control-salida-donaciones.component';
 import {AgregarFinadoComponent } from './components/control-salida-donaciones/agregar-finado/agregar-finado.component';
 import {AgregarAtaudComponent } from './components/control-salida-donaciones/agregar-ataud/agregar-ataud.component';
+import {UtileriaModule} from "../../shared/utileria/utileria.module";
+import {ValidaRolModule} from "../../shared/valida-rol/valida-rol.module";
+import {GestionarDonacionesService} from "./services/gestionar-donaciones.service";
+import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
 
 
 @NgModule({
@@ -60,10 +64,14 @@ import {AgregarAtaudComponent } from './components/control-salida-donaciones/agr
     StepsModule,
     RadioButtonModule,
     AccordionModule,
-    CheckboxModule
+    CheckboxModule,
+    UtileriaModule,
+    ValidaRolModule,
+    BtnRegresarModule,
   ],
   providers: [
-    ConsultaDonacionesService
+    ConsultaDonacionesService,
+    GestionarDonacionesService
   ]
 })
 

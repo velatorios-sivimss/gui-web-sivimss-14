@@ -1,20 +1,17 @@
-<app-table-panel>
+<app-table-panel> 
   <ng-container *ngIf="origen=='situar'">
     <div class="row table-panel-row">
-      <div class="col-md-3">
-        <div class="table-panel-column">
-          <label>Tipo de servicio</label>
-          <span>{{registroOtorgamientoSeleccionado.tipoServicio}}</span>
-        </div>
-      </div>
       <div class="col-md-6">
         <div class="table-panel-column">
-          <label>Certificado de cremación</label>
-          <!--       TODO: Implementar imagen cuando seleccionancheck-->
-          <span *ngIf="registroOtorgamientoSeleccionado.certificadoCremacion" >
-          Ok
-        </span>
+          <label>Tipo de servicio</label>
+          <span>{{registroOtorgamientoSeleccionado.servicio}}</span>
         </div>
+      </div>
+      <div class="col-md-6 " *ngIf="registroOtorgamientoSeleccionado.indCertificado!=null && registroOtorgamientoSeleccionado.indCertificado">
+        <div class="inline-block mr-3 pt-3" >
+          <i class="fs fs-check"></i>
+        </div>
+        <label>Certificado de cremación</label>
       </div>
     </div>
   </ng-container>
@@ -24,20 +21,17 @@
       <div class="col-md-6">
         <div class="table-panel-column">
           <label>Tipo de servicio</label>
-          <span>{{registroOtorgamientoSeleccionado.tipoServicio}}</span>
+          <span>{{registroOtorgamientoSeleccionado.servicio}}</span>
         </div>
       </div>
     </div>
 
     <div class="row table-panel-row">
       <div class="col-md-6">
-        <div class="table-panel-column">
-          <label>Certificado de cremación</label>
-          <!--       TODO: Implementar imagen cuando seleccionancheck-->
-          <span *ngIf="registroOtorgamientoSeleccionado.certificadoCremacion" >
-          Ok
-        </span>
+        <div class="inline-block mr-3" *ngIf="registroOtorgamientoSeleccionado.indCertificado">
+          <i class="fs fs-check"></i>
         </div>
+        <label>Certificado de cremación</label>
       </div>
     </div>
   </ng-container>
@@ -45,7 +39,7 @@
     <div class="col-md-6">
       <div class="table-panel-column">
         <label>Fecha y hora</label>
-        <span> {{registroOtorgamientoSeleccionado.fecha}} - {{registroOtorgamientoSeleccionado.hora}}  </span>
+        <span> {{registroOtorgamientoSeleccionado.fechaMostrar}} </span>
       </div>
     </div>
   </div>
@@ -53,7 +47,7 @@
     <div class="col-md-6">
       <div class="table-panel-column">
         <label>Notas del servicio</label>
-        <span> {{registroOtorgamientoSeleccionado.notasServicio}} </span>
+        <span> {{registroOtorgamientoSeleccionado.desNotas}} </span>
       </div>
     </div>
   </div>
@@ -62,7 +56,7 @@
 <ng-container *ngIf="origen=='situar'">
 
   <div class="flex justify-content-center">
-    <div class="mt-4 col-md-8" >
+    <div class="mt-4 col-md-8">
       ¿Estás seguro de registrar el otorgamiento de este servicio?
     </div>
   </div>
@@ -70,7 +64,7 @@
   <div class="flex justify-content-end">
     <button type="button" class="ml-4 mt-3 btn btn-default btn-md" (click)="regresar()">Regresar</button>
     <button type="button" class="ml-4 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" (click)="aceptar()">
       Aceptar
     </button>
   </div>
@@ -79,14 +73,14 @@
 
 <ng-container *ngIf="origen=='quitar'">
   <div class="flex justify-content-center">
-    <div class="mt-4 col-md-7" >
+    <div class="mt-4 col-md-7">
       ¿Estás seguro de quitar el registro de este servicio?
     </div>
   </div>
 
   <div class="flex justify-content-end">
     <button class="ml-6 mt-3 btn btn-danger btn-md" (click)="cancelar()">Cancelar</button>
-    <button class="ml-4 mt-3 btn btn-primary btn-md"  (click)="aceptar()">
+    <button class="ml-4 mt-3 btn btn-primary btn-md" (click)="aceptar()">
       Aceptar
     </button>
   </div>

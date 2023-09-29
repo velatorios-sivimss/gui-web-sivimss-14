@@ -5,180 +5,201 @@
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="nivel">Nivel*:</label>
-          <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="niveles"
-                      placeholder="Seleccionar el nivel">
+          <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+            placeholder="Seleccionar el nivel">
           </p-dropdown>
-          <span class="campo-obligatorio"
-                *ngIf="fmp.nivel?.errors?.required && (fmp.nivel?.dirty || fmp.nivel?.touched)">
-        Campo obligatorio</span>
         </div>
         <div class="col-md-6">
-          <label class="control-label" for="velatorio">Velatorio:</label>
-          <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="velatorios"
-                      placeholder="Selecciona el velatorio">
+          <label class="control-label" for="delegacion">Delegacion*:</label>
+          <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
+            placeholder="Selecciona la delegacion" [filter]="true"
+            (onChange)="cargarVelatorios(); this.obtenerPlacas();">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="fmp.velatorio?.errors?.required && (fmp.velatorio?.dirty || fmp.velatorio?.touched)">
-        Campo obligatorio</span>
+            *ngIf="fmp?.delegacion?.errors?.required && (fmp?.delegacion?.dirty || fmp?.delegacion?.touched)">Este campo
+            es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="delegacion">Delegacion*:</label>
-          <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="delegaciones"
-                      placeholder="Selecciona la delegacion">
+          <label class="control-label" for="velatorio">Velatorio:</label>
+          <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
+            placeholder="Selecciona el velatorio" [filter]="true" (onChange)="this.obtenerPlacas();">
+          </p-dropdown>
+        </div>
+        <div class="col-md-3">
+          <label class="control-label" for="periodo">Periodo:</label>
+          <p-dropdown id="periodo" class="form-control" formControlName="periodo" [options]="catalogoPeriodo"
+            placeholder="Seleccionar periodo" [filter]="true">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="fmp.delegacion?.errors?.required && (fmp.delegacion?.dirty || fmp.delegacion?.touched)">
-        Campo obligatorio</span>
+            *ngIf="fmp?.periodo?.errors?.required && (fmp?.periodo?.dirty || fmp?.periodo?.touched)">Este campo es
+            obligatorio *.</span>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
           <label class="control-label" for="placa">Placa*:</label>
-          <input id="placa" class="form-control" formControlName="placa"
-                 placeholder="Ingresa placa" (keyup)="consultaServicioEspecifico()">
-
+          <p-dropdown id="placa" class="form-control" formControlName="placa" [options]="catalogoPlacas"
+            placeholder="Seleccionar vehículo" [filter]="true">
+          </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="fmp.placa?.errors?.required && (fmp.placa?.dirty || fmp.placa?.touched)">
-               Campo obligatorio</span>
+            *ngIf="fmp?.placa?.errors?.required && (fmp?.placa?.dirty || fmp?.placa?.touched)">Este campo es obligatorio
+            *.</span>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-md-6">
           <label class="control-label" for="tipoMantenimiento">Tipo de Mantenimiento*:</label>
           <p-dropdown id="tipoMantenimiento" class="form-control" formControlName="tipoMantenimiento"
-                      [options]="tipoMantenimientos"
-                      placeholder="Selecciona el tipo">
+            [options]="tipoMantenimientos" [filter]="true" placeholder="Selecciona el tipo">
           </p-dropdown>
           <span class="campo-obligatorio"
-                *ngIf="fmp.tipoMantenimiento?.errors?.required && (fmp.tipoMantenimiento?.dirty || fmp.tipoMantenimiento?.touched)">
-        Campo obligatorio</span>
-        </div>
-        <div class="col-md-6">
-          <div class="row">
-            <div class="col-md-12">
-              <label class="control-label">
-                Fecha vigencia:
-                <span class="req">*</span>:</label>
-            </div>
-            <div class="col-md-6">
-              <p-calendar id="fechaVigenciaDesde" formControlName="fechaVigenciaDesde"
-                          styleClass="form-control" [showIcon]="true" placeholder="Fecha desde" dateFormat="dd/mm/yy">
-              </p-calendar>
-              <span class="campo-obligatorio"
-                    *ngIf="fmp.fechaVigenciaDesde?.errors?.required && (fmp.fechaVigenciaDesde?.dirty || fmp.fechaVigenciaDesde?.touched)">
-                      Campo obligatorio</span>
-            </div>
-            <div class="col-md-6">
-              <p-calendar id="fecahVigenciaHasta" formControlName="fecahVigenciaHasta"
-                          styleClass="form-control" [showIcon]="true" placeholder="Fecha hasta" dateFormat="dd/mm/yy"
-                          appendTo="body">
-              </p-calendar>
-              <span class="campo-obligatorio"
-                    *ngIf="fmp.fecahVigenciaHasta?.errors?.required && (fmp.fecahVigenciaHasta?.dirty || fmp.fecahVigenciaHasta?.touched)">
-                      Campo obligatorio</span>
-            </div>
-          </div>
+            *ngIf="fmp?.tipoMantenimiento?.errors?.required && (fmp?.tipoMantenimiento?.dirty || fmp?.tipoMantenimiento?.touched)">Este
+            campo es obligatorio *.</span>
         </div>
       </div>
       <div class="row mb-4">
         <div class="col-md-12">
-          <span>*Campos obligatorios</span>
+          <span class="control-label">*Campos obligatorios</span>
         </div>
       </div>
 
       <div class="row mt-6">
         <div class="col-md-12 flex justify-content-end">
-          <button type="submit" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-          <button type="submit" class="btn btn-primary btn-md ml-5"
-                  [disabled]="filtroForm.invalid" (click)="buscar()">Buscar
+          <button type="button" class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
+          <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.invalid"
+            (click)="buscar()">Buscar
           </button>
         </div>
       </div>
     </form>
   </div>
 </ng-container>
+
 <ng-container *ngIf="verDetallePredictivo">
-  <div class="separador">
-  </div>
-  <p-accordion styleClass="sivimss-accordion">
+  <div class="separador"></div>
+  <p-accordion styleClass="sivimss-accordion" [activeIndex]="0">
     <p-accordionTab>
-      <ng-template pTemplate="header">
-        <h5 class="titulo-acordion">BLX4FR0 - </h5>
-        <h6 class="titulo-acordion-tipo-vehiculo">NISSAN Sentra 2015</h6>
-      </ng-template>
-      <app-table-panel>
 
-        <ng-template appCustomTemplate="left-header">
-          <div class="table-panel-header-column">
-            <h6 class="font-bold">Calibración Neumáticos</h6>
-          </div>
-        </ng-template>
-
-        <ng-template>
-        </ng-template>
-
-        <div class="row table-panel-row">
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>Velatorio</label>
-              <span>No. 18 Tequesquináhuac	</span>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>total de vehiculos</label>
-              <span> 1</span>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="table-panel-column">
-              <label>Periodo</label>
-              <span> 01/01/2021 a 01/01/2022</span>
-            </div>
-          </div>
+      <div class="row mb-3" *ngIf="realizoBusqueda && titulosSeleccionados.length === 0">
+        <div class="col-md-12 text-center font-bold text-xl">
+          No se encontró información relacionada a tu búsqueda en mantenimiento predictivo
         </div>
-        <div class="row table-panel-row">
-          <div class="col-md-5">
-            <div class="table-panel-column">
-              <h6 class="titulo-acordion">Valores predictivos </h6>
+      </div>
 
-              <div class="col-md-8">
-                <p-table [value]="data">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Dia</th>
-                      <th>Valor</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-item>
-                    <tr>
-                      <td>{{ item.dia }}</td>
-                      <td>{{ item.valor }}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>
+      <div class="mb-3" *ngFor="let tituloSeleccionado of titulosSeleccionados">
+        <ng-template pTemplate="header">
+          <h5 class="titulo-acordion">{{vehiculoSeleccionado.DES_PLACAS}}</h5>
+          <br>
+          <h6 class="titulo-acordion-tipo-vehiculo">{{vehiculoSeleccionado.DES_MARCA}}
+            {{vehiculoSeleccionado.DES_SUBMARCA}} {{vehiculoSeleccionado.DES_MODELO}}</h6>
+        </ng-template>
+        <app-table-panel>
+          <ng-template appCustomTemplate="left-header">
+            <div class="table-panel-header-column">
+              <h6 class="font-bold">{{tituloSeleccionado}}</h6>
+            </div>
+          </ng-template>
+          <ng-template>
+          </ng-template>
+          <div class="row table-panel-row">
+            <div class="col-md-4">
+              <div class="table-panel-column">
+                <label>Velatorio</label>
+                <span>{{velatorio}}</span>
               </div>
-
+            </div>
+            <div class="col-md-4">
+              <div class="table-panel-column">
+                <label>Total de vehículos</label>
+                <span>1</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="table-panel-column">
+                <label>Periodo</label>
+                <span>{{rangoFecha}}</span>
+              </div>
             </div>
           </div>
-          <div class="col-md-7">
-            <div class="table-panel-column">
-              <label>Placas</label>
-              <span> {{vehiculoSeleccionado.placas}} </span>
+          <div class="row table-panel-row">
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <h6 class="titulo-acordion">Valores predictivos </h6>
+                <div class="col-md-8">
+                  <p-table [value]="vehiculos">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th id="mtto-predictivo-dia">Dia</th>
+                        <th id="mtto-predictivo-valor">Valor</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-vehiculo>
+                      <tr>
+                        <td>{{ vehiculo.FEC_REGISTRO }}</td>
+                        <td *ngIf="tituloSeleccionado === 'Aceite'">{{vehiculo.DES_NIVEL_ACEITE | valueConverter}}</td>
+                        <td *ngIf="tituloSeleccionado === 'Agua'">{{vehiculo.DES_NIVEL_AGUA | valueConverter}}</td>
+                        <td *ngIf="tituloSeleccionado === 'Calibración Neumáticos'">{{vehiculo.DES_NIVEL_NEUMADELA |
+                          valueConverter}}</td>
+                        <td *ngIf="tituloSeleccionado === 'Combustible'">{{vehiculo.DES_NIVEL_COMBUSTIBLE |
+                          valueConverter}}</td>
+                        <td *ngIf="tituloSeleccionado === 'Código de Falla'">{{vehiculo.DES_NIVEL_CODIGOFALLO |
+                          valueConverter}}</td>
+                        <td *ngIf="tituloSeleccionado === 'Batería'">{{vehiculo.DES_NIVEL_BATERIA | valueConverter}}
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <label>Placas</label>
+                <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
+                <a>
+                  <img src="assets/images/nivelVehiculo.svg" alt="Nivel Vehiculo">
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-
-      </app-table-panel>
-
+        </app-table-panel>
+      </div>
     </p-accordionTab>
   </p-accordion>
+
+  <div class="col-mb-12 flex justify-content-end" *ngIf="titulosSeleccionados.length > 0">
+    <div class="export-table" style="float: right;" *appValidaRol="['MANTENIMIENTO_VEHICULAR','IMPRIMIR']">
+      <span class="export-table-text">Exportar tabla</span>
+      <div class="export-table-icons flex justify-content-around">
+        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf"
+          (click)="generarReporteTabla('pdf');">
+        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel"
+          (click)="generarReporteTabla('xls');">
+      </div>
+    </div>
+  </div>
 </ng-container>
 
 
 <div class="col-mb-12 row flex justify-content-end"
-     style="margin-top: 30px; margin-bottom: 30px;  padding-right: 14px;">
+  style="margin-top: 30px; margin-bottom: 30px;  padding-right: 14px;">
   <button type="submit" class="btn btn-primary btn-md ml-5" routerLink="../">Cerrar</button>
 </div>
 
-
+<p-dialog [(visible)]="mostrarModalConfirmacion" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+  [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{mensajeArchivoConfirmacion}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalConfirmacion = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>

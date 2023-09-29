@@ -1,10 +1,8 @@
 import {Injectable} from '@angular/core';
-import {
-  ActivatedRouteSnapshot, Resolve,
-  RouterStateSnapshot
-} from '@angular/router';
+import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 import {forkJoin, Observable} from "rxjs";
 import {GenerarReciboService} from './generar-recibo-pago.service';
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
 @Injectable()
 export class GenerarReciboResolver implements Resolve<any> {
@@ -13,8 +11,8 @@ export class GenerarReciboResolver implements Resolve<any> {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    const niveles$ = this.generarReciboService.obtenerCatalogoNiveles();
-    const delegaciones$ = this.generarReciboService.obtenerCatalogoDelegaciones();
+    const niveles$: Observable<TipoDropdown[]> = this.generarReciboService.obtenerCatalogoNiveles();
+    const delegaciones$: Observable<TipoDropdown[]> = this.generarReciboService.obtenerCatalogoDelegaciones();
     return forkJoin([niveles$, delegaciones$])
   }
 }

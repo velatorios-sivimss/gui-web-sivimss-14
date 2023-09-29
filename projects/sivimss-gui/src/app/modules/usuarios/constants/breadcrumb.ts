@@ -1,4 +1,4 @@
-import { ElementoBreadcrumb } from '../../../shared/breadcrumb/models/elemento-breadcrumb.interface';
+import {ElementoBreadcrumb} from '../../../shared/breadcrumb/models/elemento-breadcrumb.interface';
 
 export const USUARIOS_BREADCRUMB: ElementoBreadcrumb[] = [
   {
@@ -7,6 +7,6 @@ export const USUARIOS_BREADCRUMB: ElementoBreadcrumb[] = [
   },
   {
     icono: '',
-    titulo: 'Administrar usuarios'
+    titulo: 'Administración de usuarios del sistema'
   }
 ]

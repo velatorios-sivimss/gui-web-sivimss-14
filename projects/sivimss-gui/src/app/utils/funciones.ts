@@ -1,7 +1,9 @@
-import { TipoDropdown } from "../models/tipo-dropdown";
+import {TipoDropdown} from "../models/tipo-dropdown";
+import {UsuarioEnSesion} from "../models/usuario-en-sesion.interface";
 
-export function diferenciaUTC(fecha: string): number {
-  const objetoFecha = new Date(fecha);
+export function diferenciaUTC(fecha: string, divisor: string = "/"): number {
+  const [dia, mes, anio]: string[] = fecha.split(divisor);
+  const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
   return objetoFecha.setMinutes(objetoFecha.getMinutes() + objetoFecha.getTimezoneOffset());
 }
 
@@ -14,8 +16,8 @@ export function validarAlMenosUnCampoConValor(values: object) {
 
 export function mapearArregloTipoDropdown(arr: [] = [], label: string, value: string): TipoDropdown[] {
   return arr.map(obj => ({
-      label: obj[label],
-      value: obj[value]
+    label: obj[label],
+    value: obj[value]
   }));
 }
 
@@ -53,4 +55,22 @@ function esAnioBisiesto(anio: number): boolean {
 export function existeMensajeEnEnum(enumObj: { [s: string]: string }, valor: string): boolean {
   const valores = Object.values(enumObj);
   return valores.includes(valor);
+}
+
+export function validarUsuarioLogueado(): boolean {
+  return !localStorage.getItem('sivimss_token');
+}
+
+export function obtenerNivelUsuarioLogueado(usuario: UsuarioEnSesion): number {
+  return +usuario.idOficina
+}
+
+export function obtenerDelegacionUsuarioLogueado(usuario: UsuarioEnSesion): number | null {
+  const {idDelegacion} = usuario;
+  return +idDelegacion === 0 ? null : +idDelegacion;
+}
+
+export function obtenerVelatorioUsuarioLogueado(usuario: UsuarioEnSesion): number | null {
+  const {idVelatorio} = usuario;
+  return +idVelatorio === 0 ? null : +idVelatorio;
 }

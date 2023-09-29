@@ -11,12 +11,24 @@ export class DescargaArchivosService {
   readonly excel_ext = {'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']};
   readonly excel_nom = "Excel workbook";
 
-  constructor() {
+  base64_2Blob(base64: string, contentType: string): Blob {
+    const byteCharacters: string = atob(base64);
+    const byteNumbers: any[] = new Array(byteCharacters.length);
+    for (let i: number = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], {type: contentType});
   }
 
-  descargarArchivo(archivo$: Observable<Blob>, options: OpcionesArchivos = {}) {
-    const nombreArchivo: string = options.nombreArchivo || "documento";
-    const ext: "pdf" | "xlsx" = options.ext || "pdf";
+  obtenerContentType(options: OpcionesArchivos = {}): string {
+    const ext: "pdf" | "xlsx" = options.ext ?? "pdf";
+    return ext === "pdf" ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  }
+
+  descargarArchivo(archivo$: Observable<Blob>, options: OpcionesArchivos = {}): Observable<boolean> {
+    const nombreArchivo: string = options.nombreArchivo ?? "documento";
+    const ext: "pdf" | "xlsx" = options.ext ?? "pdf";
     const configuracion: SaveFilePickerOptions = {
       suggestedName: `${nombreArchivo}.${ext}`,
       types: [
@@ -28,18 +40,33 @@ export class DescargaArchivosService {
     };
     return archivo$.pipe(
       switchMap((archivoBlob: Blob) => {
+
+        // Firefox
+        if (typeof window.showSaveFilePicker === 'undefined') {
+          const downloadURL: string = window.URL.createObjectURL(archivoBlob);
+          const link: HTMLAnchorElement = document.createElement('a');
+          link.href = downloadURL;
+          link.download = `${nombreArchivo}.${ext}`;
+          console.log(link.download);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          return of(true)
+        }
+
+        // (Chrome, Edge)
         return window.showSaveFilePicker(configuracion).then((fileHandle: FileSystemFileHandle) => {
-          return fileHandle.createWritable().then((writable: FileSystemWritableFileStream) => {
-            writable.write(archivoBlob);
-            writable.close();
-            console.log('Archivo guardado correctamente.');
+          return fileHandle.createWritable().then((writable: FileSystemWritableFileStream): boolean => {
+            void writable.write(archivoBlob);
+            void writable.close();
             return true;
           });
         });
       }),
       catchError((error) => {
-        console.error('Error al guardar el archivo:', error);
-        return of(false);
+        if(error.toString().includes('The user aborted a request')) return of(false);
+        console.log(error.toString())
+        throw 'Error al guardar el archivo.';
       })
     );
   }

@@ -1,4 +1,11 @@
 export interface FiltrosReciboPago {
-  "claveFolio": string,
-  "nomContratante": string
+  idNivel: number,
+  idDelegacion: number,
+  idVelatorio: number,
+  claveFolio: string,
+  nomContratante: string,
+  fecIniODS: string,
+  fecFinODS: string,
+  rutaNombreReporte: string,
+  tipoReporte: string
 }

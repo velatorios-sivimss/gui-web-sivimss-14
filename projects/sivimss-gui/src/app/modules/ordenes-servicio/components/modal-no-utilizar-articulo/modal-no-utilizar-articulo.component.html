@@ -44,7 +44,7 @@
           <textarea id="motivo" formControlName="motivo" class="form-control" rows="4"
                     placeholder="Ingresa el motivo"></textarea>
           <span class="campo-obligatorio"
-                *ngIf="f.motivo?.errors?.required && (f.motivo?.dirty || f.motivo?.touched)">Campo obligatorio</span>
+                *ngIf="f.motivo?.errors?.required && (f.motivo?.dirty || f.motivo?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
     </div>
