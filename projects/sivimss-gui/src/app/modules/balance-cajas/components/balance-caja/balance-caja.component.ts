@@ -218,7 +218,7 @@ export class BalanceCajaComponent implements OnInit {
       idNivel: this.filtroFormBalanceCaja.get("nivel")?.value === "" ? null : this.filtroFormBalanceCaja.get("nivel")?.value,
       idDelegacion: this.filtroFormBalanceCaja.get("delegacion")?.value === "" ? null : this.filtroFormBalanceCaja.get("delegacion")?.value,
       idVelatorio: this.filtroFormBalanceCaja.get("velatorio")?.value === "" ? null : this.filtroFormBalanceCaja.get("velatorio")?.value,
-      tipoConvenio: this.convenioSeleccionado,
+      idTipoConvenio: this.convenioSeleccionado,
       folioODS: this.filtroFormBalanceCaja.get("folioODS")?.value,
       folioNuevoConvenio: this.filtroFormBalanceCaja.get("folioNuevo")?.value,
       folioRenovacionConvenio: this.filtroFormBalanceCaja.get("folioRenovacion")?.value,

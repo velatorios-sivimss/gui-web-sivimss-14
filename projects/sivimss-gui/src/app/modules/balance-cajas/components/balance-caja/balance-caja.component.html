@@ -87,6 +87,7 @@
         <th pResizableColumn id="columna_balance_caja_delegacion">Delegación</th>
         <th pResizableColumn id="columna_balance_caja_velatorio">Velatorio</th>
         <th pResizableColumn id="columna_balance_caja_folio">Folio</th>
+        <th pResizableColumn id="columna_balance_caja_estatus">Estatus</th>
         <th pResizableColumn id="columna_balance_caja_tipo_ingreso">Tipo de ingreso</th>
         <th pResizableColumn id="columna_balance_caja_estatus_pago">Estatus de pago</th>
         <th pResizableColumn id="columna_balance_caja_metodo_pago">Método de pago</th>
@@ -94,7 +95,7 @@
         <th pResizableColumn id="columna_balance_caja_ingreso_neto">Ingreso neto</th>
         <th pResizableColumn id="columna_balance_caja_estatus_caja">Estatus caja</th>
         <th pResizableColumn id="columna_balance_caja_fecha_cierre">Fecha y hora de cierre</th>
-        <th id="columna_balance_caja_estatus" *appValidaRol="['BALANCE_CAJA','MODIFICAR']"></th>
+        <th id="columna_balance_caja_btns" *appValidaRol="['BALANCE_CAJA','MODIFICAR']"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-balance>
@@ -103,6 +104,7 @@
         <td pResizableColumn>{{balance.delegacion}} </td>
         <td pResizableColumn>{{balance.velatorio}} </td>
         <td pResizableColumn>{{balance.folio}}</td>
+        <td pResizableColumn>{{balance.estatus}}</td>
         <td pResizableColumn>{{balance.tipoIngreso}}</td>
         <td pResizableColumn>{{balance.estatusPago}}</td>
         <td pResizableColumn>{{balance.metodoPago}}</td>
