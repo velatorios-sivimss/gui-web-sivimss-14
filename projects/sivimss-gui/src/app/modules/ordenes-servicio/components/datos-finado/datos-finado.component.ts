@@ -829,17 +829,50 @@ export class DatosFinadoComponent implements OnInit {
       this.datosFinado.esParaExtremidad.disable();
       this.datosFinado.esObito.disable();
     }
-    this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.detallePresupuesto = [];
-    delete this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.idPaquete;
-    delete this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.notasServicio;
-    delete this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.observaciones;
-    delete this.altaODS.caracteristicasPresupuesto.caracteristicasDelPresupuesto.totalPresupuesto;
-
-    this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete? this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete.detallePaquete = [] : [];
-    delete this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete;
-    delete this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.otorgamiento;
+    this.limpiarODS();
   }
 
+  limpiarODS(): void {
+    const datosEtapaCaracteristicas = {
+      observaciones: null,
+      notasServicio: null,
+      paqueteSeleccionado: null,
+      mostrarTIpoOtorgamiento: false,
+      selecionaTipoOtorgamiento: null,
+      datosPaquetes: [],
+      datosPresupuesto: [],
+      elementosEliminadosPaquete: [],
+      elementosEliminadosPresupuesto: [],
+      total: 0,
+    };
+    const datosEtapaInformacionServicio = {
+      fechaCortejo: null,
+      fechaCremacion: null,
+      fechaRecoger: null,
+      horaRecoger: null,
+      horaCortejo: null,
+      horaCremacion: null,
+      idPanteon: null,
+      idPromotor: null,
+      idSala: null,
+      cp: null,
+      fechaInstalacion: null,
+      fechaVelacion: null,
+      horaInstalacion: null,
+      horaVelacion: null,
+      idCapilla: null,
+      calle: null,
+      interior: null,
+      exterior: null,
+      colonia: null,
+      municipio: null,
+      estado: null,
+      gestionadoPorPromotor: null,
+      promotor: null,
+    };
+    this.gestionarEtapasService.datosEtapaCaracteristicas$.next(datosEtapaCaracteristicas);
+    this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datosEtapaInformacionServicio);
+  }
 
   changeUnidad(): void {
     this.datosFinado.procedenciaFinado.setValue(null);
