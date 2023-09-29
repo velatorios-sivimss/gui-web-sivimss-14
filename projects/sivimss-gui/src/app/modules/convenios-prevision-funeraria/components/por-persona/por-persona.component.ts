@@ -407,6 +407,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (!respuesta.datos) return;
+        this.colonias = [{label:respuesta.datos.datosContratante.colonia, value: respuesta.datos.datosContratante.colonia}]
         const [anio, mes, dia] = respuesta.datos.datosContratante.fechaNacimiento.split('-')
         this.fp.curp.setValue(respuesta.datos.datosContratante.curp);
         this.fp.rfc.setValue(respuesta.datos.datosContratante.rfc);
