@@ -41,7 +41,7 @@ const routes: Routes = [
     component: PagoRenovacionConvenioComponent
   },
   {
-    path: 'agf-seleccion-beneficiarios',
+    path: 'agf-seleccion-beneficiarios/:idFinado',
     component: SeleccionBeneficiariosAgfComponent
   },
   {
