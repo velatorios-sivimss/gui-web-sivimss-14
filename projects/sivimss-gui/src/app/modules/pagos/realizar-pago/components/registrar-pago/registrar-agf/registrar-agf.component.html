@@ -95,7 +95,7 @@
     </div>
     <div class="flex justify-content-end mt-5">
       <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="ml-4 btn btn-primary btn-md">
+      <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="agfForm.invalid">
         Guardar
       </button>
     </div>
@@ -108,7 +108,7 @@
   <div class="row mt-6">
     <div class="col-md-12 flex justify-content-center">
       <button type="submit" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()" >Aceptar</button>
     </div>
   </div>
 </ng-container>
