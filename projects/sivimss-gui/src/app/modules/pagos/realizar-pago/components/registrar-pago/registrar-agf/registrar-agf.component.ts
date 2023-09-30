@@ -9,6 +9,21 @@ import {RealizarPagoService} from '../../../services/realizar-pago.service';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.interface';
 
+interface RegistroAGF {
+  idFinado: number,
+  cveNSS: number,
+  cveCURP: string,
+  fecDefuncion: string,
+  idVelatorio: number,
+  idRamo: number,
+  idTipoId: number,
+  numIdentificacion: number,
+  casillaCurp: boolean,
+  casillaActDef: boolean,
+  casillaCogf: boolean,
+  casillaNssi: boolean,
+}
+
 @Component({
   selector: 'app-registrar-agf',
   templateUrl: './registrar-agf.component.html',
@@ -44,7 +59,10 @@ export class RegistrarAgfComponent implements OnInit {
   aceptar(): void {
     if (this.indice === 1) {
       this.ref.close();
-      void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss], {relativeTo: this.route})
+      const registro: RegistroAGF = this.crearRegistroAGF();
+      const datos_agf = btoa(JSON.stringify(registro))
+      void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss],
+        {relativeTo: this.route, queryParams: {datos_agf}})
       return;
     }
     this.indice++;
@@ -85,6 +103,22 @@ export class RegistrarAgfComponent implements OnInit {
     })
   }
 
+  crearRegistroAGF(): RegistroAGF {
+    return {
+      casillaActDef: this.agfForm.get('actaDefuncion')?.value,
+      casillaCogf: this.agfForm.get('cuentaGastos')?.value,
+      casillaCurp: this.agfForm.get('curp')?.value,
+      casillaNssi: this.agfForm.get('documentoNSS')?.value,
+      cveCURP: this.detalleAGF.cveCurp,
+      cveNSS: this.detalleAGF.cveNss,
+      fecDefuncion: this.detalleAGF.fecDeceso,
+      idFinado: this.idFinado,
+      idRamo: this.agfForm.get('ramo')?.value,
+      idTipoId: this.agfForm.get('identificacionOficial')?.value,
+      idVelatorio: 0,
+      numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value
+    }
+  }
 
   obtenerIdentificaciones(): void {
     this.identificaciones = [];
