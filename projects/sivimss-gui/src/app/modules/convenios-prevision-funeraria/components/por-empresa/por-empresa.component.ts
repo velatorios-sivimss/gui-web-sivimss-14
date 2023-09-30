@@ -217,6 +217,7 @@ export class PorEmpresaComponent implements OnInit, OnChanges, AfterViewInit {
           this.loaderService.desactivar()
           this.empresaForm.reset()
           if (!respuesta.datos || respuesta.datos.length == 0) return;
+          this.colonias = [{label: respuesta.datos[0].desColonia, value:respuesta.datos[0].desColonia}];
           this.fe.nombre.setValue(respuesta.datos[0].nombreEmpresa);
           this.fe.razonSocial.setValue(respuesta.datos[0].razonSocial);
           this.fe.rfc.setValue(respuesta.datos[0].rfc);

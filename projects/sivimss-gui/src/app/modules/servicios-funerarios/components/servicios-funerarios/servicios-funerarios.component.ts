@@ -1,29 +1,30 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
-import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { OverlayPanel } from "primeng/overlaypanel";
+import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
+import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
 import {
   ConsultaPaginado,
   GenerarReporte,
 } from "../../models/servicios-funerarios.interface"
-import {LazyLoadEvent} from "primeng/api";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {ServiciosFunerariosConsultaService} from "../../services/servicios-funerarios-consulta.service";
-import {LoaderService} from "../../../../shared/loader/services/loader.service";
-import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpErrorResponse} from "@angular/common/http";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
-import {PaginadoInterface} from "../../models/paginado.interface";
+import { LazyLoadEvent } from "primeng/api";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
+import { ServiciosFunerariosConsultaService } from "../../services/servicios-funerarios-consulta.service";
+import { LoaderService } from "../../../../shared/loader/services/loader.service";
+import { finalize } from "rxjs/operators";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
+import { HttpErrorResponse } from "@angular/common/http";
+import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
+import { PaginadoInterface } from "../../models/paginado.interface";
 import * as moment from 'moment';
-import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
-import {DescargaArchivosService} from "../../../../services/descarga-archivos.service";
-import {of} from "rxjs";
+import { OpcionesArchivos } from "../../../../models/opciones-archivos.interface";
+import { DescargaArchivosService } from "../../../../services/descarga-archivos.service";
+import { of } from "rxjs";
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 
 
 @Component({
@@ -64,6 +65,9 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   mensajeCriterioBusqueda: string = "";
   aceptarCriteriosBusqueda: boolean = false;
+  // obtenerNuevosDatos: boolean = true;
+  cargaInicial: boolean = true;
+  filtros!: PaginadoInterface;
 
   constructor(
     private route: ActivatedRoute,
@@ -91,16 +95,16 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   inicializarFiltroForm(): void {
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +this.rolLocalStorage.idOficina, disabled: true}],
-      delegacion: [{value: +this.rolLocalStorage.idDelegacion ?? null, disabled: +this.rolLocalStorage.idOficina >= 2}],
-      velatorio: [{value: +this.rolLocalStorage.idVelatorio ?? null, disabled: +this.rolLocalStorage.idOficina === 3}],
-      folioPlanSFPA: [{value: null, disabled: false}],
-      rfc: [{value: null, disabled: false}],
-      curp: [{value: null, disabled: false}],
-      estatus: [{value: null, disabled: false}],
-      afiliado: [{value: null, disabled: false}],
-      rangoInicio: [{value: null, disabled: false}],
-      rangoFin: [{value: null, disabled: false}]
+      nivel: [{ value: +this.rolLocalStorage.idOficina, disabled: true }],
+      delegacion: [{ value: +this.rolLocalStorage.idDelegacion ?? null, disabled: +this.rolLocalStorage.idOficina >= 2 }],
+      velatorio: [{ value: +this.rolLocalStorage.idVelatorio ?? null, disabled: +this.rolLocalStorage.idOficina === 3 }],
+      folioPlanSFPA: [{ value: null, disabled: false }],
+      rfc: [{ value: null, disabled: false }],
+      curp: [{ value: null, disabled: false }],
+      estatus: [{ value: null, disabled: false }],
+      afiliado: [{ value: null, disabled: false }],
+      rangoInicio: [{ value: null, disabled: false }],
+      rangoFin: [{ value: null, disabled: false }]
     });
   }
 
@@ -115,20 +119,28 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   limpiar(): void {
     this.filtroForm.reset();
-    this.ff.nivel.setValue(+this.rolLocalStorage.idOficina);
-    this.ff.delegacion.setValue(+this.rolLocalStorage.idDelegacion);
-    this.ff.velatorio.setValue(+this.rolLocalStorage.idVelatorio ?? null);
-    this.paginar();
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    this.ff.nivel.setValue(+usuario?.idOficina);
+
+    if (+usuario?.idOficina >= 2) {
+      this.ff.delegacion.setValue(+usuario?.idDelegacion);
+    }
+
+    if (+usuario?.idOficina === 3) {
+      this.ff.velatorio.setValue(+usuario?.idVelatorio);
+    } else {
+      this.velatorio = [];
+    }
+    this.paginar(undefined, true);
   }
 
-  paginar(event?: LazyLoadEvent): void {
-
+  paginar(event?: LazyLoadEvent, obtenerNuevosDatos?: boolean): void {
     if (event) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1))
     } else {
       this.numPaginaActual = 0;
     }
-    this.paginarPorFiltros()
+    this.paginarPorFiltros(obtenerNuevosDatos)
   }
 
   buscar(): void {
@@ -153,14 +165,17 @@ export class ServiciosFunerariosComponent implements OnInit {
       //   || 'El servicio no responde, no permite más llamadas.'));
       return
     }
-    this.paginar();
+    this.paginar(undefined, true);
   }
 
-  paginarPorFiltros(): void {
+  paginarPorFiltros(obtenerNuevosDatos?: boolean): void {
     this.servicioFunerario = [];
-    const filtros = this.obtenerObjetoParaFiltrado();
+    if (obtenerNuevosDatos || this.cargaInicial) {
+      this.filtros = this.obtenerObjetoParaFiltrado();
+    }
+    this.cargaInicial = false;
     this.loaderService.activar()
-    this.serviciosFunerariosService.paginar(this.numPaginaActual, this.cantElementosPorPagina, filtros).pipe(
+    this.serviciosFunerariosService.paginar(this.numPaginaActual, this.cantElementosPorPagina, this.filtros).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
@@ -176,11 +191,11 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   obtenerObjetoParaFiltrado(): PaginadoInterface {
     return {
-      idVelatorio: this.ff.velatorio.value ?? null,
-      numFolioPlanSfpa: this.ff.folioPlanSFPA.value ?? null,
-      rfc: this.ff.rfc.value ?? null,
-      curp: this.ff.curp.value ?? null,
-      nombreAfiliado: this.ff.afiliado.value ?? null,
+      idVelatorio: this.ff.velatorio.getRawValue() === '' ? null : this.ff.velatorio.getRawValue(),
+      numFolioPlanSfpa: this.ff.folioPlanSFPA.getRawValue() === '' ? null : this.ff.folioPlanSFPA.getRawValue(),
+      rfc: this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
+      curp: this.ff.curp.getRawValue() === '' ? null : this.ff.curp.getRawValue(),
+      nombreAfiliado: this.ff.afiliado.getRawValue() === '' ? null : this.ff.afiliado.getRawValue(),
       idEstatusPlanSfpa: this.ff.estatus.value ?? null,
       fechaInicio: this.ff.rangoInicio.value ?
         moment(this.ff.rangoInicio.value).format('YYYY-MM-DD') : null,
@@ -241,29 +256,29 @@ export class ServiciosFunerariosComponent implements OnInit {
     filtros.tipoReporte = extension;
     this.serviciosFunerariosService.generarArchivoPaginador(filtros).pipe(
       finalize(() => this.loaderService.desactivar())).subscribe(
-      {
-        next: (respuesta: HttpRespuesta<any>) => {
-          const file = new Blob([this.descargaArchivosService.base64_2Blob(
+        {
+          next: (respuesta: HttpRespuesta<any>) => {
+            const file = new Blob([this.descargaArchivosService.base64_2Blob(
               respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-            {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-          this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-            finalize(() => this.loaderService.desactivar())).subscribe({
-            next: (respuestaArchivo): void => {
-              if(respuestaArchivo){
-                this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-                this.mostrarModalConfirmacion = true;
-              }
-            },
-            error: (error): void => {
-              this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-            }
-          })
-        },
-        error: (error: HttpErrorResponse) => {
-          this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+              { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
+            this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+              finalize(() => this.loaderService.desactivar())).subscribe({
+                next: (respuestaArchivo): void => {
+                  if (respuestaArchivo) {
+                    this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                    this.mostrarModalConfirmacion = true;
+                  }
+                },
+                error: (error): void => {
+                  this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+                }
+              })
+          },
+          error: (error: HttpErrorResponse) => {
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+          }
         }
-      }
-    );
+      );
 
   }
 
@@ -276,21 +291,21 @@ export class ServiciosFunerariosComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
 
         const file = new Blob([this.descargaArchivosService.base64_2Blob(
-            respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
+          respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) });
 
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())).subscribe({
-          next: (respuestaArchivo): void => {
-            if(respuestaArchivo){
-              this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-              this.mostrarModalConfirmacion = true;
+            next: (respuestaArchivo): void => {
+              if (respuestaArchivo) {
+                this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                this.mostrarModalConfirmacion = true;
+              }
+            },
+            error: (error): void => {
+              this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
             }
-          },
-          error: (error): void => {
-            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        })
+          })
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
@@ -306,7 +321,7 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   detallePago(): void {
     this.router.navigate(["servicios-funerarios/detalle-pago"], {
-      queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA}
+      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA }
     })
   }
 
@@ -317,7 +332,7 @@ export class ServiciosFunerariosComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.mostrarModalCancelarPlan = false;
-        this.paginar();
+        this.paginar(undefined, false);
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error,
@@ -329,7 +344,7 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   modificarPago(): void {
     this.router.navigate(["servicios-funerarios/modificar-pago"], {
-      queryParams: {idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA}
+      queryParams: { idPlanSfpa: this.servicioSeleccionado.ID_PLAN_SFPA }
     })
   }
 

@@ -89,11 +89,8 @@
   <div class="border-panel mb-5">
     <div class="row mb-4">
       <div class="col-md-4">
-        <label class="control-label" for="nombreFinado">Nombre del finado<span class="req">*</span>:</label>
+        <label class="control-label" for="nombreFinado">Nombre del finado:</label>
         <input id="nombreFinado" class="form-control" formControlName="nombreFinado" placeholder="Ingresa la versión">
-        <span class="campo-obligatorio"
-          *ngIf="ef.nombreFinado?.errors?.required && (ef.nombreFinado?.dirty || ef.nombreFinado?.touched)">Este
-          campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <div class="table-panel-column">
