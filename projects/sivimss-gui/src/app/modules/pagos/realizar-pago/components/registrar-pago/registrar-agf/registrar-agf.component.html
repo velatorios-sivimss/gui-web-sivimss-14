@@ -1,114 +1,116 @@
-<ng-container *ngIf="indice === 0">
-  <form [formGroup]="agfForm" (submit)="aceptar()">
-    <app-table-panel>
-      <div class="row table-panel-row">
-        <div class="col-md-4">
-          <div class="table-panel-column">
-            <label>NSS</label>
-            <span>{{detalleAGF.cveNss}}</span>
+<ng-container [ngSwitch]="pasoRegistrarAGF">
+  <ng-container *ngSwitchCase="CAPTURA_DE_AGF">
+    <form [formGroup]="agfForm" (submit)="pasoRegistrarAGF = VALIDACION_DE_AGF">
+      <app-table-panel>
+        <div class="row table-panel-row">
+          <div class="col-md-4">
+            <div class="table-panel-column">
+              <label>NSS</label>
+              <span>{{detalleAGF.cveNss}}</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column">
+              <label>CURP</label>
+              <span>{{detalleAGF.cveCurp}}</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="table-panel-column">
+              <label>Fecha de defunción</label>
+              <span>{{detalleAGF.fecDeceso}}</span>
+            </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="table-panel-column">
-            <label>CURP</label>
-            <span>{{detalleAGF.cveCurp}}</span>
+      </app-table-panel>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="ramo">Ramo<span class="req">*</span>:</label>
+          <p-dropdown appendTo="body" id="ramo" class="form-control" formControlName="ramo" [options]="ramos"
+                      placeholder="Seleccionar ramo">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fagf?.ramo?.errors?.required && (fagf?.ramo?.dirty || fagf?.ramo?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6">
+        </div>
+      </div>
+      <div class="mb-3 mt-3 row">
+        Documentación probatoria
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="identificacionOficial">Identificación oficial
+            <span class="req">*</span>:</label>
+          <p-dropdown appendTo="body" id="identificacionOficial" class="form-control"
+                      formControlName="identificacionOficial" [options]="identificaciones"
+                      placeholder="Seleccionar identificación">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fagf?.identificacionOficial?.errors?.required && (fagf?.identificacionOficial?.dirty || fagf?.identificacionOficial?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="numeroIdentificacion">Número de Identificación Oficial
+            <span class="req">*</span>:</label>
+          <input id="numeroIdentificacion" class="form-control" formControlName="numeroIdentificacion"
+                 placeholder="Ingresar numero">
+          <span class="campo-obligatorio"
+                *ngIf="fagf?.numeroIdentificacion?.errors?.required && (fagf?.numeroIdentificacion?.dirty || fagf?.numeroIdentificacion?.touched)">Este campo es obligatorio *.</span>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="flex align-items-center ml-5">
+            <p-checkbox inputId="curp" formControlName="curp" styleClass="mr-3" [binary]="true"></p-checkbox>
+            <label [for]="'curp'" class="control-label mb-0">Clave Única de Registro de Población</label>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="table-panel-column">
-            <label>Fecha de defunción</label>
-            <span>{{detalleAGF.fecDeceso}}</span>
+        <div class="col-md-6">
+          <div class="flex align-items-center ml-5">
+            <p-checkbox inputId="actaDefuncion" formControlName="actaDefuncion" styleClass="mr-3"
+                        [binary]="true"></p-checkbox>
+            <label [for]="'actaDefuncion'" class="control-label mb-0">Acta de defunción</label>
           </div>
         </div>
       </div>
-    </app-table-panel>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="ramo">Ramo<span class="req">*</span>:</label>
-        <p-dropdown appendTo="body" id="ramo" class="form-control" formControlName="ramo" [options]="ramos"
-                    placeholder="Seleccionar ramo">
-        </p-dropdown>
-        <span class="campo-obligatorio"
-              *ngIf="fagf?.ramo?.errors?.required && (fagf?.ramo?.dirty || fagf?.ramo?.touched)">Este campo es obligatorio *.</span>
-      </div>
-      <div class="col-md-6">
-      </div>
-    </div>
-    <div class="mb-3 mt-3 row">
-      Documentación probatoria
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="identificacionOficial">Identificación oficial
-          <span class="req">*</span>:</label>
-        <p-dropdown appendTo="body" id="identificacionOficial" class="form-control"
-                    formControlName="identificacionOficial" [options]="identificaciones"
-                    placeholder="Seleccionar identificación">
-        </p-dropdown>
-        <span class="campo-obligatorio"
-              *ngIf="fagf?.identificacionOficial?.errors?.required && (fagf?.identificacionOficial?.dirty || fagf?.identificacionOficial?.touched)">Este campo es obligatorio *.</span>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="numeroIdentificacion">Número de Identificación Oficial
-          <span class="req">*</span>:</label>
-        <input id="numeroIdentificacion" class="form-control" formControlName="numeroIdentificacion"
-               placeholder="Ingresar numero">
-        <span class="campo-obligatorio"
-              *ngIf="fagf?.numeroIdentificacion?.errors?.required && (fagf?.numeroIdentificacion?.dirty || fagf?.numeroIdentificacion?.touched)">Este campo es obligatorio *.</span>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <div class="flex align-items-center ml-5">
-          <p-checkbox inputId="curp" formControlName="curp" styleClass="mr-3" [binary]="true"></p-checkbox>
-          <label [for]="'curp'" class="control-label mb-0">Clave Única de Registro de Población</label>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="flex align-items-center ml-5">
+            <p-checkbox inputId="cuentaGastos" formControlName="cuentaGastos" styleClass="mr-3"
+                        [binary]="true"></p-checkbox>
+            <label [for]="'cuentaGastos'" class="control-label mb-0">Cuenta Original Gastos Funeral</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="flex align-items-center ml-5">
+            <p-checkbox inputId="documentoNSS" formControlName="documentoNSS" styleClass="mr-3"
+                        [binary]="true"></p-checkbox>
+            <label [for]="'documentoNSS'" class="control-label mb-0">Documento con NSSl</label>
+          </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="flex align-items-center ml-5">
-          <p-checkbox inputId="actaDefuncion" formControlName="actaDefuncion" styleClass="mr-3"
-                      [binary]="true"></p-checkbox>
-          <label [for]="'actaDefuncion'" class="control-label mb-0">Acta de defunción</label>
+      <div class="row mb-4">
+        <div class="col-md-12 control-label">
+          <span>*Campos obligatorios</span>
         </div>
       </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <div class="flex align-items-center ml-5">
-          <p-checkbox inputId="cuentaGastos" formControlName="cuentaGastos" styleClass="mr-3"
-                      [binary]="true"></p-checkbox>
-          <label [for]="'cuentaGastos'" class="control-label mb-0">Cuenta Original Gastos Funeral</label>
-        </div>
+      <div class="flex justify-content-end mt-5">
+        <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="agfForm.invalid">
+          Guardar
+        </button>
       </div>
-      <div class="col-md-6">
-        <div class="flex align-items-center ml-5">
-          <p-checkbox inputId="documentoNSS" formControlName="documentoNSS" styleClass="mr-3"
-                      [binary]="true"></p-checkbox>
-          <label [for]="'documentoNSS'" class="control-label mb-0">Documento con NSSl</label>
-        </div>
-      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="VALIDACION_DE_AGF">
+    <div class="mb-3 mt-3 row text-center">
+      ¿Estás seguro que deseas registrar en el NSSA la solicitud del AGF?
     </div>
-    <div class="row mb-4">
-      <div class="col-md-12 control-label">
-        <span>*Campos obligatorios</span>
+    <div class="row mt-6">
+      <div class="col-md-12 flex justify-content-center">
+        <button type="submit" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
       </div>
     </div>
-    <div class="flex justify-content-end mt-5">
-      <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="agfForm.invalid">
-        Guardar
-      </button>
-    </div>
-  </form>
-</ng-container>
-<ng-container *ngIf="indice === 1">
-  <div class="mb-3 mt-3 row text-center">
-    ¿Estás seguro que deseas registrar en el NSSA la solicitud del AGF?
-  </div>
-  <div class="row mt-6">
-    <div class="col-md-12 flex justify-content-center">
-      <button type="submit" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" (click)="aceptar()">Aceptar</button>
-    </div>
-  </div>
+  </ng-container>
 </ng-container>

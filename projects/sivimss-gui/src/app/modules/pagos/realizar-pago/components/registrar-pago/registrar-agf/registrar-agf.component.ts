@@ -51,6 +51,10 @@ export class RegistrarAgfComponent implements OnInit {
   idFinado!: number;
   idPagoBitacora!: number;
 
+  readonly CAPTURA_DE_AGF: number = 1;
+  readonly VALIDACION_DE_AGF: number = 2;
+  pasoRegistrarAGF: number = 1;
+
   constructor(
     private formBuilder: FormBuilder,
     private realizarPagoService: RealizarPagoService,
@@ -70,17 +74,13 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   aceptar(): void {
-    if (this.indice === 1) {
-      this.ref.close();
-      const registroAGF: RegistroAGF = this.crearRegistroAGF();
-      const datos_agf: string = btoa(JSON.stringify(registroAGF));
-      const registroPago: RegistroPago = this.crearRegistroPago();
-      const datos_pago: string = btoa(JSON.stringify(registroPago))
-      void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss],
-        {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
-      return;
-    }
-    this.indice++;
+    this.ref.close();
+    const registroAGF: RegistroAGF = this.crearRegistroAGF();
+    const datos_agf: string = btoa(JSON.stringify(registroAGF));
+    const registroPago: RegistroPago = this.crearRegistroPago();
+    const datos_pago: string = btoa(JSON.stringify(registroPago))
+    void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss],
+      {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
   }
 
   private inicializarAgfForm(): void {
