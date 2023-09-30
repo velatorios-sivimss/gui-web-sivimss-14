@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -52,9 +52,9 @@ export class RegistrarAgfComponent implements OnInit {
 
   private inicializarAgfForm(): void {
     this.agfForm = this.formBuilder.group({
-      ramo: [{value: null, disabled: false}],
-      identificacionOficial: [{value: null, disabled: false}],
-      numeroIdentificacion: [{value: null, disabled: false}],
+      ramo: [{value: null, disabled: false}, [Validators.required]],
+      identificacionOficial: [{value: null, disabled: false}, [Validators.required]],
+      numeroIdentificacion: [{value: null, disabled: false}, [Validators.required]],
       curp: [{value: null, disabled: false}],
       actaDefuncion: [{value: null, disabled: false}],
       cuentaGastos: [{value: null, disabled: false}],
@@ -100,5 +100,9 @@ export class RegistrarAgfComponent implements OnInit {
 
   cancelar(): void {
     this.ref.close();
+  }
+
+  get fagf() {
+    return this.agfForm.controls
   }
 }
