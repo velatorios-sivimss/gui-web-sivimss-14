@@ -24,6 +24,19 @@ interface RegistroAGF {
   casillaNssi: boolean,
 }
 
+interface RegistroPago {
+  descBanco: null,
+  fechaPago: null,
+  fechaValeAGF: string,
+  idFlujoPago: string,
+  idMetodoPago: string,
+  idPagoBitacora: number,
+  idRegistro: string,
+  importePago: number,
+  importeRegistro: number,
+  numAutorizacion: string
+}
+
 @Component({
   selector: 'app-registrar-agf',
   templateUrl: './registrar-agf.component.html',
@@ -59,10 +72,12 @@ export class RegistrarAgfComponent implements OnInit {
   aceptar(): void {
     if (this.indice === 1) {
       this.ref.close();
-      const registro: RegistroAGF = this.crearRegistroAGF();
-      const datos_agf = btoa(JSON.stringify(registro))
+      const registroAGF: RegistroAGF = this.crearRegistroAGF();
+      const datos_agf: string = btoa(JSON.stringify(registroAGF));
+      const registroPago: RegistroPago = this.crearRegistroPago();
+      const datos_pago: string = btoa(JSON.stringify(registroPago))
       void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss],
-        {relativeTo: this.route, queryParams: {datos_agf}})
+        {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
       return;
     }
     this.indice++;
@@ -117,6 +132,21 @@ export class RegistrarAgfComponent implements OnInit {
       idTipoId: this.agfForm.get('identificacionOficial')?.value,
       idVelatorio: 0,
       numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value
+    }
+  }
+
+  crearRegistroPago(): RegistroPago {
+    return {
+      descBanco: null,
+      fechaPago: null,
+      fechaValeAGF: "",
+      idFlujoPago: "",
+      idMetodoPago: "",
+      idPagoBitacora: this.idPagoBitacora,
+      idRegistro: "",
+      importePago: 0,
+      importeRegistro: 0,
+      numAutorizacion: ""
     }
   }
 
