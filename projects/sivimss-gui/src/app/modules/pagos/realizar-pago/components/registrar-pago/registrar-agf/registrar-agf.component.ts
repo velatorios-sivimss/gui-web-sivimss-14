@@ -4,10 +4,10 @@ import {TipoDropdown} from "../../../../../../models/tipo-dropdown";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { RealizarPagoService } from '../../../services/realizar-pago.service';
-import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
-import { DetalleAyudaGastosFuneral } from '../../../modelos/ayudaGastosFuneral.interface';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {RealizarPagoService} from '../../../services/realizar-pago.service';
+import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
+import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.interface';
 
 @Component({
   selector: 'app-registrar-agf',
@@ -20,6 +20,8 @@ export class RegistrarAgfComponent implements OnInit {
   ramos: TipoDropdown[] = [];
   identificaciones: TipoDropdown[] = [];
   indice: number = 0;
+  idFinado!: number;
+  idPagoBitacora!: number;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,6 +30,8 @@ export class RegistrarAgfComponent implements OnInit {
     public ref: DynamicDialogRef,
     private router: Router,
     private route: ActivatedRoute) {
+    this.idFinado = this.config.data.idFinado;
+    this.idPagoBitacora = this.config.data.idPagoBitacora;
   }
 
   ngOnInit(): void {
@@ -71,8 +75,7 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   obtenerDetalleAGF(): void {
-    const valor =27;
-    this.realizarPagoService.obtenerDetalleAGF(valor).subscribe({
+    this.realizarPagoService.obtenerDetalleAGF(this.idFinado).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.detalleAGF = respuesta.datos[0];
       },
