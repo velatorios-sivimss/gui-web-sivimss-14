@@ -8,6 +8,9 @@ import {BENEFICIARIOS} from "../../../constants/catalogos";
 })
 export class SeleccionBeneficiariosAgfComponent {
 
+  constructor() {
+  }
+
   beneficiarios: any[] = BENEFICIARIOS;
 
 }
