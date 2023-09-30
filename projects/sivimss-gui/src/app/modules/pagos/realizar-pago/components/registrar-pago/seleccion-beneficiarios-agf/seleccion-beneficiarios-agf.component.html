@@ -1,37 +1,4 @@
 <app-titulo-principal titulo="Seleccionar Beneficiario"></app-titulo-principal>
-<app-table-panel>
-  <div class="row table-panel-row bg-g ">
-    <div class="col-md-4">
-      <div class="table-panel-column">
-        <label class="text-bold">Nombre</label>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="table-panel-column">
-        <label class="text-bold">CURP</label>
-      </div>
-    </div>
-  </div>
-  <div class="row table-panel-row" *ngFor="let beneficiario of beneficiarios">
-    <div class="col-md-4">
-      <div class="table-panel-column mt-3">
-        <label>{{beneficiario.nombre}}</label>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="table-panel-column mt-3">
-        <label>{{beneficiario.curp}}</label>
-      </div>
-    </div>
-    <div class="col-md-2"></div>
-    <div class="col-md-2">
-      <div class="table-panel-column justify-content-end">
-        <button type="submit" class="btn btn-primary btn-md ml-5" [routerLink]="'../pago-orden-servicio'">Seleccionar
-        </button>
-      </div>
-    </div>
-  </div>
-</app-table-panel>
 
 <p-table styleClass="mt-5 mb-6" [value]="beneficiarios" [paginator]="beneficiarios.length > 0"
          [rows]="cantElementosPorPagina"
@@ -45,9 +12,11 @@
   </ng-template>
   <ng-template pTemplate="body" let-beneficiario>
     <tr>
-      <td class="font-bold">{{beneficiario.totalPagado }}</td>
-      <td class="font-bold">{{beneficiario.diferenciasTotales }}</td>
+      <td class="font-bold">{{beneficiario.nombreBeneficiario }}</td>
+      <td class="font-bold">{{beneficiario.curp }}</td>
       <td>
+        <button type="submit" class="btn btn-primary btn-md ml-5" [routerLink]="'../pago-orden-servicio'">Seleccionar
+        </button>
       </td>
     </tr>
   </ng-template>

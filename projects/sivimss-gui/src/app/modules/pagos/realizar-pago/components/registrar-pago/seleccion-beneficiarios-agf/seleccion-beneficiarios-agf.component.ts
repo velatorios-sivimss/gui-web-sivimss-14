@@ -3,6 +3,12 @@ import {BENEFICIARIOS} from "../../../constants/catalogos";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../../utils/constantes";
 import {ActivatedRoute} from "@angular/router";
 
+interface Beneficiario {
+  nombreBeneficiario: string;
+  curp: string;
+}
+
+
 @Component({
   selector: 'app-seleccion-beneficiarios-agf',
   templateUrl: './seleccion-beneficiarios-agf.component.html',
@@ -13,6 +19,7 @@ export class SeleccionBeneficiariosAgfComponent {
   numPaginaActual: number = 0;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
+  beneficiarios: Beneficiario[] = [];
 
   constructor(private readonly activatedRoute: ActivatedRoute,
   ) {
@@ -20,7 +27,4 @@ export class SeleccionBeneficiariosAgfComponent {
     this.beneficiarios = respuesta.datos;
   }
 
-  beneficiarios: any[] = BENEFICIARIOS;
-
-  protected readonly DIEZ_ELEMENTOS_POR_PAGINA = DIEZ_ELEMENTOS_POR_PAGINA;
 }
