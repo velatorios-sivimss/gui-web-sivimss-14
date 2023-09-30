@@ -13,6 +13,7 @@ import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
 import { HttpErrorResponse } from '@angular/common/http';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-generar-orden-formato',
@@ -150,24 +151,25 @@ export class GenerarOrdenFormatoComponent implements OnInit {
   }
 
   mapearOrden(): any {
+    let servicio = this.catalogoServicios.filter((s) => s.value === this.editForm.get("servicios")?.value);
     return {
       idOrdenServicio: this.ordenSeleccionada.idOds,
       idDelegacion: this.editForm.get("delegacion")?.value,
       idVelatorio: this.editForm.get("velatorio")?.value,
-      idProveedor: this.esModificacion ? this.ordenSeleccionada.idProveedor ? this.ordenSeleccionada.idProveedor : null : null,
+      idProveedor: this.ordenSeleccionada.idProveedor,
       fecGeneracionHoja: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
       tipoTraslado: this.editForm.get("tipoTraslado")?.value ? "Oficial" : "Particular",
-      idFinado: this.esModificacion ? this.ordenSeleccionada.idFinado : null,
+      idFinado: this.ordenSeleccionada.idFinado,
       origen: this.editForm.get("lugarOrigen")?.value,
       destino: this.editForm.get("lugarDestino")?.value,
       distanciaRecorrer: this.editForm.get("distancia")?.value,
-      idServicio: this.esModificacion ? this.ordenSeleccionada.idServicio ? this.ordenSeleccionada.idServicio : null : null,
+      idServicio: this.esModificacion ? this.ordenSeleccionada.idServicio : servicio.length > 0 ? servicio[0].value : null,
       especificaciones: this.editForm.get("especificaciones")?.value,
       nombreOperador: this.editForm.get("nombreOperador")?.value,
       carrozaNum: this.editForm.get("numCarroza")?.value,
       numeroPlacas: this.editForm.get("numPlacas")?.value,
       diaPartida: this.datePipe.transform(new Date(this.editForm.get("diaPartida")?.value), 'yyyy-MM-dd'),
-      horaPartida: this.formatearHora(this.editForm.get("horaPartida")?.value),
+      horaPartida: moment(this.editForm.get('horaPartida')?.value).format('HH:mm'),
       nomAcompaniante: this.editForm.get("nombreAcompanante")?.value
     }
   }
