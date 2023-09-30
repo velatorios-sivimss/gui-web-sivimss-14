@@ -55,10 +55,10 @@ export class RegistrarAgfComponent implements OnInit {
       ramo: [{value: null, disabled: false}, [Validators.required]],
       identificacionOficial: [{value: null, disabled: false}, [Validators.required]],
       numeroIdentificacion: [{value: null, disabled: false}, [Validators.required]],
-      curp: [{value: null, disabled: false}],
-      actaDefuncion: [{value: null, disabled: false}],
-      cuentaGastos: [{value: null, disabled: false}],
-      documentoNSS: [{value: null, disabled: false}],
+      curp: [{value: false, disabled: false}],
+      actaDefuncion: [{value: false, disabled: false}],
+      cuentaGastos: [{value: false, disabled: false}],
+      documentoNSS: [{value: false, disabled: false}],
     })
   }
 
