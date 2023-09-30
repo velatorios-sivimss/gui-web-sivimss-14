@@ -99,6 +99,6 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   cancelar(): void {
-    console.log("Se comenta método para que no marque error en Sonar");
+    this.ref.close();
   }
 }
