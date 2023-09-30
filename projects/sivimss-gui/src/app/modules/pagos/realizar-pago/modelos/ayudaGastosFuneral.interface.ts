@@ -1,5 +1,5 @@
 export interface DetalleAyudaGastosFuneral {
-    nss: number,
-    cveCurp: string,
-    fecDeceso: string,
+  cveNss: number;
+  cveCurp: string,
+  fecDeceso: string,
 }
