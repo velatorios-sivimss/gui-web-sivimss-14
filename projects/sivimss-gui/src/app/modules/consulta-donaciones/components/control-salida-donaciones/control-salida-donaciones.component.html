@@ -16,8 +16,6 @@
                    (blur)="consultaCURP()" (keyup)="convertirAMayusculas(0)">
             <span class="campo-obligatorio"
                   *ngIf="fds.curp?.errors?.required && (fds.curp?.dirty || fds.curp?.touched)">Este campo es obligatorio *.</span>
-            <span class="campo-obligatorio"
-                  *ngIf="fds.curp?.errors?.pattern && (fds.curp?.dirty || fds.curp?.touched)">Este campo es obligatorio *.</span>
           </div>
           <div class="col-md-6">
             <label class="control-label" for="rfc">RFC :</label>
