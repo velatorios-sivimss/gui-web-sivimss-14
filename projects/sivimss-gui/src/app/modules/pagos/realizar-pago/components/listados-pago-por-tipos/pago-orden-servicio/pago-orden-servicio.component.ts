@@ -150,6 +150,7 @@ export class PagoOrdenServicioComponent implements OnInit {
 
   abrirModalAGF(): void {
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
+      data: {idFinado: this.pagoSeleccionado.idFinado, idPagoBitacora: this.pagoSeleccionado.idPagoBitacora},
       header: "Registro de Ayuda de Gastos de Funeral",
       width: MAX_WIDTH,
     }
