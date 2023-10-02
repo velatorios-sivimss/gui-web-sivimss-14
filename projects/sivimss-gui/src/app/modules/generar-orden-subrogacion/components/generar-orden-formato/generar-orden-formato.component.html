@@ -22,7 +22,7 @@
           campo es obligatorio *.</span>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="fecha">Fecha:</label>
+        <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
         <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true" dateFormat="dd/mm/yy"
           placeholder="Ingresa fecha"></p-calendar>
         <span class="campo-obligatorio"
@@ -30,8 +30,8 @@
           obligatorio</span>
       </div>
       <div class="col-md-4">
-        <label class="control-label" for="hora">Hora:</label>
-        <p-calendar id="hora" styleClass="form-control" formControlName="hora" placeholder="00:00" [timeOnly]="true">
+        <label class="control-label" for="hora">Hora<span class="req">*</span>:</label>
+        <p-calendar id="hora" styleClass="form-control" formControlName="hora" placeholder="00:00:00" [timeOnly]="true">
         </p-calendar>
         <span class="campo-obligatorio" *ngIf="ef.hora?.errors?.required && (ef.hora?.dirty || ef.hora?.touched)">Campo
           obligatorio</span>
@@ -42,13 +42,13 @@
   <div class="border-panel mb-5">
     <div class="row mb-4">
       <div class="col-md-6">
-        <label class="control-label" for="delegacion">Delegación:</label>
+        <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catalogoDelegaciones"
           placeholder="Selecciona la delegación">
         </p-dropdown>
       </div>
       <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio:</label>
+        <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
           placeholder="Selecciona el velatorio">
         </p-dropdown>
@@ -77,7 +77,7 @@
 
     <div class="row mb-4">
       <div class="col-md-6">
-        <label class="control-label" for="fechaOrden">Fecha:</label>
+        <label class="control-label" for="fechaOrden">Fecha<span class="req">*</span>:</label>
         <input id="fechaOrden" class="form-control" formControlName="fechaOrden" placeholder="Ingresa la fecha">
         <span class="campo-obligatorio"
           *ngIf="ef.fechaOrden?.errors?.required && (ef.fechaOrden?.dirty || ef.fechaOrden?.touched)">Campo
@@ -135,7 +135,7 @@
       </div>
       <div class="col-md-6">
         <input id="especificaciones" class="form-control" formControlName="especificaciones"
-          placeholder="Ingresa especificación">
+          placeholder="Ingresa especificación" maxlength="80">
         <span class="campo-obligatorio"
           *ngIf="ef.especificaciones?.errors?.required && (ef.especificaciones?.dirty || ef.especificaciones?.touched)">Este
           campo es obligatorio *.</span>
@@ -163,7 +163,7 @@
     </div>
     <div class="row mb-4">
       <div class="col-md-6">
-        <label class="control-label" for="distancia">Distancia (km)<span class="req">*</span>:</label>
+        <label class="control-label" for="distancia">Distancia a recorrer<span class="req">*</span>:</label>
         <input id="distancia" class="form-control" formControlName="distancia" placeholder="Ingresa distancia">
         <span class="campo-obligatorio"
           *ngIf="ef.distancia?.errors?.required && (ef.distancia?.dirty || ef.distancia?.touched)">Este
@@ -178,7 +178,7 @@
         <label class="control-label" for="nombreOperador">Nombre del operador que recibe la orden<span
             class="req">*</span>:</label>
         <input id="nombreOperador" class="form-control" formControlName="nombreOperador"
-          placeholder="Ingresa nombre del operador">
+          placeholder="Ingresa nombre del operador" maxlength="30">
         <span class="campo-obligatorio"
           *ngIf="ef.nombreOperador?.errors?.required && (ef.nombreOperador?.dirty || ef.nombreOperador?.touched)">Este
           campo es obligatorio *.</span>
@@ -186,7 +186,7 @@
       <div class="col-md-6">
         <label class="control-label" for="version">Nombre del acompañante<span class="req">*</span>:</label>
         <input id="nombreAcompanante" class="form-control" formControlName="nombreAcompanante"
-          placeholder="Ingresa nombre del acompañante">
+          placeholder="Ingresa nombre del acompañante" maxlength="30">
         <span class="campo-obligatorio"
           *ngIf="ef.nombreAcompanante?.errors?.required && (ef.nombreAcompanante?.dirty || ef.nombreAcompanante?.touched)">Este
           campo es obligatorio *.</span>
@@ -195,15 +195,15 @@
 
     <div class="row mb-4">
       <div class="col-md-6">
-        <label class="control-label" for="numCarroza">No. de carroza<span class="req">*</span>:</label>
-        <input id="numCarroza" class="form-control" formControlName="numCarroza" placeholder="Ingresa número carroza">
+        <label class="control-label" for="numCarroza">Carroza num<span class="req">*</span>:</label>
+        <input id="numCarroza" class="form-control" formControlName="numCarroza" maxlength="5" placeholder="Ingresa número carroza">
         <span class="campo-obligatorio"
           *ngIf="ef.numCarroza?.errors?.required && (ef.numCarroza?.dirty || ef.numCarroza?.touched)">Este
           campo es obligatorio *.</span>
       </div>
       <div class="col-md-6">
         <label class="control-label" for="numPlacas">No. de placas<span class="req">*</span>:</label>
-        <input id="numPlacas" class="form-control" formControlName="numPlacas" placeholder="Ingresa placas">
+        <input id="numPlacas" class="form-control" formControlName="numPlacas" maxlength="5" placeholder="Ingresa placas">
         <span class="campo-obligatorio"
           *ngIf="ef.numPlacas?.errors?.required && (ef.numPlacas?.dirty || ef.numPlacas?.touched)">Este
           campo es obligatorio *.</span>
@@ -213,7 +213,7 @@
     <div class="row mb-4">
       <div class="col-md-6">
         <label class="control-label" for="horaPartida">Hora de partida:</label>
-        <p-calendar id="horaPartida" styleClass="form-control" formControlName="horaPartida" placeholder="00:00"
+        <p-calendar id="horaPartida" styleClass="form-control" formControlName="horaPartida" placeholder="00:00:00"
          [timeOnly]="true"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="ef.horaPartida?.errors?.required && (ef.horaPartida?.dirty || ef.horaPartida?.touched)">Campo
