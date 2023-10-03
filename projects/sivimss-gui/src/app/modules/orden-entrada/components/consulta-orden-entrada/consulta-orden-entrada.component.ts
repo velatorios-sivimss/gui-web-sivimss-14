@@ -66,6 +66,7 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
 
   mostrarModalCerrarODE: boolean = false;
 
+  filtros: any;
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   numPaginaActual: number = 0;
   totalElementos: number = 0;
@@ -107,8 +108,8 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
     this.folioCatalogosODE = respuesta[this.POSICION_CONTRATOS].datos;
-    this.ordenesEntrada = respuesta[this.POSICION_PAGINADO_ORDENES_ENTRADA].datos.content;
-    this.totalElementos = respuesta[this.POSICION_PAGINADO_ORDENES_ENTRADA].datos.totalElements;
+    // this.ordenesEntrada = respuesta[this.POSICION_PAGINADO_ORDENES_ENTRADA].datos.content;
+    // this.totalElementos = respuesta[this.POSICION_PAGINADO_ORDENES_ENTRADA].datos.totalElements;
   }
 
   cargarVelatorios(cargaInicial: boolean = false): void {
@@ -200,14 +201,16 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
     } else {
+      if (this.numPaginaActual === 0) {
+        this.filtros = this.mapearFiltrosBusqueda();
+      }
       this.paginar();
     }
   }
 
   paginar(): void {
-    let filtros: any = this.mapearFiltrosBusqueda();
     this.loaderService.activar();
-    this.ordenEntradaService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+    this.ordenEntradaService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.ordenesEntrada = [];

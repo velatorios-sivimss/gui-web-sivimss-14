@@ -55,7 +55,7 @@
     </div>
     <div class="col-md-6 flex justify-content-end">
       <button class="btn btn-default btn-md" (click)="limpiar()">Limpiar</button>
-      <button class="btn btn-primary btn-md ml-5" (click)="buscar()" [disabled]="f.fechaInicial.value === null && f.fechaFinal.value === null">Buscar</button>
+      <button class="btn btn-primary btn-md ml-5" (click)="buscar()">Buscar</button>
     </div>
   </div>
   <div class="row">
@@ -128,7 +128,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft">
       <div class="paginator-template">
-        <span class="total-elements">{{ordenesEntrada.length}} de {{totalElementos}}</span>
+        <span class="total-elements">{{numPaginaActual + 1}} de {{totalElementos}}</span>
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorright">
