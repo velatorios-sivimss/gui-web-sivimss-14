@@ -115,6 +115,7 @@ export class RegistrarAgfComponent implements OnInit {
       numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value,
       cveCURPBeneficiario: "",
       nombreBeneficiario: "",
+      idPagoDetalle: null
     }
   }
 

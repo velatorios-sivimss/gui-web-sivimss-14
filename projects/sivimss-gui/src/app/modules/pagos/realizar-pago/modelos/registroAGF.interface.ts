@@ -12,5 +12,6 @@ export interface RegistroAGF {
   casillaCogf: boolean,
   casillaNssi: boolean,
   cveCURPBeneficiario: string,
-  nombreBeneficiario: string
+  nombreBeneficiario: string,
+  idPagoDetalle : number | null
 }

@@ -53,8 +53,9 @@ export class SeleccionBeneficiariosAgfComponent {
     this.datos_agf.cveCURPBeneficiario = curp;
     this.datos_agf.nombreBeneficiario = nombre;
     this.realizarPagoService.guardar(this.datos_pago).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+      next: (respuesta): void => {
+        const [idPagoDetalle] = respuesta.datos;
+        this.crearAGF(idPagoDetalle);
       },
       error: (error: HttpErrorResponse): void => {
         const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
@@ -64,7 +65,8 @@ export class SeleccionBeneficiariosAgfComponent {
     });
   }
 
-  crearAGF(): void {
+  crearAGF(idPagoDetalle: number): void {
+    this.datos_agf.idPagoDetalle = idPagoDetalle;
     this.realizarPagoService.guardarAGF(this.datos_agf).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
