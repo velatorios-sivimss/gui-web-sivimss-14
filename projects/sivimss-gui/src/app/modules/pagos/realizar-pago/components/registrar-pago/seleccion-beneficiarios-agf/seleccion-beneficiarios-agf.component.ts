@@ -30,10 +30,11 @@ export class SeleccionBeneficiariosAgfComponent {
   datos_agf!: RegistroAGF;
   datos_pago!: RegistroPago;
 
-  constructor(private readonly activatedRoute: ActivatedRoute,
-              private realizarPagoService: RealizarPagoService,
-              private alertaService: AlertaService,
-              private mensajesSistemaService: MensajesSistemaService,
+  constructor(
+    private readonly activatedRoute: ActivatedRoute,
+    private realizarPagoService: RealizarPagoService,
+    private alertaService: AlertaService,
+    private mensajesSistemaService: MensajesSistemaService,
   ) {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.beneficiarios = respuesta.datos;
@@ -65,7 +66,16 @@ export class SeleccionBeneficiariosAgfComponent {
   }
 
   crearAGF(): void {
-
+    this.realizarPagoService.guardarAGF(this.datos_agf).subscribe({
+      next: (): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+      },
+      error: (error: HttpErrorResponse): void => {
+        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+        console.log(error);
+      }
+    });
   }
 
 }
