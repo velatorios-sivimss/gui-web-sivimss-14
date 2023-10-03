@@ -55,7 +55,7 @@ export class SeleccionBeneficiariosAgfComponent {
     this.datos_agf.nombreBeneficiario = nombre;
     this.realizarPagoService.guardar(this.datos_pago).subscribe({
       next: (respuesta): void => {
-        const [idPagoDetalle] = respuesta.datos;
+        const {idPagoDetalle} = respuesta.datos[0];
         this.crearAGF(idPagoDetalle);
       },
       error: (error: HttpErrorResponse): void => {

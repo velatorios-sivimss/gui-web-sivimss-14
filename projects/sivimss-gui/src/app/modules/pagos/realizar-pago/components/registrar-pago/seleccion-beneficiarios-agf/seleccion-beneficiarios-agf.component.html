@@ -10,15 +10,13 @@
       <th id="columna_beneficiarios_botones"></th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-beneficiario>.
-    .
-
+  <ng-template pTemplate="body" let-beneficiario>
     <tr>
       <td class="font-bold">{{beneficiario.nombreBeneficiario }}</td>
       <td class="font-bold">{{beneficiario.curp }}</td>
       <td>
         <button type="submit" class="btn btn-primary btn-md ml-5"
-        (click)="seleccionarBeneficiario(beneficiario.nombreBeneficiario, beneficiario.curp)">Seleccionar
+                (click)="seleccionarBeneficiario(beneficiario.nombreBeneficiario, beneficiario.curp)">Seleccionar
         </button>
       </td>
     </tr>
