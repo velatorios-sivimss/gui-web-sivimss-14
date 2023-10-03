@@ -9,6 +9,4 @@ export interface RegistroPago {
   importePago: number,
   importeRegistro: number,
   numAutorizacion: string
-  cveCURPBeneficiario: string,
-  nombreBeneficiario: string
 }

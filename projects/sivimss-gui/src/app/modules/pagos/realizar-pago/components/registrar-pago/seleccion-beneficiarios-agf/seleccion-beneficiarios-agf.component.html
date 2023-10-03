@@ -17,7 +17,8 @@
       <td class="font-bold">{{beneficiario.nombreBeneficiario }}</td>
       <td class="font-bold">{{beneficiario.curp }}</td>
       <td>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [routerLink]="'../pago-orden-servicio'">Seleccionar
+        <button type="submit" class="btn btn-primary btn-md ml-5"
+        (click)="seleccionarBeneficiario(beneficiario.nombreBeneficiario, beneficiario.curp)">Seleccionar
         </button>
       </td>
     </tr>

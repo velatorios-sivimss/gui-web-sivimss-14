@@ -45,4 +45,10 @@ export class SeleccionBeneficiariosAgfComponent {
     );
   }
 
+  seleccionarBeneficiario(nombre: string, curp: string): void {
+    this.datos_agf.cveCURPBeneficiario = curp;
+    this.datos_agf.nombreBeneficiario = nombre;
+    console.log(this.datos_agf)
+  }
+
 }

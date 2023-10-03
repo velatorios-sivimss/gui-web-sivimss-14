@@ -112,15 +112,15 @@ export class RegistrarAgfComponent implements OnInit {
       idRamo: this.agfForm.get('ramo')?.value,
       idTipoId: this.agfForm.get('identificacionOficial')?.value,
       idVelatorio: this.detalleAGF.idVelatorio,
-      numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value
+      numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value,
+      cveCURPBeneficiario: "",
+      nombreBeneficiario: "",
     }
   }
 
   crearRegistroPago(): RegistroPago {
     let fechaValeAGF = moment(new Date()).format('YYYY-MM-DD');
     return {
-      cveCURPBeneficiario: "",
-      nombreBeneficiario: "",
       descBanco: null,
       fechaPago: null,
       fechaValeAGF: fechaValeAGF,
