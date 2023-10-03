@@ -52,6 +52,8 @@ export class AltaServiciosFunerariosComponent implements OnInit {
   tipoPaquete: TipoDropdown[] = [];
   numeroPago: TipoDropdown[] = [];
   paqueteBackUp!: CatalogoPaquetes[];
+  colonias:TipoDropdown[] = [];
+  coloniasContratante:TipoDropdown[] = [];
 
   confirmarGuardado: boolean = false;
   confirmarAceptarPaquete: boolean = false;
@@ -235,7 +237,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         } else {
           formularioEnUso[posicion].nacionalidad.setValue(2);
         }
-        this.cambiarNacionalidad(posicion);
+        this.consultarLugarNacimiento(respuesta.datos.desEntidadNac,posicion);
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error,
@@ -243,6 +245,40 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       }
     })
   }
+
+  consultarLugarNacimiento(entidad:string, posicion:number): void {
+    let formularioEnUso = [this.fda, this.fdc];
+    const entidadEditada = this.accentsTidy(entidad);
+    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+      formularioEnUso[posicion].lugarNacimiento.setValue(11);
+      return
+    }
+    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+      formularioEnUso[posicion].lugarNacimiento.setValue(7);
+      return
+    }
+    this.estados.forEach((element:any) => {
+      const entidadIteracion =  this.accentsTidy(element.label);
+      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+        formularioEnUso[posicion].lugarNacimiento.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r=s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    return r;
+  };
 
   consultarRfc(posicion: number): void {
     let formularioEnUso = [this.fda, this.fdc];
@@ -299,7 +335,7 @@ export class AltaServiciosFunerariosComponent implements OnInit {
         } else {
           formularioEnUso[posicion].nacionalidad.setValue(2);
         }
-        this.cambiarNacionalidad(posicion);
+        this.consultarLugarNacimiento(respuesta.datos.ubicacion[0].dEntFed,posicion);
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
@@ -469,6 +505,11 @@ export class AltaServiciosFunerariosComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            if(posicion == 0){
+              this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
+            }else{
+              this.coloniasContratante = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
+            }
             formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
             formularios[posicion].municipio.setValue(
               respuesta.datos[0].municipio.nombre

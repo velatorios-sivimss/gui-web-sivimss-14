@@ -45,6 +45,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   paises: TipoDropdown[] = [];
   tipoPaquete: TipoDropdown[] = [];
   numeroPago: TipoDropdown[] = [];
+  colonias:TipoDropdown[] = [];
+  coloniasContratante:TipoDropdown[] = [];
   paqueteBackUp!: CatalogoPaquetes[];
 
   datosAfiliadoForm!: FormGroup;
@@ -88,7 +90,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_CLEAR);
     this.idPlanSfpa = Number(this.route.snapshot.queryParams.idPlanSfpa);
     this.consultarFormulario();
-    // this.consultarNumeroPagos(this.idPlanSfpa);
   }
 
   consultarFormulario(): void {
@@ -237,7 +238,6 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       };
     }
 
-    //  const false = contratante?.indTitularSubstituto ? true : false;
     this.datosContratanteForm = this.formBuilder.group({
       datosIguales: [{value: false, disabled: false}, [Validators.required]],
       curp: [{value: objetoContratante.curp, disabled: false},
@@ -388,12 +388,47 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         } else {
           formularioEnUso[posicion].nacionalidad.setValue(2);
         }
+        this.consultarLugarNacimiento(respuesta.datos.desEntidadNac,posicion);
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
       }
     })
   }
+
+  consultarLugarNacimiento(entidad:string, posicion:number): void {
+    let formularioEnUso = [this.fda, this.fdc];
+    const entidadEditada = this.accentsTidy(entidad);
+    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+      formularioEnUso[posicion].lugarNacimiento.setValue(11);
+      return
+    }
+    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+      formularioEnUso[posicion].lugarNacimiento.setValue(7);
+      return
+    }
+    this.estados.forEach((element:any) => {
+      const entidadIteracion =  this.accentsTidy(element.label);
+      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+        formularioEnUso[posicion].lugarNacimiento.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r=s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    return r;
+  };
 
   consultarRfc(posicion: number): void {
     let formularioEnUso = [this.fda, this.fdc];
@@ -449,6 +484,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         } else {
           formularioEnUso[posicion].nacionalidad.setValue(2);
         }
+        this.consultarLugarNacimiento(respuesta.datos.ubicacion[0].dEntFed,posicion);
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
@@ -585,6 +621,11 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           if (respuesta) {
+            if(posicion == 0){
+              this.colonias = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
+            }else{
+              this.coloniasContratante = mapearArregloTipoDropdown(respuesta.datos, 'nombre', 'nombre')
+            }
             formularios[posicion].colonia.setValue(respuesta.datos[0].nombre);
             formularios[posicion].municipio.setValue(
               respuesta.datos[0].municipio.nombre
@@ -606,31 +647,11 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
 
   datosIguales(esIgual: boolean): void {
     esIgual ? this.fdc.datosIguales.setValue(true) : this.fdc.datosIguales.setValue(false);
-    // if(esIgual){
-    //   this.fdc.datosIguales.setValue(true);
-    //   return
-    // }
+
     if (esIgual) {
       this.fdc.curp.enable()
       this.fdc.rfc.enable()
       this.fdc.matricula.enable()
-      // this.fdc.nss.enable()
-      // this.fdc.nombre.enable()
-      // this.fdc.primerApellido.enable()
-      // this.fdc.segundoApellido.enable()
-      // this.fdc.sexo.enable()
-      // this.fdc.otroSexo.enable()
-      // this.fdc.fechaNacimiento.enable()
-      // this.fdc.nacionalidad.enable()
-      // this.fdc.lugarNacimiento.enable()
-      // this.fdc.paisNacimiento.enable()
-      // this.fdc.telefono.enable()
-      // this.fdc.correoElectronico.enable()
-      // this.fdc.cp.enable()
-      // this.fdc.calle.enable()
-      // this.fdc.numeroInterior.enable()
-      // this.fdc.numeroExterior.enable()
-      // this.fdc.colonia.enable()
       return
     }
     this.fdc.curp.disable()
@@ -749,7 +770,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
   generarObjetoPlanSFPA(): AgregarPlanSFPA {
 
     let objetoContratante = {
-      persona: 'contratante', //Si es la misma persona no mandar este objeto
+      persona: 'contratante',
       rfc: this.fdc.rfc.value,
       curp: this.fdc.curp.value,
       matricula: this.fdc.matricula?.value ?? "",
@@ -784,7 +805,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       idPaquete: this.fda.tipoPaquete.value,
       idTipoPagoMensual: this.fda.numeroPago.value,
       indTipoPagoMensual: this.cambioNumeroPagos,
-      indTitularSubstituto: this.fdc.datosIguales.value ? 1 : 0, //Cuando te vas a contratante SI 1 no 0
+      indTitularSubstituto: this.fdc.datosIguales.value ? 1 : 0,
       indModificarTitularSubstituto: 1,
       monPrecio: this.consultarMonPrecio(),
       titularesBeneficiarios: [
