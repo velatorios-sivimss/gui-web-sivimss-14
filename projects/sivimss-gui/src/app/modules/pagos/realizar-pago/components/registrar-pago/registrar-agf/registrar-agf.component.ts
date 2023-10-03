@@ -8,6 +8,7 @@ import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.
 import {RealizarPagoService} from '../../../services/realizar-pago.service';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.interface';
+import * as moment from "moment/moment";
 
 interface RegistroAGF {
   idFinado: number,
@@ -28,10 +29,10 @@ interface RegistroPago {
   descBanco: null,
   fechaPago: null,
   fechaValeAGF: string,
-  idFlujoPago: string,
-  idMetodoPago: string,
+  idFlujoPago: number,
+  idMetodoPago: number,
   idPagoBitacora: number,
-  idRegistro: string,
+  idRegistro: number,
   importePago: number,
   importeRegistro: number,
   numAutorizacion: string
@@ -50,6 +51,9 @@ export class RegistrarAgfComponent implements OnInit {
   indice: number = 0;
   idFinado!: number;
   idPagoBitacora!: number;
+  idFlujoPago!: number;
+  idRegistro!: number;
+  importeTotal!: number;
 
   readonly CAPTURA_DE_AGF: number = 1;
   readonly VALIDACION_DE_AGF: number = 2;
@@ -64,6 +68,9 @@ export class RegistrarAgfComponent implements OnInit {
     private route: ActivatedRoute) {
     this.idFinado = this.config.data.idFinado;
     this.idPagoBitacora = this.config.data.idPagoBitacora;
+    this.idFlujoPago = this.config.data.idFlujoPago;
+    this.idRegistro = this.config.data.idRegistro;
+    this.importeTotal = this.config.data.importePago;
   }
 
   ngOnInit(): void {
@@ -130,22 +137,23 @@ export class RegistrarAgfComponent implements OnInit {
       idFinado: this.idFinado,
       idRamo: this.agfForm.get('ramo')?.value,
       idTipoId: this.agfForm.get('identificacionOficial')?.value,
-      idVelatorio: 0,
+      idVelatorio: this.detalleAGF.idVelatorio,
       numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value
     }
   }
 
   crearRegistroPago(): RegistroPago {
+    let fechaValeAGF = moment(new Date()).format('YYYY-MM-DD');
     return {
       descBanco: null,
       fechaPago: null,
-      fechaValeAGF: "",
-      idFlujoPago: "",
-      idMetodoPago: "",
+      fechaValeAGF: fechaValeAGF,
+      idFlujoPago: this.idFlujoPago,
+      idMetodoPago: 2,
       idPagoBitacora: this.idPagoBitacora,
-      idRegistro: "",
-      importePago: 0,
-      importeRegistro: 0,
+      idRegistro: this.idRegistro,
+      importePago: this.importeTotal,
+      importeRegistro: this.importeTotal,
       numAutorizacion: ""
     }
   }

@@ -31,6 +31,7 @@ interface DatosRegistro {
 interface RegistroModal {
   tipoPago?: string,
   idPago?: string,
+  idFinado?: number,
   total: number,
   datosRegistro: DatosRegistro
 }
@@ -149,8 +150,15 @@ export class PagoOrdenServicioComponent implements OnInit {
   }
 
   abrirModalAGF(): void {
+    const data = {
+      idFinado: this.pagoSeleccionado.idFinado,
+      idPagoBitacora: this.pagoSeleccionado.idPagoBitacora,
+      idFlujoPago: this.pagoSeleccionado.idFlujoPago,
+      idRegistro: this.pagoSeleccionado.idRegistro,
+      importePago: this.pagoSeleccionado.total,
+    }
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
-      data: {idFinado: this.pagoSeleccionado.idFinado, idPagoBitacora: this.pagoSeleccionado.idPagoBitacora},
+      data,
       header: "Registro de Ayuda de Gastos de Funeral",
       width: MAX_WIDTH,
     }
