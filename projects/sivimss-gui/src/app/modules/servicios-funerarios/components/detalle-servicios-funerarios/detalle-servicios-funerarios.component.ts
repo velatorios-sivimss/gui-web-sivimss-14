@@ -204,8 +204,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
           finalize(() => this.loaderService.desactivar())
         ).subscribe(
           {
-            next:(repuesta) => {
-              if (respuesta) {
+            next:(respuestaArchivo) => {
+              if (respuestaArchivo) {
                 this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
                 this.mostrarModalConfirmacion = true;
               }

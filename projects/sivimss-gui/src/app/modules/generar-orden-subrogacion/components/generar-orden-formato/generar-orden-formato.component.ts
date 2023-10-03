@@ -69,7 +69,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       velatorio: new FormControl({ value: +usuario.idVelatorio, disabled: true }, []),
       razonSocial: new FormControl({ value: this.ordenSeleccionada.proveedor, disabled: true }, []),
       numOrden: new FormControl({ value: this.ordenSeleccionada.folioOds, disabled: true }, []),
-      fechaOrden: new FormControl({ value: this.ordenSeleccionada.fechaOds, disabled: true }, []),
+      fechaOrden: new FormControl({ value: this.ordenSeleccionada.fechaOds.replaceAll("-","/"), disabled: true }, []),
       nombreFinado: new FormControl({ value: this.ordenSeleccionada.nombreFinado, disabled: true }, []),
       tipoTraslado: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoTranslado == "Oficial" ? "true" : "false" : null , disabled: false }, []),
       servicios: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoServicio ? this.ordenSeleccionada.tipoServicio : null : null, disabled: this.esModificacion ? true : false }, []),
