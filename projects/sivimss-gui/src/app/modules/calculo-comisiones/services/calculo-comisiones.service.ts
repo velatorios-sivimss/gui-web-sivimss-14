@@ -45,12 +45,14 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=detalle-comisiones`);
   }
 
-  obtenerDetalleODS(idComision: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=ordenes-comisiones`);
+  obtenerDetalleODS(idPromotor: number): Observable<HttpRespuesta<any>> {
+    const body = { idPromotor };
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/ordenes-comisiones`, body);
   }
 
-  obtenerDetalleConveniosPF(idComision: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=convenios-comisiones`);
+  obtenerDetalleConveniosPF(idPromotor: number): Observable<HttpRespuesta<any>> {
+    const body = { idPromotor };
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/convenios-comisiones`, body);
   }
 
   obtenerDetalleComisiones(body: any): Observable<HttpRespuesta<any>> {

@@ -77,8 +77,8 @@ export class DetalleComisionComponent implements OnInit {
     if (!this.detalleForm) {
       const respuesta = this.route.snapshot.data["respuesta"];
       this.detallePromotor = respuesta[this.POSICION_DETALLE_COMISION]?.datos[this.POSICION_DETALLE_COMISION];
-      this.detalleODS = respuesta[this.POSICION_DETALLE_ODS]?.datos;
-      this.detalleConveniosPF = respuesta[this.POSICION_DETALLE_CONVENIOS_PF]?.datos;
+      this.detalleODS = respuesta[this.POSICION_DETALLE_ODS]?.datos?.content ?? [];
+      this.detalleConveniosPF = respuesta[this.POSICION_DETALLE_CONVENIOS_PF]?.datos?.content ?? [];
       this.minDate = new Date();
       this.maxDate = new Date();
       this.importeTotalODS();

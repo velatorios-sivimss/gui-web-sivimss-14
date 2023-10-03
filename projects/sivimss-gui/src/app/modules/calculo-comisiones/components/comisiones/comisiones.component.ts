@@ -173,7 +173,7 @@ export class ComisionesComponent implements OnInit {
       idNivel: this.filtroFormComisiones.get("nivel")?.value,
       idDelegacion: this.filtroFormComisiones.get("delegacion")?.value,
       idVelatorio: this.filtroFormComisiones.get("velatorio")?.value,
-      promotores: this.filtroFormComisiones.get("promotores")?.value,
+      idPromotor: this.filtroFormComisiones.get("promotores")?.value,
       fechaInicial: fechaInicial,
       fechaFinal: fechaFinal,
       tipoReporte: tipoReporte
@@ -214,7 +214,7 @@ export class ComisionesComponent implements OnInit {
     const solicitudPromotores = this.crearSolicitudPromotores();
     this.calculoComisionesService.obtenerPromotores(solicitudPromotores).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.promotores = mapearArregloTipoDropdown(respuesta.datos, "nomPromotor", "numEmpleado");
+        this.promotores = mapearArregloTipoDropdown(respuesta.datos, "nomPromotor", "idPromotor");
         this.promotores = [{value: null, label: 'Todos'}, ...this.promotores];
       },
       error: (error: HttpErrorResponse): void => {
