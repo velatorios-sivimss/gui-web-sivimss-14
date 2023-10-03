@@ -8,34 +8,9 @@ import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.
 import {RealizarPagoService} from '../../../services/realizar-pago.service';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.interface';
-
-interface RegistroAGF {
-  idFinado: number,
-  cveNSS: number,
-  cveCURP: string,
-  fecDefuncion: string,
-  idVelatorio: number,
-  idRamo: number,
-  idTipoId: number,
-  numIdentificacion: number,
-  casillaCurp: boolean,
-  casillaActDef: boolean,
-  casillaCogf: boolean,
-  casillaNssi: boolean,
-}
-
-interface RegistroPago {
-  descBanco: null,
-  fechaPago: null,
-  fechaValeAGF: string,
-  idFlujoPago: string,
-  idMetodoPago: string,
-  idPagoBitacora: number,
-  idRegistro: string,
-  importePago: number,
-  importeRegistro: number,
-  numAutorizacion: string
-}
+import * as moment from "moment/moment";
+import {RegistroAGF} from "../../../modelos/registroAGF.interface";
+import {RegistroPago} from "../../../modelos/registroPago.interface";
 
 @Component({
   selector: 'app-registrar-agf',
@@ -50,6 +25,9 @@ export class RegistrarAgfComponent implements OnInit {
   indice: number = 0;
   idFinado!: number;
   idPagoBitacora!: number;
+  idFlujoPago!: number;
+  idRegistro!: number;
+  importeTotal!: number;
 
   readonly CAPTURA_DE_AGF: number = 1;
   readonly VALIDACION_DE_AGF: number = 2;
@@ -64,6 +42,9 @@ export class RegistrarAgfComponent implements OnInit {
     private route: ActivatedRoute) {
     this.idFinado = this.config.data.idFinado;
     this.idPagoBitacora = this.config.data.idPagoBitacora;
+    this.idFlujoPago = this.config.data.idFlujoPago;
+    this.idRegistro = this.config.data.idRegistro;
+    this.importeTotal = this.config.data.importePago;
   }
 
   ngOnInit(): void {
@@ -130,22 +111,26 @@ export class RegistrarAgfComponent implements OnInit {
       idFinado: this.idFinado,
       idRamo: this.agfForm.get('ramo')?.value,
       idTipoId: this.agfForm.get('identificacionOficial')?.value,
-      idVelatorio: 0,
-      numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value
+      idVelatorio: this.detalleAGF.idVelatorio,
+      numIdentificacion: this.agfForm.get('numeroIdentificacion')?.value,
+      cveCURPBeneficiario: "",
+      nombreBeneficiario: "",
+      idPagoDetalle: null
     }
   }
 
   crearRegistroPago(): RegistroPago {
+    let fechaValeAGF = moment(new Date()).format('YYYY-MM-DD');
     return {
       descBanco: null,
       fechaPago: null,
-      fechaValeAGF: "",
-      idFlujoPago: "",
-      idMetodoPago: "",
+      fechaValeAGF: fechaValeAGF,
+      idFlujoPago: this.idFlujoPago,
+      idMetodoPago: 2,
       idPagoBitacora: this.idPagoBitacora,
-      idRegistro: "",
-      importePago: 0,
-      importeRegistro: 0,
+      idRegistro: this.idRegistro,
+      importePago: this.importeTotal,
+      importeRegistro: this.importeTotal,
       numAutorizacion: ""
     }
   }

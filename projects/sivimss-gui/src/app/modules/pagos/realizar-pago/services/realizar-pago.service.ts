@@ -130,9 +130,12 @@ export class RealizarPagoService extends BaseService<HttpRespuesta<any>, any> {
     return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidadAGF}/0?servicio=lstads-regis-agf`);
   }
 
-
   consultarBeneficiarios(nss: number) {
     const body = { cveNSS: nss }
     return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidadAGF}/beneficiarios-regis-agf`, body);
+  }
+
+  guardarAGF(body: any) {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidadAGF}/guarda-regis-agf`, body);
   }
 }
