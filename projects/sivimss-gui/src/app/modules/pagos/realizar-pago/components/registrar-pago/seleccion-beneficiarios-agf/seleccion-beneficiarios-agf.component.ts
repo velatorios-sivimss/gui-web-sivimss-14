@@ -64,4 +64,8 @@ export class SeleccionBeneficiariosAgfComponent {
     });
   }
 
+  crearAGF(): void {
+
+  }
+
 }
