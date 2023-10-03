@@ -30,9 +30,6 @@ export class SeleccionBeneficiariosAgfComponent {
   ) {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.beneficiarios = respuesta.datos;
-    this.obtenerParametrosAGF();
-    console.log(this.datos_agf);
-    console.log(this.datos_pago);
   }
 
   obtenerParametrosAGF(): void {
@@ -48,7 +45,6 @@ export class SeleccionBeneficiariosAgfComponent {
   seleccionarBeneficiario(nombre: string, curp: string): void {
     this.datos_agf.cveCURPBeneficiario = curp;
     this.datos_agf.nombreBeneficiario = nombre;
-    console.log(this.datos_agf)
   }
 
 }
