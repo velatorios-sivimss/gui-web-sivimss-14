@@ -128,8 +128,9 @@ export class ComisionesComponent implements OnInit {
   }
 
   paginar(): void {
+    const filtros: FiltrosComisiones = this.crearSolicitudFiltros("pdf");
     this.cargadorService.activar();
-    this.calculoComisionesService.buscarPorPagina(this.numPaginaActual, this.cantElementosPorPagina)
+    this.calculoComisionesService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
@@ -172,7 +173,7 @@ export class ComisionesComponent implements OnInit {
       idNivel: this.filtroFormComisiones.get("nivel")?.value,
       idDelegacion: this.filtroFormComisiones.get("delegacion")?.value,
       idVelatorio: this.filtroFormComisiones.get("velatorio")?.value,
-      promotores: this.filtroFormComisiones.get("promotores")?.value,
+      idPromotor: this.filtroFormComisiones.get("promotores")?.value,
       fechaInicial: fechaInicial,
       fechaFinal: fechaFinal,
       tipoReporte: tipoReporte
@@ -186,7 +187,13 @@ export class ComisionesComponent implements OnInit {
     this.filtroFormComisiones.get('delegacion')?.patchValue(+usuario.idDelegacion);
     this.filtroFormComisiones.get('velatorio')?.patchValue(+usuario.idVelatorio);
     this.obtenerVelatorios();
+    this.obtenerPromotores();
     this.paginar();
+  }
+
+  actualizarCatalogos(): void {
+    this.obtenerPromotores();
+    this.obtenerVelatorios();
   }
 
   obtenerVelatorios(): void {
@@ -204,9 +211,10 @@ export class ComisionesComponent implements OnInit {
 
   obtenerPromotores(): void {
     this.promotores = [];
-    this.calculoComisionesService.obtenerPromotores().subscribe({
+    const solicitudPromotores = this.crearSolicitudPromotores();
+    this.calculoComisionesService.obtenerPromotores(solicitudPromotores).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.promotores = mapearArregloTipoDropdown(respuesta.datos, "nomPromotor", "numEmpleado");
+        this.promotores = mapearArregloTipoDropdown(respuesta.datos, "nomPromotor", "idPromotor");
         this.promotores = [{value: null, label: 'Todos'}, ...this.promotores];
       },
       error: (error: HttpErrorResponse): void => {
@@ -214,6 +222,15 @@ export class ComisionesComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     })
+  }
+
+  crearSolicitudPromotores() {
+    return {
+      idNivel: this.filtroFormComisiones.get('nivel')?.value,
+      idDelegacion: this.filtroFormComisiones.get('delegacion')?.value,
+      idVelatorio: this.filtroFormComisiones.get('velatorio')?.value,
+      idPromotor: null
+    }
   }
 
   guardarPDF(): void {

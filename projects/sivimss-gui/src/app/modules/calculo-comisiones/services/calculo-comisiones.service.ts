@@ -14,7 +14,7 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     super(_http, `${environment.api.mssivimss}`, "agregar-rec-pagos", "", 47, "consulta-comisiones", "", "");
   }
 
-  private readonly _filtros: string = 'buscar-comisiones';
+  private readonly _filtros: string = 'consulta-comisiones';
   private readonly _imprimirComisiones: string = 'gendocto-comisiones';
   private readonly _imprimirDetalleComisiones: string = 'gendetal-comisiones';
 
@@ -40,25 +40,27 @@ export class CalculoComisionesService extends BaseService<HttpRespuesta<any>, an
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._filtros}`, filtros,
       {params});
   }
-  
+
   obtenerDetallePromotor(idComision: number): Observable<HttpRespuesta<any>> {
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=detalle-comisiones`);
   }
 
-  obtenerDetalleODS(idComision: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=ordenes-comisiones`);
+  obtenerDetalleODS(idPromotor: number): Observable<HttpRespuesta<any>> {
+    const body = { idPromotor };
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/ordenes-comisiones`, body);
   }
 
-  obtenerDetalleConveniosPF(idComision: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idComision}?servicio=convenios-comisiones`);
+  obtenerDetalleConveniosPF(idPromotor: number): Observable<HttpRespuesta<any>> {
+    const body = { idPromotor };
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/convenios-comisiones`, body);
   }
 
   obtenerDetalleComisiones(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detcomi-comisiones`,body);
   }
 
-  obtenerPromotores(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}?servicio=listprom-comisiones`);
+  obtenerPromotores(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(`${this._base}${this._funcionalidad}/buscar/listprom-comisiones`, body);
   }
 
   calcularComisiones(body: any): Observable<HttpRespuesta<any>> {

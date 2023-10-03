@@ -14,7 +14,7 @@
       <div class="col-md-6">
         <label class="control-label" for="delegacion">Delegación<span class="req">*</span>:</label>
         <p-dropdown id="delegacion" class="form-control" formControlName="delegacion" [options]="catatalogoDelegaciones"
-                    placeholder="Selecciona la delegación" [filter]="true" (onChange)='obtenerVelatorios();'>
+                    placeholder="Selecciona la delegación" [filter]="true" (onChange)='actualizarCatalogos();'>
         </p-dropdown>
       </div>
     </div>
@@ -22,7 +22,7 @@
       <div class="col-md-6">
         <label class="control-label" for="velatorio">Velatorio<span class="req">*</span>:</label>
         <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                    placeholder="Selecciona el velatorio" [filter]="true">
+                    placeholder="Selecciona el velatorio" [filter]="true" (onChange)="obtenerPromotores()" >
         </p-dropdown>
       </div>
       <div class="col-md-6">
