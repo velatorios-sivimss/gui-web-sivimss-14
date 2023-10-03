@@ -9,34 +9,8 @@ import {RealizarPagoService} from '../../../services/realizar-pago.service';
 import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
 import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.interface';
 import * as moment from "moment/moment";
-
-interface RegistroAGF {
-  idFinado: number,
-  cveNSS: number,
-  cveCURP: string,
-  fecDefuncion: string,
-  idVelatorio: number,
-  idRamo: number,
-  idTipoId: number,
-  numIdentificacion: number,
-  casillaCurp: boolean,
-  casillaActDef: boolean,
-  casillaCogf: boolean,
-  casillaNssi: boolean,
-}
-
-interface RegistroPago {
-  descBanco: null,
-  fechaPago: null,
-  fechaValeAGF: string,
-  idFlujoPago: number,
-  idMetodoPago: number,
-  idPagoBitacora: number,
-  idRegistro: number,
-  importePago: number,
-  importeRegistro: number,
-  numAutorizacion: string
-}
+import {RegistroAGF} from "../../../modelos/registroAGF.interface";
+import {RegistroPago} from "../../../modelos/registroPago.interface";
 
 @Component({
   selector: 'app-registrar-agf',
