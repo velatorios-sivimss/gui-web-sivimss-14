@@ -3,6 +3,8 @@ import {BENEFICIARIOS} from "../../../constants/catalogos";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../../utils/constantes";
 import {ActivatedRoute} from "@angular/router";
 import {filter} from "rxjs/operators";
+import {RegistroAGF} from "../../../modelos/registroAGF.interface";
+import {RegistroPago} from "../../../modelos/registroPago.interface";
 
 interface Beneficiario {
   nombreBeneficiario: string;
@@ -21,22 +23,26 @@ export class SeleccionBeneficiariosAgfComponent {
   cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   totalElementos: number = 0;
   beneficiarios: Beneficiario[] = [];
+  datos_agf!: RegistroAGF;
+  datos_pago!: RegistroPago;
 
   constructor(private readonly activatedRoute: ActivatedRoute,
   ) {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.beneficiarios = respuesta.datos;
     this.obtenerParametrosAGF();
+    console.log(this.datos_agf);
+    console.log(this.datos_pago);
   }
 
   obtenerParametrosAGF(): void {
     this.activatedRoute.queryParams.pipe(
-      filter(params => params.datos_agf)
     ).subscribe(params => {
-        const {datos_agf} = params
-        console.log(atob(datos_agf));
+        const {datos_agf, datos_pago} = params;
+        this.datos_agf = JSON.parse(atob(datos_agf));
+        this.datos_pago = JSON.parse(atob(datos_pago));
       }
-    )
+    );
   }
 
 }

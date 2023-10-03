@@ -1,7 +1,7 @@
 <ng-container [ngSwitch]="pasoRegistrarAGF">
   <ng-container *ngSwitchCase="CAPTURA_DE_AGF">
     <form [formGroup]="agfForm" (submit)="pasoRegistrarAGF = VALIDACION_DE_AGF">
-      <app-table-panel>
+      <app-table-panel *ngIf="detalleAGF">
         <div class="row table-panel-row">
           <div class="col-md-4">
             <div class="table-panel-column">

@@ -119,6 +119,8 @@ export class RegistrarAgfComponent implements OnInit {
   crearRegistroPago(): RegistroPago {
     let fechaValeAGF = moment(new Date()).format('YYYY-MM-DD');
     return {
+      cveCURPBeneficiario: "",
+      nombreBeneficiario: "",
       descBanco: null,
       fechaPago: null,
       fechaValeAGF: fechaValeAGF,
