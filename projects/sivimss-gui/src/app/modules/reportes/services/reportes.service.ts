@@ -43,7 +43,12 @@ export class ReportesService extends BaseService<HttpRespuesta<any>, any> {
   }
   consultarFolioODSDetallePago(id_delegacion: number, id_velatorio: number): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/ods-pagos`,
-      {id_delegacion,id_velatorio})
+      {id_delegacion:id_delegacion,id_velatorio:id_velatorio})
+  }
+
+  consultaODSPF(idDelegacion: number, idVelatorio: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/folio-orden-pf`,
+      {idDelegacion:idDelegacion,idVelatorio:idVelatorio})
   }
 
   consultarODSServiciosVelatorios(id_delegacion: number, id_velatorio: number): Observable<HttpRespuesta<any>> {
