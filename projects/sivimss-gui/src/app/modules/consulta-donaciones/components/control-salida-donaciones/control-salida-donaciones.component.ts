@@ -219,7 +219,17 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.rfc.setValue(respuesta.datos[0]?.rfc ?? "");
             this.fds.fechaNacimiento.setValue(fecha);
             this.fds.sexo.setValue(respuesta.datos[0].numSexo);
-
+            if (respuesta.datos[0].idPais == 119 || respuesta.datos[0].idPais == "" || respuesta.datos[0].idPais === null) {
+              this.fds.nacionalidad.setValue(1);
+            } else {
+              this.fds.nacionalidad.setValue(2);
+            }
+            this.fds.paisNacimiento.setValue(
+              Number(respuesta.datos[0].idPais)
+            );
+            this.fds.lugarNacimiento.setValue(
+              Number(respuesta.datos[0].idEstado)
+            );
           }
 
           if (respuesta.mensaje.includes("externo")) {
@@ -238,12 +248,15 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             } else {
               this.fds.sexo.setValue(2);
             }
-            if (respuesta.datos.nacionalidad.includes("MEX")) {
+            if (
+              respuesta.datos.nacionalidad.includes('MEXICO') ||
+              respuesta.datos.nacionalidad.includes('MEX')
+            ) {
               this.fds.nacionalidad.setValue(1);
-              return
+            } else {
+              this.fds.nacionalidad.setValue(2);
             }
-            this.fds.nacionalidad.setValue(2);
-
+            this.consultarLugarNacimiento(respuesta.datos.desEntidadNac);
 
           }
         }
@@ -253,6 +266,39 @@ export class ControlSalidaDonacionesComponent implements OnInit {
       }
     })
   }
+
+  consultarLugarNacimiento(entidad:string): void {
+    const entidadEditada = this.accentsTidy(entidad);
+    if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
+      this.fds.lugarNacimiento.setValue(11);
+      return
+    }
+    if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
+      this.fds.lugarNacimiento.setValue(7);
+      return
+    }
+    this.estado.forEach((element:any) => {
+      const entidadIteracion =  this.accentsTidy(element.label);
+      if(entidadIteracion.toUpperCase().includes(entidadEditada.toUpperCase())){
+        this.fds.lugarNacimiento.setValue(element.value);
+      }
+    })
+  }
+
+  accentsTidy(s: string): string {
+    let r=s.toLowerCase();
+    r = r.replace(new RegExp(/[àáâãäå]/g),"a");
+    r = r.replace(new RegExp(/æ/g),"ae");
+    r = r.replace(new RegExp(/ç/g),"c");
+    r = r.replace(new RegExp(/[èéêë]/g),"e");
+    r = r.replace(new RegExp(/[ìíîï]/g),"i");
+    r = r.replace(new RegExp(/ñ/g),"n");
+    r = r.replace(new RegExp(/[òóôõö]/g),"o");
+    r = r.replace(new RegExp(/œ/g),"oe");
+    r = r.replace(new RegExp(/[ùúûü]/g),"u");
+    r = r.replace(new RegExp(/[ýÿ]/g),"y");
+    return r;
+  };
 
   consultaRFC(): void {
     if (!this.fds.rfc.value) {
