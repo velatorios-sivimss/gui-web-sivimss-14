@@ -62,7 +62,8 @@ export class ConsultaStockComponent implements OnInit {
     },
   ];
 
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA
+  filtros: any;
+  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
   numPaginaActual: number = 0
   totalElementos: number = 0
 
@@ -194,14 +195,16 @@ export class ConsultaStockComponent implements OnInit {
     if (this.paginacionConFiltrado) {
       this.paginarConFiltros();
     } else {
+      if (this.numPaginaActual === 0) {
+        this.filtros = this.mapearFiltrosBusqueda();
+      }
       this.paginar();
     }
   }
 
   paginar(): void {
-    let filtros: any = this.mapearFiltrosBusqueda();
     this.loaderService.activar();
-    this.ordenEntradaService.buscarStockPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
+    this.ordenEntradaService.buscarStockPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.stock = [];

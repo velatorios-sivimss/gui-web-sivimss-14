@@ -20,7 +20,7 @@ export class OrdenEntradaResolver implements Resolve<any> {
       "fechaInicio": null,
       "fechaFin": null
     }
-    const paginado$ = this.ordenEntradaService.buscarPorFiltros(0, 10, datos);
-    return forkJoin([catDelegacion$, catNivel$, foliosODE$, paginado$]);
+    // const paginado$ = this.ordenEntradaService.buscarPorFiltros(0, 10, datos);
+    return forkJoin([catDelegacion$, catNivel$, foliosODE$]);
   }
 }
