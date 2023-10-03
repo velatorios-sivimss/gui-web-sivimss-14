@@ -234,16 +234,20 @@ export class BalanceCajaComponent implements OnInit {
       const formularioDefault = {
         nivel: +usuario?.idOficina,
         delegacion: this.central ? null : obtenerDelegacionUsuarioLogueado(usuario),
-        velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario)
+        velatorio: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario),
       }
       this.filtroFormDir.resetForm(formularioDefault);
     }
+    this.convenioSeleccionado = null;
+    this.totalElementos = 0;
+    this.totalIngresos = 0;
+    this.totalImporte = 0;
     this.obtenerVelatorios(true);
     this.paginar();
   }
 
   obtenerVelatorios(cargaInicial: boolean = false): void {
-      if (!cargaInicial) {
+    if (!cargaInicial) {
       this.catalogoVelatorios = [];
       this.filtroFormBalanceCaja.get('velatorio')?.patchValue("");
     }

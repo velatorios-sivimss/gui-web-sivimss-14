@@ -244,7 +244,7 @@ export class DetalleComisionComponent implements OnInit {
       puesto: this.detallePromotor.puesto,
       correo: this.detallePromotor.correo,
       categoria: this.detallePromotor.categoria,
-      diasDescanso: this.detallePromotor.diasDescanso,
+      diasDescanso: this.detallePromotor.diasDescanso ?? '0',
       monComision: this.detallePromotor.montoComision,
       anioCalculo: this.formComisiones.get("anio")?.value,
       mesCalculo: mes,
