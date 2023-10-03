@@ -1,8 +1,6 @@
 import {Component} from '@angular/core';
-import {BENEFICIARIOS} from "../../../constants/catalogos";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../../utils/constantes";
 import {ActivatedRoute} from "@angular/router";
-import {filter} from "rxjs/operators";
 import {RegistroAGF} from "../../../modelos/registroAGF.interface";
 import {RegistroPago} from "../../../modelos/registroPago.interface";
 import {RealizarPagoService} from "../../../services/realizar-pago.service";
@@ -38,6 +36,7 @@ export class SeleccionBeneficiariosAgfComponent {
   ) {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.beneficiarios = respuesta.datos;
+    this.obtenerParametrosAGF();
   }
 
   obtenerParametrosAGF(): void {
