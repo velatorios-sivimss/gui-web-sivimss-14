@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../../utils/constantes";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RegistroAGF} from "../../../modelos/registroAGF.interface";
 import {RegistroPago} from "../../../modelos/registroPago.interface";
 import {RealizarPagoService} from "../../../services/realizar-pago.service";
@@ -30,6 +30,7 @@ export class SeleccionBeneficiariosAgfComponent {
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
+    private route: Router,
     private realizarPagoService: RealizarPagoService,
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
@@ -70,6 +71,7 @@ export class SeleccionBeneficiariosAgfComponent {
     this.realizarPagoService.guardarAGF(this.datos_agf).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+        void this.route.navigate(['../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
       },
       error: (error: HttpErrorResponse): void => {
         const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
