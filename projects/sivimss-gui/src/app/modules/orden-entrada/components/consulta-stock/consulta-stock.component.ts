@@ -1,21 +1,21 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {OrdenEntradaService} from "../../services/orden-entrada.service";
-import {LazyLoadEvent} from "primeng/api";
-import {OverlayPanel} from "primeng/overlaypanel";
-import {ActivatedRoute} from "@angular/router";
-import {LoaderService} from "../../../../shared/loader/services/loader.service";
-import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
-import {finalize} from "rxjs/operators";
-import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {mapearArregloTipoDropdown} from "../../../../utils/funciones";
-import {HttpErrorResponse} from "@angular/common/http";
-import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { OrdenEntradaService } from "../../services/orden-entrada.service";
+import { LazyLoadEvent } from "primeng/api";
+import { OverlayPanel } from "primeng/overlaypanel";
+import { ActivatedRoute } from "@angular/router";
+import { LoaderService } from "../../../../shared/loader/services/loader.service";
+import { MensajesSistemaService } from "../../../../services/mensajes-sistema.service";
+import { finalize } from "rxjs/operators";
+import { HttpRespuesta } from "../../../../models/http-respuesta.interface";
+import { mapearArregloTipoDropdown } from "../../../../utils/funciones";
+import { HttpErrorResponse } from "@angular/common/http";
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
 
 @Component({
   selector: 'app-consulta-stock',
@@ -89,13 +89,13 @@ export class ConsultaStockComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.formulario = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: false}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: false}],
-      ordenEntrada: [{value: null, disabled: false}],
-      categoria: [{value: null, disabled: false}],
-      asignacion1: [{value: null, disabled: false}],
-      asignacion2: [{value: null, disabled: false}],
-      asignacion3: [{value: null, disabled: false}]
+      nivel: [{ value: +usuario.idOficina, disabled: false }],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: false }],
+      ordenEntrada: [{ value: null, disabled: false }],
+      categoria: [{ value: null, disabled: false }],
+      asignacion1: [{ value: null, disabled: false }],
+      asignacion2: [{ value: null, disabled: false }],
+      asignacion3: [{ value: null, disabled: false }]
     });
   }
 
@@ -206,16 +206,16 @@ export class ConsultaStockComponent implements OnInit {
     this.loaderService.activar();
     this.ordenEntradaService.buscarStockPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, this.filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.stock = [];
-        this.stock = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
-    });
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.stock = [];
+          this.stock = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
   }
 
   paginarConFiltros(): void {
@@ -223,16 +223,16 @@ export class ConsultaStockComponent implements OnInit {
     this.loaderService.activar();
     this.ordenEntradaService.buscarStockPorFiltros(0, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.stock = [];
-        this.stock = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
-    });
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.stock = [];
+          this.stock = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
   }
 
   abrirPanel(event: MouseEvent, stock: any): void {
@@ -283,13 +283,21 @@ export class ConsultaStockComponent implements OnInit {
 
     let idTipoAsignacion: string | null = null;
 
-    if (asignacion1 && asignacion1[0] === 0) {
+    // Creamos un array con las asignaciones válidas
+    const asignacionesValidas = [asignacion1, asignacion2, asignacion3].filter(value => value !== undefined && value !== null);
+
+    // Filtramos las asignaciones que son diferentes de 0 y obtenemos sus primeros elementos.
+    const asignacionesNoCero = asignacionesValidas.filter(value => value[0] !== 0).map(innerArray => innerArray[0]);
+
+    // Comprobamos si quedan asignaciones después de filtrar los ceros
+    if (asignacionesNoCero.length > 0) {
+      idTipoAsignacion = asignacionesNoCero.join(',');
+      idTipoAsignacion = idTipoAsignacion.replace(",","").replace(",",""); 
+    }
+
+    // Si idTipoAsignacion es null, asignamos "1,3" si asignacion1 es 0
+    if (idTipoAsignacion === null && asignacion1 && asignacion1[0] === 0) {
       idTipoAsignacion = "1,3";
-    } else {
-      const asignaciones = [asignacion1, asignacion2, asignacion3].filter(value => value !== undefined && value !== null);
-      if (asignaciones.length > 0) {
-        idTipoAsignacion = asignaciones.map(innerArray => innerArray[0]).join(',');
-      }
     }
     let ordenEntrada = this.catalogoOrdenesEntradaCompleto.filter((o) => o.NUM_FOLIO === this.formulario.get("ordenEntrada")?.value);
     let categoria = this.catalogoCategoriasCompleto.filter((c) => c.DES_CATEGORIA_ARTICULO === this.formulario.get("categoria")?.value);
