@@ -290,6 +290,7 @@ export class Reportes implements OnInit {
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
+
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
@@ -391,13 +392,13 @@ export class Reportes implements OnInit {
         break;
       case 8:
         return {
-          id_tipo_reporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls',
+          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls',
           id_delegacion: this.ff.delegacion.value,
           id_velatorio: this.ff.velatorio.value,
           des_velatorio: this.velatorioDD.selectedOption.label,
           ods: this.ff.numeroOdsSiniestros.value?.value ?? null,
-          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
-          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
+          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
         }
         break;
       case 9:
@@ -457,8 +458,8 @@ export class Reportes implements OnInit {
     let filtered: any[] = [];
     if (query?.length < 3) return;
     for (let registro of this.folioODSSiniestro as any[]) {
-      if (registro.folio_ods?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-        filtered.push({label: registro.folio_ods, value: registro.id_ods});
+      if (registro.folioOrdenServicio?.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtered.push({label: registro.folioOrdenServicio, value: registro.folioOrdenServicio});
       }
     }
     this.filtroODSSiniestro = filtered;
@@ -604,7 +605,7 @@ export class Reportes implements OnInit {
     this.ff.fechaFin.setValidators(Validators.required);
     this.ff.fechaFin.updateValueAndValidity();
     //TODO inicializar autocomplete folios ODS
-    this.reporteOrdenServicioService.consultarODSServiciosVelatorios(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
+    this.reporteOrdenServicioService.consultaODSPF(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
