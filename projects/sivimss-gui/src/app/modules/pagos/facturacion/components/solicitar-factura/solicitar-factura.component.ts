@@ -95,8 +95,8 @@ export class SolicitarFacturaComponent implements OnInit {
       cfdi: [{value: null, disabled: false}, [Validators.required]],
       metodoPago: [{value: null, disabled: false}, [Validators.required]],
       formaPago: [{value: null, disabled: false}, [Validators.required]],
-      observaciones1: [{value: '000000000', disabled: true}, [Validators.required]],
-      observaciones2: [{value: null, disabled: false}],
+      observaciones1: [{value: null, disabled: true}],
+      observaciones2: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
@@ -185,7 +185,8 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroRFC = respuesta.datos;
-        this.cargarCatalogosTipoPersona(this.registroRFC!.tipoPersona)
+        this.cargarCatalogosTipoPersona(this.registroRFC!.tipoPersona);
+        this.seleccionarObservaciones();
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -316,6 +317,35 @@ export class SolicitarFacturaComponent implements OnInit {
       totalPagado: this.registroContratante!.totalPagado.toString(),
       totalServicios: this.registroContratante!.totalServicios.toString()
     }
+  }
+
+  seleccionarObservaciones(): void {
+    const idFactura = this.solicitudForm.get('tipoFactura')?.value;
+    if (idFactura === 1) {
+      this.datosCFDIForm.get('observaciones1')?.patchValue(this.crearObservacionesODS());
+      return;
+    }
+    this.datosCFDIForm.get('observaciones1')?.patchValue(this.crearObservacionesConvenio());
+  }
+
+  crearObservacionesODS(): string {
+    const folio = this.solicitudForm.get('folio')?.value
+    const finado = '';
+    const fechaFinado = '';
+    const idMetodoPago = this.datosCFDIForm.get('metodoPago')?.value;
+    const metodoPago = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
+    const idFormaPago = this.datosCFDIForm.get('formaPago')?.value;
+    const formaPago = this.formasPago.find(fP => fP.value === idFormaPago)?.label ?? '';
+    return `${folio} ${finado} ${fechaFinado} ${metodoPago} ${formaPago}`;
+  }
+
+  crearObservacionesConvenio(): string {
+    const folio = this.solicitudForm.get('folio')?.value
+    const idMetodoPago = this.datosCFDIForm.get('metodoPago')?.value;
+    const metodoPago = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
+    const idFormaPago = this.datosCFDIForm.get('formaPago')?.value;
+    const formaPago = this.formasPago.find(fP => fP.value === idFormaPago)?.label ?? '';
+    return `${folio} ${metodoPago} ${formaPago}`;
   }
 
   get pf() {
