@@ -229,11 +229,13 @@ export class VelacionDomicilioComponent implements OnInit {
   }
 
   reporteTabla(tipoReporte: string): ReporteTabla {
+    let form = this.filtroForm.getRawValue();
     return {
       idValeSalida: null,
-      folioOds: this.f.folioODS.value,
-      fechaInicio: this.f.fechaInicio.value,
-      fechaFinal: this.f.fechaFinal.value,
+      folioOds: form.folioODS === '' ? null : form.folioODS,
+      idVelatorio: +this.f.velatorio.value || null,
+      fechaInicio: this.f.fechaInicio.value ? moment(this.f.fechaInicio.value).format('YYYY-MM-DD') : null,
+      fechaFinal: this.f.fechaFinal.value ? moment(this.f.fechaFinal.value).format('YYYY-MM-DD') : null,
       ruta: "reportes/generales/ReporteTablaValeSalida.jrxml",
       tipoReporte,
     }
@@ -247,7 +249,7 @@ export class VelacionDomicilioComponent implements OnInit {
     const temp = {
       delegacion: this.f.delegacion.value,
       velatorio: this.f.velatorio.value,
-      folioODS: this.f.folioODS.value,
+      folioODS: this.f.folioODS.getRawValue() === '' ? null : this.f.folioODS.getRawValue(),
       fechaInicio: this.f.fechaInicio.value ? moment(this.f.fechaInicio.value).format('YYYY-MM-DD') : null,
       fechaFinal: this.f.fechaFinal.value ? moment(this.f.fechaFinal.value).format('YYYY-MM-DD') : null,
     };
@@ -299,7 +301,7 @@ export class VelacionDomicilioComponent implements OnInit {
       idNivel: +this.f.nivel.value || null,
       idDelegacion: +this.f.delegacion.value || null,
       idVelatorio: +this.f.velatorio.value || null,
-      folioOds: this.f.folioODS.value,
+      folioOds: this.f.folioODS.getRawValue() === '' ? null : this.f.folioODS.getRawValue(),
       fechaInicio: this.f.fechaInicio.value ? moment(this.f.fechaInicio.value).format('YYYY-MM-DD') : null,
       fechaFinal: this.f.fechaFinal.value ? moment(this.f.fechaFinal.value).format('YYYY-MM-DD') : null,
     }

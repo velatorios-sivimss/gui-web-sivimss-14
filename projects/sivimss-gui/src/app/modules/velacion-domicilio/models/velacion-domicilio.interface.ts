@@ -83,6 +83,7 @@ export interface ReporteTabla {
   ruta?: string;
   tipoReporte?: string;
   nombreVelatorio?: string;
+  idVelatorio?: number | null;
 }
 
 export interface BuscarFoliosOds {
