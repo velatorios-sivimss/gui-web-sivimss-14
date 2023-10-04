@@ -266,6 +266,9 @@ export class SolicitarFacturaComponent implements OnInit {
     const obsAutomatica = this.datosCFDIForm.get('observaciones1')?.value;
     const obsManual = this.datosCFDIForm.get('observaciones2')?.value;
     return {
+      concPago: this.registroContratante?.concPago ?? '',
+      cveRegimenFiscal: this.registroRFC?.regimenFiscal ?? '',
+      fecPago: this.registroContratante?.fecPago ?? '',
       cfdi: {desCfdi: CFDI!.label, idCfdi: CFDI!.value as number},
       correo,
       domicilioFiscal: {
