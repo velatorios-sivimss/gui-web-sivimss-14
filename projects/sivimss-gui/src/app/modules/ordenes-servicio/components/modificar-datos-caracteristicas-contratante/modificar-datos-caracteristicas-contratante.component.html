@@ -45,7 +45,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-paquete let-rowIndex="rowIndex">
-            <tr *ngIf="paquete.proviene!='paquete'">
+            <tr>
               <td>{{rowIndex + 1}}</td>
               <td>{{paquete.grupo}}</td>
               <td>{{paquete.concepto}}</td>
@@ -106,7 +106,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-paquete let-rowIndex="rowIndex">
-            <tr>
+            <tr *ngIf="paquete.proviene!='paquete'">
               <td>{{rowIndex + 1}}</td>
               <td>{{paquete.grupo}}</td>
               <td>{{paquete.concepto}}</td>
