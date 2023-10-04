@@ -51,7 +51,7 @@ export class SolicitarFacturaComponent implements OnInit {
   datosContratanteForm!: FormGroup;
   datosCFDIForm!: FormGroup;
   indice: number = 0;
-  tiposFactura: TipoDropdown[] = TIPO_FACTURACION;
+  tiposFactura: any[] = TIPO_FACTURACION;
   folios: TipoDropdown[] = [];
   servicios: any[] = REGISTROS_PAGOS;
   cfdi: TipoDropdown[] = [];
@@ -59,7 +59,7 @@ export class SolicitarFacturaComponent implements OnInit {
   formasPago: TipoDropdown[] = [];
   registroFolios: Folio[] = [];
   registroContratante: DatosContratante | null = null;
-  registroRFC!: RegistroRFC;
+  registroRFC: RegistroRFC | null = null;
   tipoSolicitud!: 1 | 2 | 3 | 4;
 
   constructor(private formBuilder: FormBuilder,
@@ -111,6 +111,7 @@ export class SolicitarFacturaComponent implements OnInit {
       this.datosContratanteDirForm.resetForm({});
     }
     this.registroContratante = null;
+    this.registroRFC = null;
     this.limpiarCatalogos();
   }
 
@@ -184,7 +185,7 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroRFC = respuesta.datos;
-        this.cargarCatalogosTipoPersona(this.registroRFC.tipoPersona)
+        this.cargarCatalogosTipoPersona(this.registroRFC!.tipoPersona)
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -265,37 +266,37 @@ export class SolicitarFacturaComponent implements OnInit {
       cfdi: {desCfdi: CFDI!.label, idCfdi: CFDI!.value as number},
       correo,
       domicilioFiscal: {
-        calle: this.registroRFC.domicilioFiscal.calle,
-        email: this.registroRFC.domicilioFiscal.email,
-        paisResidencia: this.registroRFC.domicilioFiscal.paisResidencia,
-        telefono1: this.registroRFC.domicilioFiscal.telefono1,
-        telefono2: this.registroRFC.domicilioFiscal.telefono2,
-        calr: this.registroRFC.domicilioFiscal.calr,
-        ccrh: this.registroRFC.domicilioFiscal.ccrh,
-        cp: this.registroRFC.domicilioFiscal.cp,
-        dalr: this.registroRFC.domicilioFiscal.dalr,
-        dcrh: this.registroRFC.domicilioFiscal.dcrh,
-        caractDomicilio: this.registroRFC.domicilioFiscal.caractDomicilio,
-        ccolonia: this.registroRFC.domicilioFiscal.ccolonia,
-        centFed: this.registroRFC.domicilioFiscal.centFed,
-        clocalidad: this.registroRFC.domicilioFiscal.clocalidad,
-        cmunicipio: this.registroRFC.domicilioFiscal.cmunicipio,
-        dcolonia: this.registroRFC.domicilioFiscal.dcolonia,
-        dentFed: this.registroRFC.domicilioFiscal.dentFed,
-        dentreCalle1: this.registroRFC.domicilioFiscal.dentreCalle1,
-        dentreCalle2: this.registroRFC.domicilioFiscal.dentreCalle2,
-        dinmueble: this.registroRFC.domicilioFiscal.dinmueble,
-        dlocalidad: this.registroRFC.domicilioFiscal.dlocalidad,
-        dmunicipio: this.registroRFC.domicilioFiscal.dmunicipio,
-        dreferencia: this.registroRFC.domicilioFiscal.dreferencia,
-        dvialidad: this.registroRFC.domicilioFiscal.dvialidad,
-        faltaDom: this.registroRFC.domicilioFiscal.faltaDom,
-        nexterior: this.registroRFC.domicilioFiscal.nexterior,
-        ninterior: this.registroRFC.domicilioFiscal.ninterior,
-        tinmueble: this.registroRFC.domicilioFiscal.tinmueble,
-        ttel1: this.registroRFC.domicilioFiscal.ttel1,
-        ttel2: this.registroRFC.domicilioFiscal.ttel2,
-        tvialidad: this.registroRFC.domicilioFiscal.tvialidad
+        calle: this.registroRFC!.domicilioFiscal.calle,
+        email: this.registroRFC!.domicilioFiscal.email,
+        paisResidencia: this.registroRFC!.domicilioFiscal.paisResidencia,
+        telefono1: this.registroRFC!.domicilioFiscal.telefono1,
+        telefono2: this.registroRFC!.domicilioFiscal.telefono2,
+        calr: this.registroRFC!.domicilioFiscal.calr,
+        ccrh: this.registroRFC!.domicilioFiscal.ccrh,
+        cp: this.registroRFC!.domicilioFiscal.cp,
+        dalr: this.registroRFC!.domicilioFiscal.dalr,
+        dcrh: this.registroRFC!.domicilioFiscal.dcrh,
+        caractDomicilio: this.registroRFC!.domicilioFiscal.caractDomicilio,
+        ccolonia: this.registroRFC!.domicilioFiscal.ccolonia,
+        centFed: this.registroRFC!.domicilioFiscal.centFed,
+        clocalidad: this.registroRFC!.domicilioFiscal.clocalidad,
+        cmunicipio: this.registroRFC!.domicilioFiscal.cmunicipio,
+        dcolonia: this.registroRFC!.domicilioFiscal.dcolonia,
+        dentFed: this.registroRFC!.domicilioFiscal.dentFed,
+        dentreCalle1: this.registroRFC!.domicilioFiscal.dentreCalle1,
+        dentreCalle2: this.registroRFC!.domicilioFiscal.dentreCalle2,
+        dinmueble: this.registroRFC!.domicilioFiscal.dinmueble,
+        dlocalidad: this.registroRFC!.domicilioFiscal.dlocalidad,
+        dmunicipio: this.registroRFC!.domicilioFiscal.dmunicipio,
+        dreferencia: this.registroRFC!.domicilioFiscal.dreferencia,
+        dvialidad: this.registroRFC!.domicilioFiscal.dvialidad,
+        faltaDom: this.registroRFC!.domicilioFiscal.faltaDom,
+        nexterior: this.registroRFC!.domicilioFiscal.nexterior,
+        ninterior: this.registroRFC!.domicilioFiscal.ninterior,
+        tinmueble: this.registroRFC!.domicilioFiscal.tinmueble,
+        ttel1: this.registroRFC!.domicilioFiscal.ttel1,
+        ttel2: this.registroRFC!.domicilioFiscal.ttel2,
+        tvialidad: this.registroRFC!.domicilioFiscal.tvialidad
       },
       folio,
       forPago: {desForPago: FORMA_PAGO!.label, idForPago: FORMA_PAGO!.value as number},
@@ -306,12 +307,12 @@ export class SolicitarFacturaComponent implements OnInit {
       nomContratante: this.registroContratante!.nomContratante,
       obsAutomatica,
       obsManual,
-      razonSocial: this.registroRFC.razonSocial,
-      regimenFiscal: this.registroRFC.regimenFiscal,
+      razonSocial: this.registroRFC!.razonSocial,
+      regimenFiscal: this.registroRFC!.regimenFiscal,
       rfc,
       servicios: this.registroContratante!.servicios,
       tipoFactura,
-      tipoPersona: this.registroRFC.tipoPersona,
+      tipoPersona: this.registroRFC!.tipoPersona,
       totalPagado: this.registroContratante!.totalPagado.toString(),
       totalServicios: this.registroContratante!.totalServicios.toString()
     }

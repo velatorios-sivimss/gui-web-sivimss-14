@@ -5,7 +5,7 @@
       <div class="col-md-6">
         <label class="control-label" for="tipoFactura">Tipo de factura<span class="req">*</span>:</label>
         <p-dropdown id="tipoFactura" class="form-control" formControlName="tipoFactura" [options]="tiposFactura"
-                    placeholder="Selecciona el tipo de factura" (onChange)="obtenerFolios()">
+                    placeholder="Selecciona el tipo de factura" (onChange)="obtenerFolios()" optionDisabled="disabled">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="pf?.tipoFactura?.errors?.required && (pf?.tipoFactura?.dirty || pf?.tipoFactura?.touched)">Este campo es obligatorio *.</span>
