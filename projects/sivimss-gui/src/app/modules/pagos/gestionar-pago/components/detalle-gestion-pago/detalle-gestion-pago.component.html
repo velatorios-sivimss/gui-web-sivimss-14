@@ -30,9 +30,9 @@
               <span>Importe</span>
               <b>{{pago.importe | currency}}</b>
             </div>
-            <div class="ml-7" *ngIf="['Vale paritaria'].includes(pago.desMetodoPago)"></div>
+            <div class="ml-7" *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.desMetodoPago)"></div>
             <a class="ml-5 cursor-pointer" (click)="mostrarOverlay($event, pago)"
-               *ngIf="!['Vale paritaria'].includes(pago.desMetodoPago)">
+               *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.desMetodoPago)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
           </div>
