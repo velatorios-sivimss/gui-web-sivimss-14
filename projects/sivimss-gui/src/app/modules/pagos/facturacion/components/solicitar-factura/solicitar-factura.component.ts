@@ -62,6 +62,8 @@ export class SolicitarFacturaComponent implements OnInit {
   registroRFC: RegistroRFC | null = null;
   tipoSolicitud!: 1 | 2 | 3 | 4;
 
+  validacionFactura: boolean = false;
+
   constructor(private formBuilder: FormBuilder,
               private readonly activatedRoute: ActivatedRoute,
               private facturacionService: FacturacionService,

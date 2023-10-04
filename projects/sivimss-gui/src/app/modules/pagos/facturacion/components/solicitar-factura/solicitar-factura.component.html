@@ -136,12 +136,24 @@
         <span class="control-label">*Campos obligatorios</span>
       </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="!validacionFactura">
       <div class="col-md-12 flex justify-content-end mb-4">
         <button type="reset" class="ml-4 btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
         <button type="submit" class="ml-4 btn btn-primary btn-md"
-                [disabled]="datosCFDIForm.invalid || datosContratanteForm.invalid" (click)="generarSolicitudFactura()">
+                [disabled]="datosCFDIForm.invalid || datosContratanteForm.invalid"
+                (click)="validacionFactura = !validacionFactura">
           Generar factura
+        </button>
+      </div>
+    </div>
+    <div class="row" *ngIf="validacionFactura">
+      <div class="mb-3 mt-3 row text-center">
+        ¿Estás seguro de generar la factura con la información ingresada?
+      </div>
+      <div class="flex justify-content-end mt-5">
+        <button type="button" class="btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
+        <button type="button" class="ml-4 btn btn-primary btn-md" (click)="generarSolicitudFactura();">
+          Aceptar
         </button>
       </div>
     </div>
