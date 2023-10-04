@@ -51,6 +51,7 @@ export class GenerarValeSalidaComponent implements OnInit {
   idOds: number = 0;
   paso: 'formulario' | 'confirmacion' = 'formulario';
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
+  rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
   constructor(
     private route: ActivatedRoute,
@@ -75,11 +76,11 @@ export class GenerarValeSalidaComponent implements OnInit {
     this.breadcrumbService.actualizar([]);
   }
 
-  inicializarForm(): void {
+  async inicializarForm() {
     this.generarValeSalidaForm = this.formBuilder.group({
-      nivel: new FormControl({ value: 1, disabled: true }, [Validators.required]),
-      delegacion: new FormControl({ value: null, disabled: false }),
-      velatorio: new FormControl({ value: null, disabled: false }),
+      nivel: new FormControl({ value: +this.rolLocalStorage.idOficina || null, disabled: +this.rolLocalStorage.idOficina >= 1 }, [Validators.required]),
+      delegacion: new FormControl({ value: +this.rolLocalStorage.idDelegacion || null, disabled: +this.rolLocalStorage.idOficina >= 2 }, []),
+      velatorio: new FormControl({ value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3 }, []),
       folio: new FormControl({ value: null, disabled: false }, [Validators.required, Validators.maxLength(11)]),
       nombreContratante: new FormControl({ value: null, disabled: true }, []),
       nombreFinado: new FormControl({ value: null, disabled: true }, []),
@@ -97,6 +98,8 @@ export class GenerarValeSalidaComponent implements OnInit {
       estado: new FormControl({ value: null, disabled: true }, [Validators.required]),
       articulos: this.formBuilder.array([]),
     });
+
+    await this.obtenerVelatorios();
   }
 
   addControls(articulo: Articulo) {
@@ -110,7 +113,7 @@ export class GenerarValeSalidaComponent implements OnInit {
     });
   }
 
-  obtenerVelatorios() {
+  async obtenerVelatorios() {
     this.foliosGenerados = [];
     this.velacionDomicilioService.obtenerVelatoriosPorDelegacion(this.f.delegacion.value).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
@@ -228,7 +231,7 @@ export class GenerarValeSalidaComponent implements OnInit {
       cantidadArticulos: this.articulos.length,
       fechaSalida: moment(this.f.fechaSalida.value).format('DD-MM-yyyy'),
       idOds: this.idOds,
-      idVelatorio: this.f.velatorio.value,
+      idVelatorio: this.f.velatorio.getRawValue(),
     }
   }
 
