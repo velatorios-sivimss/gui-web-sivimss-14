@@ -4,7 +4,7 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {REGISTROS_PAGOS} from "../../constants/dummies";
 import {TIPO_FACTURACION} from "../../constants/tipoFacturacion";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {FacturacionService} from "../../services/facturacion.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -16,6 +16,7 @@ import {RegistroRFC} from "../../models/registroRFC.interface";
 import {forkJoin, Observable} from "rxjs";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {SolicitudGenerarFact} from "../../models/solicitudGenerarFact.interface";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 interface Folio {
   idRegistro: number,
@@ -65,10 +66,12 @@ export class SolicitarFacturaComponent implements OnInit {
   validacionFactura: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
-              private readonly activatedRoute: ActivatedRoute,
+              private readonly router: Router,
+              private route: ActivatedRoute,
               private facturacionService: FacturacionService,
               private cargadorService: LoaderService,
-              private mensajesSistemaService: MensajesSistemaService
+              private mensajesSistemaService: MensajesSistemaService,
+              private alertaService: AlertaService,
   ) {
   }
 
@@ -240,9 +243,14 @@ export class SolicitarFacturaComponent implements OnInit {
   }
 
   generarSolicitudFactura(): void {
+    this.cargadorService.activar();
     const solicitudFactura: SolicitudGenerarFact = this.generarSolicitud();
-    this.facturacionService.generarSolicitudPago(solicitudFactura).subscribe({
+    this.facturacionService.generarSolicitudPago(solicitudFactura).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Factura registrada correctamente');
+        void this.router.navigate(['./..'], {relativeTo: this.route});
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
