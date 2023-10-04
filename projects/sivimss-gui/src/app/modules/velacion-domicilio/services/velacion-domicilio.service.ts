@@ -36,7 +36,7 @@ export class VelacionDomicilioService extends BaseService<HttpRespuesta<any>, an
   }
 
   obtenerDetalleValeSalida(idValeSalida: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idValeSalida}?servicio=consultar-vale-salida-detalle`);
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idValeSalida}?servicio=consultar-vale-salida-detalle&id=${idValeSalida}`);
   }
 
   obtenerDatosFolioOds(datos: any): Observable<HttpRespuesta<any>> {
