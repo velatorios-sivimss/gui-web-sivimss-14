@@ -32,7 +32,9 @@ interface RegistroFacturacion {
   folio: string,
   folioFactura: number,
   importe: number,
-  rfc: string
+  rfc: string,
+  folioFiscal: string,
+  nomVelatorio: string
 }
 
 interface ParamsCancelar {
@@ -242,7 +244,7 @@ export class FacturacionComponent implements OnInit {
   crearParamsCancelar(): ParamsCancelar {
     return {
       folioFactura: this.registroSeleccionado.folioFactura,
-      folioFiscal: "",
+      folioFiscal: this.registroSeleccionado.folioFiscal,
       folioRelacionado: this.registroSeleccionado.folio
     }
   }
