@@ -1,6 +1,55 @@
 <app-titulo-principal titulo="Cancelar Factura"></app-titulo-principal>
-<ng-container *ngIf="!validacionCancelacion">
-  <form [formGroup]="cancelarForm" (submit)="mostrarDialogCancelacion = true">
+<ng-container [ngSwitch]="pasoCancelarFactura">
+  <ng-container *ngSwitchCase="CAPTURA_DE_CANCELACION">
+    <form [formGroup]="cancelarForm" (submit)="pasoCancelarFactura = RESUMEN_DE_CANCELACION">
+      <app-table-panel>
+        <ng-template appCustomTemplate="left-header">
+          <div class="table-panel-header-column">
+            <span class="ml-2 font-bold">Folio de la factura {{registroCancelar.folioFactura}}</span>
+          </div>
+        </ng-template>
+        <div class="row table-panel-row">
+          <div class="col-md-12">
+            <div class="table-panel-column">
+              <label>Folio Fiscal</label>
+              <span>{{registroCancelar.folioFiscal}}</span>
+            </div>
+          </div>
+        </div>
+      </app-table-panel>
+      <div class="row mb-3 mt-3">
+        <div class="col-md-6">
+          <label class="control-label" for="motivoCancelacion">Motivo de cancelación<span class="req">*</span>:</label>
+          <p-dropdown id="motivoCancelacion" class="form-control" formControlName="motivoCancelacion"
+                      [options]="motivos"
+                      placeholder="Selecciona el motivo de cancelación">
+          </p-dropdown>
+          <span class="campo-obligatorio"
+                *ngIf="fc?.motivoCancelacion?.errors?.required && (fc?.motivoCancelacion?.dirty || fc?.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="folioRelacionado">Folio relacionado<span class="req">*</span>:</label>
+          <input id="folioRelacionado" class="form-control" formControlName="folioRelacionado"
+                 placeholder="Inserta el folio relacionado">
+          <span class="campo-obligatorio"
+                *ngIf="fc?.folioRelacionado?.errors?.required && (fc?.folioRelacionado?.dirty || fc?.folioRelacionado?.touched)">Este campo es obligatorio *.</span>
+        </div>
+      </div>
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <span class="control-label">*Campos obligatorios</span>
+        </div>
+      </div>
+      <div class="row mt-6">
+        <div class="col-md-12 flex justify-content-end">
+          <button type="button" class="btn btn-default btn-md" [routerLink]="'./..'">Cerrar</button>
+          <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="cancelarForm.invalid">Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngSwitchCase="RESUMEN_DE_CANCELACION">
     <app-table-panel>
       <ng-template appCustomTemplate="left-header">
         <div class="table-panel-header-column">
@@ -8,97 +57,36 @@
         </div>
       </ng-template>
       <div class="row table-panel-row">
-        <div class="col-md-12">
+        <div class="col-md-2">
           <div class="table-panel-column">
             <label>Folio Fiscal</label>
             <span>{{registroCancelar.folioFiscal}}</span>
           </div>
         </div>
+        <div class="col-md-4">
+          <div class="table-panel-column">
+            <label>Motivo de Cancelación</label>
+            <span></span>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="table-panel-column">
+            <label>Folio Relacionado</label>
+            <span></span>
+          </div>
+        </div>
       </div>
     </app-table-panel>
-    <div class="row mb-3 mt-3">
-      <div class="col-md-6">
-        <label class="control-label" for="motivoCancelacion">Motivo de cancelación<span class="req">*</span>:</label>
-        <p-dropdown id="motivoCancelacion" class="form-control" formControlName="motivoCancelacion" [options]="motivos"
-                    placeholder="Selecciona el motivo de cancelación">
-        </p-dropdown>
-        <span class="campo-obligatorio"
-              *ngIf="fc?.motivoCancelacion?.errors?.required && (fc?.motivoCancelacion?.dirty || fc?.motivoCancelacion?.touched)">Este campo es obligatorio *.</span>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="folioRelacionado">Folio relacionado<span class="req">*</span>:</label>
-        <input id="folioRelacionado" class="form-control" formControlName="folioRelacionado"
-               placeholder="Inserta el folio relacionado">
-        <span class="campo-obligatorio"
-              *ngIf="fc?.folioRelacionado?.errors?.required && (fc?.folioRelacionado?.dirty || fc?.folioRelacionado?.touched)">Este campo es obligatorio *.</span>
-      </div>
-    </div>
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <span class="control-label">*Campos obligatorios</span>
-      </div>
-    </div>
-    <div class="row mt-6">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="button" class="btn btn-default btn-md" [routerLink]="'./..'">Cerrar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="cancelarForm.invalid"
-                (click)="validacionCancelacion = !validacionCancelacion">Cancelar
-        </button>
-      </div>
-    </div>
-  </form>
-</ng-container>
-<ng-container *ngIf="validacionCancelacion">
-  <app-table-panel>
-    <ng-template appCustomTemplate="left-header">
-      <div class="table-panel-header-column">
-        <span class="ml-2 font-bold">Folio de la factura {{registroCancelar.folioFactura}}</span>
-      </div>
-    </ng-template>
-    <div class="row table-panel-row">
-      <div class="col-md-2">
-        <div class="table-panel-column">
-          <label>Folio Fiscal</label>
-          <span>{{registroCancelar.folioFiscal}}</span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="table-panel-column">
-          <label>Motivo de Cancelación</label>
-          <span></span>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="table-panel-column">
-          <label>Folio Relacionado</label>
-          <span></span>
-        </div>
-      </div>
-    </div>
-  </app-table-panel>
-  <div class="mb-3 mt-3 row text-center">
-    ¿Estas seguro de querer cancelar esta factura?
-  </div>
-  <div class="flex justify-content-end mt-5">
-    <button type="button" class="btn btn-default btn-md" (click)="validacionCancelacion = !validacionCancelacion">
-      Cancelar
-    </button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="generarCancelacionFactura();">
-      Aceptar
-    </button>
-  </div>
-</ng-container>
-
-<p-dialog [(visible)]="mostrarDialogCancelacion" [modal]="true"
-          [style]="{maxWidth:'544px',width: '100%'}"
-          [draggable]="false" [resizable]="false" [header]="'Cancelar factura'">
-  <ng-template pTemplate="content">
     <div class="mb-3 mt-3 row text-center">
       ¿Estas seguro de querer cancelar esta factura?
     </div>
-    <div class="flex justify-content-center">
-      <button class="btn btn-default btn-md mr-3" (click)="mostrarDialogCancelacion = false">Cancelar</button>
-      <button class="btn btn-primary btn-md">Aceptar</button>
+    <div class="flex justify-content-end mt-5">
+      <button type="button" class="btn btn-default btn-md" (click)="pasoCancelarFactura = CAPTURA_DE_CANCELACION">
+        Cancelar
+      </button>
+      <button type="button" class="ml-4 btn btn-primary btn-md" (click)="generarCancelacionFactura();">
+        Aceptar
+      </button>
     </div>
-  </ng-template>
-</p-dialog>
+  </ng-container>
+</ng-container>

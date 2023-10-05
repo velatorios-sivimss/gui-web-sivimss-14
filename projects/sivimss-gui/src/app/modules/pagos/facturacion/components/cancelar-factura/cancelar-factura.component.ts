@@ -27,9 +27,11 @@ export class CancelarFacturaComponent implements OnInit {
   motivos: TipoDropdown[] = [];
   motivosCancelacion: MotivoCancelacion[] = [];
   cancelarForm!: FormGroup;
-  mostrarDialogCancelacion: boolean = false;
   registroCancelar!: ParamsCancelar;
-  validacionCancelacion: boolean = false;
+
+  readonly CAPTURA_DE_CANCELACION: number = 1;
+  readonly RESUMEN_DE_CANCELACION: number = 2;
+  pasoCancelarFactura: number = 1;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
