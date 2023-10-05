@@ -4,7 +4,7 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../../utils/constantes";
 import {REGISTROS_PAGOS} from "../../constants/dummies";
 import {TIPO_FACTURACION} from "../../constants/tipoFacturacion";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {FacturacionService} from "../../services/facturacion.service";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -16,6 +16,7 @@ import {RegistroRFC} from "../../models/registroRFC.interface";
 import {forkJoin, Observable} from "rxjs";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {SolicitudGenerarFact} from "../../models/solicitudGenerarFact.interface";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 interface Folio {
   idRegistro: number,
@@ -51,7 +52,7 @@ export class SolicitarFacturaComponent implements OnInit {
   datosContratanteForm!: FormGroup;
   datosCFDIForm!: FormGroup;
   indice: number = 0;
-  tiposFactura: TipoDropdown[] = TIPO_FACTURACION;
+  tiposFactura: any[] = TIPO_FACTURACION;
   folios: TipoDropdown[] = [];
   servicios: any[] = REGISTROS_PAGOS;
   cfdi: TipoDropdown[] = [];
@@ -59,14 +60,18 @@ export class SolicitarFacturaComponent implements OnInit {
   formasPago: TipoDropdown[] = [];
   registroFolios: Folio[] = [];
   registroContratante: DatosContratante | null = null;
-  registroRFC!: RegistroRFC;
+  registroRFC: RegistroRFC | null = null;
   tipoSolicitud!: 1 | 2 | 3 | 4;
 
+  validacionFactura: boolean = false;
+
   constructor(private formBuilder: FormBuilder,
-              private readonly activatedRoute: ActivatedRoute,
+              private readonly router: Router,
+              private route: ActivatedRoute,
               private facturacionService: FacturacionService,
               private cargadorService: LoaderService,
-              private mensajesSistemaService: MensajesSistemaService
+              private mensajesSistemaService: MensajesSistemaService,
+              private alertaService: AlertaService,
   ) {
   }
 
@@ -95,8 +100,8 @@ export class SolicitarFacturaComponent implements OnInit {
       cfdi: [{value: null, disabled: false}, [Validators.required]],
       metodoPago: [{value: null, disabled: false}, [Validators.required]],
       formaPago: [{value: null, disabled: false}, [Validators.required]],
-      observaciones1: [{value: '000000000', disabled: true}, [Validators.required]],
-      observaciones2: [{value: null, disabled: false}],
+      observaciones1: [{value: null, disabled: true}],
+      observaciones2: [{value: null, disabled: false}, [Validators.required]],
     });
   }
 
@@ -111,6 +116,7 @@ export class SolicitarFacturaComponent implements OnInit {
       this.datosContratanteDirForm.resetForm({});
     }
     this.registroContratante = null;
+    this.registroRFC = null;
     this.limpiarCatalogos();
   }
 
@@ -184,7 +190,8 @@ export class SolicitarFacturaComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.registroRFC = respuesta.datos;
-        this.cargarCatalogosTipoPersona(this.registroRFC.tipoPersona)
+        this.cargarCatalogosTipoPersona(this.registroRFC!.tipoPersona);
+        this.seleccionarObservaciones();
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -236,9 +243,14 @@ export class SolicitarFacturaComponent implements OnInit {
   }
 
   generarSolicitudFactura(): void {
+    this.cargadorService.activar();
     const solicitudFactura: SolicitudGenerarFact = this.generarSolicitud();
-    this.facturacionService.generarSolicitudPago(solicitudFactura).subscribe({
+    this.facturacionService.generarSolicitudPago(solicitudFactura).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Factura registrada correctamente');
+        void this.router.navigate(['./..'], {relativeTo: this.route});
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
@@ -253,7 +265,7 @@ export class SolicitarFacturaComponent implements OnInit {
     const metodoPago = this.datosCFDIForm.get('metodoPago')?.value;
     const METODO_PAGO = this.metodosPago.find(registro => registro.value === metodoPago);
     const formaPago = this.datosCFDIForm.get('formaPago')?.value;
-    const FORMA_PAGO = this.metodosPago.find(registro => registro.value === formaPago);
+    const FORMA_PAGO = this.formasPago.find(registro => registro.value === formaPago);
     const correo = this.datosContratanteForm.get('correoElectronico')?.value;
     const rfc = this.datosContratanteForm.get('rfc')?.value;
     const folio = this.solicitudForm.get('folio')?.value;
@@ -261,41 +273,45 @@ export class SolicitarFacturaComponent implements OnInit {
     const folioSeleccionado = this.registroFolios.find(f => f.folio === folio);
     const obsAutomatica = this.datosCFDIForm.get('observaciones1')?.value;
     const obsManual = this.datosCFDIForm.get('observaciones2')?.value;
+    const [cveRegimenFiscal] = this.registroRFC?.regimenFiscal.split(" ") ?? '';
     return {
+      concPago: this.registroContratante?.concPago ?? '',
+      cveRegimenFiscal,
+      fecPago: this.registroContratante?.fecPago ?? '',
       cfdi: {desCfdi: CFDI!.label, idCfdi: CFDI!.value as number},
       correo,
       domicilioFiscal: {
-        calle: this.registroRFC.domicilioFiscal.calle,
-        email: this.registroRFC.domicilioFiscal.email,
-        paisResidencia: this.registroRFC.domicilioFiscal.paisResidencia,
-        telefono1: this.registroRFC.domicilioFiscal.telefono1,
-        telefono2: this.registroRFC.domicilioFiscal.telefono2,
-        calr: this.registroRFC.domicilioFiscal.calr,
-        ccrh: this.registroRFC.domicilioFiscal.ccrh,
-        cp: this.registroRFC.domicilioFiscal.cp,
-        dalr: this.registroRFC.domicilioFiscal.dalr,
-        dcrh: this.registroRFC.domicilioFiscal.dcrh,
-        caractDomicilio: this.registroRFC.domicilioFiscal.caractDomicilio,
-        ccolonia: this.registroRFC.domicilioFiscal.ccolonia,
-        centFed: this.registroRFC.domicilioFiscal.centFed,
-        clocalidad: this.registroRFC.domicilioFiscal.clocalidad,
-        cmunicipio: this.registroRFC.domicilioFiscal.cmunicipio,
-        dcolonia: this.registroRFC.domicilioFiscal.dcolonia,
-        dentFed: this.registroRFC.domicilioFiscal.dentFed,
-        dentreCalle1: this.registroRFC.domicilioFiscal.dentreCalle1,
-        dentreCalle2: this.registroRFC.domicilioFiscal.dentreCalle2,
-        dinmueble: this.registroRFC.domicilioFiscal.dinmueble,
-        dlocalidad: this.registroRFC.domicilioFiscal.dlocalidad,
-        dmunicipio: this.registroRFC.domicilioFiscal.dmunicipio,
-        dreferencia: this.registroRFC.domicilioFiscal.dreferencia,
-        dvialidad: this.registroRFC.domicilioFiscal.dvialidad,
-        faltaDom: this.registroRFC.domicilioFiscal.faltaDom,
-        nexterior: this.registroRFC.domicilioFiscal.nexterior,
-        ninterior: this.registroRFC.domicilioFiscal.ninterior,
-        tinmueble: this.registroRFC.domicilioFiscal.tinmueble,
-        ttel1: this.registroRFC.domicilioFiscal.ttel1,
-        ttel2: this.registroRFC.domicilioFiscal.ttel2,
-        tvialidad: this.registroRFC.domicilioFiscal.tvialidad
+        calle: this.registroRFC!.domicilioFiscal.calle,
+        email: this.registroRFC!.domicilioFiscal.email,
+        paisResidencia: this.registroRFC!.domicilioFiscal.paisResidencia,
+        telefono1: this.registroRFC!.domicilioFiscal.telefono1,
+        telefono2: this.registroRFC!.domicilioFiscal.telefono2,
+        calr: this.registroRFC!.domicilioFiscal.calr,
+        ccrh: this.registroRFC!.domicilioFiscal.ccrh,
+        cp: this.registroRFC!.domicilioFiscal.cp,
+        dalr: this.registroRFC!.domicilioFiscal.dalr,
+        dcrh: this.registroRFC!.domicilioFiscal.dcrh,
+        caractDomicilio: this.registroRFC!.domicilioFiscal.caractDomicilio,
+        ccolonia: this.registroRFC!.domicilioFiscal.ccolonia,
+        centFed: this.registroRFC!.domicilioFiscal.centFed,
+        clocalidad: this.registroRFC!.domicilioFiscal.clocalidad,
+        cmunicipio: this.registroRFC!.domicilioFiscal.cmunicipio,
+        dcolonia: this.registroRFC!.domicilioFiscal.dcolonia,
+        dentFed: this.registroRFC!.domicilioFiscal.dentFed,
+        dentreCalle1: this.registroRFC!.domicilioFiscal.dentreCalle1,
+        dentreCalle2: this.registroRFC!.domicilioFiscal.dentreCalle2,
+        dinmueble: this.registroRFC!.domicilioFiscal.dinmueble,
+        dlocalidad: this.registroRFC!.domicilioFiscal.dlocalidad,
+        dmunicipio: this.registroRFC!.domicilioFiscal.dmunicipio,
+        dreferencia: this.registroRFC!.domicilioFiscal.dreferencia,
+        dvialidad: this.registroRFC!.domicilioFiscal.dvialidad,
+        faltaDom: this.registroRFC!.domicilioFiscal.faltaDom,
+        nexterior: this.registroRFC!.domicilioFiscal.nexterior,
+        ninterior: this.registroRFC!.domicilioFiscal.ninterior,
+        tinmueble: this.registroRFC!.domicilioFiscal.tinmueble,
+        ttel1: this.registroRFC!.domicilioFiscal.ttel1,
+        ttel2: this.registroRFC!.domicilioFiscal.ttel2,
+        tvialidad: this.registroRFC!.domicilioFiscal.tvialidad
       },
       folio,
       forPago: {desForPago: FORMA_PAGO!.label, idForPago: FORMA_PAGO!.value as number},
@@ -306,15 +322,44 @@ export class SolicitarFacturaComponent implements OnInit {
       nomContratante: this.registroContratante!.nomContratante,
       obsAutomatica,
       obsManual,
-      razonSocial: this.registroRFC.razonSocial,
-      regimenFiscal: this.registroRFC.regimenFiscal,
+      razonSocial: this.registroRFC!.razonSocial,
+      regimenFiscal: this.registroRFC!.regimenFiscal,
       rfc,
       servicios: this.registroContratante!.servicios,
       tipoFactura,
-      tipoPersona: this.registroRFC.tipoPersona,
+      tipoPersona: this.registroRFC!.tipoPersona,
       totalPagado: this.registroContratante!.totalPagado.toString(),
       totalServicios: this.registroContratante!.totalServicios.toString()
     }
+  }
+
+  seleccionarObservaciones(): void {
+    const idFactura = this.solicitudForm.get('tipoFactura')?.value;
+    if (idFactura === 1) {
+      this.datosCFDIForm.get('observaciones1')?.patchValue(this.crearObservacionesODS());
+      return;
+    }
+    this.datosCFDIForm.get('observaciones1')?.patchValue(this.crearObservacionesConvenio());
+  }
+
+  crearObservacionesODS(): string {
+    const folio = this.solicitudForm.get('folio')?.value
+    const finado = '';
+    const fechaFinado = '';
+    const idMetodoPago = this.datosCFDIForm.get('metodoPago')?.value;
+    const metodoPago = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
+    const idFormaPago = this.datosCFDIForm.get('formaPago')?.value;
+    const formaPago = this.formasPago.find(fP => fP.value === idFormaPago)?.label ?? '';
+    return `${folio} ${finado} ${fechaFinado} ${metodoPago} ${formaPago}`;
+  }
+
+  crearObservacionesConvenio(): string {
+    const folio = this.solicitudForm.get('folio')?.value
+    const idMetodoPago = this.datosCFDIForm.get('metodoPago')?.value;
+    const metodoPago = this.metodosPago.find(mP => mP.value === idMetodoPago)?.label ?? '';
+    const idFormaPago = this.datosCFDIForm.get('formaPago')?.value;
+    const formaPago = this.formasPago.find(fP => fP.value === idFormaPago)?.label ?? '';
+    return `${folio} ${metodoPago} ${formaPago}`;
   }
 
   get pf() {
