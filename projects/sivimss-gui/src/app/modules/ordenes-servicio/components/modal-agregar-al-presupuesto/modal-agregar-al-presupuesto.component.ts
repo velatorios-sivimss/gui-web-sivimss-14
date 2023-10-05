@@ -20,6 +20,7 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
   muestraServicio: boolean = true;
 
   idInventario: number[] = [];
+  servicioExtremidad: boolean = true;
 
   constructor(
     private readonly ref: DynamicDialogRef,
@@ -31,6 +32,7 @@ export class ModalAgregarAlPresupuestoComponent implements OnInit {
     //Obtener la info que le pasa el componente que abre el modal
     this.idVelatorio = this.config.data.idVelatorio;
     this.mostrarOpciones(this.config.data.tipoOrden);
+    this.servicioExtremidad = this.config.data.servicioExtremidad;
     this.config.data.presupuesto.forEach((dato:any) => {
       this.idInventario.push(dato.idInventario)
     });
