@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from "../../../../utils/base-service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AutenticacionService} from "../../../../services/autenticacion.service";
 import {environment} from "../../../../../environments/environment";
 import {Observable} from "rxjs";
@@ -82,5 +82,15 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
 
   cancelarFactura(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/cancelar_factura`, body);
+  }
+
+  generarFactura(idFactura: number): Observable<Blob> {
+    const body = {idFactura};
+    const headers: HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/generar-factura-pdf/generarDocumento/pdf`, body,
+      {headers, responseType: 'blob' as 'json'});
   }
 }

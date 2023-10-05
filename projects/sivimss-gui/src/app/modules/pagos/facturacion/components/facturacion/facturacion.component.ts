@@ -24,6 +24,7 @@ import {LoaderService} from "../../../../../shared/loader/services/loader.servic
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {FiltrosFacturacion} from "../../models/filtrosFacturacion.interface";
 import {ActivatedRoute, Router} from "@angular/router";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
 
 interface RegistroFacturacion {
   contratante: string,
@@ -47,7 +48,7 @@ interface ParamsCancelar {
   selector: 'app-facturacion',
   templateUrl: './facturacion.component.html',
   styleUrls: ['./facturacion.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class FacturacionComponent implements OnInit {
 
@@ -72,6 +73,9 @@ export class FacturacionComponent implements OnInit {
   registros: RegistroFacturacion[] = [];
   registroSeleccionado!: RegistroFacturacion;
   tipoPago: number | null = null;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
+
+  mostrarModalDescargaExitosa: boolean = false;
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -83,6 +87,7 @@ export class FacturacionComponent implements OnInit {
     private mensajesSistemaService: MensajesSistemaService,
     private readonly router: Router,
     private route: ActivatedRoute,
+    private descargaArchivosService: DescargaArchivosService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -249,4 +254,21 @@ export class FacturacionComponent implements OnInit {
     }
   }
 
+  descargarFactura(): void {
+    const {folioFactura} = this.registroSeleccionado;
+    this.cargadorService.activar();
+    this.descargaArchivosService.descargarArchivo(this.facturacionService.generarFactura(folioFactura)).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: boolean): void => {
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
 }
