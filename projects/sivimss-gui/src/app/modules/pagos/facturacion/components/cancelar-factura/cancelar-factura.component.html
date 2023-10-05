@@ -1,7 +1,7 @@
 <app-titulo-principal titulo="Cancelar Factura"></app-titulo-principal>
 <ng-container [ngSwitch]="pasoCancelarFactura">
   <ng-container *ngSwitchCase="CAPTURA_DE_CANCELACION">
-    <form [formGroup]="cancelarForm" (submit)="pasoCancelarFactura = RESUMEN_DE_CANCELACION">
+    <form [formGroup]="cancelarForm" (submit)="realizarCancelacionFactura()">
       <app-table-panel>
         <ng-template appCustomTemplate="left-header">
           <div class="table-panel-header-column">
@@ -66,13 +66,13 @@
         <div class="col-md-4">
           <div class="table-panel-column">
             <label>Motivo de Cancelación</label>
-            <span></span>
+            <span>{{solicitudCancelacion.motivoCancelacion?.descripcion}}</span>
           </div>
         </div>
         <div class="col-md-2">
           <div class="table-panel-column">
             <label>Folio Relacionado</label>
-            <span></span>
+            <span>{{solicitudCancelacion.folioRelacionado}}</span>
           </div>
         </div>
       </div>

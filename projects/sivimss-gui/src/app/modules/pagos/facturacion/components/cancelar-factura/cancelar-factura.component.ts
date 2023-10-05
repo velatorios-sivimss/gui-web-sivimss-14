@@ -17,6 +17,13 @@ interface MotivoCancelacion {
   aplicaFolio: boolean
 }
 
+interface SolicitudCancelacion {
+  folioFactura: string,
+  folioFiscal: string,
+  folioRelacionado: string,
+  motivoCancelacion: MotivoCancelacion | null
+}
+
 @Component({
   selector: 'app-cancelar-factura',
   templateUrl: './cancelar-factura.component.html',
@@ -28,6 +35,7 @@ export class CancelarFacturaComponent implements OnInit {
   motivosCancelacion: MotivoCancelacion[] = [];
   cancelarForm!: FormGroup;
   registroCancelar!: ParamsCancelar;
+  solicitudCancelacion!: SolicitudCancelacion;
 
   readonly CAPTURA_DE_CANCELACION: number = 1;
   readonly RESUMEN_DE_CANCELACION: number = 2;
@@ -65,6 +73,22 @@ export class CancelarFacturaComponent implements OnInit {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.motivosCancelacion = respuesta.datos;
     this.motivos = mapearArregloTipoDropdown(respuesta.datos, 'descripcion', 'idMotivoCancelacion');
+  }
+
+  realizarCancelacionFactura(): void {
+    this.solicitudCancelacion = this.generarSolicitudCancelacion();
+    this.pasoCancelarFactura = this.RESUMEN_DE_CANCELACION;
+  }
+
+  generarSolicitudCancelacion(): SolicitudCancelacion {
+    const motivo =  this.cancelarForm.get('motivoCancelacion')?.value;
+    const motivoCancelacion = this.motivosCancelacion.find(mC => mC.idMotivoCancelacion === motivo) ?? null;
+    return {
+      folioFactura: this.registroCancelar.folioFactura.toString(),
+      folioFiscal: this.registroCancelar.folioFiscal,
+      folioRelacionado: this.cancelarForm.get('folioRelacionado')?.value,
+      motivoCancelacion
+    }
   }
 
   generarCancelacionFactura(): void {
