@@ -265,7 +265,7 @@ export class SolicitarFacturaComponent implements OnInit {
     const metodoPago = this.datosCFDIForm.get('metodoPago')?.value;
     const METODO_PAGO = this.metodosPago.find(registro => registro.value === metodoPago);
     const formaPago = this.datosCFDIForm.get('formaPago')?.value;
-    const FORMA_PAGO = this.metodosPago.find(registro => registro.value === formaPago);
+    const FORMA_PAGO = this.formasPago.find(registro => registro.value === formaPago);
     const correo = this.datosContratanteForm.get('correoElectronico')?.value;
     const rfc = this.datosContratanteForm.get('rfc')?.value;
     const folio = this.solicitudForm.get('folio')?.value;
@@ -273,9 +273,10 @@ export class SolicitarFacturaComponent implements OnInit {
     const folioSeleccionado = this.registroFolios.find(f => f.folio === folio);
     const obsAutomatica = this.datosCFDIForm.get('observaciones1')?.value;
     const obsManual = this.datosCFDIForm.get('observaciones2')?.value;
+    const [cveRegimenFiscal] = this.registroRFC?.regimenFiscal.split(" ") ?? '';
     return {
       concPago: this.registroContratante?.concPago ?? '',
-      cveRegimenFiscal: this.registroRFC?.regimenFiscal ?? '',
+      cveRegimenFiscal,
       fecPago: this.registroContratante?.fecPago ?? '',
       cfdi: {desCfdi: CFDI!.label, idCfdi: CFDI!.value as number},
       correo,
