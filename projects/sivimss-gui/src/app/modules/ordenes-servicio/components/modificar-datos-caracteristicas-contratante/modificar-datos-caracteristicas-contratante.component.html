@@ -55,7 +55,7 @@
               <td>{{paquete.totalPaquete | currency:"USD":"symbol"}}</td>
               <td style="width:200px">
                 {{paquete.agregado}}
-                <div class="flex ">
+                <div class="flex " *ngIf="validarEscenarioExtremidad(paquete.idTipoServicio)">
                   <div class="flex align-items- mr-2">
                     <p-radioButton [name]="rowIndex+1" [value]="true" [(ngModel)]="paquete.utilizarArticulo"
                                    [inputId]="'utilizarArticulo'+(rowIndex+1)" [disabled]="paquete.bloquearRadioButton"
@@ -137,8 +137,8 @@
                                   (click)="abrirModalAgregarAtaud($event)"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="mostrarTraslado" titulo="Seleccionar Proveedor"
                                   (click)="abrirModalAgregarProveedorTraslado($event)"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="mostrarDonarAtaud" titulo="Donar Ataúd"
-                                  (click)="abrirModalDonarAtaud($event)"></app-overlay-panel-opcion>
+<!--        <app-overlay-panel-opcion *ngIf="mostrarDonarAtaud" titulo="Donar Ataúd"-->
+<!--                                  (click)="abrirModalDonarAtaud($event)"></app-overlay-panel-opcion>-->
         <app-overlay-panel-opcion *ngIf="mostrarQuitarPresupuesto" titulo="Quitar"
                                   (click)="confQuitarPresupuesto = true"></app-overlay-panel-opcion>
       </app-overlay-panel-opciones>

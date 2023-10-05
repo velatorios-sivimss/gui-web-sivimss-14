@@ -63,6 +63,10 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
   }
 
   buscarAtaudes(idVelatorio: number, idAsignacion: number): void {
+    if(idAsignacion == 2) {
+      this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(202));
+      return
+    }
     this.loaderService.activar();
     const parametros = {
       idVelatorio: idVelatorio,

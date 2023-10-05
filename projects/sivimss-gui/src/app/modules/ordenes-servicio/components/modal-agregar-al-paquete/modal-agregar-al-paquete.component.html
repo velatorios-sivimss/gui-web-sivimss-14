@@ -6,6 +6,7 @@
           <p-radioButton [inputId]="asignacion" name="asignacion" [value]="asignacion" [(ngModel)]="selectIdAsignacion"
             (onClick)="limpiarSelects()"></p-radioButton>
           <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='1'"> Consignado </label>
+          <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='2'"> Propio </label>
           <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='3'"> Donado </label>
           <label [for]="asignacion" class="ml-2" *ngIf="asignacion=='5'"> Económico </label>
         </div>

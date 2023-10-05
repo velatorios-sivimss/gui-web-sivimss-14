@@ -190,8 +190,7 @@ export class AceptacionDonacionComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.idOrdenServicio = 0;
-        this.f.nombreContratante.patchValue(null);
-        this.f.nombreFinado.patchValue(null);
+        this.limpiarDatos();
         if(respuesta.datos.length > 0){
           this.idOrdenServicio = respuesta.datos[0].idOrdenService;
           this.f.nombreContratante.setValue(respuesta.datos[0].nombreContratante);
@@ -209,6 +208,11 @@ export class AceptacionDonacionComponent implements OnInit {
     });
   }
 
+  limpiarDatos(): void {
+    this.f.nombreContratante.patchValue(null);
+    this.f.nombreFinado.patchValue(null);
+    this.ataudDonado = [];
+  }
   nombreOoad(idOoad: number): string {
     let nombreDelegacion: TipoDropdown[];
 

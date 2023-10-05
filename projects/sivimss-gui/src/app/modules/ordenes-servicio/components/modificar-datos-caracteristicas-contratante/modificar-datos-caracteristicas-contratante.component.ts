@@ -612,7 +612,8 @@ export class ModificarDatosCaracteristicasContratanteComponent
       data: {
         idVelatorio: this.idVelatorio,
         tipoOrden: this.tipoOrden,
-        presupuesto: this.datosPresupuesto
+        presupuesto: this.datosPresupuesto,
+        servicioExtremidad: this.altaODS.finado.extremidad
       },
     });
     ref.onClose.subscribe((salida: any) => {
@@ -1148,6 +1149,13 @@ export class ModificarDatosCaracteristicasContratanteComponent
       this.caracteristicasPaquete.detallePaquete = this.detallePaquete;
     }
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
+  }
+
+  validarEscenarioExtremidad(idTipoServicio:string): boolean {
+    if(this.altaODS.finado.extremidad){
+      if(Number(idTipoServicio) != 3) return false
+    }
+    return true
   }
 
 

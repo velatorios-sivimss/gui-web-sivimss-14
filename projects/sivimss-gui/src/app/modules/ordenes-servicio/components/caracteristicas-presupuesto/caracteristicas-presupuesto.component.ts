@@ -1076,7 +1076,8 @@ export class CaracteristicasPresupuestoComponent
       data: {
         idVelatorio: this.idVelatorio,
         tipoOrden: this.tipoOrden,
-        presupuesto: this.datosPresupuesto
+        presupuesto: this.datosPresupuesto,
+        servicioExtremidad: this.altaODS.finado.extremidad
       },
     });
     ref.onClose.subscribe((salida: any) => {
@@ -1112,6 +1113,12 @@ export class CaracteristicasPresupuestoComponent
       this.alertaService.mostrar(TipoAlerta.Info,this.mensajesSistemaService.obtenerMensajeSistemaPorId(101));
       return false
     }
+  }
+  validarEscenarioExtremidad(idTipoServicio:string): boolean {
+    if(this.altaODS.finado.extremidad){
+      if(Number(idTipoServicio) != 3) return false
+    }
+    return true
   }
 
   validacionFormulario(): boolean {
