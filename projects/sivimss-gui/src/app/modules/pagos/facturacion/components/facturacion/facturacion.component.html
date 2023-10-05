@@ -141,7 +141,7 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Ver factura" class="text-center" onCloseOnNavigation
                                 (click)="abrirModalDetalleFacturacion()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'">
+      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'" *ngIf="true">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()">
       </app-overlay-panel-opcion>
