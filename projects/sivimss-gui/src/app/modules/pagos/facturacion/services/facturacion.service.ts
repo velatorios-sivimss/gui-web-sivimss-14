@@ -79,4 +79,8 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
       .append('servicio', 'consultar-cancelacion-facturacion');
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, {params});
   }
+
+  cancelarFactura(body: any): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/cancelar_factura`, body);
+  }
 }

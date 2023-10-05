@@ -1,8 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {FacturacionService} from "../../services/facturacion.service";
+import {HttpErrorResponse} from "@angular/common/http";
+import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
+import {AlertaService, TipoAlerta} from "../../../../../shared/alerta/services/alerta.service";
 
 interface ParamsCancelar {
   folioFactura: number,
@@ -44,6 +48,10 @@ export class CancelarFacturaComponent implements OnInit {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
+    private readonly router: Router,
+    private facturacionService: FacturacionService,
+    private mensajesSistemaService: MensajesSistemaService,
+    private alertaService: AlertaService,
   ) {
     this.obtenerParametrosCancelar();
   }
@@ -81,7 +89,7 @@ export class CancelarFacturaComponent implements OnInit {
   }
 
   generarSolicitudCancelacion(): SolicitudCancelacion {
-    const motivo =  this.cancelarForm.get('motivoCancelacion')?.value;
+    const motivo = this.cancelarForm.get('motivoCancelacion')?.value;
     const motivoCancelacion = this.motivosCancelacion.find(mC => mC.idMotivoCancelacion === motivo) ?? null;
     return {
       folioFactura: this.registroCancelar.folioFactura.toString(),
@@ -92,7 +100,16 @@ export class CancelarFacturaComponent implements OnInit {
   }
 
   generarCancelacionFactura(): void {
-
+    this.facturacionService.cancelarFactura(this.solicitudCancelacion).subscribe({
+      next: (): void => {
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Factura registrada correctamente');
+        void this.router.navigate(['./..'], {relativeTo: this.activatedRoute});
+      },
+      error: (error: HttpErrorResponse): void => {
+        console.error(error);
+        this.mensajesSistemaService.mostrarMensajeError(error);
+      }
+    })
   }
 
   get fc() {
