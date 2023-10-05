@@ -1,11 +1,14 @@
-<app-titulo-principal titulo="Solicitar factura"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" routerLink="./../"></app-btn-regresar>
+  <app-titulo-principal titulo="Solicitar factura" class="col"></app-titulo-principal>
+</div>
 <ng-container>
   <form [formGroup]="solicitudForm" (reset)="limpiar()" (ngSubmit)="buscarDatosContratante()" #solicitudDirForm>
     <div class="row mb-3 mt-3">
       <div class="col-md-6">
         <label class="control-label" for="tipoFactura">Tipo de factura<span class="req">*</span>:</label>
         <p-dropdown id="tipoFactura" class="form-control" formControlName="tipoFactura" [options]="tiposFactura"
-                    placeholder="Selecciona el tipo de factura" (onChange)="obtenerFolios()">
+                    placeholder="Selecciona el tipo de factura" (onChange)="obtenerFolios()" optionDisabled="disabled">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="pf?.tipoFactura?.errors?.required && (pf?.tipoFactura?.dirty || pf?.tipoFactura?.touched)">Este campo es obligatorio *.</span>
@@ -100,7 +103,7 @@
       <div class="col-md-3">
         <label class="control-label" for="metodoPago">Método de pago<span class="req">*</span>:</label>
         <p-dropdown id="metodoPago" class="form-control" formControlName="metodoPago" [options]="metodosPago"
-                    placeholder="Ingresa el método de pago">
+                    placeholder="Ingresa el método de pago" (onChange)="seleccionarObservaciones()">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="pcf?.metodoPago?.errors?.required && (pcf?.metodoPago?.dirty || pcf?.metodoPago?.touched)">Este campo es obligatorio *.</span>
@@ -108,7 +111,7 @@
       <div class="col-md-3">
         <label class="control-label" for="formaPago">Forma de pago<span class="req">*</span>:</label>
         <p-dropdown id="formaPago" class="form-control" formControlName="formaPago" [options]="formasPago"
-                    placeholder="Ingresa la forma de pago">
+                    placeholder="Ingresa la forma de pago" (onChange)="seleccionarObservaciones()">
         </p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="pcf?.formaPago?.errors?.required && (pcf?.formaPago?.dirty || pcf?.formaPago?.touched)">Este campo es obligatorio *.</span>
@@ -133,11 +136,24 @@
         <span class="control-label">*Campos obligatorios</span>
       </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="!validacionFactura">
       <div class="col-md-12 flex justify-content-end mb-4">
         <button type="reset" class="ml-4 btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
-        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="datosCFDIForm.invalid" (click)="generarSolicitudFactura()">Generar
-          factura
+        <button type="submit" class="ml-4 btn btn-primary btn-md"
+                [disabled]="datosCFDIForm.invalid || datosContratanteForm.invalid"
+                (click)="validacionFactura = !validacionFactura">
+          Generar factura
+        </button>
+      </div>
+    </div>
+    <div class="row" *ngIf="validacionFactura">
+      <div class="mb-3 mt-3 row text-center">
+        ¿Estás seguro de generar la factura con la información ingresada?
+      </div>
+      <div class="flex justify-content-end mt-5">
+        <button type="button" class="btn btn-default btn-md" [routerLink]="'./..'">Cancelar</button>
+        <button type="button" class="ml-4 btn btn-primary btn-md" (click)="generarSolicitudFactura();">
+          Aceptar
         </button>
       </div>
     </div>

@@ -29,7 +29,10 @@ export interface SolicitudGenerarFact {
     idForPago: number
   },
   obsAutomatica: string,
-  obsManual: string
+  obsManual: string,
+  fecPago: string,
+  concPago: string,
+  cveRegimenFiscal: string,
 }
 
 interface ServiciosContratados {

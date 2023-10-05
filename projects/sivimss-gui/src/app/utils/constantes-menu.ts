@@ -218,5 +218,9 @@ export const idsModulos: DatoModulo = {
   '47': {
     ruta: 'comisiones',
     icono: 'default-icon.svg'
+  },
+  '100': {
+    ruta: '/pagos/facturación',
+    icono: 'default-icon.svg'
   }
 };
