@@ -51,26 +51,32 @@ export class FacturacionService extends BaseService<HttpRespuesta<any>, any> {
   }
 
   consultarRFC(rfc: string): Observable<HttpRespuesta<any>> {
-    const body = { rfc };
+    const body = {rfc};
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._rfc}`, body);
   }
 
   consultarCFDI(tipoPersona: string): Observable<HttpRespuesta<any>> {
-    const body = { tipoPersona };
+    const body = {tipoPersona};
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._cfdi}`, body);
   }
 
   consultarMetodosPago(tipoPersona: string): Observable<HttpRespuesta<any>> {
-    const body = { tipoPersona };
+    const body = {tipoPersona};
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._metodosPago}`, body);
   }
 
   consultarFormasPago(tipoPersona: string): Observable<HttpRespuesta<any>> {
-    const body = { tipoPersona };
+    const body = {tipoPersona};
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/${this._formasPago}`, body);
   }
 
   generarSolicitudPago(body: any): Observable<HttpRespuesta<any>> {
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${this._crearFactura}`, body);
+  }
+
+  consultarMotivosCancelacion(): Observable<HttpRespuesta<any>> {
+    const params: HttpParams = new HttpParams()
+      .append('servicio', 'consultar-cancelacion-facturacion');
+    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}`, {params});
   }
 }

@@ -9,6 +9,13 @@ interface ParamsCancelar {
   folioRelacionado: string
 }
 
+interface MotivoCancelacion {
+  descripcion: string,
+  clave: string,
+  idMotivoCancelacion: number,
+  aplicaFolio: boolean
+}
+
 @Component({
   selector: 'app-cancelar-factura',
   templateUrl: './cancelar-factura.component.html',
@@ -17,6 +24,7 @@ interface ParamsCancelar {
 export class CancelarFacturaComponent implements OnInit {
 
   motivos: TipoDropdown[] = [];
+  motivosCancelacion: MotivoCancelacion[] = [];
   cancelarForm!: FormGroup;
   mostrarDialogCancelacion: boolean = false;
   registroCancelar!: ParamsCancelar;
