@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
+import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 
 interface ParamsCancelar {
   folioFactura: number,
@@ -28,6 +29,7 @@ export class CancelarFacturaComponent implements OnInit {
   cancelarForm!: FormGroup;
   mostrarDialogCancelacion: boolean = false;
   registroCancelar!: ParamsCancelar;
+  validacionCancelacion: boolean = false;
 
   constructor(
     private readonly activatedRoute: ActivatedRoute,
@@ -37,6 +39,7 @@ export class CancelarFacturaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.cargarCatalogos();
     this.inicializarCancelarForm();
   }
 
@@ -47,10 +50,6 @@ export class CancelarFacturaComponent implements OnInit {
     });
   }
 
-  get fc() {
-    return this.cancelarForm.controls;
-  }
-
   obtenerParametrosCancelar(): void {
     this.activatedRoute.queryParams.pipe(
     ).subscribe(params => {
@@ -59,4 +58,20 @@ export class CancelarFacturaComponent implements OnInit {
       }
     );
   }
+
+  cargarCatalogos(): void {
+    const respuesta = this.activatedRoute.snapshot.data["respuesta"];
+    this.motivosCancelacion = respuesta.datos;
+    this.motivos = mapearArregloTipoDropdown(respuesta.datos, 'descripcion', 'idMotivoCancelacion');
+  }
+
+  generarCancelacionFactura(): void {
+
+  }
+
+  get fc() {
+    return this.cancelarForm.controls;
+  }
+
+
 }
