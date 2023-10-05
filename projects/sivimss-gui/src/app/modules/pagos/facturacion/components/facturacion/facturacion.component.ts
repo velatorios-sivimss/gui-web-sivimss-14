@@ -23,12 +23,32 @@ import {finalize} from "rxjs/operators";
 import {LoaderService} from "../../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../../services/mensajes-sistema.service";
 import {FiltrosFacturacion} from "../../models/filtrosFacturacion.interface";
+import {ActivatedRoute, Router} from "@angular/router";
+import {DescargaArchivosService} from "../../../../../services/descarga-archivos.service";
+
+interface RegistroFacturacion {
+  contratante: string,
+  estatusFactura: string,
+  fechaFactura: string,
+  folio: string,
+  folioFactura: number,
+  importe: number,
+  rfc: string,
+  folioFiscal: string,
+  nomVelatorio: string
+}
+
+interface ParamsCancelar {
+  folioFactura: number,
+  folioFiscal: string,
+  folioRelacionado: string
+}
 
 @Component({
   selector: 'app-facturacion',
   templateUrl: './facturacion.component.html',
   styleUrls: ['./facturacion.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService, DescargaArchivosService]
 })
 export class FacturacionComponent implements OnInit {
 
@@ -50,8 +70,12 @@ export class FacturacionComponent implements OnInit {
 
   velatorios: TipoDropdown[] = [];
   filtroForm!: FormGroup;
-  registros: any[] = [];
+  registros: RegistroFacturacion[] = [];
+  registroSeleccionado!: RegistroFacturacion;
   tipoPago: number | null = null;
+  MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
+
+  mostrarModalDescargaExitosa: boolean = false;
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -61,6 +85,9 @@ export class FacturacionComponent implements OnInit {
     private facturacionService: FacturacionService,
     private cargadorService: LoaderService,
     private mensajesSistemaService: MensajesSistemaService,
+    private readonly router: Router,
+    private route: ActivatedRoute,
+    private descargaArchivosService: DescargaArchivosService
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -170,8 +197,8 @@ export class FacturacionComponent implements OnInit {
 
   crearSolicitudFiltros(): FiltrosFacturacion {
     let folio: string | null = null;
-    if(this.tipoPago === 1) folio =  this.filtroForm.get('ods')?.value;
-    if(this.tipoPago === 2) folio =  this.filtroForm.get('folioConvenio')?.value;
+    if (this.tipoPago === 1) folio = this.filtroForm.get('ods')?.value;
+    if (this.tipoPago === 2) folio = this.filtroForm.get('folioConvenio')?.value;
     let fechaFin = this.filtroForm.get('fecha')?.value;
     if (fechaFin) fechaFin = moment(fechaFin).format('YYYY-MM-DD');
     let fechaInicio = this.filtroForm.get('fecha')?.value;
@@ -202,6 +229,7 @@ export class FacturacionComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, registro: any): void {
     this.overlayPanel.toggle(event);
+    this.registroSeleccionado = registro;
   }
 
   abrirModalDetalleFacturacion(): void {
@@ -212,4 +240,35 @@ export class FacturacionComponent implements OnInit {
     this.detalleRef = this.dialogService.open(VerDetalleFacturaComponent, DETALLE_CONFIG);
   }
 
+  cancelarFactura(): void {
+    const datos_cancelar: string = btoa(JSON.stringify(this.crearParamsCancelar()));
+    void this.router.navigate(['./cancelar-factura'],
+      {relativeTo: this.route, queryParams: {datos_cancelar}});
+  }
+
+  crearParamsCancelar(): ParamsCancelar {
+    return {
+      folioFactura: this.registroSeleccionado.folioFactura,
+      folioFiscal: this.registroSeleccionado.folioFiscal,
+      folioRelacionado: this.registroSeleccionado.folio
+    }
+  }
+
+  descargarFactura(): void {
+    const {folioFactura} = this.registroSeleccionado;
+    this.cargadorService.activar();
+    this.descargaArchivosService.descargarArchivo(this.facturacionService.generarFactura(folioFactura)).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: boolean): void => {
+        if (respuesta) this.mostrarModalDescargaExitosa = true;
+        console.log(respuesta)
+      },
+      error: (error): void => {
+        console.log(error)
+        const ERROR: string = 'Error en la descarga del documento.Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
 }

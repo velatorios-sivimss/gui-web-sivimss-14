@@ -220,7 +220,7 @@ export const idsModulos: DatoModulo = {
     icono: 'default-icon.svg'
   },
   '100': {
-    ruta: '/pagos/facturación',
+    ruta: '/pagos/facturacion',
     icono: 'default-icon.svg'
   }
 };

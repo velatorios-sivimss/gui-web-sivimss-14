@@ -4,6 +4,7 @@ import {FacturacionComponent} from "./components/facturacion/facturacion.compone
 import {CancelarFacturaComponent} from "./components/cancelar-factura/cancelar-factura.component";
 import {EnviarFacturaComponent} from "./components/enviar-factura/enviar-factura.component";
 import {SolicitarFacturaComponent} from "./components/solicitar-factura/solicitar-factura.component";
+import {CancelarFacturaResolver} from "./services/cancelar-factura.resolver";
 
 const routes: Routes = [
   {
@@ -12,7 +13,10 @@ const routes: Routes = [
   },
   {
     path: 'cancelar-factura',
-    component: CancelarFacturaComponent
+    component: CancelarFacturaComponent,
+    resolve: {
+      respuesta: CancelarFacturaResolver
+    }
   },
   {
     path: 'enviar-factura',
@@ -27,6 +31,7 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
+  providers: [CancelarFacturaResolver]
 })
 export class FacturacionRoutingModule {
 }
