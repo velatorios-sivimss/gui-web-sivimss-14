@@ -67,9 +67,10 @@
     <div class="col-md-4">
       <label class="control-label" for="numeroArticulos">Agregar el número de artículos<span
         class="req">*</span>:</label>
-      <input id="numeroArticulos" class="form-control" formControlName="numeroArticulos" placeholder="Ingresa el costo" maxlength="5" [disabled]="bloquearCampoArticulos">
+      <input id="numeroArticulos" class="form-control" formControlName="numeroArticulos" placeholder="Ingresa el costo"
+             maxlength="5" [disabled]="bloquearCampoArticulos" (change)="validarMaximoArticulos()">
       <span class="campo-obligatorio" *ngIf="f.numeroArticulos?.errors?.required && (f.numeroArticulos?.dirty || f.numeroArticulos?.touched)">Este campo es obligatorio *.</span>
-      <span class="campo-obligatorio" *ngIf="(f.numeroArticulos?.dirty || f.numeroArticulos?.touched) && !bloquearCampoArticulos">El valor debe ser igual o menor a {{ maxNumeroArticulos }}</span>
+      <span class="campo-obligatorio" *ngIf="validarArticulos() && !bloquearCampoArticulos">El valor debe ser igual o menor a {{ maxNumeroArticulos }}</span>
     </div>
     <div class="col-md-4">
       <label class="control-label" for="precio">Precio:</label>

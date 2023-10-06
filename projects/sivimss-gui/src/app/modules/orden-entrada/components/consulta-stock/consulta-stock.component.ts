@@ -269,10 +269,37 @@ export class ConsultaStockComponent implements OnInit {
   }
 
   mapearDatosReporte(tipoReporteSeleccionado: string): any {
+    const asignacion1 = this.formulario.get("asignacion1")?.value;
+    const asignacion2 = this.formulario.get("asignacion2")?.value;
+    const asignacion3 = this.formulario.get("asignacion3")?.value;
+
+    let idTipoAsignacion: string | null = null;
+
+    // Creamos un array con las asignaciones válidas
+    const asignacionesValidas = [asignacion1, asignacion2, asignacion3].filter(value => value !== undefined && value !== null);
+
+    // Filtramos las asignaciones que son diferentes de 0 y obtenemos sus primeros elementos.
+    const asignacionesNoCero = asignacionesValidas.filter(value => value[0] !== 0).map(innerArray => innerArray[0]);
+
+    // Comprobamos si quedan asignaciones después de filtrar los ceros
+    if (asignacionesNoCero.length > 0) {
+      idTipoAsignacion = asignacionesNoCero.join(',');
+      idTipoAsignacion = idTipoAsignacion.replace(",","").replace(",","");
+    }
+
+    // Si idTipoAsignacion es null, asignamos "1,3" si asignacion1 es 0
+    if (idTipoAsignacion === null && asignacion1 && asignacion1[0] === 0) {
+      idTipoAsignacion = "1,3";
+    }
+    let categoria = this.catalogoCategoriasCompleto.filter((c) => c.DES_CATEGORIA_ARTICULO === this.formulario.get("categoria")?.value);
+
+
     return {
       idVelatorio: this.formulario.get("velatorio")?.value === "" ? null : this.formulario.get("velatorio")?.value,
-      numFolioOrdenEntrada: this.formulario.get("ordenEntrada")?.value,
-      tipoReporte: tipoReporteSeleccionado
+      idOrdenEntrada: this.formulario.get("ordenEntrada")?.value,
+      idCategoriaArticulo: categoria.length > 0 ? categoria[0].ID_CATEGORIA_ARTICULO : null,
+      idTipoAsignacionArt: idTipoAsignacion,
+      tipoReporte: tipoReporteSeleccionado,
     }
   }
 
@@ -292,7 +319,7 @@ export class ConsultaStockComponent implements OnInit {
     // Comprobamos si quedan asignaciones después de filtrar los ceros
     if (asignacionesNoCero.length > 0) {
       idTipoAsignacion = asignacionesNoCero.join(',');
-      idTipoAsignacion = idTipoAsignacion.replace(",","").replace(",",""); 
+      idTipoAsignacion = idTipoAsignacion.replace(",","").replace(",","");
     }
 
     // Si idTipoAsignacion es null, asignamos "1,3" si asignacion1 es 0

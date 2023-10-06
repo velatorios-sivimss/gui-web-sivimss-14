@@ -188,6 +188,17 @@ export class GenerarOdeComponent implements OnInit {
     }
   }
 
+  validarMaximoArticulos(): void {
+    if( (this.f.numeroArticulos.value > this.maxNumeroArticulos)){
+      this.f.numeroArticulos.setValue(this.maxNumeroArticulos);
+    }
+    if(this.f.numeroArticulos.value <= 0) this.f.numeroArticulos.setValue(1);
+  }
+
+  validarArticulos(): boolean {
+    return this.f.numeroArticulos.value > this.maxNumeroArticulos
+  }
+
   get f() {
     return this.formulario.controls;
   }
