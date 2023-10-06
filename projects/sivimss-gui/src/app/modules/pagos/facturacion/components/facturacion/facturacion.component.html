@@ -96,33 +96,34 @@
         <th pResizableColumn id="facturacion_folio_fiscal">Folio fiscal</th>
         <th pResizableColumn id="facturacion_rfc">RFC</th>
         <th pResizableColumn id="facturacion_razon_social">Razón social</th>
-        <th pResizableColumn id="facturacion_estatus">Estatus</th>
-        <th id="facturacion_btns"></th>
+        <th id="facturacion_estatus">Estatus</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-registro>
       <tr>
-        <td pResizableColumn>{{registro.velatorio}}</td>
+        <td pResizableColumn>{{registro.nomVelatorio}}</td>
         <td pResizableColumn>{{registro.folio}}</td>
         <td pResizableColumn>{{registro.folioFactura}}</td>
         <td pResizableColumn>{{registro.fechaFactura | date:'dd-MM-YYYY'}}</td>
         <td pResizableColumn>{{registro.folioFiscal}}</td>
         <td pResizableColumn>{{registro.rfc}}</td>
         <td pResizableColumn>{{registro.razonSocial}}</td>
-        <td pResizableColumn>{{registro.estatusFactura}}</td>
         <td>
-          <div class="contenedor-celda-iconos">
-            <a (click)="abrirPanel($event,registro)">
-              <img ngSrc="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales"
-                   height="19" width="22">
-            </a>
+          <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 60px'}">
+            <div>{{registro.estatusFactura}}</div>
+            <div class="contenedor-celda-iconos">
+              <a (click)="abrirPanel($event,registro)">
+                <img ngSrc="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales"
+                     height="19" width="22">
+              </a>
+            </div>
           </div>
         </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <th colspan="9" class="p-2 text-center font-bold text-xl" id="facturacion_empty_message">
+        <th colspan="8" class="p-2 text-center font-bold text-xl" id="facturacion_empty_message">
           No se encontro información relacionada a tu búsqueda
         </th>
       </tr>
@@ -140,11 +141,29 @@
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion titulo="Ver factura" class="text-center" onCloseOnNavigation
-                                (click)="abrirModalDetalleFacturacion()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'">
+                                (click)="descargarFactura()"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion titulo="Enviar factura" class="text-center" [routerLink]="'./enviar-factura'"
+                                *ngIf="false">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" [routerLink]="'./cancelar-factura'">
+      <app-overlay-panel-opcion titulo="Cancelar factura" class="text-center" (click)="cancelarFactura()"
+                                *ngIf="registroSeleccionado.estatusFactura !== 'Cancelada'">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
+
+
+<p-dialog [(visible)]="mostrarModalDescargaExitosa" [modal]="true"
+          [style]="{maxWidth:'544px',width: '100%'}"
+          [draggable]="false" [resizable]="false" header="">
+  <ng-template pTemplate="content">
+    <div class="flex flex-column align-items-center justify-content-center">
+      <span class="text-justify">{{MENSAJE_ARCHIVO_DESCARGA_EXITOSA}}</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-center">
+      <button class="btn btn-primary btn-md" (click)="mostrarModalDescargaExitosa = false">Aceptar</button>
+    </div>
+  </ng-template>
+</p-dialog>
