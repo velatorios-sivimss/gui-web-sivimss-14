@@ -322,8 +322,6 @@ export class DatosContratanteComponent implements OnInit {
   }
 
   limpiarFormularioConsultaRfcCurp(origen:string): void{
-      // if(origen.includes('curp'))this.datosContratante.rfc.patchValue(null);
-      // if(origen.includes('rfc'))this.datosContratante.curp.patchValue(null)
       this.datosContratante.nombre.patchValue(null)
       this.datosContratante.primerApellido.patchValue(null)
       this.datosContratante.segundoApellido.patchValue(null)
@@ -447,7 +445,6 @@ export class DatosContratanteComponent implements OnInit {
             }
             return;
           }
-          // this.limpiarConsultaDatosPersonales();
           this.alertaService.mostrar(
             TipoAlerta.Precaucion,
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
@@ -527,7 +524,7 @@ export class DatosContratanteComponent implements OnInit {
             this.datosContratante.fechaNacimiento.setValue(fecha);
             this.datosContratante.sexo.setValue(+respuesta.datos[0].sexo);
 
-            if (datos.idPais == 119) {
+            if (datos.idPais == 119 || datos.idPais == "" || datos.idPais === null) {
               this.datosContratante.nacionalidad.setValue(1);
             } else {
               this.datosContratante.nacionalidad.setValue(2);
@@ -549,8 +546,8 @@ export class DatosContratanteComponent implements OnInit {
             this.direccion.cp.setValue(datos.cp);
             this.direccion.colonia.setValue(datos.colonia);
             this.direccion.calle.setValue(datos.calle);
-            this.direccion.noInterior.setValue(datos.numExterior);
-            this.direccion.noExterior.setValue(datos.numInterior);
+            this.direccion.noInterior.setValue(datos.numInterior);
+            this.direccion.noExterior.setValue(datos.numExterior);
             this.idDomicilio = datos.idDomicilio;
           }
           // this.limpiarConsultaDatosPersonales();

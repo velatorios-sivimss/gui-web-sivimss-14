@@ -145,7 +145,7 @@ export class ServiciosFunerariosComponent implements OnInit {
 
   buscar(): void {
     if (this.ff.rangoInicio.value && this.ff.rangoFin.value) {
-      if (this.ff.rangoInicio.value > this.ff.rangoFin.value) {
+      if (this.ff.rangoInicio.value >= this.ff.rangoFin.value) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
         return;
       }

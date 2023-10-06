@@ -5,7 +5,7 @@ export interface PlantillaAceptarDonacion {
   claveResponsableAlmacen?: string,
   lugar?: string,
   version?:number,
-  velatorioId?:number,
+  velatorioId?:string,
   ooadId?:number,
   nomFinado?:string,
   nomResponsableAlmacen?:string,
@@ -51,6 +51,8 @@ export interface DatosAdministrador {
   nombreAdministrador?: string;
   lugardonacion?: string;
   matriculaAdministrador?: string;
+
+  nombreVelatorio?: string;
 }
 
 
