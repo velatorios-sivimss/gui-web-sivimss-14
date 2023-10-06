@@ -32,6 +32,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   idOds: number = 0;
   servicios: ArticulosServicios[] = [];
   notaRemisionReporte: GenerarDatosReporte = {};
+  validacionGenerarFactura: boolean = false;
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
@@ -101,9 +102,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute}).then(() => {
-    }).catch(() => {
-    });
+    void this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute});
   }
 
   generarNotaRemision() {
@@ -117,9 +116,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
         if (mensaje && mensaje.length > 0) {
           this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
         }
-        this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute}).then(() => {
-        }).catch(() => {
-        });
+        void this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute});
       },
       error: (error: HttpErrorResponse) => {
         console.error("ERROR: ", error);
