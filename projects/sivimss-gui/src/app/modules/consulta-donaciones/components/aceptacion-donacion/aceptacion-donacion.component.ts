@@ -139,7 +139,7 @@ export class AceptacionDonacionComponent implements OnInit {
     return {
       version: 5.2,
       ooadNom: this.nombreOoad(usuario.idDelegacion),
-      velatorioId: usuario.idVelatorio,
+      velatorioId: this.datosAdministrador.nombreVelatorio,
       numContrato: this.f.folio.value,
       modeloAtaud: this.modeloAtaudes(),
       tipoAtaud: this.tipoAtaud(),
@@ -243,7 +243,8 @@ export class AceptacionDonacionComponent implements OnInit {
         this.datosAdministrador = {
           nombreAdministrador: respuesta.datos[0].nombreAdministrador,
           lugardonacion: respuesta.datos[0].lugardonacion,
-          matriculaAdministrador: respuesta.datos[0].matriculaAdministrador
+          matriculaAdministrador: respuesta.datos[0].matriculaAdministrador,
+          nombreVelatorio: respuesta.datos[0].velatorio
         }
       },
       error: (error: HttpErrorResponse) => {

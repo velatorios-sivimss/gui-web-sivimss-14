@@ -213,6 +213,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             let [anio, mes, dia] = respuesta.datos[0].fechaNacimiento?.split('-');
             dia = dia.substr(0, 2);
             const fecha = new Date(anio + "-" + mes + "-" + dia)
+            this.colonias = [{label: respuesta.datos[0].desColonia, value: respuesta.datos[0].desColonia}]
             this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
             this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
             this.fds.segundoApellido.setValue(respuesta.datos[0].nomPersonaMaterno);
@@ -224,12 +225,17 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             } else {
               this.fds.nacionalidad.setValue(2);
             }
-            this.fds.paisNacimiento.setValue(
-              Number(respuesta.datos[0].idPais)
-            );
-            this.fds.lugarNacimiento.setValue(
-              Number(respuesta.datos[0].idEstado)
-            );
+            this.fds.paisNacimiento.setValue(Number(respuesta.datos[0].idPais));
+            this.fds.lugarNacimiento.setValue(Number(respuesta.datos[0].idEstado));
+            respuesta.datos[0].desTelefono.includes('null') ? this.fds.telefono.patchValue(null) : this.fds.telefono.setValue(respuesta.datos[0].desTelefono);
+            respuesta.datos[0].desCorreo.includes('null') ? this.fds.correoElectronico.patchValue(null) : this.fds.correoElectronico.setValue(respuesta.datos[0].desCorreo);
+            this.fds.calle.setValue(respuesta.datos[0].desCalle);
+            this.fds.cp.setValue(respuesta.datos[0].DesCodigoPostal);
+            this.fds.numeroExterior.setValue(respuesta.datos[0].numInterior);
+            this.fds.numeroInterior.setValue(respuesta.datos[0].numExterior);
+            this.fds.colonia.setValue(respuesta.datos[0].desColonia);
+            this.fds.municipio.setValue(respuesta.datos[0].desMunicipio);
+            this.fds.estado.setValue(respuesta.datos[0].desEstado);
           }
 
           if (respuesta.mensaje.includes("externo")) {

@@ -519,9 +519,7 @@
     <button type="submit" *ngIf="indice == 0" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
             [disabled]="formDatosSolicitante.invalid || curpDesactivado">Siguiente</button>
 
-    <button type="submit" *ngIf="indice==1" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
-            [disabled]="!fds.nombreInstitucion.value && finados.length == 0 ">Siguiente</button>
-
+    <button type="submit" *ngIf="indice==1" class="btn btn-primary btn-md ml-5" (click)="siguiente()">Siguiente</button>
 
     <button type="submit" *ngIf="indice == 2" class="btn btn-primary btn-md ml-5" (click)="siguiente()"
             [disabled]=" formAtaudes.invalid || ataudes.length < 1 ">Guardar</button>
