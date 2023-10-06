@@ -660,9 +660,9 @@ export class ConsultaConveniosComponent implements OnInit {
   obtenerDescGenero(genero: number): string {
     switch (genero) {
       case 1:
-        return 'Masculino';
-      case 2:
         return 'Femenino';
+      case 2:
+        return 'Masculino';
       case 3:
         return 'Otro';
       default:
