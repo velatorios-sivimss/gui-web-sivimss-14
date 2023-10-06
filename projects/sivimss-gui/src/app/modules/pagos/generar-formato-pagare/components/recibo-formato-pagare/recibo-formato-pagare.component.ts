@@ -21,7 +21,7 @@ export class ReciboFormatoPagareComponent {
   importeLetra: string = "";
   filtroForm!: FormGroup;
 
-  fechaActual = new Date();
+  fechaActual: Date = new Date();
 
   constructor(
     private route: ActivatedRoute,
@@ -75,7 +75,7 @@ export class ReciboFormatoPagareComponent {
     const crearPagare: string = JSON.stringify(pagare);
     this.generarFormatoPagareService.guardar(crearPagare).subscribe({
       next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Alta satisfactoria');
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Agregado correctamente');
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
