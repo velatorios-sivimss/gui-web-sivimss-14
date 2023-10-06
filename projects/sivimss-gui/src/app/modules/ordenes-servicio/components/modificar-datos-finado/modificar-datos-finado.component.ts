@@ -886,6 +886,7 @@ export class ModificarDatosFinadoComponent
       this.datosFinado.esObito.disable();
       this.datosFinado.esParaExtremidad.enable();
 
+      this.datosFinado.velatorioPrevision.disable();
     } else if (idTipoOrden == 3) {
       this.desabilitarTodo();
       this.datosFinado.esObito.disable();
@@ -893,6 +894,7 @@ export class ModificarDatosFinadoComponent
     } else {
       this.habilitarTodo();
       this.datosFinado.velatorioPrevision.disable();
+      if (idTipoOrden == 1) this.datosFinado.noContrato.disable();
     }
   }
 

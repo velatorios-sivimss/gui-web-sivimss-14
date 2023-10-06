@@ -60,7 +60,7 @@
           <div class="col-md-6">
             <label class="control-label" for="sexo">Sexo<span class="req">*</span>:</label>
             <p-dropdown appendTo="body" id="sexo" class="form-control" formControlName="sexo"
-                        [options]="sexo" (onChange)="cambiarSexo()"
+                        [options]="sexo" (onChange)="cambiarSexo(true)"
                         placeholder="Selecciona el sexo" [filter]="true" filterBy="label">
             </p-dropdown>
             <span class="campo-obligatorio"
