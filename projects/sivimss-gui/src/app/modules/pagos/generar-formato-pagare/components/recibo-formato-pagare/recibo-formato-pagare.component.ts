@@ -21,6 +21,8 @@ export class ReciboFormatoPagareComponent {
   importeLetra: string = "";
   filtroForm!: FormGroup;
 
+  fechaActual = new Date();
+
   constructor(
     private route: ActivatedRoute,
     private generarFormatoPagareService: GenerarFormatoPagareService,
