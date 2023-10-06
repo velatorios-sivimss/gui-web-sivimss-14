@@ -220,6 +220,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             this.fds.rfc.setValue(respuesta.datos[0]?.rfc ?? "");
             this.fds.fechaNacimiento.setValue(fecha);
             this.fds.sexo.setValue(respuesta.datos[0].numSexo);
+            this.fds.otro.setValue(respuesta.datos[0].desOtroSexo);
             if (respuesta.datos[0].idPais == 119 || respuesta.datos[0].idPais == "" || respuesta.datos[0].idPais === null) {
               this.fds.nacionalidad.setValue(1);
             } else {
@@ -266,6 +267,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
 
           }
         }
+        if(this.fds.sexo.value == 3)this.cambiarSexo(false);
       },
       error: (error: HttpErrorResponse) => {
         this.mostrarMensajeError("Ocurrio un error", error.error.mensaje)
@@ -626,15 +628,15 @@ export class ControlSalidaDonacionesComponent implements OnInit {
     return this.ataudLista;
   }
 
-  cambiarSexo(): void {
+  cambiarSexo(consultaCurp: boolean): void {
     this.fds.otro.disabled;
     this.fds.otro.clearValidators();
-    this.fds.otro.reset();
+    if(consultaCurp)this.fds.otro.reset();
     if (this.fds.sexo.value == 3) {
       this.otroTipoSexo = true;
       this.fds.otro.disabled;
       this.fds.otro.clearValidators();
-      this.fds.otro.setValue("");
+      if(consultaCurp)this.fds.otro.setValue("");
       return;
     }
     this.otroTipoSexo = false;

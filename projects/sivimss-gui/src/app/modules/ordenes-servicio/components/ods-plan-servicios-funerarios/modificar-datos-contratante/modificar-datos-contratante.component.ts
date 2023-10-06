@@ -468,14 +468,14 @@ export class ModificarDatosContratanteSFComponent
         ],
         telefono: [
           {
-            value: datos.contratante.telefono,
+            value: datos.contratante.telefono.includes('null') ? null : datos.contratante.telefono,
             disabled: false,
           },
           [Validators.required],
         ],
         correoElectronico: [
           {
-            value: datos.contratante.correo,
+            value: datos.contratante.correo.includes('null') ? null : datos.contratante.correo,
             disabled: false,
           },
           [Validators.required, Validators.pattern(PATRON_CORREO)],
