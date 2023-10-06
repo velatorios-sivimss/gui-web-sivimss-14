@@ -87,18 +87,17 @@ export class GenerarFormatoPagareComponent implements OnInit {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
 
-
   ngOnInit(): void {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.inicializarFiltroForm();
     this.cargarCatalogos();
   }
 
-  private cargarCatalogos(): void {
+  cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGO_NIVELES];
     this.catatalogoDelegaciones = respuesta[this.POSICION_CATALOGO_DELEGACIONES];
-    this.obtenerVelatorios();
+    this.obtenerVelatorios(true);
     this.obtenerFoliosGenerados();
   }
 
@@ -108,7 +107,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
   }
 
   abrirModalformatoPagareTramites(): void {
-    this.router.navigate(['generar-formato-pagare'], {
+    void this.router.navigate(['generar-formato-pagare'], {
       relativeTo: this.activatedRoute,
       queryParams: {idODS: this.formatoPagareSeleccionado.id}
     });
@@ -155,8 +154,8 @@ export class GenerarFormatoPagareComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          this.formatoPagare = respuesta.datos.content || [];
-          this.totalElementos = respuesta.datos.totalElements || 0;
+          this.formatoPagare = respuesta.datos.content ?? [];
+          this.totalElementos = respuesta.datos.totalElements ?? 0;
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -172,8 +171,8 @@ export class GenerarFormatoPagareComponent implements OnInit {
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          this.formatoPagare = respuesta.datos.content || [];
-          this.totalElementos = respuesta.datos.totalElements || 0;
+          this.formatoPagare = respuesta.datos.content ?? [];
+          this.totalElementos = respuesta.datos.totalElements ?? 0;
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -213,7 +212,7 @@ export class GenerarFormatoPagareComponent implements OnInit {
       velatorio: obtenerVelatorioUsuarioLogueado(usuario)
     }
     this.filtroFormDir.resetForm(DEFAULT);
-    this.obtenerVelatorios();
+    this.obtenerVelatorios(true);
     this.paginar();
   }
 
@@ -258,11 +257,11 @@ export class GenerarFormatoPagareComponent implements OnInit {
     });
   }
 
-  obtenerVelatorios(): void {
-    this.foliosGenerados = [];
-    this.catalogoVelatorios = [];
+  obtenerVelatorios(cargaInicial: boolean = false): void {
     const idDelegacion = this.filtroForm.get('delegacion')?.value;
-    if (!idDelegacion) return;
+    if (!cargaInicial) {
+      this.filtroForm.get('velatorio')?.patchValue(null);
+    }
     this.generarFormatoService.obtenerVelatoriosPorDelegacion(idDelegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");

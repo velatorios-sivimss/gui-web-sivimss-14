@@ -97,7 +97,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.catalogoNiveles = respuesta[this.POSICION_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
     const delegacion = this.filtroForm.get('delegacion')?.value;
-    if (delegacion) this.obtenerVelatorios();
+    if (delegacion) this.obtenerVelatorios(true);
     this.obtenerFoliosGenerados();
   }
 
@@ -130,7 +130,6 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   abrirPanel(event: MouseEvent, notaRemisionSeleccionada: NotaRemision): void {
-    console.log(notaRemisionSeleccionada)
     this.notaRemisionSeleccionada = notaRemisionSeleccionada;
     this.overlayPanel.toggle(event);
   }
@@ -208,7 +207,6 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.paginacionConFiltrado = false;
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
-    this.catalogoVelatorios = [];
     this.foliosGenerados = [];
     this.filtroFormDir.resetForm({
       nivel: obtenerNivelUsuarioLogueado(usuario),
@@ -216,7 +214,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
       delegacion
     });
     this.numPaginaActual = 0;
-    this.seleccionarDelegacion();
+    this.seleccionarDelegacion(true);
     this.paginar();
   }
 
@@ -234,9 +232,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
     });
   }
 
-  obtenerVelatorios(): void {
-    this.foliosGenerados = [];
+  obtenerVelatorios(cargaInicial: boolean = false): void {
     const delegacion = this.filtroForm.get('delegacion')?.value;
+    if (!cargaInicial) {
+      this.filtroForm.get('velatorio')?.patchValue(null);
+    }
     this.generarNotaRemisionService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
@@ -248,8 +248,8 @@ export class GenerarNotaRemisionComponent implements OnInit {
     });
   }
 
-  seleccionarDelegacion(): void {
-    this.obtenerVelatorios();
+  seleccionarDelegacion(cargaInicial: boolean = false): void {
+    this.obtenerVelatorios(cargaInicial);
     this.obtenerFoliosGenerados();
   }
 
