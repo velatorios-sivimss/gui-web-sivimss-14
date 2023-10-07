@@ -154,11 +154,14 @@ export class RegistrarSalidaComponent implements OnInit {
       idVehiculo: +this.vehiculoSeleccionado.idVehiculo,
       idODS: this.idOds,
       fecSalida: moment(this.f.fecha.value).format('yyyy-MM-DD'),
-      horaSalida: this.f.hora.value,
+      horaSalida: this.obtenerFormatoHora(),
       gasolinaInicial: this.f.nivelGasolinaInicial.value,
       kmInicial: +this.f.kilometrajeInicial.value,
       idResponsable: +this.f.nombreResponsable.value,
     }
+  }
+  obtenerFormatoHora(): string {
+    return typeof this.f.hora.value === 'object' ? moment(this.f.hora.value).format('HH:mm') : this.f.hora.value
   }
 
   obtenerDatosFolioOds() {
