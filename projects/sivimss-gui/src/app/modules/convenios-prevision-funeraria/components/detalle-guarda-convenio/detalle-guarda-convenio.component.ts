@@ -129,8 +129,8 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.generarArchivo(respuesta.datos.idConvenio);
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(30);
-        this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(801);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg + ' ' + respuesta.datos.folioConvenio);
         void this.router.navigate(["convenios-prevision-funeraria"]);
       },
       error: (error: HttpErrorResponse) => {
@@ -148,8 +148,8 @@ export class DetalleGuardaConvenioComponent implements OnInit, OnChanges {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.generarArchivo(respuesta.datos.idConvenio);
-        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(30);
-        this.alertaService.mostrar(TipoAlerta.Exito, msg);
+        const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(801);
+        this.alertaService.mostrar(TipoAlerta.Exito, msg + ' ' + respuesta.datos.folioConvenio);
         this.router.navigate(["convenios-prevision-funeraria"]);
       },
       error: (error: HttpErrorResponse) => {
