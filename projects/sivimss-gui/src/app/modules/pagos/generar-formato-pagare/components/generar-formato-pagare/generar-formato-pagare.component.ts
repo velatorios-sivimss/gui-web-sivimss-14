@@ -234,9 +234,10 @@ export class GenerarFormatoPagareComponent implements OnInit {
     })
   }
 
-  obtenerContratanteGeneradoPorfolio() {
-    const idFolioODS = +this.f.folioODS.value.value;
-    this.generarFormatoService.buscarContratantesGeneradosPorfolio(idFolioODS).subscribe({
+  obtenerContratanteGenerados() {
+    const nomContratante = this.filtroForm.get('nombreContratante')?.value;
+    console.log(nomContratante)
+    this.generarFormatoService.buscarContratantesGenerados(nomContratante).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         let filtrado: TipoDropdown[] = [];
         if (respuesta?.datos.length > 0) {
