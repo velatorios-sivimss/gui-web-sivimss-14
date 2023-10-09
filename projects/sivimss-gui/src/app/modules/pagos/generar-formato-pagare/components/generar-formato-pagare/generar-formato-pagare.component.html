@@ -27,8 +27,7 @@
       </div>
       <div class="col-md-6">
         <label class="control-label" for="folioODS">Folio de la ODS<span class="req">*</span>:</label>
-        <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados"
-                    (onChange)="obtenerContratanteGeneradoPorfolio()" optionLabel="label"
+        <p-dropdown id="folioODS" class="form-control" formControlName="folioODS" [options]="foliosGenerados" optionLabel="label"
                     placeholder="Selecciona el folio" [filter]="true">
         </p-dropdown>
       </div>
