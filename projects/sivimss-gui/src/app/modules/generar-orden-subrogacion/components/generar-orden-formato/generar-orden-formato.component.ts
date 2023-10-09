@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService } from "primeng/api";
 import { DynamicDialogConfig } from "primeng/dynamicdialog";
-import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { TipoDropdown } from "../../../../models/tipo-dropdown";
 import { GenerarOrdenSubrogacionService } from '../../services/generar-orden-subrogacion.service';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -71,17 +71,17 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       numOrden: new FormControl({ value: this.ordenSeleccionada.folioOds, disabled: true }, []),
       fechaOrden: new FormControl({ value: this.ordenSeleccionada.fechaOds.replaceAll("-","/"), disabled: true }, []),
       nombreFinado: new FormControl({ value: this.ordenSeleccionada.nombreFinado, disabled: true }, []),
-      tipoTraslado: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoTranslado == "Oficial" ? "true" : "false" : null , disabled: false }, []),
-      servicios: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoServicio ? this.ordenSeleccionada.tipoServicio : null : null, disabled: this.esModificacion ? true : false }, []),
-      especificaciones: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.especificaciones : null, disabled: false }, []),
-      lugarOrigen: new FormControl({ value: this.ordenSeleccionada.origen ? this.ordenSeleccionada.origen : null, disabled: false }, []),
-      lugarDestino: new FormControl({ value: this.ordenSeleccionada.destino ? this.ordenSeleccionada.destino : null, disabled: false }, []),
-      distancia: new FormControl({ value: this.ordenSeleccionada.totalKilometros ? this.ordenSeleccionada.totalKilometros : null, disabled: false }, []),
-      nombreOperador: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreOperador : null, disabled: false }, []),
+      tipoTraslado: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoTranslado == "Oficial" ? "true" : "false" : null , disabled: false }, [Validators.required]),
+      servicios: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoServicio ? this.ordenSeleccionada.tipoServicio : null : null, disabled: this.esModificacion ? true : false }, [Validators.required]),
+      especificaciones: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.especificaciones : null, disabled: false }, [Validators.required]),
+      lugarOrigen: new FormControl({ value: this.ordenSeleccionada.origen ? this.ordenSeleccionada.origen : null, disabled: false }, [Validators.required]),
+      lugarDestino: new FormControl({ value: this.ordenSeleccionada.destino ? this.ordenSeleccionada.destino : null, disabled: false }, [Validators.required]),
+      distancia: new FormControl({ value: this.ordenSeleccionada.totalKilometros ? this.ordenSeleccionada.totalKilometros : null, disabled: false }, [Validators.required]),
+      nombreOperador: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreOperador : null, disabled: false }, [Validators.required]),
       nombreAcompanante: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreAcompaniante : null, disabled: false }, []),
-      numCarroza: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numCarroza : null, disabled: false }, []),
+      numCarroza: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numCarroza : null, disabled: false }, [Validators.required]),
       numPlacas: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numPlacas : null, disabled: false }, []),
-      horaPartida: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.horaPartida.length > 5 ? this.ordenSeleccionada.horaPartida.substring(0,5) : this.ordenSeleccionada.horaPartida : null, disabled: false }, []),
+      horaPartida: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.horaPartida : null, disabled: false }, []),
       diaPartida: new FormControl({ value: this.esModificacion ? new Date(this.ordenSeleccionada.diaPartida) : null, disabled: false }, [])
     });
   }
@@ -144,7 +144,8 @@ export class GenerarOrdenFormatoComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error("ERROR: ", error);
-          this.mensajesSistemaService.mostrarMensajeError(error);
+          this.alertaService.mostrar(TipoAlerta.Error, "Error al guardar la información " + this.ordenSeleccionada.idHojaSubrogacion + ". Intenta nuevamente.");
+          // this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
     }
@@ -169,7 +170,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       carrozaNum: this.editForm.get("numCarroza")?.value,
       numeroPlacas: this.editForm.get("numPlacas")?.value,
       diaPartida: this.datePipe.transform(new Date(this.editForm.get("diaPartida")?.value), 'yyyy-MM-dd'),
-      horaPartida: moment(this.editForm.get('horaPartida')?.value).format('HH:mm'),
+      horaPartida: moment(this.editForm.get('horaPartida')?.value).format('HH:mm:ss'),
       nomAcompaniante: this.editForm.get("nombreAcompanante")?.value
     }
   }
