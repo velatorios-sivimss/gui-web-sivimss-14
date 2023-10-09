@@ -6,6 +6,7 @@ export interface FormatoPagare {
   estatusODS?: string;
   estatusPago?: string;
   nomContratante: string;
+  horaODS?: string;
   hora: string;
   nomAgente: string;
   domContratante:string;

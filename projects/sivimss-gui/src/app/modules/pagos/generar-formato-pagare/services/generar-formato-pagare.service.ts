@@ -95,12 +95,13 @@ export class GenerarFormatoPagareService extends BaseService<HttpRespuesta<any>,
   }
 
   obtenerFoliosODS(idDelegacion: string, idVelatorio: string): Observable<HttpRespuesta<any>> {
-    const body = { "idDelegacion": idDelegacion, "idVelatorio": idVelatorio  }
+    const body = {"idDelegacion": idDelegacion, "idVelatorio": idVelatorio}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-pag`, body);
   }
 
-  buscarContratantesGeneradosPorfolio(id: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${id}?servicio=contratante-ods`);
+  buscarContratantesGenerados(nomContratante: string): Observable<HttpRespuesta<any>> {
+    const body = {nomContratante};
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-contratante`, body);
   }
 
 }

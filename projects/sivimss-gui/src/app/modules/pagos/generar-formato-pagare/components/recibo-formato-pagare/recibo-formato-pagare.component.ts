@@ -35,6 +35,8 @@ export class ReciboFormatoPagareComponent {
     this.formatoPagare = this.route.snapshot.data["respuesta"].datos[0];
     this.formatoPagare.idODS = this.route.snapshot.params.idODS;
     this.formatoPagare.tipoReporte = "pdf";
+    this.formatoPagare.horaODS = this.formatoPagare.hora.slice(0, 5);
+    this.formatoPagare.hora = this.formatoPagare.hora.slice(0, 5);
     this.obtenerImporteLetra(this.formatoPagare.importe);
     this.inicializarFiltroForm();
   }
@@ -129,6 +131,7 @@ export class ReciboFormatoPagareComponent {
       fechaODS: this.formatoPagare.fechaODS,
       folioODS: this.formatoPagare.folioODS,
       nomContratante: this.formatoPagare.nomContratante,
+      horaODS: this.formatoPagare.hora,
       hora: this.formatoPagare.hora,
       nomAgente: this.formatoPagare.nomAgente,
       domContratante: this.formatoPagare.domContratante,

@@ -229,7 +229,7 @@ export class DetalleComisionComponent implements OnInit {
   }
 
   crearReporteDetalleComisiones(tipoReporte: string): FormatoDetalleComisiones {
-    const mes = this.formComisiones.get('mes')?.value !== null ? moment(this.formComisiones.get('mes')?.value).format('MM') : null;
+    const mes = this.formComisiones.get('mes')?.value.toLocaleString('default', {month: 'long'});
     return {
       idPromotor: this.detallePromotor.idPromotor,
       numEmpleado: this.detallePromotor.numEmpleado,
@@ -247,7 +247,7 @@ export class DetalleComisionComponent implements OnInit {
       diasDescanso: this.detallePromotor.diasDescanso ?? '0',
       monComision: this.detallePromotor.montoComision,
       anioCalculo: this.formComisiones.get("anio")?.value,
-      mesCalculo: mes,
+      mesCalculo: mes[0].toUpperCase() + mes.substring(1),
       numOrdenesServicio: this.listaComisiones.length > 0 ? this.listaComisiones[0].numOrdenesServicio : 0,
       monComisionODS: this.listaComisiones.length > 0 ? this.listaComisiones[0].monComisionODS : 0,
       numConveniosPF: this.listaComisiones.length > 0 ? this.listaComisiones[0].numConveniosPF : 0,
