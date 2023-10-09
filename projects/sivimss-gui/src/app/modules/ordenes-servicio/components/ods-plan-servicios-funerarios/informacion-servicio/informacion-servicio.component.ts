@@ -545,7 +545,7 @@ export class InformacionServicioSFComponent implements OnInit {
         : moment(formulario.recoger.fecha).format('yyyy-MM-DD');
 
     this.informacionServicio.horaRecoger =
-      formulario.recoger.horaRecoger == null
+      formulario.recoger.hora == null
         ? null
         : moment(formulario.recoger.hora).format('HH:mm');
 

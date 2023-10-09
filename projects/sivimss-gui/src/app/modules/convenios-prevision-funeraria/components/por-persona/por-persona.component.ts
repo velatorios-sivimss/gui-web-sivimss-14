@@ -235,12 +235,23 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
           this.fp.rfc.setValue(respuesta.datos[0].rfc)
-          this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-          this.fp.telefono.setValue(respuesta.datos[0].telefono)
+          respuesta.datos[0].correo.includes('null') ? this.fp.correoElectronico.patchValue(null) : this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
+          respuesta.datos[0].telefono.includes('null') ? this.fp.telefono.patchValue(null) : this.fp.telefono.setValue(respuesta.datos[0].telefono)
+          this.fp.idPersona.setValue(respuesta.datos[0].idPersona)
+          this.fp.idContratante.setValue(respuesta.datos[0].idDelContratante)
           this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
           this.fp.sexo.setValue(respuesta.datos[0].sexo);
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo)
           this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
+          this.fp.calle.setValue(respuesta.datos[0].calle);
+          this.fp.numeroExterior.setValue(respuesta.datos[0].numExterior);
+          this.fp.numeroInterior.setValue(respuesta.datos[0].numInterior);
+          this.fp.cp.setValue(respuesta.datos[0].cp);
+          this.colonias = [{label:respuesta.datos[0].colonia,value:respuesta.datos[0].colonia}]
+          this.fp.colonia.setValue(respuesta.datos[0].colonia);
+          this.fp.municipio.setValue(respuesta.datos[0].municipio);
+          this.fp.estado.setValue(respuesta.datos[0].estado);
+          this.fp.pais.setValue(respuesta.datos[0].idPais);
           this.cambioTipoSexo();
         } else if (respuesta.mensaje === "") {
           if (respuesta.datos.curp === "" || respuesta.datos.curp == null) {
@@ -319,7 +330,6 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
 
   consultaRFC(): void {
     if(!this.fp.rfc.value){return}
-    // this.limpiarDatosCurpRFC(2);
     if (this.personaForm.controls.rfc?.errors?.pattern) {
       this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(33));
       return;
@@ -341,19 +351,6 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
             window.location.reload()
           }
         }
-        // if(respuesta.mensaje === ""){
-        //   this.fp.nombre.setValue(respuesta.datos.nomPersona);
-        //   this.fp.primerApellido.setValue(respuesta.datos.primerApellido);
-        //   this.fp.segundoApellido.setValue(respuesta.datos.segundoApellido);
-        //   this.fp.idPersona.setValue(respuesta.datos.idPersona)
-        //   return
-        // }
-        // this.fp.nombre.setValue(respuesta.datos[0].nomPersona);
-        // this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
-        // this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
-        // this.fp.curp.setValue(respuesta.datos[0].curp)
-        // this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-        // this.fp.telefono.setValue(respuesta.datos[0].telefono)
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
@@ -434,47 +431,6 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
 
         this.fp.enfermedadPrexistente.setValue(+respuesta.datos.datosContratante.idEnfermedadPreexistente);
         this.fp.otraEnfermedad.setValue(respuesta.datos.datosContratante.otraEnfermedad);
-
-        // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
-
-        // if(this.escenario.includes('modificar')){
-        //   respuesta.datos.beneficiarios.forEach((beneficiario:any) => {
-        //     const [anio, mes, dia]: string[] = beneficiario.fechaNacimiento.split("-");
-        //     const objetoFecha: Date = new Date(+anio, +mes - 1, +dia);
-        //     this.beneficiarios.push({
-        //       fechaNacimiento: objetoFecha,
-        //       nombre: beneficiario.nombreBeneficiario,
-        //       primerApellido: beneficiario.primerApellido,
-        //       segundoApellido: beneficiario.segundoApellido,
-        //       curp: beneficiario.curp,
-        //       rfc: beneficiario.rfc ?? null,
-        //       correoElectronico: beneficiario.correo,
-        //       telefono: beneficiario.telefono,
-        //       edad: beneficiario.edad,
-        //       parentesco : beneficiario.idParentesco,
-        //       actaNacimiento: beneficiario.cveActa,
-        //       documentacion: {
-        //           validaActaNacimientoBeneficiario: beneficiario.validaActaNacimientoBeneficiario,
-        //           validaIneBeneficiario: beneficiario.validaIneBeneficiario,
-        //       }
-        //     }
-        //     )
-        //   });
-        // }
-
-
-        // this.fp.tipoPaquete.setValue(+respuesta.datos.datosContratante.idPaquete);
-        // this.fp.matricula.setValue(respuesta.datosContratante.matricula);
-        // this.fp.calle.setValue(respuesta.datos.datosContratante.calle);
-        // this.fp.numeroExterior.setValue(respuesta.datos.datosContratante.numeroExterior);
-        // this.fp.numeroInterior.setValue(respuesta.datos.datosContratante.numeroInterior);
-        // this.fp.cp.setValue(respuesta.datos.datosContratante.cp);
-        // this.fp.colonia.setValue(respuesta.datos.datosContratante.colonia);
-        // this.fp.municipio.setValue(respuesta.datos.datosContratante.municipio);
-        // this.fp.estado.setValue(respuesta.datos.datosContratante.estado);
-        // this.fp.pais.setValue(respuesta.datos.datosContratante.pais);
-        // this.fp.enfermedadPrexistente.setValue(respuesta.datos.datosContratante.enfermedadPrexistente);
-        // this.fp.otraEnfermedad.setValue(respuesta.datos.datosContratante.otraEnfermedad);
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje)));
@@ -519,6 +475,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
     if(this.confirmacionGuardado){
       this.formularioPersona.emit(
         {
+          idContratante:this.fp.idContratante.value ? this.fp.idContratante?.value.toString() : null,
           idPersona: this.fp.idPersona.value ? this.fp.idPersona?.value.toString() : null,
           matricula: this.fp.matricula.value ? this.fp.matricula.value.toString() : "",
           rfc:this.fp.rfc?.value?.toString() ?? "",

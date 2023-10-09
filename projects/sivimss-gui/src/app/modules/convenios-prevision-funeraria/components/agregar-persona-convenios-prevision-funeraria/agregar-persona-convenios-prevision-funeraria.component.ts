@@ -283,12 +283,21 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.fp.primerApellido.setValue(respuesta.datos[0].primerApellido);
           this.fp.segundoApellido.setValue(respuesta.datos[0].segundoApellido);
           this.fp.rfc.setValue(respuesta.datos[0].rfc)
-          this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
-          this.fp.telefono.setValue(respuesta.datos[0].telefono)
+          respuesta.datos[0].correo.includes('null') ? this.fp.correoElectronico.patchValue(null) : this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
+          respuesta.datos[0].telefono.includes('null') ? this.fp.telefono.patchValue(null) : this.fp.telefono.setValue(respuesta.datos[0].telefono)
           this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
           this.fp.sexo.setValue(respuesta.datos[0].sexo);
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo);
           this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
+          this.fp.calle.setValue(respuesta.datos[0].calle);
+          this.fp.noExterior.setValue(respuesta.datos[0].numExterior);
+          this.fp.noInterior.setValue(respuesta.datos[0].numInterior);
+          this.fp.cp.setValue(respuesta.datos[0].cp);
+          this.colonias = [{label:respuesta.datos[0].colonia,value:respuesta.datos[0].colonia}]
+          this.fp.colonia.setValue(respuesta.datos[0].colonia);
+          this.fp.municipio.setValue(respuesta.datos[0].municipio);
+          this.fp.estado.setValue(respuesta.datos[0].estado);
+          this.fp.pais.setValue(respuesta.datos[0].idPais);
           this.cambioTipoSexo();
         } else if (respuesta.mensaje === "") {
           if (respuesta.datos.curp === "" || respuesta.datos.curp == null) {
@@ -404,6 +413,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           colonia: this.personaForm.get('colonia')?.value ? this.personaForm.get('colonia')?.value : "",
           municipio: this.personaForm.get('municipio')?.value ? this.personaForm.get('municipio')?.value : "",
           estado: this.personaForm.get('estado')?.value ? this.personaForm.get('estado')?.value : "",
+          pais: this.personaForm.get('pais')?.value ? this.personaForm.get('pais')?.value : "",
           paquete: this.personaForm.get('tipoPaquete')?.value ? this.personaForm.get('tipoPaquete')?.value : "",
           enfermedadPreexistente: this.personaForm.get('enfermedadPrexistente')?.value ? this.personaForm.get('enfermedadPrexistente')?.value : "",
           ineAfiliado: this.documentacionForm.get('ineAfiliado')?.value ? this.documentacionForm.get('ineAfiliado')?.value : false,

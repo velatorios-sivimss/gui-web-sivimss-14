@@ -60,7 +60,7 @@ export class ModalConvenioPfComponent implements OnInit {
       finalize(()=>this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        if (respuesta.datos === null) {
+        if (respuesta.datos === null || respuesta.datos.vigencia === null) {
           const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
           this.alertaService.mostrar(TipoAlerta.Precaucion, errorMsg || 'El contrato de Previsión Funeraria que deseas utilizar no se encuentra vigente. ');
           return

@@ -181,9 +181,6 @@
 </p-accordion>
 <div class="flex justify-content-end mb-3" *ngIf="!detalleForm">
   <button class="ml-4 mt-3 btn btn-primary btn-md" routerLink="../../">Cerrar</button>
-  <button class="ml-4 mt-3 btn btn btn-default btn-md" *ngIf="detalleValeSalida.validacionDias === 1"
-    (click)="registrarEquipoEntrada()">
-    Registrar entrada de equipo</button>
 </div>
 
 <ng-container *ngIf="detalleForm">
