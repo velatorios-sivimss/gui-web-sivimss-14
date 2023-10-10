@@ -321,9 +321,14 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   mapearFiltrosBusqueda(): any {
-    debugger;
-    let folioCapturado = this.filtroForm.get("folio")?.value;
-    let folio = this.catalogoFoliosOdsCompleto.filter((o) => o.folioOrdenServicio === this.filtroForm.get("folio")?.value);
+    let folio = this.catalogoFoliosOdsCompleto.filter((o) => 
+    {
+      if (o.folioOrdenServicio.includes("-")) {
+        return o.folioOrdenServicio === this.filtroForm.get("folio")?.value;
+      } else {
+        return o.folioOrdenServicio.replace("-","") === this.filtroForm.get("folio")?.value;
+      }
+    });
     let proveedor: any = this.catalogoProveedoresConId.filter((p) => p.nombreProveedor === this.filtroForm.get("proveedor")?.value);
     return {
       idVelatorio: this.filtroForm.get("velatorio")?.value === "" ? null : this.filtroForm.get("velatorio")?.value,
@@ -334,9 +339,14 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   mapearDatosReporte(tipoReporteSeleccionado: string): any {
-    debugger;
-    let folioCapturado = this.filtroForm.get("folio")?.value;
-    let folio = this.catalogoFoliosOdsCompleto.filter((o) => o.folioOrdenServicio === this.filtroForm.get("folio")?.value);
+    let folio = this.catalogoFoliosOdsCompleto.filter((o) => 
+    {
+      if (o.folioOrdenServicio.includes("-")) {
+        return o.folioOrdenServicio === this.filtroForm.get("folio")?.value;
+      } else {
+        return o.folioOrdenServicio.replace("-","") === this.filtroForm.get("folio")?.value;
+      }
+    });
     let proveedor: any = this.catalogoProveedoresConId.filter((p) => p.nombreProveedor === this.filtroForm.get("proveedor")?.value);
     return {
       idVelatorio: this.filtroForm.get("velatorio")?.value === "" ? null : this.filtroForm.get("velatorio")?.value,
