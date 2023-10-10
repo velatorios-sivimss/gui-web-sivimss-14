@@ -193,6 +193,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos.length > 0) {
+          this.catalogoProveedoresConId = [];
           this.catalogoProveedoresConId = respuesta.datos;
           this.catalogoProveedores = [];
           respuesta.datos.forEach((proveedor: any) => {
@@ -320,7 +321,9 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   mapearFiltrosBusqueda(): any {
-    let folio = this.catalogoFoliosOdsCompleto.filter((o) => o.folioOrdenServicio.replace("-","") === this.filtroForm.get("folio")?.value);
+    debugger;
+    let folioCapturado = this.filtroForm.get("folio")?.value;
+    let folio = this.catalogoFoliosOdsCompleto.filter((o) => o.folioOrdenServicio === this.filtroForm.get("folio")?.value);
     let proveedor: any = this.catalogoProveedoresConId.filter((p) => p.nombreProveedor === this.filtroForm.get("proveedor")?.value);
     return {
       idVelatorio: this.filtroForm.get("velatorio")?.value === "" ? null : this.filtroForm.get("velatorio")?.value,
@@ -331,7 +334,9 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   mapearDatosReporte(tipoReporteSeleccionado: string): any {
-    let folio = this.catalogoFoliosOdsCompleto.filter((o) => o.folioOrdenServicio.replace("-","") === this.filtroForm.get("folio")?.value);
+    debugger;
+    let folioCapturado = this.filtroForm.get("folio")?.value;
+    let folio = this.catalogoFoliosOdsCompleto.filter((o) => o.folioOrdenServicio === this.filtroForm.get("folio")?.value);
     let proveedor: any = this.catalogoProveedoresConId.filter((p) => p.nombreProveedor === this.filtroForm.get("proveedor")?.value);
     return {
       idVelatorio: this.filtroForm.get("velatorio")?.value === "" ? null : this.filtroForm.get("velatorio")?.value,
