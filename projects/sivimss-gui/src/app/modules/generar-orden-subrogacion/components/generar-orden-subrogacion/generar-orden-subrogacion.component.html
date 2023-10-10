@@ -121,7 +121,8 @@
       <app-overlay-panel-opcion titulo="Generar orden de subrogación" (click)="generarOrdenSubrogacion(false);" *ngIf="ordenSeleccionada.puedeRegistrar === 'true'">
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion *appValidaRol="['HOJA_SUBROGACION','MODIFICACION']" titulo="Modificar" (click)="generarOrdenSubrogacion(true);"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Ver" (click)="detalleOrdenSubrogacion();"></app-overlay-panel-opcion>
+      <app-overlay-panel-opcion *ngIf="ordenSeleccionada.idHojaSubrogacion != '' && ordenSeleccionada.idHojaSubrogacion != null"
+                                titulo="Ver" (click)="detalleOrdenSubrogacion();"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
