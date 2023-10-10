@@ -212,7 +212,7 @@ export class ControlSalidaDonacionesComponent implements OnInit {
           if (respuesta.mensaje.includes("interno")) {
             let [anio, mes, dia] = respuesta.datos[0].fechaNacimiento?.split('-');
             dia = dia.substr(0, 2);
-            const fecha = new Date(anio + "-" + mes + "-" + dia)
+            const fecha = new Date(anio,mes - 1,dia)
             this.colonias = [{label: respuesta.datos[0].desColonia, value: respuesta.datos[0].desColonia}]
             this.fds.nombre.setValue(respuesta.datos[0].nomPersona);
             this.fds.primerApellido.setValue(respuesta.datos[0].nomPersonaPaterno);
@@ -232,8 +232,8 @@ export class ControlSalidaDonacionesComponent implements OnInit {
             respuesta.datos[0].desCorreo.includes('null') ? this.fds.correoElectronico.patchValue(null) : this.fds.correoElectronico.setValue(respuesta.datos[0].desCorreo);
             this.fds.calle.setValue(respuesta.datos[0].desCalle);
             this.fds.cp.setValue(respuesta.datos[0].DesCodigoPostal);
-            this.fds.numeroExterior.setValue(respuesta.datos[0].numInterior);
-            this.fds.numeroInterior.setValue(respuesta.datos[0].numExterior);
+            this.fds.numeroExterior.setValue(respuesta.datos[0].numExterior);
+            this.fds.numeroInterior.setValue(respuesta.datos[0].numInterior);
             this.fds.colonia.setValue(respuesta.datos[0].desColonia);
             this.fds.municipio.setValue(respuesta.datos[0].desMunicipio);
             this.fds.estado.setValue(respuesta.datos[0].desEstado);
