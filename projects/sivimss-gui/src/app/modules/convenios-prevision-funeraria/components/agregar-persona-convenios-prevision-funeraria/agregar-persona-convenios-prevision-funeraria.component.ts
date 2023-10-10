@@ -285,7 +285,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.fp.rfc.setValue(respuesta.datos[0].rfc)
           respuesta.datos[0].correo.includes('null') ? this.fp.correoElectronico.patchValue(null) : this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
           respuesta.datos[0].telefono.includes('null') ? this.fp.telefono.patchValue(null) : this.fp.telefono.setValue(respuesta.datos[0].telefono)
-          this.fp.fechaNacimiento.setValue(new Date(anio + '/' + mes + '/' + dia))
+          this.fp.fechaNacimiento.setValue(new Date(anio,mes - 1,dia))
           this.fp.sexo.setValue(respuesta.datos[0].sexo);
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo);
           this.fp.entidadFederativa.setValue(respuesta.datos[0].idEstado);
@@ -323,11 +323,11 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
   consultarLugarNacimiento(entidad:string): void {
     const entidadEditada = this.accentsTidy(entidad);
     if(entidadEditada.toUpperCase().includes('MEXICO') || entidadEditada.toUpperCase().includes('EDO')){
-      this.fp.lugarNacimiento.setValue(11);
+      this.fp.entidadFederativa.setValue(11);
       return
     }
     if(entidadEditada.toUpperCase().includes('DISTRITO FEDERAL')|| entidadEditada.toUpperCase().includes('CIUDAD DE MEXICO')){
-      this.fp.lugarNacimiento.setValue(7);
+      this.fp.entidadFederativa.setValue(7);
       return
     }
     this.estado.forEach((element:any) => {

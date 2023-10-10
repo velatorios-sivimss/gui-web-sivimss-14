@@ -101,7 +101,7 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
                             delegacion: [{value: +this.datosBeneficiario.delegacion, disabled:  +this.rolLocalStorage.idOficina >= 2}, [Validators.required]],
                              velatorio: [{value: +this.datosBeneficiario.velatorio, disabled: +this.rolLocalStorage.idOficina === 3}, [Validators.required]],
                        fechaNacimiento: [{value: fecha, disabled: false}, [Validators.required]],
-                                  edad: [{value: this.datosBeneficiario.edad, disabled: false}, [Validators.required]],
+                                  edad: [{value: this.datosBeneficiario.edad, disabled: true}, [Validators.required]],
                                 nombre: [{value: this.datosBeneficiario.nombre, disabled: false}, [Validators.required]],
                         primerApellido: [{value: this.datosBeneficiario.primerApellido, disabled: false}, [Validators.required]],
                        segundoApellido: [{value: this.datosBeneficiario.segundoApellido, disabled: false}, [Validators.required]],
@@ -135,25 +135,6 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
     });
   }
 
-  // consultaVelatorio(): void {
-  //   let usuario = JSON.parse(localStorage.getItem('usuario') as string);
-  //   this.loaderService.activar();
-  //   this.agregarConvenioPFService.obtenerCatalogoVelatoriosPorDelegacion(usuario.idDelegacion).pipe(
-  //     finalize(() => this.loaderService.desactivar())
-  //   ).subscribe(
-  //     (respuesta: HttpRespuesta<any>) => {
-  //       this.velatorio = respuesta.datos!.map(
-  //         (velatorio: any) => (
-  //           {label: velatorio.nomVelatorio, value: velatorio.idVelatorio}
-  //         )
-  //       )
-  //       this.f.velatorio.setValue(+usuario.idVelatorio);
-  //     },
-  //     (error: HttpErrorResponse)=> {
-  //       console.log(error);
-  //     }
-  //   )
-  // }
 
   validarEdad(): void {
     if(+this.f.edad.value < 18){
@@ -261,6 +242,11 @@ export class ModificarBeneficiarioConveniosPrevisionFunerariaComponent implement
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
     })
+  }
+
+  calcularEdad(): void {
+    this.f.edad.setValue(moment().diff(moment(this.f.fechaNacimiento.value), 'years'))
+    this.validarEdad()
   }
 
   cancelar(): void {
