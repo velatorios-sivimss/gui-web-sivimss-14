@@ -14,7 +14,7 @@
     </div>
     <div class="col-md-6" *ngIf="mostrarTIpoOtorgamiento">
       <label class="control-label" for="selecionaTipoOtorgamiento">Para el otorgamiento de este paquete fue presentado
-        un:<span class="req"></span>:</label>
+        un<span class="req">*</span>:</label>
       <p-dropdown id="selecionaTipoOtorgamiento" class="form-control" [(ngModel)]="selecionaTipoOtorgamiento"
                   placeholder="Selecciona una opción" [options]="valoresTipoOrtogamiento" [filter]="true"
                   filterBy="label"

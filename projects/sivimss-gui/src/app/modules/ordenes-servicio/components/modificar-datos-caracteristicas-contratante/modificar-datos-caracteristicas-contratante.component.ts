@@ -843,12 +843,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
   }
 
   validacionFormulario(): boolean {
-    this.selecionaTipoOtorgamiento;
-    this.paqueteSeleccionadoDD?.label;
     if(this.tipoOrden == 1 || this.tipoOrden == 2){
-      if(this.paqueteSeleccionadoDD || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete ){
+      if(this.paqueteSeleccionadoDD ||  this.paqueteSeleccionado ||
+         this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete ){
         if(this.paqueteSeleccionadoDD?.label.includes("Paquete social")){
-          if(this.selecionaTipoOtorgamiento == null){
+          if(this.selecionaTipoOtorgamiento == null || this.selecionaTipoOtorgamiento == 0){
             return true;
           }else{
             return false;
