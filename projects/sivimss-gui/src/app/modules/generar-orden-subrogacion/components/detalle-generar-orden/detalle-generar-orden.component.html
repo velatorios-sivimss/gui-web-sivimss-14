@@ -26,7 +26,7 @@
           </div>
           <div class="col-md-2">
             <p class="title-head" style="text-align: justify;">VEL-T-05</p>
-            <p class="general-font">FECHA {{ ordenSeleccionada.fechaOds | date:'dd/MM/YYYY'}}</p>
+            <p class="general-font">FECHA {{ ordenSeleccionada.fechaOds.replaceAll("-","/") }}</p>
             <p class="general-font">HORA {{ horaActual }}</p>
             <p class="general-font">Versión 1.0.0</p>
           </div>
@@ -72,7 +72,7 @@
               </div>
 
               <div class="col-md-4 table-panel-column">
-                <label class="control-label">{{ ordenSeleccionada.fechaOds }}</label>
+                <label class="control-label">{{ ordenSeleccionada.fechaOds.replaceAll("-","/") }}</label>
               </div>
             </div>
           </div>

@@ -1122,8 +1122,6 @@ export class CaracteristicasPresupuestoComponent
   }
 
   validacionFormulario(): boolean {
-    this.selecionaTipoOtorgamiento;
-    this.paqueteSeleccionadoDD?.label;
     if(this.tipoOrden == 1 || this.tipoOrden == 2){
       if(this.paqueteSeleccionadoDD || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete ){
         if(this.paqueteSeleccionadoDD?.label.includes("Paquete social")){

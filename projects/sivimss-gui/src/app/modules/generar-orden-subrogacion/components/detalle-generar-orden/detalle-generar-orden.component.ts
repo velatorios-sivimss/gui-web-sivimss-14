@@ -79,8 +79,8 @@ export class DetalleGenerarOrdenComponent implements OnInit {
 
   ngOnInit(): void {
     this.ordenSeleccionada = this.generarOrdenSubrogacionService.ordenSeleccionada;
-    this.horaPartidaConFormato = this.ordenSeleccionada.horaPartida.substring(0, 5);
-    this.horaActual = this.datePipe.transform(new Date(), 'HH:mm:ss')?.substring(0, 5);
+    this.horaPartidaConFormato = this.ordenSeleccionada.horaPartida;
+    this.horaActual = this.datePipe.transform(new Date(), 'HH:mm:ss');
     this.cargarVelatorios(true);
     this.inicializarCatalogos();
   }

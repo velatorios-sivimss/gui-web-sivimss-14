@@ -61,7 +61,7 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
       delegacion: [{value: +this.rolLocalStorage.idDelegacion || null, disabled:  +this.rolLocalStorage.idOficina >= 2},[Validators.required]],
       velatorio: [{value: +this.rolLocalStorage.idVelatorio || null, disabled: +this.rolLocalStorage.idOficina === 3},[Validators.required]],
                        fechaNacimiento: [{value: null, disabled: false}, [Validators.required]],
-                                  edad: [{value: null, disabled: false}, [Validators.required]],
+                                  edad: [{value: null, disabled: true}, [Validators.required]],
                                 nombre: [{value: null, disabled: false}, [Validators.required]],
                         primerApellido: [{value: null, disabled: false}, [Validators.required]],
                        segundoApellido: [{value: null, disabled: false}, [Validators.required]],
@@ -220,6 +220,11 @@ export class AgregarBeneficiarioConveniosPrevisionFunerariaComponent implements 
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
       }
     })
+  }
+
+  calcularEdad(): void {
+    this.f.edad.setValue(moment().diff(moment(this.f.fechaNacimiento.value), 'years'))
+    this.validarEdad()
   }
 
   cancelar(): void {
