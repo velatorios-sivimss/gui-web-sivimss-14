@@ -135,8 +135,8 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
 
   validarNombre(posicion: number): void {
     let formularios = [this.f.folio];
-    let value = formularios[posicion].value;
-    let nuevoValor = value.replace(/[^a-zA-Z0-9ñÑ\s]+/g, '');
+    let value = formularios[posicion].value ? formularios[posicion].value.trim() : '';
+    let nuevoValor = value.replace(/[^a-zA-Z0-9ñÑ-\s]+/g, '');
     nuevoValor = nuevoValor.replace(/\s+/g, ' ');
     formularios[posicion].setValue(nuevoValor)
   }
@@ -149,15 +149,15 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   validarNombreProveedor(posicion: number): void {
-    let formularios = [this.f.folio];
-    let value = formularios[posicion].value;
+    let formularios = [this.f.proveedor];
+    let value = formularios[posicion].value ? formularios[posicion].value.trim() : '';
     let nuevoValor = value.replace(/[^a-zA-Z0-9ñÑ\s]+/g, '');
     nuevoValor = nuevoValor.replace(/\s+/g, ' ');
     formularios[posicion].setValue(nuevoValor)
   }
 
   sinEspacioInicialProveedor(posicion: number): void {
-    let formularios = [this.f.folio]
+    let formularios = [this.f.proveedor]
     if (formularios[posicion].value.charAt(posicion).includes(' ')) {
       formularios[posicion].setValue(formularios[posicion].value.trimStart());
     }
