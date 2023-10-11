@@ -52,7 +52,6 @@ export class GenerarOrdenFormatoComponent implements OnInit {
     this.esModificacion = this.route.snapshot.paramMap.get('esModificacion');
     this.esModificacion =  JSON.parse(this.esModificacion);
     this.ordenSeleccionada = this.generarOrdenSubrogacionService.ordenSeleccionada;
-    console.log("ORDEN SELECCIONADA: ", this.ordenSeleccionada)
     this.cargarVelatorios(true);
     this.inicializarCatalogos();
     this.inicializarEditForm();
@@ -73,10 +72,10 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       nombreFinado: new FormControl({ value: this.ordenSeleccionada.nombreFinado, disabled: true }, []),
       tipoTraslado: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoTranslado == "Oficial" ? "true" : "false" : null , disabled: false }, [Validators.required]),
       servicios: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoServicio ? this.ordenSeleccionada.tipoServicio : null : null, disabled: this.esModificacion ? true : false }, [Validators.required]),
-      especificaciones: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.especificaciones : null, disabled: false }, [Validators.required]),
-      lugarOrigen: new FormControl({ value: this.ordenSeleccionada.origen ? this.ordenSeleccionada.origen : null, disabled: false }, [Validators.required]),
-      lugarDestino: new FormControl({ value: this.ordenSeleccionada.destino ? this.ordenSeleccionada.destino : null, disabled: false }, [Validators.required]),
-      distancia: new FormControl({ value: this.ordenSeleccionada.totalKilometros ? this.ordenSeleccionada.totalKilometros : null, disabled: false }, [Validators.required]),
+      especificaciones: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.especificaciones : null, disabled: false }, []),
+      lugarOrigen: new FormControl({ value: this.ordenSeleccionada.origen ? this.ordenSeleccionada.origen : null, disabled: true }, []),
+      lugarDestino: new FormControl({ value: this.ordenSeleccionada.destino ? this.ordenSeleccionada.destino : null, disabled: true }, []),
+      distancia: new FormControl({ value: this.ordenSeleccionada.totalKilometros ? this.ordenSeleccionada.totalKilometros : null, disabled: true }, []),
       nombreOperador: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreOperador : null, disabled: false }, [Validators.required]),
       nombreAcompanante: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreAcompaniante : null, disabled: false }, []),
       numCarroza: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numCarroza : null, disabled: false }, [Validators.required]),

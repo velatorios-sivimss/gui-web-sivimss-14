@@ -1,28 +1,29 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {OverlayPanel} from "primeng/overlaypanel";
-import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
-import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {OrdenSubrogacion} from "../../models/generar-orden-subrogacion.interface";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {ConfirmationService, LazyLoadEvent} from "primeng/api";
-import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
-import {GenerarOrdenSubrogacionService} from '../../services/generar-orden-subrogacion.service';
-import {finalize} from "rxjs/operators";
-import {of} from "rxjs";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { OverlayPanel } from "primeng/overlaypanel";
+import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
+import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
+import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import { OrdenSubrogacion } from "../../models/generar-orden-subrogacion.interface";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { ConfirmationService, LazyLoadEvent } from "primeng/api";
+import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
+import { GenerarOrdenSubrogacionService } from '../../services/generar-orden-subrogacion.service';
+import { finalize } from "rxjs/operators";
+import { of } from "rxjs";
 import * as moment from "moment/moment";
-import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import {HttpErrorResponse} from '@angular/common/http';
-import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
-import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import {DatePipe} from '@angular/common';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { PrevisualizacionArchivoComponent } from '../previsualizacion-archivo/previsualizacion-archivo.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-generar-orden-subrogacion',
@@ -83,6 +84,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     private generarOrdenSubrogacionService: GenerarOrdenSubrogacionService,
     private mensajesSistemaService: MensajesSistemaService,
     private descargaArchivosService: DescargaArchivosService,
+    private confirmationService: ConfirmationService,
     private datePipe: DatePipe
   ) {
   }
@@ -101,11 +103,11 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: false}, []],
-      velatorio: [{value: +usuario.idVelatorio, disabled: false}, []],
-      folio: new FormControl({value: null, disabled: false}, []),
-      proveedor: new FormControl({value: null, disabled: false}, []),
-      fecha: new FormControl({value: null, disabled: false}, []),
+      nivel: [{ value: +usuario.idOficina, disabled: false }, []],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: false }, []],
+      folio: new FormControl({ value: null, disabled: false }, []),
+      proveedor: new FormControl({ value: null, disabled: false }, []),
+      fecha: new FormControl({ value: null, disabled: false }, []),
     });
   }
 
@@ -231,16 +233,16 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.loaderService.activar();
     this.generarOrdenSubrogacionService.buscarPorFiltros(this.numPaginaActual, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        // this.ordenes = [];
-        this.ordenes = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
-    });
+        next: (respuesta: HttpRespuesta<any>): void => {
+          // this.ordenes = [];
+          this.ordenes = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error("ERROR: ", error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
   }
 
   paginarConFiltros(): void {
@@ -248,16 +250,16 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.loaderService.activar();
     this.generarOrdenSubrogacionService.buscarPorFiltros(0, this.cantElementosPorPagina, filtros)
       .pipe(finalize(() => this.loaderService.desactivar())).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.ordenes = [];
-        this.ordenes = respuesta.datos.content;
-        this.totalElementos = respuesta.datos.totalElements;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
-    });
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.ordenes = [];
+          this.ordenes = respuesta.datos.content;
+          this.totalElementos = respuesta.datos.totalElements;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error("ERROR: ", error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
   }
 
   validarFechaFinal(): void {
@@ -282,8 +284,8 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         const file = new Blob([this.descargaArchivosService.base64_2Blob(
-            respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)}
+          respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
         );
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())
@@ -312,21 +314,69 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
     this.overlayPanel.toggle(event);
   }
 
-  detalleOrdenSubrogacion(): void {
-    void this.router.navigate([`detalle`], {relativeTo: this.activatedRoute});
+  // detalleOrdenSubrogacion(): void {
+  //   void this.router.navigate([`detalle`], {relativeTo: this.activatedRoute});
+  // }
+
+  vistaPreviaOrdenSubrogacion(): void {
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Formato de actividades' };
+    this.loaderService.activar();
+    let datos = {
+      idHojaSubrogacion: this.ordenSeleccionada.idHojaSubrogacion
+    }
+    this.generarOrdenSubrogacionService.generarHojaSubrogacion(datos).pipe(
+      finalize(() => this.loaderService.desactivar())
+    ).subscribe({
+      next: (respuesta: any) => {
+        const file = new Blob([respuesta], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(file);
+        let archivoRef: DynamicDialogRef = this.dialogService.open(PrevisualizacionArchivoComponent, {
+          data: url,
+          header: "",
+          width: "1000px",
+        });
+        archivoRef.onClose.subscribe((response: any) => {
+          if (response) {
+            this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+              finalize(() => this.loaderService.desactivar())
+            ).subscribe({
+              next: (respuesta: any) => {
+                if (respuesta) {
+                  this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
+                  this.modalConfirmacion();
+                }
+              },
+              error: (error: HttpErrorResponse) => {
+                this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+              }
+            });
+          }
+        })
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error(error);
+      },
+    });
   }
 
+  modalConfirmacion() {
+    this.confirmationService.confirm({
+      message: this.mensajeArchivoConfirmacion,
+      accept: () => { },
+    });
+  }
+
+
   generarOrdenSubrogacion(esModificacion: boolean): void {
-    void this.router.navigate([`formato/${esModificacion}`], {relativeTo: this.activatedRoute});
+    void this.router.navigate([`formato/${esModificacion}`], { relativeTo: this.activatedRoute });
   }
 
   mapearFiltrosBusqueda(): any {
-    let folio = this.catalogoFoliosOdsCompleto.filter((o) => 
-    {
+    let folio = this.catalogoFoliosOdsCompleto.filter((o) => {
       if (o.folioOrdenServicio.includes("-")) {
         return o.folioOrdenServicio === this.filtroForm.get("folio")?.value;
       } else {
-        return o.folioOrdenServicio.replace("-","") === this.filtroForm.get("folio")?.value;
+        return o.folioOrdenServicio.replace("-", "") === this.filtroForm.get("folio")?.value;
       }
     });
     let proveedor: any = this.catalogoProveedoresConId.filter((p) => p.nombreProveedor === this.filtroForm.get("proveedor")?.value);
@@ -339,12 +389,11 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   }
 
   mapearDatosReporte(tipoReporteSeleccionado: string): any {
-    let folio = this.catalogoFoliosOdsCompleto.filter((o) => 
-    {
+    let folio = this.catalogoFoliosOdsCompleto.filter((o) => {
       if (o.folioOrdenServicio.includes("-")) {
         return o.folioOrdenServicio === this.filtroForm.get("folio")?.value;
       } else {
-        return o.folioOrdenServicio.replace("-","") === this.filtroForm.get("folio")?.value;
+        return o.folioOrdenServicio.replace("-", "") === this.filtroForm.get("folio")?.value;
       }
     });
     let proveedor: any = this.catalogoProveedoresConId.filter((p) => p.nombreProveedor === this.filtroForm.get("proveedor")?.value);

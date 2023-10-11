@@ -1,23 +1,23 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {OverlayPanel} from "primeng/overlaypanel";
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {GenerarOrdenSubrogacionService} from '../../services/generar-orden-subrogacion.service';
-import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {GenerarOrdenSubrogacion} from '../../models/generar-orden-subrogacion.interface';
-import {ConfirmationService} from 'primeng/api';
-import {DatePipe} from '@angular/common';
-import {finalize} from "rxjs/operators";
-import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
-import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
-import {HttpErrorResponse} from '@angular/common/http';
-import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import {mapearArregloTipoDropdown} from 'projects/sivimss-gui/src/app/utils/funciones';
-import {UsuarioEnSesion} from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { OverlayPanel } from "primeng/overlaypanel";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { GenerarOrdenSubrogacionService } from '../../services/generar-orden-subrogacion.service';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GenerarOrdenSubrogacion } from '../../models/generar-orden-subrogacion.interface';
+import { ConfirmationService } from 'primeng/api';
+import { DatePipe } from '@angular/common';
+import { finalize } from "rxjs/operators";
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { DescargaArchivosService } from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
+import { OpcionesArchivos } from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { mapearArregloTipoDropdown } from 'projects/sivimss-gui/src/app/utils/funciones';
+import { UsuarioEnSesion } from 'projects/sivimss-gui/src/app/models/usuario-en-sesion.interface';
 
 @Component({
   selector: 'app-detalle-generar-orden',
@@ -114,36 +114,7 @@ export class DetalleGenerarOrdenComponent implements OnInit {
     });
   }
 
-  imprimir() {
-    this.loaderService.activar();
-    let datos = {
-      idHojaSubrogacion: this.ordenSeleccionada.idHojaSubrogacion
-    }
-    const configuracionArchivo: OpcionesArchivos = {};
-    this.descargaArchivosService.descargarArchivo(this.generarOrdenSubrogacionService.generarHojaSubrogacion(datos), configuracionArchivo).pipe(
-      finalize(() => this.loaderService.desactivar())
-    ).subscribe({
-      next: (respuesta: any) => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.mostrarModalConfirmacion = true;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
-        const mensaje = this.alertas?.filter((msj: any) => {
-          return msj.idMensaje == error?.error?.mensaje;
-        })
-        if (mensaje) {
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
-        } else {
-          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
-        }
-      },
-    });
-  }
-
-  modificar(esModificacion: boolean): void {
-    void this.router.navigate([`formato/${esModificacion}`], {relativeTo: this.activatedRoute});
-  }
+  imprimir() { }
 
   get ef() {
     return this.editForm.controls;

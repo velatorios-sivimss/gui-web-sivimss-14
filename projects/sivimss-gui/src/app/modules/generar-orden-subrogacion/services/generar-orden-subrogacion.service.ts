@@ -82,13 +82,9 @@ export class GenerarOrdenSubrogacionService extends BaseService<HttpRespuesta<an
     return this._http.post<any>(this._base + `${this._funcionalidad}/buscar/reporte-hoja-subrogacion`, datosReporte)
   }
 
-  generarHojaSubrogacion(datosReporte: any): Observable<Blob> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
+  generarHojaSubrogacion(datosReporte: any): Observable<HttpRespuesta<any>> {
     return this._http.post<any>(this._base + `${this._funcionalidad}/hoja-subrogacion-generar-pdf/generarDocumento/pdf`
-      , datosReporte, { headers, responseType: 'blob' as 'json' });
+      , datosReporte, { responseType: 'blob' as 'json' });
   }
 
 }

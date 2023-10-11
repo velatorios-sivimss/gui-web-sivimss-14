@@ -25,12 +25,15 @@ import { GenerarOrdenSubrogacionRoutingModule } from "./generar-orden-subrogacio
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { GenerarOrdenFormatoComponent } from "./components/generar-orden-formato/generar-orden-formato.component";
 import { RadioButtonModule } from "primeng/radiobutton";
+import { PdfViewerModule } from "ng2-pdf-viewer";
+import { PrevisualizacionArchivoComponent } from "./components/previsualizacion-archivo/previsualizacion-archivo.component";
 
 @NgModule({
   declarations: [
     GenerarOrdenSubrogacionComponent,
     DetalleGenerarOrdenComponent,
     GenerarOrdenFormatoComponent,
+    PrevisualizacionArchivoComponent,
   ],
   imports: [
     CommonModule,
@@ -55,6 +58,7 @@ import { RadioButtonModule } from "primeng/radiobutton";
     AutoCompleteModule,
     ValidaRolModule,
     RadioButtonModule,
+    PdfViewerModule,
   ],
   providers: [
     GenerarOrdenSubrogacionService
