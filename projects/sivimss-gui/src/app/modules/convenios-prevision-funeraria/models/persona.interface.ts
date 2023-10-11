@@ -1,6 +1,8 @@
 import {BeneficiarioInterface} from "./beneficiario.interface";
 
 export interface PersonaInterface {
+  idContratante?: string;
+  idPersona?: string;
   curp?: string;
   rfc?: string;
   matricula?: string;

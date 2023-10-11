@@ -147,7 +147,9 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
                        sexo: [{value:null, disabled: false}, [Validators.required]],
                    otroSexo: [{value:null, disabled: false}, [Validators.required]],
             fechaNacimiento: [{value:null, disabled: true}, [Validators.required]],
-          entidadFederativa: [{value:null, disabled: false}, [Validators.required]]
+          entidadFederativa: [{value:null, disabled: false}, [Validators.required]],
+              idContratante: [{value:null, disabled: false}],
+                  idPersona: {value:null, disabled: false},
     });
   }
 
@@ -285,6 +287,8 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           this.fp.rfc.setValue(respuesta.datos[0].rfc)
           respuesta.datos[0].correo.includes('null') ? this.fp.correoElectronico.patchValue(null) : this.fp.correoElectronico.setValue(respuesta.datos[0].correo)
           respuesta.datos[0].telefono.includes('null') ? this.fp.telefono.patchValue(null) : this.fp.telefono.setValue(respuesta.datos[0].telefono)
+          this.fp.idPersona.setValue(respuesta.datos[0].idPersona)
+          this.fp.idContratante.setValue(respuesta.datos[0].idDelContratante)
           this.fp.fechaNacimiento.setValue(new Date(anio,mes - 1,dia))
           this.fp.sexo.setValue(respuesta.datos[0].sexo);
           this.fp.otroSexo.setValue(respuesta.datos[0].otroSexo);
@@ -398,6 +402,8 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     this.indice++;
     if(this.indice == 3){
       this.objectoConfirmacion = {
+          idContratante:this.personaForm.get('idContratante')?.value ? this.personaForm.get('idContratante')?.value.toString() : null,
+          idPersona: this.personaForm.get('idPersona')?.value ? this.personaForm.get('idPersona')?.value.toString() : null,
           curp: this.personaForm.get('curp')?.value ? this.personaForm.get('curp')?.value : "",
           rfc: this.personaForm.get('rfc')?.value ? this.personaForm.get('rfc')?.value : "",
           matricula: this.personaForm.get('matricula')?.value ? this.personaForm.get('matricula')?.value : "",

@@ -1175,7 +1175,7 @@ export class ModificarDatosFinadoComponent
     this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
     this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
     this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-    this.finado.fechaNac = datosEtapaFinado.datosFinado.fechaNacimiento;
+    this.finado.fechaNac = null;
     this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
     this.finado.idEstado = datosEtapaFinado.direccion.estado;
     this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion;
@@ -1189,10 +1189,9 @@ export class ModificarDatosFinadoComponent
     this.finado.idContratoPrevision = this.idContratoPrevision;
     this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
     this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
-    // this.finado.cp = null;
-    // this.finado.idPersona = null;
     this.altaODS.idContratantePf = this.idContratante;
     this.finado.idFinado = null;
+    this.finado.idPersona = null;
     if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
       this.finado.idFinado = this.idFinado;
       this.finado.rfc = null;
