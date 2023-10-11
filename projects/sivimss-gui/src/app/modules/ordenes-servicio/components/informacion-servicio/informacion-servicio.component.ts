@@ -160,7 +160,6 @@ export class InformacionServicioComponent implements OnInit {
 
   datosEtapaCaracteristicas(datosEtapaCaracteristicas: any): void {
     let datosPresupuesto = datosEtapaCaracteristicas.datosPresupuesto;
-    //TODO cambiar concepto por idTipoServicio
     this.desabilitarTodo();
     this.recoger.fecha.enable();
     this.recoger.hora.enable();

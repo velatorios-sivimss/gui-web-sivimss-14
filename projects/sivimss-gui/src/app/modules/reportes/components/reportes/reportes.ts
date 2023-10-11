@@ -604,7 +604,6 @@ export class Reportes implements OnInit {
     this.ff.fechaIni.updateValueAndValidity();
     this.ff.fechaFin.setValidators(Validators.required);
     this.ff.fechaFin.updateValueAndValidity();
-    //TODO inicializar autocomplete folios ODS
     this.reporteOrdenServicioService.consultaODSPF(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({

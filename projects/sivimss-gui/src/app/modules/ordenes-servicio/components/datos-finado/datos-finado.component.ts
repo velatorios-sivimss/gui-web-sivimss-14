@@ -968,7 +968,6 @@ export class DatosFinadoComponent implements OnInit {
             this.datosFinado.segundoApellido.setValue(respuesta.datos.segundoApellido);
             this.datosFinado.sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1);
 
-            //TODO verificar más escenarios, actualmente la nacionalidad lo regresa como null
             this.datosFinado.nacionalidad.setValue(1);
             this.datosFinado.fechaNacimiento.setValue(fecha);
 
