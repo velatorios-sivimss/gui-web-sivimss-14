@@ -11,69 +11,64 @@ import {BusquedaFiltro, ConsultaNotaRemision, GenerarDatosReporte} from '../mode
 
 @Injectable()
 export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, any> {
-  constructor(_http: HttpClient, private authService: AutenticacionService) {
-    super(_http, `${environment.api.mssivimss}`, "generar-notarem", "modificar",
-      54, "consultar-notasrem", "detalle-notagen", "cambiar-estatus");
-  }
+    constructor(_http: HttpClient, private authService: AutenticacionService) {
+        super(_http, `${environment.api.mssivimss}`, "generar-notarem", "modificar",
+            54, "consultar-notasrem", "detalle-notagen", "cambiar-estatus");
+    }
 
-  buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
-    const params = new HttpParams()
-      .append("pagina", pagina)
-      .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-notasrem`, filtros, {params});
-  }
+    buscarPorFiltros(filtros: any, pagina: number, tamanio: number): Observable<HttpRespuesta<any>> {
+        const params = new HttpParams()
+            .append("pagina", pagina)
+            .append("tamanio", tamanio);
+        return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-notasrem`, filtros, {params});
+    }
 
-  buscarTodasOdsGeneradas(delegacion: number, velatorio: number): Observable<HttpRespuesta<any>> {
-    const body = {idDelegacion: delegacion, idVelatorio: velatorio}
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-gen`, body);
-  }
+    buscarTodasOdsGeneradas(delegacion: number, velatorio: number): Observable<HttpRespuesta<any>> {
+        const body = {idDelegacion: delegacion, idVelatorio: velatorio}
+        return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-gen`, body);
+    }
 
-  obtenerDatosOrdenServicio(idOrdenServicio: number): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idOrdenServicio}?servicio=detalle-notasrem`);
-  }
+    obtenerDatosOrdenServicio(idOrdenServicio: number): Observable<HttpRespuesta<any>> {
+        return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/${idOrdenServicio}?servicio=detalle-notasrem`);
+    }
 
-  cancelarNotaRemision(obj: any): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/cancelar-notarem`, obj);
-  }
+    cancelarNotaRemision(obj: any): Observable<HttpRespuesta<any>> {
+        return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/cancelar-notarem`, obj);
+    }
 
-  obtenerDetalleNotaRemision(consultaNotaRemision: ConsultaNotaRemision): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-notagen`, consultaNotaRemision);
-  }
+    obtenerDetalleNotaRemision(consultaNotaRemision: ConsultaNotaRemision): Observable<HttpRespuesta<any>> {
+        return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/detalle-notagen`, consultaNotaRemision);
+    }
 
-  obtenerServiciosNotaRemision(consultaServicioRemision: ConsultaNotaRemision): Observable<HttpRespuesta<any>> {
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/servicios-notagen`, consultaServicioRemision);
-  }
+    obtenerServiciosNotaRemision(consultaServicioRemision: ConsultaNotaRemision): Observable<HttpRespuesta<any>> {
+        return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/servicios-notagen`, consultaServicioRemision);
+    }
 
-  obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
-    const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
-    return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
-  }
+    obtenerCatalogoNiveles(): Observable<TipoDropdown[]> {
+        const niveles = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_nivelOficina'));
+        return of(mapearArregloTipoDropdown(niveles, "desc", "id"));
+    }
 
-  obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
-    const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
-    return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
-  }
+    obtenerCatalogoDelegaciones(): Observable<TipoDropdown[]> {
+        const delegaciones = this.authService.obtenerCatalogoDeLocalStorage(('catalogo_delegaciones'));
+        return of(mapearArregloTipoDropdown(delegaciones, "desc", "id"));
+    }
 
-  obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body = {idDelegacion: delegacion}
-    return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
-  }
+    obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
+        const body = {idDelegacion: delegacion}
+        return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
+    }
 
-  generarReporteNotaRemision(generarReporte: GenerarDatosReporte): Observable<Blob> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-notarem/generarDocumento/pdf`
-      , generarReporte, {headers, responseType: 'blob' as 'json'});
-  }
+    generarReporteNotaRemision(generarReporte: GenerarDatosReporte): Observable<Blob> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+        });
+        return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-notarem/generarDocumento/pdf`
+            , generarReporte, {headers, responseType: 'blob' as 'json'});
+    }
 
-  generarReporteTabla(generarReporte: BusquedaFiltro): Observable<Blob> {
-    const headers: HttpHeaders = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odsnota`
-      , generarReporte, {headers, responseType: 'blob' as 'json'});
-  }
+    generarReporteTabla(generarReporte: BusquedaFiltro): Observable<HttpRespuesta<any>> {
+        return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odsnota`, generarReporte);
+    }
 }
