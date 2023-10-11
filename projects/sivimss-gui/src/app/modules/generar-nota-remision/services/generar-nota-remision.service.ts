@@ -1,13 +1,13 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { BaseService } from 'projects/sivimss-gui/src/app/utils/base-service';
-import { environment } from 'projects/sivimss-gui/src/environments/environment';
-import { Observable, of } from 'rxjs';
-import { TipoDropdown } from '../../../models/tipo-dropdown';
-import { AutenticacionService } from '../../../services/autenticacion.service';
-import { mapearArregloTipoDropdown } from '../../../utils/funciones';
-import { BusquedaFiltro, ConsultaNotaRemision, GenerarDatosReporte } from '../models/nota-remision.interface';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {BaseService} from 'projects/sivimss-gui/src/app/utils/base-service';
+import {environment} from 'projects/sivimss-gui/src/environments/environment';
+import {Observable, of} from 'rxjs';
+import {TipoDropdown} from '../../../models/tipo-dropdown';
+import {AutenticacionService} from '../../../services/autenticacion.service';
+import {mapearArregloTipoDropdown} from '../../../utils/funciones';
+import {BusquedaFiltro, ConsultaNotaRemision, GenerarDatosReporte} from '../models/nota-remision.interface';
 
 @Injectable()
 export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, any> {
@@ -20,11 +20,11 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
     const params = new HttpParams()
       .append("pagina", pagina)
       .append("tamanio", tamanio);
-    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-notasrem`, filtros, { params });
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/buscar/buscar-notasrem`, filtros, {params});
   }
 
   buscarTodasOdsGeneradas(delegacion: number, velatorio: number): Observable<HttpRespuesta<any>> {
-    const body = { idDelegacion: delegacion, idVelatorio: velatorio }
+    const body = {idDelegacion: delegacion, idVelatorio: velatorio}
     return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/lista-ods-gen`, body);
   }
 
@@ -55,7 +55,7 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
   }
 
   obtenerVelatoriosPorDelegacion(delegacion: string | null = null): Observable<HttpRespuesta<any>> {
-    const body = { idDelegacion: delegacion }
+    const body = {idDelegacion: delegacion}
     return this._http.post<HttpRespuesta<any>>(`${environment.api.login}/velatorio/consulta`, body);
   }
 
@@ -65,15 +65,15 @@ export class GenerarNotaRemisionService extends BaseService<HttpRespuesta<any>, 
       Accept: 'application/json'
     });
     return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-notarem/generarDocumento/pdf`
-      , generarReporte, { headers, responseType: 'blob' as 'json' });
+      , generarReporte, {headers, responseType: 'blob' as 'json'});
   }
 
   generarReporteTabla(generarReporte: BusquedaFiltro): Observable<Blob> {
-    const headers = new HttpHeaders({
+    const headers: HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json'
     });
-    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odsnota/generarDocumento/pdf`
-      , generarReporte, { headers, responseType: 'blob' as 'json' });
+    return this._http.post<any>(this._base + `${this._funcionalidad}/imprimir-odsnota`
+      , generarReporte, {headers, responseType: 'blob' as 'json'});
   }
 }

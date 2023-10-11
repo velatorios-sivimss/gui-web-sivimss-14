@@ -288,4 +288,68 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
 
+  guardarPDF(): void {
+    this.cargadorService.activar();
+    const filtros = this.generarSolicitudDescarga();
+    const configuracionArchivo: OpcionesArchivos = {};
+    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteTabla(filtros), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any): void => {
+        console.log(respuesta, 'xls');
+        this.mostrarModalDescargaExitosa = true;
+      },
+      error: (error: HttpErrorResponse): void => {
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
+
+  guardarExcel(): void {
+    const filtros = this.generarSolicitudDescarga('xls');
+    const configuracionArchivo: OpcionesArchivos = {ext: 'xlsx'};
+    this.cargadorService.activar();
+    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteTabla(filtros), configuracionArchivo).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: any): void => {
+        console.log(respuesta);
+        this.mostrarModalDescargaExitosa = true;
+      },
+      error: (error: HttpErrorResponse): void => {
+        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+      },
+    });
+  }
+
+  generarSolicitudDescarga(tipoReporte: 'pdf' | 'xls' = 'pdf') {
+    if (!this.paginacionConFiltrado) {
+      return {
+        idNivel: this.filtroForm.get('nivel')?.value,
+        idDelegacion: this.filtroForm.get('delegacion')?.value,
+        idVelatorio: this.filtroForm.get('velatorio')?.value,
+        folioODS: null,
+        fecIniODS: null,
+        fecFinODS: null,
+        tipoReporte
+      }
+    }
+    let fechaInicial = this.filtroForm.get('fechaInicial')?.value;
+    if (fechaInicial) fechaInicial = moment(this.f.fechaInicial.value).format('DD/MM/YYYY');
+    let fechaFinal = this.filtroForm.get('fechaFinal')?.value;
+    if (fechaFinal) fechaFinal = moment(this.f.fechaFinal.value).format('DD/MM/YYYY');
+    return {
+      idNivel: this.filtroForm.get('nivel')?.value,
+      idDelegacion: this.filtroForm.get('delegacion')?.value,
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      folioODS: this.filtroForm.get('folio')?.value,
+      fecIniODS: fechaInicial,
+      fecFinODS: fechaFinal,
+      tipoReporte
+    }
+  }
+
+
 }
