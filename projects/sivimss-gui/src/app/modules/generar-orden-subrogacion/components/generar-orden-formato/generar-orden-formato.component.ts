@@ -28,6 +28,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
 
   public editForm!: FormGroup;
   public catalogoServicios: TipoDropdown[] = [];
+  public catalogoServiciosConAtributos: any;
   public catalogoNiveles: TipoDropdown[] = [];
   public catalogoDelegaciones: TipoDropdown[] = [];
   public catalogoVelatorios: TipoDropdown[] = [];
@@ -91,6 +92,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
     this.catalogoDelegaciones = respuesta[this.POSICION_DELEGACIONES];
     this.generarOrdenSubrogacionService.consultarServicios(this.ordenSeleccionada.idOds).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
+        this.catalogoServiciosConAtributos = respuesta.datos;
         this.catalogoServicios = mapearArregloTipoDropdown(respuesta.datos, "servicio", "idServicio");
       },
       error: (error: HttpErrorResponse): void => {
@@ -116,6 +118,17 @@ export class GenerarOrdenFormatoComponent implements OnInit {
         this.mensajesSistemaService.mostrarMensajeError(error);
       }
     });
+  }
+
+  onChangeServicio(event: any) {
+    console.log("idServicio Seleccionado: ", event);
+    let idServicioSeleccionado = event.value;
+    let servicio = this.catalogoServiciosConAtributos.filter( (s: any) => s.idServicio = idServicioSeleccionado);
+    if (servicio.length > 0 ) {
+      this.editForm.get('lugarOrigen')?.setValue(servicio[0].origen);
+      this.editForm.get('lugarDestino')?.setValue(servicio[0].destino);
+      this.editForm.get('distancia')?.setValue(servicio[0].totalKilometros);
+    }
   }
 
   guardarOrden() {
@@ -144,7 +157,6 @@ export class GenerarOrdenFormatoComponent implements OnInit {
         error: (error: HttpErrorResponse): void => {
           console.error("ERROR: ", error);
           this.alertaService.mostrar(TipoAlerta.Error, "Error al guardar la información " + this.ordenSeleccionada.idHojaSubrogacion + ". Intenta nuevamente.");
-          // this.mensajesSistemaService.mostrarMensajeError(error);
         }
       });
     }

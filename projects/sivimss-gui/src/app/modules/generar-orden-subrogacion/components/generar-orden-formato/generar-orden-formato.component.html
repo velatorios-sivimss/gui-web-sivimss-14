@@ -127,7 +127,7 @@
 
     <div class="row mb-4">
       <div class="col-md-6">
-        <p-dropdown id="servicios" class="form-control" formControlName="servicios" [options]="catalogoServicios"
+        <p-dropdown id="servicios" class="form-control" formControlName="servicios" (onChange)="onChangeServicio($event)" [options]="catalogoServicios"
           placeholder="Selecciona un servicio" *ngIf="!esModificacion">
         </p-dropdown>
         <input id="servicios" class="form-control" formControlName="servicios" placeholder="Ingresa especificación" *ngIf="esModificacion">
