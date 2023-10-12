@@ -192,7 +192,7 @@
 
     <div class="row mb-4">
       <div class="col-md-6">
-        <label class="control-label" for="numCarroza">Númerp de carroza<span class="req">*</span>:</label>
+        <label class="control-label" for="numCarroza">Carroza Num<span class="req">*</span>:</label>
         <input id="numCarroza" class="form-control" formControlName="numCarroza" maxlength="5" placeholder="Ingresa número carroza">
         <span class="campo-obligatorio"
           *ngIf="ef.numCarroza?.errors?.required && (ef.numCarroza?.dirty || ef.numCarroza?.touched)">Este
@@ -224,7 +224,7 @@
     </div>
   </div>
 
-  <div class="border-panel mb-5">
+  <!-- <div class="border-panel mb-5">
     <div class="row mb-4">
       <div class="col-md-6">
         <h5>Firmas</h5>
@@ -265,12 +265,12 @@
         <p class="mt-5 subtitulo-firma">Firma</p>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div class="row mt-6 mb-6">
     <div class="col-md-12 flex justify-content-end">
       <button type="reset" class="btn btn-gold btn-md" routerLink="../..">Cancelar</button>
-      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="editForm.invalid" (click)="guardarOrden()">Generar orden de subrogación</button>
+      <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="editForm.invalid" (click)="guardarOrden()">Guardar</button>
     </div>
   </div>
 
