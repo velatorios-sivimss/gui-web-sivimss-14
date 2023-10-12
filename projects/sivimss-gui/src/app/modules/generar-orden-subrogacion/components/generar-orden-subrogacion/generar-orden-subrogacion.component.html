@@ -22,7 +22,7 @@
       <div class="col-md-6">
         <label class="control-label" for="folio">Folio de la ODS:</label>
         <p-autoComplete id="folio" class="form-control" formControlName="folio" (keyup)="validarNombre(0)"
-          (keyup.space)="sinEspacioInicial(0)" autocomplete="folio" [suggestions]="catalogoFoliosOds"
+          folioOdsAlphanumeric trimmer autocomplete="folio" [suggestions]="catalogoFoliosOds"
           (completeMethod)="consultarFoliosODS($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
           [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa el folio ODS"
           [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
@@ -31,7 +31,7 @@
       <div class="col-md-6">
         <label class="control-label" for="proveedor">Proveedor:</label>
         <p-autoComplete id="proveedor" class="form-control" formControlName="proveedor" (keyup)="validarNombreProveedor(0)"
-          (keyup.space)="sinEspacioInicialProveedor(0)" autocomplete="proveedor" [suggestions]="catalogoProveedores"
+          trimmer autocomplete="proveedor" [suggestions]="catalogoProveedores"
           (completeMethod)="consultarProveedor($event)" [showEmptyMessage]="true" [style]="{'width':'100%'}"
           [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa el proveedor"
           [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}">
@@ -122,7 +122,7 @@
       </app-overlay-panel-opcion>
       <app-overlay-panel-opcion *appValidaRol="['HOJA_SUBROGACION','MODIFICACION']" titulo="Modificar" (click)="generarOrdenSubrogacion(true);"></app-overlay-panel-opcion>
       <app-overlay-panel-opcion *ngIf="ordenSeleccionada.idHojaSubrogacion != '' && ordenSeleccionada.idHojaSubrogacion != null"
-                                titulo="Ver" (click)="detalleOrdenSubrogacion();"></app-overlay-panel-opcion>
+                                titulo="Ver" (click)="vistaPreviaOrdenSubrogacion();"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
