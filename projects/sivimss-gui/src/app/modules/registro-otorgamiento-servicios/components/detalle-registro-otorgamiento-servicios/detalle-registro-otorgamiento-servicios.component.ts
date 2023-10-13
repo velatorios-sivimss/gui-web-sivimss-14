@@ -21,6 +21,7 @@ export class DetalleRegistroOtorgamientoServiciosComponent implements OnInit {
   @Input() registroOtorgamientoSeleccionado!: OtorgamientoServicios;
   @Input() origen!: string;
   @Output() regresarPantalla = new EventEmitter<boolean>();
+  banderaCertCremacion: boolean = false;
 
   constructor(
     public ref: DynamicDialogRef,
@@ -34,6 +35,7 @@ export class DetalleRegistroOtorgamientoServiciosComponent implements OnInit {
   ngOnInit(): void {
     if (this.origen != 'situar') {
       this.registroOtorgamientoSeleccionado = this.config.data;
+      if( this.registroOtorgamientoSeleccionado.servicio?.toUpperCase().includes('CREMACIÓN'))this.banderaCertCremacion = true;
       this.origen = 'quitar';
     }
   }

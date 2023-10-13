@@ -1,4 +1,4 @@
-<app-table-panel> 
+<app-table-panel>
   <ng-container *ngIf="origen=='situar'">
     <div class="row table-panel-row">
       <div class="col-md-6">
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="row table-panel-row">
+    <div class="row table-panel-row" *ngIf="banderaCertCremacion">
       <div class="col-md-6">
         <div class="inline-block mr-3" *ngIf="registroOtorgamientoSeleccionado.indCertificado">
           <i class="fs fs-check"></i>
