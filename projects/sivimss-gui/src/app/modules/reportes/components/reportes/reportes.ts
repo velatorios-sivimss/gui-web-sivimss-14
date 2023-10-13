@@ -337,8 +337,12 @@ export class Reportes implements OnInit {
         }
         break;
       case 2:
-        // this.fechaInicialBandera = true;
-        // this.fechaFinalBandera = true;
+      return {
+        idVelatorio: this.ff.velatorio.value,
+        fechaInicio: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
+        fechaFin: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
+        tipoReporte:this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+      }
         break;
       case 3:
         return {
