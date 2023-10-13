@@ -123,7 +123,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
   onChangeServicio(event: any) {
     console.log("idServicio Seleccionado: ", event);
     let idServicioSeleccionado = event.value;
-    let servicio = this.catalogoServiciosConAtributos.filter( (s: any) => s.idServicio = idServicioSeleccionado);
+    let servicio = this.catalogoServiciosConAtributos.filter( (s: any) => s.idServicio === idServicioSeleccionado);
     if (servicio.length > 0 ) {
       this.editForm.get('lugarOrigen')?.setValue(servicio[0].origen);
       this.editForm.get('lugarDestino')?.setValue(servicio[0].destino);
