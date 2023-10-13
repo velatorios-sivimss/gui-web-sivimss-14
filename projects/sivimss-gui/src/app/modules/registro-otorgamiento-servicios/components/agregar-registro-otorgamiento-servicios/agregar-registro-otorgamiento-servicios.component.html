@@ -10,7 +10,7 @@
           *ngIf="f.idTipoServicio?.errors?.required && (f.idTipoServicio?.dirty || f.idTipoServicio?.touched)">Campo
           obligatorio</span>
       </div>
-      <div class="col-md-6 pt-6">
+      <div class="col-md-6 pt-6" *ngIf="f.idTipoServicio.value == 3">
         <p-checkbox inputId="alta" formControlName="indCertificado" styleClass="mr-3" [binary]="true"></p-checkbox>
         <label [for]="'indCertificado'" class="control-label mb-0">Certificado de cremación</label>
 

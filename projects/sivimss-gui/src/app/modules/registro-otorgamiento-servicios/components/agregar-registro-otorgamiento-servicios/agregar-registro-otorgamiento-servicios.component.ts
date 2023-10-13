@@ -120,6 +120,7 @@ export class AgregarRegistroOtorgamientoServiciosComponent implements OnInit {
     let fechaMostrar = moment(new Date()).format('DD/MM/YYYY hh:mm:ss A');
     this.f.fechaMostrar.setValue(fechaMostrar);
     this.f.fecha.setValue(moment(new Date()).format('YYYY-MM-DD hh:mm:ss'));
+    this.f.indCertificado.setValue(false)
   }
 
   cancelar(): void {
