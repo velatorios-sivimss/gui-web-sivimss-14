@@ -17,7 +17,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {
-  mapearArregloTipoDropdown,
+  mapearArregloTipoDropdown, obtenerFechaYHoraActual,
   obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado,
   validarUsuarioLogueado
 } from 'projects/sivimss-gui/src/app/utils/funciones';
@@ -316,7 +316,10 @@ export class SolicitudesPagoComponent implements OnInit {
     const filtros: FiltrosSolicitudPago = this.crearSolicitudFiltros(tipoReporte);
     const solicitudFiltros: string = JSON.stringify(filtros);
     const ext = tipoReporte === 'pdf' ? 'pdf' : 'xlsx';
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext}
+    const configuracionArchivo: OpcionesArchivos = {
+      nombreArchivo: `Listado Solicitudes ${obtenerFechaYHoraActual()}`,
+      ext
+    }
     this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarListadoSolicitudes(solicitudFiltros), configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
@@ -335,7 +338,7 @@ export class SolicitudesPagoComponent implements OnInit {
     this.cargadorService.activar();
     const solicitud = this.generarSolicitudReporte(tipoReporte);
     const ext = tipoReporte === 'pdf' ? 'pdf' : 'xlsx';
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: "reporte", ext}
+    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: `Solicitud Pago ${obtenerFechaYHoraActual()}`, ext}
     this.descargaArchivosService.descargarArchivo(this.solicitudesPagoService.descargarReporteSolicitud(solicitud),
       configuracionArchivo).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({

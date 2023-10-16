@@ -74,3 +74,17 @@ export function obtenerVelatorioUsuarioLogueado(usuario: UsuarioEnSesion): numbe
   const {idVelatorio} = usuario;
   return +idVelatorio === 0 ? null : +idVelatorio;
 }
+
+export function obtenerFechaYHoraActual(): string {
+  const fecha: Date = new Date();
+
+  const fechaFormateada: string = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString()
+    .padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`;
+
+  const horaFormateada: string = `${fecha.getHours().toString().padStart(2, '0')}`;
+  const minutos: string = `${fecha.getMinutes().toString().padStart(2, '0')}`;
+  const dosPuntos: string = ':';
+
+  return `${fechaFormateada} ${horaFormateada}${dosPuntos}${minutos}`;
+
+}
