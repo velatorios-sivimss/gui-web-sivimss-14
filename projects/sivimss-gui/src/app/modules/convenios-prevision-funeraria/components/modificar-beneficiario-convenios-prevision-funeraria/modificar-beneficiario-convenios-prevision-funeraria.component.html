@@ -20,7 +20,7 @@
         <label class="control-label" for="fechaNacimiento">Fecha<span class="req">*</span>:</label>
         <p-calendar id="fechaNacimiento" styleClass="form-control" formControlName="fechaNacimiento" [showIcon]="true"
                     dateFormat="dd/mm/yy" placeholder="Ingresa fecha de acimiento" [maxDate]="hoy"
-                    (change)="calcularEdad()"></p-calendar>
+                    (onSelect)="calcularEdad()" (change)="calcularEdad()"></p-calendar>
         <span class="campo-obligatorio"
               *ngIf="f.fechaNacimiento?.errors?.required && (f.fechaNacimiento?.dirty || f.fechaNacimiento?.touched)">Este campo es obligatorio *.</span>
       </div>
