@@ -345,7 +345,6 @@ export class Reportes implements OnInit {
         }
         break;
       case 7:
-        //TODO revisar petición no se está mandando y agrega CSV
         return {
           id_delegacion: this.ff.delegacion.value,
           id_velatorio: this.ff.velatorio.value,
