@@ -13,7 +13,7 @@ export const NOMBRE_REPORTES: string[] = [
 export const NOMBRE_ENDPOINT:Map<number, any> = new Map(
   [
     [1,	"/genera-reporte-ods"],
-    [2,	"Concentrado de Facturas"],
+    [2,	"/generar_reporte_facturas"],
     [3,	"/reporte-pago-prov"],
     [4,	"/reporte-det-pago"],
     [5,	"/reporte-detalle-is"],

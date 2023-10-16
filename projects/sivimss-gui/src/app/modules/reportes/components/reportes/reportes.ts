@@ -210,7 +210,6 @@ export class Reportes implements OnInit {
   }
 
   limpiarFiltros(): void {
-    // this.cambiarReporte();
     this.cambiarDelegacion(true);
     this.ff.idEstatusODS.clearValidators();
 
@@ -330,7 +329,6 @@ export class Reportes implements OnInit {
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
           tipoReporte: this.regresarTipoReporte(this.ff.exportar.value)
         }
-        //CSV
         break;
       case 6:
         return {
