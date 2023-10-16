@@ -26,7 +26,7 @@ import {OpcionesArchivos} from "../../../../models/opciones-archivos.interface";
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 import {MESES} from "../../constants/meses";
 import {Dropdown} from "primeng/dropdown";
-import {NOMBRE_REPORTES} from "../../constants/nombre-reportes";
+import {NOMBRE_ENDPOINT, NOMBRE_REPORTES} from "../../constants/nombre-reportes";
 
 @Component({
   selector: 'app-reportes',
@@ -81,6 +81,7 @@ export class Reportes implements OnInit {
   mes: TipoDropdown[] = MESES;
   exportar: TipoDropdown[] = [];
   estatusSeleccionODS!: number | null;
+  nombreEndpoint = NOMBRE_ENDPOINT;
 
   constructor(
     private alertaService: AlertaService,
@@ -242,55 +243,13 @@ export class Reportes implements OnInit {
     this.loaderService.activar();
     const filtros = this.consultarFiltros(this.ff.reporte.value);
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: NOMBRE_REPORTES[this.ff.reporte.value - 1]};
-    if (filtros.tipoReporte.includes("xls")) {
-      configuracionArchivo.ext = "xlsx"
-    }
-    //TODO usar un map
-    let tipoReporte: TipoDropdown[] = [
-      {
-        label: '/genera-reporte-ods',
-        value: 1
-      },
-      {
-        label: '/generar-reporte-comsiones',
-        value: 6
-      },
-      {
-        label: '/reporte-serv-vel',
-        value: 7
-      },
-      {
-        label: '/pago-anticipado-descargar-reporte-pa',
-        value: 9
-      },
-      {
-        label: '/reporte-pago-prov',
-        value: 3
-      },
-      {
-        label: '/reporte-detalle-is',
-        value: 5
-      },
-      {
-        label: '/reporte-siniestros-pf',
-        value: 8
-      },
-      {
-        label: '/reporte-det-pago',
-        value: 4
-      },
-    ]
-    let nombreReporte: string = "";
-    tipoReporte.forEach(element => {
-      if (element.value == this.ff.reporte.value) {
-        nombreReporte = element.label;
-      }
-    });
-    this.reporteOrdenServicioService.generarReporte(filtros, nombreReporte).pipe(
+    const tipoReporte = this.nombreEndpoint.get(this.ff.reporte.value);
+    if (filtros.tipoReporte.includes("xls")) configuracionArchivo.ext = "xlsx";
+    if (filtros.tipoReporte.includes("csv")) configuracionArchivo.ext = "csv";
+    this.reporteOrdenServicioService.generarReporte(filtros, tipoReporte).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
@@ -308,7 +267,7 @@ export class Reportes implements OnInit {
         })
       },
       error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
+        this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64));
       }
     });
   }
@@ -348,9 +307,9 @@ export class Reportes implements OnInit {
         return {
           id_delegacion: this.ff.delegacion.value,
           id_velatorio: this.ff.velatorio.value,
-          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
-          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
-          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+          fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
+          fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
+          tipoReporte: this.regresarTipoReporte(this.ff.exportar.value)
         }
         break;
       case 4:
@@ -369,8 +328,9 @@ export class Reportes implements OnInit {
           id_delegacion: this.ff.delegacion.value,
           fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('YYYY-MM-DD') : null,
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('YYYY-MM-DD') : null,
-          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+          tipoReporte: this.regresarTipoReporte(this.ff.exportar.value)
         }
+        //CSV
         break;
       case 6:
         return {
@@ -385,13 +345,14 @@ export class Reportes implements OnInit {
         }
         break;
       case 7:
+        //TODO revisar petición no se está mandando y agrega CSV
         return {
           id_delegacion: this.ff.delegacion.value,
           id_velatorio: this.ff.velatorio.value,
-          id_ods: this.ff.folioOds?.value.value ?? null,
+          id_ods: this.ff.folioOds.value?.value ?? null,
           fecha_inicial: this.ff.fechaIni.value ? moment(this.ff.fechaIni.value).format('DD/MM/YYYY') : null,
           fecha_final: this.ff.fechaFin.value ? moment(this.ff.fechaFin.value).format('DD/MM/YYYY') : null,
-          tipoReporte: this.ff.exportar.value == 1 ? 'pdf' : 'xls'
+          tipoReporte: this.regresarTipoReporte(this.ff.exportar.value)
         }
         break;
       case 8:
@@ -419,6 +380,11 @@ export class Reportes implements OnInit {
         break;
 
     }
+  }
+
+  regresarTipoReporte(tipo: number): string {
+    const tipoReporte = ["pdf","xls","csv"]
+    return tipoReporte[tipo -1]
   }
 
   filtrarODS(): void {
@@ -639,7 +605,7 @@ export class Reportes implements OnInit {
 
   limpiarTiposExportacion(): TipoDropdown[] {
     const ARCHIVO: TipoDropdown[] = [...TIPO_ARCHIVO];
-    if ([3].includes(this.idReporte)) return ARCHIVO;
+    if ([3,5,7].includes(this.idReporte)) return ARCHIVO;
     ARCHIVO.pop();
     return ARCHIVO;
   }

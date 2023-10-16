@@ -1,4 +1,4 @@
 export interface OpcionesArchivos {
   nombreArchivo?: string;
-  ext?: "pdf" | "xlsx";
+  ext?: "pdf" | "xlsx" | "csv";
 }
