@@ -22,13 +22,13 @@ export class DescargaArchivosService {
   }
 
   obtenerContentType(options: OpcionesArchivos = {}): string {
-    const ext: "pdf" | "xlsx" = options.ext ?? "pdf";
+    const ext: "pdf" | "xlsx" | "csv" = options.ext ?? "pdf";
     return ext === "pdf" ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   }
 
   descargarArchivo(archivo$: Observable<Blob>, options: OpcionesArchivos = {}): Observable<boolean> {
     const nombreArchivo: string = options.nombreArchivo ?? "documento";
-    const ext: "pdf" | "xlsx" = options.ext ?? "pdf";
+    const ext: "pdf" | "xlsx" | "csv" = options.ext ?? "pdf";
     const configuracion: SaveFilePickerOptions = {
       suggestedName: `${nombreArchivo}.${ext}`,
       types: [
