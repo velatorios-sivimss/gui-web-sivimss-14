@@ -84,6 +84,10 @@ export class ModalConvenioPfComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.objetoContratante = respuesta.datos || [];
+        if(this.objetoContratante.length == 0){
+          this.alertaService.mostrar(TipoAlerta.Precaucion, 'El contrato de Previsión Funeraria que deseas utilizar no se encuentra vigente. ');
+          return
+        }
         this.contratantes = respuesta.datos.map((contratante: any) => (
           {label: contratante.nombreContratante, value: contratante.idContratante}
         ));
