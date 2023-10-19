@@ -104,7 +104,7 @@ export class AgregarPromotoresComponent implements OnInit {
     this.agregarPromotorForm.markAllAsTouched();
     if (this.agregarPromotorForm.invalid) return;
     this.mostrarModalConfirmacion = true;
-    this.mensajeModal = `¿Está seguro de agregar este nuevo Promotor?`;
+    this.mensajeModal = `¿Estás seguro de agregar este nuevo registro?`;
   }
 
   guardarPromotor() {

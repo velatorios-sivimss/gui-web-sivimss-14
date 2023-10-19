@@ -243,7 +243,7 @@ export class PromotoresComponent implements OnInit {
 
   confirmarInhabilitar() {
     this.mostrarModalConfirmacion = true;
-    this.mensajeModal = '¿Está seguro de desactivar el registro seleccionado del Promotor?';
+    this.mensajeModal = '¿Estás seguro de desactivar el registro seleccionado?';
   }
 
   inhabilitarPromotor() {

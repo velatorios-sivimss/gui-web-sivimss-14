@@ -140,7 +140,7 @@ export class ModificarPromotoresComponent implements OnInit {
     if (this.modificarPromotorForm.invalid) return;
     this.modificarPromotorForm.markAsDirty();
     this.mostrarModalConfirmacion = true;
-    this.mensajeModal = `¿Está seguro de modificar el Promotor?`;
+    this.mensajeModal = `¿Estás seguro de modificar el registro?`;
   }
 
   guardarPromotor() {
