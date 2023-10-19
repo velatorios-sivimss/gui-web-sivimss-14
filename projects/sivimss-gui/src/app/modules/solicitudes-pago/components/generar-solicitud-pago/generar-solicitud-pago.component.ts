@@ -172,7 +172,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   cambiarTipoUnidad(tipoUnidad: number): void {
     this.solicitudPagoForm.get('referenciaUnidad')?.setValue(null);
     this.solicitudPagoForm.get('solicitadoPor')?.setValue(null);
-    this.unidades = tipoUnidad === 1 ? this.recuperarUnidadesOperacionales() : this.recuperarUnidadesAdministrativas();
+    this.unidades = +tipoUnidad === 1 ? this.recuperarUnidadesOperacionales() : this.recuperarUnidadesAdministrativas();
   }
 
   cancelar(): void {
@@ -229,7 +229,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
   seleccionarResponsable(): void {
     const tipoUnidad = this.solicitudPagoForm.get('unidadSeleccionada')?.value;
     const idUnidad = this.solicitudPagoForm.get('referenciaUnidad')?.value;
-    if (tipoUnidad === 1) {
+    if (+tipoUnidad === 1) {
       const responsable: string = this.catalogoUnidades.find(cu => cu.idSubdireccion === idUnidad)?.nomResponsable ?? '';
       this.solicitudPagoForm.get('solicitadoPor')?.setValue(responsable);
       return;
@@ -329,6 +329,12 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     const folio = this.solicitudPagoForm.get("folioFiscal")?.value;
     const tipoSolicitud = this.solicitudPagoForm.get("tipoSolicitud")?.value;
     if (!folio) return;
+    if (folio.length !== 36) {
+      const ERROR: string = 'El folio fiscal no es válido.\n' +
+        'Verifica tu información.';
+      this.alertaService.mostrar(TipoAlerta.Precaucion, ERROR);
+      return
+    }
     if ([3, 5, 6].includes(tipoSolicitud)) {
       this.buscarFacturaAgregar(folio);
       return;

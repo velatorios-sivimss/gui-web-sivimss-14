@@ -31,7 +31,7 @@
         <div class="formgroup-inline">
           <div class="field">
             <input id="folioFiscalBtn" class="form-control" formControlName="folioFiscal"
-                   placeholder="Ingresar folio" [maxlength]="36"
+                   placeholder="Ingresar folio" [maxlength]="36" [minlength]="36"
                    oninput="this.value = this.value.toUpperCase().trim()"
                    appRegexFolioFiscal>
             <span class="campo-obligatorio"
