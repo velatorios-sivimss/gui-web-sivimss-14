@@ -210,9 +210,7 @@ export class Reportes implements OnInit {
   }
 
   limpiarFiltros(): void {
-    this.cambiarDelegacion(true);
     this.ff.idEstatusODS.clearValidators();
-
     this.exportar = [];
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroFormDir.resetForm({
@@ -220,6 +218,7 @@ export class Reportes implements OnInit {
       delegacion: obtenerDelegacionUsuarioLogueado(usuario),
       velatorio: obtenerVelatorioUsuarioLogueado(usuario)
     });
+    this.cambiarDelegacion(true);
   }
 
   exportarReporte(): void {
