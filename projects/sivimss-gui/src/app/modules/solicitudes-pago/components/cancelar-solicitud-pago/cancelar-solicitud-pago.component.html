@@ -14,7 +14,7 @@
             <div class="col-md-12">
                 <label class="control-label" for="motivo">Motivo de cancelación<span
                         class="req">*</span>:</label>
-                <input class="form-control" formControlName="motivo" id="motivo" placeholder="Ingresa el motivo de la cancelación" maxlength="50">
+                <input class="form-control" formControlName="motivo" id="motivo" placeholder="Ingresa el motivo de la cancelación" maxlength="100" [disabled]="mensajeConfirmacion">
                 <span class="campo-obligatorio" *ngIf="ref.motivo?.errors?.required && (ref.motivo?.dirty || ref.motivo?.touched)">Este campo es obligatorio *.</span>
             </div>
         </div>

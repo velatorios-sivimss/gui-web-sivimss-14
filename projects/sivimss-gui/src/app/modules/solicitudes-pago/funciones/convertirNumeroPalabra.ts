@@ -1,12 +1,36 @@
+const palabrasDecenas: string[] = [
+  '', '', '', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'
+];
+
+
 export function convertirNumeroPalabra(valor: number): string {
+  // Verifica si el número es decimal
+  const esDecimal: boolean = valor % 1 !== 0;
+
+  // Divide el número en parte entera y parte decimal
+  const parteEntera: number = Math.floor(valor);
+  const parteDecimal: number = valor - parteEntera;
+
+  // Convierte la parte entera en palabras
+  const palabrasParteEntera: string = convertirParteEntera(parteEntera);
+
+  // Convierte la parte decimal en palabras
+  const palabrasParteDecimal: string = convertirParteDecimal(parteDecimal);
+
+  // Combina las palabras de la parte entera y parte decimal
+  if (esDecimal) {
+    return palabrasParteEntera + ' punto ' + palabrasParteDecimal;
+  } else {
+    return palabrasParteEntera;
+  }
+}
+
+function convertirParteEntera(valor: number): string {
+
   const palabrasNumeros: string[] = [
     '', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve',
     'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve',
     'veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'
-  ];
-
-  const palabrasDecenas: string[] = [
-    '', '', '', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'
   ];
 
   const palabrasCientos: string[] = [
@@ -67,4 +91,26 @@ export function convertirNumeroPalabra(valor: number): string {
   }
 
   return words.trim();
+}
+
+function convertirParteDecimal(valor: number): string {
+  const palabrasDecimales: string[] = [
+    'cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'
+  ];
+
+  // Convierte la parte decimal en palabras
+  const decimalesStr: string = valor.toFixed(2).split('.')[1]; // Tomar dos decimales
+
+  const unidadesDecimal: number = parseInt(decimalesStr.charAt(0), 10);
+  const decenasDecimal: number = parseInt(decimalesStr.charAt(1), 10);
+
+  let palabrasParteDecimal: string = '';
+  if (unidadesDecimal > 0) {
+    palabrasParteDecimal += palabrasDecimales[unidadesDecimal];
+  }
+  if (decenasDecimal > 0) {
+    palabrasParteDecimal += (palabrasParteDecimal ? ' ' : '') + palabrasDecenas[decenasDecimal];
+  }
+
+  return palabrasParteDecimal;
 }

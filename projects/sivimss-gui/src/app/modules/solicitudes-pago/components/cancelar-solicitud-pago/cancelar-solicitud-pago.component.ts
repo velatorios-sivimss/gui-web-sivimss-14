@@ -40,7 +40,6 @@ export class CancelarSolicitudPagoComponent implements OnInit {
   ngOnInit(): void {
     if (this.config?.data) {
       this.pagoSeleccionado = this.config.data;
-      console.log(this.pagoSeleccionado)
     }
     this.inicializarModificarPagoForm();
   }
