@@ -145,7 +145,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
         return {
           idDelegacion: !this.ff.idDelegacion.value || this.ff.idDelegacion.getRawValue() === '' ? null : this.ff.idDelegacion.getRawValue(),
           idVelatorio: !this.ff.idVelatorio.value || this.ff.idVelatorio.getRawValue() === '' ? null : this.ff.idVelatorio.getRawValue(),
-          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : +this.ff.numConvenio.getRawValue(),
+          numConvenio: !this.ff.numConvenio.value || this.ff.numConvenio.getRawValue() === '' ? null : this.ff.numConvenio.getRawValue(),
           folio: !this.ff.folio.value || this.ff.folio.getRawValue() === '' ? null : this.ff.folio.getRawValue(),
           rfc: !this.ff.rfc.value || this.ff.rfc.getRawValue() === '' ? null : this.ff.rfc.getRawValue(),
         }
