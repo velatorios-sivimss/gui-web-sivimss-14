@@ -354,8 +354,10 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
             formularioEnUso[posicion].nacionalidad.setValue(2);
             formularioEnUso[posicion].paisNacimiento.setValue(respuesta.datos[0].idPais)
           }
-          formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc);
-          formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss);
+          respuesta.datos[0].rfc ? formularioEnUso[posicion].rfc.setValue(respuesta.datos[0].rfc) :
+            formularioEnUso[posicion].rfc.setValue(formularioEnUso[posicion].rfc.value);
+          respuesta.datos[0].nss ? formularioEnUso[posicion].nss.setValue(respuesta.datos[0].nss) :
+            formularioEnUso[posicion].nss.setValue(formularioEnUso[posicion].nss.value);
           this.consultarCodigoPostal(posicion);
           return;
         }
@@ -547,16 +549,11 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        const [dia, mes, anio] = respuesta.datos.fechaNacimiento.split('/');
-        const fecha = new Date(Number(anio) + '/' + Number(mes) + '/' + Number(dia));
-        formularios[posicion].curp.setValue(respuesta.datos.curp);
-        formularios[posicion].rfc.setValue(respuesta.datos.rfc)
-        formularios[posicion].nombre.setValue(respuesta.datos.nombre);
-        formularios[posicion].primerApellido.setValue(respuesta.datos.primerApellido);
-        formularios[posicion].segundoApellido.setValue(respuesta.datos.segundoApellido)
-        formularios[posicion].fechaNacimiento.setValue(fecha);
-        formularios[posicion].sexo.setValue(respuesta.datos.sexo.idSexo == 1 ? 2 : 1)
-        if (respuesta.datos.pais == 119) formularios[posicion].nacionalidad.setValue(1);
+        if(respuesta.datos === null){
+          this.alertaService.mostrar(
+            TipoAlerta.Precaucion,
+            "El Número de Seguridad Social no existe." || this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje));
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(52));
