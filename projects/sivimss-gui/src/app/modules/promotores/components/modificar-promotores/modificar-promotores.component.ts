@@ -140,7 +140,7 @@ export class ModificarPromotoresComponent implements OnInit {
     if (this.modificarPromotorForm.invalid) return;
     this.modificarPromotorForm.markAsDirty();
     this.mostrarModalConfirmacion = true;
-    this.mensajeModal = `¿Está seguro de modificar el Promotor?`;
+    this.mensajeModal = `¿Estás seguro de modificar el registro?`;
   }
 
   guardarPromotor() {
@@ -203,9 +203,9 @@ export class ModificarPromotoresComponent implements OnInit {
 
     return {
       idPromotor: this.promotor.idPromotor,
-      correo: this.mpf.correo.value.trim(),
-      puesto: this.mpf.puesto.value.trim(),
-      categoria: this.mpf.categoria.value.trim(),
+      correo: this.mpf.correo.value?.trim() ?? null,
+      puesto: this.mpf.puesto.value?.trim() ?? null,
+      categoria: this.mpf.categoria.value?.trim() ?? null,
       fecIngreso: this.mpf.fechaIngreso.value ? moment(this.mpf.fechaIngreso.value).format('DD/MM/YYYY') : null,
       sueldoBase: +this.mpf.sueldoBase.value,
       idVelatorio: this.mpf.velatorio.value,
