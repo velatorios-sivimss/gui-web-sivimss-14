@@ -282,7 +282,7 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor, disabled: true},
+          {value: datos.gestionadoPorPromotor == null ? false : datos.gestionadoPorPromotor, disabled: true},
           [Validators.required],
         ],
         promotor: [
