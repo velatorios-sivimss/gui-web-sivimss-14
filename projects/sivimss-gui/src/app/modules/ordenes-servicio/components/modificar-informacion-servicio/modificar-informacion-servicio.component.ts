@@ -188,7 +188,6 @@ export class ModificarInformacionServicioComponent
     // if(typeof datos.horaVelacion){
     //   datos.horaVelacion.inclu
     // }
-
     if (typeof datos.horaVelacion == "string") {
       const [horas, minutos] = datos.horaVelacion.split(':')
       datos.horaVelacion = new Date(+anio, +mes, +dia, +horas, +minutos)
@@ -221,8 +220,7 @@ export class ModificarInformacionServicioComponent
           [Validators.required],
         ],
         interior: [
-          {value: datos.interior, disabled: false},
-          [Validators.required],
+          {value: datos.interior, disabled: false}
         ],
         cp: [{value: datos.cp, disabled: false}, [Validators.required]],
         colonia: [
@@ -284,7 +282,7 @@ export class ModificarInformacionServicioComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor == null ? false : true, disabled: false},
+          {value: datos.gestionadoPorPromotor == null ? false : datos.gestionadoPorPromotor, disabled: false},
           [Validators.required],
         ],
         promotor: [
@@ -790,32 +788,44 @@ export class ModificarInformacionServicioComponent
     this.informacionServicio.fechaCortejo =
       formulario.cortejo.fecha == null
         ? null
-        : moment(formulario.cortejo.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.cortejo.fecha === "string" ? this.parseoFecha(formulario.cortejo.fecha) : formulario.cortejo.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicio.fechaCremacion =
       formulario.lugarCremacion.fecha == null
         ? null
-        : moment(formulario.lugarCremacion.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.lugarCremacion.fecha === "string" ? this.parseoFecha(formulario.lugarCremacion.fecha) : formulario.lugarCremacion.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicio.fechaRecoger =
       formulario.recoger.fecha == null
         ? null
-        : moment(formulario.recoger.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.recoger.fecha === "string" ? this.parseoFecha(formulario.recoger.fecha) : formulario.recoger.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicio.horaRecoger =
       formulario.recoger.hora == null
         ? null
-        : moment(formulario.recoger.hora).format('HH:mm');
+        : moment(
+          typeof formulario.recoger.hora === "string" ? this.parseoHora(formulario.recoger.fecha,formulario.recoger.hora) : formulario.recoger.hora
+        ).format('HH:mm');
 
     this.informacionServicio.horaCortejo =
       formulario.cortejo.hora == null
         ? null
-        : moment(formulario.cortejo.hora).format('HH:mm');
+        : moment(
+          typeof formulario.cortejo.hora === "string" ? this.parseoHora(formulario.cortejo.fecha,formulario.cortejo.hora) : formulario.cortejo.hora
+        ).format('HH:mm');
 
     this.informacionServicio.horaCremacion =
       formulario.lugarCremacion.hora == null
         ? null
-        : moment(formulario.lugarCremacion.hora).format('HH:mm');
+        : moment(
+           typeof formulario.lugarCremacion.hora === "string" ? this.parseoHora(formulario.lugarCremacion.fecha,formulario.lugarCremacion.hora) : formulario.lugarCremacion.hora
+        ).format('HH:mm');
 
     this.informacionServicio.idPanteon = this.idPanteon;
     this.informacionServicio.idPromotor = formulario.cortejo.promotor;
@@ -839,22 +849,30 @@ export class ModificarInformacionServicioComponent
     this.informacionServicioVelacion.fechaInstalacion =
       formulario.instalacionServicio.fecha == null
         ? null
-        : moment(formulario.instalacionServicio.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.instalacionServicio.fecha === "string" ? this.parseoFecha(formulario.instalacionServicio.fecha) : formulario.instalacionServicio.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicioVelacion.fechaVelacion =
       formulario.lugarVelacion.fecha == null
         ? null
-        : moment(formulario.lugarVelacion.fecha).format('yyyy-MM-DD');
+        : moment(
+          typeof formulario.lugarVelacion.fecha === "string" ?this.parseoFecha(formulario.lugarVelacion.fecha) : formulario.lugarVelacion.fecha
+        ).format('yyyy-MM-DD');
 
     this.informacionServicioVelacion.horaInstalacion =
       formulario.instalacionServicio.hora == null
         ? null
-        : moment(formulario.instalacionServicio.hora).format('HH:mm');
+        : moment(
+          typeof formulario.instalacionServicio.hora === "string" ? this.parseoHora(formulario.instalacionServicio.fecha,formulario.instalacionServicio.hora) : formulario.instalacionServicio.hora
+        ).format('HH:mm');
 
     this.informacionServicioVelacion.horaVelacion =
       formulario.lugarVelacion.hora == null
         ? null
-        : moment(formulario.lugarVelacion.hora).format('HH:mm');
+        : moment(
+          typeof formulario.lugarVelacion.hora === "string" ? this.parseoHora(formulario.lugarVelacion.fecha,formulario.lugarVelacion.hora) : formulario.lugarVelacion.hora
+        ).format('HH:mm');
 
     this.informacionServicioVelacion.idCapilla =
       formulario.lugarVelacion.capilla;
@@ -865,6 +883,17 @@ export class ModificarInformacionServicioComponent
       this.informacionServicioVelacion;
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
+  }
+
+  parseoFecha(fecha: string): any {
+    const [dia, mes, anio] = fecha.split('/')
+    return  new Date(anio + '/' + mes + '/' + dia);
+  }
+
+  parseoHora(fecha: string, tiempo: string): any {
+    const [dia, mes, anio] = fecha.split('/')
+    const [horas, minutos] = tiempo.split(':')
+    return  new Date(+anio, +mes, +dia, +horas, +minutos)
   }
 
   descargarContratoServInmediatos(idOrdenServicio: number, consumoTablas: number): void {
