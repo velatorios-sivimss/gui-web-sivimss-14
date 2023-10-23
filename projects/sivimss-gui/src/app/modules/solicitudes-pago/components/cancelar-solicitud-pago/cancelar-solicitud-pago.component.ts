@@ -50,7 +50,7 @@ export class CancelarSolicitudPagoComponent implements OnInit {
 
   inicializarModificarPagoForm(): void {
     this.cancelarPagoForm = this.formBulder.group({
-      motivo: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
+      motivo: [{value: null, disabled: false}, [Validators.maxLength(100), Validators.required]],
     });
   }
 

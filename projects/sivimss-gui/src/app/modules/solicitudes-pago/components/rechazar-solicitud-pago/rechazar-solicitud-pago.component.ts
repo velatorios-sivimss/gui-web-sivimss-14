@@ -51,7 +51,7 @@ export class RechazarSolicitudPagoComponent implements OnInit {
 
   inicializarModificarPagoForm(): void {
     this.rechazarPagoForm = this.formBulder.group({
-      motivoRechazo: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
+      motivoRechazo: [{value: null, disabled: false}, [Validators.maxLength(100), Validators.required]],
     });
   }
 
