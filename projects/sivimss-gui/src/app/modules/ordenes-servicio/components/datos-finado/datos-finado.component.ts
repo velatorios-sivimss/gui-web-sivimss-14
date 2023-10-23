@@ -744,8 +744,8 @@ export class DatosFinadoComponent implements OnInit {
       this.finado.fechaNac = moment(
         datosEtapaFinado.datosFinado.tipoOrden
       ).format('yyyy-MM-DD');
-      this.finado.idPais = datosEtapaFinado.datosFinado.tipoOrden;
-      this.finado.idEstado = datosEtapaFinado.datosFinado.tipoOrden;
+      this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
+      this.finado.idEstado = datosEtapaFinado.datosFinado.lugarNacimiento;
       this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion ? moment(
         datosEtapaFinado.datosFinado.fechaDefuncion
       ).format('yyyy-MM-DD') : null;
