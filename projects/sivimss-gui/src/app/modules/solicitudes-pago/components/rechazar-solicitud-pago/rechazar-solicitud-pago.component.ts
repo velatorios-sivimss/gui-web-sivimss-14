@@ -21,10 +21,14 @@ interface SolicitudRechazo {
 })
 export class RechazarSolicitudPagoComponent implements OnInit {
 
+  readonly CAPTURA_RECHAZAR_PAGO: number = 1;
+  readonly RESUMEN_RECHAZAR_PAGO: number = 2;
+
   rechazarPagoForm!: FormGroup;
   pagoSeleccionado!: SolicitudPago;
 
-  mensajeConfirmacion: boolean = false;
+  pasoRechazarPago: number = 1;
+  motivoRechazo: string = '';
 
   constructor(
     public config: DynamicDialogConfig,
@@ -49,6 +53,11 @@ export class RechazarSolicitudPagoComponent implements OnInit {
     this.rechazarPagoForm = this.formBulder.group({
       motivoRechazo: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
     });
+  }
+
+  aceptarRechazo(): void {
+    this.pasoRechazarPago = this.RESUMEN_RECHAZAR_PAGO;
+    this.motivoRechazo = this.rechazarPagoForm.get('motivoRechazo')?.value;
   }
 
   confirmarRechazoPago(): void {
