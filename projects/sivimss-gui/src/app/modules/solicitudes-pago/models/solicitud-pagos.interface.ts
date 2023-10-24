@@ -46,6 +46,7 @@ export interface DetalleSolicitudPago {
 
   solicitadoPor: string;
   cantidadLetra: string;
+  beneficiario?: string;
 }
 
 export interface CrearSolicitudPago {

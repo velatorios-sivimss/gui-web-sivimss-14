@@ -301,7 +301,6 @@
         </div>
       </div>
     </div>
-
   </ng-container>
 </app-table-panel>
 <div class="mt-3 row text-center" *ngIf="mensajeConfirmacion">
@@ -311,7 +310,6 @@
   <div class="row mt-3 mb-3">
     <div class="col-md-12 flex justify-content-end align-items-center">
       <button class="ml-4 btn btn-danger btn-md" *ngIf="!mensajeConfirmacion" (click)="cancelar()">Cancelar</button>
-      <button class="ml-4 btn btn-default btn-md" *ngIf="!mensajeConfirmacion" (click)="cancelar()">Rechazar</button>
       <button class="ml-4 btn btn-md btn-primary" *ngIf="!mensajeConfirmacion"
               (click)="mensajeConfirmacion = !mensajeConfirmacion">
         Aprobar

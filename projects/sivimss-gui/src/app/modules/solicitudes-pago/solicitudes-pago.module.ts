@@ -34,6 +34,7 @@ import {AprobarSolicitudPagoComponent} from "./components/aprobar-solicitud-pago
 import {RegexFolioFiscalDirective} from "./directives/regex-folio-fiscal.directive";
 import {PanelModule} from "primeng/panel";
 import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
+import {InputNumberModule} from "primeng/inputnumber";
 
 @NgModule({
   declarations: [
@@ -45,32 +46,33 @@ import {BtnRegresarModule} from "../../shared/btn-regresar/btn-regresar.module";
     AprobarSolicitudPagoComponent,
     RegexFolioFiscalDirective,
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    SolicitudesPagoRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    AutoCompleteModule,
-    ValidaRolModule,
-    UtileriaModule,
-    CheckboxModule,
-    CeldaStickyModule,
-    PanelModule,
-    RadioButtonModule,
-    BtnRegresarModule,
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        SolicitudesPagoRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        AutoCompleteModule,
+        ValidaRolModule,
+        UtileriaModule,
+        CheckboxModule,
+        CeldaStickyModule,
+        PanelModule,
+        RadioButtonModule,
+        BtnRegresarModule,
+        InputNumberModule,
+    ],
   providers: [SolicitudesPagoService]
 })
 export class SolicitudesPagoModule {

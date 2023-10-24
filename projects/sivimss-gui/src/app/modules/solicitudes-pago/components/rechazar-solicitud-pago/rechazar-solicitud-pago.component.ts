@@ -1,13 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
-import {SolicitudPago} from "../../models/solicitud-pagos.interface";
+import {DetalleSolicitudPago, PartidaPresupuestal} from "../../models/solicitud-pagos.interface";
 import {SolicitudesPagoService} from "../../services/solicitudes-pago.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {finalize} from "rxjs/operators";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
+import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
 
 interface SolicitudRechazo {
   idSolicitud: number,
@@ -25,10 +27,12 @@ export class RechazarSolicitudPagoComponent implements OnInit {
   readonly RESUMEN_RECHAZAR_PAGO: number = 2;
 
   rechazarPagoForm!: FormGroup;
-  pagoSeleccionado!: SolicitudPago;
+  pagoSeleccionado!: DetalleSolicitudPago;
 
   pasoRechazarPago: number = 1;
   motivoRechazo: string = '';
+
+  partidaPresupuestal: PartidaPresupuestal [] = [];
 
   constructor(
     public config: DynamicDialogConfig,
@@ -45,6 +49,7 @@ export class RechazarSolicitudPagoComponent implements OnInit {
   ngOnInit(): void {
     if (this.config?.data) {
       this.pagoSeleccionado = this.config.data;
+      this.obtenerSolicPago(this.pagoSeleccionado.idSolicitud);
     }
     this.inicializarModificarPagoForm();
   }
@@ -53,6 +58,42 @@ export class RechazarSolicitudPagoComponent implements OnInit {
     this.rechazarPagoForm = this.formBulder.group({
       motivoRechazo: [{value: null, disabled: false}, [Validators.maxLength(100), Validators.required]],
     });
+  }
+
+  obtenerSolicPago(idSolicitud: number): void {
+    this.cargadorService.activar();
+    this.solicitudesPagoService.detalleSolicitudPago(idSolicitud)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.pagoSeleccionado = respuesta.datos[0];
+          this.listaPartidaPresupuestal(this.pagoSeleccionado.cveFolioGastos);
+          this.convertirImporte(this.pagoSeleccionado.impTotal);
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+          this.mensajesSistemaService.mostrarMensajeError(error);
+        }
+      });
+  }
+
+  listaPartidaPresupuestal(folioGastos: string): void {
+    this.cargadorService.activar();
+    this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>): void => {
+          this.partidaPresupuestal = respuesta.datos;
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error);
+        }
+      });
+  }
+
+  convertirImporte(importe: string): void {
+    if (!importe) return;
+    this.pagoSeleccionado.cantidadLetra = convertirNumeroPalabra(+importe);
   }
 
   aceptarRechazo(): void {
@@ -91,6 +132,10 @@ export class RechazarSolicitudPagoComponent implements OnInit {
 
   get ref() {
     return this.rechazarPagoForm.controls;
+  }
+
+  get tipoSolicitud(): number {
+    return this.pagoSeleccionado.idTipoSolicitud;
   }
 
 }
