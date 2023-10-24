@@ -10,8 +10,8 @@
         <div class="table-panel-header-column">
           <div class="flex flex-column">
             <span class="ml-5">Estatus</span>
-            <div class="contenedor-inputswitch">
-              <span class="activo">{{pagoSeleccionado.desEstatusSolicitud}}</span>
+            <div>
+              <span><b>{{pagoSeleccionado.desEstatusSolicitud}}</b></span>
             </div>
           </div>
         </div>
@@ -35,13 +35,15 @@
           <div class="col-md-6" *ngIf="[2,3,4,6].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Folio fiscal de la factura de gastos</label>
-              <span>{{pagoSeleccionado.cveFolioGastos}}</span>
+              <span *ngIf="pagoSeleccionado.cveFolioGastos">{{pagoSeleccionado.cveFolioGastos}}</span>
+              <span *ngIf="!pagoSeleccionado.cveFolioGastos">{{pagoSeleccionado.foliosFactura}}</span>
             </div>
           </div>
           <div class="col-md-6" *ngIf="[5].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Folio fiscal de la factura de gastos</label>
-              <span>{{pagoSeleccionado.cveFolioGastos}}</span>
+              <span *ngIf="pagoSeleccionado.cveFolioGastos">{{pagoSeleccionado.cveFolioGastos}}</span>
+              <span *ngIf="!pagoSeleccionado.cveFolioGastos">{{pagoSeleccionado.foliosFactura}}</span>
             </div>
           </div>
         </div>
@@ -55,11 +57,11 @@
           <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Importe Total</label>
-              <span>{{pagoSeleccionado.impTotal}}</span>
+              <span>{{pagoSeleccionado.impTotal | currency}}</span>
             </div>
           </div>
         </div>
-        <div class="row mx-1 mb-3" *ngIf="[2,4].includes(tipoSolicitud)">
+        <div class="row mx-2 mb-3 mt-2" *ngIf="[2,4].includes(tipoSolicitud)">
           <p-table [value]="partidaPresupuestal" [pageLinks]="3">
             <ng-template pTemplate="header">
               <tr>
@@ -72,12 +74,12 @@
               <tr>
                 <td> {{partida.partidaPres}} </td>
                 <td> {{partida.cuentaContable}} </td>
-                <td> {{partida.importeTotal}} </td>
+                <td> {{partida.importeTotal | currency}} </td>
               </tr>
             </ng-template>
           </p-table>
         </div>
-        <div class="row mx-1 mb-3" *ngIf="[3,5,6].includes(tipoSolicitud)">
+        <div class="row mx-2 mb-3 mt-2" *ngIf="[3,5,6].includes(tipoSolicitud)">
           <p-table [value]="partidaPresupuestal" [pageLinks]="3">
             <ng-template pTemplate="header">
               <tr>
@@ -99,24 +101,25 @@
           <div class="col-md-12">
             <div class="table-panel-column">
               <label>Importe Total</label>
-              <span>{{pagoSeleccionado.impTotal}}</span>
+              <span>{{pagoSeleccionado.impTotal | currency}}</span>
             </div>
           </div>
         </div>
         <div class="row table-panel-row">
           <div class="row ml-6" *ngIf="pagoSeleccionado.idUnidadOperativa===1">
             <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
-            <label>Unidad operativa</label>
+            <label class="ml-3 mt-2">Unidad operativa</label>
           </div>
           <div class="row ml-6" *ngIf="pagoSeleccionado.idUnidadOperativa!=1">
             <img src="../../../assets/images/imagen-icono-vector.svg" alt="i" class="imagen-usuario">
-            <label>Unidad administrativa</label>
+            <label class="ml-3 mt-2">Unidad administrativa</label>
           </div>
           <div class="col-md-6">
             <div class="table-panel-column">
               <label>Referencia unidad operativa / administrativa</label>
               <span *ngIf="pagoSeleccionado.idUnidadOperativa">{{pagoSeleccionado.nomUnidadOpe}}</span>
-              <span *ngIf="!pagoSeleccionado.idUnidadOperativa">{{pagoSeleccionado.desVelatorio}}</span>
+              <span
+                *ngIf="!pagoSeleccionado.idUnidadOperativa">{{pagoSeleccionado.desVelatorio | titlecase}}</span>
             </div>
           </div>
           <div class="col-md-6">
@@ -158,7 +161,8 @@
           <div class="col-md-6" *ngIf="[2,3,4,5,6].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Beneficiario</label>
-              <span>{{pagoSeleccionado.nomBeneficiario}}</span>
+              <span *ngIf="pagoSeleccionado.nomBeneficiario">{{pagoSeleccionado.nomBeneficiario}}</span>
+              <span *ngIf="!pagoSeleccionado.nomBeneficiario">{{pagoSeleccionado.beneficiario}}</span>
             </div>
           </div>
         </div>
@@ -166,13 +170,13 @@
           <div class="col-md-6">
             <div class="table-panel-column">
               <label>Fecha Inicial</label>
-              <span>{{pagoSeleccionado.fechaInicial | date: 'YYYY-MM-dd'}}</span>
+              <span>{{pagoSeleccionado.fechaInicial}}</span>
             </div>
           </div>
           <div class="col-md-6">
             <div class="table-panel-column">
               <label>Fecha Final</label>
-              <span>{{pagoSeleccionado.fechaFinal | date: 'YYYY-MM-dd'}}</span>
+              <span>{{pagoSeleccionado.fechaFinal}}</span>
             </div>
           </div>
         </div>
@@ -215,7 +219,7 @@
           <div class="col-md-6" *ngIf="[2,3,4].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Cantidad con letra</label>
-              <span>{{pagoSeleccionado.cantidadLetra}}</span>
+              <span>{{pagoSeleccionado.cantidadLetra + ' pesos' | titlecase }}</span>
             </div>
           </div>
 
@@ -228,7 +232,7 @@
           <div class="col-md-6" *ngIf="[1].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Importe Total</label>
-              <span>{{pagoSeleccionado.impTotal}}</span>
+              <span>{{pagoSeleccionado.impTotal | currency }}</span>
             </div>
           </div>
         </div>
@@ -236,7 +240,7 @@
           <div class="col-md-12" *ngIf="[1].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Cantidad con letra</label>
-              <span>{{pagoSeleccionado.cantidadLetra}}</span>
+              <span>{{pagoSeleccionado.cantidadLetra + ' pesos'  | titlecase}}</span>
             </div>
           </div>
         </div>
@@ -262,7 +266,6 @@
 
         </div>
         <div class="row table-panel-row">
-
           <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Concepto</label>
@@ -272,17 +275,17 @@
           <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
             <div class="table-panel-column">
               <label>Cantidad con letra</label>
-              <span>{{pagoSeleccionado.cantidadLetra}}</span>
+              <span>{{pagoSeleccionado.cantidadLetra + ' pesos'  | titlecase}}</span>
             </div>
           </div>
         </div>
-        <div class="row table-panel-row">
-          <div class="col-md-12" *ngIf="[5].includes(tipoSolicitud)">
+        <div class="row table-panel-row" *ngIf="[5].includes(tipoSolicitud)">
+          <div class="col-md-12">
             <div class="row table-panel-row">
               <div class="col-md-6">
                 <div class="table-panel-column">
                   <label>Fecha Inicial</label>
-                  <span>{{pagoSeleccionado.fechaInicial | date: 'YYYY-MM-dd'}}</span>
+                  <span>{{pagoSeleccionado.fechaInicial | date: 'YYYY-MM-dd' }} </span>
                 </div>
               </div>
               <div class="col-md-6">
@@ -294,7 +297,7 @@
             </div>
           </div>
         </div>
-        <div class="row table-panel-row">
+        <div class="row table-panel-row" *ngIf="pagoSeleccionado.observaciones">
           <div class="col-md-12">
             <div class="table-panel-column">
               <label>Observaciones</label>
@@ -302,6 +305,7 @@
             </div>
           </div>
         </div>
+
       </ng-container>
     </app-table-panel>
     <form [formGroup]="rechazarPagoForm">
