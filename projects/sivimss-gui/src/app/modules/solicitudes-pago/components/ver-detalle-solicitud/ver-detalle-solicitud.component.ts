@@ -60,6 +60,7 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
   }
 
   listaPartidaPresupuestal(folioGastos: string): void {
+    if (!folioGastos) return;
     this.cargadorService.activar();
     this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
       .pipe(finalize(() => this.cargadorService.desactivar()))
@@ -75,7 +76,7 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
 
   convertirImporte(importe: string): void {
     if (!importe) return;
-    this.solicitudPagoSeleccionado.cantidadLetra=convertirNumeroPalabra(+importe);
+    this.solicitudPagoSeleccionado.cantidadLetra = convertirNumeroPalabra(+importe);
   }
 
 }

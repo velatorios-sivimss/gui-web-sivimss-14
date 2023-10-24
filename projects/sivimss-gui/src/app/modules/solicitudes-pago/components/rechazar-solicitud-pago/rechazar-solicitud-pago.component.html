@@ -3,7 +3,7 @@
     <app-table-panel *ngIf="pagoSeleccionado">
       <ng-template appCustomTemplate="left-header">
         <div class="table-panel-header-column">
-          <span class="font-bold">Folio {{pagoSeleccionado.cveFolioGastos}}</span>
+          <span class="font-bold">Folio {{pagoSeleccionado.folioSolicitud}}</span>
         </div>
       </ng-template>
       <ng-template appCustomTemplate="right-header">
@@ -115,9 +115,8 @@
           <div class="col-md-6">
             <div class="table-panel-column">
               <label>Referencia unidad operativa / administrativa</label>
-              <span
-                *ngIf="pagoSeleccionado.idUnidadOperativa===1">{{pagoSeleccionado.refeUnidadOpe}}</span>
-              <span *ngIf="pagoSeleccionado.idUnidadOperativa!=1">{{pagoSeleccionado.desVelatorio}}</span>
+              <span *ngIf="pagoSeleccionado.idUnidadOperativa">{{pagoSeleccionado.nomUnidadOpe}}</span>
+              <span *ngIf="!pagoSeleccionado.idUnidadOperativa">{{pagoSeleccionado.desVelatorio}}</span>
             </div>
           </div>
           <div class="col-md-6">

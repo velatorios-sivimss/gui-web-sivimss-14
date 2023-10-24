@@ -115,7 +115,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       concepto: [{value: null, disabled: false}],
       importe: [{value: null, disabled: false}],
       importeLetra: [{value: null, disabled: true}],
-      observaciones: [{value: null, disabled: false}, [Validators.required]],
+      observaciones: [{value: null, disabled: false}],
       numeroContrato: [{value: null, disabled: false}],
       banco: [{value: null, disabled: true}],
       cuenta: [{value: null, disabled: true}],
@@ -206,7 +206,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       fechaElabora: this.validarFecha(this.solicitudPagoForm.get('fechaElaboracion')?.value),
       impTotal: impTotal.toString().replace('$ ', ''),
       observaciones: this.solicitudPagoForm.get('observaciones')?.value,
-      idProveedor: [1, 4, 5].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
+      idProveedor: [1, 4, 5, 6].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
       beneficiario: [2, 3].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
     }
   }
@@ -218,7 +218,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
 
   modificarImporteLocal(event: any): void {
     this.solicitudPagoForm.patchValue({
-      importe: event.value >= 0 && event.value <= 32767 ? event.value : this.solicitudPagoForm.value.amount
+      importe: event.value >= 0 && event.value <= 10000000 ? event.value : this.solicitudPagoForm.value.amount
     });
     this.convertirImporte();
   }
@@ -479,9 +479,12 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       this.mostrarMensajeSolicitudCorrecta();
       return;
     }
+    this.cargadorService.activar();
     const cveFolios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
     const solicitud = {idSolicitud: id, cveFolios}
-    this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).subscribe({
+    this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (): void => {
         this.mostrarMensajeSolicitudCorrecta();
       },
