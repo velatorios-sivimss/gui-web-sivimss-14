@@ -206,7 +206,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       fechaElabora: this.validarFecha(this.solicitudPagoForm.get('fechaElaboracion')?.value),
       impTotal: impTotal.toString().replace('$ ', ''),
       observaciones: this.solicitudPagoForm.get('observaciones')?.value,
-      idProveedor: [1, 4, 5].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
+      idProveedor: [1, 4, 5, 6].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
       beneficiario: [2, 3].includes(tipoSolicitud) ? this.solicitudPagoForm.get('beneficiario')?.value : null,
     }
   }
