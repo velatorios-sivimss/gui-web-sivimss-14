@@ -53,8 +53,9 @@
       </div>
       <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
         <label class="control-label" for="importe">Importe Total<span class="req">*</span>:</label>
-        <input id="importe" class="form-control" formControlName="importe" placeholder="Importe Total"
-               (blur)="convertirImporte()" [maxlength]="7" numbersOnly>
+        <p-inputNumber id="importe" class="form-control" formControlName="importe" placeholder="Importe Total"
+                       (blur)="convertirImporte()" [maxlength]="13" [minFractionDigits]="2" mode="currency"
+                       currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
       </div>
