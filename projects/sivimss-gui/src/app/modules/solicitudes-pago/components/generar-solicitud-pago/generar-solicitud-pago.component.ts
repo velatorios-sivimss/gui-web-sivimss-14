@@ -137,7 +137,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.solicitudPagoForm.get('banco')?.setValue(registro?.banco);
     this.solicitudPagoForm.get('cuenta')?.setValue(registro?.cuenta);
     this.solicitudPagoForm.get('claveBancaria')?.setValue(registro?.cveBancaria);
-    if ([5,6].includes(this.tipoSolicitud))  this.solicitudPagoForm.get('numeroContrato')?.setValue(registro?.numeroContrato);
+    if ([5, 6].includes(this.tipoSolicitud)) this.solicitudPagoForm.get('numeroContrato')?.setValue(registro?.numeroContrato);
   }
 
   crearSolicitudPago(): void {
@@ -216,13 +216,19 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     return moment(fecha).format('DD/MM/YYYY')
   }
 
+  modificarImporteLocal(event: any): void {
+    this.solicitudPagoForm.patchValue({
+      importe: event.value >= 0 && event.value <= 32767 ? event.value : this.solicitudPagoForm.value.amount
+    });
+    this.convertirImporte();
+  }
+
   convertirImporte(): void {
     this.solicitudPagoForm.get('importeLetra')?.setValue('');
     const importe = this.solicitudPagoForm.get('importe')?.value;
     if (!importe) return;
     importe.toString().replace('$ ', '');
     const importeLetra: string = convertirNumeroPalabra(+importe);
-    this.solicitudPagoForm.get('importe')?.setValue(`$ ${importe}`);
     this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1) + ' pesos');
   }
 
@@ -491,9 +497,4 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     this.referencia.close();
   }
 
-  resetImporte(): void {
-    const importe = this.solicitudPagoForm.get('importe')?.value;
-    if (!importe) return;
-    this.solicitudPagoForm.get('importe')?.setValue(importe.substring(2));
-  }
 }
