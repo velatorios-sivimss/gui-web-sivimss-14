@@ -53,8 +53,9 @@
       </div>
       <div class="col-md-6" *ngIf="[5,6].includes(tipoSolicitud)">
         <label class="control-label" for="importe">Importe Total<span class="req">*</span>:</label>
-        <input id="importe" class="form-control" formControlName="importe" placeholder="Importe Total"
-               (blur)="convertirImporte()" [maxlength]="7" numbersOnly>
+        <p-inputNumber id="importe" class="form-control" formControlName="importe" placeholder="Importe Total"
+                       (blur)="convertirImporte()" [maxlength]="13" [minFractionDigits]="2" mode="currency"
+                       currency="USD" locale="en-US"></p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
       </div>
@@ -330,8 +331,9 @@
       </div>
       <div class="col-6 mb-3" *ngIf="[1].includes(tipoSolicitud)">
         <label class="control-label" for="importecol6">Importe Total<span class="req">*</span>:</label>
-        <input id="importecol6" class="form-control" formControlName="importe" (blur)="convertirImporte()"
-              (focus)="resetImporte()"  placeholder="Importe Total" [maxlength]="7" numbersOnly>
+        <p-inputNumber id="importecol6" class="form-control" formControlName="importe" [min]="0"
+                       mode="currency" currency="USD" locale="en-US" (onInput)="modificarImporteLocal($event)"
+                       placeholder="Importe Total" [maxlength]="13" [minFractionDigits]="2"></p-inputNumber>
         <span class="campo-obligatorio"
               *ngIf="fc?.importe?.errors?.required && (fc?.importe?.dirty || fc?.importe?.touched)">Este campo es obligatorio *.</span>
       </div>

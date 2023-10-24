@@ -47,7 +47,7 @@ export class AprobarSolicitudPagoComponent implements OnInit {
 
   inicializarAprobarPagoForm(): void {
     this.aprobarPagoForm = this.formBulder.group({
-      cveFolioGastos: [{value: null, disabled: false}, [Validators.maxLength(70), Validators.required]],
+      cveFolioGastos: [{value: null, disabled: false}, [Validators.maxLength(100), Validators.required]],
     });
   }
 

@@ -2,6 +2,11 @@ const palabrasDecenas: string[] = [
   '', '', '', 'treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'
 ];
 
+const palabrasNumeros: string[] = [
+  '', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve',
+  'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve',
+  'veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'
+];
 
 export function convertirNumeroPalabra(valor: number): string {
   // Verifica si el número es decimal
@@ -27,11 +32,6 @@ export function convertirNumeroPalabra(valor: number): string {
 
 function convertirParteEntera(valor: number): string {
 
-  const palabrasNumeros: string[] = [
-    '', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve',
-    'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve',
-    'veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'
-  ];
 
   const palabrasCientos: string[] = [
     '', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'
@@ -94,22 +94,25 @@ function convertirParteEntera(valor: number): string {
 }
 
 function convertirParteDecimal(valor: number): string {
-  const palabrasDecimales: string[] = [
-    'cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'
-  ];
 
   // Convierte la parte decimal en palabras
   const decimalesStr: string = valor.toFixed(2).split('.')[1]; // Tomar dos decimales
 
-  const unidadesDecimal: number = parseInt(decimalesStr.charAt(0), 10);
-  const decenasDecimal: number = parseInt(decimalesStr.charAt(1), 10);
+  const unidadesDecimal: number = parseInt(decimalesStr.charAt(1), 10);
+  const decenasDecimal: number = parseInt(decimalesStr.charAt(0), 10);
 
   let palabrasParteDecimal: string = '';
-  if (unidadesDecimal > 0) {
-    palabrasParteDecimal += palabrasDecimales[unidadesDecimal];
+
+  if (+decimalesStr < 30) {
+    palabrasParteDecimal += palabrasNumeros[+decimalesStr];
   }
-  if (decenasDecimal > 0) {
-    palabrasParteDecimal += (palabrasParteDecimal ? ' ' : '') + palabrasDecenas[decenasDecimal];
+
+  if (decenasDecimal > 2 && unidadesDecimal === 0) {
+    palabrasParteDecimal += palabrasDecenas[decenasDecimal];
+  }
+
+  if (decenasDecimal > 2 && unidadesDecimal > 0) {
+    palabrasParteDecimal += palabrasDecenas[decenasDecimal] + ' y ' + palabrasNumeros[unidadesDecimal];
   }
 
   return palabrasParteDecimal;
