@@ -200,12 +200,13 @@ export class ConsultaConveniosComponent implements OnInit {
   }
 
   crearSolicitudFiltros(): FiltrosConvenio {
+    const form = this.filtroForm.getRawValue();
     return {
-      folioConvenio: this.filtroForm.get("folioConvenio")?.value,
-      rfc: this.filtroForm.get("rfc")?.value,
-      nombre: this.filtroForm.get("nombre")?.value,
-      curp: this.filtroForm.get("curp")?.value,
-      estatusConvenio: this.filtroForm.get("estatusConvenio")?.value
+      folioConvenio: form.folioConvenio === '' ? null : form.folioConvenio,
+      rfc: form.rfc === '' ? null : form.rfc,
+      nombre: form.nombre === '' ? null : form.nombre,
+      curp: form.curp === '' ? null : form.curp,
+      estatusConvenio: form.estatusConvenio === '' ? null : form.estatusConvenio, 
     }
   }
 
@@ -216,7 +217,6 @@ export class ConsultaConveniosComponent implements OnInit {
     } else {
       this.numPaginaActual.tablaConvenios = 0;
     }
-
     const filtros: FiltrosConvenio = this.crearSolicitudFiltros();
     this.cargadorService.activar();
     this.consultaConvenioService.consultarConvenios(filtros, this.numPaginaActual.tablaConvenios, this.cantElementosPorPagina)
