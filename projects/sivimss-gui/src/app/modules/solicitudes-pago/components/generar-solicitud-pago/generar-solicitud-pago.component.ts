@@ -115,7 +115,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       concepto: [{value: null, disabled: false}],
       importe: [{value: null, disabled: false}],
       importeLetra: [{value: null, disabled: true}],
-      observaciones: [{value: null, disabled: false}, [Validators.required]],
+      observaciones: [{value: null, disabled: false}],
       numeroContrato: [{value: null, disabled: false}],
       banco: [{value: null, disabled: true}],
       cuenta: [{value: null, disabled: true}],
