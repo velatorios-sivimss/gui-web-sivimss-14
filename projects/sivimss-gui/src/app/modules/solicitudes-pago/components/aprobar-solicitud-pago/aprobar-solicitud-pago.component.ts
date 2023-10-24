@@ -95,7 +95,7 @@ export class AprobarSolicitudPagoComponent implements OnInit {
     ).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Tu solicitud de pago ha sido aprobada exitosamente.');
-        this.referencia.close(true);
+        this.referencia.close();
       },
       error: (error: HttpErrorResponse): void => {
         console.error(error);
