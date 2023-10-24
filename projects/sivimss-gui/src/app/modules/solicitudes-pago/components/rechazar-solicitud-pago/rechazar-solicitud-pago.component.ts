@@ -78,6 +78,7 @@ export class RechazarSolicitudPagoComponent implements OnInit {
   }
 
   listaPartidaPresupuestal(folioGastos: string): void {
+    if (!folioGastos) return;
     this.cargadorService.activar();
     this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
       .pipe(finalize(() => this.cargadorService.desactivar()))

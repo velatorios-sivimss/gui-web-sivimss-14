@@ -36,6 +36,8 @@ export interface DetalleSolicitudPago {
   concepto: string;
   numContrato: string;
   observaciones: string;
+  folioSolicitud: string;
+  nomUnidadOpe: string;
 
   cveFolioGastos: string;
   fechaInicial: string;
