@@ -218,7 +218,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
 
   modificarImporteLocal(event: any): void {
     this.solicitudPagoForm.patchValue({
-      importe: event.value >= 0 && event.value <= 32767 ? event.value : this.solicitudPagoForm.value.amount
+      importe: event.value >= 0 && event.value <= 10000000 ? event.value : this.solicitudPagoForm.value.amount
     });
     this.convertirImporte();
   }

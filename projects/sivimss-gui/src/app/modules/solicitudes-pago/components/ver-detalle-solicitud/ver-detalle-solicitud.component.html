@@ -226,7 +226,7 @@
             <div class="col-md-6" *ngIf="[1].includes(tipoSolicitud)">
                 <div class="table-panel-column">
                     <label>Importe Total</label>
-                    <span>{{solicitudPagoSeleccionado.impTotal}}</span>
+                    <span>{{solicitudPagoSeleccionado.impTotal | currency }}</span>
                 </div>
             </div>
         </div>
@@ -234,7 +234,7 @@
             <div class="col-md-12" *ngIf="[1].includes(tipoSolicitud)">
                 <div class="table-panel-column">
                     <label>Cantidad con letra</label>
-                    <span>{{solicitudPagoSeleccionado.cantidadLetra}}</span>
+                    <span>{{solicitudPagoSeleccionado.cantidadLetra + ' pesos'  | titlecase}}</span>
                 </div>
             </div>
         </div>
