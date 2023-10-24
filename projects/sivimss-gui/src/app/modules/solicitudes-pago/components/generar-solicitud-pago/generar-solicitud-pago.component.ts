@@ -479,9 +479,12 @@ export class GenerarSolicitudPagoComponent implements OnInit {
       this.mostrarMensajeSolicitudCorrecta();
       return;
     }
+    this.cargadorService.activar();
     const cveFolios: string[] = this.partidaPresupuestal.map(r => r.idPartida.toString());
     const solicitud = {idSolicitud: id, cveFolios}
-    this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).subscribe({
+    this.solicitudesPagoService.guardarFoliosSolicitud(solicitud).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (): void => {
         this.mostrarMensajeSolicitudCorrecta();
       },
