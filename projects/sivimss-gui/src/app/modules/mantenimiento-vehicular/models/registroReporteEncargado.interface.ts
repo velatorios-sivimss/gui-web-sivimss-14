@@ -8,7 +8,7 @@ export interface RegistroReporteEncargado {
   DES_NIVEL_LIMPIEZAINTERIOR: string
   DES_NIVEL_NEUMADELA: string
   DES_NIVEL_NEUMATRASE: string
-  DES_PLACAS: string
+  REF_PLACAS: string
   FEC_REGISTRO: string
   ID_DELEGACION: number
   ID_MTTOVEHICULAR: number

@@ -83,9 +83,9 @@ export class SolicitudMantenimientoComponent implements OnInit {
 
   inicializarSolicitudForm(): void {
     this.solicitudMantenimientoForm = this.formBuilder.group({
-      placas: [{ value: this.vehiculoSeleccionado ? this.vehiculoSeleccionado.DES_PLACAS : null, disabled: true }],
-      marca: [{ value: this.vehiculoSeleccionado ? this.vehiculoSeleccionado.DES_MARCA : null, disabled: true }],
-      anio: [{ value: this.vehiculoSeleccionado ? this.vehiculoSeleccionado.DES_MODELO : null, disabled: true }],
+      placas: [{ value: this.vehiculoSeleccionado ? this.vehiculoSeleccionado.REF_PLACAS : null, disabled: true }],
+      marca: [{ value: this.vehiculoSeleccionado ? this.vehiculoSeleccionado.REF_MARCA : null, disabled: true }],
+      anio: [{ value: this.vehiculoSeleccionado ? this.vehiculoSeleccionado.REF_MODELO : null, disabled: true }],
       kilometraje: [{ value: null, disabled: false }, [Validators.required]],
       tipoMantenimiento: [{ value: null, disabled: false }, [Validators.required]],
       matPreventivo: [{ value: null, disabled: false }],
@@ -253,7 +253,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.mantenimientoVehicularService.obtenerCatalogoMtto(id).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          this.mantenimientosPrev = mapearArregloTipoDropdown(respuesta.datos, "DES_MTTO_MODALIDAD", "ID_MTTO_MODALIDAD");
+          this.mantenimientosPrev = mapearArregloTipoDropdown(respuesta.datos, "REF_MTTO_MODALIDAD", "ID_MTTO_MODALIDAD");
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
@@ -266,7 +266,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.mantenimientoVehicularService.obtenerCatalogoMttoDetalle(id).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
-          this.opcionesSemestrales = mapearArregloTipoDropdown(respuesta.datos, "DES_MTTO_MODALIDAD_DET", "ID_MTTO_MODALIDAD_DET");
+          this.opcionesSemestrales = mapearArregloTipoDropdown(respuesta.datos, "REF_MTTO_MODALIDAD_DET", "ID_MTTO_MODALIDAD_DET");
         },
         error: (error: HttpErrorResponse): void => {
           console.log(error);
@@ -295,16 +295,16 @@ export class SolicitudMantenimientoComponent implements OnInit {
       DESCRIPCION: "",
       ID_MTTOESTADO: respuesta.ID_MTTOESTADO,
       DES_DELEGACION: respuesta.DES_DELEGACION,
-      DES_MARCA: respuesta.DES_MARCA,
+      REF_MARCA: respuesta.REF_MARCA,
       DES_MODALIDAD: respuesta.DES_MODALIDAD,
-      DES_MODELO: respuesta.DES_MODELO,
+      REF_MODELO: respuesta.REF_MODELO,
       DES_MTTOESTADO: respuesta.DES_MTTOESTADO,
       DES_MTTO_TIPO: respuesta.DES_MTTO_TIPO,
       DES_NIVELOFICINA: "",
       DES_NUMMOTOR: respuesta.DES_NUMMOTOR,
       DES_NUMSERIE: respuesta.DES_NUMSERIE,
-      DES_PLACAS: respuesta.DES_PLACAS,
-      DES_SUBMARCA: respuesta.DES_SUBMARCA,
+      REF_PLACAS: respuesta.REF_PLACAS,
+      REF_SUBMARCA: respuesta.REF_SUBMARCA,
       DES_USO: "",
       ID_MTTOVEHICULAR: respuesta.ID_MTTOVEHICULAR,
       ID_OFICINA: 0,
@@ -322,9 +322,9 @@ export class SolicitudMantenimientoComponent implements OnInit {
   llenarFormulario(respuesta: RespuestaSolicitudMantenimiento): void {
     const fecha = moment(respuesta.FEC_REGISTRO, 'DD-MM-yyyy').format('yyyy-MM-DD');
     const fecha2 = moment(respuesta.FEC_REGISTRO_FIN, 'DD-MM-yyyy').format('yyyy-MM-DD');
-    this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.DES_PLACAS);
-    this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.DES_MARCA);
-    this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.DES_MODELO);
+    this.solicitudMantenimientoForm.get('placas')?.patchValue(respuesta.REF_PLACAS);
+    this.solicitudMantenimientoForm.get('marca')?.patchValue(respuesta.REF_MARCA);
+    this.solicitudMantenimientoForm.get('anio')?.patchValue(respuesta.REF_MODELO);
     this.solicitudMantenimientoForm.get('kilometraje')?.patchValue(respuesta.NUM_KILOMETRAJE);
     this.solicitudMantenimientoForm.get('tipoMantenimiento')?.patchValue(respuesta.ID_MTTO_TIPO.toString());
     this.solicitudMantenimientoForm.get('matPreventivo')?.patchValue(respuesta.ID_MTTO_MODALIDAD);
@@ -332,7 +332,7 @@ export class SolicitudMantenimientoComponent implements OnInit {
     this.solicitudMantenimientoForm.get('modalidad')?.patchValue(respuesta.ID_MTTOMODALIDAD);
     this.solicitudMantenimientoForm.get('fechaRegistro2')?.patchValue(new Date(this.diferenciaUTC(fecha2)));
     this.solicitudMantenimientoForm.get('fechaRegistro')?.patchValue(new Date(this.diferenciaUTC(fecha)));
-    this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.DES_NOTAS);
+    this.solicitudMantenimientoForm.get('notas')?.patchValue(respuesta.REF_NOTAS);
     this.idSolicitudMtto = respuesta.ID_MTTO_SOLICITUD;
 
     this.validarFechaSemestral();
