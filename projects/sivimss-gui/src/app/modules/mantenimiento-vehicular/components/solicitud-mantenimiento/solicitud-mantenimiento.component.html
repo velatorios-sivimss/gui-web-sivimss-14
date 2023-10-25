@@ -141,13 +141,13 @@
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Placas</label>
-            <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
+            <span> {{vehiculoSeleccionado.REF_PLACAS}} </span>
           </div>
         </div>
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Marca</label>
-            <span> {{vehiculoSeleccionado.DES_MARCA}} </span>
+            <span> {{vehiculoSeleccionado.REF_MARCA}} </span>
           </div>
         </div>
       </div>
@@ -161,7 +161,7 @@
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Año</label>
-            <span> {{vehiculoSeleccionado.DES_MODELO}} </span>
+            <span> {{vehiculoSeleccionado.REF_MODELO}} </span>
           </div>
         </div>
       </div>
@@ -217,8 +217,8 @@
       ¿Estás seguro de agregar este nuevo registro?
     </div>
     <div class="mt-4 mb-4 col-12 text-center" *ngIf="mode === 'update'">
-      ¿Estás seguro de modificar el registro {{vehiculoSeleccionado.DES_MARCA}} {{vehiculoSeleccionado.DES_SUBMARCA}}
-      {{vehiculoSeleccionado.DES_MODELO}}?
+      ¿Estás seguro de modificar el registro {{vehiculoSeleccionado.REF_MARCA}} {{vehiculoSeleccionado.REF_SUBMARCA}}
+      {{vehiculoSeleccionado.REF_MODELO}}?
     </div>
     <div class="flex justify-content-end">
       <button type="button" class="ml-4  btn btn-default btn-md"

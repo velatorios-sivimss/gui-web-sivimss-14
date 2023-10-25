@@ -69,21 +69,24 @@
         <th pResizableColumn id="columna_programar_mtto_fecha">Fecha de Mantenimiento</th>
         <th pResizableColumn id="columna_programar_mtto_costo">Costo de Mantenimiento</th>
         <th id="columna_programar_mtto_estado">Estado de Mantenimiento</th>
+        <th id="columna_acciones"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-vehiculo>
       <tr>
         <td pResizableColumn> {{vehiculo.ID_MTTOVEHICULAR}} </td>
-        <td pResizableColumn> {{vehiculo.DES_MARCA}} {{vehiculo.DES_SUBMARCA}} {{vehiculo.DES_MODELO}}</td>
-        <td pResizableColumn> {{vehiculo.DES_PLACAS}} </td>
+        <td pResizableColumn> {{vehiculo.REF_MARCA}} {{vehiculo.REF_SUBMARCA}} {{vehiculo.REF_MODELO}}</td>
+        <td pResizableColumn> {{vehiculo.REF_PLACAS}} </td>
         <td pResizableColumn> {{vehiculo.NUM_KILOMETRAJE_REG}} </td>
         <td pResizableColumn> {{vehiculo.DES_MTTO_TIPO}} </td>
         <td pResizableColumn> {{vehiculo.DES_MODALIDAD}} </td>
         <td pResizableColumn> {{vehiculo.FEC_REGISTRO_REG}} </td>
         <td pResizableColumn> {{vehiculo.MON_COSTO_MTTO}} </td>
+        <td pResizableColumn>
+          <span [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</span>
+        </td>
         <td>
           <div [appEstilosCeldaSticky]="{display:'grid',gridTemplateColumns:'100px 70px'}">
-            <span [appTextColor]="vehiculo.DES_MTTOESTADO">{{vehiculo.DES_MTTOESTADO}}</span>
             <div class="contenedor-celda-iconos">
               <a (click)="irADetalle(vehiculo)" *ngIf="vehiculo.ID_MTTOVEHICULAR">
                 <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
@@ -141,8 +144,8 @@
 <p-dialog header="Modificar" [(visible)]="modificarModal" *ngIf="vehiculoSeleccionado">
   <div class="border-panel mb-4 w-440 bg-g">
     <div class="row flex justify-content-center">
-      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
-      {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
+      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.REF_MARCA | uppercase }}
+      {{vehiculoSeleccionado.REF_SUBMARCA | uppercase}} {{vehiculoSeleccionado.REF_MODELO | uppercase}}
     </div>
   </div>
   <div class=" border-panel w-440">
@@ -171,8 +174,8 @@
 <p-dialog header="Ver Detalle" [(visible)]="detalleModal" *ngIf="vehiculoSeleccionado">
   <div class="border-panel mb-4 w-440 bg-g">
     <div class="row flex justify-content-center">
-      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.DES_MARCA | uppercase }}
-      {{vehiculoSeleccionado.DES_SUBMARCA | uppercase}} {{vehiculoSeleccionado.DES_MODELO | uppercase}}
+      {{vehiculoSeleccionado.ID_VEHICULO}} - {{vehiculoSeleccionado.REF_MARCA | uppercase }}
+      {{vehiculoSeleccionado.REF_SUBMARCA | uppercase}} {{vehiculoSeleccionado.REF_MODELO | uppercase}}
     </div>
   </div>
   <div class=" border-panel w-440">
