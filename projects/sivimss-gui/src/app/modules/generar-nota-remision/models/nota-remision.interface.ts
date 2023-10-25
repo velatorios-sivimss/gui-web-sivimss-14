@@ -21,6 +21,7 @@ export interface ConsultaNotaRemision {
   idNota: number | null;
   idOrden: number | null;
 }
+
 export interface DetalleNotaRemision {
   versionDocumento?: string;
   fechaNota?: string;
@@ -39,6 +40,7 @@ export interface DetalleNotaRemision {
   folioConvenio?: string;
   fechaConvenio?: string;
   motivo?: string;
+  fechaODS: string;
 }
 
 export interface ArticulosServicios {
@@ -70,6 +72,7 @@ export interface GenerarDatosReporte {
   folioConvenio?: string;
   fechaConvenio?: string;
   tipoReporte?: string;
+  fechaODS?: string;
 }
 
 export interface BusquedaFiltro {
