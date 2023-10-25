@@ -1,4 +1,3 @@
-// TODO: Regresar catalogos
 
 import {Injectable} from '@angular/core';
 import {
