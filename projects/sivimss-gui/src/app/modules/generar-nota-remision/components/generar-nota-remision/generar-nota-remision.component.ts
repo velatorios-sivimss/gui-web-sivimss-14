@@ -147,22 +147,37 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   paginar(): void {
+    const filtros = this.obtenerFiltrosBasicos();
+    this.realizarSolicitudBusqueda(filtros);
+  }
+
+  obtenerFiltrosBasicos(): any {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    const filtros = {
+    return {
       nivel: obtenerNivelUsuarioLogueado(usuario),
       velatorio: obtenerVelatorioUsuarioLogueado(usuario),
       delegacion: obtenerDelegacionUsuarioLogueado(usuario)
     };
-    this.generarNotaRemisionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.notasRemision = respuesta.datos?.content ?? [];
-        this.totalElementos = respuesta.datos?.totalElements ?? 0;
-      },
-      error: (error: HttpErrorResponse): void => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+  }
+
+  private realizarSolicitudBusqueda(filtros: any): void {
+    this.cargadorService.activar();
+    this.generarNotaRemisionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
+  }
+
+  private manejarRespuestaBusqueda(respuesta: HttpRespuesta<any>): void {
+    this.notasRemision = respuesta.datos?.content ?? [];
+    this.totalElementos = respuesta.datos?.totalElements ?? 0;
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   buscar(): void {
@@ -177,22 +192,14 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.generarNotaRemisionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
-        this.notasRemision = respuesta.datos?.content ?? [];
-        this.totalElementos = respuesta.datos?.totalElements ?? 0;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error(error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      next: (respuesta: HttpRespuesta<any>): void => this.manejarRespuestaBusqueda(respuesta),
+      error: (error: HttpErrorResponse) => this.manejarMensajeError(error)
     });
   }
 
   obtenerObjetoParaFiltrado(): BusquedaFiltro {
-    let fechaInicial = this.filtroForm.get('fechaInicial')?.value;
-    if (fechaInicial) fechaInicial = moment(this.f.fechaInicial.value).format('DD/MM/YYYY');
-    let fechaFinal = this.filtroForm.get('fechaFinal')?.value;
-    if (fechaFinal) fechaFinal = moment(this.f.fechaFinal.value).format('DD/MM/YYYY');
+    const fechaInicial: string | null = this.obtenerFechaInicial();
+    const fechaFinal: string | null = this.obtenerFechaFinal();
     return {
       idNivel: this.filtroForm.get('nivel')?.value,
       idDelegacion: this.filtroForm.get('delegacion')?.value,
@@ -203,19 +210,31 @@ export class GenerarNotaRemisionComponent implements OnInit {
     }
   }
 
+  obtenerFechaInicial(): string | null {
+    const fechaInicial = this.filtroForm.get('fechaInicial')?.value;
+    return fechaInicial ? moment(fechaInicial).format('DD/MM/YYYY') : null;
+  }
+
+  obtenerFechaFinal(): string | null {
+    const fechaFinal = this.filtroForm.get('fechaInicial')?.value;
+    return fechaFinal ? moment(fechaFinal).format('DD/MM/YYYY') : null;
+  }
+
   limpiar(): void {
     this.paginacionConFiltrado = false;
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
-    const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
+    this.limpiarFormulario();
     this.foliosGenerados = [];
-    this.filtroFormDir.resetForm({
-      nivel: obtenerNivelUsuarioLogueado(usuario),
-      velatorio: obtenerVelatorioUsuarioLogueado(usuario),
-      delegacion
-    });
     this.numPaginaActual = 0;
     this.seleccionarDelegacion(true);
     this.paginar();
+  }
+
+  limpiarFormulario(): void {
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+    const nivel: number = obtenerNivelUsuarioLogueado(usuario);
+    const velatorio: number | null = obtenerVelatorioUsuarioLogueado(usuario);
+    const delegacion: number | null = obtenerDelegacionUsuarioLogueado(usuario);
+    this.filtroFormDir.resetForm({nivel, velatorio, delegacion});
   }
 
   obtenerFoliosGenerados(): void {
@@ -225,10 +244,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.foliosGenerados = mapearArregloTipoDropdown(respuesta.datos, "nombre", "nombre");
       },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
   }
 
@@ -241,10 +257,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
       },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
-      }
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     });
   }
 
@@ -284,93 +297,41 @@ export class GenerarNotaRemisionComponent implements OnInit {
     }
   }
 
-  get f() {
-    return this.filtroForm?.controls;
-  }
-
-
   guardarPDF(): void {
-    this.cargadorService.activar();
-    const filtros = this.generarSolicitudDescarga();
+    const busqueda = this.prepararSolicitudDescarga();
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: `Listado Notas Remisión ${obtenerFechaYHoraActual()}`};
-    this.generarNotaRemisionService.generarReporteTabla(filtros).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        const file = new Blob(
-          [this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,
-            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.cargadorService.desactivar())
-        ).subscribe({
-          next: (repuestaDescarga): void => {
-            if (repuestaDescarga) {
-              this.mostrarModalDescargaExitosa = true;
-            }
-          },
-          error: (error): void => {
-            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        })
-      },
-      error: (error: HttpErrorResponse): void => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
-      }
-    });
+    this.generarYDescargarArchivo(busqueda, configuracionArchivo);
   }
 
   guardarExcel(): void {
-    const filtros = this.generarSolicitudDescarga('xls');
+    const busqueda = this.prepararSolicitudDescarga('xls');
     const configuracionArchivo: OpcionesArchivos = {
       ext: 'xlsx',
       nombreArchivo: `Listado Notas Remisión ${obtenerFechaYHoraActual()}`
     };
-    this.cargadorService.activar();
-    this.generarNotaRemisionService.generarReporteTabla(filtros).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>) => {
-        const file = new Blob(
-          [this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,
-            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.cargadorService.desactivar())
-        ).subscribe({
-          next: (repuestaDescarga): void => {
-            if (repuestaDescarga) {
-              this.mostrarModalDescargaExitosa = true;
-            }
-          },
-          error: (error): void => {
-            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        })
-      },
-      error: (error: HttpErrorResponse): void => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
-      }
-    });
+    this.generarYDescargarArchivo(busqueda, configuracionArchivo);
   }
 
-  generarSolicitudDescarga(tipoReporte: 'pdf' | 'xls' = 'pdf'): any {
+  private prepararSolicitudDescarga(tipoReporte: 'pdf' | 'xls' = 'pdf'): any {
     if (!this.paginacionConFiltrado) {
-      return {
-        idNivel: this.filtroForm.get('nivel')?.value,
-        idDelegacion: this.filtroForm.get('delegacion')?.value,
-        idVelatorio: this.filtroForm.get('velatorio')?.value,
-        tipoReporte
-      }
+      return this.prepararSolicitudDescargaSinFiltrado(tipoReporte);
+    } else {
+      return this.prepararSolicitudDescargaConFiltrado(tipoReporte);
     }
-    let fechaInicial = this.filtroForm.get('fechaInicial')?.value;
-    if (fechaInicial) fechaInicial = moment(this.f.fechaInicial.value).format('DD/MM/YYYY');
-    let fechaFinal = this.filtroForm.get('fechaFinal')?.value;
-    if (fechaFinal) fechaFinal = moment(this.f.fechaFinal.value).format('DD/MM/YYYY');
+  }
+
+  private prepararSolicitudDescargaSinFiltrado(tipoReporte: 'pdf' | 'xls') {
+    return {
+      idNivel: this.filtroForm.get('nivel')?.value,
+      idDelegacion: this.filtroForm.get('delegacion')?.value,
+      idVelatorio: this.filtroForm.get('velatorio')?.value,
+      tipoReporte
+    }
+  }
+
+  private prepararSolicitudDescargaConFiltrado(tipoReporte: 'pdf' | 'xls'): any {
+    const fechaInicial: string | null = this.obtenerFechaInicial();
+    const fechaFinal: string | null = this.obtenerFechaFinal();
     return {
       idNivel: this.filtroForm.get('nivel')?.value,
       idDelegacion: this.filtroForm.get('delegacion')?.value,
@@ -382,5 +343,38 @@ export class GenerarNotaRemisionComponent implements OnInit {
     }
   }
 
+  private generarYDescargarArchivo(solicitudDescarga: any, configuracionArchivo: OpcionesArchivos): void {
+    this.cargadorService.activar();
+    this.generarNotaRemisionService.generarReporteTabla(solicitudDescarga).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta: HttpRespuesta<any>): void => {
+        const file = new Blob(
+          [this.descargaArchivosService.base64_2Blob(
+            respuesta.datos,
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
+        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+          finalize(() => this.cargadorService.desactivar())
+        ).subscribe({
+          next: (repuestaDescarga): void => {
+            if (repuestaDescarga) {
+              this.mostrarModalDescargaExitosa = true;
+            }
+          },
+          error: (): void => {
+            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+          }
+        })
+      },
+      error: (error: HttpErrorResponse): void => {
+        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+      }
+    });
+  }
 
+  get f() {
+    return this.filtroForm?.controls;
+  }
 }
