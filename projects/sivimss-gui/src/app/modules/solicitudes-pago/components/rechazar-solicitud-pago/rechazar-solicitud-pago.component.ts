@@ -10,6 +10,7 @@ import {finalize} from "rxjs/operators";
 import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
+import {forkJoin, Observable} from "rxjs";
 
 interface SolicitudRechazo {
   idSolicitud: number,
@@ -68,6 +69,7 @@ export class RechazarSolicitudPagoComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>): void => {
           this.pagoSeleccionado = respuesta.datos[0];
           this.listaPartidaPresupuestal(this.pagoSeleccionado.cveFolioGastos);
+          this.partidaPresupuestalMultiplesFolios(this.pagoSeleccionado.foliosFactura);
           this.convertirImporte(this.pagoSeleccionado.impTotal);
         },
         error: (error: HttpErrorResponse): void => {
@@ -90,6 +92,23 @@ export class RechazarSolicitudPagoComponent implements OnInit {
           console.error(error);
         }
       });
+  }
+
+  partidaPresupuestalMultiplesFolios(foliosGastos: string): void {
+    if (!foliosGastos) return;
+    const folios: string[] = foliosGastos.split(',');
+    const observablesFolios: Observable<HttpRespuesta<any>>[] = folios.map(folio => this.obtenerPartidaPresupuestal(folio.trim()));
+    this.cargadorService.activar();
+    forkJoin(observablesFolios).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta): void => {
+        this.partidaPresupuestal = respuesta.map(response => response.datos).flat();
+      },
+      error: (error): void => {
+        console.error('Error:', error);
+      }
+    })
   }
 
   convertirImporte(importe: string): void {
@@ -130,6 +149,9 @@ export class RechazarSolicitudPagoComponent implements OnInit {
     }
   }
 
+  obtenerPartidaPresupuestal(parametro: string): Observable<any> {
+    return this.solicitudesPagoService.buscarPartidaPresupuestal(parametro)
+  }
 
   get ref() {
     return this.rechazarPagoForm.controls;

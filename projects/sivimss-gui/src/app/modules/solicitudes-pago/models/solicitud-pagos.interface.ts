@@ -49,6 +49,7 @@ export interface DetalleSolicitudPago {
   solicitadoPor: string;
   cantidadLetra: string;
   beneficiario?: string;
+  foliosFactura: string;
 }
 
 export interface CrearSolicitudPago {

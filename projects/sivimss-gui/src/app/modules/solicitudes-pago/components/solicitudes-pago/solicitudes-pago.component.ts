@@ -224,7 +224,7 @@ export class SolicitudesPagoComponent implements OnInit {
       },
     );
 
-    this.aceptarRef.onClose.subscribe(() => this.seleccionarPaginacion());
+    this.aceptarRef.onClose.subscribe(() => this.limpiar());
   }
 
   abrirModalRechazarSolicitudPago(): void {
