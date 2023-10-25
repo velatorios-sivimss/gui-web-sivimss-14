@@ -221,6 +221,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
   }
 
   abrirModalAprobarSolicitudPago(): void {
+    this.cargadorService.activar();
     this.aceptarRef = this.dialogService.open(
       AprobarSolicitudPagoComponent,
       {
@@ -234,6 +235,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
   }
 
   abrirModalRechazarSolicitudPago(): void {
+    this.cargadorService.activar();
     this.rechazarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
       {

@@ -62,7 +62,6 @@ export class RechazarSolicitudPagoComponent implements OnInit {
   }
 
   obtenerSolicPago(idSolicitud: number): void {
-    this.cargadorService.activar();
     this.solicitudesPagoService.detalleSolicitudPago(idSolicitud)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
@@ -81,7 +80,6 @@ export class RechazarSolicitudPagoComponent implements OnInit {
 
   listaPartidaPresupuestal(folioGastos: string): void {
     if (!folioGastos) return;
-    this.cargadorService.activar();
     this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
@@ -98,7 +96,6 @@ export class RechazarSolicitudPagoComponent implements OnInit {
     if (!foliosGastos) return;
     const folios: string[] = foliosGastos.split(',');
     const observablesFolios: Observable<HttpRespuesta<any>>[] = folios.map(folio => this.obtenerPartidaPresupuestal(folio.trim()));
-    this.cargadorService.activar();
     forkJoin(observablesFolios).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
@@ -122,7 +119,6 @@ export class RechazarSolicitudPagoComponent implements OnInit {
   }
 
   confirmarRechazoPago(): void {
-    this.cargadorService.activar();
     const solicitud: SolicitudRechazo = this.generarSolicitud();
     this.solicitudesPagoService.rechazarSolicitudPago(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())
