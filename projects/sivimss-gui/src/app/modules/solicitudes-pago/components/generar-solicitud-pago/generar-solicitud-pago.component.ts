@@ -467,9 +467,10 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     });
   }
 
-  reAjustarImporte(): void {
+  reAjustarImporte(event: any): void {
     const importe: string = this.partidaPresupuestal[0].importeTotal ?? 0;
-    this.solicitudPagoForm.get('importe')?.setValue(importe);
+    console.log(this.partidaPresupuestal[0].importeTotal)
+    this.solicitudPagoForm.get('importe')?.setValue(event.value);
     this.convertirImporte();
   }
 

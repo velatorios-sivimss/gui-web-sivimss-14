@@ -54,7 +54,6 @@ export class AprobarSolicitudPagoComponent implements OnInit {
   }
 
   obtenerSolicPago(idSolicitud: number): void {
-    this.cargadorService.activar();
     this.solicitudesPagoService.detalleSolicitudPago(idSolicitud)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
@@ -73,7 +72,6 @@ export class AprobarSolicitudPagoComponent implements OnInit {
 
   listaPartidaPresupuestal(folioGastos: string): void {
     if (!folioGastos) return;
-    this.cargadorService.activar();
     this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
@@ -91,7 +89,6 @@ export class AprobarSolicitudPagoComponent implements OnInit {
   }
 
   confirmarAprobacionPago(): void {
-    this.cargadorService.activar();
     const solicitud: SolicitudCancelacion = this.generarSolicitud();
     this.solicitudesPagoService.aprobarSolicitudPago(solicitud).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -111,7 +108,6 @@ export class AprobarSolicitudPagoComponent implements OnInit {
     if (!foliosGastos) return;
     const folios: string[] = foliosGastos.split(',');
     const observablesFolios: Observable<HttpRespuesta<any>>[] = folios.map(folio => this.obtenerPartidaPresupuestal(folio.trim()));
-    this.cargadorService.activar();
     forkJoin(observablesFolios).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({

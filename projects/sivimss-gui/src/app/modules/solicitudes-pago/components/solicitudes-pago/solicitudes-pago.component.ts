@@ -1,5 +1,5 @@
 import {SolicitudPago} from '../../models/solicitud-pagos.interface';
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterContentChecked, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from 'projects/sivimss-gui/src/app/utils/constantes';
@@ -50,7 +50,7 @@ interface SolicitudReporte {
   styleUrls: ['./solicitudes-pago.component.scss'],
   providers: [DialogService, DescargaArchivosService]
 })
-export class SolicitudesPagoComponent implements OnInit {
+export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
 
   @ViewChild(FormGroupDirective)
   private filtroFormDir!: FormGroupDirective;
@@ -99,7 +99,8 @@ export class SolicitudesPagoComponent implements OnInit {
     private solicitudesPagoService: SolicitudesPagoService,
     private cargadorService: LoaderService,
     private descargaArchivosService: DescargaArchivosService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private changeDetector: ChangeDetectorRef,
   ) {
     this.fechaAnterior.setDate(this.fechaActual.getDate() - 1);
   }
@@ -108,6 +109,10 @@ export class SolicitudesPagoComponent implements OnInit {
     this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
     this.inicializarFiltroForm();
     this.cargarCatalogos();
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   private cargarCatalogos(): void {
@@ -180,6 +185,7 @@ export class SolicitudesPagoComponent implements OnInit {
 
   abrirDetalleSolicitudPago(solicitudPagoSeleccionado: ListadoSolicitudPago): void {
     this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
+    this.cargadorService.activar();
     this.cancelarRef = this.dialogService.open(
       VerDetalleSolicitudPagoComponent,
       {
@@ -215,6 +221,7 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalAprobarSolicitudPago(): void {
+    this.cargadorService.activar();
     this.aceptarRef = this.dialogService.open(
       AprobarSolicitudPagoComponent,
       {
@@ -228,6 +235,7 @@ export class SolicitudesPagoComponent implements OnInit {
   }
 
   abrirModalRechazarSolicitudPago(): void {
+    this.cargadorService.activar();
     this.rechazarRef = this.dialogService.open(
       RechazarSolicitudPagoComponent,
       {

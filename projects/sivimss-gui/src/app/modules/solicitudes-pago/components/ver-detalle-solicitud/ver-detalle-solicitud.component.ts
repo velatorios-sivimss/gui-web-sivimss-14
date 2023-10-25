@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterContentChecked, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {DetalleSolicitudPago, PartidaPresupuestal} from '../../models/solicitud-pagos.interface';
 import {DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
 import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
-import {concatMap, finalize, mergeMap} from "rxjs/operators";
+import {finalize} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
 import {forkJoin, Observable} from "rxjs";
@@ -15,7 +15,7 @@ import {forkJoin, Observable} from "rxjs";
   templateUrl: './ver-detalle-solicitud.component.html',
   styleUrls: ['./ver-detalle-solicitud.component.scss']
 })
-export class VerDetalleSolicitudPagoComponent implements OnInit {
+export class VerDetalleSolicitudPagoComponent implements OnInit, AfterContentChecked {
 
   solicitudPagoSeleccionado!: DetalleSolicitudPago;
   idSolicitud!: number;
@@ -26,13 +26,18 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     public ref: DynamicDialogRef,
     private solicitudesPagoService: SolicitudesPagoService,
     private cargadorService: LoaderService,
-    private mensajesSistemaService: MensajesSistemaService
+    private mensajesSistemaService: MensajesSistemaService,
+    private changeDetector: ChangeDetectorRef,
   ) {
   }
 
   ngOnInit(): void {
     this.idSolicitud = this.config.data;
     this.obtenerSolicPago(this.idSolicitud);
+  }
+
+  ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   aceptar(): void {
@@ -44,15 +49,16 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
   }
 
   obtenerSolicPago(idSolicitud: number): void {
-    this.cargadorService.activar();
+
     this.solicitudesPagoService.detalleSolicitudPago(idSolicitud)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>): void => {
           this.solicitudPagoSeleccionado = respuesta.datos[0];
-          this.listaPartidaPresupuestal(this.solicitudPagoSeleccionado.cveFolioGastos);
-          this.partidaPresupuestalMultiplesFolios(this.solicitudPagoSeleccionado.foliosFactura);
-          this.convertirImporte(this.solicitudPagoSeleccionado.impTotal);
+          const {cveFolioGastos, foliosFactura, impTotal} = this.solicitudPagoSeleccionado;
+          this.listaPartidaPresupuestal(cveFolioGastos);
+          this.partidaPresupuestalMultiplesFolios(foliosFactura);
+          this.convertirImporte(impTotal);
         },
         error: (error: HttpErrorResponse): void => {
           console.error(error);
@@ -63,7 +69,6 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
 
   listaPartidaPresupuestal(folioGastos: string): void {
     if (!folioGastos) return;
-    this.cargadorService.activar();
     this.solicitudesPagoService.buscarPartidaPresupuestal(folioGastos)
       .pipe(finalize(() => this.cargadorService.desactivar()))
       .subscribe({
@@ -80,7 +85,6 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
     if (!foliosGastos) return;
     const folios: string[] = foliosGastos.split(',');
     const observablesFolios: Observable<HttpRespuesta<any>>[] = folios.map(folio => this.obtenerPartidaPresupuestal(folio.trim()));
-    this.cargadorService.activar();
     forkJoin(observablesFolios).pipe(
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
