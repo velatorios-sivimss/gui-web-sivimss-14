@@ -171,9 +171,7 @@ export class ModificarDatosFinadoComponent
       this.cambiarValidacionMatricula();
       this.inicializarCalcularEdad();
       this.cambiarValidacionNSS();
-      // this.changeTipoOrden(true, Number(this.form.value.datosFinado.tipoOrden));
       this.cambiarTipoSexo();
-      // this.datosFinado.esParaExtremidad.value;
     }, 500)
 
 
@@ -230,16 +228,11 @@ export class ModificarDatosFinadoComponent
   inicializarForm(datosEtapaFinado: any): void {
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio, mes, dia] = fechaActual.split('-')
-    let nacionalidad = 1;
     if (datosEtapaFinado.hasOwnProperty('direccion')) {
       let coloniasLista: any = [{'nombre': datosEtapaFinado.direccion.colonia}]
       this.colonias = mapearArregloTipoDropdown(coloniasLista, 'nombre', 'nombre')
     }
-    if (datosEtapaFinado.datosFinado.idEstado == null ||
-      datosEtapaFinado.datosFinado.idEstado == ''
-    ) {
-      nacionalidad = 2;
-    }
+
     this.idPersona = datosEtapaFinado.datosFinado.idPersona == 0 ? null : datosEtapaFinado.datosFinado.idPersona;
     this.idFinado = datosEtapaFinado.datosFinado.idFinado == 0 ? null : datosEtapaFinado.datosFinado.idFinado;
     this.idDomicilio = datosEtapaFinado.direccion.idDomicilio;
@@ -375,7 +368,7 @@ export class ModificarDatosFinadoComponent
           {value: datosEtapaFinado.datosFinado.otroTipoSexo, disabled: false},
         ],
         nacionalidad: [
-          {value: nacionalidad, disabled: false},
+          {value: datosEtapaFinado.datosFinado.nacionalidad, disabled: false},
           [Validators.required],
         ],
         lugarNacimiento: [
