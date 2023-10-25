@@ -5,9 +5,10 @@ import {SolicitudesPagoService} from '../../services/solicitudes-pago.service';
 import {LoaderService} from "../../../../shared/loader/services/loader.service";
 import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 import {convertirNumeroPalabra} from "../../funciones/convertirNumeroPalabra";
-import {finalize} from "rxjs/operators";
+import {concatMap, finalize, mergeMap} from "rxjs/operators";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 import {HttpErrorResponse} from "@angular/common/http";
+import {forkJoin, Observable} from "rxjs";
 
 @Component({
   selector: 'app-ver-detalle-solicitud',
@@ -50,6 +51,7 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
         next: (respuesta: HttpRespuesta<any>): void => {
           this.solicitudPagoSeleccionado = respuesta.datos[0];
           this.listaPartidaPresupuestal(this.solicitudPagoSeleccionado.cveFolioGastos);
+          this.partidaPresupuestalMultiplesFolios(this.solicitudPagoSeleccionado.foliosFactura);
           this.convertirImporte(this.solicitudPagoSeleccionado.impTotal);
         },
         error: (error: HttpErrorResponse): void => {
@@ -74,9 +76,31 @@ export class VerDetalleSolicitudPagoComponent implements OnInit {
       });
   }
 
+  partidaPresupuestalMultiplesFolios(foliosGastos: string): void {
+    if (!foliosGastos) return;
+    const folios: string[] = foliosGastos.split(',');
+    const observablesFolios: Observable<HttpRespuesta<any>>[] = folios.map(folio => this.obtenerPartidaPresupuestal(folio.trim()));
+    this.cargadorService.activar();
+    forkJoin(observablesFolios).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuesta): void => {
+        console.log(respuesta)
+        this.partidaPresupuestal = respuesta.map(response => response.datos).flat();
+      },
+      error: (error): void => {
+        console.error('Error:', error);
+      }
+    })
+  }
+
   convertirImporte(importe: string): void {
     if (!importe) return;
     this.solicitudPagoSeleccionado.cantidadLetra = convertirNumeroPalabra(+importe);
+  }
+
+  obtenerPartidaPresupuestal(parametro: string): Observable<any> {
+    return this.solicitudesPagoService.buscarPartidaPresupuestal(parametro)
   }
 
 }
