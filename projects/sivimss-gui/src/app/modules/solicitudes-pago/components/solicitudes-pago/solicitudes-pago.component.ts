@@ -185,6 +185,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
 
   abrirDetalleSolicitudPago(solicitudPagoSeleccionado: ListadoSolicitudPago): void {
     this.solicitudPagoSeleccionado = solicitudPagoSeleccionado;
+    this.cargadorService.activar();
     this.cancelarRef = this.dialogService.open(
       VerDetalleSolicitudPagoComponent,
       {
