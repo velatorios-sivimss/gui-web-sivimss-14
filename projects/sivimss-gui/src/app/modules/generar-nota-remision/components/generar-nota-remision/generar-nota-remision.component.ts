@@ -27,6 +27,12 @@ import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
 
+interface FiltrosBasicos {
+  nivel: number,
+  velatorio: number | null,
+  delegacion: number | null
+}
+
 @Component({
   selector: 'app-generar-nota-remision',
   templateUrl: './generar-nota-remision.component.html',
@@ -147,11 +153,11 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   paginar(): void {
-    const filtros = this.obtenerFiltrosBasicos();
+    const filtros: FiltrosBasicos = this.obtenerFiltrosBasicos();
     this.realizarSolicitudBusqueda(filtros);
   }
 
-  obtenerFiltrosBasicos(): any {
+  obtenerFiltrosBasicos(): FiltrosBasicos {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     return {
       nivel: obtenerNivelUsuarioLogueado(usuario),
@@ -160,7 +166,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     };
   }
 
-  private realizarSolicitudBusqueda(filtros: any): void {
+  private realizarSolicitudBusqueda(filtros: FiltrosBasicos): void {
     this.cargadorService.activar();
     this.generarNotaRemisionService.buscarPorFiltros(filtros, this.numPaginaActual, this.cantElementosPorPagina).pipe(
       finalize(() => this.cargadorService.desactivar())
@@ -320,7 +326,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     }
   }
 
-  private prepararSolicitudDescargaSinFiltrado(tipoReporte: 'pdf' | 'xls') {
+  private prepararSolicitudDescargaSinFiltrado(tipoReporte: 'pdf' | 'xls'): any {
     return {
       idNivel: this.filtroForm.get('nivel')?.value,
       idDelegacion: this.filtroForm.get('delegacion')?.value,
