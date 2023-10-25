@@ -43,8 +43,8 @@ export class ServiciosFunerariosService extends BaseService<HttpRespuesta<any>, 
     return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/consulta-tipo-pago-mensual`);
   }
 
-  obtenerCatalogoPaquetes(): Observable<HttpRespuesta<any>> {
-    return this._http.get<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/catalogo/consulta-paquetes`);
+  obtenerCatalogoPaquetes(idVelatorio: number): Observable<HttpRespuesta<any>> {
+    return this._http.post<HttpRespuesta<any>>(this._base + `${this._funcionalidad}/convenio-pf-paquetes`,{idVelatorio:idVelatorio});
   }
 
   consultarCURP(curp: string): Observable<HttpRespuesta<any>> {
