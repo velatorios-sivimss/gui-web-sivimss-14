@@ -103,7 +103,6 @@ export class RechazarSolicitudPagoComponent implements OnInit {
       finalize(() => this.cargadorService.desactivar())
     ).subscribe({
       next: (respuesta): void => {
-        console.log(respuesta)
         this.partidaPresupuestal = respuesta.map(response => response.datos).flat();
       },
       error: (error): void => {
