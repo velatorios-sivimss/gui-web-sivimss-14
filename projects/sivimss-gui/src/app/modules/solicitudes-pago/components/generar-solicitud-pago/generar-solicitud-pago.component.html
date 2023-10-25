@@ -74,8 +74,11 @@
             <td>{{partida.partidaPres}}</td>
             <td>{{partida.cuentaContable}}</td>
             <td>
-              <input [(ngModel)]="partida.importeTotal" class="form-control" [ngModelOptions]="{standalone: true}"
-                     (blur)="reAjustarImporte()" numbersOnly>
+              <p-inputNumber [(ngModel)]="partida.importeTotal" class="form-control"
+                             [ngModelOptions]="{standalone: true}"
+                             (onInput)="reAjustarImporte($event)" [min]="0"
+                             mode="currency" currency="USD" locale="en-US" [maxlength]="13"
+                             [minFractionDigits]="2"></p-inputNumber>
             </td>
           </tr>
         </ng-template>
