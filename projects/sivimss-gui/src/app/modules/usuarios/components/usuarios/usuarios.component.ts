@@ -1,45 +1,35 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormGroupDirective} from '@angular/forms';
-import {
-  DIEZ_ELEMENTOS_POR_PAGINA,
-  MAX_WIDTH,
-} from '../../../../utils/constantes';
-import {OverlayPanel} from 'primeng/overlaypanel';
-import {
-  AlertaService,
-  TipoAlerta,
-} from '../../../../shared/alerta/services/alerta.service';
-import {BreadcrumbService} from '../../../../shared/breadcrumb/services/breadcrumb.service';
-
 import {ActivatedRoute} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
+import {finalize} from 'rxjs/operators';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
+import {DIEZ_ELEMENTOS_POR_PAGINA, MAX_WIDTH} from '../../../../utils/constantes';
+import {AlertaService, TipoAlerta} from '../../../../shared/alerta/services/alerta.service';
+import {BreadcrumbService} from '../../../../shared/breadcrumb/services/breadcrumb.service';
 import {Usuario} from '../../models/usuario.interface';
 import {UsuarioService} from '../../services/usuario.service';
-
 import {TipoDropdown} from '../../../../models/tipo-dropdown';
-import {
-  DialogService,
-  DynamicDialogConfig,
-  DynamicDialogRef,
-} from 'primeng/dynamicdialog';
-import {AgregarUsuarioComponent} from '../agregar-usuario/agregar-usuario.component';
 import {USUARIOS_BREADCRUMB} from '../../constants/breadcrumb';
 import {FiltrosUsuario} from '../../models/filtrosUsuario.interface';
-import {VerDetalleUsuarioComponent} from '../ver-detalle-usuario/ver-detalle-usuario.component';
 import {RespuestaModalUsuario} from '../../models/respuestaModal.interface';
-import {ModificarUsuarioComponent} from '../modificar-usuario/modificar-usuario.component';
-import {
-  mapearArregloTipoDropdown,
-  validarUsuarioLogueado,
-} from '../../../../utils/funciones';
+import {mapearArregloTipoDropdown, validarUsuarioLogueado} from '../../../../utils/funciones';
 import {LazyLoadEvent} from 'primeng/api';
 import {LoaderService} from '../../../../shared/loader/services/loader.service';
-import {finalize} from 'rxjs/operators';
 import {CambioEstatusUsuarioComponent} from '../cambio-estatus-usuario/cambio-estatus-usuario.component';
 import {HttpRespuesta} from '../../../../models/http-respuesta.interface';
 import {MensajesSistemaService} from '../../../../services/mensajes-sistema.service';
+import {AgregarUsuarioComponent} from "../agregar-usuario/agregar-usuario.component";
+import {ModificarUsuarioComponent} from "../modificar-usuario/modificar-usuario.component";
+import {VerDetalleUsuarioComponent} from "../ver-detalle-usuario/ver-detalle-usuario.component";
 
 type SolicitudEstatus = Pick<Usuario, 'id'>;
+
+interface NuevoUsuario {
+  usuario: string;
+  contrasenia: string
+}
 
 @Component({
   selector: 'app-usuarios',
@@ -65,10 +55,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   usuarios: Usuario[] = [];
   usuarioSeleccionado!: Usuario;
   mostrarNuevoUsuario: boolean = false;
-  nuevoUsuario: { usuario: string; contrasenia: string } = {
-    usuario: '',
-    contrasenia: '',
-  };
+  nuevoUsuario: NuevoUsuario = {usuario: '', contrasenia: ''};
   respuestaNuevoUsuario: RespuestaModalUsuario = {};
 
   filtroForm!: FormGroup;
@@ -120,13 +107,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       width: MAX_WIDTH,
       data: this.folioCreacion,
     };
-    this.creacionRef = this.dialogService.open(
-      AgregarUsuarioComponent,
-      CREACION_CONFIG
-    );
-    this.creacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) =>
-      this.procesarRespuestaModal(respuesta)
-    );
+    this.creacionRef = this.dialogService.open(AgregarUsuarioComponent, CREACION_CONFIG);
+    this.creacionRef.onClose
+      .subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
   }
 
   abrirModalModificarUsuario(): void {
@@ -135,13 +118,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       width: MAX_WIDTH,
       data: this.usuarioSeleccionado.id,
     };
-    this.modificacionRef = this.dialogService.open(
-      ModificarUsuarioComponent,
-      MODIFICAR_CONFIG
-    );
-    this.modificacionRef.onClose.subscribe((respuesta: RespuestaModalUsuario) =>
-      this.procesarRespuestaModal(respuesta)
-    );
+    this.modificacionRef = this.dialogService.open(ModificarUsuarioComponent, MODIFICAR_CONFIG);
+    this.modificacionRef.onClose
+      .subscribe((respuesta: RespuestaModalUsuario) => this.procesarRespuestaModal(respuesta));
   }
 
   abrirModalCambioEstatusUsuario(usuario: Usuario): void {

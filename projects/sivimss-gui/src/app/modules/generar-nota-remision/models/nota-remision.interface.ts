@@ -84,3 +84,19 @@ export interface BusquedaFiltro {
   fecFinODS: string | null;
   tipoReporte?: string;
 }
+
+export interface FiltrosBasicos {
+  nivel: number,
+  velatorio: number | null,
+  delegacion: number | null
+}
+
+export interface SolicitudDescarga {
+  idNivel: number | null;
+  idDelegacion: number | null;
+  idVelatorio: number | null;
+  tipoReporte: 'pdf' | 'xls';
+  folioODS?: string | null;
+  fecIniODS?: string | null;
+  fecFinODS?: string | null;
+}
