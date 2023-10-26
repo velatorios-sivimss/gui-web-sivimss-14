@@ -161,9 +161,9 @@ export class GenerarNotaRemisionComponent implements OnInit {
   obtenerFiltrosBasicos(): FiltrosBasicos {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     return {
-      nivel: obtenerNivelUsuarioLogueado(usuario),
-      velatorio: obtenerVelatorioUsuarioLogueado(usuario),
-      delegacion: obtenerDelegacionUsuarioLogueado(usuario)
+      idNivel: obtenerNivelUsuarioLogueado(usuario),
+      idVelatorio: obtenerVelatorioUsuarioLogueado(usuario),
+      idDelegacion: obtenerDelegacionUsuarioLogueado(usuario)
     };
   }
 

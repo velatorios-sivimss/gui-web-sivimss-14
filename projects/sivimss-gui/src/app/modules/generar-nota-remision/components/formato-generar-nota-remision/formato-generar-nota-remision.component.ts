@@ -52,11 +52,14 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     this.inicializarNotaRemisionForm(this.detalleNota);
   }
 
+  
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
     [this.notaRemisionReporte] = respuesta[this.POSICION_DETALLE]!.datos;
     [this.detalleNota] = respuesta[this.POSICION_DETALLE]!.datos;
     this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
+    this.idOds = +this.route.snapshot.params?.idOds;
+ 
   }
 
   inicializarNotaRemisionForm(detalle: DetalleNotaRemision): void {
