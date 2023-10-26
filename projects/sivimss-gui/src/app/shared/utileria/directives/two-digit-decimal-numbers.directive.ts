@@ -25,7 +25,7 @@ export class TwoDigitDecimaNumbersDirective {
             }
             this.text = next;
         }
-        if ((next && !String(next).match(this.regex))) {
+        if ((next && !RegExp(this.regex).exec(String(next)))) {
             event.preventDefault();
         }
     }
