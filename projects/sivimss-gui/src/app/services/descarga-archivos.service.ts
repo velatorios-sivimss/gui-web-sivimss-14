@@ -12,7 +12,7 @@ export class DescargaArchivosService {
   readonly excel_nom = "Excel workbook";
 
   base64_2Blob(base64: string, contentType: string): Blob {
-    const byteCharacters: string = atob(base64);
+    const byteCharacters: string = window.atob(base64);
     const byteNumbers: any[] = new Array(byteCharacters.length);
     for (let i: number = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -66,7 +66,7 @@ export class DescargaArchivosService {
       catchError((error) => {
         if(error.toString().includes('The user aborted a request')) return of(false);
         console.log(error.toString())
-        throw 'Error al guardar el archivo.';
+        throw new Error('Error al guardar el archivo.');
       })
     );
   }
