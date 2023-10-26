@@ -78,26 +78,26 @@ export class DetalleMantenimientoComponent implements OnInit {
             this.vehiculo.ID_VEHICULO = this.verificacion.ID_VEHICULO;
             this.vehiculo.DES_MTTOESTADO = this.verificacion.DES_MTTOESTADO;
             this.vehiculo.DES_VELATORIO = this.verificacion.DES_VELATORIO || null;
-            this.vehiculo.DES_MARCA = this.verificacion.DES_MARCA;
-            this.vehiculo.DES_SUBMARCA = this.verificacion.DES_SUBMARCA;
-            this.vehiculo.DES_MODELO = this.verificacion.DES_MODELO;
-            this.vehiculo.DES_PLACAS = this.verificacion.DES_PLACAS;
+            this.vehiculo.REF_MARCA = this.verificacion.REF_MARCA;
+            this.vehiculo.REF_SUBMARCA = this.verificacion.REF_SUBMARCA;
+            this.vehiculo.REF_MODELO = this.verificacion.REF_MODELO;
+            this.vehiculo.REF_PLACAS = this.verificacion.REF_PLACAS;
           } else if (this.registro) {
             this.vehiculo.ID_VEHICULO = this.registro.ID_VEHICULO;
             this.vehiculo.DES_MTTOESTADO = this.registro.DES_MTTOESTADO;
             this.vehiculo.DES_VELATORIO = this.registro.NOM_VELATORIO || null;
-            this.vehiculo.DES_MARCA = this.registro.DES_MARCA;
-            this.vehiculo.DES_SUBMARCA = this.registro.DES_SUBMARCA;
-            this.vehiculo.DES_MODELO = this.registro.DES_MODELO;
-            this.vehiculo.DES_PLACAS = this.registro.DES_PLACAS;
+            this.vehiculo.REF_MARCA = this.registro.REF_MARCA;
+            this.vehiculo.REF_SUBMARCA = this.registro.REF_SUBMARCA;
+            this.vehiculo.REF_MODELO = this.registro.REF_MODELO;
+            this.vehiculo.REF_PLACAS = this.registro.REF_PLACAS;
           } else {
             this.vehiculo.ID_VEHICULO = this.solicitudRegistro.ID_VEHICULO;
             this.vehiculo.DES_MTTOESTADO = this.solicitudRegistro.DES_MTTOESTADO;
             this.vehiculo.DES_VELATORIO = this.solicitudRegistro.DES_VELATORIO || null;
-            this.vehiculo.DES_MARCA = this.solicitudRegistro.DES_MARCA;
-            this.vehiculo.DES_SUBMARCA = this.solicitudRegistro.DES_SUBMARCA;
-            this.vehiculo.DES_MODELO = this.solicitudRegistro.DES_MODELO;
-            this.vehiculo.DES_PLACAS = this.solicitudRegistro.DES_PLACAS;
+            this.vehiculo.REF_MARCA = this.solicitudRegistro.REF_MARCA;
+            this.vehiculo.REF_SUBMARCA = this.solicitudRegistro.REF_SUBMARCA;
+            this.vehiculo.REF_MODELO = this.solicitudRegistro.REF_MODELO;
+            this.vehiculo.REF_PLACAS = this.solicitudRegistro.REF_PLACAS;
           }
           this.vehiculo.DES_VELATORIO = this.verificacion?.DES_VELATORIO || this.registro?.NOM_VELATORIO || this.solicitudRegistro?.DES_VELATORIO;
           if (this.solicitudRegistro?.DES_MTTOESTADO) {

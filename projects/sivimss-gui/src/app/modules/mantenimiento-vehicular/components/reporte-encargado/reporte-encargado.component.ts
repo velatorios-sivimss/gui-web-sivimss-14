@@ -92,7 +92,7 @@ export class ReporteEncargadoComponent implements OnInit {
 
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
-    this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
+    // this.catalogoPlacas = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGOS_PLACAS].datos.content, "DES_PLACAS", "DES_PLACAS");
     this.tipoReportes = respuesta[this.POSICION_CATALOGOS_TIPO_MTTO];
     this.catalogoNiveles = respuesta[this.POSICION_CATALOGOS_NIVELES];
     this.catalogoDelegaciones = respuesta[this.POSICION_CATALOGOS_DELEGACIONES];

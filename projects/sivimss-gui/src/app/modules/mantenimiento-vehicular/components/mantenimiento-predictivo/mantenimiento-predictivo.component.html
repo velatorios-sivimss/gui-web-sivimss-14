@@ -88,10 +88,10 @@
 
       <div class="mb-3" *ngFor="let tituloSeleccionado of titulosSeleccionados">
         <ng-template pTemplate="header">
-          <h5 class="titulo-acordion">{{vehiculoSeleccionado.DES_PLACAS}}</h5>
+          <h5 class="titulo-acordion">{{vehiculoSeleccionado.REF_PLACAS}}</h5>
           <br>
-          <h6 class="titulo-acordion-tipo-vehiculo">{{vehiculoSeleccionado.DES_MARCA}}
-            {{vehiculoSeleccionado.DES_SUBMARCA}} {{vehiculoSeleccionado.DES_MODELO}}</h6>
+          <h6 class="titulo-acordion-tipo-vehiculo">{{vehiculoSeleccionado.REF_MARCA}}
+            {{vehiculoSeleccionado.REF_SUBMARCA}} {{vehiculoSeleccionado.REF_MODELO}}</h6>
         </ng-template>
         <app-table-panel>
           <ng-template appCustomTemplate="left-header">
@@ -155,7 +155,7 @@
             <div class="col-md-3">
               <div class="table-panel-column">
                 <label>Placas</label>
-                <span> {{vehiculoSeleccionado.DES_PLACAS}} </span>
+                <span> {{vehiculoSeleccionado.REF_PLACAS}} </span>
               </div>
             </div>
             <div class="col-md-3">

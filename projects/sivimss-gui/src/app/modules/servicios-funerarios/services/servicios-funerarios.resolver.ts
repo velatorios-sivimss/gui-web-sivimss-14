@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core";
 import {forkJoin, Observable} from "rxjs";
 import {ServiciosFunerariosService} from "./servicios-funerarios.service";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
+import {UsuarioEnSesion} from "../../../models/usuario-en-sesion.interface";
 
 
 @Injectable()
@@ -11,10 +12,11 @@ export class ServiciosFunerariosResolver implements  Resolve<HttpRespuesta<any>>
   constructor(private serviciosFunerariosService:ServiciosFunerariosService) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>{
+    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const catEstados$ = this.serviciosFunerariosService.obtenerCatalogoEstados();
     const catPaises$ = this.serviciosFunerariosService.obtenerCatalogoPais();
     const catNumeroPagos$ = this.serviciosFunerariosService.obtenerCatalogoNumeroPagos();
-    const catPaquetes$ = this.serviciosFunerariosService.obtenerCatalogoPaquetes();
+    const catPaquetes$ = this.serviciosFunerariosService.obtenerCatalogoPaquetes(+usuario.idVelatorio);
     return forkJoin([catEstados$,catPaises$,catNumeroPagos$,catPaquetes$]);
   }
 }
