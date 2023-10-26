@@ -9,7 +9,6 @@ import {GenerarNotaRemisionService} from '../../services/generar-nota-remision.s
 import {HttpErrorResponse} from '@angular/common/http';
 import {ArticulosServicios, DetalleNotaRemision, GenerarDatosReporte} from '../../models/nota-remision.interface';
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
-import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import {mensajes} from '../../../reservar-salas/constants/mensajes';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 
@@ -28,6 +27,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
 
   notaRemisionForm!: FormGroup;
   formatoGenerar: boolean = true;
+  detalleNota!: DetalleNotaRemision;
   creacionRef!: DynamicDialogRef;
   idOds: number = 0;
   servicios: ArticulosServicios[] = [];
@@ -44,26 +44,25 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     private route: ActivatedRoute,
     private activatedRoute: ActivatedRoute,
     private generarNotaRemisionService: GenerarNotaRemisionService,
-    private descargaArchivosService: DescargaArchivosService,
-    private readonly loaderService: LoaderService,
   ) {
   }
 
   ngOnInit(): void {
-    const respuesta = this.route.snapshot.data['respuesta'];
-    this.idOds = +this.route.snapshot.params?.idOds;
-
-    if (!this.idOds) {
-      this.cancelar();
-    }
-
-    this.notaRemisionReporte = respuesta[this.POSICION_DETALLE]?.datos[0];
-    const detalleOrdenServicio = respuesta[this.POSICION_DETALLE]?.datos[0];
-    this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
-    this.inicializarNotaRemisionForm(detalleOrdenServicio);
+    this.cargarCatalogos();
+    this.inicializarNotaRemisionForm(this.detalleNota);
   }
 
-  inicializarNotaRemisionForm(detalle: DetalleNotaRemision) {
+  
+  cargarCatalogos(): void {
+    const respuesta = this.route.snapshot.data['respuesta'];
+    [this.notaRemisionReporte] = respuesta[this.POSICION_DETALLE]!.datos;
+    [this.detalleNota] = respuesta[this.POSICION_DETALLE]!.datos;
+    this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
+    this.idOds = +this.route.snapshot.params?.idOds;
+ 
+  }
+
+  inicializarNotaRemisionForm(detalle: DetalleNotaRemision): void {
     this.notaRemisionForm = this.formBuilder.group({
       versionDocumento: [{value: null, disabled: true}],
       fechaNota: [{value: new Date(), disabled: true}],
@@ -80,11 +79,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
       nombreConformidad: [{value: null, disabled: true}],
       nombreRepresentante: [{value: null, disabled: true}],
     });
-
-    this.notaRemisionForm.patchValue({
-      ...detalle,
-      versionDocumento: "1.2",
-    })
+    this.notaRemisionForm.patchValue({...detalle, versionDocumento: "1.2"});
   }
 
   abrirModalGenerandoNotaRemision(): void {
@@ -95,17 +90,17 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     });
   }
 
-  regresar() {
+  regresar(): void {
     this.formatoGenerar = true;
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   }
 
-  cancelar() {
+  cancelar(): void {
     void this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute});
   }
 
-  generarNotaRemision() {
+  generarNotaRemision(): void {
     this.abrirModalGenerandoNotaRemision();
     this.generarNotaRemisionService.guardar({idOrden: this.idOds}).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
@@ -131,7 +126,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     });
   }
 
-  generarReporteOrdenServicio() {
+  generarReporteOrdenServicio(): void {
     const busqueda: GenerarDatosReporte = this.datosReporte();
     this.generarNotaRemisionService.generarReporteNotaRemision(busqueda).subscribe({
       next: (response: any) => {

@@ -241,7 +241,7 @@ export class FacturacionComponent implements OnInit {
   }
 
   cancelarFactura(): void {
-    const datos_cancelar: string = btoa(JSON.stringify(this.crearParamsCancelar()));
+    const datos_cancelar: string = window.btoa(JSON.stringify(this.crearParamsCancelar()));
     void this.router.navigate(['./cancelar-factura'],
       {relativeTo: this.route, queryParams: {datos_cancelar}});
   }

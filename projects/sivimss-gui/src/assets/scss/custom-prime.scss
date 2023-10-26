@@ -596,13 +596,14 @@ p-inputnumber.form-control {
 .p-paginator .p-paginator-prev,
 .p-paginator .p-paginator-next,
 .p-paginator .p-paginator-last {
-
   font-style: normal;
   font-weight: 400;
   font-size: 18px;
   line-height: 22px;
   text-align: center;
   color: #545454;
+  min-width: 3rem;
+  height: 3rem;
 }
 
 .p-paginator-icon {
@@ -614,14 +615,12 @@ p-inputnumber.form-control {
 .p-paginator .p-paginator-pages .p-paginator-page {
   min-width: 3rem;
   height: 3rem;
-}
-
-.p-paginator .p-paginator-first,
-.p-paginator .p-paginator-prev,
-.p-paginator .p-paginator-next,
-.p-paginator .p-paginator-last {
-  min-width: 3rem;
-  height: 3rem;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  color: #545454;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
@@ -635,16 +634,6 @@ p-inputnumber.form-control {
   align-items: center;
   border: none;
   position: relative;
-}
-
-
-.p-paginator .p-paginator-pages .p-paginator-page {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 22px;
-  text-align: center;
-  color: #545454;
 }
 
 .p-paginator-prev.p-disabled,
@@ -716,7 +705,9 @@ p-inputnumber.form-control {
 }
 
 .p-toast .p-toast-message {
-  margin-bottom: 0;
+  margin-bottom: 10px;
+  box-shadow: none;
+  border-radius: 3px;
 }
 
 .p-toast .p-toast-message .p-toast-message-content[role="alert"] {
@@ -725,12 +716,6 @@ p-inputnumber.form-control {
 
 .p-toast-message-content[role="alert"] {
   align-items: center;
-}
-
-.p-toast .p-toast-message {
-  box-shadow: none;
-  border-radius: 3px;
-
 }
 
 .p-toast .p-toast-message.p-toast-message-success {
@@ -778,9 +763,6 @@ p-table .border-padding-top .p-datatable-wrapper {
 
   .p-accordion-header .p-accordion-header-link {
     background-color: white;
-  }
-
-  .p-accordion-header .p-accordion-header-link {
     text-decoration: none;
     font-weight: 500;
     font-size: 21px;
@@ -850,6 +832,7 @@ p-table .border-padding-top .p-datatable-wrapper {
 
   &:before {
     background-color: black;
+    border-radius: 50%;
   }
 }
 
@@ -868,10 +851,6 @@ p-table .border-padding-top .p-datatable-wrapper {
 
 .p-inputswitch.p-focus .p-inputswitch-slider {
   box-shadow: none;
-}
-
-.p-inputswitch .p-inputswitch-slider:before {
-  border-radius: 50%;
 }
 
 .p-overlaypanel .p-overlaypanel-content {
@@ -895,6 +874,9 @@ p-table .border-padding-top .p-datatable-wrapper {
 
 .p-steps .p-steps-item.p-highlight .p-steps-number {
   background: #fff;
+  border: 3px solid #9D2449;
+  font-weight: 600;
+  color: #9D2449;
 }
 
 .p-steps .p-steps-item .p-menuitem-link .p-steps-number {
@@ -909,12 +891,6 @@ p-table .border-padding-top .p-datatable-wrapper {
   border-radius: 50%;
   font-weight: 100;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-.p-steps .p-steps-item.p-highlight .p-steps-number {
-  border: 3px solid #9D2449;
-  font-weight: 600;
-  color: #9D2449;
 }
 
 .p-steps .p-steps-item.p-highlight .p-steps-title {
@@ -1076,10 +1052,6 @@ p-table .border-padding-top .p-datatable-wrapper {
   height: 1rem;
 }
 
-.p-toast .p-toast-message {
-  margin-bottom: 10px;
-}
-
 .white-button .p-radiobutton .p-radiobutton-box.p-highlight {
   border-color: #9d2449;
   background: #fff;
@@ -1089,7 +1061,7 @@ p-table .border-padding-top .p-datatable-wrapper {
   background-color: #9d2449;
 }
 
-.notificaciones .p-overlay  {
+.notificaciones .p-overlay {
   width: 450px;
   left: -180px !important;
   top: 30px !important;

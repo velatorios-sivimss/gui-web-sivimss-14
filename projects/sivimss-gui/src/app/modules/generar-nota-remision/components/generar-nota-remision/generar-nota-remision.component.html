@@ -37,8 +37,7 @@
         <label class="control-label" for="fechaInicial">Rango de fechas
           <span class="req" *ngIf="hayCamposObligatorios">*</span>:</label>
         <p-calendar id="fechaInicial" formControlName="fechaInicial" styleClass="form-control" [showIcon]="true"
-                    placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="f!.fechaFinal!.value"
-                    [maxDate]="fechaActual">
+                    placeholder="Fecha inicial" dateFormat="dd/mm/yy" [maxDate]="fechaActual || f!.fechaFinal!.value ">
         </p-calendar>
       </div>
       <div class="col-md-4 pt-5">
