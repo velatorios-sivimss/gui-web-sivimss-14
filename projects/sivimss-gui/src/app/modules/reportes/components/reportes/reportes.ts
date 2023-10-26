@@ -234,9 +234,11 @@ export class Reportes implements OnInit {
       9	Concentrado de Servicios Pago Anticipado
     */
     if (!this.validarFiltros()) return;
-    if (this.ff.fechaIni.value > this.ff.fechaFin.value) {
-      this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
-      return;
+    if(this.ff.fechaIni.value != null && this.ff.fechaFin.value!= null){
+      if (this.ff.fechaIni.value > this.ff.fechaFin.value) {
+        this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
+        return;
+      }
     }
     this.loaderService.activar();
     const filtros = this.consultarFiltros(this.ff.reporte.value);
@@ -533,6 +535,10 @@ export class Reportes implements OnInit {
   }
 
   iniciarComisionesPromotores(): void {
+    this.ff.mes.setValidators(Validators.required);
+    this.ff.anio.setValidators(Validators.required);
+    this.ff.mes.updateValueAndValidity();
+    this.ff.anio.updateValueAndValidity();
     this.loaderService.activar();
     this.reporteOrdenServicioService.consultarODSComisionPromotor(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -547,11 +553,6 @@ export class Reportes implements OnInit {
   }
 
   iniciarServiciosVelatorios(): void {
-    this.ff.mes.setValue(Validators.required);
-    this.ff.anio.setValue(Validators.required);
-    this.ff.mes.updateValueAndValidity();
-    this.ff.anio.updateValueAndValidity();
-
     this.loaderService.activar();
     this.reporteOrdenServicioService.consultarODSServiciosVelatorios(this.ff.delegacion.value, this.ff.velatorio.value).pipe(
       finalize(() => this.loaderService.desactivar())
