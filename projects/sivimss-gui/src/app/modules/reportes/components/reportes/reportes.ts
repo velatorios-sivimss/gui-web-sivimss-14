@@ -235,7 +235,7 @@ export class Reportes implements OnInit {
     */
     if (!this.validarFiltros()) return;
     if(this.ff.fechaIni.value != null && this.ff.fechaFin.value!= null){
-      if (this.ff.fechaIni.value > this.ff.fechaFin.value) {
+      if (this.ff.fechaIni.value >= this.ff.fechaFin.value) {
         this.alertaService.mostrar(TipoAlerta.Precaucion, 'La fecha inicial no puede ser mayor que la fecha final.');
         return;
       }
