@@ -57,9 +57,9 @@ export class RegistrarAgfComponent implements OnInit {
   aceptar(): void {
     this.ref.close();
     const registroAGF: RegistroAGF = this.crearRegistroAGF();
-    const datos_agf: string = btoa(JSON.stringify(registroAGF));
+    const datos_agf: string = window.btoa(JSON.stringify(registroAGF));
     const registroPago: RegistroPago = this.crearRegistroPago();
-    const datos_pago: string = btoa(JSON.stringify(registroPago))
+    const datos_pago: string = window.btoa(JSON.stringify(registroPago))
     void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss],
       {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
   }
