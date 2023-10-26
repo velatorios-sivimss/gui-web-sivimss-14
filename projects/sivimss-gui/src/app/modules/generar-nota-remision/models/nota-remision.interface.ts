@@ -86,9 +86,9 @@ export interface BusquedaFiltro {
 }
 
 export interface FiltrosBasicos {
-  nivel: number,
-  velatorio: number | null,
-  delegacion: number | null
+  idNivel: number,
+  idVelatorio: number | null,
+  idDelegacion: number | null
 }
 
 export interface SolicitudDescarga {
