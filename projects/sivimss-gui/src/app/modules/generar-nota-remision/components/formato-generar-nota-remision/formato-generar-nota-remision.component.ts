@@ -11,6 +11,7 @@ import {ArticulosServicios, DetalleNotaRemision, GenerarDatosReporte} from '../.
 import {DescargaArchivosService} from 'projects/sivimss-gui/src/app/services/descarga-archivos.service';
 import {mensajes} from '../../../reservar-salas/constants/mensajes';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import {MensajesSistemaService} from "../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-formato-generar-nota-remision',
@@ -45,6 +46,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     private route: ActivatedRoute,
     private activatedRoute: ActivatedRoute,
     private generarNotaRemisionService: GenerarNotaRemisionService,
+    private mensajesSistemaService: MensajesSistemaService
   ) {
   }
 
@@ -61,7 +63,6 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
     this.idOds = +this.route.snapshot.params?.idOds;
     this.idNota = +this.route.snapshot.params?.idNota;
-    console.log(this.idNota)
   }
 
   inicializarNotaRemisionForm(detalle: DetalleNotaRemision): void {
@@ -107,22 +108,12 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     this.generarNotaRemisionService.guardar({idOrden: this.idOds, idNota: this.idNota}).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.creacionRef.close();
-        const mensaje = this.alertas?.filter((msj: any) => {
-          return msj.idMensaje == respuesta.mensaje;
-        });
-        if (mensaje && mensaje.length > 0) {
-          this.alertaService.mostrar(TipoAlerta.Exito, mensaje[0].desMensaje);
-        }
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Nota de remisión generada exitosamente');
         void this.router.navigate(['/generar-nota-remision'], {relativeTo: this.activatedRoute});
       },
       error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
-        const mensaje = this.alertas.filter((msj: any) => {
-          return msj.idMensaje == error?.error?.mensaje;
-        })
-        if (mensaje && mensaje.length > 0) {
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0].desMensaje);
-        }
+        const ERROR: string = 'Error al guardar la información de la nota de remisión. Intenta nuevamente.'
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
         this.creacionRef.close();
       }
     });

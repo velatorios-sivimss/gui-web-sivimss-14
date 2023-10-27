@@ -368,7 +368,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
       idTipoSolicitud: this.solicitudPagoSeleccionado.idTipoSolicitid,
       idUnidadOperativa: this.solicitudPagoSeleccionado.idUnidadOperartiva ?? null,
       idVelatorio: this.solicitudPagoSeleccionado.idVelatorio ?? null,
-      cantidadLetra: convertirNumeroPalabra(this.solicitudPagoSeleccionado.importe),
+      cantidadLetra: convertirNumeroPalabra(this.solicitudPagoSeleccionado.importe) + ' pesos',
       tipoReporte
     }
   }
