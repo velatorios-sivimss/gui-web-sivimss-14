@@ -12,11 +12,10 @@ export class ServiciosFunerariosResolver implements  Resolve<HttpRespuesta<any>>
   constructor(private serviciosFunerariosService:ServiciosFunerariosService) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>{
-    const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     const catEstados$ = this.serviciosFunerariosService.obtenerCatalogoEstados();
     const catPaises$ = this.serviciosFunerariosService.obtenerCatalogoPais();
     const catNumeroPagos$ = this.serviciosFunerariosService.obtenerCatalogoNumeroPagos();
-    const catPaquetes$ = this.serviciosFunerariosService.obtenerCatalogoPaquetes(+usuario.idVelatorio);
+    const catPaquetes$ = this.serviciosFunerariosService.obtenerCatalogoPaquetes();
     return forkJoin([catEstados$,catPaises$,catNumeroPagos$,catPaquetes$]);
   }
 }

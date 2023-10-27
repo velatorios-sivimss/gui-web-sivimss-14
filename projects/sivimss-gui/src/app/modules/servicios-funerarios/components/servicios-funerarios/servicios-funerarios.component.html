@@ -154,7 +154,8 @@
       <app-overlay-panel-opciones>
         <app-overlay-panel-opcion (click)="verContrato()" titulo="Ver contrato"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion (click)="detallePago()" titulo="Detalle pago"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion (click)="modificarPago()" titulo="Modificar Plan"></app-overlay-panel-opcion>
+        <app-overlay-panel-opcion *ngIf="!servicioSeleccionado.ESTATUS_PLAN_SFPA?.includes('CANCELADO')"
+                                  (click)="modificarPago()" titulo="Modificar Plan"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion *ngIf="!servicioSeleccionado.ESTATUS_PLAN_SFPA?.includes('CANCELADO')"
                                   (click)="mostrarModalCancelarPlan = true"
                                   titulo="Cancelar Plan"></app-overlay-panel-opcion>
