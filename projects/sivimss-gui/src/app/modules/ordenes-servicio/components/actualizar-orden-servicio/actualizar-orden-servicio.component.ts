@@ -177,16 +177,14 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
       let paquete = caracteristicasPaquete.detallePaquete;
       idPaquete = datosPaquete.caracteristicasPaqueteResponse.idPaquete;
       otorgamiento = Number(caracteristicasPaquete.otorgamiento);
-      if (otorgamiento > 0) {
-        mostrarOtorgamiento = true;
-      }
+      mostrarOtorgamiento = otorgamiento > 0;
       for (let element of paquete) {
         let coordOrigen = null;
         let coordDestino = null;
         let destino = null;
         let origen = null;
         let totalKilometros = null;
-        if (element.servicioDetalleTraslado != null) {
+        if (element.servicioDetalleTraslado !== null) {
           coordOrigen = [
             element.servicioDetalleTraslado.latitudInicial,
             element.servicioDetalleTraslado.longitudInicial,
@@ -311,11 +309,8 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
   }
 
   datosInformacionServicio(datos: any): void {
-    let validaPromotor = false;
-    let idPromotor = datos.informacionServicioVelacion.idPromotor ?? null;
-    if (idPromotor != null && Number(idPromotor) > 0) {
-      validaPromotor = true;
-    }
+    let idPromotor = datos.informacionServicioVelacion?.idPromotor;
+    let validaPromotor =  Number(idPromotor) > 0;
 
     let cp = datos.informacionServicioVelacion.cp;
     let codigoPostal = null;
