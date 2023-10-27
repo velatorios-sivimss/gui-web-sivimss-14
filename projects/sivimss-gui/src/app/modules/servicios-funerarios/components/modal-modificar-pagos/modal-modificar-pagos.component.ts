@@ -51,7 +51,7 @@ export class ModalModificarPagosComponent implements OnInit {
   inicializarFormulario(datos: PagosRealizados): void {
     let fecha;
     if(datos.fechaPago){
-      const [anio,mes,dia] = datos.fechaPago.split('-');
+      const [anio,mes,dia] = datos.fechaPago.split('/');
       fecha = new Date(Number(anio) + '/' + Number(mes) + '/' + Number(dia));
     }
 
@@ -65,7 +65,6 @@ export class ModalModificarPagosComponent implements OnInit {
       metodoPago: [{value: Number(datos.idMetodoPago), disabled:false}],
     });
 
-    // this.cambioMetodoPago(null, )
     this.tipoDePago = datos.metodoPago;
     this.validarTipoPago(datos.metodoPago);
 
