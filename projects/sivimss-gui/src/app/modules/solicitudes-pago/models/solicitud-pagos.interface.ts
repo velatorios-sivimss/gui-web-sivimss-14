@@ -38,7 +38,7 @@ export interface DetalleSolicitudPago {
   observaciones: string;
   folioSolicitud: string;
   nomUnidadOpe: string;
-
+  nomResponsable: string;
   cveFolioGastos: string;
   fechaInicial: string;
   fechaFinal: string;
