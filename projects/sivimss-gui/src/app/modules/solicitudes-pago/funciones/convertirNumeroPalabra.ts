@@ -10,7 +10,7 @@ const palabrasNumeros: string[] = [
 
 export function convertirNumeroPalabra(valor: number): string {
 
-  if (!Number.isInteger(valor) || valor < 0 || valor > 9999999) {
+  if (!Number.isFinite(valor) || valor < 0 || valor > 9999999) {
     return '';
   }
 
@@ -26,6 +26,7 @@ export function convertirNumeroPalabra(valor: number): string {
 
   // Convierte la parte decimal en palabras
   const palabrasParteDecimal: string = convertirParteDecimal(parteDecimal);
+
 
   // Combina las palabras de la parte entera y parte decimal
   if (esDecimal) {
