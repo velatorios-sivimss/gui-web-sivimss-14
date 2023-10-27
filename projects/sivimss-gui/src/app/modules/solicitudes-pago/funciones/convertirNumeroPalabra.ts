@@ -20,7 +20,6 @@ export function convertirNumeroPalabra(valor: number): string {
   // Divide el número en parte entera y parte decimal
   const parteEntera: number = Math.floor(valor);
   const parteDecimal: number = valor - parteEntera;
-  console.log(esDecimal)
 
   // Convierte la parte entera en palabras
   const palabrasParteEntera: string = convertirParteEntera(parteEntera);
