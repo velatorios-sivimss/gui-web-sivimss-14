@@ -29,7 +29,7 @@ const routes: Route[] = [
     },
   },
   {
-    path: 'detalle-orden-servicio/:idOds',
+    path: 'detalle-orden-servicio/:idNota/:idOds',
     component: FormatoGenerarNotaRemisionComponent,
     resolve: {
       respuesta: DetalleOrderServicioResolver

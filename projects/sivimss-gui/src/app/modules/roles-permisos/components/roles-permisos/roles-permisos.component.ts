@@ -1,20 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { AlertaService, TipoAlerta } from "../../../../shared/alerta/services/alerta.service";
-import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import { DIEZ_ELEMENTOS_POR_PAGINA } from "../../../../utils/constantes";
-import { OverlayPanel } from "primeng/overlaypanel";
-import { USUARIOS_BREADCRUMB } from '../../../usuarios/constants/breadcrumb';
-import { DialogService, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { Rol } from "../../models/rol.interface";
-import { TipoDropdown } from "../../../../models/tipo-dropdown";
-import { HttpErrorResponse } from '@angular/common/http';
-import { CATALOGOS } from '../../../usuarios/constants/catalogos_dummies';
-import { RolPermisosService } from '../../services/rol-permisos.service';
-import { Catalogo } from 'projects/sivimss-gui/src/app/models/catalogos.interface';
-import { VerDetalleRolPermisosComponent } from "../ver-detalle-rol-permisos/ver-detalle-rol-permisos.component";
-import { ModificarRolPermisosComponent } from "../modificar-rol-permisos/modificar-rol-permisos.component";
-import { RespuestaModalRol } from "projects/sivimss-gui/src/app/modules/roles-permisos/models/respuesta-modal.interface";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {AlertaService, TipoAlerta} from "../../../../shared/alerta/services/alerta.service";
+import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import {DIEZ_ELEMENTOS_POR_PAGINA} from "../../../../utils/constantes";
+import {OverlayPanel} from "primeng/overlaypanel";
+import {USUARIOS_BREADCRUMB} from '../../../usuarios/constants/breadcrumb';
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {Rol} from "../../models/rol.interface";
+import {TipoDropdown} from "../../../../models/tipo-dropdown";
+import {HttpErrorResponse} from '@angular/common/http';
+import {CATALOGOS} from '../../../usuarios/constants/catalogos_dummies';
+import {RolPermisosService} from '../../services/rol-permisos.service';
+import {Catalogo} from 'projects/sivimss-gui/src/app/models/catalogos.interface';
+import {VerDetalleRolPermisosComponent} from "../ver-detalle-rol-permisos/ver-detalle-rol-permisos.component";
+import {ModificarRolPermisosComponent} from "../modificar-rol-permisos/modificar-rol-permisos.component";
+import {RespuestaModalRol} from "projects/sivimss-gui/src/app/modules/roles-permisos/models/respuesta-modal.interface";
 import {HttpRespuesta} from "../../../../models/http-respuesta.interface";
 
 type SolicitudEstatus = Pick<Rol, "idRol">;
@@ -99,15 +99,14 @@ export class RolesPermisosComponent implements OnInit {
   }
 
   paginarConFiltros(): void {
-    this.permisos = "";
-    this.filtroForm.get("alta")?.value == true ? this.permisos = "1" : this.permisos;
-    this.filtroForm.get("baja")?.value == true ? this.permisos += "2" : this.permisos;
-    this.filtroForm.get("consulta")?.value == true ? this.permisos += "3" : this.permisos;
-    this.filtroForm.get("modificar")?.value == true ? this.permisos += "4" : this.permisos;
-    this.filtroForm.get("aprobacion")?.value == true ? this.permisos += "5" : this.permisos;
-    this.filtroForm.get("imprimir")?.value == true ? this.permisos += "6" : this.permisos;
+    this.permisos = (this.filtroForm.get("alta")?.value ? "1" : "") +
+      (this.filtroForm.get("baja")?.value ? "2" : "") +
+      (this.filtroForm.get("consulta")?.value ? "3" : "") +
+      (this.filtroForm.get("modificar")?.value ? "4" : "") +
+      (this.filtroForm.get("aprobacion")?.value ? "5" : "") +
+      (this.filtroForm.get("imprimir")?.value ? "6" : "");
     const separar = this.permisos.split('');
-    const cadenaPermisos = separar.toString(separar)
+    const cadenaPermisos = separar.toString()
     if (cadenaPermisos != "") {
       this.rolPermisos = {
         idRol: this.filtroForm.get("rol")?.value,
@@ -207,7 +206,7 @@ export class RolesPermisosComponent implements OnInit {
         console.error(error);
         this.alertaService.mostrar(TipoAlerta.Error, error.message);
       }
-    } );
+    });
   }
 
   ngOnDestroy(): void {

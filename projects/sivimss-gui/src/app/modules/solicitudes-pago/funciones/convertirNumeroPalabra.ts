@@ -9,6 +9,11 @@ const palabrasNumeros: string[] = [
 ];
 
 export function convertirNumeroPalabra(valor: number): string {
+
+  if (!Number.isFinite(valor) || valor < 0 || valor > 9999999) {
+    return '';
+  }
+
   // Verifica si el número es decimal
   const esDecimal: boolean = valor % 1 !== 0;
 
@@ -22,6 +27,7 @@ export function convertirNumeroPalabra(valor: number): string {
   // Convierte la parte decimal en palabras
   const palabrasParteDecimal: string = convertirParteDecimal(parteDecimal);
 
+
   // Combina las palabras de la parte entera y parte decimal
   if (esDecimal) {
     return palabrasParteEntera + ' punto ' + palabrasParteDecimal;
@@ -31,7 +37,6 @@ export function convertirNumeroPalabra(valor: number): string {
 }
 
 function convertirParteEntera(valor: number): string {
-
 
   const palabrasCientos: string[] = [
     '', 'ciento', 'doscientos', 'trescientos', 'cuatrocientos', 'quinientos', 'seiscientos', 'setecientos', 'ochocientos', 'novecientos'
@@ -43,17 +48,11 @@ function convertirParteEntera(valor: number): string {
   const decenas: number = Math.floor((valor % 100) / 10);
   const unidades: number = valor % 10;
 
-  if (!Number.isInteger(valor) || valor < 0 || valor > 9999999) {
-    return '';
-  }
-
   let words: string = '';
 
   if (valor === 0) {
     return 'cero';
   }
-
-  if (!valor) return '';
 
   if (millones === 1) {
     words += 'un millón ';
@@ -95,7 +94,6 @@ function convertirParteEntera(valor: number): string {
 
 function convertirParteDecimal(valor: number): string {
 
-  // Convierte la parte decimal en palabras
   const decimalesStr: string = valor.toFixed(2).split('.')[1]; // Tomar dos decimales
 
   const unidadesDecimal: number = parseInt(decimalesStr.charAt(1), 10);

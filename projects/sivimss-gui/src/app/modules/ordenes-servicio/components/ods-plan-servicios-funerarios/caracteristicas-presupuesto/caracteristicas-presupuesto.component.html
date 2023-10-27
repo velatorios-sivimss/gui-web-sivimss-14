@@ -133,8 +133,6 @@
       <app-overlay-panel-opcion *ngIf="mostrarTraslado" titulo="Seleccionar Proveedor"
                                 onCloseOnNavigation
                                 (click)="abrirModalAgregarProveedorTraslado($event)"></app-overlay-panel-opcion>
-<!--      <app-overlay-panel-opcion *ngIf="mostrarDonarAtaud" titulo="Donar Ataúd"-->
-<!--                                onCloseOnNavigation (click)="abrirModalDonarAtaud($event)"></app-overlay-panel-opcion>-->
       <app-overlay-panel-opcion onCloseOnNavigation *ngIf="mostrarQuitarPresupuesto" titulo="Quitar"
                                 (click)="confQuitarPresupuesto = true"></app-overlay-panel-opcion>
 

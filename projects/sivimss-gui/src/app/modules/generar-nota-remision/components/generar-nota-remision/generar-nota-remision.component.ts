@@ -15,7 +15,13 @@ import {
   obtenerDelegacionUsuarioLogueado, obtenerFechaYHoraActual,
   obtenerNivelUsuarioLogueado, obtenerVelatorioUsuarioLogueado, validarUsuarioLogueado
 } from 'projects/sivimss-gui/src/app/utils/funciones';
-import {BusquedaFiltro, ClavesEstatus, GenerarReporte, NotaRemision} from '../../models/nota-remision.interface';
+import {
+  BusquedaFiltro,
+  ClavesEstatus,
+  FiltrosBasicos,
+  GenerarReporte,
+  NotaRemision, SolicitudDescarga
+} from '../../models/nota-remision.interface';
 import {GenerarNotaRemisionService} from '../../services/generar-nota-remision.service';
 import * as moment from "moment/moment";
 import {OpcionesArchivos} from 'projects/sivimss-gui/src/app/models/opciones-archivos.interface';
@@ -26,12 +32,7 @@ import {mensajes} from '../../../reservar-salas/constants/mensajes';
 import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
 import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
 import {UsuarioEnSesion} from "../../../../models/usuario-en-sesion.interface";
-
-interface FiltrosBasicos {
-  nivel: number,
-  velatorio: number | null,
-  delegacion: number | null
-}
+import {switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-generar-nota-remision',
@@ -124,7 +125,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   generarNotaRemision(): void {
-    void this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
+    void this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
   }
 
   verDetalleNotaRemision(): void {
@@ -160,9 +161,9 @@ export class GenerarNotaRemisionComponent implements OnInit {
   obtenerFiltrosBasicos(): FiltrosBasicos {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     return {
-      nivel: obtenerNivelUsuarioLogueado(usuario),
-      velatorio: obtenerVelatorioUsuarioLogueado(usuario),
-      delegacion: obtenerDelegacionUsuarioLogueado(usuario)
+      idNivel: obtenerNivelUsuarioLogueado(usuario),
+      idVelatorio: obtenerVelatorioUsuarioLogueado(usuario),
+      idDelegacion: obtenerDelegacionUsuarioLogueado(usuario)
     };
   }
 
@@ -274,25 +275,15 @@ export class GenerarNotaRemisionComponent implements OnInit {
 
   generarReporteNotaRemision(tipoReporte: string): void {
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: `Reporte Nota Remisión ${obtenerFechaYHoraActual()}`};
-    if (tipoReporte == "xls") {
-      configuracionArchivo.ext = "xlsx"
-    }
-
+    if (tipoReporte == "xls") configuracionArchivo.ext = "xlsx"
     this.cargadorService.activar();
     const busqueda: GenerarReporte = this.filtrosArchivos(tipoReporte);
-    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: any): void => {
-        if (respuesta) {
-          this.mostrarModalDescargaExitosa = true;
-        }
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error en la descarga del documento. Intenta nuevamente.';
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-      },
-    });
+    this.descargaArchivosService.descargarArchivo(this.generarNotaRemisionService.generarReporteNotaRemision(busqueda), configuracionArchivo)
+      .pipe(finalize(() => this.cargadorService.desactivar()))
+      .subscribe({
+        next: (respuesta: boolean): void => this.manejarMensajeDescargaExitosa(respuesta),
+        error: (error: HttpErrorResponse): void => this.manejarMensajeErrorDescarga(error),
+      });
   }
 
   filtrosArchivos(tipoReporte: string): GenerarReporte {
@@ -304,13 +295,13 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   guardarPDF(): void {
-    const busqueda = this.prepararSolicitudDescarga();
+    const busqueda: SolicitudDescarga = this.prepararSolicitudDescarga();
     const configuracionArchivo: OpcionesArchivos = {nombreArchivo: `Listado Notas Remisión ${obtenerFechaYHoraActual()}`};
     this.generarYDescargarArchivo(busqueda, configuracionArchivo);
   }
 
   guardarExcel(): void {
-    const busqueda = this.prepararSolicitudDescarga('xls');
+    const busqueda: SolicitudDescarga = this.prepararSolicitudDescarga('xls');
     const configuracionArchivo: OpcionesArchivos = {
       ext: 'xlsx',
       nombreArchivo: `Listado Notas Remisión ${obtenerFechaYHoraActual()}`
@@ -318,15 +309,14 @@ export class GenerarNotaRemisionComponent implements OnInit {
     this.generarYDescargarArchivo(busqueda, configuracionArchivo);
   }
 
-  private prepararSolicitudDescarga(tipoReporte: 'pdf' | 'xls' = 'pdf'): any {
+  private prepararSolicitudDescarga(tipoReporte: 'pdf' | 'xls' = 'pdf'): SolicitudDescarga {
     if (!this.paginacionConFiltrado) {
       return this.prepararSolicitudDescargaSinFiltrado(tipoReporte);
-    } else {
-      return this.prepararSolicitudDescargaConFiltrado(tipoReporte);
     }
+    return this.prepararSolicitudDescargaConFiltrado(tipoReporte);
   }
 
-  private prepararSolicitudDescargaSinFiltrado(tipoReporte: 'pdf' | 'xls'): any {
+  private prepararSolicitudDescargaSinFiltrado(tipoReporte: 'pdf' | 'xls'): SolicitudDescarga {
     return {
       idNivel: this.filtroForm.get('nivel')?.value,
       idDelegacion: this.filtroForm.get('delegacion')?.value,
@@ -335,7 +325,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
     }
   }
 
-  private prepararSolicitudDescargaConFiltrado(tipoReporte: 'pdf' | 'xls'): any {
+  private prepararSolicitudDescargaConFiltrado(tipoReporte: 'pdf' | 'xls'): SolicitudDescarga {
     const fechaInicial: string | null = this.obtenerFechaInicial();
     const fechaFinal: string | null = this.obtenerFechaFinal();
     return {
@@ -349,35 +339,34 @@ export class GenerarNotaRemisionComponent implements OnInit {
     }
   }
 
-  private generarYDescargarArchivo(solicitudDescarga: any, configuracionArchivo: OpcionesArchivos): void {
+  private generarYDescargarArchivo(solicitudDescarga: SolicitudDescarga, configuracionArchivo: OpcionesArchivos): void {
     this.cargadorService.activar();
     this.generarNotaRemisionService.generarReporteTabla(solicitudDescarga).pipe(
-      finalize(() => this.cargadorService.desactivar())
-    ).subscribe({
-      next: (respuesta: HttpRespuesta<any>): void => {
+      switchMap((respuesta: HttpRespuesta<any>) => {
         const file = new Blob(
           [this.descargaArchivosService.base64_2Blob(
             respuesta.datos,
-            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.cargadorService.desactivar())
-        ).subscribe({
-          next: (repuestaDescarga): void => {
-            if (repuestaDescarga) {
-              this.mostrarModalDescargaExitosa = true;
-            }
-          },
-          error: (): void => {
-            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        })
-      },
-      error: (error: HttpErrorResponse): void => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
-      }
+            this.descargaArchivosService.obtenerContentType(configuracionArchivo)
+          )],
+          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)}
+        );
+        return this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo);
+      }),
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
+      next: (respuestaDescarga: boolean) => this.manejarMensajeDescargaExitosa(respuestaDescarga),
+      error: (error: HttpErrorResponse) => this.manejarMensajeErrorDescarga(error)
     });
+  }
+
+  private manejarMensajeErrorDescarga(error: HttpErrorResponse): void {
+    const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
+    this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
+  }
+
+  private manejarMensajeDescargaExitosa(respuesta: boolean): void {
+    if (!respuesta) return;
+    this.mostrarModalDescargaExitosa = !this.mostrarModalDescargaExitosa;
   }
 
   get f() {

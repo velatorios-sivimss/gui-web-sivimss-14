@@ -1074,7 +1074,11 @@ export class ModificarDatosCaracteristicasContratanteComponent
         traslado.totalKilometros = datos.kilometraje ?? null;
         detalle.servicioDetalleTraslado = traslado ?? null;
       }
-      detalle.activo =  datos.utilizarArticulo ? (datos.utilizarArticulo.includes("true") ? 1 : 0) : null;
+      detalle.activo =  datos.utilizarArticulo ?
+        (typeof datos.utilizarArticulo == "string" ?
+            datos.utilizarArticulo.includes("true") ? 1 : 0 :
+            datos.utilizarArticulo ? 1 : 0
+        ) : null;
       this.detallePaquete.push(detalle);
     });
 

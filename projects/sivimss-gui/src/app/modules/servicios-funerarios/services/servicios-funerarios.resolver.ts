@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core";
 import {forkJoin, Observable} from "rxjs";
 import {ServiciosFunerariosService} from "./servicios-funerarios.service";
 import {HttpRespuesta} from "../../../models/http-respuesta.interface";
+import {UsuarioEnSesion} from "../../../models/usuario-en-sesion.interface";
 
 
 @Injectable()

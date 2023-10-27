@@ -228,7 +228,7 @@ export class GenerarSolicitudPagoComponent implements OnInit {
     const importe = this.solicitudPagoForm.get('importe')?.value;
     if (!importe) return;
     importe.toString().replace('$ ', '');
-    const importeLetra: string = convertirNumeroPalabra(+importe);
+    const importeLetra: string = convertirNumeroPalabra(importe);
     this.solicitudPagoForm.get('importeLetra')?.setValue(importeLetra[0].toUpperCase() + importeLetra.substring(1) + ' pesos');
   }
 
@@ -469,7 +469,6 @@ export class GenerarSolicitudPagoComponent implements OnInit {
 
   reAjustarImporte(event: any): void {
     const importe: string = this.partidaPresupuestal[0].importeTotal ?? 0;
-    console.log(this.partidaPresupuestal[0].importeTotal)
     this.solicitudPagoForm.get('importe')?.setValue(event.value);
     this.convertirImporte();
   }

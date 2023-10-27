@@ -655,7 +655,6 @@ export class InformacionServicioSFComponent implements OnInit {
             return;
           }
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-          this.descargarEntradaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
           this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
 
           const ExitoMsg: string =
@@ -717,30 +716,6 @@ export class InformacionServicioSFComponent implements OnInit {
     } )
   }
 
-  descargarEntradaDonaciones(idODS: number, idEstatus: number): void {
-    const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
-    this.gestionarOrdenServicioService.generarArchivoEntradaDonaciones(idODS,idEstatus).subscribe({
-      next:(respuesta: HttpRespuesta<any>) => {
-        let link = this.renderer.createElement('a');
-
-        const file = new Blob(
-          [this.descargaArchivosService.base64_2Blob(
-            respuesta.datos,
-            this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
-          {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        const url = window.URL.createObjectURL(file);
-        link.setAttribute('download', 'documento');
-        link.setAttribute('href', url);
-        link.click();
-        link.remove();
-      },
-      error:(error: HttpErrorResponse) => {
-        const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-        this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
-      }
-    });
-
-  }
   descargarControlSalidaDonaciones(idODS: number, idEstatus: number): void {
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.gestionarOrdenServicioService.generarArchivoSalidaDonaciones(idODS,idEstatus).subscribe({
