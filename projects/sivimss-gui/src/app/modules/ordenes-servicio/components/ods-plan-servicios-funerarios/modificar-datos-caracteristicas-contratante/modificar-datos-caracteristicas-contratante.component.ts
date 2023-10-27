@@ -843,7 +843,8 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
   }
 
   validacionFormulario(): boolean {
-    if (this.dd || this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
+    if (this.paqueteSeleccionadoDD ||  this.paqueteSeleccionado ||
+        this.altaODS.caracteristicasPresupuesto.caracteristicasPaquete?.idPaquete) {
       const drop:any = this.dd;
       if(drop == 3){
         return this.selecionaTipoOtorgamiento != null ? false: true;
@@ -1067,7 +1068,11 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
         traslado.totalKilometros = datos.kilometraje ?? null;
         detalle.servicioDetalleTraslado = traslado ?? null;
       }
-      detalle.activo =  datos.utilizarArticulo ? (datos.utilizarArticulo.includes("true") ? 1 : 0) : null;
+      detalle.activo =  datos.utilizarArticulo ?
+        (typeof datos.utilizarArticulo == "string" ?
+            datos.utilizarArticulo.includes("true") ? 1 : 0 :
+            datos.utilizarArticulo ? 1 : 0
+        ) : null;
       this.detallePaquete.push(detalle);
     });
 

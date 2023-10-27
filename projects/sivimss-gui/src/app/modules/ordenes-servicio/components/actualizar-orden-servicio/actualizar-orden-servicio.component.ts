@@ -242,7 +242,7 @@ export class ActualizarOrdenServicioComponent implements OnInit, OnDestroy {
       for (let element of detallePresupuesto) {
         total += Number(element.importeMonto * element.cantidad);
         let utilizarArticulo = false;
-        if (element.servicioDetalleTraslado.includes('paquete')) {
+        if (element.servicioDetalleTraslado == 'paquete') {
           utilizarArticulo = true;
         }
         let coordOrigen = null;
