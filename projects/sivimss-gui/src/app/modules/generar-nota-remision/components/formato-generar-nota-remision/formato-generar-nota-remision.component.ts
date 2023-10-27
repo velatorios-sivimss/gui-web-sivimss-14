@@ -33,6 +33,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
   servicios: ArticulosServicios[] = [];
   notaRemisionReporte: GenerarDatosReporte = {};
   validacionGenerarFactura: boolean = false;
+  idNota: number = 0;
 
   alertas = JSON.parse(localStorage.getItem('mensajes') as string) || mensajes;
 
@@ -52,14 +53,15 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
     this.inicializarNotaRemisionForm(this.detalleNota);
   }
 
-  
+
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data['respuesta'];
     [this.notaRemisionReporte] = respuesta[this.POSICION_DETALLE]!.datos;
     [this.detalleNota] = respuesta[this.POSICION_DETALLE]!.datos;
     this.servicios = respuesta[this.POSICION_SERVICIOS]?.datos;
     this.idOds = +this.route.snapshot.params?.idOds;
- 
+    this.idNota = +this.route.snapshot.params?.idNota;
+    console.log(this.idNota)
   }
 
   inicializarNotaRemisionForm(detalle: DetalleNotaRemision): void {
@@ -102,7 +104,7 @@ export class FormatoGenerarNotaRemisionComponent implements OnInit {
 
   generarNotaRemision(): void {
     this.abrirModalGenerandoNotaRemision();
-    this.generarNotaRemisionService.guardar({idOrden: this.idOds}).subscribe({
+    this.generarNotaRemisionService.guardar({idOrden: this.idOds, idNota: this.idNota}).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         this.creacionRef.close();
         const mensaje = this.alertas?.filter((msj: any) => {

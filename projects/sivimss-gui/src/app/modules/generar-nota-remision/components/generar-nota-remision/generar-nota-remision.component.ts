@@ -125,7 +125,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   generarNotaRemision(): void {
-    void this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
+    void this.router.navigate([`detalle-orden-servicio/${this.notaRemisionSeleccionada.idNota}/${this.notaRemisionSeleccionada.id}`], {relativeTo: this.activatedRoute})
   }
 
   verDetalleNotaRemision(): void {
