@@ -223,7 +223,7 @@ export class GenerarNotaRemisionComponent implements OnInit {
   }
 
   obtenerFechaFinal(): string | null {
-    const fechaFinal = this.filtroForm.get('fechaInicial')?.value;
+    const fechaFinal = this.filtroForm.get('fechaFinal')?.value;
     return fechaFinal ? moment(fechaFinal).format('DD/MM/YYYY') : null;
   }
 
