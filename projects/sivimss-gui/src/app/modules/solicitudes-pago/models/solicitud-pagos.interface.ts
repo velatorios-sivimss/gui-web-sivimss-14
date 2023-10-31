@@ -45,7 +45,7 @@ export interface DetalleSolicitudPago {
   ejercicioFiscal: number;
   idDelegacion: number;
   idUnidadOperativa: number;
-
+  refUnidadOpe: string;
   solicitadoPor: string;
   cantidadLetra: string;
   beneficiario?: string;
