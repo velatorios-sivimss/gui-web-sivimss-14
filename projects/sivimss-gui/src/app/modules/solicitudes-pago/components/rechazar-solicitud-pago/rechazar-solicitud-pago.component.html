@@ -117,7 +117,8 @@
           <div class="col-md-6">
             <div class="table-panel-column">
               <label>Referencia unidad operativa / administrativa</label>
-              <span *ngIf="pagoSeleccionado.idUnidadOperativa">{{pagoSeleccionado.nomUnidadOpe}}</span>
+              <span *ngIf="pagoSeleccionado.idUnidadOperativa">
+            {{pagoSeleccionado.refUnidadOpe}} - {{pagoSeleccionado.idUnidadOperativa}}</span>
               <span
                 *ngIf="!pagoSeleccionado.idUnidadOperativa">{{pagoSeleccionado.desVelatorio | titlecase}}</span>
             </div>
