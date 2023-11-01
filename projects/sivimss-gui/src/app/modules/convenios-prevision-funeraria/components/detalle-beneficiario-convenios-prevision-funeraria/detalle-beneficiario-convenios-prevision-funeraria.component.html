@@ -13,6 +13,11 @@
       <label>{{velatorioDescripcion}}</label>
     </div>
     <div class="col-md-3">
+      <span> CURP:  </span>
+      <br/>
+      <label>{{beneficiario.curp}}</label>
+    </div>
+    <div class="col-md-3">
       <span> Fecha:  </span>
       <br/>
       <label>{{beneficiario.fechaNacimiento | date: 'dd/MM/yyyy'}}</label>
@@ -47,11 +52,6 @@
       <span>  Parentesco: </span>
       <br/>
       <label>{{ parentescoDescripcion[0].label}}</label>
-    </div>
-    <div class="col-md-4">
-      <span> CURP:  </span>
-      <br/>
-      <label>{{beneficiario.curp}}</label>
     </div>
     <div class="col-md-4">
       <span> RFC: </span>
