@@ -171,6 +171,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
 
     this.beneficiarioRef.onClose.subscribe((beneficiarioModal: BeneficiarioInterface) => {
       if (beneficiarioModal) {
+        beneficiarioModal.posicion = this.beneficiario.length;
         this.beneficiario.push(beneficiarioModal);
       }
     });
@@ -202,7 +203,7 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
     })
     this.modificarBeneficiarioRef.onClose.subscribe((beneficiario: BeneficiarioInterface) => {
       if(beneficiario){
-        const index = this.beneficiario.findIndex((item: BeneficiarioInterface) => item.curp === beneficiario.curp);
+        const index = this.beneficiario.findIndex((item: BeneficiarioInterface) => item.posicion === beneficiario.posicion);
         this.beneficiario[index] = beneficiario;
       }
     })
