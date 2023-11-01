@@ -44,8 +44,8 @@ export class SeleccionBeneficiariosAgfComponent {
     this.activatedRoute.queryParams.pipe(
     ).subscribe(params => {
         const {datos_agf, datos_pago} = params;
-        this.datos_agf = JSON.parse(atob(datos_agf));
-        this.datos_pago = JSON.parse(atob(datos_pago));
+        this.datos_agf = JSON.parse(window.atob(datos_agf));
+        this.datos_pago = JSON.parse(window.atob(datos_pago));
       }
     );
   }
