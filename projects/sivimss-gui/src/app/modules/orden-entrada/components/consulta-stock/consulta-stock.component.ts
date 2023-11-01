@@ -247,7 +247,7 @@ export class ConsultaStockComponent implements OnInit {
     }
     this.loaderService.activar();
     const busqueda = this.mapearDatosReporte(tipoReporte);
-    this.descargaArchivosService.descargarArchivo(this.ordenEntradaService.generarReporteStock(busqueda), configuracionArchivo).pipe(
+    this.descargaArchivosService.descargarArchivoShowSaveFilePicker(this.ordenEntradaService.generarReporteStock(busqueda), configuracionArchivo).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: any) => {
