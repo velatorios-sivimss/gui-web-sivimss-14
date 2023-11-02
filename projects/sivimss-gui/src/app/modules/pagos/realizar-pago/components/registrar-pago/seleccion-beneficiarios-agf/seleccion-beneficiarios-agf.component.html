@@ -12,7 +12,7 @@
   </ng-template>
   <ng-template pTemplate="body" let-beneficiario>
     <tr>
-      <td class="font-bold">{{beneficiario.nombreBeneficiario }}</td>
+      <td class="font-bold">{{beneficiario.nombre}} {{beneficiario.aMaterno}} {{beneficiario.aPaterno}}</td>
       <td class="font-bold">{{beneficiario.curp }}</td>
       <td>
         <button type="submit" class="btn btn-primary btn-md ml-5"
