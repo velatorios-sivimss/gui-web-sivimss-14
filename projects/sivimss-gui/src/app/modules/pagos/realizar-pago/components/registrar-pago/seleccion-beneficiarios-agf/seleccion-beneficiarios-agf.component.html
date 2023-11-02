@@ -12,11 +12,13 @@
   </ng-template>
   <ng-template pTemplate="body" let-beneficiario>
     <tr>
-      <td class="font-bold">{{beneficiario.nombreBeneficiario }}</td>
+      <td class="font-bold">{{beneficiario.nombre}} {{beneficiario.aPaterno}} {{beneficiario.aMaterno}}</td>
       <td class="font-bold">{{beneficiario.curp }}</td>
       <td>
         <button type="submit" class="btn btn-primary btn-md ml-5"
-                (click)="seleccionarBeneficiario(beneficiario.nombreBeneficiario, beneficiario.curp)">Seleccionar
+                (click)="seleccionarBeneficiario(beneficiario.nombre  + ' ' + beneficiario.aPaterno + ' ' + beneficiario.aMaterno
+                , beneficiario.curp)">
+          Seleccionar
         </button>
       </td>
     </tr>
@@ -34,7 +36,7 @@
   </ng-template>
 </p-table>
 <div class="flex mt-6 mb-4 justify-content-end">
-  <button class="ml-6 btn btn-primary btn-md" [routerLink]="'../../pago-orden-servicio'">
+  <button class="ml-6 btn btn-primary btn-md" [routerLink]="'../../../pago-orden-servicio'">
     Regresar
   </button>
 </div>

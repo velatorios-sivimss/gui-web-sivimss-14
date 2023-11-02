@@ -60,8 +60,16 @@ export class RegistrarAgfComponent implements OnInit {
     const datos_agf: string = window.btoa(JSON.stringify(registroAGF));
     const registroPago: RegistroPago = this.crearRegistroPago();
     const datos_pago: string = window.btoa(JSON.stringify(registroPago))
-    void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss],
+    const fecDefuncion: string = this.obtenerFechaDefuncion(this.detalleAGF.fecDeceso);
+    void this.router.navigate(['../agf-seleccion-beneficiarios', this.detalleAGF.cveNss, fecDefuncion],
       {relativeTo: this.route, queryParams: {datos_agf, datos_pago}})
+  }
+
+  obtenerFechaDefuncion(fecDeceso: string): string {
+    const partes: string[] = fecDeceso.split('/');
+    if (partes.length !== 3) return '';
+    const [dia, mes, anio] = partes;
+    return `${anio}${mes}${dia}`;
   }
 
   private inicializarAgfForm(): void {

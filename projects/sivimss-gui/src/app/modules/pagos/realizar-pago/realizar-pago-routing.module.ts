@@ -42,7 +42,7 @@ const routes: Routes = [
     component: PagoRenovacionConvenioComponent
   },
   {
-    path: 'agf-seleccion-beneficiarios/:nss',
+    path: 'agf-seleccion-beneficiarios/:nss/:fecha',
     component: SeleccionBeneficiariosAgfComponent,
     resolve: {
       respuesta: BeneficiariosResolver

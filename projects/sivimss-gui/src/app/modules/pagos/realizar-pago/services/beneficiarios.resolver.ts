@@ -12,6 +12,7 @@ export class BeneficiariosResolver implements Resolve<any> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     const nss: number = route.paramMap.get('nss') as unknown as number;
-    return this.realizarPagoService.consultarBeneficiarios(nss);
+    const fecha: string = route.paramMap.get('fecha') as unknown as string;
+    return this.realizarPagoService.consultarBeneficiarios(nss, fecha);
   }
 }
