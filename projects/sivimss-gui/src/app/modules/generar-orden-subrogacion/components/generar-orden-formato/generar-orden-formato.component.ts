@@ -121,7 +121,6 @@ export class GenerarOrdenFormatoComponent implements OnInit {
   }
 
   onChangeServicio(event: any) {
-    console.log("idServicio Seleccionado: ", event);
     let idServicioSeleccionado = event.value;
     let servicio = this.catalogoServiciosConAtributos.filter( (s: any) => s.idServicio === idServicioSeleccionado);
     if (servicio.length > 0 ) {
@@ -181,7 +180,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       carrozaNum: this.editForm.get("numCarroza")?.value,
       numeroPlacas: this.editForm.get("numPlacas")?.value,
       diaPartida: this.datePipe.transform(new Date(this.editForm.get("diaPartida")?.value), 'yyyy-MM-dd'),
-      horaPartida: moment(this.editForm.get('horaPartida')?.value).format('HH:mm:ss'),
+      horaPartida: moment(this.datePipe.transform(new Date(this.editForm.get("diaPartida")?.value), 'yyyy-MM-dd') + " "+ this.editForm.get('horaPartida')?.value, 'YYYY-MM-DD HH:mm:ss').format('HH:mm:ss'),
       nomAcompaniante: this.editForm.get("nombreAcompanante")?.value
     }
   }

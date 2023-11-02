@@ -14,6 +14,12 @@
           <div class="row">
             <div class="col-md-3">
               <div class="table-panel-column">
+                <label>Delegación:</label>
+                <span>{{datosGenerales.delegacion}}</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="table-panel-column">
                 <label>Velatorio:</label>
                 <span>{{datosGenerales.velatorio}}</span>
               </div>
@@ -50,6 +56,13 @@
             <div *ngIf="beneficiarioSeleccionado">
               <div class="row mb-3">
                 <div class="col-md-4">
+                  <label class="control-label" for="curp">CURP:</label>
+                  <input id="curp" class="form-control" [(ngModel)]="beneficiarioSeleccionado.curp" [disabled]="true">
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-4">
                   <label class="control-label" for="nombre">Nombre:</label>
                   <input id="nombre" class="form-control" [(ngModel)]="beneficiarioSeleccionado.nombre"
                     [disabled]="true">
@@ -68,6 +81,10 @@
 
               <div class="row mb-3">
                 <div class="col-md-4">
+                  <label class="control-label" for="fechaNacimiento">Fecha nacimiento:</label>
+                  <input id="fechaNacimiento" class="form-control" [(ngModel)]="beneficiarioSeleccionado.fechaNac" [disabled]="true">
+                </div>
+                <div class="col-md-4">
                   <label class="control-label" for="edad">Edad:</label>
                   <input id="edad" class="form-control" [(ngModel)]="beneficiarioSeleccionado.edad" [disabled]="true">
                 </div>
@@ -75,10 +92,6 @@
                   <label class="control-label" for="parentesco">Parentesco:</label>
                   <input id="parentesco" class="form-control" [(ngModel)]="beneficiarioSeleccionado.parentesco"
                     [disabled]="true">
-                </div>
-                <div class="col-md-4">
-                  <label class="control-label" for="curp">CURP:</label>
-                  <input id="curp" class="form-control" [(ngModel)]="beneficiarioSeleccionado.curp" [disabled]="true">
                 </div>
               </div>
 
@@ -98,63 +111,69 @@
                 </div>
               </div>
 
-              <div class="row mb-3">
-                <div class="col-md-8">
-                  <div class="flex">
-                    <p-checkbox inputId="actaNacimiento" [(ngModel)]="beneficiarioSeleccionado.indActa"
-                      [disabled]="true" styleClass="mr-3" [binary]="true"></p-checkbox>
-                    <label [for]="'actaNacimiento'" class="control-label">
-                      <strong>Copia acta de nacimiento del beneficiario si es menor de edad</strong>
-                    </label>
+              <div *ngIf="busquedaListBeneficiarios.tipoPlan === 1">
+                <div class="row mb-3">
+                  <div class="col-md-8">
+                    <div class="flex">
+                      <p-checkbox inputId="actaNacimiento" [(ngModel)]="beneficiarioSeleccionado.indActa"
+                        [disabled]="true" styleClass="mr-3" [binary]="true"></p-checkbox>
+                      <label [for]="'actaNacimiento'" class="control-label">
+                        <strong>Copia acta de nacimiento del beneficiario si es menor de edad</strong>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-8">
+                    <div class="flex">
+                      <p-checkbox inputId="ineBeneficiario" [(ngModel)]="beneficiarioSeleccionado.indIne"
+                        [disabled]="true" styleClass="mr-3" [binary]="true"></p-checkbox>
+                      <label [for]="'ineBeneficiario'" class="control-label">
+                        <strong>Copia del INE del beneficiario si es mayor de edad</strong>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div class="row mb-3">
-                <div class="col-md-8">
-                  <div class="flex">
-                    <p-checkbox inputId="ineBeneficiario" [(ngModel)]="beneficiarioSeleccionado.indIne"
-                      [disabled]="true" styleClass="mr-3" [binary]="true"></p-checkbox>
-                    <label [for]="'ineBeneficiario'" class="control-label">
-                      <strong>Copia del INE del beneficiario si es mayor de edad</strong>
-                    </label>
+              <div *ngIf="busquedaListBeneficiarios.tipoPlan !== 1">
+                <div class="row mb-3">
+                  <div class="col-md-8">
+                    <div class="flex">
+                      <p-checkbox inputId="comprobanteEstudios" [(ngModel)]="beneficiarioSeleccionado.comprobEstudios"
+                        [disabled]="true" styleClass="mr-3" [binary]="true"></p-checkbox>
+                      <label [for]="'comprobanteEstudios'" class="control-label">
+                        <strong>Comprobante de estudios del beneficiario si es mayor de 18 años y estudia</strong>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-8">
+                    <div class="flex">
+                      <p-checkbox inputId="actaMatrimonio" [(ngModel)]="beneficiarioSeleccionado.actaMatrimonio"
+                        [disabled]="true" styleClass="mr-3" [binary]="true"></p-checkbox>
+                      <label [for]="'actaMatrimonio'" class="control-label">
+                        <strong>Acta de matrimonio (Beneficiario Espos@)</strong>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-8">
+                    <div class="flex">
+                      <p-checkbox inputId="declaracionConcubinato"
+                        [(ngModel)]="beneficiarioSeleccionado.declaracionConcubinato" [disabled]="true" styleClass="mr-3"
+                        [binary]="true"></p-checkbox>
+                      <label [for]="'declaracionConcubinato'" class="control-label">
+                        <strong>Declaración de concubinato</strong>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="row mb-3">
-                <div class="col-md-8">
-                  <div class="flex">
-                    <p-checkbox inputId="comprobanteEstudios" [(ngModel)]="beneficiarioSeleccionado.comprobEstudios"
-                      [disabled]="true" styleClass="mr-3" [binary]="true"></p-checkbox>
-                    <label [for]="'comprobanteEstudios'" class="control-label">
-                      <strong>Comprobante de estudios del beneficiario si es mayor de 18 años y estudia</strong>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-8">
-                  <div class="flex">
-                    <p-checkbox inputId="actaMatrimonio" [(ngModel)]="beneficiarioSeleccionado.actaMatrimonio"
-                      [disabled]="true" styleClass="mr-3" [binary]="true"></p-checkbox>
-                    <label [for]="'actaMatrimonio'" class="control-label">
-                      <strong>Acta de matrimonio (Beneficiario Espos@)</strong>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-8">
-                  <div class="flex">
-                    <p-checkbox inputId="declaracionConcubinato"
-                      [(ngModel)]="beneficiarioSeleccionado.declaracionConcubinato" [disabled]="true" styleClass="mr-3"
-                      [binary]="true"></p-checkbox>
-                    <label [for]="'declaracionConcubinato'" class="control-label">
-                      <strong>Declaración de concubinato</strong>
-                    </label>
-                  </div>
-                </div>
-              </div>
+
             </div>
 
           </ng-template>
@@ -163,19 +182,19 @@
     </div>
 
     <div class="mt-7" *ngIf="mode === 'crear'">
-      <app-renovar-convenio-crear-beneficiario [beneficiarioSeleccionado]="beneficiarioSeleccionado"
+      <app-renovar-convenio-crear-beneficiario [beneficiarioSeleccionado]="beneficiarioSeleccionado" [busquedaListBeneficiarios]="busquedaListBeneficiarios"
         [numBeneficiario]="numBeneficiario" (crearBeneficiario)="crearBeneficiario($event)">
       </app-renovar-convenio-crear-beneficiario>
     </div>
 
     <div class="mt-7" *ngIf="mode === 'modificar'">
-      <app-renovar-convenio-modificar-beneficiario [beneficiarioSeleccionado]="beneficiarioSeleccionado"
+      <app-renovar-convenio-modificar-beneficiario [beneficiarioSeleccionado]="beneficiarioSeleccionado" [busquedaListBeneficiarios]="busquedaListBeneficiarios"
         [numBeneficiario]="numBeneficiario" (actualizarBeneficiario)="actualizarBeneficiario($event)">
       </app-renovar-convenio-modificar-beneficiario>
     </div>
 
     <div class="mt-7" *ngIf="mode === 'desactivar'">
-      <app-renovar-convenio-desactivar-beneficiario [beneficiarioSeleccionado]="beneficiarioSeleccionado"
+      <app-renovar-convenio-desactivar-beneficiario [beneficiarioSeleccionado]="beneficiarioSeleccionado" [busquedaListBeneficiarios]="busquedaListBeneficiarios"
         [numBeneficiario]="numBeneficiario" (desactivarBeneficiario)="activarDesactivarBeneficiario($event)">
       </app-renovar-convenio-desactivar-beneficiario>
     </div>
@@ -184,8 +203,11 @@
 
 <div class="row my-6" *ngIf="mode === 'listado' && beneficiarios.length > 0">
   <div class="col-md-12 flex justify-content-end" *appValidaRol="['RENOVAR_CONVENIO_PF','MODIFICAR']">
-    <button type="button" class="btn btn-default btn-md ml-5" [disabled]="activeIndex === null"
-      (click)="desactivar();">{{beneficiarioSeleccionado && beneficiarioSeleccionado.estatus ? 'Desactivar' : 'Activar'}}</button>
+    <button type="button" class="btn btn-default btn-md ml-5" *ngIf="beneficiarioSeleccionado?.estatus" [disabled]="activeIndex === null"
+      (click)="desactivar();">Desactivar</button>
+    <button type="button" class="btn btn-default btn-md ml-5" *ngIf="!beneficiarioSeleccionado?.estatus"
+      [disabled]="activeIndex === null || busquedaListBeneficiarios.tipoPlan === 1 && busquedaListBeneficiarios.activos === 3"
+      (click)="desactivar();">Activar</button>
     <button type="button" class="btn btn-primary btn-md ml-5" [disabled]="activeIndex === null"
       (click)="modificar();">Modificar</button>
   </div>
