@@ -247,24 +247,19 @@ export class ConsultaStockComponent implements OnInit {
     }
     this.loaderService.activar();
     const busqueda = this.mapearDatosReporte(tipoReporte);
-    this.descargaArchivosService.descargarArchivoShowSaveFilePicker(this.ordenEntradaService.generarReporteStock(busqueda), configuracionArchivo).pipe(
+    this.ordenEntradaService.generarReporteStock(busqueda).pipe(
       finalize(() => this.loaderService.desactivar())
-    ).subscribe({
-      next: (respuesta: any) => {
-        this.mensajeArchivoConfirmacion = this.mensajesSistemaService.obtenerMensajeSistemaPorId(23);
-        this.mostrarModalConfirmacion = true;
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error("ERROR: ", error);
-        const mensaje = this.alertas?.filter((msj: any) => {
-          return msj.idMensaje == error?.error?.mensaje;
-        })
-        if (mensaje) {
-          this.alertaService.mostrar(TipoAlerta.Error, mensaje[0]?.desMensaje);
-        } else {
-          this.alertaService.mostrar(TipoAlerta.Error, "Error en la descarga del documento. Intenta nuevamente.");
-        }
-      },
+    )
+    .subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = tipoReporte == "xls" ? "documento"+"."+"xlsx" : "documento"+"."+"pdf";
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     });
   }
 
