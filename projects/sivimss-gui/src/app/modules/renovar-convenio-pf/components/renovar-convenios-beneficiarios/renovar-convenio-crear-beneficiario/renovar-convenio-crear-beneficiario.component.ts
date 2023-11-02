@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { Beneficiario, BeneficiarioSeleccionado } from '../../../models/convenio.interface';
+import { Beneficiario, BeneficiarioSeleccionado, BusquedaListBeneficiarios } from '../../../models/convenio.interface';
 import { PATRON_CORREO, PATRON_CURP, PATRON_RFC } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { UsuarioService } from '../../../../usuarios/services/usuario.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
@@ -11,6 +11,7 @@ import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuest
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-renovar-convenio-crear-beneficiario',
@@ -19,6 +20,8 @@ import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/me
 })
 export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
   @Input() beneficiarioSeleccionado!: BeneficiarioSeleccionado;
+
+  @Input() busquedaListBeneficiarios!: BusquedaListBeneficiarios;
 
   @Input() numBeneficiario: number = 0;
 
@@ -48,10 +51,11 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
 
   inicializarCrearBeneficiarioForm(): void {
     this.crearBeneficiarioForm = this.formBuilder.group({
-      nombre: [{ value: null, disabled: false }, [Validators.maxLength(50)]],
-      primerApellido: [{ value: null, disabled: false }, [Validators.maxLength(50)]],
-      segundoApellido: [{ value: null, disabled: false }, [Validators.maxLength(50)]],
-      edad: [{ value: null, disabled: false }, [Validators.maxLength(3)]],
+      nombre: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
+      primerApellido: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
+      segundoApellido: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
+      fechaNac: [{ value: null, disabled: true }, []],
+      edad: [{ value: null, disabled: true }, []],
       parentesco: [{ value: null, disabled: false }, []],
       curp: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(18), Validators.pattern(PATRON_CURP)]],
       rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
@@ -83,7 +87,8 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
 
   guardar() {
     if (this.crearBeneficiarioForm.valid) {
-      this.crearBeneficiario.emit(this.crearBeneficiarioForm.value);
+
+      this.crearBeneficiario.emit(this.crearBeneficiarioForm.getRawValue());
     } else {
       this.crearBeneficiarioForm.markAllAsTouched();
       const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(24);
@@ -92,6 +97,13 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
   }
 
   validarCurpRenapo(): void {
+    this.crearBeneficiarioForm.patchValue({
+      nombre: null,
+      primerApellido: null,
+      segundoApellido: null,
+      fechaNac: null,
+      edad: null,
+    });
     if (this.cbf.curp.invalid) return;
     this.loaderService.activar();
     this.usuarioService.consultarCurpRenapo(this.cbf.curp.value).pipe(
@@ -103,6 +115,13 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
           this.cbf.curp.setErrors({ 'incorrect': true });
         } else {
           this.cbf.curp.setErrors(null);
+          this.crearBeneficiarioForm.patchValue({
+            nombre: respuesta.datos?.nombre,
+            primerApellido: respuesta.datos?.apellido1,
+            segundoApellido: respuesta.datos?.apellido2,
+            fechaNac: respuesta.datos?.fechNac,
+            edad: this.calcularEdad(moment(respuesta.datos?.fechNac, 'DD/MM/YYYY').format('YYYY/MM/DD')),
+          });
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -126,6 +145,17 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
     if (this.cbf.email.invalid) {
       this.alertaService.mostrar(TipoAlerta.Precaucion, 'Tu correo electrónico no es válido.');
     }
+  }
+
+  calcularEdad(fecha: string) {
+    const hoy = new Date();
+    const cumpleanos = new Date(fecha);
+    let edad = hoy.getFullYear() - cumpleanos.getFullYear();
+    const m = hoy.getMonth() - cumpleanos.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+      edad--;
+    }
+    return edad;
   }
 
   get cbf() {

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from '@angular/router';
 import { TipoDropdown } from 'projects/sivimss-gui/src/app/models/tipo-dropdown';
-import { Beneficiario, BeneficiarioSeleccionado } from '../../../models/convenio.interface';
+import { Beneficiario, BeneficiarioSeleccionado, BusquedaListBeneficiarios } from '../../../models/convenio.interface';
 
 @Component({
   selector: 'app-renovar-convenio-desactivar-beneficiario',
@@ -11,6 +11,8 @@ import { Beneficiario, BeneficiarioSeleccionado } from '../../../models/convenio
 })
 export class RenovarConvenioDesactivarBeneficiarioComponent implements OnInit {
   @Input() beneficiarioSeleccionado!: BeneficiarioSeleccionado;
+
+  @Input() busquedaListBeneficiarios!: BusquedaListBeneficiarios;
 
   @Input() numBeneficiario: number = 0;
 
@@ -39,6 +41,7 @@ export class RenovarConvenioDesactivarBeneficiarioComponent implements OnInit {
       primerApellido: [{ value: null, disabled: true }, []],
       segundoApellido: [{ value: null, disabled: true }, []],
       edad: [{ value: null, disabled: true }, []],
+      fechaNac: [{ value: null, disabled: true }, []],
       parentesco: [{ value: null, disabled: true }, []],
       curp: [{ value: null, disabled: true }, [Validators.required]],
       rfc: [{ value: null, disabled: true }, []],
@@ -69,7 +72,7 @@ export class RenovarConvenioDesactivarBeneficiarioComponent implements OnInit {
   }
 
   guardar() {
-    this.desactivarBeneficiario.emit(this.desactivarBeneficiarioForm.value);
+    this.desactivarBeneficiario.emit(this.desactivarBeneficiarioForm.getRawValue());
   }
 
   get dbf() {
