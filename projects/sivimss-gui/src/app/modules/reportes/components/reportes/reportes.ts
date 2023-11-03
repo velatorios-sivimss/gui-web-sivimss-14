@@ -189,6 +189,7 @@ export class Reportes implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         respuesta.datos.push({"idVelatorio": null, "nomVelatorio": "Todos"})
         this.velatorios = mapearArregloTipoDropdown(respuesta.datos, "nomVelatorio", "idVelatorio");
+        this.seleccionarValidaciones();
       },
       error: (error: HttpErrorResponse): void => {
         this.mensajesSistemaService.mostrarMensajeError(error);
