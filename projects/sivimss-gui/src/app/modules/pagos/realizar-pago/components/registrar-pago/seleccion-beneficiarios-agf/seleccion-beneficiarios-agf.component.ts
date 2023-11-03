@@ -71,7 +71,7 @@ export class SeleccionBeneficiariosAgfComponent {
     this.realizarPagoService.guardarAGF(this.datos_agf).subscribe({
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
-        void this.route.navigate(['../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
+        void this.route.navigate(['../../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
       },
       error: (error: HttpErrorResponse): void => {
         const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
