@@ -204,7 +204,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error al consultar la información.");
       }
     });
   }
