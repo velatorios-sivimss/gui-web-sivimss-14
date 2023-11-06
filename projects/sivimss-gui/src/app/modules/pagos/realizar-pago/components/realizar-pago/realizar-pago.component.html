@@ -3,7 +3,7 @@
   <app-titulo-principal titulo="Realizar pago" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (submit)="buscar()" (reset)="limpiar()">
+  <form [formGroup]="filtroPagoForm" (submit)="buscar()" (reset)="limpiar()">
     <div class="row mb-3">
       <div class="col-md-6">
         <label class="control-label" for="nivelRealizarPago">Nivel:</label>
@@ -59,14 +59,14 @@
             <p-calendar id="periodoInicio" formControlName="periodoInicio" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
                         (onSelect)="validarMismaFechaInicioFin()"
-                        [maxDate]="filtroForm.get('periodoFin')?.value || fechaAnterior">
+                        [maxDate]="filtroPagoForm.get('periodoFin')?.value || fechaAnterior">
             </p-calendar>
           </div>
           <div class="col-md-6">
             <p-calendar id="periodoFin" formControlName="periodoFin" styleClass="form-control" [showIcon]="true"
                         placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body"
                         (onSelect)="validarMismaFechaInicioFin()"
-                        [minDate]="filtroForm.get('periodoInicio')?.value" [maxDate]="fechaActual">
+                        [minDate]="filtroPagoForm.get('periodoInicio')?.value" [maxDate]="fechaActual">
             </p-calendar>
           </div>
         </div>
@@ -74,10 +74,10 @@
     </div>
     <div class="row mt-6">
       <div class="col-md-12 flex justify-content-end">
-        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">
+        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroPagoForm.pristine">
           Limpiar filtros
         </button>
-        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar
+        <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroPagoForm.pristine">Buscar
         </button>
       </div>
     </div>
