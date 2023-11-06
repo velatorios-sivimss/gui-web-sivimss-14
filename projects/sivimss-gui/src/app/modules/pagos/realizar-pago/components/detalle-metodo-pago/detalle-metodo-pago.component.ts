@@ -13,6 +13,7 @@ export class DetalleMetodoPagoComponent implements OnInit {
   idPagoBitacora!: number;
   fecha: Date = new Date();
   tipoPago: string = '';
+  titulo: string = '';
 
   constructor(
     private router: Router,
@@ -23,17 +24,18 @@ export class DetalleMetodoPagoComponent implements OnInit {
   ngOnInit(): void {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
     this.tipoPago = this.obtenerTipoPago();
+    this.titulo = this.obtenerTipoPago();
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
   }
 
   obtenerTipoPago(): string {
     if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
-      return 'la ODS'
+      return 'Pago de orden de servicio'
     }
     if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
-      return 'el Nuevo Convenio de Previsión Funeraria';
+      return 'Pago de Nuevos convenios de previsión funeraria';
     }
-    return 'la Renovación del Nuevo Convenio de Previsión Funeraria';
+    return 'Pago de Renovación de convenios de previsión funeraria';
   }
 
   redireccionPago(): void {
