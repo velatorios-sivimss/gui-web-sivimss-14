@@ -237,6 +237,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         }
       };
     }
+    this.coloniasContratante = [{label:contratante.titularesBeneficiarios[1].cp.desColonia, value: contratante.titularesBeneficiarios[1].cp.desColonia}]
 
     this.datosContratanteForm = this.formBuilder.group({
       datosIguales: [{value: false, disabled: false}, [Validators.required]],
