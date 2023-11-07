@@ -15,6 +15,7 @@ export class DetalleMetodoPagoComponent implements OnInit {
   tipoPago: string = '';
   tipoFolio: string = '';
   titulo: string = '';
+  generarPagare: boolean = false;
 
   constructor(
     private router: Router,

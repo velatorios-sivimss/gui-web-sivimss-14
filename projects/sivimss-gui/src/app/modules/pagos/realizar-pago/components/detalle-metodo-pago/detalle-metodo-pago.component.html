@@ -28,13 +28,20 @@
       <label class="control-label">Métodos de pago seleccionables:</label>
       <p-dropdown class="form-control" placeholder="Selecciona un método de pago"></p-dropdown>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6" *ngIf="!generarPagare">
       <div class="flex mb-4 justify-content-end">
         <button class="ml-6 mt-6 btn btn-default btn-md">
           Modificar
         </button>
         <button class="ml-6 mt-6 btn btn-primary btn-md">
           Registrar
+        </button>
+      </div>
+    </div>
+    <div class="col-md-6" *ngIf="generarPagare">
+      <div class="flex mb-4 justify-content-end">
+        <button class="ml-6 mt-6 btn btn-default btn-md">
+          Generar Pagare
         </button>
       </div>
     </div>
@@ -60,7 +67,7 @@
   </div>
 </div>
 
-<div class="border-panel">
+<div class="border-panel" *ngIf="registroPago.metodosPago.length > 0">
   <h2 class="subtitulo pt-4 pb-4">Datos de pago</h2>
   <p-accordion styleClass="sivimss-accordion sivimss-accordionColor">
     <p-accordionTab *ngFor="let pago of registroPago.metodosPago">
