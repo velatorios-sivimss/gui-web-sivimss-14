@@ -26,11 +26,11 @@ export class DetalleMetodoPagoComponent implements OnInit {
     this.registroPago = this.activatedRoute.snapshot.data["respuesta"].datos;
     this.tipoPago = this.obtenerTipoPago();
     this.titulo = this.obtenerTipoPago();
-    this.tipoFolio = this.obtenerTipoPago();
+    this.tipoFolio = this.obtenerFolioTipoPago();
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
   }
 
-  obtenerTipoPago(): string {
+  obtenerFolioTipoPago(): string {
     if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
       return 'Folio ODS'
     }
@@ -40,7 +40,7 @@ export class DetalleMetodoPagoComponent implements OnInit {
     return 'Folio PRCPF';
   }
 
-  obtenerFolioTipoPago(): string {
+  obtenerTipoPago(): string {
     if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
       return 'Pago de orden de servicio'
     }
