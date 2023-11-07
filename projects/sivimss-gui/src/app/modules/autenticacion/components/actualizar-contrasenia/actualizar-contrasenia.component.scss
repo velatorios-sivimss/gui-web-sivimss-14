@@ -71,4 +71,32 @@
   }
 }
 
+.contenedor-intentos{
+  transform: scale(.8);
+  div{
+    background-color: #d7d7d7;
+    padding: 1rem;
+    .numero{
+      display: inline-block;
+      transform: scale(2);
+      font-weight: 700;
+      color: #454545;
+    }
 
+    .numero + span{
+      display: inline-block;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+  }
+  span{
+    color: #0c231e;
+  }
+
+  div + span{
+    transform: scale(3);
+    font-weight: 700;
+    display: inline-block;
+    margin: 0 10px;
+  }
+}
