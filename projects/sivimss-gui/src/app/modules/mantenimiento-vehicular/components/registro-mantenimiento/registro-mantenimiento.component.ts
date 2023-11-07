@@ -79,7 +79,7 @@ export class RegistroMantenimientoComponent implements OnInit {
   cargarCatalogos(): void {
     const respuesta = this.route.snapshot.data["respuesta"];
     const catalogos = respuesta[this.POSICION_CATALOGOS_PROVEEDORES].datos;
-    this.catalogoProveedores = mapearArregloTipoDropdown(catalogos, "NOM_PROVEEDOR", "ID_PROVEEDOR");
+    this.catalogoProveedores = mapearArregloTipoDropdown(catalogos, "REF_PROVEEDOR", "ID_PROVEEDOR");
     this.obtenerCatalogoContratos();
 
     this.inicializarRegistroMantenimientoForm();

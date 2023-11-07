@@ -28,7 +28,7 @@ export interface RespuestaRegistroMantenimiento {
   ID_VELATORIO: number,
   IND_ACTIVO: boolean,
   KILOMETRAJE: string,
-  NOM_PROVEEDOR: string,
+  REF_PROVEEDOR: string,
   NOM_VELATORIO: string,
   DES_NOMBRE_TALLER: string,
   COSTO_MTTO: string,
