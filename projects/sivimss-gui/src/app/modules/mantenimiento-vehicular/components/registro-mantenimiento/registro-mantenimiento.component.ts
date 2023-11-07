@@ -264,7 +264,7 @@ export class RegistroMantenimientoComponent implements OnInit {
     this.mantenimientoVehicularService.obtenerCatalogoMtto(id).pipe(
       finalize(() => this.cargadorService.desactivar())).subscribe({
       next: (respuesta: HttpRespuesta<any>): void => {
-        this.mantenimientosPrev = mapearArregloTipoDropdown(respuesta.datos, "REF_MTTO_MODALIDAD", "ID_MTTO_MODALIDAD");
+        this.mantenimientosPrev = mapearArregloTipoDropdown(respuesta.datos, "DES_MTTO_MODALIDAD", "ID_MTTO_MODALIDAD");
       },
       error: (error: HttpErrorResponse): void => {
         console.log(error);
