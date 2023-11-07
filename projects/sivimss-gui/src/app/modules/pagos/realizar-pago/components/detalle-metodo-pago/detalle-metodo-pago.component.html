@@ -50,7 +50,7 @@
       <ng-template pTemplate="header">
         <div class="sivimss-acoordion-header">
           <div class="accordion-header-left font-bold font-14">
-            {{ pago.metodoPago }}
+            {{pago.metodoPago}}
           </div>
           <div class="accordion-header-right">
             <div class="estatus">
@@ -63,29 +63,24 @@
       <ng-template pTemplate="content">
         <div class="row grid">
           <div class="col">
-            <span class="flex flex-column etiqueta-base">Número de autorización</span>
-            <span class="texto-base">{{pago.numAutorizacion}}</span>
+            <span class="flex flex-column texto-base">Fecha de pago</span>
+            <span class="flex flex-column etiqueta-base">{{pago.fechaPago | date:'dd/MM/YYYY'}}</span>
           </div>
           <div class="col">
-            <span class="flex flex-column etiqueta-base">Nombre del banco</span>
-            <span class="texto-base">{{pago.nomBanco}}</span>
+            <span class="flex flex-column texto-base">Número de Autorización</span>
+            <span class="flex flex-column etiqueta-base">{{pago.numAutorizacion}}</span>
           </div>
           <div class="col">
-            <span class="flex flex-column etiqueta-base">Fecha de pago</span>
-            <span class="texto-base">{{pago.fechaPago | date:'dd/MM/YYYY'}}</span>
-          </div>
-        </div>
-        <hr>
-        <div class="row grid">
-          <div class="col">
-            <span class="flex flex-column etiqueta-base">Importe</span>
-            <span class="texto-base">{{pago.importe | currency}}</span>
+            <span class="flex flex-column texto-base">Nombre del banco</span>
+            <span class="flex flex-column etiqueta-base">{{pago.nomBanco}}</span>
           </div>
           <div class="col">
-            <span class="flex flex-column etiqueta-base">Total a pagar</span>
-            <span class="texto-base">{{registroPago.totalAPagar | currency}}</span>
+            <span class="flex flex-column texto-base">Total a pagar</span>
+            <span class="flex flex-column etiqueta-base">{{registroPago.totalAPagar | currency}}</span>
           </div>
           <div class="col">
+            <span class="flex flex-column texto-base">Tipo de Pago</span>
+            <span class="flex flex-column etiqueta-base">{{pago.metodoPago}}</span>
           </div>
         </div>
       </ng-template>
