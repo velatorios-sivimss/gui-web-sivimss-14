@@ -38,6 +38,7 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { ModificarTipoPagoComponent } from './components/modificar-tipo-pago/modificar-tipo-pago.component';
 import { EliminarTipoPagoComponent } from './components/eliminar-tipo-pago/eliminar-tipo-pago.component';
 import { BtnRegresarModule } from "../../../shared/btn-regresar/btn-regresar.module";
+import { ControlPagoComponent } from './components/control-pago/control-pago.component';
 
 
 @NgModule({
@@ -54,6 +55,7 @@ import { BtnRegresarModule } from "../../../shared/btn-regresar/btn-regresar.mod
     ModificarMetodoPagoComponent,
     ModificarTipoPagoComponent,
     EliminarTipoPagoComponent,
+    ControlPagoComponent,
   ],
   imports: [
     CommonModule,
