@@ -119,9 +119,6 @@
         <td>{{pago.metodoPago | titlecase}}</td>
         <td>
           <div class="contenedor-celda-iconos">
-            <a (click)="abrirModalDetallePago(pago)" [routerLink]="['./detalle-de-pago', pago.idPagoBitacora]">
-              <img src="assets/images/imagen-icono-ver.svg" alt="icono ver">
-            </a>
             <a (click)="abrirPanel($event,pago)">
               <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
             </a>
