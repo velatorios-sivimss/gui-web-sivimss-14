@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {DetallePago} from "../../modelos/detallePago.interface";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-detalle-metodo-pago',
@@ -20,6 +21,7 @@ export class DetalleMetodoPagoComponent implements OnInit {
   constructor(
     private router: Router,
     private readonly activatedRoute: ActivatedRoute,
+    private location: Location
   ) {
   }
 
@@ -61,6 +63,10 @@ export class DetalleMetodoPagoComponent implements OnInit {
       return;
     }
     void this.router.navigate(["./../../pago-renovacion-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
+  }
+
+  regresarPaginaPrevia(): void {
+    this.location.back();
   }
 
 }

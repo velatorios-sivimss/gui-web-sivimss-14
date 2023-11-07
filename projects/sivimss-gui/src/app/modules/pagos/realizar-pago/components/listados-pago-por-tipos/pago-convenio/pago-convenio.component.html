@@ -24,7 +24,8 @@
       <td>
         <div class="contenedor-celda-iconos">
           <a (click)="abrirPanel($event,pago)">
-            <img src="../../../../../../../assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+            <img src="../../../../../../../assets/images/imagen-icono-barras-horizontales.svg"
+                 alt="icono barras horizontales">
           </a>
         </div>
       </td>
@@ -54,13 +55,9 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Registrar pago" (click)="registrarPago()"
-                                onCloseOnNavigation></app-overlay-panel-opcion>
-      <ng-container *ngIf="rol === 13">
-        <app-overlay-panel-opcion *ngIf="+pagoSeleccionado.totalPagado > 0" titulo="Modificar método de pago"
-                                  [routerLink]="['./../modificar-metodo-de-pago', pagoSeleccionado.idPagoBitacora]">
-        </app-overlay-panel-opcion>
-      </ng-container>
+      <app-overlay-panel-opcion titulo="Registrar pago"
+                                [routerLink]="['./../detalle-de-pago', pagoSeleccionado.idPagoBitacora]">
+      </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
 </p-overlayPanel>
