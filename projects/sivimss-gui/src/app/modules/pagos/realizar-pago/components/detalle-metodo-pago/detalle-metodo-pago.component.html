@@ -9,7 +9,7 @@
       <div class="row grid">
         <div class="col">
           <span class="flex flex-column etiqueta-base">Fecha de pago</span>
-          <span class="flex flex-column etiqueta-base font-bold"></span>
+          <span class="flex flex-column etiqueta-base font-bold">{{fechaPago | date:'dd/MM/YYYY'}}</span>
         </div>
         <div class="col">
           <span class="flex flex-column etiqueta-base">{{tipoFolio}}</span>
@@ -23,30 +23,6 @@
           <span class="flex flex-column etiqueta-base">Estatus</span>
           <span class="flex flex-column etiqueta-base font-bold">{{registroPago.estatusPago}}</span>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row mb-5">
-    <div class="col-md-6">
-      <label class="control-label">Métodos de pago seleccionables:</label>
-      <p-dropdown class="form-control" placeholder="Selecciona un método de pago"></p-dropdown>
-    </div>
-    <div class="col-md-6" *ngIf="!generarPagare">
-      <div class="flex mb-4 justify-content-end">
-        <button class="ml-6 mt-6 btn btn-default btn-md">
-          Modificar
-        </button>
-        <button class="ml-6 mt-6 btn btn-primary btn-md">
-          Registrar
-        </button>
-      </div>
-    </div>
-    <div class="col-md-6" *ngIf="generarPagare">
-      <div class="flex mb-4 justify-content-end">
-        <button class="ml-6 mt-6 btn btn-default btn-md">
-          Generar Pagare
-        </button>
       </div>
     </div>
   </div>
@@ -121,17 +97,3 @@
     Regresar
   </button>
 </div>
-
-<p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagado'"
-                                (click)="redireccionPago()">
-      </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Modificar método de pago"
-                                *ngIf="registroPago.estatusPago === 'Pagado'"
-                                [routerLink]="['../../modificar-metodo-de-pago', idPagoBitacora]">
-      </app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
-</p-overlayPanel>

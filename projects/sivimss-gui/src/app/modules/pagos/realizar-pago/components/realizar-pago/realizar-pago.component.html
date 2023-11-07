@@ -157,14 +157,14 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Ir a Pago" *ngIf="habilitaIrPago.includes(pagoSeleccionado.estatus) ||
+      <app-overlay-panel-opcion titulo="Ir a Pago" *ngIf="habilitaIrPago.includes(pagoSeleccionado.estatus) &&
         habilitaIrPagoEstatus.includes(pagoSeleccionado.estatusPago)"
                                 [routerLink]="['./registrar-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) ||
+      <app-overlay-panel-opcion titulo="Modificar Pago" *ngIf="habilitaModificar.includes(pagoSeleccionado.estatus) &&
         habilitaModificarPago.includes(pagoSeleccionado.estatusPago)" (click)="modificarPago()">
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Detalle de Pago" *ngIf="['Facturado'].includes(pagoSeleccionado.estatus)"
+      <app-overlay-panel-opcion titulo="Detalle de Pago" *ngIf="['Facturado'].includes(pagoSeleccionado.estatusPago)"
                                 [routerLink]="['./detalle-de-pago', pagoSeleccionado.idPagoBitacora]">
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>

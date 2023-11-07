@@ -16,7 +16,7 @@ export class DetalleMetodoPagoComponent implements OnInit {
   tipoPago: string = '';
   tipoFolio: string = '';
   titulo: string = '';
-  generarPagare: boolean = false;
+  fechaPago: string = '';
 
   constructor(
     private router: Router,
@@ -30,6 +30,8 @@ export class DetalleMetodoPagoComponent implements OnInit {
     this.tipoPago = this.obtenerTipoPago();
     this.titulo = this.obtenerTipoPago();
     this.tipoFolio = this.obtenerFolioTipoPago();
+    const ultimaFecha: number = this.registroPago.metodosPago.length - 1;
+    this.fechaPago = this.registroPago.metodosPago[ultimaFecha].fechaPago;
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
   }
 
@@ -51,18 +53,6 @@ export class DetalleMetodoPagoComponent implements OnInit {
       return 'Pago de Nuevos convenios de previsión funeraria';
     }
     return 'Pago de Renovación de convenios de previsión funeraria';
-  }
-
-  redireccionPago(): void {
-    if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
-      void this.router.navigate(["./../../pago-orden-servicio"], {relativeTo: this.activatedRoute});
-      return;
-    }
-    if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
-      void this.router.navigate(["./../../pago-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
-      return;
-    }
-    void this.router.navigate(["./../../pago-renovacion-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
   }
 
   regresarPaginaPrevia(): void {
