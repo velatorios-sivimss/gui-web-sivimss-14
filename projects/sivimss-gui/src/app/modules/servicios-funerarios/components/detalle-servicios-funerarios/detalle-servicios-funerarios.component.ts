@@ -273,5 +273,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     });
   }
 
+  validarEstatusDetallePago(estatus: any): boolean {
+    return !estatus?.toUpperCase().includes('CANCELADO');
+  }
 
 }
