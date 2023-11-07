@@ -154,7 +154,8 @@ export interface CatalogoDatosGenerales {
 }
 
 export interface VerificarDocumentacion {
-  idValidacionDoc?: number;
+  idConvenio?: number | null;
+  idValidacionDoc?: number | null;
   ineAfiliado?: number | null;
   curp?: number | null;
   rfc?: number | null;
