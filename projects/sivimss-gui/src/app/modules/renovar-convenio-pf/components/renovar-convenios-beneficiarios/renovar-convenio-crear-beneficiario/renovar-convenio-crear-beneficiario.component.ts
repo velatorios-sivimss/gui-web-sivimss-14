@@ -56,7 +56,7 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
       segundoApellido: [{ value: null, disabled: true }, [Validators.maxLength(50)]],
       fechaNac: [{ value: null, disabled: true }, []],
       edad: [{ value: null, disabled: true }, []],
-      parentesco: [{ value: null, disabled: false }, []],
+      parentesco: [{ value: null, disabled: false }, [Validators.required]],
       curp: [{ value: null, disabled: false }, [Validators.required, Validators.maxLength(18), Validators.pattern(PATRON_CURP)]],
       rfc: [{ value: null, disabled: false }, [Validators.pattern(PATRON_RFC)]],
       email: [{ value: null, disabled: false }, [Validators.pattern(PATRON_CORREO)]],

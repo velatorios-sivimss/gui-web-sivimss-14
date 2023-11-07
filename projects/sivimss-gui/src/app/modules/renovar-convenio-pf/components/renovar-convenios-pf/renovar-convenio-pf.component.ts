@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SERVICIO_BREADCRUMB} from "../../constants/breadcrumb";
-import {BreadcrumbService} from "../../../../shared/breadcrumb/services/breadcrumb.service";
-import {MenuItem} from "primeng/api";
-import {TipoDropdown} from "../../../../models/tipo-dropdown";
-import {CATALOGOS_DUMMIES} from "../../../convenios-prevision-funeraria/constants/dummies";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { SERVICIO_BREADCRUMB } from "../../constants/breadcrumb";
+import { BreadcrumbService } from "../../../../shared/breadcrumb/services/breadcrumb.service";
+import { MenuItem } from "primeng/api";
+import { TipoDropdown } from "../../../../models/tipo-dropdown";
+import { CATALOGOS_DUMMIES } from "../../../convenios-prevision-funeraria/constants/dummies";
 import {
   BuscarConvenioPlanAnterior,
   BuscarConvenioPlanNuevo,
@@ -13,16 +13,16 @@ import {
   RenovarPlan,
   VerificarDocumentacion
 } from "../../models/convenio.interface";
-import {MENU_STEPPER} from '../../constants/menu-steppers';
-import {ActivatedRoute, Router} from '@angular/router';
-import {RenovarConvenioPfService} from '../../services/renovar-convenio-pf.service';
-import {HttpRespuesta} from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import {HttpErrorResponse} from '@angular/common/http';
-import {AlertaService, TipoAlerta} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
-import {validarAlMenosUnCampoConValor} from 'projects/sivimss-gui/src/app/utils/funciones';
+import { MENU_STEPPER } from '../../constants/menu-steppers';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RenovarConvenioPfService } from '../../services/renovar-convenio-pf.service';
+import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
+import { validarAlMenosUnCampoConValor } from 'projects/sivimss-gui/src/app/utils/funciones';
 import * as moment from 'moment';
-import {MensajesSistemaService} from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import {LoaderService} from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
+import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
+import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 
 @Component({
   selector: 'app-renovar-convenio-pf',
@@ -42,8 +42,8 @@ export class RenovarConvenioPfComponent implements OnInit {
   mensajeBusqueda: string = "";
 
   tipoConvenio: TipoDropdown[] = [
-    {label: 'Plan anterior', value: '0'},
-    {label: 'Plan nuevo', value: '1'},
+    { label: 'Plan anterior', value: '0' },
+    { label: 'Plan nuevo', value: '1' },
   ];
 
   tipoPrevisionFuneraria: TipoDropdown[] = CATALOGOS_DUMMIES;
@@ -75,31 +75,31 @@ export class RenovarConvenioPfComponent implements OnInit {
 
   inicializarFormBusquedaTipoConvenio(): void {
     this.busquedaTipoConvenioForm = this.formBuilder.group({
-      tipoConvenio: [{value: true, disabled: false}, []],
-      numConvenio: [{value: null, disabled: false}, []],
-      nombreContratante: [{value: null, disabled: false}, []],
-      folio: [{value: null, disabled: false}, []],
-      rfc: [{value: null, disabled: false}, []],
+      tipoConvenio: [{ value: true, disabled: false }, []],
+      numConvenio: [{ value: null, disabled: false }, []],
+      nombreContratante: [{ value: null, disabled: false }, []],
+      folio: [{ value: null, disabled: false }, []],
+      rfc: [{ value: null, disabled: false }, []],
     });
   }
 
   inicializarFormPlanAnterior(): void {
     this.resultadoBusquedaForm = this.formBuilder.group({
-      tipoPrevision: [{value: null, disabled: true}, []],
-      tipoPaquete: [{value: null, disabled: true}, []],
-      datosBancarios: [{value: null, disabled: false}, [Validators.maxLength(30)]],
-      costoRenovacion: [{value: null, disabled: true}, []],
+      tipoPrevision: [{ value: null, disabled: true }, []],
+      tipoPaquete: [{ value: null, disabled: true }, []],
+      datosBancarios: [{ value: null, disabled: false }, [Validators.maxLength(30)]],
+      costoRenovacion: [{ value: null, disabled: true }, []],
     });
   }
 
   inicializarDocumentacionForm(): void {
     this.documentacionForm = this.formBuilder.group({
-      ineAfiliado: [{value: null, disabled: false}, []],
-      curp: [{value: null, disabled: false}, []],
-      rfc: [{value: null, disabled: false}, []],
-      convenioAnterior: [{value: null, disabled: false}, []],
-      cartaPoder: [{value: null, disabled: false}, []],
-      ineTestigo: [{value: null, disabled: false}, []],
+      ineAfiliado: [{ value: null, disabled: false }, []],
+      curp: [{ value: null, disabled: false }, []],
+      rfc: [{ value: null, disabled: false }, []],
+      convenioAnterior: [{ value: null, disabled: false }, []],
+      cartaPoder: [{ value: null, disabled: false }, []],
+      ineTestigo: [{ value: null, disabled: false }, []],
     });
   }
 
@@ -109,7 +109,7 @@ export class RenovarConvenioPfComponent implements OnInit {
 
   aceptar(): void {
     void this.router.navigate([`./beneficiarios/${this.convenio?.idConvenio}`],
-      {queryParams: {folio: this.convenio?.folio}, relativeTo: this.activatedRoute});
+      { queryParams: { folio: this.convenio?.folio }, relativeTo: this.activatedRoute });
   }
 
   limpiar(): void {
@@ -136,8 +136,6 @@ export class RenovarConvenioPfComponent implements OnInit {
     this.renovarConvenioPfService.verificarDocumentacion(this.datosVerificarDocumentacion()).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.codigo === 200) {
-          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(192);
-          this.alertaService.mostrar(TipoAlerta.Exito, msg);
           this.renovarPlan();
         }
       },
@@ -157,6 +155,9 @@ export class RenovarConvenioPfComponent implements OnInit {
           this.limpiar();
           this.indice = 0;
           this.confirmarModificarBeneficiarios = false;
+        } else {
+          const msg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(+respuesta.mensaje);
+          this.alertaService.mostrar(TipoAlerta.Precaucion, msg);
         }
       },
       error: (error: HttpErrorResponse) => {
@@ -281,15 +282,16 @@ export class RenovarConvenioPfComponent implements OnInit {
 
   datosVerificarDocumentacion(): VerificarDocumentacion {
     return {
-      idValidacionDoc: this.idValidacionDoc,
+      idConvenio: this.convenio?.idConvenio ? +this.convenio?.idConvenio : null,
+      idValidacionDoc: this.idValidacionDoc === 0 ? null : this.idValidacionDoc,
       ineAfiliado: this.df.ineAfiliado.value ? 1 : null,
-      curp: this.df.curp.value ? 1 : null,
-      rfc: this.df.rfc.value ? 1 : null,
+      curp: this.df.curp.value ? 1 : 0,
+      rfc: this.df.rfc.value ? 1 : 0,
       renovarDoc: {
-        convenioAnterior: this.df.convenioAnterior.value ? 1 : null,
-        cartaPoder: this.df.cartaPoder.value ? 1 : null,
-        ineTestigo: this.df.ineTestigo.value ? 1 : null,
-        ineTestigoDos: null,
+        convenioAnterior: this.df.convenioAnterior.value ? 1 : 0,
+        cartaPoder: this.df.cartaPoder.value ? 1 : 0,
+        ineTestigo: this.df.ineTestigo.value ? 1 : 0,
+        ineTestigoDos: 0,
       }
     }
   }
