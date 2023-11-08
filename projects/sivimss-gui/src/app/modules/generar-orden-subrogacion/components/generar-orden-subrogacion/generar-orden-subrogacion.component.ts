@@ -287,6 +287,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
           respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
           { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
         );
+        configuracionArchivo.nombreArchivo = "OrdenDeSubrogación";
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())
         ).subscribe({
