@@ -124,12 +124,9 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion class="text-center" titulo="Ir a Pago" *ngIf="registroPago.estatusPago !== 'Pagado'"
-                                (click)="redireccionPago()">
+      <app-overlay-panel-opcion titulo="Modificar" onCloseOnNavigation>
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion class="text-center" titulo="Modificar método de pago"
-                                *ngIf="registroPago.estatusPago === 'Pagado'"
-                                [routerLink]="['../../modificar-metodo-de-pago', idPagoBitacora]">
+      <app-overlay-panel-opcion titulo="Eliminar" onCloseOnNavigation>
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>

@@ -323,25 +323,9 @@ export class RealizarPagoComponent implements OnInit {
     this.filtroPagoForm.get('periodoFin')?.patchValue(null);
   }
 
-  redireccionPago(): void {
-    if (this.pagoSeleccionado.tipoPago === 'Pago de Orden de Servicio') {
-      void this.router.navigate(["./pago-orden-servicio"], {relativeTo: this.activatedRoute});
-      return;
-    }
-    if (this.pagoSeleccionado.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
-      void this.router.navigate(["./pago-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
-      return;
-    }
-    void this.router.navigate(["./pago-renovacion-convenio-prevision-funeraria"], {relativeTo: this.activatedRoute});
-  }
-
   modificarPago(): void {
     void this.router.navigate(["./modificar-metodo-de-pago", this.pagoSeleccionado.idPagoBitacora],
       {relativeTo: this.activatedRoute});
-  }
-
-  abrirModalDetallePago(pago: any): void {
-    console.log(pago);
   }
 
   abrirPanel(event: MouseEvent, pago: Pago): void {
