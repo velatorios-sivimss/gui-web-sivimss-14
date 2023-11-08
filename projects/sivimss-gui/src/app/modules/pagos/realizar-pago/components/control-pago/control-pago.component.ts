@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {DetallePago} from "../../modelos/detallePago.interface";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {DetallePago, MetodoPago} from "../../modelos/detallePago.interface";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
@@ -8,6 +8,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {MAX_WIDTH} from "../../../../../utils/constantes";
 import {RegistrarTipoPagoComponent} from "../registrar-pago/registrar-tipo-pago/registrar-tipo-pago.component";
+import {OverlayPanel} from "primeng/overlaypanel";
 
 
 interface DatosRegistro {
@@ -31,6 +32,9 @@ interface RegistroModal {
   providers: [DialogService]
 })
 export class ControlPagoComponent implements OnInit {
+
+  @ViewChild(OverlayPanel)
+  overlayPanel!: OverlayPanel;
 
   registroPago!: DetallePago;
   idPagoBitacora!: number;
@@ -138,4 +142,8 @@ export class ControlPagoComponent implements OnInit {
     this.location.back();
   }
 
+  mostrarOverlay(event: MouseEvent, pago: MetodoPago): void {
+    event.stopPropagation();
+    this.overlayPanel.toggle(event);
+  }
 }
