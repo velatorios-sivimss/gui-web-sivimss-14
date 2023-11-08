@@ -445,3 +445,9 @@ h1.subtitulo-base-lg {
   font-size: 16px !important;
   font-weight: 600 !important;
 }
+
+
+p-table .p-datatable .p-column-resizer {
+  cursor: initial;
+  pointer-events: none;
+}
