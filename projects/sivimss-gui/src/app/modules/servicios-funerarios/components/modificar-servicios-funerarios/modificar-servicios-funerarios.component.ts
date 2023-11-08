@@ -202,6 +202,7 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
         desEstado: contratante.titularesBeneficiarios[0].cp.desEstado,
       }
     };
+    this.coloniasContratante = [{label:contratante.titularesBeneficiarios[0].cp.desColonia, value: contratante.titularesBeneficiarios[0].cp.desColonia}]
 
     if (contratante.titularesBeneficiarios.length > 1) {
       const [anio, mes, dia] = contratante.titularesBeneficiarios[1].fecNacimiento.split('-');
@@ -236,8 +237,8 @@ export class ModificarServiciosFunerariosComponent implements OnInit {
           desEstado: contratante.titularesBeneficiarios[1].cp.desEstado,
         }
       };
-    }
     this.coloniasContratante = [{label:contratante.titularesBeneficiarios[1].cp.desColonia, value: contratante.titularesBeneficiarios[1].cp.desColonia}]
+    }
 
     this.datosContratanteForm = this.formBuilder.group({
       datosIguales: [{value: false, disabled: false}, [Validators.required]],
