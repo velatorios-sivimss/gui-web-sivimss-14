@@ -70,9 +70,9 @@ export class RealizarPagoComponent implements OnInit {
   fechaActual: Date = new Date();
   fechaAnterior: Date = new Date();
 
-  habilitaIrPago: string[] = ['Generada', 'Vigente', 'Generado'];
+  habilitaIrPago: string[] = ['Generada', 'Vigente', 'Generado', 'Cancelada'];
   habilitaIrPagoEstatus: string[] = ['Pendiente', 'Generado']
-  habilitaModificar: string[] = ['Pagada'];
+  habilitaModificar: string[] = ['Pagada', 'Vigente', 'Generado', 'Cancelada'];
   habilitaModificarPago: string[] = ['Pagado'];
   MENSAJE_ARCHIVO_DESCARGA_EXITOSA: string = "El archivo se guardó correctamente.";
 
