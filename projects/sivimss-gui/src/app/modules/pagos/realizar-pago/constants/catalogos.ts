@@ -13,12 +13,12 @@ export const TIPO_PAGO_CATALOGOS_ODS: any[] = [
   },
   {
     value: 3,
-    label: 'Tarjeta crédito',
+    label: 'Tarjeta de crédito',
     deshabilitado: false
   },
   {
     value: 4,
-    label: 'Tarjeta débito',
+    label: 'Tarjeta de débito',
     deshabilitado: false
   },
   {
@@ -47,11 +47,11 @@ export const TIPO_PAGO_CATALOGOS_ODS: any[] = [
 export const TIPO_PAGO_CATALOGOS_CONVENIO: TipoDropdown[] = [
   {
     value: 3,
-    label: 'Tarjeta crédito'
+    label: 'Tarjeta de crédito'
   },
   {
     value: 4,
-    label: 'Tarjeta débito'
+    label: 'Tarjeta de débito'
   },
   {
     value: 6,

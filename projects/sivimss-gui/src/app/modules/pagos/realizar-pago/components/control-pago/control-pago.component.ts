@@ -131,7 +131,7 @@ export class ControlPagoComponent implements OnInit {
       }
     }
     const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
-      header: "Registrar tipo de pago",
+      header: `Registro de ${tipoPago.toLowerCase()}`,
       width: MAX_WIDTH,
       data
     }

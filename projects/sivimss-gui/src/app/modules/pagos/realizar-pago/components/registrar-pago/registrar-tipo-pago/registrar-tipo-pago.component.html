@@ -3,22 +3,12 @@
     <form [formGroup]="tipoPagoForm" (submit)="aceptar()">
       <div class="row mb-3">
         <div class="col-md-6">
-          <label class="control-label" for="tipoPago">Tipo de pago<span class="req">*</span>:</label>
-          <input id="tipoPago" class="form-control" formControlName="tipoPago"
-                 placeholder="Ingresar Tipo de pago">
-          <span class="campo-obligatorio"
-                *ngIf="pf?.tipoPago?.errors?.required && (pf?.tipoPago?.dirty || pf?.tipoPago?.touched)">Este campo es obligatorio *.</span>
+          <label class="control-label" for="total">Total a Pagar</label>
+          <p-inputNumber id="total" class="form-control" formControlName="total"
+                         placeholder="Ingresar Tipo de pago" [maxlength]="10"
+                         [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD"></p-inputNumber>
         </div>
-        <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
-          <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
-          <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
-                      placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
-          </p-calendar>
-          <span class="campo-obligatorio"
-                *ngIf="pf?.fecha?.errors?.required && (pf?.fecha?.dirty || pf?.fecha?.touched)">Este campo es obligatorio *.</span>
-        </div>
-      </div>
-      <div class="row mb-3" *ngIf="!pagosDeshabilitados.includes(idPago)">
         <div class="col-md-6" *ngIf="!recibeFolio.includes(idPago)">
           <label class="control-label" for="noAutorizacion">Número de autorización<span class="req">*</span>:</label>
           <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
@@ -33,8 +23,7 @@
           <span class="campo-obligatorio"
                 *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
         </div>
-
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="bancoLabelDiferente.includes(idPago) || !bancoLabelDiferente.includes(idPago)">
           <label class="control-label" for="nombreBanco" *ngIf="bancoLabelDiferente.includes(idPago)">Banco<span
             class="req">*</span>:</label>
           <label class="control-label" for="nombreBanco" *ngIf="!bancoLabelDiferente.includes(idPago)">Nombre del
@@ -44,8 +33,14 @@
           <span class="campo-obligatorio"
                 *ngIf="pf?.nombreBanco?.errors?.required && (pf?.nombreBanco?.dirty || pf?.nombreBanco?.touched)">Este campo es obligatorio *.</span>
         </div>
-      </div>
-      <div class="row mb-3">
+        <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
+          <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
+          <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
+                      placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+          </p-calendar>
+          <span class="campo-obligatorio"
+                *ngIf="pf?.fecha?.errors?.required && (pf?.fecha?.dirty || pf?.fecha?.touched)">Este campo es obligatorio *.</span>
+        </div>
         <div class="col-md-6">
           <label class="control-label" for="importe">Importe<span class="req">*</span>:</label>
           <p-inputNumber class="form-control" id="importe" formControlName="importe"
@@ -63,12 +58,6 @@
           <span class="campo-obligatorio"
                 *ngIf="pf?.importe?.errors?.required && (pf?.importe?.dirty || pf?.importe?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <div class="col-md-6 flex justify-content-end  mt-2">
-          <div class="flex flex-column">
-            <span class=" etiqueta-base mt-2">Total a pagar</span>
-            <span class="text-bold mt-2 total-pago">{{total | currency}}</span>
-          </div>
-        </div>
       </div>
       <div class="row mb-4">
         <div class="col-md-12 control-label">
@@ -77,9 +66,8 @@
       </div>
       <div class="flex justify-content-end mt-5">
         <button type="button" class="btn btn-default btn-md" (click)="cancelar()">Cancelar</button>
-        <button type="submit" class="ml-4 btn btn-primary btn-md"
-                [disabled]="tipoPagoForm.invalid">
-          Guardar
+        <button type="submit" class="ml-4 btn btn-primary btn-md" [disabled]="tipoPagoForm.invalid">
+          Aceptar
         </button>
       </div>
     </form>

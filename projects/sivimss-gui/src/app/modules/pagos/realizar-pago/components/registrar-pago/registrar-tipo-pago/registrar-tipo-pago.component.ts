@@ -62,7 +62,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   inicializarTipoPagoForm(): void {
     this.tipoPagoForm = this.formBuilder.group({
-      tipoPago: [{value: this.tipoPago, disabled: true}],
+      total: [{value: this.total, disabled: true}],
       fecha: [{value: null, disabled: false}, [Validators.required]],
       noAutorizacion: [{value: null, disabled: false}, [Validators.required]],
       nombreBanco: [{value: null, disabled: false}, [Validators.required]],
