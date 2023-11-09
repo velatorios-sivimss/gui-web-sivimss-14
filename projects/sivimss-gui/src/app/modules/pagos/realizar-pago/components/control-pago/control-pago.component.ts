@@ -62,8 +62,8 @@ export class ControlPagoComponent implements OnInit {
 
   inicializarFormPago(): void {
     this.pagoForm = this.formBuilder.group({
-      tipoPago: [{value: null, disabled: false}, [Validators.required]]
-    })
+      tipoPago: [{value: null, disabled: false}]
+    });
   }
 
   cargarCatalogos(): void {
