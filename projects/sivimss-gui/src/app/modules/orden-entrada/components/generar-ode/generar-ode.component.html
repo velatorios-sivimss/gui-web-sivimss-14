@@ -110,7 +110,7 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-content-end">
       <button class="btn btn-gold btn-md" (click)="mostrarModalAgregarODE = false">Cancelar</button>
-      <button class="btn btn-primary btn-md ml-3" (click)="generarODE()">Aceptar</button>
+      <button class="btn btn-primary btn-md ml-3" *ngIf="bloquearCampoArticulos" (click)="generarODE()">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>
