@@ -9,21 +9,21 @@
                          [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
                          [locale]="'en-US'" [mode]="'currency'" currency="USD"></p-inputNumber>
         </div>
-        <div class="col-md-6" *ngIf="!recibeFolio.includes(idPago)">
+        <div class="col-md-6" *ngIf="!recibeFolio.includes(idPago) && !pagosDeshabilitados.includes(idPago)">
           <label class="control-label" for="noAutorizacion">Número de autorización<span class="req">*</span>:</label>
           <input id="noAutorizacion" class="form-control" formControlName="noAutorizacion"
                  placeholder="Ingresa número" [maxlength]="10">
           <span class="campo-obligatorio"
                 *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <div class="col-md-6" *ngIf="recibeFolio.includes(idPago)">
+        <div class="col-md-6" *ngIf="recibeFolio.includes(idPago) && !pagosDeshabilitados.includes(idPago)">
           <label class="control-label" for="folioAutorizacion">Folio de autorización<span class="req">*</span>:</label>
           <input id="folioAutorizacion" class="form-control" formControlName="noAutorizacion"
                  placeholder="Ingresa número" [maxlength]="20">
           <span class="campo-obligatorio"
                 *ngIf="pf?.noAutorizacion?.errors?.required && (pf?.noAutorizacion?.dirty || pf?.noAutorizacion?.touched)">Este campo es obligatorio *.</span>
         </div>
-        <div class="col-md-6" *ngIf="bancoLabelDiferente.includes(idPago) || !bancoLabelDiferente.includes(idPago)">
+        <div class="col-md-6" *ngIf="![8,5].includes(idPago)">
           <label class="control-label" for="nombreBanco" *ngIf="bancoLabelDiferente.includes(idPago)">Banco<span
             class="req">*</span>:</label>
           <label class="control-label" for="nombreBanco" *ngIf="!bancoLabelDiferente.includes(idPago)">Nombre del
