@@ -36,7 +36,7 @@
         <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
           <label class="control-label" for="fecha">Fecha<span class="req">*</span>:</label>
           <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
-                      placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
+                      placeholder="dd-mm-aaaa" dateFormat="dd/mm/yy" appendTo="body">
           </p-calendar>
           <span class="campo-obligatorio"
                 *ngIf="pf?.fecha?.errors?.required && (pf?.fecha?.dirty || pf?.fecha?.touched)">Este campo es obligatorio *.</span>
