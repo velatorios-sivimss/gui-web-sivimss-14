@@ -74,55 +74,60 @@
   </ng-container>
   <ng-container *ngSwitchCase="RESUMEN_DE_PAGO">
     <app-table-panel>
-      <div class="row table-panel-row" *ngIf="[5].includes(idPago)">
+      <div class="row table-panel-row">
         <div class="col-md-6">
           <div class="table-panel-column">
             <label>Total a pagar</label>
             <span>{{total | currency}}</span>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="[5].includes(idPago)">
           <div class="table-panel-column">
             <label>Importe</label>
             <span>{{resumenSolicitud.importe | currency}}</span>
           </div>
         </div>
-      </div>
-
-      <div class="row table-panel-row" *ngIf="[3,4].includes(idPago)">
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="[3,4,6,7].includes(idPago)">
           <div class="table-panel-column">
-            <label>Total a pagar</label>
-            <span>{{total | currency}}</span>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="table-panel-column">
-            <label>Número de autorización</label>
+            <label *ngIf="[3,4].includes(idPago)">Número de autorización</label>
+            <label *ngIf="[6,7].includes(idPago)">Folio de autorización</label>
             <span>{{ resumenSolicitud.noAutorizacion }}</span>
           </div>
         </div>
-
+        <div class="col-md-6" *ngIf="![8].includes(idPago)">
+          <div class="table-panel-column">
+            <label>Fecha de pago</label>
+            <span> {{ resumenSolicitud.fecha | date:'dd/MM/YYYY' }}</span>
+          </div>
+        </div>
       </div>
-      <div class="row table-panel-row" *ngIf="[3,4].includes(idPago)">
+
+      <div class="row table-panel-row" *ngIf="[3,4,6,7].includes(idPago)">
         <div class="col-md-6">
           <div class="table-panel-column">
-            <label>Nombre del banco</label>
+            <label *ngIf="[3,4].includes(idPago)">Nombre del banco</label>
+            <label *ngIf="[6,7].includes(idPago)">Banco</label>
             <span>{{ resumenSolicitud.nombreBanco }}</span>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" *ngIf="[8].includes(idPago)">
           <div class="table-panel-column">
             <label>Importe</label>
             <span>{{resumenSolicitud.importe | currency}}</span>
           </div>
         </div>
-      </div>
-      <div class="row table-panel-row">
-        <div class="col-md-6" *ngIf="!fechasDeshabilitadas.includes(idPago)">
+        <div class="col-md-6" *ngIf="[6,7].includes(idPago)">
           <div class="table-panel-column">
             <label>Fecha de pago</label>
             <span> {{ resumenSolicitud.fecha | date:'dd/MM/YYYY' }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="row table-panel-row" *ngIf="[6,7].includes(idPago)">
+        <div class="col-md-6">
+          <div class="table-panel-column">
+            <label>Importe</label>
+            <span>{{resumenSolicitud.importe | currency}}</span>
           </div>
         </div>
       </div>
