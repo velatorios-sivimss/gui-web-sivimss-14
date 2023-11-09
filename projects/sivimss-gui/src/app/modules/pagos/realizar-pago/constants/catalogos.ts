@@ -1,45 +1,37 @@
 import {TipoDropdown} from "../../../../models/tipo-dropdown";
 
-export const TIPO_PAGO_CATALOGOS_ODS: any[] = [
+export const TIPO_PAGO_CATALOGOS_ODS: TipoDropdown[] = [
   {
     value: 1,
     label: 'Vale paritaria',
-    deshabilitado: false
   },
   {
     value: 2,
     label: 'Ayuda de Gastos de Funeral (AGF)',
-    deshabilitado: false
   },
   {
     value: 3,
     label: 'Tarjeta de crédito',
-    deshabilitado: false
   },
   {
     value: 4,
     label: 'Tarjeta de débito',
-    deshabilitado: false
   },
   {
     value: 5,
     label: 'Efectivo',
-    deshabilitado: false
   },
   {
     value: 6,
     label: 'Transferencia',
-    deshabilitado: false
   },
   {
     value: 7,
     label: 'Deposito',
-    deshabilitado: false
   },
   {
     value: 8,
     label: 'Traslado oficial',
-    deshabilitado: false
   }
 ];
 

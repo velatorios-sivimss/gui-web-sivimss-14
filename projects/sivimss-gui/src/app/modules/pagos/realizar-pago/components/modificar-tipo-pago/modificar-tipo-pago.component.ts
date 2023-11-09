@@ -80,7 +80,7 @@ export class ModificarTipoPagoComponent implements OnInit {
     this.idPagoDetalle = this.config.data.idPagoDetalle;
     this.total = this.config.data.importe;
     if (this.config.data.tipoPago === 'Pago de Orden de Servicio') {
-      this.tipoPagos = TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value));
+      this.tipoPagos = TIPO_PAGO_CATALOGOS_ODS.filter(t => ![1, 2].includes(t.value as number));
       return;
     }
     this.tipoPagos = TIPO_PAGO_CATALOGOS_CONVENIO;

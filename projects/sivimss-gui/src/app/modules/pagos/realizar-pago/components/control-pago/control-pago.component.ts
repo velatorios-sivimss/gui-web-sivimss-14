@@ -3,7 +3,7 @@ import {DetallePago, MetodoPago} from "../../modelos/detallePago.interface";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
-import {TIPO_PAGO_CATALOGOS_CONVENIO} from "../../constants/catalogos";
+import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DialogService, DynamicDialogConfig} from "primeng/dynamicdialog";
 import {MAX_WIDTH} from "../../../../../utils/constantes";
@@ -97,7 +97,7 @@ export class ControlPagoComponent implements OnInit {
 
   obtenerMetodosPago(): TipoDropdown[] {
     if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
-      return []
+      return TIPO_PAGO_CATALOGOS_ODS;
     }
     if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
       return TIPO_PAGO_CATALOGOS_CONVENIO;
