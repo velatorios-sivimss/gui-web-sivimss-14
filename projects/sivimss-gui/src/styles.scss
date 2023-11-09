@@ -93,7 +93,7 @@ body {
 
 .contenedor-inputswitch {
   align-items: center;
-  display: inline-block;
+  display: flex;
   margin-left: 10px;
 
   & > *:not(span) {
