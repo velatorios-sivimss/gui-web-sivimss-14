@@ -1,4 +1,7 @@
-<app-titulo-principal titulo="Pago de Orden de Servicio"></app-titulo-principal>
+<div class="grid">
+  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="'../'"></app-btn-regresar>
+  <app-titulo-principal titulo="Pago de Orden de Servicio" class="col"></app-titulo-principal>
+</div>
 <p-table styleClass="mt-5 mb-6" [value]="pagos" [paginator]="pagos.length > 0" [rows]="cantElementosPorPagina"
          [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
          (onLazyLoad)="seleccionarPaginacion($event)">
