@@ -91,6 +91,9 @@
         [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
         <ng-template pTemplate="header">
           <tr>
+            <th scope="col">
+              
+            </th>
             <th scope="col">Velatorio</th>
             <th scope="col">Pagos</th>
             <th scope="col">Fecha de pago</th>
@@ -101,6 +104,9 @@
         </ng-template>
         <ng-template pTemplate="body" let-pagosRealizados>
           <tr>
+            <td scope="col">
+              <p-tableRadioButton *ngIf="pagosRealizados.importePagado > 0"[value]="pagosRealizados.idPagoSFPA" (click)="mostrarDetallePagos(pagosRealizados)"></p-tableRadioButton>
+            </td>
             <td>{{pagosRealizados.velatorio}}</td>
             <td>{{pagosRealizados.noPagos}}</td>
             <td>{{pagosRealizados.fechaParcialidad}}</td>

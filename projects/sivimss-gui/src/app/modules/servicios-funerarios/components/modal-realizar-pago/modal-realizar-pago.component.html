@@ -39,35 +39,33 @@
 <form [formGroup]="generarPagoForm">
   <div class="row mb-3">
     <div class="col-md-6">
-      <label class="control-label" for="metodoPago">Método de pago</label>
-      <p-dropdown #dd id="metodoPago" class="form-control" [filter]="true" filterBy="label" appendTo="body"
-        [options]="metodoPago" placeholder="Selecciona método de pago" (onChange)="cambioMetodoPago(dd)"
-        formControlName="metodoPago">
+      <label class="control-label" for="idMetodoPago">Método de pago</label>
+      <p-dropdown #dd id="idMetodoPago" class="form-control" [filter]="true" filterBy="label" appendTo="body"
+        [options]="idMetodoPago" placeholder="Selecciona método de pago" (onChange)="cambioMetodoPago(dd)"
+        formControlName="idMetodoPago">
       </p-dropdown>
 
     </div>
+    
+  </div>
+
+  <div class="row mb-3">
     <div class="col-md-6" *ngIf="validacion.nombreBanco">
       <label class="control-label" for="nombreBanco">Nombre del banco:</label>
       <input id="nombreBanco" class="form-control" placeholder="Ingresa el nombre del banco" maxlength="20"
         formControlName="nombreBanco">
     </div>
-  </div>
-  <div class="row mb-3">
     <div class="col-md-6" *ngIf="validacion.numeroAutorizacion">
       <label class="control-label" for="numeroAutorizacion">Número de autorización:</label>
       <input id="numeroAutorizacion" class="form-control" alphanumericOnly maxlength="10"
         placeholder="Ingresa el número de autorización" formControlName="numeroAutorizacion">
-
     </div>
     <div class="col-md-6" *ngIf="validacion.importe">
       <label class="control-label" for="importe">Importe:</label>
-      <p-inputNumber id="importe" class="form-control" formControlName="importe" mode="decimal" [minFractionDigits]="2"
-        [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD"
+      <p-inputNumber id="importe" class="form-control" formControlName="importe" mode="decimal" [minFractionDigits]="2" 
+        [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="this.config.data.item.importeAcumulado" [min]="1"
         locale="en-US"></p-inputNumber>
     </div>
-
-  </div>
-  <div class="row mb-3">
     <div class="col-md-6" *ngIf="validacion.folioAutorizacion">
       <label class="control-label" for="folioAutorizacion">Folio de autorización:</label>
       <input id="folioAutorizacion" class="form-control" alphanumericOnly maxlength="20"
@@ -78,7 +76,24 @@
       <p-calendar styleClass="form-control" appendTo="body" id="fecha" formControlName="fecha" [showIcon]="true"
         dateFormat="dd/mm/yy" placeholder="Fecha" [maxDate]="fechaActual"></p-calendar>
     </div>
+    <div class="col-md-6" *ngIf="validacion.valeParitaria">
+      <label class="control-label" for="valeParitaria">Folio vale paritaria:</label>
+      <input id="valeParitaria" class="form-control" alphanumericOnly maxlength="20"
+        placeholder="Ingresa el folio de autorización" formControlName="valeParitaria">
+    </div>
+    <div class="col-md-6" *ngIf="validacion.fechaVale">
+      <label class="control-label" for="fecha">Fecha:</label>
+      <p-calendar styleClass="form-control" appendTo="body" id="fechaVale" formControlName="fechaVale" [showIcon]="true"
+        dateFormat="dd/mm/yy" placeholder="Fecha" [maxDate]="fechaActual"></p-calendar>
+    </div>
+    <div class="col-md-6" *ngIf="validacion.importeValeParitaria">
+      <label class="control-label" for="importeValeParitaria">Importe autorizado:</label>
+      <p-inputNumber id="importeValeParitaria" class="form-control" formControlName="importeValeParitaria" mode="decimal" [minFractionDigits]="2" 
+        [maxFractionDigits]="2" placeholder="Ingresa el importe" [maxlength]="10" currency="USD" [max]="this.config.data.item.importeAcumulado" [min]="0"
+        locale="en-US"></p-inputNumber>
+    </div>
   </div>
+ 
 </form>
 <div class="row mt-2">
   <div class="col-md-12 flex justify-content-end">

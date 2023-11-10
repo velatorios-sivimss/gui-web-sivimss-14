@@ -98,8 +98,6 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
-
           if (respuesta.error === false && respuesta.mensaje === 'Exito') {
             this.datosGenerales = respuesta.datos.datosGenerales;
             this.costoRestante = Number(this.datosGenerales.costoRestante);
@@ -110,8 +108,6 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
             this.alertaService.mostrar(TipoAlerta.Info, this.errorMsg);
             console.log(respuesta.mensaje);
           }
-
-          console.log(this.pagosRealizados);
         },
         error: (error: HttpErrorResponse) => {
           console.log(error);
@@ -121,41 +117,6 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
           );
         },
       });
-  }
-
-  paginar(event: LazyLoadEvent): void {
-    setTimeout(() => {
-      this.detallePago = [
-        {
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          pagos: '1/3',
-          fechaPago: '01/01/2022',
-          metodoPago: 'Tarjeta de débito',
-          noReciboPago: 10293847456,
-          estatus: 'Pagado',
-          monto: 11000,
-        },
-        {
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          pagos: '1/3',
-          fechaPago: '01/01/2022',
-          metodoPago: 'Tarjeta de débito',
-          noReciboPago: 10293847456,
-          estatus: 'Pagado',
-          monto: 11000,
-        },
-        {
-          velatorio: 'No. 14 San Luis Potosí y CD Valles',
-          pagos: '1/3',
-          fechaPago: '01/01/2022',
-          metodoPago: 'Tarjeta de débito',
-          noReciboPago: 10293847456,
-          estatus: 'Pagado',
-          monto: 11000,
-        },
-      ];
-      this.totalElementos = this.detallePago.length;
-    }, 0);
   }
 
   abrirPanelHeader(event: MouseEvent): void {
@@ -185,6 +146,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       },
     });
     ref.onClose.subscribe((val: boolean) => {
+      console.log(val);
       if (val) {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
       }
@@ -288,8 +250,11 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     event: MouseEvent,
     item: PagosRealizados
   ): void {
-    console.log(item);
     this.item = item;
     emergente.toggle(event);
+  }
+
+  mostrarDetallePagos(item: any) {
+    console.log(item);
   }
 }
