@@ -119,8 +119,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
 
   }
 
-
-  paginar(event: LazyLoadEvent): void {
+  /*  paginar(event: LazyLoadEvent): void {
     setTimeout(() => {
       this.detallePago = [
         {
