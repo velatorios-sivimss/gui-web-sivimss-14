@@ -510,9 +510,7 @@ export class PorPersonaComponent implements OnInit,OnChanges, AfterViewInit {
           documentacion:{
             validaIneContratante:false,
             validaCurp:false,
-            validaRfc:false,
-            validaActaNacimientoBeneficiario:false,
-            validaIneBeneficiario:false
+            validaRfc:false
           }
         }
       )
