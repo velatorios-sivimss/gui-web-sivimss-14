@@ -7,8 +7,8 @@
           [options]="listaServicios" placeholder="Selecciona el tipo de servicio" (onChange)="seleccionarServicio(dd)">
         </p-dropdown>
         <span class="campo-obligatorio"
-          *ngIf="f.idTipoServicio?.errors?.required && (f.idTipoServicio?.dirty || f.idTipoServicio?.touched)">Campo
-          obligatorio</span>
+          *ngIf="f.idTipoServicio?.errors?.required && (f.idTipoServicio?.dirty || f.idTipoServicio?.touched)">
+          Este campo es obligatorio *.</span>
       </div>
       <div class="col-md-6 pt-6" *ngIf="f.idTipoServicio.value == 3">
         <p-checkbox inputId="alta" formControlName="indCertificado" styleClass="mr-3" [binary]="true"></p-checkbox>
@@ -22,7 +22,7 @@
         <label class="control-label" for="idTipoServicio">Fecha y hora <span class="req">*:</span></label><br>
         <div class="row mb-2 mt-2">
           <div class="col-md-3">
-            <label>{{fechaActual}} - {{registro | date:'shortTime'}}</label>
+            <label>{{fechaActual}} - {{registro | date:'HH:mm:SS'}}</label>
           </div>
         </div>
       </div>
