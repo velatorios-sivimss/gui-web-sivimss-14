@@ -278,7 +278,7 @@ export class SolicitudesPagoComponent implements OnInit, AfterContentChecked {
   crearSolicitudFiltros(tipoReporte: "pdf" | "xls" = "pdf"): FiltrosSolicitudPago {
     const fechaInicial = this.filtroFormSolicitudesPago.get('fechaInicial')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaInicial')?.value).format('DD/MM/YYYY') : null;
     const fechaFinal = this.filtroFormSolicitudesPago.get('fechaFinal')?.value !== null ? moment(this.filtroFormSolicitudesPago.get('fechaFinal')?.value).format('DD/MM/YYYY') : null;
-    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folioODS")?.value.label : null;
+    const folio = this.filtroFormSolicitudesPago.get("folio")?.value !== null ? this.filtroFormSolicitudesPago.get("folio")?.value : null;
     return {
       idNivel: this.filtroFormSolicitudesPago.get("nivel")?.value,
       idDelegacion: this.filtroFormSolicitudesPago.get("delegacion")?.value,
