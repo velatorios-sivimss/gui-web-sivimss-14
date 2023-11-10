@@ -96,7 +96,8 @@
   </div>
   <div class="flex justify-content-end mb-3">
     <button type="button" class="ml-4 mt-3 btn btn-danger btn-md" routerLink="../">Cancelar</button>
-    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" [disabled]="!formulario.valid" (click)="mostrarModalAgregarODE = true">Guardar</button>
+    <button type="button" class="ml-4 mt-3 btn btn-primary btn-md" [disabled]="!formulario.valid || bloquearCampoArticulos"
+    (click)="mostrarModalAgregarODE = true">Guardar</button>
   </div>
 </form>
 
@@ -110,7 +111,7 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-content-end">
       <button class="btn btn-gold btn-md" (click)="mostrarModalAgregarODE = false">Cancelar</button>
-      <button class="btn btn-primary btn-md ml-3" *ngIf="bloquearCampoArticulos" (click)="generarODE()">Aceptar</button>
+      <button class="btn btn-primary btn-md ml-3" (click)="generarODE()">Aceptar</button>
     </div>
   </ng-template>
 </p-dialog>
