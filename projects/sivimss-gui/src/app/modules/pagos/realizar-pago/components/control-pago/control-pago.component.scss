@@ -115,3 +115,13 @@ hr {
   justify-items: start;
   width: 120px;
 }
+
+.container-monto {
+  display: grid;
+  grid-template-columns:  100px auto;
+}
+
+
+.cursor-pointer {
+  padding-top: 4px;
+}

@@ -80,16 +80,18 @@
             {{pago.metodoPago}}
           </div>
           <div class="accordion-header-right">
-            <div class="estatus">
-              <span>Importe</span>
-              <b>{{pago.importe | currency}}</b>
+            <div class="container-monto">
+              <div class="estatus">
+                <span>Importe</span>
+                <b>{{pago.importe | currency}}</b>
+              </div>
+              <div class="ml-2"
+                   *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)"></div>
+              <a class="cursor-pointer" (click)="mostrarOverlay($event, pago)"
+                 *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)">
+                <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
+              </a>
             </div>
-            <div class="ml-2"
-                 *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)"></div>
-            <a class="cursor-pointer" (click)="mostrarOverlay($event, pago)"
-               *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)">
-              <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-            </a>
           </div>
         </div>
       </ng-template>
@@ -130,9 +132,9 @@
 <p-overlayPanel #overlayPanel>
   <ng-template pTemplate="content">
     <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Modificar" onCloseOnNavigation>
+      <app-overlay-panel-opcion titulo="Modificar" (click)="modificarTipoPago()" onCloseOnNavigation>
       </app-overlay-panel-opcion>
-      <app-overlay-panel-opcion titulo="Eliminar" onCloseOnNavigation>
+      <app-overlay-panel-opcion titulo="Eliminar" (click)="cancelarTipoPago()" onCloseOnNavigation>
       </app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
