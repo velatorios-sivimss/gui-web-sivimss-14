@@ -1,29 +1,24 @@
 export interface DetalleServicios {
-                 idPlan: null | string,
-               numFolio: null | string,
-         desNumeroPagos: null | string,
-          nombrePaquete: null | string,
-  contratanteSubstituto: null | string,
-                 correo: null | string,
-                 estado: null | string,
-              velatorio: null | string,
-            estatusPlan: null | string,
-                  total: null | string,
-               restante: null | number,
-            totalPagado: null | number
+  idPlan: null | string;
+  costoRestante: null | string;
+  precio: null | string;
+  estado: null | string;
+  correo: null | string;
+  folio: null | string;
+  nombre: null | string;
+  paquete: null | string;
+  importePagado: null | string;
 }
 
 export interface PagosRealizados {
-        idMetodoPago:  null | string,
-               pagos:  null | string,
-           fechaPago:  null | string,
-          metodoPago:  null | string,
-  numeroAutorizacion:  null | string,
-   folioAutorizacion:  null | string,
-         estatusPago:  null | string,
-      idBitacoraPago:  null | number,
-         nombreBanco:  null | string,
-           velatorio:  null | string,
-               monto:  null | string,
-        noReciboPago:  null | string,
+  estatusPago: null | string;
+  idPagoSFPA: null | string;
+  importeAcumulado: null | string;
+  noPagos: null | string;
+  velatorio: null | string;
+  validaPago: null | boolean;
+  idPlanSFPA: null | string;
+  fechaParcialidad: null | number;
+  importeMensual: null | string;
+  importePagado: null | string;
 }
