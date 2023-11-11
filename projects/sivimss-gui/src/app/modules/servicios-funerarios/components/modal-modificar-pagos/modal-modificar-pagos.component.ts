@@ -13,7 +13,6 @@ import { MensajesSistemaService } from '../../../../services/mensajes-sistema.se
 import { Dropdown } from 'primeng/dropdown';
 import { RegistrarPago } from '../../models/registrar-pago.interface';
 import * as moment from 'moment/moment';
-import { PagosRealizados } from '../../models/detalle-servicios.interface';
 import { finalize } from 'rxjs/operators';
 import { HttpRespuesta } from '../../../../models/http-respuesta.interface';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,13 +23,14 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./modal-modificar-pagos.component.scss'],
 })
 export class ModalModificarPagosComponent implements OnInit {
-  modificarPagoForm!: FormGroup;
-  metodoPago!: TipoDropdown[];
+  generarPagoForm!: FormGroup;
+  idMetodoPago!: TipoDropdown[];
   fechaActual = new Date();
-  mensalidades: number = 0;
-  tipoDePago: any;
+  mensualidades: number = 0;
+
   confirmacionGuardar: boolean = false;
-  idPlanSpfa!: number;
+  errorMsg =
+    ' Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
 
   validacion: any = {
     nombreBanco: false,
@@ -39,6 +39,9 @@ export class ModalModificarPagosComponent implements OnInit {
     totalPagar: false,
     folioAutorizacion: false,
     fecha: false,
+    fechaVale: false,
+    valeParitaria: false,
+    importeValeParitaria: false,
   };
 
   constructor(
@@ -53,74 +56,109 @@ export class ModalModificarPagosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.inicializarFormulario(this.config.data.detalleRegistro);
+    console.log(this.config.data);
+    this.inicializarFormulario();
     this.inicializarDatos();
-    this.idPlanSpfa = this.config.data.detalleRegistro.idBitacoraPago;
   }
 
-  inicializarFormulario(datos: PagosRealizados): void {
-    let fecha;
-    /*   if(datos.fechaPago){
-      const [anio,mes,dia] = datos.fechaPago.split('-');
-      fecha = new Date(Number(anio) + '/' + Number(mes) + '/' + Number(dia));
-    } */
-
-    /*  this.modificarPagoForm = this.formBuilder.group({
-      numeroAutorizacion: [{value: datos.numeroAutorizacion ?? null, disabled:false}],
-      nombreBanco: [{value: datos.nombreBanco ?? null, disabled:false}],
-      importe: [{value: datos.monto ?? null, disabled:false}],
-      folioAutorizacion: [{value: datos.folioAutorizacion ?? null, disabled:false}],
-      fecha: [{value: fecha ?? null, disabled:false}],
-      totalPagar: [{value: null, disabled:false}],
-      metodoPago: [{value: Number(datos.idMetodoPago), disabled:false}],
-    }); */
-
-    // this.cambioMetodoPago(null, )
-    //  this.tipoDePago = datos.metodoPago;
-
-    //this.validarTipoPago(datos.metodoPago);
+  inicializarFormulario(): void {
+    this.generarPagoForm = this.formBuilder.group({
+      numeroAutorizacion: [{ value: null, disabled: false }],
+      nombreBanco: [{ value: null, disabled: false }],
+      importe: [{ value: null, disabled: false }],
+      folioAutorizacion: [{ value: null, disabled: false }],
+      fecha: [{ value: null, disabled: false }],
+      fechaPago: [{ value: null, disabled: false }],
+      idMetodoPago: [{ value: null, disabled: false }],
+      idPlan: [{ value: null, disabled: false }],
+      idPagoSFPA: [{ value: null, disabled: false }],
+      valeParitaria: [{ value: null, disabled: false }],
+      fechaVale: [{ value: null, disabled: false }],
+      fechaValeParitaria: [{ value: null, disabled: false }],
+      importeValeParitaria: [{ value: null, disabled: false }],
+      idBitacoraPago: [{ value: null, disabled: false }],
+    });
   }
 
   inicializarDatos(): void {
-    this.metodoPago = this.config.data.metodosPago;
-    this.mensalidades =
-      Number(this.config.data.detallePago.total) /
-      Number(this.config.data.detallePago.desNumeroPagos);
-  }
+    console.log('-------------------------------');
+    console.log(this.config.data.detallePago);
+    console.log(this.config.data.detalleRegistro);
+    console.log(
+      moment(this.config.data.detalleRegistro.fechaValeParitario).format(
+        'YYYY/MM/DD'
+      )
+    );
 
-  validarTipoPago(tipo: any): void {
-    if (tipo.includes('Tarjeta crédito')) {
-      this.validacion.nombreBanco = true;
-      this.validacion.numeroAutorizacion = true;
-      this.validacion.importe = true;
-      this.validacion.totalPagar = false;
-      this.validacion.folioAutorizacion = false;
-      this.validacion.fecha = false;
+    let fechaValeParitario =
+      this.config.data.detalleRegistro.fechaValeParitario;
+    if (
+      typeof this.config.data.detalleRegistro.fechaValeParitario == 'string'
+    ) {
+      let [anio, mes, dia] = fechaValeParitario.split('-');
+      dia = dia.substr(0, 2);
+      fechaValeParitario = new Date(anio + '/' + mes + '/' + dia);
+    } else {
+      fechaValeParitario = null;
     }
-    if (tipo.includes('Tarjeta débito')) {
-      this.validacion.nombreBanco = true;
-      this.validacion.numeroAutorizacion = true;
-      this.validacion.importe = true;
-      this.validacion.totalPagar = false;
-      this.validacion.folioAutorizacion = false;
-      this.validacion.fecha = false;
+
+    let fecha = this.config.data.detalleRegistro.fechaValeParitario;
+    if (
+      typeof this.config.data.detalleRegistro.fechaValeParitario == 'string'
+    ) {
+      let [anio, mes, dia] = fecha.split('-');
+      dia = dia.substr(0, 2);
+      fecha = new Date(anio + '/' + mes + '/' + dia);
+    } else {
+      fecha = null;
     }
-    if (tipo.includes('Transferencia')) {
-      this.validacion.nombreBanco = true;
-      this.validacion.numeroAutorizacion = false;
-      this.validacion.importe = true;
-      this.validacion.totalPagar = true;
-      this.validacion.folioAutorizacion = true;
-      this.validacion.fecha = true;
-    }
-    if (tipo.includes('Depósito')) {
-      this.validacion.nombreBanco = true;
-      this.validacion.numeroAutorizacion = false;
-      this.validacion.importe = true;
-      this.validacion.totalPagar = true;
-      this.validacion.folioAutorizacion = true;
-      this.validacion.fecha = true;
-    }
+
+    console.log(fecha);
+    this.idMetodoPago = this.config.data.metodosPago;
+    this.mensualidades = this.config.data.detallePago.noPagos;
+    this.formulario.idPlan.setValue(this.config.data.detallePago.idPlanSFPA);
+    this.formulario.idPagoSFPA.setValue(
+      this.config.data.detallePago.idPagoSFPA
+    );
+    this.formulario.idBitacoraPago.setValue(
+      this.config.data.detalleRegistro.idBitacora
+    );
+
+    this.formulario.numeroAutorizacion.setValue(
+      this.config.data.detalleRegistro.numeroAutorizacion
+    );
+    this.formulario.nombreBanco.setValue(
+      this.config.data.detalleRegistro.referenciaBancaria
+    );
+    this.formulario.importe.setValue(
+      this.config.data.detalleRegistro.importePago
+    );
+    this.formulario.folioAutorizacion.setValue(
+      this.config.data.detalleRegistro.folioAutorizacion
+    );
+    this.formulario.fecha.setValue(fecha);
+
+    this.formulario.idMetodoPago.setValue(
+      this.config.data.detalleRegistro.idMetodoPago
+    );
+    this.formulario.valeParitaria.setValue(
+      this.config.data.detalleRegistro.numeroValeParitario
+    );
+    this.formulario.fechaVale.setValue(fechaValeParitario);
+    this.formulario.importeValeParitaria.setValue(
+      this.config.data.detalleRegistro.importeValeParitario
+    );
+
+    this.mostrarCampos(
+      this.config.data.detalleRegistro.idMetodoPago,
+      this.config.data.detalleRegistro.estatus
+    );
+    this.formulario.idPagoSFPA.setValue(
+      this.config.data.detallePago.idPagoSFPA
+    );
+    this.formulario.idMetodoPago.setValue(
+      this.config.data.detalleRegistro.idMetodoPago
+    );
   }
 
   cambioMetodoPago(dd: Dropdown): void {
@@ -128,71 +166,113 @@ export class ModalModificarPagosComponent implements OnInit {
     this.formulario.nombreBanco.patchValue(null);
     this.formulario.importe.patchValue(null);
     this.formulario.folioAutorizacion.patchValue(null);
-    this.formulario.fecha.patchValue(null);
+    this.formulario.fechaPago.patchValue(null);
     this.formulario.totalPagar.patchValue(null);
-    this.tipoDePago = dd.selectedOption.label;
-    if (dd.selectedOption.label.includes('Tarjeta crédito')) {
+    this.formulario.fecha.patchValue(null);
+    this.formulario.valeParitaria.patchValue(null);
+    this.formulario.fechaVale.patchValue(null);
+    this.formulario.fechaValeParitaria.patchValue(null);
+    this.formulario.importeValeParitaria.patchValue(null);
+
+    const idTipoPago = Number(dd.selectedOption.value);
+    this.mostrarCampos(idTipoPago, dd.selectedOption.label);
+  }
+
+  mostrarCampos(idTipoPago: number, tipoPago: string): void {
+    if (tipoPago.toUpperCase().includes('TARJETA CRÉDITO') || idTipoPago == 3) {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;
       this.validacion.totalPagar = false;
       this.validacion.folioAutorizacion = false;
       this.validacion.fecha = false;
+      this.validacion.fechaVale = false;
+      this.validacion.valeParitaria = false;
+      this.validacion.importeValeParitaria = false;
     }
-    if (dd.selectedOption.label.includes('Tarjeta débito')) {
+    if (tipoPago.toUpperCase().includes('TARJETA DÉBITO') || idTipoPago == 4) {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;
       this.validacion.totalPagar = false;
       this.validacion.folioAutorizacion = false;
       this.validacion.fecha = false;
+      this.validacion.fechaVale = false;
+      this.validacion.valeParitaria = false;
+      this.validacion.importeValeParitaria = false;
     }
-    if (dd.selectedOption.label.includes('Transferencia')) {
+    if (tipoPago.toUpperCase().includes('TRANSFERENCIA') || idTipoPago == 6) {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = false;
       this.validacion.importe = true;
       this.validacion.totalPagar = true;
       this.validacion.folioAutorizacion = true;
       this.validacion.fecha = true;
+      this.validacion.fechaVale = false;
+      this.validacion.valeParitaria = false;
+      this.validacion.importeValeParitaria = false;
     }
-    if (dd.selectedOption.label.includes('Depósito')) {
+    if (tipoPago.toUpperCase().includes('DEPÓSITO') || idTipoPago == 7) {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = false;
       this.validacion.importe = true;
       this.validacion.totalPagar = true;
       this.validacion.folioAutorizacion = true;
       this.validacion.fecha = true;
+      this.validacion.fechaVale = false;
+      this.validacion.valeParitaria = false;
+      this.validacion.importeValeParitaria = false;
+    }
+    if (tipoPago.toUpperCase().includes('VALE PARITARIA') || idTipoPago == 1) {
+      this.validacion.fechaVale = true;
+      this.validacion.valeParitaria = true;
+      this.validacion.importeValeParitaria = true;
+      this.validacion.nombreBanco = false;
+      this.validacion.numeroAutorizacion = false;
+      this.validacion.importe = false;
+      this.validacion.totalPagar = false;
+      this.validacion.folioAutorizacion = false;
+      this.validacion.fecha = false;
     }
   }
 
-  generarObjetoModificar(): RegistrarPago {
-    return {
-      idPago: +this.idPlanSpfa,
-      idTipoPago: +this.formulario.metodoPago.value ?? null,
-      fechaPago: this.formulario.fecha.value
+  cerrarModal() {
+    this.ref.close(false);
+  }
+
+  guardarPago(): void {
+    this.formulario.fechaPago.setValue(
+      this.formulario.fecha.value
         ? moment(this.formulario.fecha.value).format('YYYY-MM-DD')
-        : null,
-      numeroAutorizacion: this.formulario.numeroAutorizacion.value ?? null,
-      folioAutorizacion: this.formulario.folioAutorizacion.value ?? null,
-      nombreBanco: this.formulario.nombreBanco.value ?? null,
-      importe: this.formulario.importe.value ?? null,
-    };
-  }
+        : null
+    );
+    this.formulario.fechaValeParitaria.setValue(
+      this.formulario.fechaVale.value
+        ? moment(this.formulario.fechaVale.value).format('YYYY-MM-DD')
+        : null
+    );
 
-  modificarPago(): void {
+    console.log(this.generarPagoForm.getRawValue());
+
     this.confirmacionGuardar = false;
     this.loaderService.activar();
-    let generarObjetoGuardado: RegistrarPago = this.generarObjetoModificar();
+    let generarObjetoGuardado: RegistrarPago =
+      this.generarPagoForm.getRawValue();
     this.detallePagoService
       .modificarPago(generarObjetoGuardado)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          this.alertaService.mostrar(
-            TipoAlerta.Exito,
-            'Pago modificado correctamente.'
-          );
-          this.ref.close(true);
+          if (respuesta.error === false && respuesta.mensaje === 'Exito') {
+            this.alertaService.mostrar(
+              TipoAlerta.Exito,
+              'Pago realizado correctamente. '
+            );
+            this.ref.close(true);
+          } else {
+            this.alertaService.mostrar(TipoAlerta.Info, this.errorMsg);
+            console.log(respuesta.mensaje);
+          }
         },
         error: (error: HttpErrorResponse) => {
           const errorMsg: string =
@@ -207,11 +287,7 @@ export class ModalModificarPagosComponent implements OnInit {
       });
   }
 
-  cerrarModal() {
-    this.ref.close(false);
-  }
-
   get formulario() {
-    return this.modificarPagoForm.controls;
+    return this.generarPagoForm.controls;
   }
 }

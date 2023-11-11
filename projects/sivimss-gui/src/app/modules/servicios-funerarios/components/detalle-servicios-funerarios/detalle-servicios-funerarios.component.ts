@@ -24,6 +24,7 @@ import {
 import { MensajesSistemaService } from '../../../../services/mensajes-sistema.service';
 import {
   DetalleServicios,
+  PagosBitacora,
   PagosRealizados,
 } from '../../models/detalle-servicios.interface';
 import { ModalModificarPagosComponent } from '../modal-modificar-pagos/modal-modificar-pagos.component';
@@ -49,7 +50,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   readonly POSICION_METODO_PAGO: number = 0;
 
   detallePago: DetallePago[] = [];
-  detalleSeleccionado!: PagosRealizados;
+  detallePagoBitacora!: PagosBitacora;
+  PagosBitacora: PagosBitacora[] = [];
   metodosPago!: TipoDropdown[];
 
   numPaginaActual: number = 0;
@@ -119,15 +121,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       });
   }
 
-  abrirPanelHeader(event: MouseEvent): void {
-    this.overlayPanelHeader.toggle(event);
-  }
-
-  abrirPanelBody(
-    event: MouseEvent,
-    detalleSeleccionado: PagosRealizados
-  ): void {
-    this.detalleSeleccionado = detalleSeleccionado;
+  abrirPanelBody(event: MouseEvent, detallePagoBitacora: PagosBitacora): void {
+    this.detallePagoBitacora = detallePagoBitacora;
     this.overlayPanelBody.toggle(event);
   }
 
@@ -146,7 +141,6 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       },
     });
     ref.onClose.subscribe((val: boolean) => {
-      console.log(val);
       if (val) {
         this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
       }
@@ -205,6 +199,9 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   }
 
   abrirModalModificarPago(): void {
+    console.log(this.metodosPago);
+    console.log(this.item);
+    console.log(this.detallePagoBitacora);
     const ref = this.dialogService.open(ModalModificarPagosComponent, {
       header: 'Modificar pago',
       style: {
@@ -213,8 +210,8 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
       },
       data: {
         metodosPago: this.metodosPago,
-        detallePago: this.datosGenerales,
-        detalleRegistro: this.detalleSeleccionado,
+        detallePago: this.item,
+        detalleRegistro: this.detallePagoBitacora,
       },
     });
     ref.onClose.subscribe((val: boolean) => {
@@ -232,7 +229,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         width: '100%',
       },
       data: {
-        detalleRegistro: this.detalleSeleccionado,
+        detalleRegistro: this.detallePagoBitacora,
       },
     });
     ref.onClose.subscribe((val: boolean) => {
@@ -254,7 +251,32 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     emergente.toggle(event);
   }
 
-  mostrarDetallePagos(item: any) {
-    console.log(item);
+  mostrarDetallePagos(detallePagoBitacora: PagosRealizados): void {
+    this.item = detallePagoBitacora;
+    this.buscarPagosBitacora(Number(detallePagoBitacora.idPagoSFPA));
+  }
+
+  buscarPagosBitacora(idPagoSFPA: number): void {
+    this.detallePagoService
+      .obtenerDetalleBitacoraPago(idPagoSFPA)
+      .pipe(finalize(() => this.loaderService.desactivar()))
+      .subscribe({
+        next: (respuesta: HttpRespuesta<any>) => {
+          console.log(respuesta);
+          if (respuesta.error === false && respuesta.mensaje === 'Exito') {
+            this.PagosBitacora = respuesta.datos;
+          } else {
+            this.alertaService.mostrar(TipoAlerta.Info, this.errorMsg);
+            console.log(respuesta.mensaje);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          this.alertaService.mostrar(
+            TipoAlerta.Info,
+            this.errorMsg || 'El servicio no responde, no permite más llamadas.'
+          );
+        },
+      });
   }
 }
