@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 
@@ -37,6 +37,7 @@ import {InformacionServicioVelacionInterface} from '../../../models/InformacionS
 import {InformacionServicioInterface} from '../../../models/InformacionServicio.interface';
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 
 @Component({
   selector: 'app-datos-finado-sf',
@@ -45,7 +46,13 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 })
 export class DatosFinadoSFComponent implements OnInit {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
+
+  @ViewChild('clinicaSeleccionada') clinicaSeleccionada: any;
+  @ViewChild('unidadSeleccionada') unidadSeleccionada: any;
+  @ViewChild('pensionSeleccionada') pensionSeleccionada: any;
+  @ViewChild('lugarNacimientoSelect') lugarNacimientoSelect: any;
+  @ViewChild('paisNacimientoSelect') paisNacimientoSelect: any;
 
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
@@ -290,7 +297,8 @@ export class DatosFinadoSFComponent implements OnInit {
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(0);
+    // this.seleccionarEtapa.emit(0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:0, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
@@ -355,7 +363,7 @@ export class DatosFinadoSFComponent implements OnInit {
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(2);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:2, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
@@ -441,6 +449,7 @@ export class DatosFinadoSFComponent implements OnInit {
     this.finado.idPersona = this.idPersona;
 
     this.altaODS.finado = this.finado;
+    this.llenarDescripcionDropDown();
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -574,5 +583,17 @@ export class DatosFinadoSFComponent implements OnInit {
 
   validarBotonAceptar(): boolean {
     return this.form.invalid || this.folioInvalido
+  }
+
+  llenarDescripcionDropDown(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    obj.finado.clinicaAdscripcion = this.clinicaSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.tipoPension = this.pensionSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.unidadProcedencia = this.unidadSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.lugarNacimiento = this.lugarNacimientoSelect?.selectedOption?.label ?? null;
+    obj.finado.paisNacimiento = this.paisNacimientoSelect?.selectedOption?.label ?? null;
+    obj.finado.numeroContrato = this.datosFinado.noContrato.value
+    obj.finado.matricula = this.datosFinado.matricula.value
+    localStorage.setItem("drop_down",JSON.stringify(obj));
   }
 }

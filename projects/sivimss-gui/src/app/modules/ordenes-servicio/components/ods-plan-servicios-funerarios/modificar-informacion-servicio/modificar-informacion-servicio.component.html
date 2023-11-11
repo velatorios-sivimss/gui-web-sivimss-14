@@ -7,7 +7,7 @@
         <div class="col-md-6">
           <label class="control-label" for="capilla">Capilla<span class="req">*</span>:</label>
           <p-dropdown id="capilla" class="form-control" formControlName="capilla" placeholder="Selecciona capilla"
-            [options]="capillas" [filter]="true" filterBy="label"></p-dropdown>
+            [options]="capillas" [filter]="true" filterBy="label" #idCapilla></p-dropdown>
           <span class="campo-obligatorio"
             *ngIf="lugarVelacion.capilla?.errors?.required && (lugarVelacion.capilla?.dirty || lugarVelacion.capilla?.touched)">Este campo es obligatorio *.</span>
         </div>
@@ -81,7 +81,7 @@
         <div class="col-md-6">
           <label class="control-label" for="sala">Sala<span class="req">*</span>:</label>
           <p-dropdown id="sala" class="form-control" formControlName="sala" placeholder="Selecciona sala"
-            [options]="salas" [filter]="true" filterBy="label"></p-dropdown>
+            [options]="salas" [filter]="true" filterBy="label" #salaCambio></p-dropdown>
           <span class="campo-obligatorio"
             *ngIf="lugarCremacion.sala?.errors?.required && (lugarCremacion.sala?.dirty || lugarCremacion.sala?.touched)">Este campo es obligatorio *.</span>
         </div>

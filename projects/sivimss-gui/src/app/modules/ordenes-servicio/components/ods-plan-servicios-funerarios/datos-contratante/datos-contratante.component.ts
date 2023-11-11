@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {
   AlertaService,
@@ -39,6 +39,7 @@ import * as moment from 'moment';
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 
 @Component({
   selector: 'app-datos-contratante-sf',
@@ -49,8 +50,11 @@ export class DatosContratanteSFComponent implements OnInit {
   @Output()
   confirmacionAceptar = new EventEmitter<ConfirmacionServicio>();
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
 
+  @ViewChild('parentescoContratante') parentescoContratante: any;
+  @ViewChild('paisSeleccionado') paisSeleccionado: any
+  @ViewChild('lugarSeleccionado') lugarSeleccionado: any
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
   readonly POSICION_PARENTESCO = 2;
@@ -128,6 +132,8 @@ export class DatosContratanteSFComponent implements OnInit {
     this.gestionarEtapasService.altaODS$
       .asObservable()
       .subscribe((datosPrevios) => this.llenarAlta(datosPrevios));
+
+    this.inicializarLocalStorage();
   }
 
   llenarAlta(datosPrevios: AltaODSSFInterface): void {
@@ -187,6 +193,36 @@ export class DatosContratanteSFComponent implements OnInit {
     this.cambiarValidacion();
     this.idContratante = datosEtapaContratante.datosContratante.idContratante;
     this.idPersona = datosEtapaContratante.datosContratante.idPersona;
+  }
+
+  inicializarLocalStorage(): void {
+    let obj = {
+      contratante: {
+        parentesco: null,
+        lugarNacimiento: null,
+        paisNacimiento: null,
+      },
+      finado: {
+        tipoOrden: null,
+        lugarNacimiento: null,
+        paisNacimiento: null,
+        clinicaAdscripcion: null,
+        unidadProcedencia: null,
+        tipoPension: null,
+
+      },
+      caracteristicas: {
+        paquete: null,
+        tipoOtorgamiento: null,
+      },
+      informacion: {
+        capilla: null,
+        sala: null,
+        promotor: null,
+      },
+      tablaPaquete:[]
+    }
+    localStorage.setItem("drop_down",JSON.stringify(obj));
   }
 
   noEspaciosAlPrincipio(posicion: number) {
@@ -508,7 +544,6 @@ export class DatosContratanteSFComponent implements OnInit {
     this.datosContratante.lugarNacimiento.clearValidators();
     this.datosContratante.lugarNacimiento.reset();
     this.datosContratante.paisNacimiento.enable();
-    // this.datosContratante.paisNacimiento.setValidators(Validators.required);
   }
 
   limpiarConsultaDatosPersonales(): void {
@@ -581,8 +616,7 @@ export class DatosContratanteSFComponent implements OnInit {
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(1);
-
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:1, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
@@ -664,6 +698,8 @@ export class DatosContratanteSFComponent implements OnInit {
     this.altaODS.idOperador = null;
     this.contratante.cp = this.cp;
 
+    this.llenarDescripcionDropDown();
+
     this.gestionarEtapasService.datosEtapaContratante$.next(
       datosEtapaContratante
     );
@@ -721,5 +757,12 @@ export class DatosContratanteSFComponent implements OnInit {
         this.mensajesSistemaService.obtenerMensajeSistemaPorId(50)
       );
     }
+  }
+  llenarDescripcionDropDown(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    obj.contratante.parentesco = this.parentescoContratante?.selectedOption?.label ?? null;
+    obj.contratante.lugarNacimiento = this.lugarSeleccionado?.selectedOption?.label ?? null;
+    obj.contratante.paisNacimiento = this.paisSeleccionado?.selectedOption?.label ?? null;
+    localStorage.setItem("drop_down",JSON.stringify(obj));
   }
 }

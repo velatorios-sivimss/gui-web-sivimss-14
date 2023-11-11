@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, Renderer2} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {
@@ -38,6 +38,8 @@ import {DescargaArchivosService} from "../../../../../services/descarga-archivos
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {GestionarEtapasServiceSF} from "../../../services/gestionar-etapas.service-sf";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
+import {PanteonInterace} from "../../../constants/panteon.interace";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 
 @Component({
   selector: 'app-informacion-servicio-sf',
@@ -47,7 +49,10 @@ import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 })
 export class InformacionServicioSFComponent implements OnInit {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
+  @ViewChild('idCapilla') idCapilla: any;
+  @ViewChild('salaCambio') salaCambio: any;
+  @ViewChild('cambioPromotor') cambioPromotor: any;
   form!: FormGroup;
 
   altaODS: AltaODSSFInterface = {} as AltaODSSFInterface;
@@ -88,7 +93,9 @@ export class InformacionServicioSFComponent implements OnInit {
   confirmarGuardado: boolean = false;
   confirmarPreOrden: boolean = false;
   confirmarGuardarPanteon: boolean = false;
+  existePanteon: boolean = false;
   colonias:TipoDropdown[] = [];
+  direcPanteon!: PanteonInterace;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -156,6 +163,7 @@ export class InformacionServicioSFComponent implements OnInit {
     this.recoger.hora.enable();
     this.cortejo.fecha.enable();
     this.cortejo.hora.enable();
+    this.cortejo.gestionadoPorPromotor.enable();
     datosPresupuesto.forEach((datos: any) => {
       if (+datos.idTipoServicio == 1) {
         this.lugarVelacion.capilla.enable();
@@ -426,11 +434,21 @@ export class InformacionServicioSFComponent implements OnInit {
       header: 'Agregar panteón',
       style: {maxWidth: '876px', width: '100%'},
     });
-    ref.onClose.subscribe((val: number) => {
-      if (val) {
+    ref.onClose.subscribe((val: any) => {
+      if (val.idPanteon) {
+        this.existePanteon = true;
         this.idPanteon = val
         this.inhumacion.agregarPanteon.disable();
         this.confirmarGuardarPanteon = true
+        this.direcPanteon = {
+          calle: val.formularioPanteon.calle,
+          noExterior: val.formularioPanteon.noExterior ?? null,
+          noInterior: val.formularioPanteon.noInterior,
+          colonia: val.formularioPanteon.colonia,
+          cp: val.formularioPanteon.cp,
+          estado: val.formularioPanteon.estado,
+          municipio: val.formularioPanteon.municipio,
+        }
         return
       }
       this.inhumacion.agregarPanteon.setValue(false);
@@ -498,8 +516,8 @@ export class InformacionServicioSFComponent implements OnInit {
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(2);
     this.llenarDatos();
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:2, detalle_orden_servicio: true});
   }
 
   llenarDatos(): void {
@@ -558,7 +576,6 @@ export class InformacionServicioSFComponent implements OnInit {
       formulario.lugarCremacion.hora == null
         ? null
         : moment(formulario.lugarCremacion.hora).format('HH:mm');
-
     this.informacionServicio.idPanteon = this.idPanteon;
     this.informacionServicio.idPromotor = formulario.cortejo.promotor;
     this.informacionServicio.idSala = formulario.lugarCremacion.sala;
@@ -605,6 +622,7 @@ export class InformacionServicioSFComponent implements OnInit {
 
     this.informacionServicio.informacionServicioVelacion =
       this.informacionServicioVelacion;
+    this.llenarDescripcionDropDown();
     this.gestionarEtapasService.datosEtapaInformacionServicio$.next(datos);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -792,14 +810,20 @@ export class InformacionServicioSFComponent implements OnInit {
   }
 
   preorden(): void {
-    this.altaODS.idEstatus = 1;
     this.llenarDatos();
+    this.altaODS.idEstatus = 1;
+    window.scrollTo(0, 0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    return
     this.guardarODS();
   }
 
   generada(): void {
-    this.altaODS.idEstatus = 2;
     this.llenarDatos();
+    this.altaODS.idEstatus = 2;
+    window.scrollTo(0, 0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:4, detalle_orden_servicio: false});
+    return
     this.guardarODS();
   }
 
@@ -832,5 +856,13 @@ export class InformacionServicioSFComponent implements OnInit {
           console.log(error);
         }
       });
+  }
+
+  llenarDescripcionDropDown(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    obj.informacion.capilla = this.idCapilla?.selectedOption?.label ?? null;
+    obj.informacion.sala = this.salaCambio?.selectedOption?.label ?? null;
+    obj.informacion.promotor = this.cambioPromotor?.selectedOption?.label ?? null;
+    localStorage.setItem("drop_down",JSON.stringify(obj));
   }
 }

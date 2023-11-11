@@ -184,10 +184,6 @@ export class ModificarInformacionServicioComponent
     let fechaVelacion;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio, mes, dia] = fechaActual.split('-')
-    // let horaVelacion:string;
-    // if(typeof datos.horaVelacion){
-    //   datos.horaVelacion.inclu
-    // }
 
     if (typeof datos.horaVelacion == "string") {
       const [horas, minutos] = datos.horaVelacion.split(':')

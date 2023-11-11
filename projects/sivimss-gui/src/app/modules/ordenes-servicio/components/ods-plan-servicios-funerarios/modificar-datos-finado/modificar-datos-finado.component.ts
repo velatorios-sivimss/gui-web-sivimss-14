@@ -4,7 +4,7 @@ import {
   OnInit,
   Output,
   AfterContentChecked,
-  ChangeDetectorRef,
+  ChangeDetectorRef, ViewChild,
 } from '@angular/core';
 
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -48,6 +48,7 @@ import {Etapa} from 'projects/sivimss-gui/src/app/shared/etapas/models/etapa.int
 import {GestionarEtapasActualizacionSFService} from "../../../services/gestionar-etapas-actualizacion-sf.service";
 import {GenerarOrdenServicioService} from "../../../services/generar-orden-servicio.service";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
+import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
 
 @Component({
   selector: 'app-modificar-datos-finado-sf',
@@ -57,7 +58,13 @@ import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 export class ModificarDatosFinadoSFComponent
   implements OnInit, AfterContentChecked {
   @Output()
-  seleccionarEtapa: EventEmitter<number> = new EventEmitter<number>();
+  seleccionarEtapa: EventEmitter<any> = new EventEmitter<any>();
+
+  @ViewChild('clinicaSeleccionada') clinicaSeleccionada: any;
+  @ViewChild('unidadSeleccionada') unidadSeleccionada: any;
+  @ViewChild('pensionSeleccionada') pensionSeleccionada: any;
+  @ViewChild('lugarNacimientoSelect') lugarNacimientoSelect: any;
+  @ViewChild('paisNacimientoSelect') paisNacimientoSelect: any;
   readonly POSICION_PAIS = 0;
   readonly POSICION_ESTADO = 1;
   readonly POSICION_UNIDADES_MEDICAS = 3;
@@ -272,7 +279,7 @@ export class ModificarDatosFinadoSFComponent
 
     let edad;
     let fechaNacimiento;
-    if (datosEtapaFinado.datosFinado.fechaNacimiento) {
+    if (datosEtapaFinado.datosFinado.fechaNacimiento && typeof datosEtapaFinado.datosFinado.fechaNacimiento == 'string') {
       let [dia, mes, anio] =
         datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
       fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
@@ -803,7 +810,7 @@ export class ModificarDatosFinadoSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(2);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:2, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
@@ -914,6 +921,7 @@ export class ModificarDatosFinadoSFComponent
 
 
     this.altaODS.finado = this.finado;
+    this.llenarDescripcionDropDown();
     this.gestionarEtapasService.datosEtapaFinado$.next(datosEtapaFinado);
     this.gestionarEtapasService.altaODS$.next(this.altaODS);
   }
@@ -979,11 +987,22 @@ export class ModificarDatosFinadoSFComponent
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    this.seleccionarEtapa.emit(0);
+    this.seleccionarEtapa.emit({idEtapaSeleccionada:0, detalle_orden_servicio: true});
     this.datosAlta();
   }
 
   validarBotonAceptar(): boolean {
     return this.form.invalid || this.folioInvalido
+  }
+  llenarDescripcionDropDown(): void {
+    let obj: DropDownDetalleInterface = JSON.parse(localStorage.getItem("drop_down") as string)
+    obj.finado.clinicaAdscripcion = this.clinicaSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.tipoPension = this.pensionSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.unidadProcedencia = this.unidadSeleccionada?.selectedOption?.label ?? null;
+    obj.finado.lugarNacimiento = this.lugarNacimientoSelect?.selectedOption?.label ?? null;
+    obj.finado.paisNacimiento = this.paisNacimientoSelect?.selectedOption?.label ?? null;
+    obj.finado.numeroContrato = this.datosFinado.noContrato.value
+    obj.finado.matricula = this.datosFinado.matricula.value
+    localStorage.setItem("drop_down",JSON.stringify(obj));
   }
 }
