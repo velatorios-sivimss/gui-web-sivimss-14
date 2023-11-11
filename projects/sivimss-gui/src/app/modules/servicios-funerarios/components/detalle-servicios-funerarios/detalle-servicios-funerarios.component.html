@@ -166,7 +166,7 @@
           <td>{{PagosBitacora.estatus}}</td>
 
           <td>
-            <div class="contenedor-celda-iconos" *ngIf="PagosBitacora.idEstatus != '3'">
+            <div class="contenedor-celda-iconos" *ngIf="PagosBitacora.idEstatus != '0'">
               <a (click)="abrirPanelBody($event,PagosBitacora)">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
@@ -213,7 +213,7 @@
     <app-overlay-panel-opciones>
       <app-overlay-panel-opcion onCloseOnNavigation titulo="Modificar método"
         (click)="abrirModalModificarPago()"></app-overlay-panel-opcion>
-      <app-overlay-panel-opcion onCloseOnNavigation titulo="Eliminar método"
+      <app-overlay-panel-opcion  onCloseOnNavigation titulo="Eliminar método"  
         (click)="abrirModalEliminarPago()"></app-overlay-panel-opcion>
     </app-overlay-panel-opciones>
   </ng-template>
@@ -246,12 +246,4 @@
 </p-dialog>
 
 
-<!-- 
-sirve para modificar o eliminar los metodos de pago
-<td>
-  <div class="contenedor-celda-iconos" *ngIf="!pagosRealizados.estatusPago?.includes('CANCELADO')">
-    <a (click)="abrirPanelBody($event,pagosRealizados)">
-      <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-    </a>
-  </div>
-</td> -->
+ 
