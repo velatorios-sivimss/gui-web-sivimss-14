@@ -114,10 +114,11 @@
             <td>{{pagosRealizados.estatusPago}}</td>
 
             <td>
-              <div *ngIf="pagosRealizados.validaPago">
-                <a *ngIf="pagosRealizados.validaPago" class="ml-5 cursor-pointer"
+              
+              <div *ngIf="pagosRealizados.importeAcumulado >  0 && pagosRealizados.idEstatus == 8">
+                <a class="ml-5 cursor-pointer"
                   (click)="abrirPanelNuevoPago(overlayPanelHeader,$event,pagosRealizados)">
-                  <img *ngIf="pagosRealizados.validaPago" src="assets/images/imagen-icono-barras-horizontales.svg"
+                  <img   src="assets/images/imagen-icono-barras-horizontales.svg"
                     alt="icono barras horizontales">
                 </a>
               </div>
@@ -132,8 +133,8 @@
           </tr>
         </ng-template>
       </p-table>
-      <h2 class="subtitulo pl-1 mx-6 my-4">Bitacora de metodos de pago</h2>
-      <p-table styleClass="mt-5 mb-8 mx-6" [value]="PagosBitacora" [rows]="cantElementosPorPagina" [lazy]="true"
+      <h2 class="subtitulo pl-1 mx-6 my-4" *ngIf="ocultarBitacora">Bitacora de metodos de pago</h2>
+      <p-table styleClass="mt-5 mb-8 mx-6" *ngIf="ocultarBitacora" [value]="PagosBitacora" [rows]="cantElementosPorPagina" [lazy]="true"
       [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual">
       <ng-template pTemplate="header">
         <tr> 
@@ -165,7 +166,7 @@
           <td>{{PagosBitacora.estatus}}</td>
 
           <td>
-            <div class="contenedor-celda-iconos" *ngIf="PagosBitacora.idEstatus != 3">
+            <div class="contenedor-celda-iconos" *ngIf="PagosBitacora.idEstatus != '3'">
               <a (click)="abrirPanelBody($event,PagosBitacora)">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>

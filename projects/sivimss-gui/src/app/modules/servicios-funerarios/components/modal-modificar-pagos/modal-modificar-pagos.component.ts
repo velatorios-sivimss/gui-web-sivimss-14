@@ -36,7 +36,6 @@ export class ModalModificarPagosComponent implements OnInit {
     nombreBanco: false,
     numeroAutorizacion: false,
     importe: false,
-    totalPagar: false,
     folioAutorizacion: false,
     fecha: false,
     fechaVale: false,
@@ -56,7 +55,6 @@ export class ModalModificarPagosComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.config.data);
     this.inicializarFormulario();
     this.inicializarDatos();
   }
@@ -81,15 +79,6 @@ export class ModalModificarPagosComponent implements OnInit {
   }
 
   inicializarDatos(): void {
-    console.log('-------------------------------');
-    console.log(this.config.data.detallePago);
-    console.log(this.config.data.detalleRegistro);
-    console.log(
-      moment(this.config.data.detalleRegistro.fechaValeParitario).format(
-        'YYYY/MM/DD'
-      )
-    );
-
     let fechaValeParitario =
       this.config.data.detalleRegistro.fechaValeParitario;
     if (
@@ -113,7 +102,6 @@ export class ModalModificarPagosComponent implements OnInit {
       fecha = null;
     }
 
-    console.log(fecha);
     this.idMetodoPago = this.config.data.metodosPago;
     this.mensualidades = this.config.data.detallePago.noPagos;
     this.formulario.idPlan.setValue(this.config.data.detallePago.idPlanSFPA);
@@ -167,7 +155,6 @@ export class ModalModificarPagosComponent implements OnInit {
     this.formulario.importe.patchValue(null);
     this.formulario.folioAutorizacion.patchValue(null);
     this.formulario.fechaPago.patchValue(null);
-    this.formulario.totalPagar.patchValue(null);
     this.formulario.fecha.patchValue(null);
     this.formulario.valeParitaria.patchValue(null);
     this.formulario.fechaVale.patchValue(null);
@@ -183,7 +170,6 @@ export class ModalModificarPagosComponent implements OnInit {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;
-      this.validacion.totalPagar = false;
       this.validacion.folioAutorizacion = false;
       this.validacion.fecha = false;
       this.validacion.fechaVale = false;
@@ -194,7 +180,6 @@ export class ModalModificarPagosComponent implements OnInit {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;
-      this.validacion.totalPagar = false;
       this.validacion.folioAutorizacion = false;
       this.validacion.fecha = false;
       this.validacion.fechaVale = false;
@@ -205,7 +190,6 @@ export class ModalModificarPagosComponent implements OnInit {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = false;
       this.validacion.importe = true;
-      this.validacion.totalPagar = true;
       this.validacion.folioAutorizacion = true;
       this.validacion.fecha = true;
       this.validacion.fechaVale = false;
@@ -216,7 +200,6 @@ export class ModalModificarPagosComponent implements OnInit {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = false;
       this.validacion.importe = true;
-      this.validacion.totalPagar = true;
       this.validacion.folioAutorizacion = true;
       this.validacion.fecha = true;
       this.validacion.fechaVale = false;
@@ -230,7 +213,6 @@ export class ModalModificarPagosComponent implements OnInit {
       this.validacion.nombreBanco = false;
       this.validacion.numeroAutorizacion = false;
       this.validacion.importe = false;
-      this.validacion.totalPagar = false;
       this.validacion.folioAutorizacion = false;
       this.validacion.fecha = false;
     }
@@ -251,8 +233,6 @@ export class ModalModificarPagosComponent implements OnInit {
         ? moment(this.formulario.fechaVale.value).format('YYYY-MM-DD')
         : null
     );
-
-    console.log(this.generarPagoForm.getRawValue());
 
     this.confirmacionGuardar = false;
     this.loaderService.activar();

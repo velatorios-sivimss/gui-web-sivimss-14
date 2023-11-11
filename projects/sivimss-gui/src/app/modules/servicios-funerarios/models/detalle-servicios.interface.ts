@@ -21,6 +21,7 @@ export interface PagosRealizados {
   fechaParcialidad: null | number;
   importeMensual: null | string;
   importePagado: null | string;
+  idEstatus: null | string;
 }
 
 export interface PagosBitacora {

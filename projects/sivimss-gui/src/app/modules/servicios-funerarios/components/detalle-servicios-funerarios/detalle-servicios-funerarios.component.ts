@@ -72,6 +72,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   costoRestante: number = 0;
   errorMsg =
     ' Ocurrio un error al procesar tu solicitud. Verifica tu información e intenta nuevamente. Si el problema persiste, contacta al responsable de la administración del sistema.';
+  ocultarBitacora: boolean = false;
 
   constructor(
     private alertaService: AlertaService,
@@ -174,6 +175,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
                 }
               },
               error: (error) => {
+                console.log(error);
                 this.alertaService.mostrar(
                   TipoAlerta.Error,
                   this.mensajesSistemaService.obtenerMensajeSistemaPorId(64)
@@ -199,9 +201,6 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
   }
 
   abrirModalModificarPago(): void {
-    console.log(this.metodosPago);
-    console.log(this.item);
-    console.log(this.detallePagoBitacora);
     const ref = this.dialogService.open(ModalModificarPagosComponent, {
       header: 'Modificar pago',
       style: {
@@ -216,7 +215,12 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
     });
     ref.onClose.subscribe((val: boolean) => {
       if (val) {
-        this.consultarDetallePago(this.route.snapshot.queryParams.idPlanSfpa);
+        this.consultarDetallePago(
+          Number(this.route.snapshot.queryParams.idPlanSfpa)
+        );
+        setTimeout(() => {
+          this.buscarPagosBitacora(Number(this.item.idPagoSFPA));
+        }, 900);
       }
     });
   }
@@ -253,16 +257,17 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
 
   mostrarDetallePagos(detallePagoBitacora: PagosRealizados): void {
     this.item = detallePagoBitacora;
+
     this.buscarPagosBitacora(Number(detallePagoBitacora.idPagoSFPA));
   }
 
   buscarPagosBitacora(idPagoSFPA: number): void {
+    this.ocultarBitacora = true;
     this.detallePagoService
       .obtenerDetalleBitacoraPago(idPagoSFPA)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          console.log(respuesta);
           if (respuesta.error === false && respuesta.mensaje === 'Exito') {
             this.PagosBitacora = respuesta.datos;
           } else {

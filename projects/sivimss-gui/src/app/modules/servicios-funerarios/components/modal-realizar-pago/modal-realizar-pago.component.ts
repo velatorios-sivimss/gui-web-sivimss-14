@@ -37,7 +37,6 @@ export class ModalRealizarPagoComponent implements OnInit {
     nombreBanco: false,
     numeroAutorizacion: false,
     importe: false,
-    totalPagar: false,
     folioAutorizacion: false,
     fecha: false,
     fechaVale: false,
@@ -69,7 +68,6 @@ export class ModalRealizarPagoComponent implements OnInit {
       folioAutorizacion: [{ value: null, disabled: false }],
       fecha: [{ value: null, disabled: false }],
       fechaPago: [{ value: null, disabled: false }],
-      totalPagar: [{ value: null, disabled: false }],
       idMetodoPago: [{ value: null, disabled: false }],
       idPlan: [{ value: null, disabled: false }],
       idPagoSFPA: [{ value: null, disabled: false }],
@@ -93,7 +91,6 @@ export class ModalRealizarPagoComponent implements OnInit {
     this.formulario.importe.patchValue(null);
     this.formulario.folioAutorizacion.patchValue(null);
     this.formulario.fechaPago.patchValue(null);
-    this.formulario.totalPagar.patchValue(null);
     this.formulario.fecha.patchValue(null);
     this.formulario.valeParitaria.patchValue(null);
     this.formulario.fechaVale.patchValue(null);
@@ -105,7 +102,6 @@ export class ModalRealizarPagoComponent implements OnInit {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;
-      this.validacion.totalPagar = false;
       this.validacion.folioAutorizacion = false;
       this.validacion.fecha = false;
       this.validacion.fechaVale = false;
@@ -116,7 +112,6 @@ export class ModalRealizarPagoComponent implements OnInit {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = true;
       this.validacion.importe = true;
-      this.validacion.totalPagar = false;
       this.validacion.folioAutorizacion = false;
       this.validacion.fecha = false;
       this.validacion.fechaVale = false;
@@ -127,7 +122,6 @@ export class ModalRealizarPagoComponent implements OnInit {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = false;
       this.validacion.importe = true;
-      this.validacion.totalPagar = true;
       this.validacion.folioAutorizacion = true;
       this.validacion.fecha = true;
       this.validacion.fechaVale = false;
@@ -138,7 +132,6 @@ export class ModalRealizarPagoComponent implements OnInit {
       this.validacion.nombreBanco = true;
       this.validacion.numeroAutorizacion = false;
       this.validacion.importe = true;
-      this.validacion.totalPagar = true;
       this.validacion.folioAutorizacion = true;
       this.validacion.fecha = true;
       this.validacion.fechaVale = false;
@@ -152,7 +145,6 @@ export class ModalRealizarPagoComponent implements OnInit {
       this.validacion.nombreBanco = false;
       this.validacion.numeroAutorizacion = false;
       this.validacion.importe = false;
-      this.validacion.totalPagar = false;
       this.validacion.folioAutorizacion = false;
       this.validacion.fecha = false;
     }
