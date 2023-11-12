@@ -1,0 +1,93 @@
+.paquetes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 420px));
+
+    grid-gap: 4rem;
+
+    .paquete {
+        border: 1px solid #217A6B;
+        padding: 2rem;
+        border-radius: .75rem;
+
+        .paquete-titulo {
+            display: flex;
+            margin-bottom: 5px;
+
+            span {
+                flex-grow: 1;
+                margin-left: 15px;
+                color: #217A6B;
+                font-weight: 600;
+                font-size: 18px;
+            }
+        }
+
+        div {
+            display: flex;
+            justify-content: space-between;
+
+            ul {
+                list-style-type: disc !important;
+                padding-left: 2rem;
+
+                li {
+                    font-size: 12px;
+                    font-weight: 400;
+                }
+            }
+
+            .iconos {
+                display: flex;
+                flex-direction: column;
+
+                img {
+                    width: 50px;
+                    height: auto;
+                }
+
+                img:nth-child(2) {
+                    margin: 2rem 0;
+                }
+            }
+        }
+    }
+}
+
+.table-panel-custom {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-margen-custom {
+    margin-top: 3rem !important;
+    margin-left: 0.2rem !important;
+}
+
+.file-container {
+    position: absolute;
+}
+
+.ms {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+}
+
+.hidden {
+    visibility: hidden;
+    width: 1px;
+    height: 1px;
+}
+
+.text-archivos {
+    font-size: 12px;
+    color: #BFBFBF;
+}
+
+:host ::ng-deep .overlay-panel-opciones .overlay-panel-opcion{
+    text-align: center;
+    display: block;
+    color: #9D244A;
+}

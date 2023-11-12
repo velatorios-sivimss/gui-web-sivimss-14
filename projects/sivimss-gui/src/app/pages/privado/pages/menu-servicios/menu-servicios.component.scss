@@ -1,0 +1,34 @@
+.menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 240px));
+    grid-gap: 25px;
+
+    .menu-card {
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #98989A;
+        border-radius: 2rem;
+        text-align: center;
+        padding: 4rem 1.5rem;
+        cursor: pointer;
+
+        .menu-card__title {
+            margin-top: 0;
+            font-size: 20px;
+            margin-bottom: 7.5px;
+        }
+
+        .menu-card__description {
+            font-size: 18px;
+        }
+
+        .menu-card__image {
+            margin-top: 2rem;
+            display: inline-block;
+        }
+
+    }
+}

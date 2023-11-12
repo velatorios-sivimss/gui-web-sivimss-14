@@ -1,0 +1,93 @@
+.grid-map {
+    display: grid;
+    grid-template-columns: 360px auto;
+}
+
+.addresses {
+    .input-search-container {
+        padding: 2rem 2rem 2rem 2rem;
+        .input-search {
+            position: relative;
+            input{
+                padding-left:3rem;
+            }
+
+
+            .pi {
+                top:0;
+                left:0;
+                transform: translate(50%,65%);
+                position: absolute;
+                font-size: 18px;
+                font-weight: 700;
+                color:#9D2449;
+            }
+        }
+
+    }
+
+    .address {
+        border:1px solid #cecece;
+        box-shadow: inset 1px 0px 0px rgb(0 0 0 / 0), 0 0 8px rgba(55, 56, 56, 0.1);
+        padding: 2rem 2rem;
+
+        .address-title {
+            font-weight: 700;
+            display: block;
+            font-size: 14px;
+        }
+
+        .address-description {
+            display: block;
+            font-size: 12px;
+            margin: 1rem 0;
+        }
+
+        .address-telephone {
+            display: block;
+            font-size: 12px;
+            text-align: right;
+            font-weight: 700;
+        }
+    }
+}
+
+:host ::ng-deep{
+    .custom-popup{
+
+        .popup-title {
+            font-weight: 700;
+            display: block;
+            font-size: 14px;
+        }
+
+        .popup-description {
+            display: block;
+            font-size: 12px;
+            margin: 1rem 0;
+        }
+
+        .popup-telephone {
+            display: block;
+            font-size: 12px;
+            text-align: right;
+            font-weight: 700;
+        }
+        hr{
+            margin:1rem 0;
+        }
+        ul{
+            padding-left: 2rem;
+        }
+        .info-title{
+            font-weight: 700;
+            display: block;
+            font-size: 14px;
+            margin-bottom: .5rem;
+        }
+        .info-description{
+            font-size: 12px;
+
+        }
+    }
+}

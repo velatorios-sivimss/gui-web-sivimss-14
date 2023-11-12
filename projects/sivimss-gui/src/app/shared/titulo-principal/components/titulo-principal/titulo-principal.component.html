@@ -1,5 +1,15 @@
 <div [ngStyle]="style" [class]="styleClass">
-  <h3>{{titulo}}</h3>
+  <div class="flex align-items-center">
+    <!-- 
+    Cuando se desee agregar un boton de retroceso se puede hacer a través de content projection 
+    Por ejemplo:
+    <app-titulo-principal titulo="CONSULTAR MI CONVENIO DE PREVISIÓN FUNERARIA">
+        <app-btn-regresar routerLink="../consultar-mis-servicios-en-linea"></app-btn-regresar>
+    </app-titulo-principal>
+    Así apareceria una flecha para retroceder con el título a la derecha y un ligero margen que los separa. :)
+    -->
+    <ng-content></ng-content>
+    <h3>{{titulo}}</h3>
+  </div>
   <hr class="red">
 </div>
-
