@@ -433,9 +433,6 @@ export class AgregarConveniosPrevisionFunerariaComponent implements OnInit {
       this.modeloGuardarPersona.persona.documentacion.validaCurp = this.fd.copiaCURP?.value ?? false;
       this.modeloGuardarPersona.persona.documentacion.validaIneContratante = this.fd.ineAfiliado?.value ?? false;
       this.modeloGuardarPersona.persona.documentacion.validaRfc = this.fd.copiaRFC?.value ?? false;
-      this.modeloGuardarPersona.persona.documentacion.validaActaNacimientoBeneficiario = false;
-      this.modeloGuardarPersona.persona.documentacion.validaIneBeneficiario = false;
-
     },200)
   }
 

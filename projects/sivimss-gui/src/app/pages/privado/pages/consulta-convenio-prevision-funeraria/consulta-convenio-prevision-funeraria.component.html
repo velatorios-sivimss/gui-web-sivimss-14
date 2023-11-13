@@ -1,0 +1,105 @@
+<div class="container-sivimss px-5 registro-en-linea my-5">
+    <app-titulo-principal titulo="CONSULTAR MI CONVENIO DE PREVISIÓN FUNERARIA">
+        <app-btn-regresar routerLink="../consultar-mis-servicios-en-linea"></app-btn-regresar>
+    </app-titulo-principal>
+
+    <p-table styleClass="mt-5 mb-8" [value]="convenios" [paginator]="convenios.length > 0"
+        [rows]="cantElementosPorPagina" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+        [resizableColumns]="true" [columnResizeMode]="'expand'">
+        <ng-template pTemplate="header">
+            <tr>
+                <th scope="col">Folio</th>
+                <th scope="col">Nombre del afiliado</th>
+                <th scope="col">CURP</th>
+                <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-convenio>
+            <tr>
+                <td>{{convenio.folio}}</td>
+                <td>{{convenio.nombreAfiliado}}</td>
+                <td>{{convenio.curp}}</td>
+                <td style="border-left: 1px solid #b0b0b0;">
+                    <div class="contenedor-celda-iconos">
+                        <a routerLink="mi-convenio-de-prevision-funeraria">
+                            <i class="pi pi-eye"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <th colspan="7" class="p-2 text-center font-bold text-xl" id="consulta_ods_sin_resultados">
+                    No se encontró información relacionada a tu búsqueda
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+                <span class="total-elements">{{convenios.length}} de {{totalElementos}}</span>
+            </div>
+        </ng-template>
+    </p-table>
+    <div class="row mb-3">
+        <div class="col-md-12 flex justify-content-end">
+            <button class="btn btn-primary" (click)="mostrarModalFaltaConvenio = !mostrarModalFaltaConvenio">Mostrar
+                modal
+                falta convenio</button>
+            <button class="btn btn-primary ml-5"
+                (click)="mostrarModalNoPuedeRenovar = !mostrarModalNoPuedeRenovar">Mostrar
+                modal
+                falta convenio</button>
+            <button class="btn btn-primary ml-5"
+                (click)="mostrarModalNoSeEncuentraEnPeriodo = !mostrarModalNoSeEncuentraEnPeriodo">Mostrar modal
+                falta convenio</button>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog [(visible)]="mostrarModalFaltaConvenio" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+    [closable]="false" [draggable]="false" [resizable]="false" header="Convenios">
+    <ng-template pTemplate="content">
+        <div>
+            <p class="text-center">Aún no cuentas con un convenio de previsión funeraria</p>
+            <p class="mt-2 text-center">Puedes registrarlo en línea o puedes asistir a tu velatorio más cercano.</p>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center">
+            <button class="btn btn-primary btn-md" (click)="mostrarModalFaltaConvenio = false;">Aceptar</button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="mostrarModalNoPuedeRenovar" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+    [closable]="false" [draggable]="false" [resizable]="false" header="Convenios">
+    <ng-template pTemplate="content">
+        <div>
+            <p class="text-center">Titular del convenio fallecido</p>
+            <p class="mt-2 text-center">El beneficiario <b>NO PUEDE RENOVAR</b> el convenio.</p>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center">
+            <button class="btn btn-primary btn-md" (click)="mostrarModalNoPuedeRenovar = false;">Aceptar</button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="mostrarModalNoSeEncuentraEnPeriodo" [modal]="true" [style]="{maxWidth:'544px',width: '100%'}"
+    [closable]="false" [draggable]="false" [resizable]="false" header="Convenios">
+    <ng-template pTemplate="content">
+        <div>
+            <p class="text-center">El convenio no se encuentra en periodo de renovación.</p>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-center">
+            <button class="btn btn-primary btn-md" (click)="mostrarModalNoSeEncuentraEnPeriodo = false">Aceptar</button>
+        </div>
+    </ng-template>
+</p-dialog>

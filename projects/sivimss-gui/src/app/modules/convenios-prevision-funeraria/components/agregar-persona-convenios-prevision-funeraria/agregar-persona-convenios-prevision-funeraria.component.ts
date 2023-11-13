@@ -432,9 +432,9 @@ export class AgregarPersonaConveniosPrevisionFunerariaComponent implements OnIni
           entidadFederativa: this.personaForm.get('entidadFederativa')?.value ?? "",
           beneficiarios: this.beneficiario,
           documentacion:{
-            validaIneContratante:false,
-            validaCurp:false,
-            validaRfc:false
+            validaIneContratante:this.fd.ineAfiliado.value,
+            validaCurp:this.fd.copiaCURP.value,
+            validaRfc:this.fd.copiaRFC.value
           },
           nss:"",
           numIne:"",
