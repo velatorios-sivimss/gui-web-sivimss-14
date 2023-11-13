@@ -1,0 +1,86 @@
+<form [formGroup]="form">
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="control-label" for="nombre">Nombre:</label>
+            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="primerApellido">Primer apellido:</label>
+            <input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
+                placeholder="Ingresa primerApellido">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="segundoApellido">Segundo apellido:</label>
+            <input id="nombre" type="text" class="form-control" formControlName="nombre" placeholder="Ingresa nombre">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="control-label" for="edad">Edad:</label>
+            <input id="edad" type="text" class="form-control" formControlName="edad" placeholder="Ingresa edad">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="parentesco">Parentesco<span class="req">*</span>:</label>
+            <p-dropdown id="parentesco" class="form-control" formControlName="parentesco" appendTo="body"
+                placeholder="Selecciona parentesco" [options]="dummyDropdown" [filter]="true"
+                filterBy="label"></p-dropdown>
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="curp">CURP<span class="req">*</span>:</label>
+            <input id="curp" type="text" class="form-control" formControlName="curp" placeholder="Ingresa curp">
+            <span class="campo-obligatorio" *ngIf="f.curp?.errors?.required  && (f.curp?.dirty || f.curp?.touched)">Este
+                campo es obligatorio *.</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="control-label" for="rfc">RFC:</label>
+            <input id="rfc" type="text" class="form-control" formControlName="rfc" placeholder="Ingresa rfc">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="archivoXml">Acta de nacimiento:</label>
+            <div (click)="handleClick('archivoXml', 'xml')"><!--Adaptarlo a sus necesidades :) -->
+                <input class="hidden" type="file" id="upload-file-xml" name="upload-file-xml" accept=".xml"
+                    ngf-max-size="2MB" (change)="addAttachment($event)">
+                <input id="archivoXml" class="form-control" formControlName="actaNacimiento" readonly>
+                <img src="assets/images/imagen-icono-file-upload.svg" class="ms" alt="icono ver">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="fecha">Fecha:</label>
+            <p-calendar id="fecha" styleClass="form-control" formControlName="fecha" [showIcon]="true"
+                dateFormat="dd/mm/yy" placeholder="dd-mm-aaaa" [maxDate]="fechaActual"></p-calendar>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="control-label" for="correoElectronico">Correo electrónico:</label>
+            <input id="correoElectronico" type="text" class="form-control" formControlName="correoElectronico"
+                placeholder="Ingresa correo electronico">
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="velatorio">Velatorio:</label>
+            <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" appendTo="body"
+                placeholder="Selecciona velatorio" [options]="dummyDropdown" [filter]="true"
+                filterBy="label"></p-dropdown>
+        </div>
+        <div class="col-md-4">
+            <label class="control-label" for="telefono">Teléfono:</label>
+            <input id="telefono" type="text" class="form-control" formControlName="telefono"
+                placeholder="Ingresa telefono">
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 flex justify-content-between align-items-center">
+            <span class="mensaje-inferior-campo-obligatorio">
+                *Campos obligatorios
+            </span>
+            <div class="flex justify-content-end align-items-center">
+                <button class="btn btn-gold btn-md">Cancelar</button>
+                <button class="btn btn-primary btn-md ml-5">Guardar</button>
+            </div>
+        </div>
+    </div>
+</form>

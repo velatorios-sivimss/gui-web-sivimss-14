@@ -225,6 +225,8 @@ const routes: Routes = [
     loadChildren: () => import('./modules/generar-hoja-consignacion/generar-hoja-consignacion.module').then(m => m.GenerarHojaConsignacionModule),
     canActivate: [PermiteUsuarioLogueadoGuard]
   },
+  { path: 'externo-publico', loadChildren: () => import('./pages/publico/publico.module').then(m => m.PublicoModule) },
+  { path: 'externo-privado', loadChildren: () => import('./pages/privado/privado.module').then(m => m.PrivadoModule) },
   {
     path: '**',
     component: PaginaNoEncontradaComponent,

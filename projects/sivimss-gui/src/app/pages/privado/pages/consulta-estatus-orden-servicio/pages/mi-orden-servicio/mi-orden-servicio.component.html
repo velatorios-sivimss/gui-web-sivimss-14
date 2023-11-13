@@ -1,0 +1,53 @@
+<div class="container-sivimss px-5 registro-en-linea my-5">
+    <app-titulo-principal titulo="MI ORDEN DE SERVICIO">
+        <app-btn-regresar routerLink="../"></app-btn-regresar>
+    </app-titulo-principal>
+    <div class="border-panel mb-5">
+        <h2 class="subtitulo-base">Datos generales de la ODS</h2>
+        <div class="row mb-3">
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Folio ODS</span>
+                <span class="texto-base font-normal">000000000000</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Estatus ODS</span>
+                <span class="texto-base font-normal">Vigente</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Nombre del contratante</span>
+                <span class="texto-base font-normal">00</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Nombre del finado</span>
+                <span class="texto-base font-normal">00</span>
+            </div>
+            <div class="col-md-2 flex flex-column">
+                <span class="etiqueta-base font-bold">Fecha ODS</span>
+                <span class="texto-base font-normal">00-00-0000</span>
+            </div>
+        </div>
+    </div>
+    <div class="border-panel mb-5">
+        <h2 class="subtitulo-base">Histórico de servicios</h2>
+        <p-table styleClass="mt-5 mb-8" [value]="servicios" [resizableColumns]="true" [columnResizeMode]="'expand'">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Capilla</th>
+                    <th scope="col">Estatus del servicio</th>
+                    <th scope="col">Fecha y hora</th>
+                    <th scope="col">Notas del servicio</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-convenio>
+                <tr>
+                    <td>{{convenio.servicio}}</td>
+                    <td>{{convenio.capilla}}</td>
+                    <td>{{convenio.estatusServicio}}</td>
+                    <td>{{convenio.fechaHora}}</td>
+                    <td>{{convenio.notasServicio}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
