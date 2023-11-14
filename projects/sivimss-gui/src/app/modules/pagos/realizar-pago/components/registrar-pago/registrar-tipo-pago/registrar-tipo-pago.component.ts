@@ -7,7 +7,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 
 interface DatosRegistro {
   idPagoBitacora: number,
@@ -47,7 +47,6 @@ export class RegistrarTipoPagoComponent implements OnInit {
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
     private router: Router,
-    private readonly activatedRoute: ActivatedRoute,
   ) {
   }
 

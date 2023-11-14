@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {DetallePago} from "../../modelos/detallePago.interface";
 import {Location} from "@angular/common";
 
@@ -16,10 +16,8 @@ export class DetalleMetodoPagoComponent implements OnInit {
   tipoPago: string = '';
   tipoFolio: string = '';
   titulo: string = '';
-  fechaPago: string = '';
 
   constructor(
-    private router: Router,
     private readonly activatedRoute: ActivatedRoute,
     private location: Location
   ) {
@@ -30,8 +28,6 @@ export class DetalleMetodoPagoComponent implements OnInit {
     this.tipoPago = this.obtenerTipoPago();
     this.titulo = this.obtenerTipoPago();
     this.tipoFolio = this.obtenerFolioTipoPago();
-    const ultimaFecha: number = this.registroPago.metodosPago.length - 1;
-    this.fechaPago = this.registroPago.metodosPago[ultimaFecha].fechaPago;
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
   }
 
