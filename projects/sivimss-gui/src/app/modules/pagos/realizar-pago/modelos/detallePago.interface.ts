@@ -19,4 +19,5 @@ export interface MetodoPago {
   metodoPago: string
   nomBanco: string
   numAutorizacion: string
+  fechaValeParAGF: string
 }
