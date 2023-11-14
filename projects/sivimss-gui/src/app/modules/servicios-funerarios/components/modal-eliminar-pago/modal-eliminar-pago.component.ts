@@ -26,7 +26,7 @@ export class ModalEliminarPagoComponent {
 
   desactivar(): void {
     this.loaderService.activar();
-    this.detallePagoService.desactivarPago(Number(this.config.data.detalleRegistro.idBitacoraPago)).pipe(
+    this.detallePagoService.desactivarPago(Number(this.config.data.idBitacora)).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {

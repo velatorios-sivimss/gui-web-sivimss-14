@@ -233,7 +233,7 @@ export class DetalleServiciosFunerariosComponent implements OnInit {
         width: '100%',
       },
       data: {
-        detalleRegistro: this.detallePagoBitacora,
+        idBitacora: this.detallePagoBitacora.idBitacora,
       },
     });
     ref.onClose.subscribe((val: boolean) => {
