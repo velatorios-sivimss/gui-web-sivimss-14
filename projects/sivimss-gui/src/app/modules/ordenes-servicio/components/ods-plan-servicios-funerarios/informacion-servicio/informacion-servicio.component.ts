@@ -279,6 +279,7 @@ export class InformacionServicioSFComponent implements OnInit {
         ],
       }),
     });
+    this.colonias = [{label:datos.colonia, value: datos.colonia}];
   }
 
   changePromotor(validacion: string): void {

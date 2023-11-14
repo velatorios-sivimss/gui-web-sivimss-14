@@ -7,7 +7,7 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 
-import {SERVICIO_BREADCRUMB} from '../../../constants/breadcrumb';
+import {SERVICIO_BREADCRUMB, SERVICIO_BREADCRUMB_SFPA} from '../../../constants/breadcrumb';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ContratanteInterface} from '../../../models/Contratante.interface';
@@ -164,7 +164,7 @@ export class ModificarDatosContratanteSFComponent
         value: parentesco.value,
       })) || [];
 
-    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_SFPA);
 
     let estatus = this.rutaActiva.snapshot.paramMap.get('idEstatus');
     if (Number(estatus) == 1) this.ocultarFolioEstatus = true;

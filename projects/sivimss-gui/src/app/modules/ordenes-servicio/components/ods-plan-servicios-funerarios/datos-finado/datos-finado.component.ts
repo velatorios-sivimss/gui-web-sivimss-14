@@ -218,6 +218,7 @@ export class DatosFinadoSFComponent implements OnInit {
     });
     datosEtapaFinado.datosFinado.folioValido;
     datosEtapaFinado.datosFinado.folioValido ? this.folioInvalido = false : this.folioInvalido = true
+    this.colonias =  [{label:datosEtapaFinado.direccion.colonia, value:datosEtapaFinado.direccion.colonia}] || []
   }
 
   limpiarConsultaDatosPersonales(): void {

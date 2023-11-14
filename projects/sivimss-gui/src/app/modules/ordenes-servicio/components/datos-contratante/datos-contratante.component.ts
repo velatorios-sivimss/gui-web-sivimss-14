@@ -310,6 +310,8 @@ export class DatosContratanteComponent implements OnInit {
     this.cambiarValidacion();
     this.idContratante = datosEtapaContratante.datosContratante.idContratante;
     this.idPersona = datosEtapaContratante.datosContratante.idPersona;
+    this.colonias = [{label: datosEtapaContratante.direccion.colonia, value:datosEtapaContratante.direccion.colonia}] ||
+      [];
   }
 
   noEspaciosAlPrincipio(posicion: number) {

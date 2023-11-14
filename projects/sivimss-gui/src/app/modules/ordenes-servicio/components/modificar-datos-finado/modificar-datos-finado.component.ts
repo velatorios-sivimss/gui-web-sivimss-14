@@ -505,6 +505,7 @@ export class ModificarDatosFinadoComponent
     if (Number(this.form.value.datosFinado.tipoOrden) == 3) {
 
       this.changeTipoOrden(true);
+      this.colonias = [{label:datosEtapaFinado.direccion.colonia,value:datosEtapaFinado.direccion.colonia}] || [];
     }
   }
 
