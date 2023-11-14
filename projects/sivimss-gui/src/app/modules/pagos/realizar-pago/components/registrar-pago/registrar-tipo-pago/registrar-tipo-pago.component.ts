@@ -94,13 +94,20 @@ export class RegistrarTipoPagoComponent implements OnInit {
       next: (): void => {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
         this.ref.close();
-        void this.router.navigate(["../"], {relativeTo: this.activatedRoute});
+        this.actualizarPagina();
       },
       error: (error: HttpErrorResponse): void => {
         const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
         this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
         console.log(error);
       }
+    });
+  }
+
+  actualizarPagina(): void {
+    const currentUrl: string = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+      void this.router.navigate([currentUrl]);
     });
   }
 
