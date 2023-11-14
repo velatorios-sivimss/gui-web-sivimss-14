@@ -273,9 +273,13 @@ export class ModificarDatosFinadoSFComponent
     let edad;
     let fechaNacimiento;
     if (datosEtapaFinado.datosFinado.fechaNacimiento) {
+      if(typeof datosEtapaFinado.datosFinado.fechaNacimiento == 'string'){
       let [dia, mes, anio] =
         datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
-      fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
+        fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
+      }else{
+        fechaNacimiento =datosEtapaFinado.datosFinado.fechaNacimiento
+      }
       let a = moment(anio + '-' + mes + '-' + dia);
       edad = moment().diff(a, 'years');
     }

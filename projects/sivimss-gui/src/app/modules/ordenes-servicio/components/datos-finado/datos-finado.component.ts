@@ -337,6 +337,7 @@ export class DatosFinadoComponent implements OnInit {
     this.cambiarValidacionMatricula();
     this.esExtremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
     this.esObito(datosEtapaFinado.datosFinado.esObito);
+    this.colonias =  [{label:datosEtapaFinado.direccion.colonia, value:datosEtapaFinado.direccion.colonia}] || []
   }
 
   consultarCURP(): void {
