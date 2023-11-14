@@ -87,6 +87,7 @@ export class ControlPagoComponent implements OnInit {
     this.tipoFolio = this.obtenerFolioTipoPago();
     this.tiposPago = this.obtenerMetodosPago();
     this.idPagoBitacora = this.activatedRoute.snapshot.paramMap.get('idPagoBitacora') as unknown as number;
+    this.actualizarValidaciones();
   }
 
   obtenerFolioTipoPago(): string {
@@ -174,6 +175,11 @@ export class ControlPagoComponent implements OnInit {
       data
     };
     this.dialogService.open(EliminarTipoPagoComponent, CANCELAR_TIPO_PAGO_CONFIG);
+  }
+
+  actualizarValidaciones(): void {
+    if (this.registroPago.totalPorCubrir > 0) return;
+    this.pagoForm.get('tipoPago')?.disable();
   }
 
 }

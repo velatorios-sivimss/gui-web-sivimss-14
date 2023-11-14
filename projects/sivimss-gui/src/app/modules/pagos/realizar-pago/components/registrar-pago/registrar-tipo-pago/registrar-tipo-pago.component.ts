@@ -104,10 +104,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
   }
 
   actualizarPagina(): void {
-    const currentUrl: string = this.router.url;
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-      void this.router.navigate([currentUrl]);
-    });
+    window.location.reload();
   }
 
   cancelar(): void {
