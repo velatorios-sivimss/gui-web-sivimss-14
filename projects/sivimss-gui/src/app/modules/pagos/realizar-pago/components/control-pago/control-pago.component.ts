@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DetallePago, MetodoPago} from "../../modelos/detallePago.interface";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 import {TipoDropdown} from "../../../../../models/tipo-dropdown";
 import {TIPO_PAGO_CATALOGOS_CONVENIO, TIPO_PAGO_CATALOGOS_ODS} from "../../constants/catalogos";
@@ -63,7 +63,6 @@ export class ControlPagoComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router,
     private readonly activatedRoute: ActivatedRoute,
     private location: Location,
     public dialogService: DialogService,
