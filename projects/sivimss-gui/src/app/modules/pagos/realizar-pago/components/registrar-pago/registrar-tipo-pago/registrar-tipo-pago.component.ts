@@ -7,14 +7,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
-import {Router} from "@angular/router";
-
-interface DatosRegistro {
-  idPagoBitacora: number,
-  idFlujoPago: number,
-  idRegistro: number,
-  importePago: number
-}
+import {DatosRegistroPago} from "../../../modelos/datosRegistro.interface";
 
 @Component({
   selector: 'app-registrar-tipo-pago',
@@ -29,7 +22,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   tipoPagoForm!: FormGroup;
 
-  registroPago!: DatosRegistro;
+  registroPago!: DatosRegistroPago;
   tipoPago!: string;
   idPago!: number;
   total: number = 0;
@@ -46,7 +39,6 @@ export class RegistrarTipoPagoComponent implements OnInit {
     private realizarPagoService: RealizarPagoService,
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
-    private router: Router,
   ) {
   }
 
@@ -90,17 +82,21 @@ export class RegistrarTipoPagoComponent implements OnInit {
   guardar(): void {
     const solicitudPago: SolicitudCrearPago = this.generarSolicitudPago();
     this.realizarPagoService.guardar(solicitudPago).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
-        this.ref.close();
-        this.actualizarPagina();
-      },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+      next: (): void => this.manejoRespuestaExitosaPago(),
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
+  }
+
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+    this.ref.close();
+    this.actualizarPagina();
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    console.log(error);
   }
 
   actualizarPagina(): void {
@@ -127,7 +123,6 @@ export class RegistrarTipoPagoComponent implements OnInit {
       numAutorizacion: this.tipoPagoForm.get('noAutorizacion')?.value
     }
   }
-
 
   get pf() {
     return this.tipoPagoForm?.controls
