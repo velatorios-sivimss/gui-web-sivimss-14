@@ -11,6 +11,9 @@ import {RegistrarTipoPagoComponent} from "../registrar-pago/registrar-tipo-pago/
 import {OverlayPanel} from "primeng/overlaypanel";
 import {ModificarTipoPagoComponent} from "../modificar-tipo-pago/modificar-tipo-pago.component";
 import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pago.component";
+import {
+  RegistrarValeParitariaComponent
+} from "../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
 
 interface DatosRegistro {
   idPagoBitacora?: number,
@@ -120,25 +123,54 @@ export class ControlPagoComponent implements OnInit {
     return TIPO_PAGO_CATALOGOS_CONVENIO;
   }
 
+  seleccionarPago(): void {
+    const tipoPago: number = this.pagoForm.get('tipoPago')?.value as number;
+    if (tipoPago === 1) {
+      this.abrirModalValeParitaria();
+      return;
+    }
+    if (tipoPago === 2) {
+      return;
+    }
+    this.registrarPago();
+  }
+
   registrarPago(): void {
     const idPago = this.pagoForm.get('tipoPago')?.value;
+    const tipoPago: string = this.obtenerTipoPagoSeleccionado(idPago);
+    const data: RegistroModal = this.generarDatosDialogo();
+    const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo(`Registro de ${tipoPago.toLowerCase()}`, data)
+    this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
+  }
+
+  obtenerTipoPagoSeleccionado(idPago: number): string {
+    const tipoPago: string | undefined = this.tiposPago.find((tp: TipoDropdown) => tp.value === idPago)?.label
+    return tipoPago ?? ''
+  }
+
+  crearConfiguracionDialogo(header: string, data: RegistroModal): DynamicDialogConfig {
+    return {header, width: MAX_WIDTH, data}
+  }
+
+  abrirModalValeParitaria(): void {
+    const data: RegistroModal = this.generarDatosDialogo();
+    const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo('Registro de Vale Paritaria', data);
+    this.dialogService.open(RegistrarValeParitariaComponent, REGISTRAR_PAGO_CONFIG)
+  }
+
+  generarDatosDialogo(): RegistroModal {
+    const idPago = this.pagoForm.get('tipoPago')?.value;
     const tipoPago: string = this.tiposPago.find((tp: TipoDropdown) => tp.value === idPago)?.label ?? '';
-    const data: RegistroModal = {
+    return {
       tipoPago, idPago,
       total: this.registroPago.totalPorCubrir,
       datosRegistro: {
         idPagoBitacora: this.registroPago.idPagoBitacora,
         idFlujoPago: this.registroPago.idFlujoPago,
         idRegistro: this.registroPago.idRegistro,
-        importePago: this.registroPago.totalPagado
+        importePago: this.registroPago.totalPagado,
       }
     }
-    const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
-      header: `Registro de ${tipoPago.toLowerCase()}`,
-      width: MAX_WIDTH,
-      data
-    }
-    this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
   }
 
   regresarPaginaPrevia(): void {
