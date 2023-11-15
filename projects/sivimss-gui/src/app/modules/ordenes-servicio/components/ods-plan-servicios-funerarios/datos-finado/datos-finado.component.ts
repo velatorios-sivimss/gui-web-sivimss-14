@@ -419,6 +419,7 @@ export class DatosFinadoSFComponent implements OnInit {
     this.finado.cp = this.cpFinado
     //Datos finado general
     this.finado.idTipoOrden = datosEtapaFinado.datosFinado.tipoOrden;
+    this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
     this.finado.curp = datosEtapaFinado.datosFinado.curp;
     this.finado.nss = datosEtapaFinado.datosFinado.nss;
     this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
