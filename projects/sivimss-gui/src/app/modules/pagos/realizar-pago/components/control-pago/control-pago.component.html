@@ -99,23 +99,24 @@
         </div>
       </ng-template>
       <ng-template pTemplate="content">
-        <div class="flex-row flex justify-content-between" *ngIf="['Efectivo', 'Traslado oficial'].includes(pago.metodoPago)">
-          <div class="col">
-            <span class="flex flex-column texto-base">Fecha de pago</span>
+        <div class="flex-row flex justify-content-between"
+             *ngIf="['Efectivo', 'Traslado oficial'].includes(pago.metodoPago)">
+          <div>
+            <span class="flex flex-column texto-base">Fecha de pago:</span>
             <span class="flex flex-column etiqueta-base">{{pago.fechaPago}}</span>
           </div>
-          <div class="col">
-            <span class="flex flex-column texto-base">Total a pagar</span>
+          <div>
+            <span class="flex flex-column texto-base">Total a pagar:</span>
             <span class="flex flex-column etiqueta-base">{{registroPago.totalAPagar | currency}}</span>
           </div>
-          <div class="col">
-            <span class="flex flex-column texto-base">Tipo de Pago</span>
-            <span class="flex flex-column etiqueta-base">{{pago.metodoPago}}</span>
+          <div>
+            <span class="flex flex-column texto-base mr-4">Tipo de Pago</span>
+            <span class="flex flex-column etiqueta-base mr-4">{{pago.metodoPago}}</span>
           </div>
         </div>
         <div class="row grid" *ngIf="!['Efectivo', 'Traslado oficial','Vale paritaria'].includes(pago.metodoPago)">
           <div class="col">
-            <span class="flex flex-column texto-base">Fecha de pago</span>
+            <span class="flex flex-column texto-base">Fecha de pago:</span>
             <span class="flex flex-column etiqueta-base">{{pago.fechaPago }}</span>
           </div>
           <div class="col">
