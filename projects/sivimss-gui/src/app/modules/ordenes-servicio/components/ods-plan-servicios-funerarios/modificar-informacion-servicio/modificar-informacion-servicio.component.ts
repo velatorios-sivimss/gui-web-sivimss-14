@@ -182,10 +182,6 @@ export class ModificarInformacionServicioSFComponent
     let fechaVelacion;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio, mes, dia] = fechaActual.split('-')
-    // let horaVelacion:string;
-    // if(typeof datos.horaVelacion){
-    //   datos.horaVelacion.inclu
-    // }
 
     if (typeof datos.horaVelacion == "string") {
       const [horas, minutos] = datos.horaVelacion.split(':')
@@ -282,7 +278,7 @@ export class ModificarInformacionServicioSFComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor == null ? false : datos.gestionadoPorPromotor, disabled: true},
+          {value: datos.gestionadoPorPromotor ?? false, disabled: true},
           [Validators.required],
         ],
         promotor: [
@@ -298,11 +294,6 @@ export class ModificarInformacionServicioSFComponent
     this.servicioExtremidad = datodPrevios.finado.extremidad
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
-    // if(Number(this.altaODS.finado.idTipoOrden) < 3){
-    //   this.cortejo.gestionadoPorPromotor.disable();
-    // }else{
-    //   this.cortejo.gestionadoPorPromotor.enable();
-    // }
   }
 
   ngAfterContentChecked(): void {
@@ -650,14 +641,12 @@ export class ModificarInformacionServicioSFComponent
   }
 
   guardarODS(consumoTablas: number): void {
-    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
     this.loaderService.activar();
     this.generarODSSF.actualizarODSSF(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe(
         {
           next: (respuesta: HttpRespuesta<any>) => {
-            const datos = respuesta.datos;
             if (respuesta.error) {
               this.salas = [];
               const errorMsg: string =
@@ -686,8 +675,9 @@ export class ModificarInformacionServicioSFComponent
               );
             } else {
               this.alertaService.mostrar(
-                TipoAlerta.Exito,
-                'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+                TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(49) ||
+                'Se ha guardado exitosamente la pre-orden. El contratante debe acudir al Velatorio correspondiente para' +
+                ' concluir con la contratación del servicio.'
               );
             }
 
@@ -721,16 +711,11 @@ export class ModificarInformacionServicioSFComponent
   }
 
   guardarODSComplementaria(consumoTablas: number): void {
-    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
-    if (this.altaODS.idEstatus == 1) {
-
-    }
     this.loaderService.activar();
     this.gestionarOrdenServicioService.generarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
             const errorMsg: string =
@@ -813,14 +798,12 @@ export class ModificarInformacionServicioSFComponent
         ? null
         : moment(
           typeof formulario.cortejo.fecha === "string" ? this.parseoFecha(formulario.cortejo.fecha) : formulario.cortejo.fecha
-          // formulario.cortejo.fecha
         ).format('yyyy-MM-DD');
 
     this.informacionServicio.fechaCremacion =
       formulario.lugarCremacion.fecha == null
         ? null
         : moment(
-          // formulario.lugarCremacion.fecha
           typeof formulario.lugarCremacion.fecha === "string" ? this.parseoFecha(formulario.lugarCremacion.fecha) : formulario.lugarCremacion.fecha
         ).format('yyyy-MM-DD');
 
@@ -828,7 +811,6 @@ export class ModificarInformacionServicioSFComponent
       formulario.recoger.fecha == null
         ? null
         : moment(
-          // formulario.recoger.fecha
           typeof formulario.recoger.fecha === "string" ? this.parseoFecha(formulario.recoger.fecha) : formulario.recoger.fecha
         ).format('yyyy-MM-DD');
 
@@ -836,7 +818,6 @@ export class ModificarInformacionServicioSFComponent
       formulario.recoger.hora == null
         ? null
         : moment(
-          // formulario.recoger.hora
           typeof formulario.recoger.hora === "string" ? this.parseoHora(formulario.recoger.fecha,formulario.recoger.hora) : formulario.recoger.hora
         ).format('HH:mm');
 
@@ -844,7 +825,6 @@ export class ModificarInformacionServicioSFComponent
       formulario.cortejo.hora == null
         ? null
         : moment(
-          // formulario.cortejo.hora
           typeof formulario.cortejo.hora === "string" ? this.parseoHora(formulario.cortejo.fecha,formulario.cortejo.hora) : formulario.cortejo.hora
         ).format('HH:mm');
 
@@ -852,7 +832,6 @@ export class ModificarInformacionServicioSFComponent
       formulario.lugarCremacion.hora == null
         ? null
         : moment(
-          // formulario.lugarCremacion.hora
           typeof formulario.lugarCremacion.hora === "string" ? this.parseoHora(formulario.lugarCremacion.fecha,formulario.lugarCremacion.hora) : formulario.lugarCremacion.hora
         ).format('HH:mm');
 
@@ -879,7 +858,6 @@ export class ModificarInformacionServicioSFComponent
       formulario.instalacionServicio.fecha == null
         ? null
         : moment(
-          // formulario.instalacionServicio.fecha
           typeof formulario.instalacionServicio.fecha === "string" ? this.parseoFecha(formulario.instalacionServicio.fecha) : formulario.instalacionServicio.fecha
         ).format('yyyy-MM-DD');
 
@@ -887,7 +865,6 @@ export class ModificarInformacionServicioSFComponent
       formulario.lugarVelacion.fecha == null
         ? null
         : moment(
-          // formulario.lugarVelacion.fecha
           typeof formulario.lugarVelacion.fecha === "string" ?this.parseoFecha(formulario.lugarVelacion.fecha) : formulario.lugarVelacion.fecha
         ).format('yyyy-MM-DD');
 
@@ -895,7 +872,6 @@ export class ModificarInformacionServicioSFComponent
       formulario.instalacionServicio.hora == null
         ? null
         : moment(
-          // formulario.instalacionServicio.hora
           typeof formulario.instalacionServicio.hora === "string" ? this.parseoHora(formulario.instalacionServicio.fecha,formulario.instalacionServicio.hora) : formulario.instalacionServicio.hora
         ).format('HH:mm');
 
@@ -903,7 +879,6 @@ export class ModificarInformacionServicioSFComponent
       formulario.lugarVelacion.hora == null
         ? null
         : moment(
-          // formulario.lugarVelacion.hora
           typeof formulario.lugarVelacion.hora === "string" ? this.parseoHora(formulario.lugarVelacion.fecha,formulario.lugarVelacion.hora) : formulario.lugarVelacion.hora
         ).format('HH:mm');
 
@@ -1034,9 +1009,6 @@ export class ModificarInformacionServicioSFComponent
     this.altaODS.idEstatus = 2;
     this.llenarDatos();
     this.guardarODS(1)
-    // Number(this.estatusUrl)==1 ? this.guardarODS(1) : this.guardarODSComplementaria(1);
-
-    // this.guardarODS(1);
   }
 
   regresar() {

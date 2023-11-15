@@ -14,6 +14,18 @@ hr {
 }
 
 :host ::ng-deep {
+  app-btn-regresar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: .25rem .75rem .25rem .75rem;
+    cursor: pointer;
+    img{
+      padding-bottom: 0;
+    }
+  }
   *+h3 {
     margin-left: 1.25rem;
   }

@@ -1,7 +1,9 @@
-.back-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
+a {
+  outline: none;
   cursor: pointer;
+  display: inline-block;
+}
+
+img {
+  padding-bottom: 7px;
 }
