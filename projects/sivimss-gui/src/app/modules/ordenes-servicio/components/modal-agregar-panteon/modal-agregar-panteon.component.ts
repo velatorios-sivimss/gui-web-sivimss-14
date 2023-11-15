@@ -272,6 +272,12 @@ export class ModalAgregarPanteonComponent implements OnInit {
       });
   }
 
+  seleccionarEstilos(): string {
+    if(this.f.nombrePanteon?.errors?.required && (this.f.nombrePanteon?.dirty || this.f.nombrePanteon?.touched)){
+      return 'input-autocomplete input-autocomplete-error'
+    }
+    return 'input-autocomplete'
+  }
 
   cerrarModal() {
     //Pasar info a quien abrio el modal en caso de que se requiera. Se esta pasando un boolean de ejemplo
