@@ -218,6 +218,7 @@ export class DatosFinadoSFComponent implements OnInit {
     });
     datosEtapaFinado.datosFinado.folioValido;
     datosEtapaFinado.datosFinado.folioValido ? this.folioInvalido = false : this.folioInvalido = true
+    this.colonias =  [{label:datosEtapaFinado.direccion.colonia, value:datosEtapaFinado.direccion.colonia}] || []
   }
 
   limpiarConsultaDatosPersonales(): void {
@@ -418,6 +419,7 @@ export class DatosFinadoSFComponent implements OnInit {
     this.finado.cp = this.cpFinado
     //Datos finado general
     this.finado.idTipoOrden = datosEtapaFinado.datosFinado.tipoOrden;
+    this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
     this.finado.curp = datosEtapaFinado.datosFinado.curp;
     this.finado.nss = datosEtapaFinado.datosFinado.nss;
     this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;

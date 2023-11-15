@@ -155,7 +155,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
         },
         error: (error: HttpErrorResponse): void => {
           console.error("ERROR: ", error);
-          this.alertaService.mostrar(TipoAlerta.Error, "Error al guardar la información " + this.ordenSeleccionada.idHojaSubrogacion + ". Intenta nuevamente.");
+          this.alertaService.mostrar(TipoAlerta.Error, "Error al guardar la información. Intenta nuevamente.");
         }
       });
     }
