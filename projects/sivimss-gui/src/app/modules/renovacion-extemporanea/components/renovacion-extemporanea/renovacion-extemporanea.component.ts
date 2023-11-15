@@ -51,6 +51,7 @@ export class RenovacionExtemporaneaComponent implements OnInit {
   busquedaRealizada: boolean = false;
   mostrarModalConfirmacion: boolean = false;
   mensajeConfirmacion: string = "";
+  cargaInicial: boolean = true;
 
   rolLocalStorage = JSON.parse(localStorage.getItem('usuario') as string);
 
@@ -104,9 +105,11 @@ export class RenovacionExtemporaneaComponent implements OnInit {
 
   paginar(event: LazyLoadEvent): void {
     if (validarUsuarioLogueado()) return;
-    if (event) {
+    if (event && !this.cargaInicial) {
       this.numPaginaActual = Math.floor((event.first ?? 0) / (event.rows ?? 1));
+      this.paginarConFiltros();
     }
+    this.cargaInicial = false;
   }
 
   paginarConFiltros(): void {
