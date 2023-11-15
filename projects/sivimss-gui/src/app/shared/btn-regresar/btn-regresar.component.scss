@@ -1,9 +1,9 @@
-.back-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: .25rem .75rem .25rem .75rem;
+a {
+  outline: none;
   cursor: pointer;
+  display: inline-block;
+}
+
+img {
+  padding-bottom: 7px;
 }
