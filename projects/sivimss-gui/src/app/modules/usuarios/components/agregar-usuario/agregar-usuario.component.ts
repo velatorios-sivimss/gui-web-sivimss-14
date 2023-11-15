@@ -208,7 +208,8 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
+        const ERROR: string = 'Error al consultar la información.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       }
     });
   }
@@ -234,7 +235,8 @@ export class AgregarUsuarioComponent implements OnInit {
       },
       error: (error: HttpErrorResponse): void => {
         console.error("ERROR: ", error);
-        this.mensajesSistemaService.mostrarMensajeError(error);
+        const ERROR: string = 'Error al consultar la información.';
+        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
       }
     });
   }

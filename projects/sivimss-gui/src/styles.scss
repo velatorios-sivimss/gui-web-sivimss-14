@@ -93,7 +93,7 @@ body {
 
 .contenedor-inputswitch {
   align-items: center;
-  display: inline-block;
+  display: flex;
   margin-left: 10px;
 
   & > *:not(span) {
@@ -145,7 +145,7 @@ body {
     width: 100%;
   }
 
-  a.pi-ellipsis-v {
+  a.pi-ellipsis-v,a.pi  {
     color: #9D2449;
     font-size: 18px;
   }
@@ -154,7 +154,7 @@ body {
     margin-left: 1.75rem;
   }
 
-  i.fs {
+  i.fs, i.pi {
     font-size: 20px;
     color: #9D2449;
   }
@@ -444,4 +444,10 @@ h1.subtitulo-base-lg {
   color: #484848 !important;
   font-size: 16px !important;
   font-weight: 600 !important;
+}
+
+
+p-table .p-datatable .p-column-resizer {
+  cursor: initial;
+  pointer-events: none;
 }

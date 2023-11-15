@@ -1,0 +1,122 @@
+.inicio-sesion {
+  height: 100%;
+  display: grid;
+  max-width: 600px;
+  align-items: center;
+  margin: auto;
+
+  h1 {
+    color: #6F7271;
+    margin: 0 0 20px 0;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+  }
+
+  hr {
+    border-top: 1.5px solid #98989A;
+  }
+
+  h2 {
+    color: #10312b;
+    margin: 0 0 20px 0;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 29px;
+    text-align: center;
+  }
+
+  h3 {
+    color: #272829;
+    margin: 0 0 40px 0;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 120%;
+    text-align: center;
+  }
+
+  label {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 22px;
+    color: #222222;
+  }
+
+  input {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    color: #484848;
+  }
+
+  ::placeholder {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    color: #545454;
+  }
+
+  a {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #2387f5;
+  }
+
+
+  i {
+    color: #98989a;
+  }
+
+  .olvidaste-contrasena {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 120%;
+    color: #1122CC;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+}
+
+
+.contenedor-intentos {
+  transform: scale(.8);
+
+  div {
+    background-color: #d7d7d7;
+    padding: 1rem;
+
+    .numero {
+      display: inline-block;
+      transform: scale(2);
+      font-weight: 700;
+      color: #454545;
+    }
+
+    .numero+span {
+      display: inline-block;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+  }
+
+  span {
+    color: #0c231e;
+  }
+
+  div+span {
+    transform: scale(3);
+    font-weight: 700;
+    display: inline-block;
+    margin: 0 10px;
+  }
+}

@@ -14,22 +14,18 @@
           <span class="inactivo" *ngIf="!usuarioSeleccionado.estatus">Inactivo</span>
         </div>
       </div>
-      <a class="ml-5 cursor-pointer" (click)="overlayPanel.toggle($event)" *appValidaRol="['USUARIOS','MODIFICAR']"
-         onCloseOnNavigation>
-        <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
-      </a>
     </div>
   </ng-template>
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>CURP</label>
+        <label>CURP<span class="req">*</span>:</label>
         <span>{{usuarioSeleccionado.curp}}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Matrícula</label>
+        <label>Matrícula<span class="req">*</span>:</label>
         <span>{{usuarioSeleccionado.matricula}}</span>
       </div>
     </div>
@@ -37,13 +33,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Nombre</label>
+        <label>Nombre(s)<span class="req">*</span>:</label>
         <span>{{usuarioSeleccionado.nombre}}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Usuario</label>
+        <label>Usuario:</label>
         <span>{{usuarioSeleccionado.usuario}}</span>
       </div>
     </div>
@@ -51,13 +47,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Contraseña</label>
+        <label>Contraseña:</label>
         <span>{{usuarioSeleccionado.contrasenia}}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Entidad Federativa de Nacimiento</label>
+        <label>Entidad Federativa de Nacimiento:</label>
         <span>{{usuarioSeleccionado.desEdoNacimiento | uppercase}}</span>
       </div>
     </div>
@@ -65,13 +61,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Primer apellido</label>
+        <label>Primer apellido<span class="req">*</span>:</label>
         <span>{{usuarioSeleccionado.paterno}}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Segundo apellido</label>
+        <label>Segundo apellido<span class="req">*</span>:</label>
         <span>{{usuarioSeleccionado.materno}}</span>
       </div>
     </div>
@@ -79,13 +75,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Correo electrónico</label>
+        <label>Correo electrónico<span class="req">*</span>:</label>
         <span>{{usuarioSeleccionado.correo}}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Nivel</label>
+        <label>Nivel<span class="req">*</span>:</label>
         <span>{{usuarioSeleccionado.oficina}}</span>
       </div>
     </div>
@@ -93,13 +89,13 @@
   <div class="row table-panel-row">
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Delegación</label>
+        <label>Delegación:</label>
         <span>{{usuarioSeleccionado.delegacion}}</span>
       </div>
     </div>
     <div class="col-md-6">
       <div class="table-panel-column">
-        <label>Velatorio</label>
+        <label>Velatorio:</label>
         <span>{{usuarioSeleccionado.velatorio}}</span>
       </div>
     </div>
@@ -107,7 +103,7 @@
   <div class="row table-panel-row">
     <div class="col-md-12">
       <div class="table-panel-column">
-        <label>Rol</label>
+        <label>Rol<span class="req">*</span>:</label>
         <span>{{usuarioSeleccionado.rol}}</span>
       </div>
     </div>

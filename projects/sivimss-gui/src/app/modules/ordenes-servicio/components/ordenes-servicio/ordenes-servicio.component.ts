@@ -242,8 +242,7 @@ export class OrdenesServicioComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, ordenServicioSeleccionada: any): void {
     this.ordenServicioSeleccionada = ordenServicioSeleccionada;
-    this.ordenServicioSeleccionada.EntradaDonacion > 0 ? this.mostrarDescargaEntradas = true : this.mostrarDescargaEntradas = false
-    this.ordenServicioSeleccionada.SalidaDonacion > 0 ? this.mostrarDescagaSalidas = true : this.mostrarDescagaSalidas = false
+    this.mostrarDescagaSalidas = this.ordenServicioSeleccionada.SalidaDonacion > 0;
     this.overlayPanel.toggle(event);
   }
 
@@ -401,27 +400,9 @@ export class OrdenesServicioComponent implements OnInit {
     return query?.toLowerCase();
   }
 
-  consultarUnidadMedica(): void {
-    // this.loaderService.activar();
-    // this.consultarOrdenServicioService.unidadMedica(this.formulario.delegacion.value).pipe(
-    //   finalize(()=>this.loaderService.desactivar())
-    // ).subscribe(
-    //   (respuesta: HttpRespuesta<any>): void => {
-    //     this.unidadesMedicas = respuesta.datos.map((unidadMedica: catalogoUnidadesMedicas) => (
-    //       { label: unidadMedica.nombreUnidad, value: unidadMedica.idUnidadMedica })) || [];
-    //   },
-    //   (error:HttpErrorResponse) => {
-    //     const errorMsg: string = this.mensajesSistemaService.obtenerMensajeSistemaPorId(parseInt(error.error.mensaje));
-    //     this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'El servicio no responde, no permite más llamadas.');
-    //   }
-    // )
-
-
-  }
 
   exportarArchivo(extension: string): void {
 
-    // if(this.filtroForm.invalid)return;
     this.loaderService.activar()
     let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {};
@@ -466,7 +447,6 @@ export class OrdenesServicioComponent implements OnInit {
     if (this.ordenServicioSeleccionada.estatus?.includes('Preorden')) {
       tipoReporte = 0;
     }
-    let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.consultarOrdenServicioService.generarArchivoServiciosInmediatos(this.ordenServicioSeleccionada.idOrdenServicio, tipoReporte).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -494,10 +474,9 @@ export class OrdenesServicioComponent implements OnInit {
 
   descargarOrdenServicio(): void {
     this.loaderService.activar()
-    let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
-    let estatusODS: number = 1;
-    this.ordenServicioSeleccionada.estatus?.includes("Generada") ? estatusODS = 2 : estatusODS = 1;
+    let estatusODS: number = this.ordenServicioSeleccionada.estatus?.includes("Generada") ? 2 : 1;
+
     this.consultarOrdenServicioService.generarArchivoOrdenServicio(
       this.ordenServicioSeleccionada.idOrdenServicio, estatusODS
     ).pipe(
@@ -546,7 +525,6 @@ export class OrdenesServicioComponent implements OnInit {
   descargarEntradas(): void {
     let tipoConsulta = this.ordenServicioSeleccionada.estatus == "Preorden" ? 0 : 1;
     this.loaderService.activar()
-    let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.consultarOrdenServicioService.generarArchivoEntradaDonaciones(
       this.ordenServicioSeleccionada.idOrdenServicio, tipoConsulta
@@ -577,7 +555,6 @@ export class OrdenesServicioComponent implements OnInit {
   descargarSalidas(): void {
     let tipoConsulta = this.ordenServicioSeleccionada.estatus == "Preorden" ? 0 : 1;
     this.loaderService.activar()
-    let filtros = this.obtenerObjetoParaFiltrado();
     const configuracionArchivo: OpcionesArchivos = {ext: 'pdf'};
     this.consultarOrdenServicioService.generarArchivoSalidaDonaciones(
       this.ordenServicioSeleccionada.idOrdenServicio, tipoConsulta
@@ -603,6 +580,16 @@ export class OrdenesServicioComponent implements OnInit {
         this.alertaService.mostrar(TipoAlerta.Error, errorMsg || 'Error en la descarga del documento.Intenta nuevamente.');
       }
     })
+  }
+
+  validaControlSalidaDonacion(): boolean {
+    if(this.ordenServicioSeleccionada.EntradaDonacion > 0){
+      if(this.ordenServicioSeleccionada.idTipoOrden == 4){
+        return this.ordenServicioSeleccionada.estatus?.includes('Generada');
+      }
+      return true
+    }
+    return false;
   }
 
   limpiarFiltros(): void {

@@ -279,6 +279,7 @@ export class InformacionServicioSFComponent implements OnInit {
         ],
       }),
     });
+    this.colonias = [{label:datos.colonia, value: datos.colonia}];
   }
 
   changePromotor(validacion: string): void {
@@ -655,8 +656,9 @@ export class InformacionServicioSFComponent implements OnInit {
             return;
           }
           this.descargarOrdenServicio(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-          this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
-
+          if(this.altaODS.idEstatus != 1){
+            this.descargarControlSalidaDonaciones(respuesta.datos.idOrdenServicio, respuesta.datos.idEstatus);
+          }
           const ExitoMsg: string =
             this.mensajesSistemaService.obtenerMensajeSistemaPorId(
               parseInt(respuesta.mensaje)

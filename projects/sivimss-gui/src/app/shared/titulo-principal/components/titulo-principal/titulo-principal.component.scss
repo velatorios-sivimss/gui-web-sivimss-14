@@ -5,9 +5,16 @@ h3 {
   line-height: 45px;
   text-transform: uppercase;
   color: #272829;
-  margin:0;
+  margin: 0;
 }
-hr{
-    margin-top: 5px;
-    margin-bottom: 35px;
+
+hr {
+  margin-top: 5px;
+  margin-bottom: 35px;
+}
+
+:host ::ng-deep {
+  *+h3 {
+    margin-left: 1.25rem;
+  }
 }

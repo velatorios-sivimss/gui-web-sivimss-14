@@ -88,6 +88,10 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
             );
             return;
           }
+          if(respuesta.datos.length == 0){
+            this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(15));
+            return
+          }
           this.listaAtaudes = mapearArregloTipoDropdown(
             datos,
             'nombreArticulo',
@@ -133,6 +137,10 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
               )
             );
             return;
+          }
+          if(respuesta.datos.length == 0){
+            this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(15));
+            return
           }
           this.listaProveedores = mapearArregloTipoDropdown(
             datos,
@@ -187,8 +195,8 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
           const datos = respuesta.datos;
+          this.listaAtaudesInventario = [];
           if (respuesta.error) {
-            this.listaAtaudesInventario = [];
             this.alertaService.mostrar(
               TipoAlerta.Error,
               this.gestionarOrdenServicioService.obtenerMensajeSistemaPorId(
@@ -196,6 +204,10 @@ export class ModalAgregarAlPaqueteComponent implements OnInit {
               )
             );
             return;
+          }
+          if(respuesta.datos.length == 0){
+            this.alertaService.mostrar(TipoAlerta.Precaucion,this.mensajesSistemaService.obtenerMensajeSistemaPorId(15));
+            return
           }
 
           this.listaAtaudesInventario = mapearArregloTipoDropdown(

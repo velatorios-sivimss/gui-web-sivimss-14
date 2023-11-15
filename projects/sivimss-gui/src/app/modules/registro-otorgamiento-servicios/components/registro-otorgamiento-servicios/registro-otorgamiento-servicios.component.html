@@ -9,7 +9,7 @@
         <label class="control-label" for="folioODS">Folio de ODS<span class="req">*</span></label>
         <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Inserta el folio de ODS">
         <span class="campo-obligatorio"
-          *ngIf="f.folioODS?.errors?.required && (f.folioODS?.dirty || f.folioODS?.touched)">Campo obligatorio</span>
+          *ngIf="f.folioODS?.errors?.required && (f.folioODS?.dirty || f.folioODS?.touched)">Este campo es obligatorio *.</span>
       </div>
     </div>
     <div class="row mt-6">

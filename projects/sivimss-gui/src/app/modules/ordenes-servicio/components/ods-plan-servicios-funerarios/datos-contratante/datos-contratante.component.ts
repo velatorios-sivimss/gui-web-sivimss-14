@@ -13,7 +13,7 @@ import {
 import {TipoDropdown} from '../../../../../models/tipo-dropdown';
 import {nacionalidad, sexo} from '../../../constants/catalogos-complementarios';
 import {ActivatedRoute} from '@angular/router';
-import {SERVICIO_BREADCRUMB} from '../../../constants/breadcrumb';
+import {SERVICIO_BREADCRUMB, SERVICIO_BREADCRUMB_SFPA} from '../../../constants/breadcrumb';
 import {LoaderService} from '../../../../../shared/loader/services/loader.service';
 import {finalize} from 'rxjs/operators';
 import {HttpRespuesta} from '../../../../../models/http-respuesta.interface';
@@ -120,7 +120,7 @@ export class DatosContratanteSFComponent implements OnInit {
         value: parentesco.value,
       })) || [];
 
-    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB);
+    this.breadcrumbService.actualizar(SERVICIO_BREADCRUMB_SFPA);
     this.gestionarEtapasService.datosEtapaContratante$
       .subscribe((datosEtapaContratante) =>
         this.inicializarForm(datosEtapaContratante)
@@ -187,6 +187,8 @@ export class DatosContratanteSFComponent implements OnInit {
     this.cambiarValidacion();
     this.idContratante = datosEtapaContratante.datosContratante.idContratante;
     this.idPersona = datosEtapaContratante.datosContratante.idPersona;
+    this.colonias =  [{label:datosEtapaContratante.direccion.colonia, value:datosEtapaContratante.direccion.colonia}] ||
+      [];
   }
 
   noEspaciosAlPrincipio(posicion: number) {

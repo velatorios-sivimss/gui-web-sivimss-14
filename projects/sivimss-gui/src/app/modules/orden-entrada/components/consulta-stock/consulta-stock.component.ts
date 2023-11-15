@@ -89,8 +89,8 @@ export class ConsultaStockComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.formulario = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: false }],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: false }],
+      nivel: [{ value: +usuario.idOficina, disabled: true }],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3 }],
       ordenEntrada: [{ value: null, disabled: false }],
       categoria: [{ value: null, disabled: false }],
       asignacion1: [{ value: null, disabled: false }],
@@ -286,12 +286,11 @@ export class ConsultaStockComponent implements OnInit {
     if (idTipoAsignacion === null && asignacion1 && asignacion1[0] === 0) {
       idTipoAsignacion = "1,3";
     }
+    let ordenEntrada = this.catalogoOrdenesEntradaCompleto.filter((o) => o.NUM_FOLIO === this.formulario.get("ordenEntrada")?.value);
     let categoria = this.catalogoCategoriasCompleto.filter((c) => c.DES_CATEGORIA_ARTICULO === this.formulario.get("categoria")?.value);
-
-
     return {
       idVelatorio: this.formulario.get("velatorio")?.value === "" ? null : this.formulario.get("velatorio")?.value,
-      idOrdenEntrada: this.formulario.get("ordenEntrada")?.value,
+      idOrdenEntrada: ordenEntrada.length > 0 ? ordenEntrada[0].ID_ODE : null,
       idCategoriaArticulo: categoria.length > 0 ? categoria[0].ID_CATEGORIA_ARTICULO : null,
       idTipoAsignacionArt: idTipoAsignacion,
       tipoReporte: tipoReporteSeleccionado,

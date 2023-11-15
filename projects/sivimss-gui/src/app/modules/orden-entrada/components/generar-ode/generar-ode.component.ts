@@ -149,6 +149,7 @@ export class GenerarOdeComponent implements OnInit {
           if (this.maxNumeroArticulos <= 0) {
             this.formulario.get("numeroArticulos")?.setValue(0);
             this.bloquearCampoArticulos = true;
+            this.alertaService.mostrar(TipoAlerta.Info, "No puedes generar una ODE porque la cantidad de artículos es 0");
           } else {
             this.formulario.get('numeroArticulos')?.enable();
           }

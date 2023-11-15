@@ -545,7 +545,6 @@ export class ModificarDatosContratanteComponent
     }
     this.idContratante = Number(datos.contratante.idContratante);
     this.idPersona = datos.contratante.idPersona;
-
     this.cambiarValidacion();
     this.cambiarTipoSexo();
     this.cambiarNacionalidad();

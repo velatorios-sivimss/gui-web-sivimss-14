@@ -94,8 +94,8 @@ export class ConsultaOrdenEntradaComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.formulario = this.formBuilder.group({
-      nivel: [{value: +usuario.idOficina, disabled: false}],
-      velatorio: [{value: +usuario.idVelatorio, disabled: false}],
+      nivel: [{value: +usuario.idOficina, disabled: true}],
+      velatorio: [{value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}],
       ordenEntrada: [{value: null, disabled: false}],
       proveedor: [{value: null, disabled: false}],
       fechaInicial: [{value: null, disabled: false}, [Validators.required]],

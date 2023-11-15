@@ -103,8 +103,8 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   inicializarFormulario(): void {
     const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
     this.filtroForm = this.formBuilder.group({
-      nivel: [{ value: +usuario.idOficina, disabled: false }, []],
-      velatorio: [{ value: +usuario.idVelatorio, disabled: false }, []],
+      nivel: [{ value: +usuario.idOficina, disabled: true }, []],
+      velatorio: [{ value: +usuario.idVelatorio, disabled: +usuario.idOficina === 3}, []],
       folio: new FormControl({ value: null, disabled: false }, []),
       proveedor: new FormControl({ value: null, disabled: false }, []),
       fecha: new FormControl({ value: null, disabled: false }, []),
@@ -204,7 +204,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
         }
       },
       error: (error: HttpErrorResponse) => {
-        this.alertaService.mostrar(TipoAlerta.Error, error.error.mensaje);
+        this.alertaService.mostrar(TipoAlerta.Error, "Error al consultar la información.");
       }
     });
   }
@@ -287,6 +287,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
           respuesta.datos, this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
           { type: this.descargaArchivosService.obtenerContentType(configuracionArchivo) }
         );
+        configuracionArchivo.nombreArchivo = "Orden De Subrogación";
         this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
           finalize(() => this.loaderService.desactivar())
         ).subscribe({

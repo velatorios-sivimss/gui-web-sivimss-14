@@ -273,9 +273,13 @@ export class ModificarDatosFinadoSFComponent
     let edad;
     let fechaNacimiento;
     if (datosEtapaFinado.datosFinado.fechaNacimiento) {
+      if(typeof datosEtapaFinado.datosFinado.fechaNacimiento == 'string'){
       let [dia, mes, anio] =
         datosEtapaFinado.datosFinado.fechaNacimiento.split('/');
-      fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
+        fechaNacimiento = new Date(anio + '-' + mes + '-' + dia)
+      }else{
+        fechaNacimiento =datosEtapaFinado.datosFinado.fechaNacimiento
+      }
       let a = moment(anio + '-' + mes + '-' + dia);
       edad = moment().diff(a, 'years');
     }
@@ -848,33 +852,6 @@ export class ModificarDatosFinadoSFComponent
       },
     };
 
-    //direcccion
-    // this.finado.cp = null;
-    // this.finado.idTipoOrden = 4;
-    // this.finado.rfc = null;
-    // this.finado.curp = datosEtapaFinado.datosFinado.curp;
-    // this.finado.nss = datosEtapaFinado.datosFinado.nss;
-    // this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
-    // this.finado.primerApellido = datosEtapaFinado.datosFinado.primerApellido;
-    // this.finado.segundoApellido = datosEtapaFinado.datosFinado.segundoApellido;
-    // this.finado.sexo = datosEtapaFinado.datosFinado.sexo;
-    // this.finado.otroSexo = datosEtapaFinado.datosFinado.otroTipoSexo;
-    // this.finado.fechaNac = datosEtapaFinado.datosFinado.fechaNacimiento;
-    // this.finado.idPais = datosEtapaFinado.datosFinado.paisNacimiento;
-    // this.finado.idEstado = datosEtapaFinado.direccion.estado;
-    // this.finado.fechaDeceso = datosEtapaFinado.datosFinado.fechaDefuncion;
-    // this.finado.causaDeceso = datosEtapaFinado.datosFinado.causaDeceso;
-    // this.finado.lugarDeceso = datosEtapaFinado.datosFinado.lugarDeceso;
-    // this.finado.hora = datosEtapaFinado.datosFinado.horaDeceso;
-    // this.finado.idClinicaAdscripcion = datosEtapaFinado.datosFinado.clinicaAdscripcion;
-    // this.finado.idUnidadProcedencia = datosEtapaFinado.datosFinado.unidadProcedencia;
-    // this.finado.procedenciaFinado = datosEtapaFinado.datosFinado.procedenciaFinado;
-    // this.finado.idTipoPension = datosEtapaFinado.datosFinado.tipoPension;
-    // this.finado.idContratoPrevision = this.idContratoPrevision;
-    // this.finado.idVelatorioContratoPrevision = this.idVelatorioContratoPrevision ? this.idVelatorioContratoPrevision : null;
-    // this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
-    // this.finado.cp = null;
-    // this.finado.idPersona = null;
     this.cpFinado.idDomicilio = this.idDomicilio;
     this.cpFinado.desCalle = datosEtapaFinado.direccion.calle;
     this.cpFinado.numExterior = datosEtapaFinado.direccion.noExterior;
@@ -888,6 +865,7 @@ export class ModificarDatosFinadoSFComponent
     this.finado.idTipoOrden = 4;
 
     this.altaODS.idContratantePf = this.idContratante;
+    this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
     this.finado.curp = datosEtapaFinado.datosFinado.curp;
     this.finado.nss = datosEtapaFinado.datosFinado.nss;
     this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;

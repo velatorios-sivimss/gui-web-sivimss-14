@@ -337,6 +337,7 @@ export class DatosFinadoComponent implements OnInit {
     this.cambiarValidacionMatricula();
     this.esExtremidad(datosEtapaFinado.datosFinado.esParaExtremidad);
     this.esObito(datosEtapaFinado.datosFinado.esObito);
+    this.colonias =  [{label:datosEtapaFinado.direccion.colonia, value:datosEtapaFinado.direccion.colonia}] || []
   }
 
   consultarCURP(): void {
@@ -733,6 +734,7 @@ export class DatosFinadoComponent implements OnInit {
     this.altaODS.idContratantePf = this.idContratante;
     if (!datosEtapaFinado.datosFinado.esParaExtremidad) {
       this.finado.rfc = null;
+      this.finado.matricula = datosEtapaFinado.datosFinado.matricula;
       this.finado.curp = datosEtapaFinado.datosFinado.curp;
       this.finado.nss = datosEtapaFinado.datosFinado.nss;
       this.finado.nomPersona = datosEtapaFinado.datosFinado.nombre;
