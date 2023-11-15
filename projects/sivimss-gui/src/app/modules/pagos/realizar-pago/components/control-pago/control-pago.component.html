@@ -90,7 +90,7 @@
               </div>
               <div class="ml-2"
                    *ngIf="['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)"></div>
-              <a class="cursor-pointer" (click)="mostrarOverlay($event, pago)"
+              <a class="cursor-pointer" (click)="mostrarOverlay($event, pago)" onCloseOnNavigation
                  *ngIf="!['Vale paritaria', 'Ayuda de Gastos de Funeral (AGF)'].includes(pago.metodoPago)">
                 <img src="assets/images/imagen-icono-barras-horizontales.svg" alt="icono barras horizontales">
               </a>
