@@ -6,7 +6,7 @@
                       (keyup.space)="sinEspacioInicial(0)"  (onSelect)="seleccionaPanteon($event)" autocomplete="panteon" [suggestions]="panteonServicioFiltrados"
                       (completeMethod)="filtrarPateon($event)"
                       [showEmptyMessage]="true" [style]="{'width':'100%'}" [minLength]="3" [maxlength]="50" class="p-autocomplete" placeholder="Ingresa nombre del panteón"
-                      [inputStyle]="{'width' : '100%','font-style' : 'normal','font-weight' : '400','font-size' : '14px'}"></p-autoComplete>
+                      [inputStyleClass]="seleccionarEstilos()"></p-autoComplete>
       <span class="campo-obligatorio"
             *ngIf="f.nombrePanteon?.errors?.required && (f.nombrePanteon?.dirty || f.nombrePanteon?.touched)">Este campo es obligatorio *.</span>
     </div>
