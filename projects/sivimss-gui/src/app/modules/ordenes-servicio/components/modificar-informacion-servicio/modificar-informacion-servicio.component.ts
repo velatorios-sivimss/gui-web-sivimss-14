@@ -184,10 +184,6 @@ export class ModificarInformacionServicioComponent
     let fechaVelacion;
     const fechaActual = moment().format('YYYY-MM-DD');
     const [anio, mes, dia] = fechaActual.split('-')
-    // let horaVelacion:string;
-    // if(typeof datos.horaVelacion){
-    //   datos.horaVelacion.inclu
-    // }
     if (typeof datos.horaVelacion == "string") {
       const [horas, minutos] = datos.horaVelacion.split(':')
       datos.horaVelacion = new Date(+anio, +mes, +dia, +horas, +minutos)
@@ -282,7 +278,7 @@ export class ModificarInformacionServicioComponent
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor == null ? false : datos.gestionadoPorPromotor, disabled: false},
+          {value:  datos.gestionadoPorPromotor ?? false, disabled: false},
           [Validators.required],
         ],
         promotor: [
@@ -648,13 +644,11 @@ export class ModificarInformacionServicioComponent
   }
 
   guardarODS(consumoTablas: number): void {
-    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
     this.loaderService.activar();
     this.gestionarOrdenServicioService.actualizarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
             const errorMsg: string =
@@ -686,8 +680,9 @@ export class ModificarInformacionServicioComponent
             );
           } else {
             this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+              TipoAlerta.Exito, this.mensajesSistemaService.obtenerMensajeSistemaPorId(49) ||
+              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente' +
+              ' para concluir con la contratación del servicio.'
             );
           }
 
@@ -707,16 +702,11 @@ export class ModificarInformacionServicioComponent
   }
 
   guardarODSComplementaria(consumoTablas: number): void {
-    let tipoServicio = this.gestionarOrdenServicioService.actualizarODS;
-    if (this.altaODS.idEstatus == 1) {
-
-    }
     this.loaderService.activar();
     this.gestionarOrdenServicioService.generarODS(this.altaODS)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
             const errorMsg: string =
@@ -989,8 +979,6 @@ export class ModificarInformacionServicioComponent
     this.llenarDatos();
 
     Number(this.estatusUrl) == 1 ? this.guardarODS(1) : this.guardarODSComplementaria(1);
-
-    // this.guardarODS(1);
   }
 
   regresar() {

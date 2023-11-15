@@ -641,7 +641,6 @@ export class InformacionServicioSFComponent implements OnInit {
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<any>) => {
-          const datos = respuesta.datos;
           if (respuesta.error) {
             this.salas = [];
             const errorMsg: string =
@@ -670,8 +669,9 @@ export class InformacionServicioSFComponent implements OnInit {
             );
           } else {
             this.alertaService.mostrar(
-              TipoAlerta.Exito,
-              'Se ha guardado exitosamente la pre-orden.El contratante debe acudir al Velatorio correspondiente para concluir con la contratación del servicio.'
+              TipoAlerta.Exito,this.mensajesSistemaService.obtenerMensajeSistemaPorId(49) ||
+              'Se ha guardado exitosamente la pre-orden. El contratante debe acudir al Velatorio correspondiente' +
+              ' para concluir con la contratación del servicio.'
             );
           }
           this.router.navigate(["ordenes-de-servicio"]);
@@ -758,7 +758,6 @@ export class InformacionServicioSFComponent implements OnInit {
     this.lugarCremacion.fecha.disable();
     this.lugarCremacion.hora.disable();
     this.cortejo.promotor.disable();
-    // this.inhumacion.agregarPanteon.disable();
     this.cortejo.gestionadoPorPromotor.disable();
     this.cortejo.fecha.disable();
     this.cortejo.hora.disable();
