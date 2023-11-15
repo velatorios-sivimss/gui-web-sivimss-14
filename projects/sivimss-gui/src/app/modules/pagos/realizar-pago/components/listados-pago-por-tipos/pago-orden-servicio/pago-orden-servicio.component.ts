@@ -185,8 +185,4 @@ export class PagoOrdenServicioComponent implements OnInit {
     this.dialogService.open(RegistrarTipoPagoComponent, REGISTRAR_PAGO_CONFIG);
   }
 
-  get odsf() {
-    return this.pagoForm?.controls;
-  }
-
 }
