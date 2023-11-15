@@ -60,7 +60,7 @@
 <section class="mt-5">
   <p-table styleClass="mt-5 mb-8" [value]="conveniosPrevicion" [paginator]="conveniosPrevicion.length > 0"
     [rows]="cantElementosPorPagina" [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3"
-    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)">
+    [(first)]="numPaginaActual" (onLazyLoad)="paginar($event)" [columnResizeMode]="'expand'">
     <ng-template pTemplate="header">
       <tr>
         <th scope="col">Velatorio origen</th>
