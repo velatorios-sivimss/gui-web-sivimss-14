@@ -36,7 +36,7 @@ interface ParametrosModificar {
   idPagoDetalle: number
 }
 
-interface ParametrosCancelar {
+interface ParametrosEliminar {
   pago: MetodoPago,
   total: number
 }
@@ -148,7 +148,7 @@ export class ControlPagoComponent implements OnInit {
     return tipoPago ?? ''
   }
 
-  crearConfiguracionDialogo(header: string, data: RegistroModal): DynamicDialogConfig {
+  crearConfiguracionDialogo(header: string, data: RegistroModal | ParametrosEliminar): DynamicDialogConfig {
     return {header, width: MAX_WIDTH, data}
   }
 
@@ -196,17 +196,17 @@ export class ControlPagoComponent implements OnInit {
     this.dialogService.open(ModificarTipoPagoComponent, MODIFICAR_TIPO_PAGO_CONFIG)
   }
 
-  cancelarTipoPago(): void {
-    const data: ParametrosCancelar = {
+  eliminarTipoPago(): void {
+    const data: ParametrosEliminar = this.generarDatosDialogoEliminar();
+    const CANCELAR_TIPO_PAGO_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo('Eliminar método de pago registrado', data);
+    this.dialogService.open(EliminarTipoPagoComponent, CANCELAR_TIPO_PAGO_CONFIG);
+  }
+
+  generarDatosDialogoEliminar(): ParametrosEliminar {
+    return {
       pago: this.pagoSeleccionado,
       total: this.registroPago.totalAPagar
-    };
-    const CANCELAR_TIPO_PAGO_CONFIG: DynamicDialogConfig = {
-      header: "Cancelar pago",
-      width: MAX_WIDTH,
-      data
-    };
-    this.dialogService.open(EliminarTipoPagoComponent, CANCELAR_TIPO_PAGO_CONFIG);
+    }
   }
 
   actualizarValidaciones(): void {
