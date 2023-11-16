@@ -14,32 +14,7 @@ import {EliminarTipoPagoComponent} from "../eliminar-tipo-pago/eliminar-tipo-pag
 import {
   RegistrarValeParitariaComponent
 } from "../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
-
-interface DatosRegistro {
-  idPagoBitacora?: number,
-  idFlujoPago?: number,
-  idRegistro?: number,
-}
-
-interface RegistroModal {
-  tipoPago: string,
-  idPago: string,
-  total: number,
-  datosRegistro: DatosRegistro
-}
-
-interface ParametrosModificar {
-  metodoPago: string,
-  tipoPago: string,
-  importe: number,
-  idPagoDetalle: number,
-  total: number
-}
-
-interface ParametrosEliminar {
-  pago: MetodoPago,
-  total: number
-}
+import {ParametrosEliminar, ParametrosModificar, RegistroModal} from "../../modelos/datosRegistro.interface";
 
 @Component({
   selector: 'app-control-pago',
@@ -61,7 +36,6 @@ export class ControlPagoComponent implements OnInit {
   tipoFolio: string = '';
   titulo: string = '';
   tiposPago: TipoDropdown[] = [];
-  generarPagare: boolean = false;
   pagoForm!: FormGroup;
 
   constructor(
