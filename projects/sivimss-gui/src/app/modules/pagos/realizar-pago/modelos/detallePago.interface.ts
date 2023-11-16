@@ -10,6 +10,8 @@ export interface DetallePago {
   estatusPago: string,
   tipoPago: string,
   fechaUltimaPago: string
+  valeP: number
+  nss: string
 }
 
 export interface MetodoPago {

@@ -115,12 +115,20 @@ export class ControlPagoComponent implements OnInit {
 
   obtenerMetodosPago(): TipoDropdown[] {
     if (this.registroPago.tipoPago === 'Pago de Orden de Servicio') {
-      return TIPO_PAGO_CATALOGOS_ODS;
+      return this.verificarValeParitaria();
     }
     if (this.registroPago.tipoPago === 'Pago de Nuevos Convenios de Previsión Funeraria') {
       return TIPO_PAGO_CATALOGOS_CONVENIO;
     }
     return TIPO_PAGO_CATALOGOS_CONVENIO;
+  }
+
+  verificarValeParitaria(): TipoDropdown[] {
+    const tipoPago: TipoDropdown[] = [...TIPO_PAGO_CATALOGOS_ODS];
+    if (this.registroPago.valeP > 0 || this.registroPago.nss) {
+      tipoPago.shift()
+    }
+    return tipoPago;
   }
 
   seleccionarPago(): void {
