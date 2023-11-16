@@ -26,13 +26,13 @@
     </div>
     <div class="grid mb-3">
       <div class="col-4">
-        <label class="control-label pb-3" for="tipoConvenio">Tipo de convenios:</label>
+        <label class="control-label md:pb-3 x2l:pb-0" for="tipoConvenio">Tipo de convenios:</label>
         <p-dropdown id="tipoConvenio" class="form-control" [(ngModel)]="convenioSeleccionado" [options]="tipoConvenio"
                     placeholder="Selecciona tipo de convenio" [filter]="true" [ngModelOptions]="{ standalone: true }">
         </p-dropdown>
       </div>
       <div class="col-4" *ngIf="[null,1].includes(convenioSeleccionado)">
-        <label class="control-label pb-3" for="folioODS">Folio de la orden de Servicio (ODS):</label>
+        <label class="control-label md:pb-3 x2l:pb-0" for="folioODS">Folio de la orden de Servicio (ODS):</label>
         <input id="folioODS" class="form-control" formControlName="folioODS" placeholder="Ingresa folio"/>
       </div>
       <div class="col-4" *ngIf="[null,2].includes(convenioSeleccionado)">
@@ -45,13 +45,13 @@
         <input id="folioRenovacion" class="form-control" formControlName="folioRenovacion" placeholder="Ingresa folio"/>
       </div>
       <div class="col-4">
-        <label class="control-label pb-3" for="metodo">Método de pago:</label>
+        <label class="control-label md:pb-3 x2l:pb-0" for="metodo">Método de pago:</label>
         <p-dropdown id="metodo" class="form-control" formControlName="metodo" [options]="opciones"
                     placeholder="Ingresa método de pago" [filter]="true">
         </p-dropdown>
       </div>
       <div class="col-4">
-        <label class="control-label pb-3" for="fecha">Fecha:</label>
+        <label class="control-label md:pb-3 x2l:pb-0" for="fecha">Fecha:</label>
         <p-calendar id="fecha" formControlName="fecha" styleClass="form-control" [showIcon]="true"
                     placeholder="Selecciona la fecha" dateFormat="dd/mm/yy" [maxDate]="fechaActual">
         </p-calendar>
