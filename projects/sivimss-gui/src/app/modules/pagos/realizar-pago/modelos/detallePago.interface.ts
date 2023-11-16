@@ -9,9 +9,10 @@ export interface DetallePago {
   totalPorCubrir: number,
   estatusPago: string,
   tipoPago: string,
-  fechaUltimaPago: string
-  valeP: number
-  nss: string
+  fechaUltimaPago: string,
+  valeP: number,
+  nss: string,
+  generarPagare: number
 }
 
 export interface MetodoPago {
