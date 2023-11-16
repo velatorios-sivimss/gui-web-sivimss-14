@@ -125,7 +125,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
       idPagoBitacora: this.registroPago.idPagoBitacora,
       idRegistro: this.registroPago.idRegistro,
       importePago: this.tipoPagoForm.get('importe')?.value,
-      importeRegistro: this.registroPago.importePago,
+      importeRegistro: this.total,
       numAutorizacion: this.tipoPagoForm.get('noAutorizacion')?.value
     }
   }

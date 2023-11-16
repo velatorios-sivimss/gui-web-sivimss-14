@@ -19,7 +19,6 @@ interface DatosRegistro {
   idPagoBitacora?: number,
   idFlujoPago?: number,
   idRegistro?: number,
-  importePago: number
 }
 
 interface RegistroModal {
@@ -176,7 +175,6 @@ export class ControlPagoComponent implements OnInit {
         idPagoBitacora: this.registroPago.idPagoBitacora,
         idFlujoPago: this.registroPago.idFlujoPago,
         idRegistro: this.registroPago.idRegistro,
-        importePago: this.registroPago.totalPorCubrir,
       }
     }
   }

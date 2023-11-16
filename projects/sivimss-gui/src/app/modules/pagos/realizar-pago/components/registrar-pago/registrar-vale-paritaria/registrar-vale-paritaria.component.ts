@@ -90,7 +90,7 @@ export class RegistrarValeParitariaComponent implements OnInit {
       idPagoBitacora: this.registroPago.idPagoBitacora,
       idRegistro: this.registroPago.idRegistro,
       importePago: this.valeParitariaForm.get('importe')?.value,
-      importeRegistro: this.registroPago.importePago,
+      importeRegistro: this.total,
       numAutorizacion: this.valeParitariaForm.get('noAutorizacion')?.value
     }
   }
