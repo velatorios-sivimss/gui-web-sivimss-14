@@ -176,7 +176,7 @@ export class ControlPagoComponent implements OnInit {
         idPagoBitacora: this.registroPago.idPagoBitacora,
         idFlujoPago: this.registroPago.idFlujoPago,
         idRegistro: this.registroPago.idRegistro,
-        importePago: this.registroPago.totalPagado,
+        importePago: this.registroPago.totalPorCubrir,
       }
     }
   }
