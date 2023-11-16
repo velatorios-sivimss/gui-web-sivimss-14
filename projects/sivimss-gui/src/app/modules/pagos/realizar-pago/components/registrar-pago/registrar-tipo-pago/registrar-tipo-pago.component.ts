@@ -8,6 +8,8 @@ import * as moment from "moment/moment";
 import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {DatosRegistroPago} from "../../../modelos/datosRegistro.interface";
+import {LoaderService} from "../../../../../../shared/loader/services/loader.service";
+import {finalize} from "rxjs/operators";
 
 @Component({
   selector: 'app-registrar-tipo-pago',
@@ -39,6 +41,7 @@ export class RegistrarTipoPagoComponent implements OnInit {
     private realizarPagoService: RealizarPagoService,
     private alertaService: AlertaService,
     private mensajesSistemaService: MensajesSistemaService,
+    private cargadorService: LoaderService
   ) {
   }
 
@@ -81,7 +84,10 @@ export class RegistrarTipoPagoComponent implements OnInit {
 
   guardar(): void {
     const solicitudPago: SolicitudCrearPago = this.generarSolicitudPago();
-    this.realizarPagoService.guardar(solicitudPago).subscribe({
+    this.cargadorService.activar();
+    this.realizarPagoService.guardar(solicitudPago).pipe(
+      finalize(() => this.cargadorService.desactivar())
+    ).subscribe({
       next: (): void => this.manejoRespuestaExitosaPago(),
       error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
