@@ -5,8 +5,7 @@
         <div class="col-md-6">
           <label class="control-label" for="total">Total a Pagar</label>
           <p-inputNumber id="total" class="form-control" formControlName="total"
-                         placeholder="Ingresar Tipo de pago" [maxlength]="10"
-                         [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [maxlength]="10" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
                          [locale]="'en-US'" [mode]="'currency'" currency="USD"></p-inputNumber>
         </div>
         <div class="col-md-6" *ngIf="!recibeFolio.includes(idPago) && !pagosDeshabilitados.includes(idPago)">

@@ -66,6 +66,8 @@ export class ModificarTipoPagoComponent implements OnInit {
 
   inicializarTipoPagoForm(): void {
     this.tipoPagoForm = this.formBuilder.group({
+      totalPagar: [{value: '', disabled: true}],
+      totalPagado: [{value: '', disabled: true}],
       tipoPagoAnterior: [{value: '', disabled: true}],
       tipoPago: [{value: '', disabled: false}, [Validators.required]],
       fecha: [{value: null, disabled: false}, [Validators.required]],

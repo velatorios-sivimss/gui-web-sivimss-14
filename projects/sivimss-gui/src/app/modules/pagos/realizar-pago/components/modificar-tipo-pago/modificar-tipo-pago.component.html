@@ -2,6 +2,20 @@
   <ng-container *ngSwitchCase="CAPTURA_DE_PAGO">
     <form [formGroup]="tipoPagoForm" (ngSubmit)="aceptar()">
       <div class="row mb-3">
+        <div class="col-md-6">
+          <label class="control-label" for="totalPagar">Total a Pagar</label>
+          <p-inputNumber id="totalPagar" class="form-control" formControlName="totalPagar"
+                         [maxlength]="10" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD"></p-inputNumber>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label" for="totalPagado">Total Pagado</label>
+          <p-inputNumber id="totalPagado" class="form-control" formControlName="totalPagado"
+                         [maxlength]="10" [minFractionDigits]="2" [maxFractionDigits]="2" [min]="0" [max]="99999999999"
+                         [locale]="'en-US'" [mode]="'currency'" currency="USD"></p-inputNumber>
+        </div>
+      </div>
+      <div class="row mb-3">
         <div class="col-md-12">
           <label class="control-label" for="tipoPagoAnterior">Tipo de pago anterior:</label>
           <input id="tipoPagoAnterior" class="form-control" formControlName="tipoPagoAnterior"
