@@ -17,6 +17,14 @@ import {
 import {ParametrosEliminar, ParametrosModificar, RegistroModal} from "../../modelos/datosRegistro.interface";
 import {RegistrarAgfComponent} from "../registrar-pago/registrar-agf/registrar-agf.component";
 
+interface DialogoAGF {
+  idFinado: number,
+  idPagoBitacora: number,
+  idFlujoPago: number,
+  idRegistro: number,
+  importePago: number,
+}
+
 @Component({
   selector: 'app-control-pago',
   templateUrl: './control-pago.component.html',
@@ -132,7 +140,7 @@ export class ControlPagoComponent implements OnInit {
     return tipoPago ?? ''
   }
 
-  crearConfiguracionDialogo(header: string, data: RegistroModal | ParametrosEliminar | ParametrosModificar): DynamicDialogConfig {
+  crearConfiguracionDialogo(header: string, data: RegistroModal | ParametrosEliminar | ParametrosModificar | DialogoAGF): DynamicDialogConfig {
     return {header, width: MAX_WIDTH, data}
   }
 
@@ -199,19 +207,19 @@ export class ControlPagoComponent implements OnInit {
   }
 
   abrirModalAGF(): void {
-    const data = {
+    const data: DialogoAGF = this.generarDatosDialogoAGF();
+    const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = this.crearConfiguracionDialogo("Registro de Ayuda de Gastos de Funeral", data);
+    this.dialogService.open(RegistrarAgfComponent, REGISTRAR_PAGO_CONFIG);
+  }
+
+  generarDatosDialogoAGF(): DialogoAGF {
+    return {
       idFinado: this.registroPago.idFinado,
       idPagoBitacora: this.registroPago.idPagoBitacora,
       idFlujoPago: this.registroPago.idFlujoPago,
       idRegistro: this.registroPago.idRegistro,
       importePago: this.registroPago.totalPorCubrir,
     }
-    const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
-      data,
-      header: "Registro de Ayuda de Gastos de Funeral",
-      width: MAX_WIDTH,
-    }
-    this.dialogService.open(RegistrarAgfComponent, REGISTRAR_PAGO_CONFIG)
   }
 
 
