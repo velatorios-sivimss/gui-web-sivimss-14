@@ -74,9 +74,9 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       tipoTraslado: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoTranslado == "Oficial" ? true : false : null , disabled: false }, [Validators.required]),
       servicios: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoServicio ? this.ordenSeleccionada.tipoServicio : null : null, disabled: this.esModificacion ? true : false }, [Validators.required]),
       especificaciones: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.especificaciones : null, disabled: false }, []),
-      lugarOrigen: new FormControl({ value: null, disabled: true }, []),
-      lugarDestino: new FormControl({ value: null, disabled: true }, []),
-      distancia: new FormControl({ value: null, disabled: true }, []),
+      lugarOrigen: new FormControl({ value: this.ordenSeleccionada.origen ?? null, disabled: true }, []),
+      lugarDestino: new FormControl({ value: this.ordenSeleccionada.destino ?? null, disabled: true }, []),
+      distancia: new FormControl({ value: this.ordenSeleccionada.totalKilometros ?? null, disabled: true }, []),
       nombreOperador: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreOperador : null, disabled: false }, [Validators.required]),
       nombreAcompanante: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.nombreAcompaniante : null, disabled: false }, []),
       numCarroza: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numCarroza : null, disabled: false }, [Validators.required]),
@@ -87,7 +87,9 @@ export class GenerarOrdenFormatoComponent implements OnInit {
   }
 
   validarCadenaFechaVacia(cadenaFecha:string):Date | null{
-    return cadenaFecha === '' ? null : new Date(cadenaFecha);
+    if(cadenaFecha === '') return null
+    const [anio, mes, dia] = cadenaFecha.split('-')
+    return  new Date(+anio + '/' + +mes + '/' + +dia);
   }
 
   inicializarCatalogos(): void {
@@ -181,13 +183,13 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       destino: this.editForm.get("lugarDestino")?.value,
       distanciaRecorrer: this.editForm.get("distancia")?.value,
       idServicio: this.esModificacion ? this.ordenSeleccionada.idServicio : servicio.length > 0 ? servicio[0].value : null,
-      especificaciones: this.editForm.get("especificaciones")?.value,
+      especificaciones: this.editForm.get("especificaciones")?.value ?? "",
       nombreOperador: this.editForm.get("nombreOperador")?.value,
       carrozaNum: this.editForm.get("numCarroza")?.value,
-      numeroPlacas: this.editForm.get("numPlacas")?.value,
+      numeroPlacas: this.editForm.get("numPlacas")?.value ?? "",
       diaPartida: this.obtenerDiaPartida(this.editForm.get("diaPartida")?.value),
       horaPartida: this.obtenerHoraPartida(this.editForm.get("horaPartida")?.value),
-      nomAcompaniante: this.editForm.get("nombreAcompanante")?.value
+      nomAcompaniante: this.editForm.get("nombreAcompanante")?.value ?? ""
     }
   }
 

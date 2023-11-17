@@ -337,7 +337,7 @@ export class GenerarOrdenSubrogacionComponent implements OnInit {
   // }
 
   vistaPreviaOrdenSubrogacion(): void {
-    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Formato de actividades' };
+    const configuracionArchivo: OpcionesArchivos = { nombreArchivo: 'Orden de subrogación de servicios' };
     this.loaderService.activar();
     let datos = {
       idHojaSubrogacion: this.ordenSeleccionada.idHojaSubrogacion
