@@ -71,7 +71,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       numOrden: new FormControl({ value: this.ordenSeleccionada.folioOds, disabled: true }, []),
       fechaOrden: new FormControl({ value: this.ordenSeleccionada.fechaOds.replaceAll("-","/"), disabled: true }, []),
       nombreFinado: new FormControl({ value: this.ordenSeleccionada.nombreFinado, disabled: true }, []),
-      tipoTraslado: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoTranslado == "Oficial" ? "true" : "false" : null , disabled: false }, [Validators.required]),
+      tipoTraslado: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoTranslado == "Oficial" ? true : false : null , disabled: false }, [Validators.required]),
       servicios: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.tipoServicio ? this.ordenSeleccionada.tipoServicio : null : null, disabled: this.esModificacion ? true : false }, [Validators.required]),
       especificaciones: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.especificaciones : null, disabled: false }, []),
       lugarOrigen: new FormControl({ value: null, disabled: true }, []),
@@ -82,8 +82,12 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       numCarroza: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numCarroza : null, disabled: false }, [Validators.required]),
       numPlacas: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.numPlacas : null, disabled: false }, []),
       horaPartida: new FormControl({ value: this.esModificacion ? this.ordenSeleccionada.horaPartida : null, disabled: false }, []),
-      diaPartida: new FormControl({ value: this.esModificacion ? new Date(this.ordenSeleccionada.diaPartida) : null, disabled: false }, [])
+      diaPartida: new FormControl({ value: this.esModificacion ? this.validarCadenaFechaVacia(this.ordenSeleccionada.diaPartida) : null, disabled: false }, [])
     });
+  }
+
+  validarCadenaFechaVacia(cadenaFecha:string):Date | null{
+    return cadenaFecha === '' ? null : new Date(cadenaFecha);
   }
 
   inicializarCatalogos(): void {
@@ -132,6 +136,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
 
   guardarOrden() {
     let orden = this.mapearOrden();
+    console.log("Despues ", orden);
     if (this.esModificacion) {
       orden.idHojaSubrogacion = this.ordenSeleccionada.idHojaSubrogacion;
       this.generarOrdenSubrogacionService.actualizarOrden(orden).subscribe({
@@ -163,6 +168,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
 
   mapearOrden(): any {
     let servicio = this.catalogoServicios.filter((s) => s.value === this.editForm.get("servicios")?.value);
+    console.log("ANTES " ,this.editForm.value);
     return {
       idOrdenServicio: this.ordenSeleccionada.idOds,
       idDelegacion: this.editForm.get("delegacion")?.value,
@@ -179,10 +185,18 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       nombreOperador: this.editForm.get("nombreOperador")?.value,
       carrozaNum: this.editForm.get("numCarroza")?.value,
       numeroPlacas: this.editForm.get("numPlacas")?.value,
-      diaPartida: this.datePipe.transform(new Date(this.editForm.get("diaPartida")?.value), 'yyyy-MM-dd'),
-      horaPartida: moment(this.datePipe.transform(new Date(this.editForm.get("diaPartida")?.value), 'yyyy-MM-dd') + " "+ this.editForm.get('horaPartida')?.value, 'YYYY-MM-DD HH:mm:ss').format('HH:mm:ss'),
+      diaPartida: this.obtenerDiaPartida(this.editForm.get("diaPartida")?.value),
+      horaPartida: this.obtenerHoraPartida(this.editForm.get("horaPartida")?.value),
       nomAcompaniante: this.editForm.get("nombreAcompanante")?.value
     }
+  }
+
+  obtenerDiaPartida(diaPartida:Date){
+    return diaPartida ? moment(diaPartida).format('YYYY-MM-DD') : null;
+  }
+
+  obtenerHoraPartida(horaPartida:Date){
+    return horaPartida ? moment(horaPartida).format('HH:mm:ss') : null;
   }
 
   formatearHora(cadenaHora: string) {
