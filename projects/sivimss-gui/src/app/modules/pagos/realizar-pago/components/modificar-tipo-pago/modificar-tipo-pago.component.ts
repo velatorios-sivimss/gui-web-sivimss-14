@@ -150,7 +150,7 @@ export class ModificarTipoPagoComponent implements OnInit {
 
   generarSolicitud(): SolicitudModificacionPago {
     return {
-      cambioMetPago: this.tipoPago === this.config.data.metodoPago,
+      cambioMetPago: this.tipoPago !== this.config.data.metodoPago,
       descBanco: this.tipoPagoForm.get('nombreBanco')?.value,
       idMetodoPago: this.tipoPagoForm.get('tipoPago')?.value,
       idPagoDetalle: this.idPagoDetalle,
