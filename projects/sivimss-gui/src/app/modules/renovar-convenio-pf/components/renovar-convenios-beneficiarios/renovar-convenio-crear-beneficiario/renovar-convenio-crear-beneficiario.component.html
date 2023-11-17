@@ -48,6 +48,7 @@
             <div class="col-md-4">
               <label class="control-label" for="fechaNac">Fecha nacimiento:</label>
               <p-calendar id="fechaNac" formControlName="fechaNac" styleClass="form-control"
+                          (onSelect)="calcularEdad()" (change)="calcularEdad()"
                           [showIcon]="true" placeholder="dd/mm/aaaa" dateFormat="dd/mm/yy" appendTo="body">
               </p-calendar>
               <span class="campo-obligatorio"
