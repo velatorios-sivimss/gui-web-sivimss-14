@@ -15,6 +15,7 @@ import {
   RegistrarValeParitariaComponent
 } from "../registrar-pago/registrar-vale-paritaria/registrar-vale-paritaria.component";
 import {ParametrosEliminar, ParametrosModificar, RegistroModal} from "../../modelos/datosRegistro.interface";
+import {RegistrarAgfComponent} from "../registrar-pago/registrar-agf/registrar-agf.component";
 
 @Component({
   selector: 'app-control-pago',
@@ -112,6 +113,7 @@ export class ControlPagoComponent implements OnInit {
       return;
     }
     if (tipoPago === 2) {
+      this.abrirModalAGF();
       return;
     }
     this.registrarPago();
@@ -195,5 +197,22 @@ export class ControlPagoComponent implements OnInit {
     if (this.registroPago.totalPorCubrir > 0) return;
     this.pagoForm.get('tipoPago')?.disable();
   }
+
+  abrirModalAGF(): void {
+    const data = {
+      idFinado: this.registroPago.idFinado,
+      idPagoBitacora: this.registroPago.idPagoBitacora,
+      idFlujoPago: this.registroPago.idFlujoPago,
+      idRegistro: this.registroPago.idRegistro,
+      importePago: this.registroPago.totalPorCubrir,
+    }
+    const REGISTRAR_PAGO_CONFIG: DynamicDialogConfig = {
+      data,
+      header: "Registro de Ayuda de Gastos de Funeral",
+      width: MAX_WIDTH,
+    }
+    this.dialogService.open(RegistrarAgfComponent, REGISTRAR_PAGO_CONFIG)
+  }
+
 
 }

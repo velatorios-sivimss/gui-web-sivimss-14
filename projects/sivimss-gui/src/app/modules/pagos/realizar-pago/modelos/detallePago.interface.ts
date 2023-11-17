@@ -12,7 +12,8 @@ export interface DetallePago {
   fechaUltimaPago: string,
   valeP: number,
   nss: string,
-  generarPagare: number
+  generarPagare: number,
+  idFinado: number
 }
 
 export interface MetodoPago {
