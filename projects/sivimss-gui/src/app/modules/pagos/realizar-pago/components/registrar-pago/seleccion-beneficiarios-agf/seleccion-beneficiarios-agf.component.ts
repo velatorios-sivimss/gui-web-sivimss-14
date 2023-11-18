@@ -7,6 +7,7 @@ import {RealizarPagoService} from "../../../services/realizar-pago.service";
 import {AlertaService, TipoAlerta} from "../../../../../../shared/alerta/services/alerta.service";
 import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {HttpRespuesta} from "../../../../../../models/http-respuesta.interface";
 
 interface Beneficiario {
   nombreBeneficiario: string;
@@ -40,8 +41,7 @@ export class SeleccionBeneficiariosAgfComponent {
   }
 
   obtenerParametrosAGF(): void {
-    this.activatedRoute.queryParams.pipe(
-    ).subscribe(params => {
+    this.activatedRoute.queryParams.subscribe(params => {
         const {datos_agf, datos_pago} = params;
         this.datos_agf = JSON.parse(window.atob(datos_agf));
         this.datos_pago = JSON.parse(window.atob(datos_pago));
@@ -53,23 +53,27 @@ export class SeleccionBeneficiariosAgfComponent {
     this.datos_agf.cveCURPBeneficiario = curp;
     this.datos_agf.nombreBeneficiario = nombre;
     this.realizarPagoService.guardar(this.datos_pago).subscribe({
-      next: (respuesta): void => {
-        const {idPagoDetalle} = respuesta.datos[0];
-        this.crearAGF(idPagoDetalle);
-      },
+      next: (respuesta: HttpRespuesta<any>): void => this.manejoRespuestaBeneficiarios(respuesta),
       error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
+  }
+
+  private manejoRespuestaBeneficiarios(respuesta: HttpRespuesta<any>): void {
+    const {idPagoDetalle} = respuesta.datos[0];
+    this.crearAGF(idPagoDetalle);
   }
 
   crearAGF(idPagoDetalle: number): void {
     this.datos_agf.idPagoDetalle = idPagoDetalle;
     this.realizarPagoService.guardarAGF(this.datos_agf).subscribe({
-      next: (): void => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
-        void this.route.navigate(['../../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
-      },
+      next: (): void => this.manejoRespuestaExitosaPago(),
       error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
+  }
+
+  private manejoRespuestaExitosaPago(): void {
+    this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
+    void this.route.navigate(['../../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
   }
 
   private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
