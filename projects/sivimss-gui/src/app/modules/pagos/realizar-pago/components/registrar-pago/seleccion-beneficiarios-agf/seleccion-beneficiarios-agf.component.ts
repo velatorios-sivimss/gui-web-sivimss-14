@@ -13,7 +13,6 @@ interface Beneficiario {
   curp: string;
 }
 
-
 @Component({
   selector: 'app-seleccion-beneficiarios-agf',
   templateUrl: './seleccion-beneficiarios-agf.component.html',
@@ -58,11 +57,7 @@ export class SeleccionBeneficiariosAgfComponent {
         const {idPagoDetalle} = respuesta.datos[0];
         this.crearAGF(idPagoDetalle);
       },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
   }
 
@@ -73,12 +68,14 @@ export class SeleccionBeneficiariosAgfComponent {
         this.alertaService.mostrar(TipoAlerta.Exito, 'Pago registrado correctamente');
         void this.route.navigate(['../../../pago-orden-servicio'], {relativeTo: this.activatedRoute})
       },
-      error: (error: HttpErrorResponse): void => {
-        const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
-        this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
-        console.log(error);
-      }
+      error: (error: HttpErrorResponse): void => this.manejoRespuestaErrorPago(error)
     });
+  }
+
+  private manejoRespuestaErrorPago(error: HttpErrorResponse): void {
+    const ERROR: string = 'Error al guardar la información del Pago. Intenta nuevamente.'
+    this.mensajesSistemaService.mostrarMensajeError(error, ERROR);
+    console.log(error);
   }
 
 }
