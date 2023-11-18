@@ -103,3 +103,25 @@ hr {
 .activo {
   color: #006857;
 }
+
+
+.p28 {
+  font-size: 28px;
+  padding-bottom: 5px;
+}
+
+
+.accordion-header-right {
+  justify-items: start;
+  width: 120px;
+}
+
+.container-monto {
+  display: grid;
+  grid-template-columns:  100px auto;
+}
+
+
+.cursor-pointer {
+  padding-top: 4px;
+}
