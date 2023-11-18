@@ -11,6 +11,7 @@ import {DetalleAyudaGastosFuneral} from '../../../modelos/ayudaGastosFuneral.int
 import * as moment from "moment/moment";
 import {RegistroAGF} from "../../../modelos/registroAGF.interface";
 import {RegistroPago} from "../../../modelos/registroPago.interface";
+import {MensajesSistemaService} from "../../../../../../services/mensajes-sistema.service";
 
 @Component({
   selector: 'app-registrar-agf',
@@ -39,6 +40,7 @@ export class RegistrarAgfComponent implements OnInit {
     public config: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     private router: Router,
+    private mensajesSistemaService: MensajesSistemaService,
     private route: ActivatedRoute) {
     this.idFinado = this.config.data.idFinado;
     this.idPagoBitacora = this.config.data.idPagoBitacora;
@@ -90,9 +92,7 @@ export class RegistrarAgfComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.ramos = mapearArregloTipoDropdown(respuesta.datos, "desRamo", "idRamo");
       },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     })
   }
 
@@ -101,9 +101,7 @@ export class RegistrarAgfComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.detalleAGF = respuesta.datos[0];
       },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     })
   }
 
@@ -128,7 +126,7 @@ export class RegistrarAgfComponent implements OnInit {
   }
 
   crearRegistroPago(): RegistroPago {
-    let fechaValeAGF = moment(new Date()).format('YYYY-MM-DD');
+    let fechaValeAGF: string = moment(new Date()).format('YYYY-MM-DD');
     return {
       descBanco: null,
       fechaPago: null,
@@ -149,14 +147,17 @@ export class RegistrarAgfComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>): void => {
         this.identificaciones = mapearArregloTipoDropdown(respuesta.datos, "desTipoId", "idTipoId");
       },
-      error: (error: HttpErrorResponse): void => {
-        console.error("ERROR: ", error);
-      }
+      error: (error: HttpErrorResponse): void => this.manejarMensajeError(error)
     })
   }
 
   cancelar(): void {
     this.ref.close();
+  }
+
+  private manejarMensajeError(error: HttpErrorResponse): void {
+    console.error(error);
+    this.mensajesSistemaService.mostrarMensajeError(error);
   }
 
   get fagf() {
