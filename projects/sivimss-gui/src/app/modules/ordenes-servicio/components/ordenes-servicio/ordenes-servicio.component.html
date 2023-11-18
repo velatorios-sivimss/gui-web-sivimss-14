@@ -206,7 +206,7 @@
       <div *appValidaRol="['CONSULTAR_ODS','IMPRIMIR']">
         <app-overlay-panel-opcion titulo="Generar Tarjeta de identificación" onCloseOnNavigation
                                   (click)="abrirModalGenerarTarjetaIdent()"></app-overlay-panel-opcion>
-        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada')"
+        <app-overlay-panel-opcion *ngIf="ordenServicioSeleccionada.estatus?.includes('Generada') &&  ordenServicioSeleccionada.idTipoOrden != 4"
                                   (click)="descargarContratoServInmediatos()"
                                   titulo="Descargar Contrato de servicios inmediatos"></app-overlay-panel-opcion>
         <app-overlay-panel-opcion

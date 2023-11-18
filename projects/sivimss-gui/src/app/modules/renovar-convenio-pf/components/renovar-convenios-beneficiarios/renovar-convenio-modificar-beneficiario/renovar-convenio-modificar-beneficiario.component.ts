@@ -108,6 +108,8 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
   }
 
   validarCurpRenapo(): void {
+    if (this.mbf.curp.value.includes('XEXX010101HNEXXXA4')) { this.limpiarDatosBeneficario(); return };
+    if (this.mbf.curp.value.includes('XEXX010101MNEXXXA8')) { this.limpiarDatosBeneficario(); return };
     this.modificarBeneficiarioForm.patchValue({
       nombre: null,
       primerApellido: null,
@@ -116,6 +118,10 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
       edad: null,
     });
     if (this.mbf.curp.invalid) return;
+    this.mbf.nombre.disable();
+    this.mbf.primerApellido.disable();
+    this.mbf.segundoApellido.disable();
+    this.mbf.fechaNac.disable();
     this.loaderService.activar();
     this.usuarioService.consultarCurpRenapo(this.mbf.curp.value).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -131,8 +137,8 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
             primerApellido: respuesta.datos?.apellido1,
             segundoApellido: respuesta.datos?.apellido2,
             fechaNac: respuesta.datos?.fechNac,
-            edad: this.calcularEdad(moment(respuesta.datos?.fechNac, 'DD/MM/YYYY').format('YYYY/MM/DD')),
           });
+          this.calcularEdad();
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -140,6 +146,24 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
         this.mbf.curp.setErrors({ 'incorrect': true });
       }
     });
+  }
+
+  limpiarDatosBeneficario(): void {
+    this.mbf.nombre.patchValue(null);
+    this.mbf.primerApellido.patchValue(null);
+    this.mbf.segundoApellido.patchValue(null);
+    this.mbf.fechaNac.patchValue(null);
+    this.mbf.edad.patchValue(null);
+    this.mbf.parentesco.patchValue(null);
+    this.mbf.rfc.patchValue(null);
+    this.mbf.email.patchValue(null);
+    this.mbf.telefono.patchValue(null);
+
+    this.mbf.nombre.enable();
+    this.mbf.primerApellido.enable();
+    this.mbf.segundoApellido.enable();
+    this.mbf.fechaNac.enable();
+
   }
 
   validarRfc() {
@@ -162,7 +186,13 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
     }
   }
 
-  calcularEdad(fecha: string) {
+  calcularEdad() {
+    let fecha: string;
+    if (typeof this.mbf?.fechaNac?.value === 'object') {
+      fecha = moment(this.mbf?.fechaNac.value).format('YYYY/MM/DD');
+    } else {
+      fecha = moment(this.mbf?.fechaNac.value, 'DD/MM/YYYY').format('YYYY/MM/DD');
+    }
     const hoy = new Date();
     const cumpleanos = new Date(fecha);
     let edad = hoy.getFullYear() - cumpleanos.getFullYear();
@@ -170,7 +200,7 @@ export class RenovarConvenioModificarBeneficiarioComponent implements OnInit {
     if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
       edad--;
     }
-    return edad;
+    this.mbf.edad.patchValue(edad);
   }
 
   get mbf() {

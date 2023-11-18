@@ -28,7 +28,7 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
   @Output() crearBeneficiario = new EventEmitter<Beneficiario | null>();
 
   readonly POSICION_PARENTESCO = 0;
-  readonly NOT_FOUND_RENAPO: string = "CURP no válido.";
+  readonly NOT_FOUND_RENAPO: string = "CURP no válida.";
 
   crearBeneficiarioForm!: FormGroup;
   catParentesco!: TipoDropdown[];
@@ -97,6 +97,8 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
   }
 
   validarCurpRenapo(): void {
+    if (this.cbf.curp.value.includes('XEXX010101HNEXXXA4')) { this.limpiarDatosBeneficario(); return };
+    if (this.cbf.curp.value.includes('XEXX010101MNEXXXA8')) { this.limpiarDatosBeneficario(); return };
     this.crearBeneficiarioForm.patchValue({
       nombre: null,
       primerApellido: null,
@@ -105,6 +107,10 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
       edad: null,
     });
     if (this.cbf.curp.invalid) return;
+    this.cbf.nombre.disable();
+    this.cbf.primerApellido.disable();
+    this.cbf.segundoApellido.disable();
+    this.cbf.fechaNac.disable();
     this.loaderService.activar();
     this.usuarioService.consultarCurpRenapo(this.cbf.curp.value).pipe(
       finalize(() => this.loaderService.desactivar())
@@ -120,8 +126,8 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
             primerApellido: respuesta.datos?.apellido1,
             segundoApellido: respuesta.datos?.apellido2,
             fechaNac: respuesta.datos?.fechNac,
-            edad: this.calcularEdad(moment(respuesta.datos?.fechNac, 'DD/MM/YYYY').format('YYYY/MM/DD')),
           });
+          this.calcularEdad();
         }
       },
       error: (error: HttpErrorResponse): void => {
@@ -129,6 +135,24 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
         this.cbf.curp.setErrors({ 'incorrect': true });
       }
     });
+  }
+
+  limpiarDatosBeneficario(): void {
+    this.cbf.nombre.patchValue(null);
+    this.cbf.primerApellido.patchValue(null);
+    this.cbf.segundoApellido.patchValue(null);
+    this.cbf.fechaNac.patchValue(null);
+    this.cbf.edad.patchValue(null);
+    this.cbf.parentesco.patchValue(null);
+    this.cbf.rfc.patchValue(null);
+    this.cbf.email.patchValue(null);
+    this.cbf.telefono.patchValue(null);
+
+    this.cbf.nombre.enable();
+    this.cbf.primerApellido.enable();
+    this.cbf.segundoApellido.enable();
+    this.cbf.fechaNac.enable();
+
   }
 
   validarRfc() {
@@ -147,7 +171,13 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
     }
   }
 
-  calcularEdad(fecha: string) {
+  calcularEdad() {
+    let fecha: string;
+    if (typeof this.cbf?.fechaNac?.value === 'object') {
+      fecha = moment(this.cbf?.fechaNac.value).format('YYYY/MM/DD');
+    } else {
+      fecha = moment(this.cbf?.fechaNac.value, 'DD/MM/YYYY').format('YYYY/MM/DD');
+    }
     const hoy = new Date();
     const cumpleanos = new Date(fecha);
     let edad = hoy.getFullYear() - cumpleanos.getFullYear();
@@ -155,7 +185,7 @@ export class RenovarConvenioCrearBeneficiarioComponent implements OnInit {
     if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
       edad--;
     }
-    return edad;
+    this.cbf.edad.patchValue(edad);
   }
 
   get cbf() {

@@ -243,7 +243,7 @@ export class Reportes implements OnInit {
     }
     this.loaderService.activar();
     const filtros = this.consultarFiltros(this.ff.reporte.value);
-    const configuracionArchivo: OpcionesArchivos = {nombreArchivo: NOMBRE_REPORTES[this.ff.reporte.value - 1]};
+    const configuracionArchivo: any = {nombreArchivo: NOMBRE_REPORTES[this.ff.reporte.value - 1]};
     const tipoReporte = this.nombreEndpoint.get(this.ff.reporte.value);
     if (filtros.tipoReporte.includes("xls")) configuracionArchivo.ext = "xlsx";
     if (filtros.tipoReporte.includes("csv")) configuracionArchivo.ext = "csv";
@@ -256,21 +256,37 @@ export class Reportes implements OnInit {
             respuesta.datos,
             this.descargaArchivosService.obtenerContentType(configuracionArchivo))],
           {type: this.descargaArchivosService.obtenerContentType(configuracionArchivo)});
-        this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
-          finalize(() => this.loaderService.desactivar())
-        ).subscribe({
-          next: (repuesta): void => {
-            //TODO verificar si se necesita agregar mensaje de confirmación
-          },
-          error: (error): void => {
-            this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
-          }
-        })
+        const url = window.URL.createObjectURL(file);
+        const a = document.createElement('a');
+        a.href = url;
+        console.log(configuracionArchivo.nombreArchivo +'.'+ this.validarExtension(configuracionArchivo.ext));
+        a.download = configuracionArchivo.nombreArchivo +'.'+ this.validarExtension(configuracionArchivo.ext);
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        // this.descargaArchivosService.descargarArchivo(of(file), configuracionArchivo).pipe(
+        //   finalize(() => this.loaderService.desactivar())
+        // ).subscribe({
+        //   next: (repuesta): void => {
+        //     //TODO verificar si se necesita agregar mensaje de confirmación
+        //   },
+        //   error: (error): void => {
+        //     this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64))
+        //   }
+        // })
       },
       error: (error: HttpErrorResponse) => {
         this.alertaService.mostrar(TipoAlerta.Error, this.mensajesSistemaService.obtenerMensajeSistemaPorId(64));
       }
     });
+  }
+
+  validarExtension(extension:string | undefined) : string {
+    if(extension)return extension
+    return'pdf'
   }
 
   validarFiltros(): boolean {
