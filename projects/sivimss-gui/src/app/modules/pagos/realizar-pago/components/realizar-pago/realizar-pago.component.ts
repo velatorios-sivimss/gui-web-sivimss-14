@@ -234,8 +234,8 @@ export class RealizarPagoComponent implements OnInit {
       idFlujoPagos = 3;
     }
     return {
-      fechaFin: this.filtroForm.get('periodoInicio')?.value,
-      fechaInicio: this.filtroForm.get('periodoFin')?.value,
+      fechaFin: this.filtroForm.get('periodoFin')?.value,
+      fechaInicio: this.filtroForm.get('periodoInicio')?.value,
       folio,
       idFlujoPagos,
       idVelatorio: this.filtroForm.get('velatorio')?.value,
