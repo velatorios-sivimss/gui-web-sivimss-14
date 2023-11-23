@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import { HttpRespuesta } from "projects/sivimss-gui/src/app/models/http-respuesta.interface";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 import { MensajesRespuestaAutenticacion } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
@@ -60,7 +60,7 @@ export class ActualizarContraseniaComponent implements OnInit {
   contraseniaIncorrecta: boolean = false;
 
   constructor(
-    private readonly autenticacionService: AutenticacionService,
+    private readonly autenticacionService: AutenticacionContratanteService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly alertaService: AlertaService,
@@ -101,7 +101,7 @@ export class ActualizarContraseniaComponent implements OnInit {
     } = this.form.value;
     this.usuarioIncorrecto = false;
     this.loaderService.activar();
-    this.autenticacionService.actualizarContrasenia(usuario, contraseniaAnterior, contraseniaNueva).pipe(
+    this.autenticacionService.actualizarContraseniaNewLogin(usuario, contraseniaAnterior, contraseniaNueva).pipe(
       finalize(() => this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<unknown>): void => {

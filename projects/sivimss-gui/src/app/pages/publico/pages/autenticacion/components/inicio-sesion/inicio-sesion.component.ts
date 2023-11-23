@@ -5,7 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DialogService} from "primeng/dynamicdialog";
 import {finalize} from "rxjs/operators";
 import { ModalRestablecerContraseniaComponent } from "../modal-restablecer-contrasenia/modal-restablecer-contrasenia.component";
-import { AutenticacionService } from "projects/sivimss-gui/src/app/services/autenticacion.service";
+import { AutenticacionContratanteService } from "projects/sivimss-gui/src/app/services/autenticacion-contratante.service";
 import { AlertaService, TipoAlerta } from "projects/sivimss-gui/src/app/shared/alerta/services/alerta.service";
 import { LoaderService } from "projects/sivimss-gui/src/app/shared/loader/services/loader.service";
 import { MensajesRespuestaAutenticacion } from "projects/sivimss-gui/src/app/utils/mensajes-respuesta-autenticacion.enum";
@@ -39,7 +39,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly loaderService: LoaderService,
-    private readonly autenticacionService: AutenticacionService,
+    private readonly autenticacionContratanteService: AutenticacionContratanteService,
     private readonly router: Router,
     private readonly alertaService: AlertaService,
     private readonly activatedRoute: ActivatedRoute,
@@ -65,13 +65,13 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
     const {usuario, contrasenia} = this.form.value;
     this.loaderService.activar();
     this.usuarioIncorrecto = false;
-    this.autenticacionService.iniciarSesion(usuario, contrasenia, mostrarMsjContraseniaProxVencer)
+    this.autenticacionContratanteService.iniciarSesionNewLogin(usuario, contrasenia, mostrarMsjContraseniaProxVencer)
       .pipe(
         finalize(() => this.loaderService.desactivar())).subscribe({
       next: (respuesta: string): void => {
         switch (respuesta) {
           case MensajesRespuestaAutenticacion.InicioSesionCorrecto:
-            void this.router.navigate(["/inicio"]);
+            void this.router.navigate(["/externo-privado/consultar-mis-servicios-en-linea"]);
             break;
           case MensajesRespuestaAutenticacion.ContraseniaProximaVencer:
             this.mostrarModalContraseniaProxVencer = true;
@@ -115,7 +115,7 @@ export class InicioSesionComponent implements OnInit, OnDestroy {
 
   actualizarContrasenia(): void {
     this.mostrarModalPreActivo = false;
-    void this.router.navigate(["actualizar-contrasenia"], {relativeTo: this.activatedRoute});
+    void this.router.navigate(["../restablecer-contrasenia"], {relativeTo: this.activatedRoute});
   }
 
   empezarTemporizadorPorExcederIntentos(): void {

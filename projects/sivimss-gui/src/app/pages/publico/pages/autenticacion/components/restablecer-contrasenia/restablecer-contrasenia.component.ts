@@ -5,7 +5,7 @@ import { finalize } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { confirmacionContraseniadValidator } from '../actualizar-contrasenia/actualizar-contrasenia.component';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
-import { AutenticacionService } from 'projects/sivimss-gui/src/app/services/autenticacion.service';
+import { AutenticacionContratanteService } from 'projects/sivimss-gui/src/app/services/autenticacion-contratante.service';
 import { AlertaService, TipoAlerta } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { PATRON_CONTRASENIA } from 'projects/sivimss-gui/src/app/utils/regex';
@@ -21,7 +21,7 @@ export class RestablecerContraseniaComponent implements OnInit {
   mostrarModalFormatoContrasenia: boolean = false;
 
   constructor(
-    private readonly autenticacionService: AutenticacionService,
+    private readonly autenticacionService: AutenticacionContratanteService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly alertaService: AlertaService,
@@ -55,7 +55,7 @@ export class RestablecerContraseniaComponent implements OnInit {
     const form = this.form.getRawValue();
     this.loaderService.activar();
     this.autenticacionService
-      .actualizarContrasenia(form.usuario, '', form.contraseniaNueva)
+      .actualizarContraseniaNewLogin(form.usuario, '', form.contraseniaNueva)
       .pipe(finalize(() => this.loaderService.desactivar()))
       .subscribe({
         next: (respuesta: HttpRespuesta<unknown>): void => {
@@ -64,7 +64,7 @@ export class RestablecerContraseniaComponent implements OnInit {
               TipoAlerta.Exito,
               'Contraseña actualizada correctamente.'
             );
-            void this.router.navigate(['../'], {
+            void this.router.navigate(['/externo-publico/autenticacion/inicio-sesion'], {
               relativeTo: this.activatedRoute,
             });
           }
