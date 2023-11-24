@@ -180,7 +180,7 @@
 
   <div class="flex justify-content-end mb-6">
     <button type="button" class="ml-4 btn btn-gold btn-md" (click)="cerrarDialogo()">Cancelar</button>
-    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarGuardar()">
+    <button type="button" class="ml-4 btn btn-primary btn-md" (click)="confirmarGuardar()" [disabled]="modificarPromotorForm.invalid">
       Guardar
     </button>
   </div>

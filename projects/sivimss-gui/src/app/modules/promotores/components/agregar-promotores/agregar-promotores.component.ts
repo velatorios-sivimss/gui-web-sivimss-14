@@ -75,7 +75,7 @@ export class AgregarPromotoresComponent implements OnInit {
       nombre: [{ value: null, disabled: true }, [Validators.maxLength(30), Validators.required]],
       primerApellido: [{ value: null, disabled: true }, [Validators.maxLength(20), Validators.required]],
       segundoApellido: [{ value: null, disabled: true }, [Validators.maxLength(20), Validators.required]],
-      fechaNacimiento: [{ value: null, disabled: false }],
+      fechaNacimiento: [{ value: null, disabled: false }, [Validators.required]],
       entidadFederativa: [{ value: null, disabled: false }, Validators.required],
       fechaIngreso: [{ value: null, disabled: false }, Validators.required],
       fechaBaja: [{ value: null, disabled: true }],
