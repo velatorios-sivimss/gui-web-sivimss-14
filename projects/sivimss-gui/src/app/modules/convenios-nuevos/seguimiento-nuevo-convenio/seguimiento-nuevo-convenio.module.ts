@@ -28,6 +28,7 @@ import { DetalleBeneficiosComponent } from './components/detalle-beneficios/deta
 import { ModificarPersonaComponent } from './components/modificar-persona/modificar-persona.component';
 import { DetalleBeneficiarioComponent } from './components/detalle-beneficiario/detalle-beneficiario.component';
 import { ModificarBeneficiarioComponent } from './components/modificar-beneficiario/modificar-beneficiario.component';
+import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 
 //as
 @NgModule({
@@ -40,24 +41,25 @@ import { ModificarBeneficiarioComponent } from './components/modificar-beneficia
     DetalleBeneficiarioComponent,
     ModificarBeneficiarioComponent,
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    SeguimientoNuevoConvenioRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        SeguimientoNuevoConvenioRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        BtnRegresarModule
+    ],
   providers: [SeguimientoNuevoConvenioService]
 })
 export class SeguimientoNuevoConvenioModule { }
