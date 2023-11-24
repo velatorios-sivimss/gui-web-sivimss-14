@@ -94,17 +94,6 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     this.breadcrumbService.actualizar(GENERAR_FORMATO_BREADCRUMB);
     this.inicializarAgregarActividadesForm();
     this.cargarCatalogo();
-    if (this.idFormatoRegistro) {
-      this.obtenerDatosFormato();
-      this.obtenerActividades();
-    } else {
-      this.apf.velatorio.setValidators(Validators.required);
-      this.apf.velatorio.updateValueAndValidity();
-      this.apf.fechaInicio.setValidators(Validators.required);
-      this.apf.fechaInicio.updateValueAndValidity();
-      this.apf.fechaFinal.setValidators(Validators.required);
-      this.apf.fechaFinal.updateValueAndValidity();
-    }
   }
 
   inicializarAgregarActividadesForm() {
@@ -134,6 +123,17 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     const respuesta = this.activatedRoute.snapshot.data["respuesta"];
     this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta[this.POSICION_CATALOGO_VELATORIO].datos, "velatorio", "idVelatorio");
     this.entidadFederativa = respuesta[this.POSICION_CATALOGOS_ENTIDADES];
+    if (this.idFormatoRegistro) {
+      this.obtenerDatosFormato();
+      this.obtenerActividades();
+    } else {
+      this.apf.velatorio.setValidators(Validators.required);
+      this.apf.velatorio.updateValueAndValidity();
+      this.apf.fechaInicio.setValidators(Validators.required);
+      this.apf.fechaInicio.updateValueAndValidity();
+      this.apf.fechaFinal.setValidators(Validators.required);
+      this.apf.fechaFinal.updateValueAndValidity();
+    }
   }
 
   agregarRegistro() {
@@ -235,10 +235,11 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
         if (respuesta.datos && respuesta.datos?.length > 0) {
+          let velatorioObj = this.catalogoVelatorios.find((item: TipoDropdown) => item.label === respuesta.datos[0].Velatorio )
           this.agregarGenerarFormatoActividadesForm.patchValue({
             folio: respuesta.datos[0].folio,
             descVelatorio: respuesta.datos[0].Velatorio,
-            velatorio: +respuesta.datos[0].Velatorio.split('')[0],
+            velatorio: velatorioObj?.value,
             fechaInicio: moment(respuesta.datos[0].fecInicio).format('DD/MM/YYYY'),
             fechaFinal: moment(respuesta.datos[0].fecFin).format('DD/MM/YYYY'),
           });
