@@ -220,7 +220,7 @@ export class GenerarOrdenFormatoComponent implements OnInit {
       finalize(()=>this.loaderService.desactivar())
     ).subscribe({
       next: (respuesta: HttpRespuesta<any>) => {
-        this.ef.razonSocial.setValue(respuesta.datos[0].razonSocial);
+        this.ef.razonSocial.setValue(respuesta.datos[0].proveedor);
         this.ef.tipoTraslado.setValue(respuesta.datos[0].tipoTraslado == "Oficial" ? true : false);
         this.ef.servicios.setValue(respuesta.datos[0].servicio);
         this.ef.especificaciones.setValue(respuesta.datos[0].especificaciones);
