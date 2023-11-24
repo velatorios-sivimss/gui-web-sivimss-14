@@ -39,8 +39,7 @@
       </div>
       <div class="col-md-6">
         <p-calendar styleClass="form-control" id="fechaFinal" formControlName="fechaFinal" [showIcon]="true"
-          dateFormat="dd/mm/yy" placeholder="Fecha final" [maxDate]="fechaActual"
-          (onSelect)="validarFechas()"></p-calendar>
+          dateFormat="dd/mm/yy" placeholder="Fecha final" (onSelect)="validarFechas()"></p-calendar>
         <span class="campo-obligatorio"
           *ngIf="apf.fechaFinal?.errors?.required && (apf.fechaFinal?.dirty || apf.fechaFinal?.touched)">Este campo es
           obligatorio *.</span>
