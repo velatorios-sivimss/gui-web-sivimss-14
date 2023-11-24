@@ -255,7 +255,7 @@ export class PromotoresComponent implements OnInit {
       })
     ).subscribe({
       next: () => {
-        this.alertaService.mostrar(TipoAlerta.Exito, 'Inhabilitado correctamente Promotor.');
+        this.alertaService.mostrar(TipoAlerta.Exito, 'Promotor inhabilitado correctamente');
         this.paginar();
       },
       error: (error: HttpErrorResponse) => {
