@@ -56,7 +56,6 @@ export class AgregarGenerarFormatoActividadesComponent implements OnInit {
   public agregarGenerarFormatoActividadesForm!: FormGroup;
   public agregarActividadForm!: FormGroup;
   public mostrarModal: boolean = false;
-  public fechaActual: Date = new Date();
   public agregandoRegistro: boolean = false;
   public descVelatorio: string = '';
   public numActividades: number | null = null;

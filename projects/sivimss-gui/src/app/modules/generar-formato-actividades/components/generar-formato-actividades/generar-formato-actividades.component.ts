@@ -60,7 +60,6 @@ export class GenerarFormatoActividadesComponent implements OnInit {
   public detalleRef!: DynamicDialogRef;
   public filtroForm!: FormGroup;
   public promotoresFiltrados: TipoDropdown[] = [];
-  public fechaActual: Date = new Date();
 
   constructor(
     private route: ActivatedRoute,
