@@ -30,6 +30,7 @@ import { DetalleBeneficiarioComponent } from './components/detalle-beneficiario/
 import { ModificarBeneficiarioComponent } from './components/modificar-beneficiario/modificar-beneficiario.component';
 import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.module";
 import {UtileriaModule} from "../../../shared/utileria/utileria.module";
+import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 
 //as
 @NgModule({
@@ -42,26 +43,27 @@ import {UtileriaModule} from "../../../shared/utileria/utileria.module";
     DetalleBeneficiarioComponent,
     ModificarBeneficiarioComponent,
   ],
-  imports: [
-    CalendarModule,
-    CommonModule,
-    DialogModule,
-    DropdownModule,
-    DynamicDialogModule,
-    FormsModule,
-    InputSwitchModule,
-    SeguimientoNuevoConvenioRoutingModule,
-    OverlayPanelModule,
-    OverlayPanelOpcionesModule,
-    ReactiveFormsModule,
-    TableModule,
-    TablePanelModule,
-    TituloPrincipalModule,
-    StepsModule,
-    AccordionModule,
-    BtnRegresarModule,
-    UtileriaModule
-  ],
+    imports: [
+        CalendarModule,
+        CommonModule,
+        DialogModule,
+        DropdownModule,
+        DynamicDialogModule,
+        FormsModule,
+        InputSwitchModule,
+        SeguimientoNuevoConvenioRoutingModule,
+        OverlayPanelModule,
+        OverlayPanelOpcionesModule,
+        ReactiveFormsModule,
+        TableModule,
+        TablePanelModule,
+        TituloPrincipalModule,
+        StepsModule,
+        AccordionModule,
+        BtnRegresarModule,
+        UtileriaModule,
+        CeldaStickyModule
+    ],
   providers: [SeguimientoNuevoConvenioService]
 })
 export class SeguimientoNuevoConvenioModule { }

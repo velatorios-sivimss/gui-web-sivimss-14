@@ -1,118 +1,117 @@
 <div class="grid">
-  <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
-  <app-titulo-principal titulo="Seguimiento de nuevo convenio" class="col"></app-titulo-principal>
+    <app-btn-regresar class="mr-2 mt-5 col-fixed border-return-button" [routerLink]="['']"></app-btn-regresar>
+    <app-titulo-principal titulo="Seguimiento de nuevo convenio" class="col"></app-titulo-principal>
 </div>
 <div class="border-panel">
-  <form [formGroup]="filtroForm" (submit)="buscar()" (reset)="limpiar()">
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="nivel">Nivel:</label>
-        <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
-                    placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
-        </p-dropdown>
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="velatorio">Velatorio:</label>
-        <p-dropdown id="velatorio" class="form-control" formControlName="velatorio" [options]="catalogoVelatorios"
-                    placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
-        </p-dropdown>
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="velatorio">Folio de Convenio PF :</label>
-        <input id="folioConvenioPf" class="form-control" formControlName="folioConvenioPf"
-               placeholder="Ingresa el folio de convenio PF">
-      </div>
-      <div class="col-md-6">
-        <label class="control-label" for="nivel">Folio de Convenio PSFPA :</label>
-        <input id="folioConvenioPsfpa" class="form-control" formControlName="folioConvenioPsfpa"
-               placeholder="Ingresa el folio de convenio PSFPA">
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="control-label" for="nivel">RFC del afiliado :</label>
-        <input id="rfcAfiliado" class="form-control" formControlName="rfcAfiliado"
-               placeholder="Ingresa el RFC de afiliado" [maxLength]="13" alphanumericOnly>
-      </div>
-    </div>
-    <div class="row mt-6">
-      <div class="col-md-12 flex justify-content-end">
-        <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">Limpiar</button>
-        <button type="submit" class="btn btn-primary btn-md ml-5">Buscar</button>
-      </div>
-    </div>
-  </form>
+    <form [formGroup]="filtroForm" (submit)="buscar()" (reset)="limpiar()">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="nivel">Nivel:</label>
+                <p-dropdown id="nivel" class="form-control" formControlName="nivel" [options]="catalogoNiveles"
+                            placeholder="Seleccionar el nivel" [filter]="true" filterBy="label">
+                </p-dropdown>
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="velatorio">Velatorio:</label>
+                <p-dropdown id="velatorio" class="form-control" formControlName="velatorio"
+                            [options]="catalogoVelatorios"
+                            placeholder="Seleccionar el velatorio" [filter]="true" filterBy="label">
+                </p-dropdown>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="velatorio">Folio de Convenio PF :</label>
+                <input id="folioConvenioPf" class="form-control" formControlName="folioConvenioPf"
+                       placeholder="Ingresa el folio de convenio PF">
+            </div>
+            <div class="col-md-6">
+                <label class="control-label" for="nivel">Folio de Convenio PSFPA :</label>
+                <input id="folioConvenioPsfpa" class="form-control" formControlName="folioConvenioPsfpa"
+                       placeholder="Ingresa el folio de convenio PSFPA">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="control-label" for="nivel">RFC del afiliado :</label>
+                <input id="rfcAfiliado" class="form-control" formControlName="rfcAfiliado"
+                       placeholder="Ingresa el RFC de afiliado" [maxLength]="13" alphanumericOnly>
+            </div>
+        </div>
+        <div class="row mt-6">
+            <div class="col-md-12 flex justify-content-end">
+                <button type="reset" class="btn btn-default btn-md" [disabled]="filtroForm.pristine">Limpiar</button>
+                <button type="submit" class="btn btn-primary btn-md ml-5" [disabled]="filtroForm.pristine">Buscar</button>
+            </div>
+        </div>
+    </form>
 </div>
 <section class="mt-5">
-  <div class="flex justify-content-between align-items-center">
-    <h2 class="subtitulo">Registros</h2>
-  </div>
-  <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="convenios" [paginator]="convenios.length > 0"
-           [rows]="cantElementosPorPagina"
-           [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
-           (onLazyLoad)="paginar($event)">
-    <ng-template pTemplate="header">
-      <tr>
-        <th scope="col">Folio convenio</th>
-        <th scope="col">Tipo de contratación</th>
-        <th scope="col">RFC</th>
-        <th scope="col">Nombre afiliado</th>
-        <th scope="col">Tipo paquete</th>
-        <th scope="col">Estatus</th>
-        <th scope="col"></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-convenio>
-      <tr>
-        <td> {{convenio.folioConvenioPf}} </td>
-        <td> {{convenio.tipoContratacion}} </td>
-        <td> {{convenio.rfc}} </td>
-        <td> {{convenio.nombreAfiliado}} </td>
-        <td> {{convenio.tipoPaquete}} </td>
-        <td>
-          <div class="contenedor-inputswitch">
-            <p-inputSwitch [(ngModel)]="convenio.estatus" (onChange)="abrirCambioEstatus(convenio)"></p-inputSwitch>
-            <span class="activo" *ngIf="convenio.estatus">Activo</span>
-            <span class="inactivo" *ngIf="!convenio.estatus">Inactivo</span>
-          </div>
-        </td>
-        <td>
-          <div class="contenedor-celda-iconos">
-            <a (click)="abrirPanel($event,convenio)">
-              <img
-                src="assets/images/imagen-icono-barras-horizontales.svg"
-                alt="icono barras horizontales">
-            </a>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="paginatorleft">
-      <div class="paginator-template">
-        <span class="total-elements"> {{convenios.length}} de {{totalElementos}} </span>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="paginatorright">
-      <div class="paginator-template">
-        <div class="export-table">
-          <span class="export-table-text">Exportar tabla</span>
-          <div class="export-table-icons">
-            <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
-            <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
-          </div>
-        </div>
-      </div>
-    </ng-template>
-  </p-table>
+    <p-table styleClass="mt-5 mb-8 last-sticky-column" [value]="convenios" [paginator]="convenios.length > 0" [rows]="cantElementosPorPagina"
+             [lazy]="true" [totalRecords]="totalElementos" [pageLinks]="3" [(first)]="numPaginaActual"
+             (onLazyLoad)="paginar($event)" [resizableColumns]="true" [columnResizeMode]="'expand'"
+             appActivarUltimaCeldaSticky>
+        <ng-template pTemplate="header">
+            <tr>
+                <th pResizableColumn scope="col">Folio convenio</th>
+                <th pResizableColumn scope="col">Tipo de contratación</th>
+                <th pResizableColumn scope="col">RFC</th>
+                <th pResizableColumn scope="col">Nombre afiliado</th>
+                <th pResizableColumn scope="col">Tipo paquete</th>
+                <th pResizableColumn scope="col">Estatus</th>
+                <th scope="col"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-convenio>
+            <tr>
+                <td pResizableColumn> {{convenio.folioConvenioPf}} </td>
+                <td pResizableColumn> {{convenio.tipoContratacion}} </td>
+                <td pResizableColumn> {{convenio.rfc}} </td>
+                <td pResizableColumn> {{convenio.nombreAfiliado}} </td>
+                <td pResizableColumn> {{convenio.tipoPaquete}} </td>
+                <td>
+                    <div class="contenedor-inputswitch">
+                        <p-inputSwitch [(ngModel)]="convenio.estatus"
+                                       (onChange)="abrirCambioEstatus(convenio)"></p-inputSwitch>
+                        <span class="activo" *ngIf="convenio.estatus">Activo</span>
+                        <span class="inactivo" *ngIf="!convenio.estatus">Inactivo</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="contenedor-celda-iconos">
+                        <a (click)="abrirPanel($event,convenio)">
+                            <img
+                                    src="assets/images/imagen-icono-barras-horizontales.svg"
+                                    alt="icono barras horizontales">
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <div class="paginator-template">
+                <span class="total-elements"> {{convenios.length}} de {{totalElementos}} </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <div class="paginator-template">
+                <div class="export-table">
+                    <span class="export-table-text">Exportar tabla</span>
+                    <div class="export-table-icons">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-pdf.svg" alt="exportar pdf">
+                        <img class="icon-export-table" src="assets/images/imagen-icono-excel.svg" alt="exportar excel">
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
 </section>
 
 <p-overlayPanel #overlayPanel>
-  <ng-template pTemplate="content">
-    <app-overlay-panel-opciones>
-      <app-overlay-panel-opcion titulo="Concluir formato"
-                                (click)="abrirPreRegistroNuevoConvenio()"></app-overlay-panel-opcion>
-    </app-overlay-panel-opciones>
-  </ng-template>
+    <ng-template pTemplate="content">
+        <app-overlay-panel-opciones>
+            <app-overlay-panel-opcion titulo="Concluir formato"
+                                      (click)="abrirPreRegistroNuevoConvenio()"></app-overlay-panel-opcion>
+        </app-overlay-panel-opciones>
+    </ng-template>
 </p-overlayPanel>
