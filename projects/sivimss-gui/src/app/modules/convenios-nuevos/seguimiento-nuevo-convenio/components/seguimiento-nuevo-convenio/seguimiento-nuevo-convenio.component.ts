@@ -11,188 +11,225 @@ import {DIEZ_ELEMENTOS_POR_PAGINA} from 'projects/sivimss-gui/src/app/utils/cons
 import {CATALOGOS_DUMMIES} from '../../../../proveedores/constants/dummies';
 import {SeguimientoNuevoConvenio} from '../../models/seguimiento-nuevo-convenio.interface';
 import {SEGUIMIENTO_CONVENIO_BREADCRUMB} from "../../constants/breadcrumb";
+import {UsuarioEnSesion} from "../../../../../models/usuario-en-sesion.interface";
+import {HttpRespuesta} from "../../../../../models/http-respuesta.interface";
+import {
+    mapearArregloTipoDropdown,
+    obtenerNivelUsuarioLogueado,
+    obtenerVelatorioUsuarioLogueado
+} from "../../../../../utils/funciones";
+import {HttpErrorResponse} from "@angular/common/http";
+import {SeguimientoNuevoConvenioService} from "../../services/seguimiento-nuevo-convenio.service";
 
 @Component({
-  selector: 'app-seguimiento-nuevo-convenio',
-  templateUrl: './seguimiento-nuevo-convenio.component.html',
-  styleUrls: ['./seguimiento-nuevo-convenio.component.scss'],
-  providers: [DialogService],
+    selector: 'app-seguimiento-nuevo-convenio',
+    templateUrl: './seguimiento-nuevo-convenio.component.html',
+    styleUrls: ['./seguimiento-nuevo-convenio.component.scss'],
+    providers: [DialogService],
 })
 export class SeguimientoNuevoConvenioComponent implements OnInit {
 
-  @ViewChild(OverlayPanel)
-  overlayPanel!: OverlayPanel;
+    @ViewChild(OverlayPanel)
+    overlayPanel!: OverlayPanel;
 
-  niveles: TipoDropdown[] = [];
-  velatorios: TipoDropdown[] = [];
+    catalogoNiveles: TipoDropdown[] = [];
+    catalogoVelatorios: TipoDropdown[] = [];
 
-  numPaginaActual: number = 0;
-  cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
-  totalElementos: number = 0;
+    numPaginaActual: number = 0;
+    cantElementosPorPagina: number = DIEZ_ELEMENTOS_POR_PAGINA;
+    totalElementos: number = 0;
+
+    central!: boolean;
+
+    convenios: SeguimientoNuevoConvenio[] = [];
+    convenioSeleccionado: SeguimientoNuevoConvenio = {};
+
+    filtroForm!: FormGroup;
+
+    creacionRef!: DynamicDialogRef;
+    detalleRef!: DynamicDialogRef;
+    modificacionRef!: DynamicDialogRef;
+
+    opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
+    tipoServicio: TipoDropdown[] = CATALOGOS_DUMMIES;
+    partidaPresupuestal: TipoDropdown[] = CATALOGOS_DUMMIES;
+    cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES;
 
 
-  convenios: SeguimientoNuevoConvenio[] = [];
-  convenioSeleccionado: SeguimientoNuevoConvenio = {};
+    constructor(
+        private formBuilder: FormBuilder,
+        private breadcrumbService: BreadcrumbService,
+        private alertaService: AlertaService,
+        public dialogService: DialogService,
+        private router: Router,
+        private activatedRoute: ActivatedRoute,
+        private seguimientoConvenioService: SeguimientoNuevoConvenioService
+    ) {
+    }
 
-  filtroForm!: FormGroup;
+    ngOnInit(): void {
+        this.breadcrumbService.actualizar(SEGUIMIENTO_CONVENIO_BREADCRUMB);
+        this.inicializarFiltroForm();
+        this.cargarCatalogos();
+    }
 
-  creacionRef!: DynamicDialogRef;
-  detalleRef!: DynamicDialogRef;
-  modificacionRef!: DynamicDialogRef;
+    cargarCatalogos(): void {
+        this.catalogoNiveles = this.activatedRoute.snapshot.data["respuesta"];
+        this.obtenerVelatorios();
+    }
 
-  opciones: TipoDropdown[] = CATALOGOS_DUMMIES;
-  tipoServicio: TipoDropdown[] = CATALOGOS_DUMMIES;
-  partidaPresupuestal: TipoDropdown[] = CATALOGOS_DUMMIES;
-  cuentaContable: TipoDropdown[] = CATALOGOS_DUMMIES;
+    inicializarFiltroForm(): void {
+        const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+        this.central = obtenerNivelUsuarioLogueado(usuario) === 1;
+        this.filtroForm = this.formBuilder.group({
+            nivel: [{value: obtenerNivelUsuarioLogueado(usuario), disabled: true}],
+            velatorio: [{
+                value: this.central ? null : obtenerVelatorioUsuarioLogueado(usuario),
+                disabled: obtenerNivelUsuarioLogueado(usuario) === 3
+            }],
+            folioConvenioPf: [{value: null, disabled: false}, [Validators.required]],
+            folioConvenioPsfpa: [{value: null, disabled: false}, [Validators.required]],
+            rfcAfiliado: [{value: null, disabled: false}, [Validators.required]],
+        });
+    }
 
+    obtenerVelatorios(): void {
+        const usuario: UsuarioEnSesion = JSON.parse(localStorage.getItem('usuario') as string);
+        const delegacion: null | string = this.central ? null : usuario?.idDelegacion ?? null;
+        this.seguimientoConvenioService.obtenerVelatoriosPorDelegacion(delegacion).subscribe({
+            next: (respuesta: HttpRespuesta<any>): void => this.solicitudExitosaVelatorios(respuesta),
+            error: (error: HttpErrorResponse): void => {
+                console.error("ERROR: ", error);
+            }
+        });
+    }
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private breadcrumbService: BreadcrumbService,
-    private alertaService: AlertaService,
-    public dialogService: DialogService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-  ) {
-  }
+    solicitudExitosaVelatorios(respuesta: HttpRespuesta<any>): void {
+        this.catalogoVelatorios = mapearArregloTipoDropdown(respuesta.datos, "desc", "id");
+    }
 
-  ngOnInit(): void {
-    this.inicializarFiltroForm();
-    this.breadcrumbService.actualizar(SEGUIMIENTO_CONVENIO_BREADCRUMB);
-  }
+    paginar(event: LazyLoadEvent): void {
+        console.log(event);
+        setTimeout(() => {
+            this.convenios = [
+                {
+                    id: 1,
+                    nivel: "ataúd",
+                    velatorio: "Artículo complementario",
+                    folioConvenioPf: "Madera ecológica MDF",
+                    folioConvenioPsfpa: "Tambora",
+                    rfcAfiliado: "Intermediaria",
+                    tipoContratacion: "Por persona",
+                    rfc: "fjdgf639d ",
+                    nombreAfiliado: "10m",
+                    tipoPaquete: "2m",
+                    estatus: true,
+                },
+                {
+                    id: 2,
+                    nivel: "ataúd",
+                    velatorio: "Artículo complementario",
+                    folioConvenioPf: "Madera ecológica MDF",
+                    folioConvenioPsfpa: "Tambora",
+                    rfcAfiliado: "Intermediaria",
+                    tipoContratacion: "Por Empresa",
+                    rfc: "fjdgf639d ",
+                    nombreAfiliado: "10m",
+                    tipoPaquete: "2m",
+                    estatus: true,
+                },
+                {
+                    id: 3,
+                    nivel: "ataúd",
+                    velatorio: "Artículo complementario",
+                    folioConvenioPf: "Madera ecológica MDF",
+                    folioConvenioPsfpa: "Tambora",
+                    rfcAfiliado: "Intermediaria",
+                    tipoContratacion: "Numero de folio de convenio (Pre registro)",
+                    rfc: "fjdgf639d ",
+                    nombreAfiliado: "10m",
+                    tipoPaquete: "2m",
+                    estatus: true,
+                }
+            ];
+            this.totalElementos = this.convenios.length;
+        }, 0)
+    }
 
-  inicializarFiltroForm(): void {
-    this.filtroForm = this.formBuilder.group({
-      nivel: [{value: null, disabled: false}, [Validators.required]],
-      velatorio: [{value: null, disabled: false}, [Validators.required]],
-      folioConvenioPf: [{value: null, disabled: false}, [Validators.required]],
-      folioConvenioPsfpa: [{value: null, disabled: false}, [Validators.required]],
-      rfcAfiliado: [{value: null, disabled: false}, [Validators.required]],
-    });
-  }
+    limpiar(): void {
+        this.filtroForm.reset();
+    }
 
-  paginar(event: LazyLoadEvent): void {
-    console.log(event);
-    setTimeout(() => {
-      this.convenios = [
-        {
-          id: 1,
-          nivel: "ataúd",
-          velatorio: "Artículo complementario",
-          folioConvenioPf: "Madera ecológica MDF",
-          folioConvenioPsfpa: "Tambora",
-          rfcAfiliado: "Intermediaria",
-          tipoContratacion: "Por persona",
-          rfc: "fjdgf639d ",
-          nombreAfiliado: "10m",
-          tipoPaquete: "2m",
-          estatus: true,
-        },
-        {
-          id: 2,
-          nivel: "ataúd",
-          velatorio: "Artículo complementario",
-          folioConvenioPf: "Madera ecológica MDF",
-          folioConvenioPsfpa: "Tambora",
-          rfcAfiliado: "Intermediaria",
-          tipoContratacion: "Por Empresa",
-          rfc: "fjdgf639d ",
-          nombreAfiliado: "10m",
-          tipoPaquete: "2m",
-          estatus: true,
-        },
-        {
-          id: 3,
-          nivel: "ataúd",
-          velatorio: "Artículo complementario",
-          folioConvenioPf: "Madera ecológica MDF",
-          folioConvenioPsfpa: "Tambora",
-          rfcAfiliado: "Intermediaria",
-          tipoContratacion: "Numero de folio de convenio (Pre registro)",
-          rfc: "fjdgf639d ",
-          nombreAfiliado: "10m",
-          tipoPaquete: "2m",
-          estatus: true,
-        }
-      ];
-      this.totalElementos = this.convenios.length;
-    }, 0)
-  }
+    buscar(): void {
 
-  limpiar(): void {
-    this.filtroForm.reset();
-  }
+    }
 
-  get nuf() {
-    return this.filtroForm?.controls;
-  }
+    abrirModalAgregarServicio(): void {
+        // this.creacionRef = this.dialogService.open(AgregarArticulosComponent,{
+        //   header:"Agregar artículo",
+        //   width:"920px"
+        // });
+        // this.creacionRef.onClose.subscribe((estatus:boolean) => {
+        //   if(estatus){
+        //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo agregado correctamente');
+        //   }
+        // })
+    }
 
-  abrirModalAgregarServicio(): void {
-    // this.creacionRef = this.dialogService.open(AgregarArticulosComponent,{
-    //   header:"Agregar artículo",
-    //   width:"920px"
-    // });
-    // this.creacionRef.onClose.subscribe((estatus:boolean) => {
-    //   if(estatus){
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo agregado correctamente');
-    //   }
-    // })
-  }
+    abrirCambioEstatus(servicio: SeguimientoNuevoConvenio) {
+        void this.router.navigate(['desactivar-convenio'], {relativeTo: this.activatedRoute});
+        /*Preguntar si se puede usar 'let'*/
+        // let header:string = "" ;
+        // servicio.estatus?header="Activar artículo":header="Desactivar artículo";
+        // this.creacionRef = this.dialogService.open(DetalleArticulosComponent, {
+        //   header:header,
+        //   width:"920px",
+        //   data: {servicio:servicio, origen: "estatus"},
+        // })
 
-  abrirCambioEstatus(servicio: SeguimientoNuevoConvenio) {
-    void this.router.navigate(['desactivar-convenio'], {relativeTo: this.activatedRoute});
-    /*Preguntar si se puede usar 'let'*/
-    // let header:string = "" ;
-    // servicio.estatus?header="Activar artículo":header="Desactivar artículo";
-    // this.creacionRef = this.dialogService.open(DetalleArticulosComponent, {
-    //   header:header,
-    //   width:"920px",
-    //   data: {servicio:servicio, origen: "estatus"},
-    // })
+        // this.creacionRef.onClose.subscribe((servicio:Articulos) => {
+        //   if(servicio.estatus){
+        //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo activado correctamente');
+        //   }else{
+        //     this.alertaService.mostrar(TipoAlerta.Exito, 'Servicio desactivado correctamente');
+        //   }
+        // })
 
-    // this.creacionRef.onClose.subscribe((servicio:Articulos) => {
-    //   if(servicio.estatus){
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo activado correctamente');
-    //   }else{
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Servicio desactivado correctamente');
-    //   }
-    // })
+    }
 
-  }
+    abrirConcluirServicio(): void {
+        // this.creacionRef = this.dialogService.open(ModificarArticulosComponent, {
+        //   header:"Modificar artículo",
+        //   width:"920px",
+        // })
 
-  abrirConcluirServicio(): void {
-    // this.creacionRef = this.dialogService.open(ModificarArticulosComponent, {
-    //   header:"Modificar artículo",
-    //   width:"920px",
-    // })
+        // this.creacionRef.onClose.subscribe((estatus:boolean) => {
+        //   if(estatus){
+        //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo modificado correctamente');
+        //   }
+        // })
+    }
 
-    // this.creacionRef.onClose.subscribe((estatus:boolean) => {
-    //   if(estatus){
-    //     this.alertaService.mostrar(TipoAlerta.Exito, 'Artículo modificado correctamente');
-    //   }
-    // })
-  }
+    abrirPanel(event: MouseEvent, convenioSeleccionado: SeguimientoNuevoConvenio): void {
+        this.convenioSeleccionado = convenioSeleccionado;
+        this.overlayPanel.toggle(event);
+    }
 
-  abrirPanel(event: MouseEvent, convenioSeleccionado: SeguimientoNuevoConvenio): void {
-    this.convenioSeleccionado = convenioSeleccionado;
-    this.overlayPanel.toggle(event);
-  }
+    abrirModalDetalleCapilla(servicio: SeguimientoNuevoConvenio) {
+        // this.creacionRef = this.dialogService.open(DetalleArticulosComponent, {
+        //   header:"Detalle",
+        //   width:"920px",
+        //   data: {servicio:servicio, origen: "detalle"},
+        // })
+    }
 
-  abrirModalDetalleCapilla(servicio: SeguimientoNuevoConvenio) {
-    // this.creacionRef = this.dialogService.open(DetalleArticulosComponent, {
-    //   header:"Detalle",
-    //   width:"920px",
-    //   data: {servicio:servicio, origen: "detalle"},
-    // })
-  }
+    consultaServicioEspecifico(): string {
+        return ''
+    }
 
-  consultaServicioEspecifico(): string {
-    return ''
-  }
-
-  abrirPreRegistroNuevoConvenio(): void {
-    this.router.navigate(['pre-registro-nuevo-convenio'], {relativeTo: this.activatedRoute});
-  }
+    abrirPreRegistroNuevoConvenio(): void {
+        this.router.navigate(['pre-registro-nuevo-convenio'], {relativeTo: this.activatedRoute});
+    }
 
 
 }
