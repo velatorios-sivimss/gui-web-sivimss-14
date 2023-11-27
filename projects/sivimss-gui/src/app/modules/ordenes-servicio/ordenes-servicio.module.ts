@@ -91,6 +91,7 @@ import {GestionarEtapasServiceSF} from "./services/gestionar-etapas.service-sf";
 import {GestionarEtapasActualizacionSFService} from "./services/gestionar-etapas-actualizacion-sf.service";
 import { DetalleOrdenServicioComponent } from './components/ods-plan-servicios-funerarios/detalle-orden-servicio/detalle-orden-servicio.component';
 import { DetalleActualizarOrdenServicioComponent } from './components/ods-plan-servicios-funerarios/detalle-actualizar-orden-servicio/detalle-actualizar-orden-servicio.component';
+import { ModalConvenioSfpaComponent } from './components/ods-plan-servicios-funerarios/modal-convenio-sfpa/modal-convenio-sfpa.component';
 @NgModule({
     declarations: [
         OrdenesServicioComponent,
@@ -140,7 +141,8 @@ import { DetalleActualizarOrdenServicioComponent } from './components/ods-plan-s
         ModificarInformacionServicioSFComponent,
         ModalGenerarTarjetaIdentificacionSFComponent,
         DetalleOrdenServicioComponent,
-        DetalleActualizarOrdenServicioComponent
+        DetalleActualizarOrdenServicioComponent,
+        ModalConvenioSfpaComponent
 
     ],
     imports: [

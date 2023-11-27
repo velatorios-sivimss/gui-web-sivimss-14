@@ -240,8 +240,9 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
       observaciones = presupuesto.observaciones;
       notasServicio = presupuesto.notasServicio;
 
+      total = detallePresupuesto[0].importeMonto
       for (let element of detallePresupuesto) {
-        total += Number(element.importeMonto * element.cantidad);
+        // total += Number(element.importeMonto * element.cantidad);
         let utilizarArticulo = false;
         if (element.servicioDetalleTraslado == 'paquete') {
           utilizarArticulo = true;
@@ -311,10 +312,10 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
 
   datosInformacionServicio(datos: any): void {
     let validaPromotor = false;
-    let idPromotor = datos.informacionServicioVelacion.idPromotor ?? null;
-    if (idPromotor != null && Number(idPromotor) > 0) {
-      validaPromotor = true;
-    }
+    // let idPromotor = datos.informacionServicioVelacion.idPromotor ?? null;
+    // if (idPromotor != null && Number(idPromotor) > 0) {
+    //   validaPromotor = true;
+    // }
 
     let cp = datos.informacionServicioVelacion.cp;
     let codigoPostal = null;
@@ -344,7 +345,8 @@ export class ActualizarOrdenServicioSFComponent implements OnInit, OnDestroy {
       horaRecoger: datos.horaRecoger ?? null,
       horaCortejo: datos.horaCortejo ?? null,
       horaCremacion: datos.horaCremacion ?? null,
-      idPanteon: datos.idPanteon ?? null,
+      idPanteon: datos.panteon?.idPanteon ?? null,
+      panteon: datos.panteon ?? null,
       idPromotor: datos.idPromotor ?? null,
       idSala: datos.idSala ?? null,
       fechaInstalacion:

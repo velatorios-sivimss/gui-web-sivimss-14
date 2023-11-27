@@ -38,6 +38,8 @@ import {InformacionServicioInterface} from '../../../models/InformacionServicio.
 import {AltaODSSFInterface} from "../../../models/AltaODSSF.interface";
 import {mapearArregloTipoDropdown} from "../../../../../utils/funciones";
 import {DropDownDetalleInterface} from "../../../models/drop-down-detalle.interface";
+import {ModalConvenioSfpaComponent} from "../modal-convenio-sfpa/modal-convenio-sfpa.component";
+import {Contratante} from "../../../models/contrato-sfpa.interface";
 
 @Component({
   selector: 'app-datos-finado-sf',
@@ -162,6 +164,7 @@ export class DatosFinadoSFComponent implements OnInit {
 
   llenarAlta(datodPrevios: AltaODSSFInterface): void {
     this.altaODS = datodPrevios;
+    this.idContratoPrevision = this.altaODS.finado.idContratoPrevision
   }
 
   inicializarForm(datosEtapaFinado: any): void {
@@ -223,6 +226,7 @@ export class DatosFinadoSFComponent implements OnInit {
         estado: [{value: datosEtapaFinado.direccion.estado, disabled: false}, [Validators.required]],
       }),
     });
+    this.colonias = [{label:datosEtapaFinado.direccion.colonia, value:datosEtapaFinado.direccion.colonia}];
     datosEtapaFinado.datosFinado.folioValido;
     datosEtapaFinado.datosFinado.folioValido ? this.folioInvalido = false : this.folioInvalido = true
   }
@@ -297,7 +301,6 @@ export class DatosFinadoSFComponent implements OnInit {
     ];
     window.scrollTo(0, 0);
     this.gestionarEtapasService.etapas$.next(etapas);
-    // this.seleccionarEtapa.emit(0);
     this.seleccionarEtapa.emit({idEtapaSeleccionada:0, detalle_orden_servicio: true});
     this.datosAlta();
   }
@@ -504,39 +507,24 @@ export class DatosFinadoSFComponent implements OnInit {
       next: (respuesta: HttpRespuesta<any>) => {
         this.folioInvalido = false
         if (respuesta.datos != null) {
-          const listaColonias: any = [{nombre: respuesta.datos.contratante.cp.desColonia}]
-          const [anio, mes, dia] = respuesta.datos.contratante.fechaNac.split('-');
-          const fecha = new Date(anio + '/' + mes + '/' + dia);
-          this.colonias = mapearArregloTipoDropdown(listaColonias, 'nombre', 'nombre')
-          this.idContratoPrevision = respuesta.datos.idConvenioPa
-          this.idPersona = respuesta.datos.contratante.idPersona;
-          this.idDomicilio = respuesta.datos.contratante.cp.idDomicilio
-          this.idVelatorioContratoPrevision = respuesta.datos.idVelatorio;
+          const ref = this.dialogService.open(ModalConvenioSfpaComponent, {
+            header: 'Número de contrato',
+            style: {maxWidth: '876px', width: '100%'},
+            data: {contratantes: respuesta.datos},
+          });
 
-          this.direccion.calle.setValue(respuesta.datos.contratante.cp.desCalle);
-          this.direccion.noExterior.setValue(respuesta.datos.contratante.cp.numExterior);
-          this.direccion.noInterior.setValue(respuesta.datos.contratante.cp.numInterior);
-          this.direccion.cp.setValue(respuesta.datos.contratante.cp.codigoPostal);
-          this.direccion.colonia.setValue(respuesta.datos.contratante.cp.desColonia);
-          this.direccion.municipio.setValue(respuesta.datos.contratante.cp.desMunicipio);
-          this.direccion.estado.setValue(respuesta.datos.contratante.cp.desEstado);
-
-          this.datosFinado.curp.setValue(respuesta.datos.contratante.curp);
-          this.datosFinado.nss.setValue(respuesta.datos.contratante.nss);
-          this.datosFinado.nombre.setValue(respuesta.datos.contratante.nomPersona);
-          this.datosFinado.primerApellido.setValue(respuesta.datos.contratante.primerApellido);
-          this.datosFinado.segundoApellido.setValue(respuesta.datos.contratante.segundoApellido);
-          this.datosFinado.sexo.setValue(+respuesta.datos.contratante.sexo);
-          this.datosFinado.otroTipoSexo.setValue(respuesta.datos.contratante.otroSexo);
-          this.datosFinado.fechaNacimiento.setValue(fecha);
-          this.datosFinado.nacionalidad.setValue(+respuesta.datos.contratante.nacionalidad);
-          this.datosFinado.lugarNacimiento.setValue(+respuesta.datos.contratante.idEstado);
-          this.datosFinado.paisNacimiento.setValue(+respuesta.datos.contratante.idPais);
-          this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);
-          this.datosFinado.matricula.setValue(respuesta.datos.contratante.matricula);
-          this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
-          this.cambiarTipoSexo();
-          this.cambiarNacionalidad();
+          ref.onClose.subscribe((idContrato: number) => {
+            if(idContrato){
+              this.llenarDatosFinado(
+                respuesta.datos.contratante.filter((contratante:Contratante) => {
+                  return contratante.idPersona == idContrato
+                })
+              );
+              this.idContratoPrevision = respuesta.datos.idConvenioPa
+              this.idVelatorioContratoPrevision = respuesta.datos.idVelatorio;
+              this.datosFinado.velatorioPrevision.setValue(respuesta.datos.nombreVelatorio);
+            }
+          });
           return
         }
         this.folioInvalido = true
@@ -551,6 +539,39 @@ export class DatosFinadoSFComponent implements OnInit {
         ));
       }
     })
+  }
+
+  llenarDatosFinado(contratanteSeleccionado:Contratante[]): void {
+    const contratante = contratanteSeleccionado[0]
+    const [anio, mes, dia] = contratante.fechaNac.split('-');
+    const fecha = new Date(anio + '/' + mes + '/' + dia);
+    this.colonias = [{label: contratante.cp.desColonia, value: contratante.cp.desColonia}];
+    this.idPersona = contratante.idPersona;
+    this.idDomicilio = contratante.cp.idDomicilio;
+
+    this.direccion.calle.setValue(contratante.cp.desCalle);
+    this.direccion.noExterior.setValue(contratante.cp.numExterior);
+    this.direccion.noInterior.setValue(contratante.cp.numInterior);
+    this.direccion.cp.setValue(contratante.cp.codigoPostal);
+    this.direccion.colonia.setValue(contratante.cp.desColonia);
+    this.direccion.municipio.setValue(contratante.cp.desMunicipio);
+    this.direccion.estado.setValue(contratante.cp.desEstado);
+
+    this.datosFinado.curp.setValue(contratante.curp);
+    this.datosFinado.nss.setValue(contratante.nss);
+    this.datosFinado.nombre.setValue(contratante.nomPersona);
+    this.datosFinado.primerApellido.setValue(contratante.primerApellido);
+    this.datosFinado.segundoApellido.setValue(contratante.segundoApellido);
+    this.datosFinado.sexo.setValue(+contratante.sexo);
+    this.datosFinado.otroTipoSexo.setValue(contratante.otroSexo);
+    this.datosFinado.fechaNacimiento.setValue(fecha);
+    this.datosFinado.nacionalidad.setValue(+contratante.idEstado ? 1 : 2);
+    this.datosFinado.lugarNacimiento.setValue(+contratante.idEstado);
+    this.datosFinado.paisNacimiento.setValue(+contratante.idPais);
+    this.datosFinado.matricula.setValue(contratante.matricula);
+    this.datosFinado.edad.setValue(moment().diff(moment(this.datosFinado.fechaNacimiento.value), 'years'));
+    this.cambiarTipoSexo();
+    this.cambiarNacionalidad();
   }
 
   cambiarTipoSexo(): void {

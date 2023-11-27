@@ -149,9 +149,22 @@ export class InformacionServicioSFComponent implements OnInit {
     this.buscarPromotor();
   }
 
+  validarExistenciaPanteon(datos:any): void {
+    this.existePanteon = !!datos.idPanteon
+    if(!this.existePanteon)return
+    this.direcPanteon = {
+      calle: datos.panteon.calle,
+      noExterior: datos.panteon.noExterior ?? null,
+      noInterior: datos.panteon.noInterior,
+      colonia: datos.panteon.colonia,
+      cp: datos.panteon.cp,
+      estado: datos.panteon.estado,
+      municipio: datos.panteon.municipio,
+    }
+  }
+
   llenarAlta(datodPrevios: AltaODSSFInterface): void {
     this.altaODS = datodPrevios;
-
     this.tipoOrden = Number(this.altaODS.finado.idTipoOrden);
     if (Number(this.altaODS.finado.idTipoOrden) == 3) this.desabilitarTodo();
   }
@@ -163,7 +176,6 @@ export class InformacionServicioSFComponent implements OnInit {
     this.recoger.hora.enable();
     this.cortejo.fecha.enable();
     this.cortejo.hora.enable();
-    this.cortejo.gestionadoPorPromotor.enable();
     datosPresupuesto.forEach((datos: any) => {
       if (+datos.idTipoServicio == 1) {
         this.lugarVelacion.capilla.enable();
@@ -195,6 +207,7 @@ export class InformacionServicioSFComponent implements OnInit {
 
   inicializarForm(datos: any): void {
     this.idPanteon = datos.idPanteon;
+    this.validarExistenciaPanteon(datos);
     this.form = this.formBuilder.group({
       lugarVelacion: this.formBuilder.group({
         capilla: [
@@ -244,7 +257,7 @@ export class InformacionServicioSFComponent implements OnInit {
       }),
       inhumacion: this.formBuilder.group({
         agregarPanteon: [
-          {value: null, disabled: false},
+          {value: !!datos.idPanteon, disabled: datos.idPanteon}
 
         ],
       }),
@@ -278,7 +291,7 @@ export class InformacionServicioSFComponent implements OnInit {
           [Validators.required],
         ],
         gestionadoPorPromotor: [
-          {value: datos.gestionadoPorPromotor ? datos.gestionadoPorPromotor : false, disabled: false},
+          {value: false, disabled: true},
           [Validators.required],
         ],
         promotor: [
@@ -437,7 +450,7 @@ export class InformacionServicioSFComponent implements OnInit {
     ref.onClose.subscribe((val: any) => {
       if (val.idPanteon) {
         this.existePanteon = true;
-        this.idPanteon = val
+        this.idPanteon = val.idPanteon;
         this.inhumacion.agregarPanteon.disable();
         this.confirmarGuardarPanteon = true
         this.direcPanteon = {
@@ -530,6 +543,7 @@ export class InformacionServicioSFComponent implements OnInit {
       horaCortejo: formulario.cortejo.hora,
       horaCremacion: formulario.lugarCremacion.hora,
       idPanteon: this.idPanteon,
+      panteon: this.direcPanteon,
       idPromotor: formulario.cortejo.promotor,
       idSala: formulario.lugarCremacion.sala,
       cp: formulario.lugarVelacion.cp,

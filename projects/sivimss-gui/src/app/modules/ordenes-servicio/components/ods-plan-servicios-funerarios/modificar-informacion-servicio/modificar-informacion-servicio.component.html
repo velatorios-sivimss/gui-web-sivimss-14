@@ -115,6 +115,46 @@
             *ngIf="inhumacion.agregarPanteon?.errors?.required && (inhumacion.agregarPanteon?.dirty || inhumacion.agregarPanteon?.touched)">Este campo es obligatorio *.</span>
         </div>
       </div>
+      <hr *ngIf="existePanteon">
+      <div class="row  mx-3 mb-2" *ngIf="existePanteon"><h2 class="subtitulo-base">Dirección del panteón:</h2></div>
+      <div class="flex justify-content-between mb-2" *ngIf="existePanteon">
+        <div class="col-md-1">
+          <span class="etiqueta-base">Calle:</span>
+          <br/>
+          <label class="texto-base"> {{direcPanteon.calle}} </label>
+        </div>
+        <div class="col-md-2">
+          <span class="etiqueta-base">Número exterior:</span>
+          <br/>
+          <label class="texto-base"> {{direcPanteon.noExterior}} </label>
+        </div>
+        <div class="col-md-2">
+          <span class="etiqueta-base">Número interior:</span>
+          <br/>
+          <label class="texto-base"> {{direcPanteon.noInterior}} </label>
+        </div>
+        <div class="col-md-1">
+          <span class="etiqueta-base">Colonia:</span>
+          <br/>
+          <label class="texto-base"> {{direcPanteon.colonia}} </label>
+        </div>
+        <div class="col-md-1">
+          <span class="etiqueta-base">C.P.:</span>
+          <br/>
+          <label class="texto-base"> {{direcPanteon.cp}} </label>
+        </div>
+        <div class="col-md-1">
+          <span class="etiqueta-base">Estado:</span>
+          <br/>
+          <label class="texto-base"> {{direcPanteon.estado}} </label>
+        </div>
+        <div class="col-md-1">
+          <span class="etiqueta-base">Municipio:</span>
+          <br/>
+          <label class="texto-base"> {{direcPanteon.municipio}} </label>
+        </div>
+      </div>
+      <hr *ngIf="existePanteon">
     </ng-container>
 
     <div class="row mb-2">
@@ -224,7 +264,7 @@
 </div>
 <div class="row my-4 flex align-items-center">
   <div class="col-md-3">
-    <button type="button" (click)="confirmarPreOrden = true" [disabled]="form.invalid" class="btn btn-lg btn-primary">Generar
+    <button type="button" (click)="preorden()" [disabled]="form.invalid" class="btn btn-lg btn-primary">Generar
       pre-orden</button>
   </div>
   <div class="col-md-9" *ngIf="ocultarFolioEstatus">

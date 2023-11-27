@@ -42,6 +42,7 @@ export class DetalleOrdenServicioComponent implements OnInit {
     this.gestionarEtapasService.altaODS$.asObservable().subscribe(
       (datodPrevios) => this.llenarAlta(datodPrevios)
     );
+    this.dropDownODS
   }
 
   generada(): void {

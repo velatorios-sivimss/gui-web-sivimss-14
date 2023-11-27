@@ -193,6 +193,7 @@ export class DatosContratanteSFComponent implements OnInit {
     this.cambiarValidacion();
     this.idContratante = datosEtapaContratante.datosContratante.idContratante;
     this.idPersona = datosEtapaContratante.datosContratante.idPersona;
+    this.colonias = [{value:datosEtapaContratante.direccion.colonia,label:datosEtapaContratante.direccion.colonia}];
   }
 
   inicializarLocalStorage(): void {
@@ -209,7 +210,6 @@ export class DatosContratanteSFComponent implements OnInit {
         clinicaAdscripcion: null,
         unidadProcedencia: null,
         tipoPension: null,
-
       },
       caracteristicas: {
         paquete: null,
@@ -220,7 +220,8 @@ export class DatosContratanteSFComponent implements OnInit {
         sala: null,
         promotor: null,
       },
-      tablaPaquete:[]
+      tablaPaquete: [],
+      totalPaquete: 0
     }
     localStorage.setItem("drop_down",JSON.stringify(obj));
   }

@@ -25,5 +25,6 @@ export interface DropDownDetalleInterface {
     sala: string | null,
     promotor: string | null,
   },
-  tablaPaquete: ContenidoPaqueteInterface []
+  tablaPaquete: ContenidoPaqueteInterface [],
+  totalPaquete: number
 }

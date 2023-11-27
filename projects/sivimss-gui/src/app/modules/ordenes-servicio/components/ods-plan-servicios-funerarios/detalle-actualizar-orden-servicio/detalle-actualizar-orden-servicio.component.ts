@@ -46,6 +46,11 @@ export class DetalleActualizarOrdenServicioComponent implements OnInit {
     this.gestionarEtapasService.altaODS$
       .asObservable()
       .subscribe((datodPrevios) => this.llenarAlta(datodPrevios));
+    this.dropDownODS.tablaPaquete.map((valor:any) => {
+      if(valor.utilizarArticulo == true){
+        valor.utilizarArticulo = valor.utilizarArticulo.toString();
+      }
+    })
   }
 
   llenarAlta(datodPrevios: AltaODSInterface): void {
@@ -279,6 +284,10 @@ export class DetalleActualizarOrdenServicioComponent implements OnInit {
           );
         }
       });
+  }
+
+  parseBooleanToString(valor: any): any {
+    return valor.toLowerCase() === "true"
   }
 
 }

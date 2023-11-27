@@ -171,7 +171,7 @@
       <div class="col-md-6">
         <label class="control-label" for="unidadProcedencia">Unidad de procedencia<span class="req">*</span>:</label>
         <p-dropdown id="unidadProcedencia" class="form-control" formControlName="unidadProcedencia"
-                    placeholder="Selecciona unidad de procedencia" [options]="unidadesMedicas"
+                    placeholder="Selecciona unidad de procedencia" [options]="unidadesMedicas" (onChange)="changeUnidad()"
                     #unidadSeleccionada [filter]="true" filterBy="label"></p-dropdown>
         <span class="campo-obligatorio"
               *ngIf="datosFinado.unidadProcedencia?.errors?.required && (datosFinado.unidadProcedencia?.dirty || datosFinado.unidadProcedencia?.touched)">Este campo es obligatorio *.</span>

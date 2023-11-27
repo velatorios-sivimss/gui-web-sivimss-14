@@ -938,6 +938,7 @@ export class ModificarDatosCaracteristicasContratanteSFComponent
       datosEtapaCaracteristicas
     );
     obj.tablaPaquete = datosEtapaCaracteristicas.datosPaquetes;
+    obj.totalPaquete = this.total;
     localStorage.setItem("drop_down",JSON.stringify(obj));
     this.datosPresupuesto.forEach((datos: any) => {
       let detalle: DetallePresupuestoInterface =

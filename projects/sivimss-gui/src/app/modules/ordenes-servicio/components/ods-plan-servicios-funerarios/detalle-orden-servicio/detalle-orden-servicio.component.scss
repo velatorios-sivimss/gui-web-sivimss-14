@@ -1,3 +1,18 @@
 .texto-base {
   overflow-wrap: break-word;
 }
+.texto-orden-servicio {
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 24px;
+  color: #484848;
+}
+
+.cantidad-orden-servicio {
+  margin-top: 1rem;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 24px;
+  color: #000000;
+}

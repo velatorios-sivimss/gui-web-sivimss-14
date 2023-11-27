@@ -552,6 +552,7 @@ export class ModificarDatosContratanteSFComponent
     }
     this.idContratante = Number(datos.contratante.idContratante);
     this.idPersona = datos.contratante.idPersona;
+    this.colonias = [{label:datos.contratante.cp.desColonia,value:datos.contratante.cp.desColonia}];
 
     this.cambiarValidacion();
     this.cambiarTipoSexo();
@@ -1121,13 +1122,12 @@ export class ModificarDatosContratanteSFComponent
     let municipio = finado.cp?.desMunicipio ?? null;
     let estado = finado.cp?.desEstado ?? null;
     let idDomicilio = finado.cp?.idDomicilio ?? null;
-
     let datosEtapaFinado = {
       datosFinado: {
         folioConvenioPa: finado.folioConvenioPa,
         idFinado: finado.idFinado == 0 ? null : finado.idFinado,
         idPersona: finado.idPersona,
-        idContratoPrevision: finado.idContratoPrevision,
+        idContratoPrevision: finado.idConvenioPrevision,
         tipoOrden: finado.idTipoOrden,
         noContrato: finado.idContratoPrevision,
         velatorioPrevision: finado.idVelatorioContratoPrevision,

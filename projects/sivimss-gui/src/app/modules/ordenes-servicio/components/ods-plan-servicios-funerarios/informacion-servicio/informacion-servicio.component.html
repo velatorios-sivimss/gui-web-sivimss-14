@@ -116,9 +116,9 @@
     </div>
   </ng-container>
   <ng-container formGroupName="inhumacion">
-    <div class="flex justify-content-between mt-6">
-      <div class="col-md-2"><h2 class="subtitulo-base">Inhumación</h2></div>
-      <div class="col-md-3">
+      <h2 class="subtitulo-base">Inhumación</h2>
+    <div class="row mb-2">
+      <div class="col-md-6">
         <div class="flex align-items-center">
           <p-checkbox [inputId]="'agregarPanteon'" styleClass="mr-3" formControlName="agregarPanteon"
             (onChange)="abrirModalAgregarPanteon()" [binary]="true" onCloseOnNavigation
@@ -169,7 +169,7 @@
         <label class="texto-base"> {{direcPanteon.municipio}} </label>
       </div>
     </div>
-  <hr *ngIf="existePanteon">
+    <hr *ngIf="existePanteon">
   </ng-container>
   <div class="row mb-2">
     <div class="col-md-6">

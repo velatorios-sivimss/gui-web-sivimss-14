@@ -187,13 +187,11 @@
           <label class="texto-base"> {{consultarNacionalidad(altaODS.finado.idPais)}} </label>
         </div>
         <div class="col-md-3" *ngIf="altaODS.finado.idEstado">
-          {{altaODS.finado.idEstado}}
           <span class="etiqueta-base" >Lugar de nacimiento:</span>
           <br/>
           <label class="texto-base"> {{dropDownODS.finado.lugarNacimiento}} </label>
         </div>
         <div class="col-md-3" *ngIf="altaODS.finado.idPais">
-          {{altaODS.finado.idPais}}
           <span class="etiqueta-base">País de nacimiento</span>
           <br/>
           <label class="texto-base"> {{dropDownODS.finado.paisNacimiento}} </label>
@@ -259,7 +257,6 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-paquete let-rowIndex="rowIndex">
-          {{paquete | json}}
           <tr>
             <td>{{rowIndex + 1}}</td>
             <td>{{paquete.grupo}}</td>
@@ -324,27 +321,37 @@
         <div class="col-md-2">
           <span class="etiqueta-base">Se recogerá:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.informacionServicio.fechaRecoger}} {{altaODS.informacionServicio.horaRecoger}} </label>
+          <div *ngIf="altaODS.informacionServicio.fechaRecoger">
+            <label class="texto-base"> {{altaODS.informacionServicio.fechaRecoger}} {{altaODS.informacionServicio.horaRecoger}} </label>
+          </div>
         </div>
         <div class="col-md-2">
           <span class="etiqueta-base">Cortejo del día:</span>
           <br/>
-          <label class="texto-base"> {{altaODS.informacionServicio.fechaCortejo}}  {{altaODS.informacionServicio.horaCortejo}} </label>
+          <div *ngIf="altaODS.informacionServicio.fechaCortejo">
+            <label class="texto-base"> {{altaODS.informacionServicio.fechaCortejo}}  {{altaODS.informacionServicio.horaCortejo}} </label>
+          </div>
         </div>
       </div>
     </ng-template>
   </p-accordionTab>
 </p-accordion>
+<div class="row">
+  <div class="col-md-12 flex justify-content-end">
+    <div class="flex flex-column align-items-end">
+      <span class="texto-orden-servicio">Total órden de servicio</span>
+      <span class="cantidad-orden-servicio">{{dropDownODS.totalPaquete | currency: 'USD' | lowercase}}</span>
+    </div>
+  </div>
+</div>
 <hr>
 <div class="my-4 flex justify-content-end">
-  <div class="col-md-3">
-    <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
-  </div>
-  <div class="col-md-3" *ngIf="altaODS.idEstatus == 1">
-    <button type="button" (click)="guardarODS(0)" [disabled]="false" class="btn btn-lg btn-primary">
+  <button (click)="regresar()" class="btn btn-md btn-default">Regresar</button>
+  <div *ngIf="altaODS.idEstatus == 1">
+    <button type="button" (click)="guardarODS(0)" [disabled]="false" class="btn btn-lg btn-primary ml-5">
       Generar pre-orden</button>
   </div>
-  <div class="col-md-3" *ngIf="altaODS.idEstatus == 2">
+  <div *ngIf="altaODS.idEstatus == 2">
     <button type="button" class="btn btn-md btn-primary ml-5" [disabled]="false"
             (click)="guardarODS(1)">Crear Orden de Servicio</button>
   </div>
