@@ -1,9 +1,9 @@
 export interface BusquedaPrevision {
-  folioConvenio: String;
-  estatus: String;
-  nombreAfiliado: String;
+  folioConvenio: string;
+  estatus: string;
+  nombreAfiliado: string;
   idConvenio: number;
-  curp: String;
+  curp: string;
   idEstatus: number;
   tipoPrevision: number;
 }

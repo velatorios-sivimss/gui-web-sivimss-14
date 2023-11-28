@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DialogService } from 'primeng/dynamicdialog';
 import { DIEZ_ELEMENTOS_POR_PAGINA } from 'projects/sivimss-gui/src/app/utils/constantes';
 import { BusquedaConveniosPFServic } from './services/busqueda-convenios-pf.service';
 import {
@@ -8,8 +7,6 @@ import {
 } from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
 
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { MensajesSistemaService } from 'projects/sivimss-gui/src/app/services/mensajes-sistema.service';
-import { BreadcrumbService } from 'projects/sivimss-gui/src/app/shared/breadcrumb/services/breadcrumb.service';
 import { LoaderService } from 'projects/sivimss-gui/src/app/shared/loader/services/loader.service';
 import { Router } from '@angular/router';
 import { HttpRespuesta } from 'projects/sivimss-gui/src/app/models/http-respuesta.interface';
@@ -34,6 +31,9 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
   mostrarModalNoSeEncuentraEnPeriodo: boolean = false;
   @ViewChild(OverlayPanel)
   overlayPanel!: OverlayPanel;
+  realizarPago: boolean = false;
+  descargarConvenio: boolean = false;
+
   constructor(
     private consultaConveniosService: BusquedaConveniosPFServic,
     private alertaService: AlertaService,
@@ -86,6 +86,9 @@ export class ConsultaConvenioPrevisionFunerariaComponent implements OnInit {
 
   abrirPanel(event: MouseEvent, itemConvenio: BusquedaPrevision): void {
     this.itemConvenio = itemConvenio;
+    const idEstatus = itemConvenio.idEstatus;
+    this.descargarConvenio = idEstatus > 1;
+    this.realizarPago = idEstatus == 1;
     this.overlayPanel.toggle(event);
   }
 

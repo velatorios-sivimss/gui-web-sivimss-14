@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ModalRegistrarNuevoBeneficiarioComponent } from '../modal-registrar-nuevo-beneficiario/modal-registrar-nuevo-beneficiario.component';
 import { ModalEditarBeneficiarioComponent } from '../modal-editar-beneficiario/modal-editar-beneficiario.component';
+import { ActivatedRoute } from '@angular/router';
+import { Beneficiarios } from '../../../../models/Beneficiarios.interface';
 
 @Component({
   selector: 'app-modal-detalle-beneficiarios',
@@ -9,12 +11,20 @@ import { ModalEditarBeneficiarioComponent } from '../modal-editar-beneficiario/m
   styleUrls: ['./modal-detalle-beneficiarios.component.scss'],
 })
 export class ModalDetalleBeneficiariosComponent implements OnInit {
+  beneficiarios: Beneficiarios = {} as Beneficiarios;
+
   constructor(
     private readonly dialogService: DialogService,
-    public ref: DynamicDialogRef
+    public ref: DynamicDialogRef,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    //this.beneficiarios = this.route.snapshot.data['item'];
+    console.log('aeuasd noasndoasd ');
+    console.log(this.route.snapshot);
+    console.log(this.route.snapshot.data['valores']);
+  }
 
   abrirModalRegistroNuevoBeneficiario(event: MouseEvent) {
     event.stopPropagation();

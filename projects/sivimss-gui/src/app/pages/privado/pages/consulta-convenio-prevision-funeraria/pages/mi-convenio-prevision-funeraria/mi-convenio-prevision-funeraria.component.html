@@ -7,51 +7,51 @@
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Folio del convenio</span>
-                <span class="texto-base font-normal">A6SD5746287</span>
+                <span class="texto-base font-normal">{{datosGenerales.primerApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Estatus del convenio</span>
-                <span class="texto-base font-normal">Vigente</span>
+                <span class="texto-base font-normal">{{datosGenerales.primerApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">RFC</span>
-                <span class="texto-base font-normal">00</span>
+                <span class="texto-base font-normal">{{datosGenerales.primerApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">CURP</span>
-                <span class="texto-base font-normal">00</span>
+                <span class="texto-base font-normal">{{datosGenerales.curp}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Fecha de nacimiento</span>
-                <span class="texto-base font-normal">00</span>
+                <span class="texto-base font-normal">{{datosGenerales.fechaNacimiento}}</span>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Nombre</span>
-                <span class="texto-base font-normal">nombre</span>
+                <span class="texto-base font-normal">{{datosGenerales.nombreAfiliado}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Primer apellido</span>
-                <span class="texto-base font-normal">Apellido</span>
+                <span class="texto-base font-normal">{{datosGenerales.primerApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Segundo apellido</span>
-                <span class="texto-base font-normal">Apellido</span>
+                <span class="texto-base font-normal">{{datosGenerales.segundoApellido}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Sexo</span>
-                <span class="texto-base font-normal">Masculino</span>
+                <span class="texto-base font-normal">{{datosGenerales.sexo}}</span>
             </div>
             <div class="col-md-2 flex flex-column">
                 <span class="etiqueta-base font-bold">Entidad Federativa</span>
-                <span class="texto-base font-normal">CDMX</span>
+                <span class="texto-base font-normal">{{datosGenerales.entidadFederativa}}</span>
             </div>
         </div>
     </div>
     <div class="border-panel mb-5">
         <h2 class="subtitulo-base">Beneficiarios</h2>
-        <p-table styleClass="mt-5 mb-8" [value]="nombres" [resizableColumns]="true" [columnResizeMode]="'expand'">
+        <p-table styleClass="mt-5 mb-8" [value]="beneficiarios" [resizableColumns]="true" [columnResizeMode]="'expand'">
             <ng-template pTemplate="header">
                 <tr>
                     <th scope="col">Nombre</th>
@@ -60,14 +60,14 @@
                     <th scope="col" style="width: 40px; border-left: 1px solid #b0b0b0;"></th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-convenio>
+            <ng-template pTemplate="body" let-beneficiario>
                 <tr>
-                    <td>{{convenio.nombre}}</td>
-                    <td>{{convenio.primerApellido}}</td>
-                    <td>{{convenio.segundoApellido}}</td>
+                    <td>{{beneficiario.nombreAfiliado}}</td>
+                    <td>{{beneficiario.primerApellido}}</td>
+                    <td>{{beneficiario.segundoApellido}}</td>
                     <td style="border-left: 1px solid #b0b0b0;">
                         <div class="contenedor-celda-iconos">
-                            <a (click)="abrirModalDetalleBeneficiarios($event)">
+                            <a (click)="abrirModalDetalleBeneficiarios($event,beneficiario)">
                                 <i class="pi pi-eye"></i>
                             </a>
                         </div>
@@ -103,7 +103,8 @@
     <div class="row">
         <div class="col-md-12 flex justify-content-end">
             <button class="btn btn-primary btn-md" routerLink="comprobante-de-pago">Ver comprobante de pago</button>
-            <button class="btn btn-primary btn-md ml-5" (click)="abrirModalRenovarConvenio($event)">Renovar convenio</button>
+            <button class="btn btn-primary btn-md ml-5" (click)="abrirModalRenovarConvenio($event)">Renovar
+                convenio</button>
         </div>
     </div>
 </div>

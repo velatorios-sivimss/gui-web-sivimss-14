@@ -25,4 +25,10 @@ export class BusquedaConveniosPFServic extends BaseService<
       parametros
     );
   }
+
+  detalleConvenio(idConvenio: string): Observable<HttpRespuesta<any>> {
+    return this._http.get<HttpRespuesta<any>>(
+      this._base + '/detalle-convenio/' + idConvenio
+    );
+  }
 }
