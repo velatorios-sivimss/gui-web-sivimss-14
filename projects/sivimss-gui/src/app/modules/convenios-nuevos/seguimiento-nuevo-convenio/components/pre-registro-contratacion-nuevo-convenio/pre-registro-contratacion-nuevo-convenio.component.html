@@ -5,6 +5,33 @@
 </div>
 <app-convenio-header [tipoContratacion]="'Por persona'" [numeroFolio]="'00001'"></app-convenio-header>
 
+<form [formGroup]="contratacionNuevoConvenioForm">
+
+  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+    <p-accordionTab header="Datos de la persona">
+      <app-datos-persona></app-datos-persona>
+    </p-accordionTab>
+  </p-accordion>
+
+  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+    <p-accordionTab header="Características del convenio">
+
+    </p-accordionTab>
+  </p-accordion>
+
+  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor mb-5" [activeIndex]="0">
+    <p-accordionTab header="Beneficiarios">
+
+    </p-accordionTab>
+  </p-accordion>
+
+  <p-accordion styleClass="sivimss-accordion sivimss-accordionColor" [activeIndex]="0">
+    <p-accordionTab header="Documentación requerida">
+
+    </p-accordionTab>
+  </p-accordion>
+</form>
+
 <ng-container *ngIf="preRegistroSiguiente == false">
 
   <div class="row mb-3">

@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {DialogService} from 'primeng/dynamicdialog';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {AlertaService} from 'projects/sivimss-gui/src/app/shared/alerta/services/alerta.service';
@@ -48,6 +48,8 @@ export class PreRegistroContratacionNuevoConvenioComponent {
   }
 
   // ,articuloSeleccionado:SeguimientoNuevoConvenio
+  contratacionNuevoConvenioForm!: FormGroup;
+
   abrirPanel(event: MouseEvent): void {
     console.log('se habre el panel');
 

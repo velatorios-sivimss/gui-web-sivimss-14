@@ -32,6 +32,7 @@ import {BtnRegresarModule} from "../../../shared/btn-regresar/btn-regresar.modul
 import {UtileriaModule} from "../../../shared/utileria/utileria.module";
 import {CeldaStickyModule} from "../../../shared/celda-sticky/celda-sticky.module";
 import { ConvenioHeaderComponent } from './shared/convenio-header/convenio-header.component';
+import { DatosPersonaComponent } from './shared/datos-persona/datos-persona.component';
 
 //as
 @NgModule({
@@ -44,6 +45,7 @@ import { ConvenioHeaderComponent } from './shared/convenio-header/convenio-heade
     DetalleBeneficiarioComponent,
     ModificarBeneficiarioComponent,
     ConvenioHeaderComponent,
+    DatosPersonaComponent,
   ],
     imports: [
         CalendarModule,
