@@ -37,6 +37,7 @@ import { DatosBeneficiarioComponent } from './shared/datos-beneficiario/datos-be
 import { DocumentacionBeneficiarioComponent } from './shared/documentacion-beneficiario/documentacion-beneficiario.component';
 import { DatosEmpresaComponent } from './shared/datos-empresa/datos-empresa.component';
 import { ResumenPersonaComponent } from './shared/resumen-persona/resumen-persona.component';
+import { ResumenBeneficiarioComponent } from './shared/resumen-beneficiario/resumen-beneficiario.component';
 
 //as
 @NgModule({
@@ -54,6 +55,7 @@ import { ResumenPersonaComponent } from './shared/resumen-persona/resumen-person
     DocumentacionBeneficiarioComponent,
     DatosEmpresaComponent,
     ResumenPersonaComponent,
+    ResumenBeneficiarioComponent,
   ],
     imports: [
         CalendarModule,
