@@ -35,6 +35,7 @@ import { ConvenioHeaderComponent } from './shared/convenio-header/convenio-heade
 import { DatosPersonaComponent } from './shared/datos-persona/datos-persona.component';
 import { DatosBeneficiarioComponent } from './shared/datos-beneficiario/datos-beneficiario.component';
 import { DocumentacionBeneficiarioComponent } from './shared/documentacion-beneficiario/documentacion-beneficiario.component';
+import { DatosEmpresaComponent } from './shared/datos-empresa/datos-empresa.component';
 
 //as
 @NgModule({
@@ -50,6 +51,7 @@ import { DocumentacionBeneficiarioComponent } from './shared/documentacion-benef
     DatosPersonaComponent,
     DatosBeneficiarioComponent,
     DocumentacionBeneficiarioComponent,
+    DatosEmpresaComponent,
   ],
     imports: [
         CalendarModule,
